@@ -1,4 +1,5 @@
-import type { PokeTabooPublicState, PokeTabooRoundResult } from '@pokemon-universe/shared/public';
+import type { PokeTabooPublicState, PokeTabooRoundResult, Pokemon } from '@pokemon-universe/shared/public';
+import { containsTabooPokemonName } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import {
   tabooAnnouncement, tabooCurrentStep, tabooForbiddenWords, tabooHeading, tabooHintProblem, tabooRevealSummary, tabooRole, tabooRoundLabel, tabooStatsLine,
@@ -32,6 +33,23 @@ describe('palabras prohibidas', () => {
     expect(tabooHintProblem('Siente el aura de los demás', lucario)).toBeNull();
     expect(tabooHintProblem('   ', lucario)).toBeNull();
     expect(tabooHintProblem('Lucario', null)).toBeNull();
+  });
+
+  // Paridad con el motor: sin los nombres en otros idiomas (`names`, que solo conoce el servidor), el cliente marca una
+  // pista exactamente cuando `containsTabooPokemonName` la rechazaría. Si el motor cambia la regla, esto falla.
+  it('coincide con `containsTabooPokemonName` del motor en una tabla de Pokémon y pistas', () => {
+    const pokemon = [lucario, vulpix, mime, { id: 'tauros-paldea-aqua-breed', name: 'Tauros de Paldea (raza acuática)' }, { id: 'zigzagoon-galar', name: 'Zigzagoon de Galar' }, { id: 'ho-oh', name: 'Ho-Oh' }, { id: 'farfetchd', name: "Farfetch'd" }];
+    const hints = [
+      'Es como LUCARIO pero azul', 'lu ca rio', 'superlucariomax', 'Un zorro de hielo, como vulpix', 'vulpix alola', 'vulpixalola', 'mr. mime hace mimo', 'mrmime',
+      'Un tauros que nada', 'TAUROS!!', 'tauros paldea aqua breed', 'zigzagoon corre en zigzag', 'zigzagoon galar', 'Ho Oh vuela', 'hooh', 'farfetchd con puerro', "farfetch'd",
+      'Siente el aura de los demás', 'Un pájaro arcoíris', 'Toro de agua', '   ', 'zig zag', 'mime',
+    ];
+    for (const target of pokemon) {
+      for (const hint of hints) {
+        const engine = containsTabooPokemonName(hint, { ...target } as unknown as Pokemon);
+        expect(tabooHintProblem(hint, target) !== null, `${target.id} · «${hint}»`).toBe(engine);
+      }
+    }
   });
 });
 

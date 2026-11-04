@@ -44,9 +44,12 @@ export function presenceChange(before: RoomMemberView[], after: RoomMemberView[]
   return joined ? 'join' : left ? 'leave' : null;
 }
 
-/** Estado de la franja en el lobby, siempre en texto: el host controla el inicio; el resto, conexión o «Listo». */
+/**
+ * Estado de la franja en el lobby, siempre en texto: conexión, «Listo» o «Sin confirmar». El host no lleva texto (basta
+ * su insignia «Host»): `label` vacío, y la lista no lo pinta.
+ */
 export function memberReadiness(member: RoomMemberView): { kind: 'host' | 'away' | 'ready' | 'pending'; label: string } {
-  if (member.roomRole === 'HOST') return { kind: 'host', label: 'Controla el inicio' };
+  if (member.roomRole === 'HOST') return { kind: 'host', label: '' };
   if (member.presence !== 'CONNECTED') return { kind: 'away', label: member.presence === 'LEFT' ? 'Fuera de la sala' : 'Reconectando…' };
   return member.ready ? { kind: 'ready', label: 'Listo' } : { kind: 'pending', label: 'Sin confirmar' };
 }

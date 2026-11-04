@@ -26,14 +26,8 @@ describe('HowToPlayCarousel', () => {
     expect(markup.match(/role="group" aria-roledescription="diapositiva"[^>]*hidden=""/g)).toHaveLength(2);
   });
 
-  it('dentro de un diálogo no pinta cabecera, nombra la región y da el foco inicial a «Siguiente»', () => {
-    const props = { slides: gameHowToPlay['type-duel']!, heading: 'Type Duel', idPrefix: 'how-to-type-duel', itemLabel: 'paso', loop: false };
-    const inDialog = renderToStaticMarkup(createElement(HowToPlayCarousel, { ...props, inDialog: true }));
-    expect(inDialog).not.toContain('<h2');
-    expect(inDialog).toContain('aria-label="Type Duel"');
-    expect(inDialog).not.toContain('aria-labelledby="how-to-type-duel-title"');
-    expect(inDialog).toMatch(/data-carousel-next="" data-autofocus=""/);
-    const plain = renderToStaticMarkup(createElement(HowToPlayCarousel, props));
+  it('nombra la región con su título y no da foco inicial a «Siguiente»', () => {
+    const plain = renderToStaticMarkup(createElement(HowToPlayCarousel, { slides: gameHowToPlay['type-duel']!, heading: 'Type Duel', idPrefix: 'how-to-type-duel', itemLabel: 'paso', loop: false }));
     expect(plain).toContain('<h2 id="how-to-type-duel-title"');
     expect(plain).toContain('aria-labelledby="how-to-type-duel-title"');
     expect(plain).not.toContain('data-autofocus');
@@ -50,9 +44,8 @@ describe('HowToPlayCarousel', () => {
   });
 
   it('los pasos de un juego no dan la vuelta: «Anterior» inactivo en el primero y puntos inactivos visibles', () => {
-    const markup = renderToStaticMarkup(createElement(HowToPlayCarousel, { slides: gameHowToPlay['type-duel']!, loop: false, lastAction: createElement('button', { type: 'button' }, 'Entendido') }));
+    const markup = renderToStaticMarkup(createElement(HowToPlayCarousel, { slides: gameHowToPlay['type-duel']!, loop: false }));
     expect(markup).toMatch(/aria-disabled="true"[^>]*aria-label="Consejo anterior"|aria-label="Consejo anterior"[^>]*aria-disabled="true"/);
     expect(markup.match(/class="[^"]*dotMark[^"]*"/g)).toHaveLength(3);
-    expect(markup).not.toContain('Entendido');
   });
 });

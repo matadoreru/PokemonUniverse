@@ -1,15 +1,15 @@
 import type { RoomView, SecretRankingConfig, SecretRankingPlayerState, SecretRankingPokemon, SecretRankingPublicState, SecretRankingRoundResult } from '@pokemon-universe/shared/public';
 import { ArrowDown, ArrowUp, CheckCircle2, Clock3, Eye, ListOrdered, LockKeyhole, Trophy, X } from 'lucide-react';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Avatar } from '../components/Avatar';
 import {
   MAX_RANKING_DISTANCE, formatDistance, moveRankingItem, rankingFocusAfterMove, rankingMoveText, rankingPlayerStatus, rankingPositionOf, rankingStandings,
-  secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingSteps, secretRankingVerdict, shouldRefocusSubmit, submitRanking,
+  secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingSteps, secretRankingVerdict, submitRanking,
   type MoveDirection,
 } from '../games/secret-ranking/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Bar, Chip, cx, Icon, Panel, Pill, Row, StateBox } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
 import { playerColor } from './player-color';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, socialFocusKey, type SocialPlateContent } from './social-kit';
@@ -184,14 +184,8 @@ export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; 
   };
   // Rechazado (en la misma ronda deja de estar ocupado y sigue abierto): el botón vuelve a estar activo y el foco, que
   // estaba en él mientras se deshabilitaba, vuelve a él en vez de quedarse en el `body`.
-  const previousBusy = useRef({ round: game.roundNumber, busy });
-  useEffect(() => {
-    const previous = previousBusy.current;
-    previousBusy.current = { round: game.roundNumber, busy };
-    const active = document.activeElement;
-    if (!shouldRefocusSubmit(previous, { round: game.roundNumber, busy, open }, !active || active === document.body)) return;
-    document.querySelector<HTMLButtonElement>('[data-testid="ranking-submit"]')?.focus();
-  }, [busy, open, game.roundNumber]);
+  const submitRef = useRef<HTMLButtonElement>(null);
+  useRefocusAfterReject(game.roundNumber, busy, open, submitRef);
 
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
   const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
@@ -222,7 +216,7 @@ export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; 
     bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
       icon: ListOrdered, tone: 'info', kicker: <span className={s.plateKicker}>Tu ranking secreto</span>, title: 'Una vez bloqueado, no se cambia',
       text: 'Usa Subir y Bajar en cada uno. Después de enviarlo no podrás cambiar el orden.',
-      aside: <><Pill variant="yellow" icon={LockKeyhole} loading={busy} disabled={current.order.length !== 5} onClick={() => void submit()} className={s.submit} data-testid="ranking-submit" aria-describedby="ranking-submit-warning">Bloquear ranking</Pill>
+      aside: <><Pill ref={submitRef} variant="yellow" icon={LockKeyhole} loading={busy} disabled={current.order.length !== 5} onClick={() => void submit()} className={s.submit} data-testid="ranking-submit" aria-describedby="ranking-submit-warning">Bloquear ranking</Pill>
         {/* El aviso completo para lectores a todos los tamaños (la ayuda de la placa se oculta donde falta alto). */}
         <span id="ranking-submit-warning" className="sr-only">Después de bloquearlo no podrás cambiar el orden.</span></>,
     }} />;

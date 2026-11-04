@@ -1,5 +1,6 @@
 import { Send } from 'lucide-react';
 import { useEffect, useRef, useState, type Ref } from 'react';
+import { useRefocusAfterReject } from '../../room/focus-transition';
 import { Pill, TextArea } from '../../ui';
 import s from './PokemonRedFlag.module.css';
 
@@ -69,9 +70,14 @@ export function RedFlagWriter({ label, initialDraft, canSubmit, roundEndsAt, ser
     return () => window.clearTimeout(timer);
   }, [roundEndsAt, canSubmit, serverOffset, sender]);
 
+  // Envío rechazado: el campo y la píldora se deshabilitaron mientras iba; el foco vuelve a «Bloquear respuesta» (que
+  // sigue activa: el texto no se borra), no al `body`. El campo va con `key` de la ronda, así que la época es fija.
+  const sendRef = useRef<HTMLButtonElement>(null);
+  useRefocusAfterReject(0, busy, canSubmit, sendRef);
+
   return <div className={s.writer}>
     <TextArea ref={fieldRef} label={label} value={text} maxLength={RED_FLAG_MAX} rows={2} disabled={!canSubmit || busy} className={s.writerField ?? ''}
       onChange={(value) => { setText(value); textRef.current = value; void onDraft(value).catch(() => undefined); }} />
-    <Pill variant="yellow" icon={Send} loading={busy} disabled={!canSubmit || !text.trim()} className={s.writerSend} onClick={() => void sender.send(textRef.current)} data-testid="red-flag-send">Bloquear respuesta</Pill>
+    <Pill ref={sendRef} variant="yellow" icon={Send} loading={busy} disabled={!canSubmit || !text.trim()} className={s.writerSend} onClick={() => void sender.send(textRef.current)} data-testid="red-flag-send">Bloquear respuesta</Pill>
   </div>;
 }

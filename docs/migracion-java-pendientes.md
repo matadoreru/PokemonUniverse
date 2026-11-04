@@ -84,8 +84,9 @@ Implementado en la rama `etapa-2c-datos-administracion` (plan
 - Categorías personalizadas (`/api/categories`) y dilemas de Would You Rather (`/api/would-you-rather-prompts`, con
   importación), respaldando el `HostContentProvider` de las salas Java y reemitiendo `room:state` al host.
 - Configuraciones por usuario (`UserGameConfigService`: `migrateStoredGameConfig`, debounce y `flush()` al apagar).
-- Escritura de avatares (`POST /api/auth/guest/custom-avatar`, `PUT /api/auth/profile/avatar/{preset,custom}`,
-  `DELETE /api/auth/profile/avatar`) con WebP nativo de `webp-imageio`.
+- Escritura de avatares (`POST /api/auth/guest/custom-avatar`, `PUT /api/auth/profile/avatar/custom`,
+  `DELETE /api/auth/profile/avatar`) con WebP nativo de `webp-imageio`. Un avatar es `DEFAULT` (la inicial) o `CUSTOM`
+  (imagen subida); los predefinidos se retiraron en F7 (`V2__avatares_sin_predefinidos.sql`).
 - Data-sync: `DataSyncService`, planificador, `SyncHttpClient`, adaptadores PokéAPI (sembrador, normalización y
   paletas) y TCGdex, catálogo TCG (`CachedTcgCardCatalog`) y `/api/tcg/{options,eligibility}`; recarga de los catálogos
   de sala tras cada sincronización.
@@ -194,7 +195,7 @@ Lista de comprobación (todo junto, en un mismo despliegue):
 - [x] Quitar `/socket.io/` de nginx. (Tarea 5 de 2D.)
 - [x] Nuevos `location` hacia `backend:8080` en `infra/nginx.conf`, antes de `location /api/`: `/api/categories`,
   `/api/would-you-rather-prompts`, `/api/admin/`, `/api/tcg/`,
-  `/api/auth/(guest/custom-avatar|profile/avatar)` (con `/preset`, `/custom` y el `DELETE`) y `/api/rooms/`
+  `/api/auth/(guest/custom-avatar|profile/avatar)` (con `/custom` y el `DELETE`; `/preset` se retiró en F7) y `/api/rooms/`
   (imágenes y gritos de ronda); `location = /ws` ya existe. La excepción de `proxyFor('java')` ya no existe
   (Tarea 2 de 2D: un único modo). (Tarea 5 de 2D: en su lugar, una sola `location ^~ /api/` y `location = /ws` hacia
   `backend:8080`.)

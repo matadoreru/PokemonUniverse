@@ -2,11 +2,12 @@ import type { PokemonRedFlagConfig, PokemonRedFlagPlayerState, PokemonRedFlagPub
 import { CheckCircle2, Clock3, Eye, Flag, Heart, PenLine, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
-import { flagLabel, redFlagAnnouncement, redFlagCurrentStep, redFlagHeading, redFlagQuestion, redFlagSteps, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
+import { flagLabel, redFlagAnnouncement, sendRedFlagDraft, redFlagCurrentStep, redFlagHeading, redFlagQuestion, redFlagSteps, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
 import { RedFlagWriter } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
+import type { GameActionOptions } from './room-command';
 import { guessSprite, pointsWord } from './guess-kit';
 import { playerColor } from './player-color';
 import {
@@ -26,7 +27,7 @@ const GAME_NAME = 'Pokémon Red Flag / Green Flag';
  * Anónimo: durante la votación las respuestas son «Respuesta N» con su texto, sin autor en el DOM (ni en `aria-label` ni
  * en `data-*`); los autores y los votos solo llegan en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
  */
-export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown, options?: GameActionOptions): Promise<void> }) {
   const game = room.game as PokemonRedFlagPublicState;
   const player = room.gamePlayerState as PokemonRedFlagPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonRedFlagConfig> | null;
@@ -126,7 +127,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
     }} textClassName={s.writeHelp}>
       <RedFlagWriter key={game.roundNumber} label={green ? `Tu green flag para ${pokemon?.name ?? 'el Pokémon'}` : `Tu red flag para ${pokemon?.name ?? 'el Pokémon'}`}
         initialDraft={player.ownDraft} canSubmit={player.canSubmit} roundEndsAt={game.roundEndsAt} serverOffset={offset} fieldRef={fieldRef}
-        onDraft={(text) => onAction({ type: 'UPDATE_RED_FLAG_DRAFT', text })} onSubmit={(text) => onAction({ type: 'SUBMIT_RED_FLAG', text })} />
+        onDraft={(text) => sendRedFlagDraft(onAction, text)} onSubmit={(text) => onAction({ type: 'SUBMIT_RED_FLAG', text })} />
     </SocialPlate>;
   } else if (writing) {
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Eye, tone: 'info', kicker: 'No escribes en esta ronda', title: 'Estás observando', text: 'Verás las respuestas, sin autor, en la votación.' }} />;

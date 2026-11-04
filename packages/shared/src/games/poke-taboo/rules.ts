@@ -33,9 +33,14 @@ export function normalizeTabooText(value: string): string {
     .replace(/[^\p{L}\p{N}]+/gu, ' ').trim().replace(/\s+/g, ' ');
 }
 
-export function tabooPokemonAliases(pokemon: Pokemon): string[] {
-  const idWithoutForm = pokemon.id.replace(/-(alola|galar|hisui|paldea)$/, '')
+/** Id sin la forma regional (los Tauros de Paldea, `tauros`): su nombre base también está prohibido. Lo usa también la web. */
+export function tabooBaseId(id: string): string {
+  return id.replace(/-(alola|galar|hisui|paldea)$/, '')
     .replace(/^tauros-paldea-(combat|blaze|aqua)-breed$/, 'tauros');
+}
+
+export function tabooPokemonAliases(pokemon: Pokemon): string[] {
+  const idWithoutForm = tabooBaseId(pokemon.id);
   const values = [pokemon.name, pokemon.id.replace(/-/g, ' '), idWithoutForm.replace(/-/g, ' '), ...Object.values(pokemon.names ?? {})];
   return [...new Set(values.map(normalizeTabooText).filter(Boolean))];
 }

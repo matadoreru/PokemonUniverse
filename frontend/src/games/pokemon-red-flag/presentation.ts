@@ -7,6 +7,14 @@ import { tallySummary, votesText, type PhaseStep } from '../../room/social-kit';
  */
 
 /** «red flag» o «green flag» (en minúsculas, para las frases). */
+/**
+ * Envía el borrador (a cada pulsación) sin pasar por el aviso global: teclear para corregir no borra el error de un
+ * «Bloquear respuesta» rechazado (ni ningún otro aviso de la sala).
+ */
+export function sendRedFlagDraft(onAction: (action: unknown, options?: { report?: boolean }) => Promise<void>, text: string): Promise<void> {
+  return onAction({ type: 'UPDATE_RED_FLAG_DRAFT', text }, { report: false });
+}
+
 export const flagLabel = (mode: PokemonFlagMode) => (mode === 'GREEN' ? 'green flag' : 'red flag');
 
 /** Fases de la ronda: escribir, votar (o la segunda vuelta) y el resultado. */

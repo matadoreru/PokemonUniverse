@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode, Ref } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
@@ -14,6 +14,8 @@ export type PillSize = 'std' | 'small' | 'main' | 'round';
 export const WHITE_INK_PILLS: readonly PillVariant[] = ['blue', 'red', 'danger', 'ghost'];
 
 interface PillBase extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+  /** El botón (React 19 pasa `ref` como prop): para devolverle el foco tras un envío rechazado. */
+  ref?: Ref<HTMLButtonElement>;
   children?: ReactNode;
   icon?: LucideIcon;
   loading?: boolean;

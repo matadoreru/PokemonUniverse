@@ -1,5 +1,5 @@
 import type { GamePhase, GameResults, PokeTabooAttempt, PokeTabooHint, PokeTabooPlayerState, PokeTabooPublicState, PokeTabooRoundResult } from '@pokemon-universe/shared/public';
-import { normalizeTabooText } from '@pokemon-universe/shared/public';
+import { normalizeTabooText, tabooBaseId } from '@pokemon-universe/shared/public';
 import type { PhaseStep } from '../../room/social-kit';
 
 /**
@@ -30,8 +30,6 @@ export function tabooRoundLabel(game: Pick<PokeTabooPublicState, 'roundNumber' |
   return `Turno ${game.roundNumber} de ${game.totalRounds} · Vuelta ${game.lapNumber} de ${game.totalLaps}`;
 }
 
-const FORM_SUFFIX = /-(alola|galar|hisui|paldea)$/;
-const TAUROS_BREED = /^tauros-paldea-(combat|blaze|aqua)-breed$/;
 const capitalize = (value: string) => value.replace(/(^|\s)\p{L}/gu, (letter) => letter.toUpperCase());
 
 /** Una palabra prohibida: lo que se enseña y cómo se compara (el alias normalizado, como el motor). */
@@ -42,7 +40,8 @@ interface ForbiddenAlias { display: string; alias: string }
  * nombres en otros idiomas solo los conoce el servidor (también los rechaza).
  */
 function forbiddenAliases(pokemon: { id: string; name: string }): ForbiddenAlias[] {
-  const base = pokemon.id.replace(FORM_SUFFIX, '').replace(TAUROS_BREED, 'tauros').replace(/-/g, ' ');
+  // El id base es el del motor (`tabooBaseId`): si cambia la regla de formas, cambia aquí también.
+  const base = tabooBaseId(pokemon.id).replace(/-/g, ' ');
   const entries: ForbiddenAlias[] = [
     { display: pokemon.name, alias: normalizeTabooText(pokemon.name) },
     { display: pokemon.name, alias: normalizeTabooText(pokemon.id.replace(/-/g, ' ')) },

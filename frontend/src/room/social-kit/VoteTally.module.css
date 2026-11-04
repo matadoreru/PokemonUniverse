@@ -26,6 +26,7 @@
 }
 .meta {
   display: flex;
+  flex: 1 1 auto;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-1) var(--sp-2);
@@ -51,11 +52,12 @@
   font: 800 var(--fs-15) / 1.3 var(--font-text);
   color: var(--ink);
 }
+/* La barra ocupa toda la línea (los chips van debajo): todas las barras miden lo mismo y se comparan a simple vista. */
 .count {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  flex: 1 1 12rem;
+  flex: 1 1 100%;
   min-width: 0;
 }
 .bar {
@@ -64,6 +66,9 @@
 }
 .votes {
   flex: none;
+  /* Ancho fijo («1 voto» y «12 votos» igual): las barras acaban en el mismo sitio. */
+  min-width: 8ch;
+  text-align: end;
   white-space: nowrap;
   font: 800 var(--fs-15) / 1 var(--font-text);
   font-variant-numeric: tabular-nums;

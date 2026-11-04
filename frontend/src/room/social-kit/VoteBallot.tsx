@@ -1,6 +1,7 @@
 import { CheckCircle2, Eye, Lock, Scale, Vote } from 'lucide-react';
-import { useState, type ReactNode, type Ref } from 'react';
+import { useRef, useState, type ReactNode, type Ref } from 'react';
 import { useRunoffVote } from '../../hooks/useRunoffVote';
+import { useRefocusAfterReject } from '../focus-transition';
 import { Card, Chip, cx, Icon, Pill, TextCard } from '../../ui';
 import { ballotState } from './presentation';
 import { SocialPlate, type SocialPlateContent } from './SocialPlate';
@@ -67,8 +68,6 @@ export interface VoteBallotProps {
   className?: string | undefined;
 }
 
-const VOTE_FALLBACK = 'No se pudo registrar el voto.';
-
 /**
  * Papeleta secreta (pantalla de abajo): las opciones como cartas (o textos) seleccionables con `aria-pressed`, la
  * píldora «Confirmar voto» y, al confirmar, el voto bloqueado (la elegida queda marcada con «Tu voto» y el resto fijas).
@@ -89,11 +88,14 @@ export function VoteBallot(props: VoteBallotProps) {
   } = props;
   // Una época por ronda y vuelta (la vuelta vuelve a ser 1 en la ronda siguiente): el hook y la elección se reinician.
   const epoch = roundNumber * 100 + voteRound;
-  const { busyId, vote } = useRunoffVote(epoch, onVote, VOTE_FALLBACK);
+  const { busyId, vote } = useRunoffVote(epoch, onVote);
   const [pick, setPick] = useState<{ epoch: number; id: string } | null>(null);
   const offered = options.filter((option) => candidateIds.includes(option.id));
   const { locked, sending, open, picked, selected } = ballotState({ epoch, pick, candidateIds, ownId, ownVote, busyId, canVote, participating });
   const chosen = offered.find((option) => option.id === selected) ?? null;
+  // Voto rechazado: «Confirmar voto» se deshabilitó mientras iba la petición; el foco vuelve a él, no al `body`.
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  useRefocusAfterReject(epoch, sending, open, confirmRef);
 
   const content: SocialPlateContent = locked
     ? { icon: Lock, tone: 'ok', kicker: runoff ? 'Segunda vuelta' : 'Tu voto', title: 'Voto bloqueado', text: lockedText, aside: <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Votaste</Chip> }
@@ -125,7 +127,7 @@ export function VoteBallot(props: VoteBallotProps) {
     </ul>
     {open && <div className={s.actions}>
       <p className={s.choice}>{chosen ? <>Has elegido <strong>{chosen.ariaLabel}</strong></> : 'Elige una opción y confirma tu voto.'}</p>
-      <Pill variant="yellow" icon={Vote} loading={sending} disabled={!picked && !sending} onClick={() => { if (picked) void vote(picked); }} data-testid="ballot-confirm">{confirmLabel}</Pill>
+      <Pill ref={confirmRef} variant="yellow" icon={Vote} loading={sending} disabled={!picked && !sending} onClick={() => { if (picked) void vote(picked); }} data-testid="ballot-confirm">{confirmLabel}</Pill>
     </div>}
   </SocialPlate>;
 }

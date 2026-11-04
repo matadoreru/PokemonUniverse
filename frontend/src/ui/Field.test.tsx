@@ -26,6 +26,11 @@ describe('Field', () => {
   it('sin error no marca invalidez', () => {
     expect(renderToStaticMarkup(createElement(Field, { label: 'Nombre' }))).not.toContain('aria-invalid');
   });
+  it('sin error respeta un `aria-invalid` propio (aviso en `hint`, sin alerta)', () => {
+    const html = renderToStaticMarkup(createElement(Field, { label: 'Pista', hint: 'Contiene una palabra prohibida', 'aria-invalid': true }));
+    expect(html).toContain('aria-invalid="true"');
+    expect(html).not.toContain('role="alert"');
+  });
   it('code agranda el texto del campo (código de sala) y lo marca para el teclado', () => {
     const input = /<input[^>]*>/.exec(renderToStaticMarkup(createElement(Field, { label: 'Código', code: true })))?.[0] ?? '';
     expect(input).toMatch(/class="[^"]*code/);

@@ -217,9 +217,17 @@ export async function crearSalaConJugadores(browser: Browser, n: number, viewpor
   }
 }
 
+/**
+ * ¿Se ve `locator` sin tapar? El elemento que hay en el centro de su caja es él o uno de sus hijos (no lo cubre una
+ * barra fija, el compositor ni otra capa).
+ */
+export function sinTapar(locator: Locator): Promise<boolean> {
+  return locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
+}
+
 /** En el lobby (host o co-host), elige el minijuego por su nombre del manifest. */
 export async function seleccionarJuego(page: Page, nombre: string): Promise<void> {
-  // La carta (primer botón de su celda; el segundo es «Cómo se juega a …») de la lista «Minijuegos».
+  // La carta (el botón de su celda) de la lista «Minijuegos».
   const celda = page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) });
   await expect(celda).toHaveCount(1);
   const opcion = celda.getByRole('button').first();

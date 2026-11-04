@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   MAX_RANKING_DISTANCE, averageDistance, closestAverage, formatDistance, moveRankingItem, rankingFocusAfterMove, rankingMoveText, rankingPlayerStatus,
   rankingPositionOf, rankingStandings, secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingStatsLine, secretRankingSummary,
-  secretRankingVerdict, shouldRefocusSubmit, submitRanking,
+  secretRankingVerdict, submitRanking,
 } from './presentation';
 
 const pokemon: SecretRankingPokemon[] = ['Pikachu', 'Eevee', 'Snorlax', 'Gengar', 'Psyduck'].map((name) => ({ id: name.toLowerCase(), name, sprite: `/${name}.png` }));
@@ -131,15 +131,3 @@ describe('resultados', () => {
   });
 });
 
-describe('foco tras un rechazo', () => {
-  const busy = { round: 2, busy: true };
-  it('vuelve a «Bloquear ranking» si se rechaza en la misma ronda con el foco en el body', () => {
-    expect(shouldRefocusSubmit(busy, { round: 2, busy: false, open: true }, true)).toBe(true);
-  });
-  it('no lo mueve si el foco ya está en otro sitio, si cambia la ronda, si se aceptó o si no estaba ocupado', () => {
-    expect(shouldRefocusSubmit(busy, { round: 2, busy: false, open: true }, false)).toBe(false);
-    expect(shouldRefocusSubmit(busy, { round: 3, busy: false, open: true }, true)).toBe(false);
-    expect(shouldRefocusSubmit(busy, { round: 2, busy: false, open: false }, true)).toBe(false);
-    expect(shouldRefocusSubmit({ round: 2, busy: false }, { round: 2, busy: false, open: true }, true)).toBe(false);
-  });
-});

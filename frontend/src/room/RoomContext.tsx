@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
 import { createRealtime } from '../lib/socket';
-import { commandRequest, gameActionPayload, requestCommand } from './room-command';
+import { commandRequest, gameActionPayload, requestCommand, roomErrorReporter, type GameActionOptions } from './room-command';
 import { roomActionErrorMessage } from './roomCode';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
@@ -35,7 +35,8 @@ interface RoomContextValue {
   endSession(): Promise<void>;
   setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
   skipIntro(request: SkipGameIntroRequest): Promise<void>;
-  gameAction(action: unknown): Promise<void>;
+  /** Con aviso global salvo `{ report: false }` (los borradores de Red Flag: teclear no borra el error de un envío). */
+  gameAction(action: unknown, options?: GameActionOptions): Promise<void>;
 }
 
 const RoomContext = createContext<RoomContextValue | null>(null);
@@ -76,8 +77,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
   const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E> | (() => CommandPayload<E>), report = true) => {
     const socket = socketRef.current;
     // Sin socket, `socketRef.current === socket` (los dos nulos): «Sin conexión» también sale en el aviso global.
-    const reporter = report ? { clear: () => setError(null), set: (message: string) => { if (socketRef.current === socket) setError(roomActionErrorMessage(message)); } } : null;
-    return requestCommand(commandRequest(socket, event, payload), reporter);
+    return requestCommand(commandRequest(socket, event, payload), roomErrorReporter(report, setError, roomActionErrorMessage, () => socketRef.current === socket));
   }, []);
 
   const optimisticEmit = useCallback(<E extends CommandEvent,>(event: E, payload: CommandPayload<E>, update: OptimisticLobbyUpdate) => (
@@ -118,7 +118,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
     async skipIntro(request) { await emit('game:intro:skip', request); },
     // Las guardas (sin minijuego activo, sin época) van dentro de la petición: su fallo también sale en el aviso global.
-    async gameAction(action) { await emit('game:action', () => gameActionPayload(room, action)); },
+    async gameAction(action, options) { await emit('game:action', () => gameActionPayload(room, action), options?.report ?? true); },
   }), [connected, emit, error, optimisticEmit, room]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { commandRequest, gameActionPayload, requestCommand } from './room-command';
+import { commandRequest, gameActionPayload, requestCommand, roomErrorReporter } from './room-command';
 import { roomActionErrorMessage } from './roomCode';
 
 function reporter() {
@@ -58,5 +58,34 @@ describe('guardas de los comandos: también salen en el aviso global', () => {
   });
   it('los tres textos llegan tal cual al aviso (ya están en castellano)', () => {
     for (const message of ['Sin conexión con el servidor', 'No hay un minijuego activo.', 'Actualiza la conexión para recuperar la ronda.']) expect(roomActionErrorMessage(message)).toBe(message);
+  });
+});
+
+describe('roomErrorReporter: los borradores no tocan el aviso global', () => {
+  // El aviso global, como el `useState` de `RoomContext`.
+  function notice(initial: string | null) {
+    const state = { error: initial };
+    return { state, setError: (message: string | null) => { state.error = message; } };
+  }
+  const translate = (message: string) => `ES: ${message}`;
+
+  it('un borrador (`report: false`) no borra un error que ya estaba, ni al enviarse ni al fallar', async () => {
+    const { state, setError } = notice('La respuesta es demasiado larga.');
+    await requestCommand(() => Promise.resolve(undefined), roomErrorReporter(false, setError, translate, () => true));
+    expect(state.error).toBe('La respuesta es demasiado larga.');
+    await expect(requestCommand(() => Promise.reject(new Error('Draft rejected')), roomErrorReporter(false, setError, translate, () => true))).rejects.toThrow('Draft rejected');
+    expect(state.error).toBe('La respuesta es demasiado larga.');
+  });
+  it('una acción normal sí lo limpia al empezar y publica su fallo traducido', async () => {
+    const { state, setError } = notice('Error anterior');
+    await requestCommand(() => Promise.resolve(undefined), roomErrorReporter(true, setError, translate, () => true));
+    expect(state.error).toBeNull();
+    await expect(requestCommand(() => Promise.reject(new Error('Answer too long')), roomErrorReporter(true, setError, translate, () => true))).rejects.toThrow('Answer too long');
+    expect(state.error).toBe('ES: Answer too long');
+  });
+  it('el fallo de un socket que ya no es el actual no se publica', async () => {
+    const { state, setError } = notice(null);
+    await expect(requestCommand(() => Promise.reject(new Error('tarde')), roomErrorReporter(true, setError, translate, () => false))).rejects.toThrow('tarde');
+    expect(state.error).toBeNull();
   });
 });

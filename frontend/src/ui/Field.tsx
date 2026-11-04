@@ -10,7 +10,10 @@ export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   label: string;
   /** Referencia al `<input>` (para llevarle el foco). */
   ref?: Ref<HTMLInputElement>;
-  /** Error bajo el campo; el campo recibe `aria-invalid` y `aria-describedby`. */
+  /**
+   * Error bajo el campo; el campo recibe `aria-invalid` y `aria-describedby`. Sin `error`, se respeta un `aria-invalid`
+   * propio (un aviso que va en `hint` y no en una alerta, como la palabra prohibida de Poké Taboo).
+   */
   error?: string | null;
   hint?: string;
   /** Etiqueta solo para lectores de pantalla. */
@@ -60,7 +63,7 @@ export function Field({ label, error, hint, hideLabel, code, icon, large, classN
   const auto = useId();
   const fid = id ?? auto;
   const codeProps = code ? { autoCapitalize: 'characters', autoComplete: 'off', autoCorrect: 'off', spellCheck: false } : {};
-  const input = <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, large && s.lg, icon && s.withIcon, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : undefined} aria-describedby={describedBy(fid, error, hint)} />;
+  const input = <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, large && s.lg, icon && s.withIcon, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : rest['aria-invalid']} aria-describedby={describedBy(fid, error, hint)} />;
   return (
     <Shell id={fid} label={label} hideLabel={hideLabel} error={error} hint={hint} className={className}>
       {icon ? (

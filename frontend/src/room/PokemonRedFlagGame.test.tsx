@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { PokemonRedFlagConfigPanel } from '../games/pokemon-red-flag/ConfigPanel';
-import { redFlagAnnouncement, redFlagHeading, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
+import { redFlagAnnouncement, redFlagHeading, redFlagVerdict, sendRedFlagDraft } from '../games/pokemon-red-flag/presentation';
 import { PokemonRedFlagGame } from './PokemonRedFlagGame';
 import { PokemonRedFlagResults } from './PokemonRedFlagResults';
 
@@ -189,6 +189,14 @@ describe('Pokémon Red Flag: pantalla', () => {
     expect(html).toContain('Victoria compartida');
     expect(html).toContain('Empate sin votos');
     expect(html).not.toContain('Red flag ganadora');
+  });
+});
+
+describe('Pokémon Red Flag: borrador', () => {
+  it('el borrador se envía sin aviso global (`report: false`); «Bloquear respuesta» sí informa', async () => {
+    const onAction = vi.fn(async () => undefined);
+    await sendRedFlagDraft(onAction, 'Ronca');
+    expect(onAction).toHaveBeenCalledWith({ type: 'UPDATE_RED_FLAG_DRAFT', text: 'Ronca' }, { report: false });
   });
 });
 

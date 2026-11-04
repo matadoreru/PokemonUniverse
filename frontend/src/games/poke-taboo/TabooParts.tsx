@@ -124,7 +124,7 @@ export function TabooComposer({ secret, canSend, hintCount, fieldRef, onProblem,
       : 'Pulsa Intro para enviarla. Los que adivinan la verán al momento.';
   return <form className={s.composer} onSubmit={(event) => void submit(event)} {...(problem ? { 'data-invalid': 'true' } : {})}>
     <Field ref={fieldRef} label="Pista para los que adivinan" value={text} maxLength={TABOO_HINT_MAX} disabled={!canSend} hint={hint} autoComplete="off" enterKeyHint="send"
-      placeholder="Ej.: Camina sobre dos patas…" className={cx(s.composerField)} onChange={(event) => setText(event.target.value.slice(0, TABOO_HINT_MAX))} />
+      {...(problem ? { 'aria-invalid': true } : {})} placeholder="Ej.: Camina sobre dos patas…" className={cx(s.composerField)} onChange={(event) => setText(event.target.value.slice(0, TABOO_HINT_MAX))} />
     <div className={s.composerSide}>
       <span className={cx(s.count, text.length >= TABOO_HINT_MAX && s.countFull)} data-testid="taboo-hint-count">{text.length} / {TABOO_HINT_MAX}</span>
       <Pill type="submit" variant="yellow" icon={Send} loading={busy} disabled={!ready} className={s.send} data-testid="taboo-hint-send">Enviar pista</Pill>

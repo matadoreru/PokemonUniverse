@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
-import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type CaptureOptions, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, sinTapar, SIZES, type CaptureOptions, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -3425,7 +3425,6 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     // A 390×844 sin desplazar: la pregunta, el plazo, la papeleta y su confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
-    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
     for (const arriba of [b.page.getByTestId('social-prompt'), b.page.getByRole('timer'), b.page.locator('[aria-current="step"]')]) {
       await expect(arriba).toBeInViewport({ ratio: 1 });
       expect(await sinTapar(arriba), 'a 390: fase, pregunta y plazo a la vista y sin tapar').toBe(true);
@@ -3587,7 +3586,6 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     // A 390×844 sin desplazar: la fase, la consigna, el plazo y la confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
-    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
     for (const arriba of [b.page.getByTestId('social-prompt'), b.page.getByRole('timer'), b.page.locator('[aria-current="step"]')]) {
       await expect(arriba).toBeInViewport({ ratio: 1 });
       expect(await sinTapar(arriba), 'a 390: fase, consigna y plazo a la vista y sin tapar').toBe(true);
@@ -3704,7 +3702,6 @@ test('would-you-rather: atajos, papeleta secreta, revelación y clasificación',
     // A 390×844 sin desplazar: la fase, el plazo, las dos opciones, la predicción y la confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
-    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
     for (const objetivo of [b.page.locator('[aria-current="step"]'), b.page.getByRole('timer'), opcion(b.page, 'A'), opcion(b.page, 'B'), mayoria(b.page, 'A'), mayoria(b.page, 'B'), confirmar(b.page)]) {
       await expect(objetivo).toBeInViewport({ ratio: 1 });
       expect(await sinTapar(objetivo), 'a 390: todo lo de la papeleta a la vista y sin tapar').toBe(true);
@@ -3819,7 +3816,6 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
       expect(texto, `${fase}: sin recuentos ni quién votó a quién`).not.toMatch(/\b\d+ votos?\b|Votos de|Primera vuelta|Más votado|El fake era/);
       await expect(page.getByTestId('tally-row')).toHaveCount(0);
     };
-    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
 
     // Elegir: cada página lee su categoría; la que difiere es la del fake (sin «El fake sabe», nadie lo dice).
     for (const { page } of jugadores) await expect(titulo(page)).toHaveText('Elige tu Pokémon', { timeout: 20_000 });
@@ -3985,7 +3981,6 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
       await expect(page.getByTestId('ranking-players')).toHaveCount(0);
       await expect(page.getByTestId('ranking-closeness')).toHaveCount(0);
     };
-    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
 
     for (const { page } of jugadores) await expect(titulo(page)).toHaveText('Ordena el ranking', { timeout: 20_000 });
     const inicial = await orden(host.page);
@@ -4144,7 +4139,6 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     const campo = (page: Page) => page.getByRole('textbox', { name: 'Pista para los que adivinan' });
     const enviar = (page: Page) => page.getByTestId('taboo-hint-send');
     const pistas = (page: Page) => page.getByTestId('taboo-hint');
-    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
     /** Quien describe el turno `n`: la única página que pinta el secreto con esa insignia. */
     const turno = async (n: number) => {
       for (const page of paginas) await expect(page.getByText(`Turno ${n} de 3 · Vuelta 1 de 1`)).toBeVisible({ timeout: 20_000 });
@@ -4184,13 +4178,16 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     const primera = await pista('Lo verías en un combate de exhibición', 'Pista 1: 1234567890');
     await campo(descriptora).press('Enter');
     await expect(campo(descriptora)).toHaveValue('', { timeout: 5_000 });
+    const primeraEnviada = Date.now();
     await expect(campo(descriptora)).toBeFocused();
     await expect(pistas(g1)).toHaveCount(1, { timeout: 5_000 });
     await expect(pistas(g1).first()).toContainText(primera);
     await expect(viva(g1)).toContainText(`Pista 1 de ${nombreDe(descriptora)}: ${primera}`);
-    await descriptora.waitForTimeout(700);
     const larga = await pista(`Su número de registro es largo: ${'0123456789'.repeat(14)}`.slice(0, 180), `Cifras: ${'0123456789'.repeat(17)}`.slice(0, 180));
     await expect(descriptora.getByTestId('taboo-hint-count')).toHaveText(`${larga.length} / 180`);
+    // El servidor impone 500 ms entre pistas (`POKE_TABOO_HINT_COOLDOWN_MS`) y el cliente no lo muestra: se espera a que
+    // pasen desde la primera (lo normal es que ya hayan pasado con las comprobaciones de arriba) y luego se envía.
+    await expect.poll(() => Date.now() - primeraEnviada, { message: 'enfriamiento de pistas del servidor' }).toBeGreaterThan(600);
     await enviar(descriptora).click();
     await expect(campo(descriptora)).toHaveValue('', { timeout: 5_000 });
     await expect(campo(descriptora)).toBeFocused();

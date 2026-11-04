@@ -4,6 +4,18 @@ export interface RoomErrorReporter {
   set(message: string): void;
 }
 
+/** Opciones de `gameAction`. `report: false`: ni limpia ni publica el aviso global (borradores que se envían a cada pulsación). */
+export interface GameActionOptions { report?: boolean }
+
+/**
+ * El aviso global para una orden: con `report`, limpia y publica el fallo (ya en español con `translate`), pero solo si
+ * el socket sigue siendo el mismo (`isCurrent`); sin `report`, `null`, y el aviso global no se toca.
+ */
+export function roomErrorReporter(report: boolean, setError: (message: string | null) => void, translate: (message: string) => string, isCurrent: () => boolean): RoomErrorReporter | null {
+  if (!report) return null;
+  return { clear: () => setError(null), set: (message) => { if (isCurrent()) setError(translate(message)); } };
+}
+
 /**
  * Lanza un comando de sala. Con `report`, limpia el aviso global al empezar y publica en él el fallo; con `null`, el
  * aviso global no se toca: quien llama enseña el error donde toca (Jugar lo pone en su campo, traducido) y así no borra

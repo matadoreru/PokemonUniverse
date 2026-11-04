@@ -1,4 +1,5 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
+import type { GameActionOptions } from '../room/room-command';
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
 import { validatePokeddleConfig } from './pokeddle-race/validation';
@@ -10,7 +11,7 @@ import { validateMostLikelyToConfig } from './most-likely-to/validation';
 import { validateWouldYouRatherConfig } from './would-you-rather/validation';
 import { validatePokemonImpostorConfig } from './pokemon-impostor/validation';
 
-export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }
+export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown, options?: GameActionOptions): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
 export interface GameConfigProps { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }
 export interface MiniGameClientModule {

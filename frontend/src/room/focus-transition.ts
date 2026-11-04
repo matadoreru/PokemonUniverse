@@ -23,3 +23,26 @@ export function useFocusOnTransition(focusKey: string | null, target: RefObject<
     target.current?.focus({ preventScroll: true });
   }, [focusKey, target]);
 }
+
+/**
+ * ¿Se devuelve el foco al botón de envío? Solo tras un rechazo: en la misma época (ronda, vuelta) deja de estar ocupado,
+ * sigue abierto (un envío aceptado lo cierra) y el foco se había perdido en el `body` (el botón se deshabilitó al enviar).
+ */
+export function shouldRefocusSubmit(previous: { epoch: number; busy: boolean }, next: { epoch: number; busy: boolean; open: boolean }, activeIsBody: boolean): boolean {
+  return previous.epoch === next.epoch && previous.busy && !next.busy && next.open && activeIsBody;
+}
+
+/**
+ * Tras un envío rechazado, devuelve el foco a `target` (el botón de envío, que se deshabilitó mientras iba la petición)
+ * en vez de dejarlo en el `body`. Ver `shouldRefocusSubmit`. Lo usan la papeleta del kit social, Red Flag y Secret Ranking.
+ */
+export function useRefocusAfterReject(epoch: number, busy: boolean, open: boolean, target: RefObject<HTMLElement | null>): void {
+  const previous = useRef({ epoch, busy });
+  useEffect(() => {
+    const before = previous.current;
+    previous.current = { epoch, busy };
+    const active = document.activeElement;
+    if (!shouldRefocusSubmit(before, { epoch, busy, open }, !active || active === document.body)) return;
+    target.current?.focus({ preventScroll: true });
+  }, [epoch, busy, open, target]);
+}

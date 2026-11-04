@@ -1,7 +1,6 @@
 /*
- * Carrusel de «Cómo jugar» con los tokens del sistema. Va sobre azul (panel de Jugar, intro de partida con marco propio)
- * o sobre crema (`onCream`, dentro del `Dialog`): solo cambian las tintas del texto. Las maquetas usan rellenos sólidos
- * con borde azul noche y tinta azul noche, que se leen igual sobre los dos fondos.
+ * Carrusel de «Cómo jugar» con los tokens del sistema. Va sobre azul, con marco propio (intro de partida). Las maquetas
+ * usan rellenos sólidos con borde azul noche y tinta azul noche.
  */
 .root {
   --hp-title: var(--white);
@@ -13,13 +12,8 @@
   /* Las etiquetas de «Anterior» y «Siguiente» dependen del ancho del carrusel, no de la ventana (panel estrecho). */
   container-type: inline-size;
 }
-.onCream {
-  --hp-title: var(--ink);
-  --hp-text: var(--ink-2);
-  --hp-line: color-mix(in srgb, var(--navy) 20%, transparent);
-}
 
-/* Marco propio (fuera de un panel o diálogo): el de `Panel`, azul con rayas, contorno y sombra dura. */
+/* Marco propio: el de `Panel`, azul con rayas, contorno y sombra dura. */
 .framed {
   position: relative;
   overflow: hidden;
@@ -163,15 +157,11 @@
   background: var(--white);
   transition: transform var(--t-press) var(--ease);
 }
-.onCream .dotMark {
-  background: var(--cream-2);
-}
 .dot:hover .dotMark {
   background: var(--sky);
 }
 .dotActive,
-.dot:hover .dotActive,
-.onCream .dotActive {
+.dot:hover .dotActive {
   background: var(--yellow);
   transform: scaleX(2.6);
 }

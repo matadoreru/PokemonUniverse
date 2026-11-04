@@ -3,16 +3,16 @@ import { sendRunoffVote, type RunoffVoteRequest } from './useRunoffVote';
 
 function harness() {
   const request: { current: RunoffVoteRequest } = { current: { epoch: 1, pending: false } };
-  const state = { busy: '', error: '' };
-  const send = (id: string, submit: (id: string) => Promise<void>) => sendRunoffVote(request, id, submit, 'No se pudo registrar el voto.', (value) => { state.busy = value; }, (value) => { state.error = value; });
+  const state = { busy: '' };
+  const send = (id: string, submit: (id: string) => Promise<void>) => sendRunoffVote(request, id, submit, (value) => { state.busy = value; });
   return { request, state, send };
 }
 
 describe('useRunoffVote: envío del voto', () => {
-  it('un rechazo suelta la papeleta (se puede volver a votar) y deja el mensaje', async () => {
+  it('un rechazo suelta la papeleta (se puede volver a votar)', async () => {
     const { request, state, send } = harness();
     await send('p2', async () => { throw new Error('Tu voto ya está bloqueado.'); });
-    expect(state).toEqual({ busy: '', error: 'Tu voto ya está bloqueado.' });
+    expect(state).toEqual({ busy: '' });
     expect(request.current.pending).toBe(false);
     const sent: string[] = [];
     await send('p3', async (id) => { sent.push(id); });
@@ -41,7 +41,7 @@ describe('useRunoffVote: envío del voto', () => {
     state.busy = '';
     reject(new Error('tarde'));
     await pending;
-    expect(state).toEqual({ busy: '', error: '' });
+    expect(state).toEqual({ busy: '' });
     expect(request.current.pending).toBe(false);
   });
 });
