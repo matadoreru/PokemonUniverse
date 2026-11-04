@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import { cx } from '../../ui';
 import { GuessScreen, type GuessTimer } from '../guess-kit';
+import s from './AuctionScreen.module.css';
 
 /** Plazo de la cabecera (el del kit de adivinar): `{ deadline, serverOffset, label, totalMs? }`; `deadline: null`, sin plazo. */
 export type AuctionTimer = GuessTimer;
@@ -26,6 +28,11 @@ export interface AuctionScreenProps {
   /** Pantalla de abajo: `BidControls`. En el móvil queda pegada al fondo. */
   bottom: ReactNode;
   className?: string | undefined;
+  /**
+   * En el móvil la pantalla de abajo va pegada al fondo (por defecto). Con `false` queda en su sitio tras la escena: para
+   * placas altas (el buscador con su bandeja abierta) que, pegadas, taparían la escena; lo esencial sigue a la vista.
+   */
+  pinBottom?: boolean;
 }
 
 /**
@@ -37,6 +44,9 @@ export interface AuctionScreenProps {
  * Cada juego monta siempre un único `AuctionScreen` en sus fases de puja: la región viva no se vuelve a montar.
  * Quien lo use añade su id a `GAMES_WITH_SKIP_IN_SCREEN` (`room/game-skip-slot.ts`). `data-testid="auction-screen"`.
  */
-export function AuctionScreen({ stage, ...rest }: AuctionScreenProps) {
-  return <GuessScreen {...rest} clue={stage} hints={null} testId="auction-screen" />;
+export function AuctionScreen({ stage, roundLabel, roundNumber, totalRounds, className, pinBottom = true, ...rest }: AuctionScreenProps) {
+  // La insignia y el `h1` parten en dos líneas en el móvil; en el móvil y la tableta la pantalla de abajo va tras la escena.
+  return <GuessScreen {...rest} roundNumber={roundNumber} totalRounds={totalRounds} className={cx(s.screen, !pinBottom && s.unpinned, className)}
+    roundLabel={<span className={s.roundLabel}>{roundLabel ?? <>Ronda {roundNumber} de {totalRounds}</>}</span>}
+    clue={stage} hints={null} testId="auction-screen" />;
 }

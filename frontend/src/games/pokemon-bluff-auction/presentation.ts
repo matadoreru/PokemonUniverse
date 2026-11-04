@@ -47,6 +47,11 @@ export function bluffBlockInput(game: PokemonBluffAuctionPublicState, player: Po
   };
 }
 
+/** Etiqueta del plazo del resultado de la ronda: tras la última ronda llega la clasificación, no otra ronda. */
+export function bluffResultTimerLabel(game: Pick<PokemonBluffAuctionPublicState, 'roundNumber' | 'totalRounds'>): string {
+  return game.roundNumber >= game.totalRounds ? 'Clasificación' : 'Siguiente ronda';
+}
+
 /** Fase en la insignia de la ronda. */
 export function bluffPhaseName(phase: PokemonBluffAuctionPublicState['phase']): string {
   if (phase === 'POKEMON_SEARCH') return 'Demostración';
@@ -118,13 +123,16 @@ export function latestBids(game: Pick<PokemonBluffAuctionPublicState, 'bidHistor
 /** «Pikachu: correcto», «Pikachu: incorrecto», «Pikachu: ya utilizado». */
 export const ATTEMPT_TEXT: Record<BluffAuctionAttempt['result'], string> = { CORRECT: 'Correcto', INCORRECT: 'Incorrecto', DUPLICATE: 'Ya utilizado' };
 
-/** Métricas de la demostración: correctos sobre la apuesta, los que faltan y los fallos sobre lo enviado. */
-export function bluffMetrics({ correct, incorrect, target, attempts }: { correct: number; incorrect: number; target: number; attempts: number }) {
+/**
+ * Métricas de la demostración, las tres sobre la apuesta (la misma escala: un fallo no llena la barra de golpe):
+ * correctos, los que faltan y los fallos (con más fallos que la apuesta, la barra se queda llena y la cifra lo dice).
+ */
+export function bluffMetrics({ correct, incorrect, target }: { correct: number; incorrect: number; target: number }) {
   const goal = Math.max(1, target);
   return [
     { key: 'correct', label: 'Correctos', value: correct, max: goal, text: `${correct} de ${goal}`, tone: 'ok' as const },
     { key: 'remaining', label: 'Faltan', value: Math.max(0, goal - correct), max: goal, text: `${Math.max(0, goal - correct)} de ${goal}`, tone: 'yellow' as const },
-    { key: 'incorrect', label: 'Incorrectos', value: incorrect, max: Math.max(1, attempts), text: `${incorrect} de ${attempts} ${attempts === 1 ? 'enviado' : 'enviados'}`, tone: 'bad' as const },
+    { key: 'incorrect', label: 'Incorrectos', value: Math.min(incorrect, goal), max: goal, text: `${incorrect} ${incorrect === 1 ? 'fallo' : 'fallos'}`, tone: 'bad' as const },
   ];
 }
 

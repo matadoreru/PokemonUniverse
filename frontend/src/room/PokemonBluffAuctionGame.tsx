@@ -4,7 +4,7 @@ import { CheckCircle2, Clock3, Copy, Crown, Eye, Gavel, Hourglass, Mic2, Search,
 import { useMemo, useRef, type ReactNode } from 'react';
 import { Avatar } from '../components/Avatar';
 import {
-  ATTEMPT_TEXT, bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTitle, bluffRoundLabel, bluffRoundLines, bluffRoundResult,
+  ATTEMPT_TEXT, bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffResultTitle, bluffRoundLabel, bluffRoundLines, bluffRoundResult,
   bluffSeatStatus, bluffSelfVerdict, GAME_NAME, latestBids, PASS_RULE, SEAT_STATUS_TEXT, TIME_RULE, UNIT, type BluffSeatStatus,
 } from '../games/pokemon-bluff-auction/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
@@ -34,8 +34,8 @@ function Condition({ description, clauses, compact = false }: { description: str
 }
 
 /** Métricas de la demostración: `Bar`s del catálogo con la cifra en texto al lado. */
-function Metrics({ correct, incorrect, target, attempts }: { correct: number; incorrect: number; target: number; attempts: number }) {
-  return <div className={b.metrics} data-testid="bluff-metrics">{bluffMetrics({ correct, incorrect, target, attempts }).map((metric) => <div key={metric.key} className={b.metric} data-testid="bluff-metric" data-metric={metric.key}>
+function Metrics({ correct, incorrect, target }: { correct: number; incorrect: number; target: number }) {
+  return <div className={b.metrics} data-testid="bluff-metrics">{bluffMetrics({ correct, incorrect, target }).map((metric) => <div key={metric.key} className={b.metric} data-testid="bluff-metric" data-metric={metric.key}>
     <span className={b.metricLabel}>{metric.label}</span>
     <Bar value={metric.value} max={metric.max} tone={metric.tone} label={metric.label} showValue valueText={metric.text} size="lg" />
   </div>)}</div>;
@@ -116,7 +116,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: Room
               <span className={b.bidderBid}>{`Apostó ${amountText(game.targetBid ?? 0, UNIT)}`}</span>
             </span>
           </div>
-          <Metrics correct={game.correctCount} incorrect={game.incorrectCount} target={game.targetBid ?? 0} attempts={game.attempts.length} />
+          <Metrics correct={game.correctCount} incorrect={game.incorrectCount} target={game.targetBid ?? 0} />
         </div>
       </div>
     </Panel>;
@@ -164,7 +164,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: Room
     const bidder = game.bidderId === selfId;
     bottom = canSearch
       ? <GuessPanel kind="guess" titleRef={titleRef} question="Nombra Pokémon" content={{ icon: Search, tone: 'info', kicker: `Tu demostración · ${game.correctCount} de ${game.targetBid ?? 0}`, title: 'Nombra Pokémon', text: TIME_RULE }}
-        selector={{ pokemon: pool.pokemon, loading: pool.loading, loadError: pool.error, onRetry: pool.retry, inputLabel: 'Buscar Pokémon para demostrar la apuesta', roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId }) }} />
+        selector={{ pokemon: pool.pokemon, loading: pool.loading, loadError: pool.error, onRetry: pool.retry, inputLabel: 'Buscar Pokémon para demostrar la apuesta', maxResults: 5, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId }) }} />
       : <GuessPanel kind="watching" titleRef={titleRef} question="" content={{
         icon: bidder ? Clock3 : Eye, tone: 'info', kicker: bidder ? 'Tu demostración' : 'Demostración',
         title: bidder ? 'Reconectando con la demostración…' : `${nameOf(game.bidderId)} está buscando`, text: 'Todos veis los intentos en tiempo real.',
@@ -176,14 +176,14 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: Room
   }
 
   const timer = result
-    ? { deadline: game.nextTransitionAt ?? null, serverOffset: offset, label: 'Siguiente ronda' }
+    ? { deadline: game.nextTransitionAt ?? null, serverOffset: offset, label: bluffResultTimerLabel(game) }
     : searching
       ? { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Tiempo restante' }
       : { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Turno de puja', ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) };
   return <AuctionScreen gameName={GAME_NAME} roundNumber={Math.max(1, game.roundNumber)} totalRounds={game.totalRounds} roundLabel={bluffRoundLabel(game)}
     heading={bluffHeading(game, selfId, nameOf)}
     meta={<><Chip tone="info" icon={<Icon icon={Mic2} size={18} />}>Bluff por voz externa</Chip>{!result && !searching && bidSeconds === 0 && <Chip tone="neutral">Sin límite de tiempo</Chip>}</>}
-    timer={timer} announcement={bluffAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />;
+    pinBottom={!(searching && canSearch)} timer={timer} announcement={bluffAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />;
 }
 
 /** Escena del resultado: la condición, quién apostó, por qué acabó así y las métricas finales. */
@@ -203,7 +203,7 @@ function ResultScene({ result, nameOf, avatar }: { result: BluffAuctionRoundResu
         </span>
       </div>
       <p className={b.reason} data-testid="bluff-reason">{bluffResultReason(result, nameOf)}</p>
-      <Metrics correct={result.correctCount} incorrect={result.incorrectCount} target={result.bid} attempts={result.attempts.length} />
+      <Metrics correct={result.correctCount} incorrect={result.incorrectCount} target={result.bid} />
     </div>
   </div>;
 }

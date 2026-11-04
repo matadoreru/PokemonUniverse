@@ -331,25 +331,54 @@
     font-size: var(--fs-34);
   }
 }
-/* Escritorio grande (≥1600×900): la puja y la carta crecen. */
+/* Escritorio grande (≥1600×900): la pantalla se llena. La carta y las cifras se reparten el lote a partes iguales y las
+   cifras son placas blancas que llenan su columna, con letra más grande. */
 @media (min-width: 1600px) and (min-height: 900px) {
   .lot {
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: var(--sp-5);
   }
   .media > * {
-    width: min(100%, 30rem);
+    width: min(100%, 34rem);
+  }
+  .figures {
+    justify-content: center;
+    gap: var(--sp-3);
+  }
+  .figures > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding: var(--sp-3) var(--sp-4);
+    border: var(--ol-3) solid var(--navy);
+    border-radius: var(--r-card);
+    background: var(--white);
+    box-shadow: var(--sh-hard-3);
+  }
+  .figures dt {
+    font-size: var(--fs-15);
+  }
+  .none {
+    font-size: var(--fs-44);
+  }
+  .muted {
+    font-size: var(--fs-26);
+  }
+  .minimum dd {
+    font-size: var(--fs-26);
+  }
+  .turn dd {
+    font-size: var(--fs-22);
   }
   .current dd {
     font-size: var(--fs-68);
   }
-  .amount strong {
-  line-height: 1.05;
-}
-.amount small {
-    font-size: var(--fs-22);
+  .amount small {
+    font-size: var(--fs-26);
   }
   .leaderName {
-    font-size: var(--fs-26);
+    font-size: var(--fs-34);
   }
   .awardTitle {
     font-size: var(--fs-26);

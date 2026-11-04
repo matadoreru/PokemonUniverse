@@ -1,0 +1,39 @@
+/*
+ * Marco de las subastas sobre el de adivinar (`GuessScreen`): solo lo que cambia en las subastas.
+ */
+
+/* Móvil y tableta: la pantalla de abajo justo tras la escena y el lateral después. Sigue pegada al fondo si no cabe,
+   pero ya no tapa la escena ni asoma el lateral por detrás. */
+@media (max-width: 1023px) {
+  .screen > div:last-child {
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: 'top' 'bottom' 'side';
+  }
+  .unpinned > div:last-child > [data-layer='screen-bottom'] {
+    position: static;
+  }
+}
+
+/* Móvil: el título y la insignia de la ronda parten en dos líneas antes que cortarse con puntos suspensivos. */
+@media (max-width: 639px) {
+  .screen h1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    line-height: 1.15;
+  }
+  .screen span:has(> .roundLabel) {
+    white-space: normal;
+    padding-block: 2px;
+  }
+  .roundLabel {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    line-height: 1.15;
+  }
+}

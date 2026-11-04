@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { PokemonBluffAuctionConfigPanel } from '../games/pokemon-bluff-auction/ConfigPanel';
-import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffRoundLines, bluffSelfVerdict, bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
+import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffRoundLines, bluffSelfVerdict, bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
 import { bidBlock } from './auction-kit';
 import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
@@ -144,12 +144,20 @@ describe('Pokémon Bluff Auction: demostración', () => {
     expect(html).toContain('Nombra Pokémon');
     expect(html).toContain('Acierto: +5 segundos · Fallo: −3 segundos.');
     expect(html).toContain('Buscar Pokémon para demostrar la apuesta');
+    // En el móvil el buscador no va pegado al fondo (con la bandeja abierta taparía las métricas).
+    expect(html).toMatch(/data-testid="auction-screen"/);
+    expect(html).toMatch(/class="[^"]*unpinned[^"]*"[^>]*data-testid="auction-screen"/);
+    expect(play(game(), turn)).not.toContain('unpinned');
     expect(html.match(/aria-live/g)).toHaveLength(1);
     expect(html.match(/data-testid="bluff-metric"/g)).toHaveLength(3);
     for (const label of ['Correctos', 'Faltan', 'Incorrectos']) expect(html).toContain(`role="meter" aria-label="${label}"`);
     expect(html).toContain('1 de 5');
     expect(html).toContain('4 de 5');
-    expect(html).toContain('1 de 3 enviados');
+    // Los fallos, sobre la apuesta (1 de 5 llena una quinta parte), con la cifra en texto.
+    expect(html).toContain('1 fallo');
+    expect(html).toMatch(/role="meter" aria-label="Incorrectos" aria-valuenow="1" aria-valuemin="0" aria-valuemax="5"/);
+    // El buscador muestra como mucho 5 resultados (como antes del rediseño).
+    expect(html).toContain('Buscar Pokémon para demostrar la apuesta');
     expect(html).toContain('Apostó 5 Pokémon');
     // Los intentos, públicos, con el veredicto en texto (y el repetido explicado).
     expect(html.match(/data-testid="bluff-attempt"/g)).toHaveLength(3);
@@ -215,6 +223,12 @@ describe('Pokémon Bluff Auction: resultado de la ronda', () => {
     expect(html.match(/data-testid="bluff-metric"/g)).toHaveLength(3);
     expect(html.match(/aria-live/g)).toHaveLength(1);
     expect(html).toContain('Siguiente ronda');
+    expect(html).not.toContain('Clasificación');
+    // En la última ronda, el plazo lleva a la clasificación, no a otra ronda.
+    const last = play({ ...game('ROUND_RESULTS'), roundNumber: 10, lastRound: timeout }, idle, 'p1');
+    expect(last).toContain('Clasificación');
+    expect(last).not.toContain('Siguiente ronda');
+    expect(last).toContain('Era la última ronda: después, la clasificación.');
     const done = play({ ...game('ROUND_RESULTS'), lastRound: completed }, idle, 'p3');
     expect(done).toContain('>Carlos lo consiguió</h1>');
     expect(done).toContain('Cumpliste tu apuesta');
@@ -229,7 +243,11 @@ describe('Pokémon Bluff Auction: resultado de la ronda', () => {
     expect(bluffSelfVerdict(completed, 'x', false)).toMatchObject({ tone: 'info', text: 'Resultado de la ronda' });
     expect(bluffAnnouncement({ ...game('ROUND_RESULTS'), lastRound: timeout }, 'p1', nameOf)).toBe('Carlos no lo consiguió. Se agotó el tiempo: 0 de 2 correctos. +2 para cada rival.');
     // Las métricas nunca dan NaN ni dividen por cero.
-    expect(bluffMetrics({ correct: 0, incorrect: 0, target: 0, attempts: 0 }).map((metric) => metric.max)).toEqual([1, 1, 1]);
+    expect(bluffMetrics({ correct: 0, incorrect: 0, target: 0 }).map((metric) => metric.max)).toEqual([1, 1, 1]);
+    // Más fallos que la apuesta: la barra llena, la cifra real en texto.
+    expect(bluffMetrics({ correct: 0, incorrect: 4, target: 2 })[2]).toMatchObject({ value: 2, max: 2, text: '4 fallos' });
+    expect(bluffResultTimerLabel({ roundNumber: 4, totalRounds: 5 })).toBe('Siguiente ronda');
+    expect(bluffResultTimerLabel({ roundNumber: 5, totalRounds: 5 })).toBe('Clasificación');
   });
 });
 

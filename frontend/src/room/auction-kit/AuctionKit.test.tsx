@@ -122,5 +122,13 @@ describe('auction-kit: lateral y marco', () => {
     expect(html).toContain('data-testid="auction-screen"');
     expect(html.match(/aria-live/g)).toHaveLength(1);
     expect(html).toContain('Lote 1 de 4');
+    // La insignia va envuelta para partir en dos líneas en el móvil (sin `roundLabel`, «Ronda N de M»).
+    expect(html).toMatch(/class="[^"]*roundLabel[^"]*">Lote 1 de 4<\/span>/);
+    const plain = renderToStaticMarkup(<AuctionScreen gameName="Subasta" roundNumber={2} totalRounds={4} heading="Tu turno" timer={{ deadline: null, serverOffset: 0, label: 'Turno de puja' }}
+      announcement="" stage={<p>lote</p>} side={<p>lado</p>} bottom={<p>abajo</p>} />);
+    expect(plain).not.toContain('unpinned');
+    expect(renderToStaticMarkup(<AuctionScreen gameName="Subasta" roundNumber={2} totalRounds={4} heading="Tu turno" timer={{ deadline: null, serverOffset: 0, label: 'Turno de puja' }}
+      announcement="" stage={<p>lote</p>} side={<p>lado</p>} bottom={<p>abajo</p>} pinBottom={false} />)).toMatch(/class="[^"]*unpinned/);
+    expect(plain.replace(/<!-- -->/g, '')).toMatch(/class="[^"]*roundLabel[^"]*">Ronda 2 de 4<\/span>/);
   });
 });

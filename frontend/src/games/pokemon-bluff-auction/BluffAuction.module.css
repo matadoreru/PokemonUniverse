@@ -44,10 +44,10 @@
 }
 
 /* En el lote del kit la condición usa todo el ancho de su columna (no el tope de una carta) y su alto natural, centrada. */
+/* En escritorio llena el alto de su columna, como la carta del lote en Team Auction. */
 .lot .condition {
   width: 100%;
-  height: auto;
-  align-self: center;
+  height: 100%;
 }
 .rule {
   font: 700 var(--fs-15) / 1.35 var(--font-text);
@@ -68,6 +68,10 @@
   .lot [data-testid='auction-lot'] {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   }
+  .lot .condition {
+    height: auto;
+    align-self: center;
+  }
   .condition {
     padding: var(--sp-2);
     gap: var(--sp-1);
@@ -81,7 +85,7 @@
 }
 @media (min-width: 1600px) and (min-height: 900px) {
   .lot [data-testid='auction-lot'] {
-    grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 1fr);
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   }
 }
 
@@ -256,18 +260,56 @@
   }
 }
 @media (min-width: 1600px) and (min-height: 900px) {
+  .sceneGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--sp-5);
+  }
+  .figures {
+    gap: var(--sp-4);
+  }
+  /* Quien apostó y las métricas, en placas blancas que llenan su columna (como las cifras del lote). */
+  .bidder,
+  .metrics,
+  .reason {
+    padding: var(--sp-3) var(--sp-4);
+    border: var(--ol-3) solid var(--navy);
+    border-radius: var(--r-card);
+    background: var(--white);
+    box-shadow: var(--sh-hard-3);
+  }
+  .metrics {
+    gap: var(--sp-3);
+  }
   .bidderName {
-    font-size: var(--fs-34);
+    font-size: var(--fs-44);
   }
   .bidderBid,
   .reason {
     font-size: var(--fs-22);
   }
   .metric {
-    grid-template-columns: 9rem minmax(0, 1fr);
+    grid-template-columns: 11rem minmax(0, 1fr);
   }
   .metricLabel {
-    font-size: var(--fs-18);
+    font-size: var(--fs-22);
+  }
+}
+/* Móvil: las tres métricas en una fila (etiqueta, barra y cifra apiladas) para que la escena sea baja. */
+@media (max-width: 639px) {
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+  .metric {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .metricLabel {
+    font-size: var(--fs-13);
+  }
+  .bidder > :first-child {
+    display: none;
   }
 }
 
