@@ -86,6 +86,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...trivia, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...trivia, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Higher or Lower: Cartas la lleva dentro de su pantalla salvo en los resultados', () => {
+    const tcg = { ...(base as object), selectedGameId: 'tcg-higher-lower', game: { gameId: 'tcg-higher-lower' } };
+    expect(skipRowInLayout(tcg as never)).toBe(false);
+    expect(skipRowInLayout({ ...tcg, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...tcg, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

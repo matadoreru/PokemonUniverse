@@ -1,0 +1,157 @@
+/*
+ * Higher or Lower: Cartas. El marco (placa de la ronda, columna lateral, placa inferior) es el de Higher or Lower
+ * (`HigherLower.module.css`); aquí van el duelo de cartas TCG, el precio y la franja del revelado.
+ */
+
+/* Duelo: las dos cartas con el «VS» en medio. En escritorio llena el alto libre; es contenedor para escalar el precio. */
+div.duel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--sp-2);
+  height: clamp(15rem, 36dvh, 20rem);
+  perspective: 1200px;
+  container-type: size;
+}
+@media (min-width: 1024px) {
+  div.duel {
+    flex: 1 1 0;
+    height: auto;
+    min-height: 14rem;
+    gap: var(--sp-4);
+  }
+}
+.duel > [data-tcg-card] {
+  padding-top: var(--sp-5);
+}
+/* Solo el hueco de la imagen encoge: el nombre, el set y el precio conservan su alto. */
+.duel > [data-tcg-card] > :not(:first-child) {
+  flex: none;
+}
+/* La imagen es el escaneo de la carta (no un sprite): se escala suave, sin el fondo celeste del hueco. */
+.duel > [data-tcg-card] > span:first-child {
+  background: transparent;
+}
+.duel > [data-tcg-card] img {
+  image-rendering: auto;
+  border-radius: var(--r-badge);
+}
+
+.set,
+.rarity {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.rarity {
+  font-weight: 800;
+}
+.price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.priceLabel {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.priceValue {
+  font: 800 var(--fs-26) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+  white-space: nowrap;
+}
+.priceHidden {
+  color: var(--red-text);
+}
+/* La que vale más al revelar: subrayado verde (además de la franja con la diferencia escrita). */
+.priceLeader {
+  text-decoration: underline;
+  text-decoration-color: var(--ok);
+  text-decoration-thickness: 4px;
+  text-underline-offset: 6px;
+}
+
+/* Franja del revelado: placa crema bajo el duelo con los dos precios, la diferencia y la correcta. */
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2) var(--sp-5);
+  padding: var(--sp-2) var(--sp-4);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: var(--sh-hard-4);
+}
+.stripItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  white-space: nowrap;
+}
+.stripItem strong {
+  font: 800 var(--fs-22) / 1.1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.stripLabel {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+
+@media (max-width: 639px) {
+  div.duel {
+    gap: var(--sp-1);
+  }
+  .priceValue {
+    font-size: var(--fs-22);
+  }
+  .strip {
+    gap: var(--sp-1) var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .stripItem strong {
+    font-size: var(--fs-18);
+  }
+}
+@media (min-width: 1024px) {
+  .priceValue {
+    font-size: clamp(var(--fs-26), 9cqh, var(--fs-44));
+  }
+}
+
+/* Escritorio grande (≥1600×900): la pantalla se llena; el precio y la franja crecen con el duelo. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .duel > [data-tcg-card] {
+    padding-top: var(--sp-6, 2.5rem);
+  }
+  .duel > [data-tcg-card] > span:nth-of-type(2) {
+    font-size: var(--fs-26);
+  }
+  .set,
+  .rarity,
+  .priceLabel {
+    font-size: var(--fs-15);
+  }
+  .priceValue {
+    font-size: clamp(var(--fs-34), 10cqh, var(--fs-68));
+  }
+  .strip {
+    gap: var(--sp-3) var(--sp-6, 2.5rem);
+    padding: var(--sp-3) var(--sp-5);
+  }
+  .stripItem strong {
+    font-size: var(--fs-34);
+  }
+  .stripLabel {
+    font-size: var(--fs-15);
+  }
+}

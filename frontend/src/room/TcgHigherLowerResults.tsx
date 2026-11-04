@@ -1,10 +1,49 @@
 import type { RoomView, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
-import { RotateCcw, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ResultsShell } from './ResultsShell';
+import type { LucideIcon } from 'lucide-react';
+import { Equal, Flame, Target } from 'lucide-react';
+import { higherLowerRecord } from '../games/higher-lower/presentation';
+import { tcgStatsLine } from '../games/tcg-higher-lower/presentation';
+import { Chip, Icon } from '../ui';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
 
+const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
+  { key: 'bestStreak', title: 'Mejor racha', icon: Flame, unit: (value) => value === 1 ? 'acierto seguido' : 'aciertos seguidos' },
+  { key: 'sameCorrect', title: 'Iguales acertados', icon: Equal, unit: (value) => value === 1 ? 'igual' : 'iguales' },
+  { key: 'accuracy', title: 'Mejor precisión', icon: Target, unit: () => 'de aciertos' },
+];
+
+/**
+ * Resultados de Higher or Lower: Cartas, como los de Higher or Lower: la clasificación del catálogo (`ResultsShell` con
+ * `standings`: podio, ganador con insignia y «+N», y la línea de aciertos, iguales, mejor racha y precisión de cada uno)
+ * y, al lado, los récords de la partida (empates juntos). Abajo, la acción del host. Un empate a cero no corona.
+ */
 export function TcgHigherLowerResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as TcgHigherLowerPublicState; const host = room.hostId === selfId;
-  return <ResultsShell title="Resultado" subtitle="Higher or Lower: Cartas"><div className="space-y-2">{game.results?.standings.map((entry) => { const member = room.members.find(({ id }) => id === entry.playerId); return <div key={entry.playerId} className="flex items-center gap-3 rounded-2xl bg-surface-raised p-3"><strong className="w-6 font-display text-lg">{entry.position}</strong><Avatar name={member?.displayName ?? entry.playerId} avatar={member?.avatar} size="md" /><div className="min-w-0 flex-1"><strong className="block truncate">{member?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/60">Mejor racha: {entry.stats.bestStreak} · {entry.stats.correct}/{entry.stats.comparisons} aciertos · {entry.stats.accuracy}%</p></div><strong className="text-berry">{entry.points} pts</strong></div>; })}</div>{host ? <div className="mt-6 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar</button></div> : <p className="mt-6 text-center">Esperando al host…</p>}</ResultsShell>;
+  const standings = game.results?.standings ?? [];
+  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{tcgStatsLine(standing.stats)}</span></>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const aside = <ResultsRecords id="tcg-higher-lower-records-title" records={RECORDS.map(({ key, title, icon, unit }) => {
+    const record = higherLowerRecord(entries, key);
+    const value = record ? (key === 'accuracy' ? `${record.value}%` : String(record.value)) : '';
+    return { key, title, icon, names: record?.names ?? null, value, unit: record ? unit(record.value) : '', valueInHelp: true };
+  })} />;
+  const actions = <ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} />;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower: Cartas" subtitle={`Precios de cartas TCG · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }
-
