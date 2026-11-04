@@ -1,4 +1,4 @@
-import { avatarPreset, type AvatarRef, type PresenceStatus } from '@pokemon-universe/shared/public';
+import { type AvatarRef, type PresenceStatus } from '@pokemon-universe/shared/public';
 import { useEffect, useState } from 'react';
 import { apiAsset } from '../lib/api';
 import { cx } from '../ui';
@@ -9,7 +9,7 @@ const presenceLabel: Record<PresenceStatus, string> = { CONNECTED: 'Conectado', 
 const presenceClass: Record<PresenceStatus, string | undefined> = { CONNECTED: s.connected, TEMPORARILY_DISCONNECTED: s.reconnecting, LEFT: s.left };
 
 export function avatarSource(avatar: AvatarRef | undefined): string | null {
-  if (avatar?.type === 'PRESET') return avatarPreset(avatar.value)?.asset ?? null;
+  // Los avatares predefinidos ya no existen: un PRESET guardado se muestra como la inicial (sin pedir imagen).
   if (avatar?.type === 'CUSTOM') return apiAsset(`/api/auth/avatars/${avatar.value}?v=${avatar.version}`);
   return null;
 }

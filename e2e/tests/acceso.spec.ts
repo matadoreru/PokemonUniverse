@@ -36,7 +36,6 @@ for (const { w, h } of SIZES) {
     await expect(page.getByLabel('Tu nombre temporal')).toBeVisible();
 
     // El invitado solo pone un nombre: no elige ni sube avatar (usa la inicial de su nombre).
-    await expect(page.getByRole('button', { name: 'Entrenadora Aqua' })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /mi imagen/ })).toHaveCount(0);
     await capture(page, 'acceso-invitado', CAPTURA);
 

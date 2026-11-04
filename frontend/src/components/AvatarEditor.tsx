@@ -1,9 +1,9 @@
-import { AVATAR_PRESETS, type AuthUser, type AvatarRef } from '@pokemon-universe/shared/public';
+import { type AuthUser, type AvatarRef } from '@pokemon-universe/shared/public';
 import { Camera, Check, ImagePlus, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { api } from '../lib/api';
 import { authErrorMessage } from '../auth/authErrors';
-import { Card, Dialog, Pill, Slider } from '../ui';
+import { Dialog, Pill, Slider } from '../ui';
 import { Avatar } from './Avatar';
 
 const MAX_CLIENT_BYTES = 5 * 1024 * 1024;
@@ -19,13 +19,6 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
     if (file.size > MAX_CLIENT_BYTES) { setError('La imagen supera el límite de 5 MB.'); return; }
     if (source) URL.revokeObjectURL(source);
     setSource(URL.createObjectURL(file)); setZoom(1); setOffsetX(0); setOffsetY(0);
-  }
-
-  async function selectPreset(presetId: string) {
-    setBusy(true); setError('');
-    try { const body = await api<{ user: AuthUser }>('/auth/profile/avatar/preset', { method: 'PUT', body: JSON.stringify({ presetId }) }); onSaved(body.user); setSource(null); setOpen(false); }
-    catch (caught) { setError(authErrorMessage(caught)); }
-    finally { setBusy(false); }
   }
 
   async function removeAvatar() {
@@ -54,7 +47,6 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
     finally { setBusy(false); }
   }
 
-  const current = avatar.type === 'PRESET' ? avatar.value : null;
   return <>
     <span className="relative inline-flex shrink-0">
       <Avatar name={name} avatar={avatar} size="xxl" className="border-[3px] border-[color:var(--navy)]" />
@@ -63,20 +55,12 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
       </span>
     </span>
     <Dialog open={open} title="Elige tu avatar" onClose={() => setOpen(false)} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined, autoFocus: true }]}>
-      {/* Mientras se recorta una imagen propia, solo el recorte: los predefinidos vuelven con «Elegir otra». */}
-      {!source && <>
-        <h3 className="font-display text-15 font-extrabold text-[color:var(--ink)]">Avatares del universo</h3>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-busy={busy || undefined}>
-          {AVATAR_PRESETS.map((preset) => <Card key={preset.id} sprite={preset.asset} photo name={preset.label.replace(/^Entrenadora? /, '')} state={current === preset.id ? 'selected' : 'idle'} onSelect={() => { if (!busy && current !== preset.id) void selectPreset(preset.id); }} />)}
-        </div>
-        <div className="my-5 border-t-[3px] border-dashed border-[color:var(--ink-2)] opacity-40" aria-hidden="true" />
-      </>}
-      <h3 className="font-display text-15 font-extrabold text-[color:var(--ink)]">Tu propia imagen</h3>
+      <h3 className="font-display text-15 font-extrabold text-[color:var(--ink)]">Tu imagen</h3>
       <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={chooseFile} />
       {!source
         ? <div className="mt-3 flex flex-wrap gap-3">
-            <Pill variant="cream" icon={ImagePlus} disabled={busy} onClick={() => fileInput.current?.click()}>Subir mi propia imagen</Pill>
-            {avatar.type === 'CUSTOM' && <Pill variant="danger" icon={Trash2} loading={busy} onClick={() => void removeAvatar()}>Eliminar foto personalizada</Pill>}
+            <Pill variant="cream" icon={ImagePlus} disabled={busy} onClick={() => fileInput.current?.click()}>Subir mi imagen</Pill>
+            {avatar.type === 'CUSTOM' && <Pill variant="danger" icon={Trash2} loading={busy} onClick={() => void removeAvatar()}>Quitar mi imagen</Pill>}
           </div>
         : <div className="mt-3 grid gap-5 sm:grid-cols-[14rem_minmax(0,1fr)]">
             <div className="mx-auto h-56 w-56 overflow-hidden rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--navy)]"><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div>

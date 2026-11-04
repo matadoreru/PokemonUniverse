@@ -100,7 +100,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await page.getByRole('button', { name: 'Cambiar avatar' }).click();
     const dialogo = page.getByRole('dialog', { name: 'Elige tu avatar' });
     await expect(dialogo).toBeVisible();
-    // Capturas del diálogo abierto, con los avatares en cartas y luego con el recorte.
+    // Capturas del diálogo abierto, sin avatares predefinidos y luego con el recorte.
     await capturarDialogo(page, 'dialogo-avatar', dialogo);
     await dialogo.locator('input[type="file"]').setInputFiles({ name: 'avatar.png', mimeType: 'image/png', buffer: png(160) });
     await expect(dialogo.getByAltText('Previsualización del recorte')).toBeVisible();

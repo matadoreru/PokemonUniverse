@@ -603,11 +603,11 @@ function CardSection() {
           </span>
         </Card>
       </Fig>
-      <Fig id="card-photo" caption="Avatar (ilustración en círculo)">
-        <Card name="Aqua" sprite="/avatars/presets/trainer-aqua.webp" photo onSelect={() => undefined} />
+      <Fig id="card-photo" caption="Carta con avatar de inicial">
+        <Card name="Aqua" art={<Avatar name="Aqua" size="xl" />} onSelect={() => undefined} />
       </Fig>
       <Fig id="card-photo-selected" caption="Avatar · elegido">
-        <Card name="Berry" sprite="/avatars/presets/trainer-berry.webp" photo state="selected" onSelect={() => undefined} />
+        <Card name="Berry" art={<Avatar name="Berry" size="xl" />} state="selected" onSelect={() => undefined} />
       </Fig>
     </Section>
   );
