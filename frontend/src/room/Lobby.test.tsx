@@ -37,6 +37,11 @@ describe('lobby information hierarchy', () => {
     // Las cartas solo llevan nombre, jugadores e insignias (la descripción sigue en los ajustes del juego elegido).
     expect(markup).not.toContain('Encuentra el shiny verdadero.');
     expect(markup).toContain('Shiny Quiz');
+    // Iconos de línea del sistema, no los emojis del registro.
+    expect(markup).not.toContain('🎯');
+    expect(markup).not.toContain('✨');
+    expect(markup).toContain('lucide-target');
+    expect(markup).toContain('lucide-sparkles');
     expect(markup).toContain('Experimental');
     expect(markup).toContain('>TOP<');
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');

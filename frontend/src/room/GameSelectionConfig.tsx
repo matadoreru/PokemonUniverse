@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../ui';
+import { gameIcon } from '../games/game-icons';
 import { summarizeGameConfig } from './game-config-summary';
 import g from './GameSelectionConfig.module.css';
 import { filterGames } from './lobby-state';
@@ -155,7 +156,7 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
                     <span className={g.box}>{active && <Icon icon={Check} size={18} />}</span>
                   </button>
                   <div className={g.itemText}>
-                    <div className={g.itemName}><span aria-hidden="true">{game.icon}</span><strong className={g.name} title={game.name}>{game.name}</strong>{game.recommended && <Badge>TOP</Badge>}{game.experimental && <Badge tone="cream">Experimental</Badge>}</div>
+                    <div className={g.itemName}><Icon icon={gameIcon(game.id)} size={22} /><strong className={g.name} title={game.name}>{game.name}</strong>{game.recommended && <Badge>TOP</Badge>}{game.experimental && <Badge tone="cream">Experimental</Badge>}</div>
                     <p className={cx(g.summary, (unavailableReason || needsReview) && g.summaryBad)}>{unavailableReason ?? configReason ?? summarizeGameConfig(config)}</p>
                   </div>
                 </div>
@@ -174,7 +175,7 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
           {editingGame && editingClient && room && onConfig
             ? <Panel key={editingGame.id} variant="cream" as="div">
               <div className={g.editorHead}>
-                <h4 className={g.title}><span aria-hidden="true">{editingGame.icon}</span> {editingGame.name}</h4>
+                <h4 className={g.title}><Icon icon={gameIcon(editingGame.id)} size={22} /> {editingGame.name}</h4>
                 <Chip tone={editingSkipReason ? 'neutral' : editingReason ? 'bad' : 'ok'} icon={editingSkipReason ? undefined : <Icon icon={editingReason ? AlertCircle : Check} size={18} />}>{editingSkipReason ? 'Se omitirá' : editingReason ? 'Revisar' : 'Listo'}</Chip>
               </div>
               <p className={g.editorLead}>{editingGame.description}</p>

@@ -6,7 +6,8 @@ import { useAuth } from '../auth/AuthContext';
 import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
 import { formatDerivedMetric, formatStoredMetric, sortProfileGames, winRate } from '../profile/profileStats';
-import { cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
+import { cx, HudPlate, Icon, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
+import { gameIcon } from '../games/game-icons';
 import tone from '../styles/tones.module.css';
 
 type ProfileGame = UserProfileResponse['games'][number];
@@ -127,7 +128,7 @@ export function ProfilePage() {
             return (
               <li key={game.id}>
                 <Row
-                  avatar={<span className="grid h-9 w-9 place-items-center text-26" aria-hidden="true">{game.icon}</span>}
+                  avatar={<span className="grid h-9 w-9 place-items-center" aria-hidden="true"><Icon icon={gameIcon(game.id)} size={32} /></span>}
                   name={game.name}
                   meta={hasStats ? `${game.stats.gamesPlayed} ${game.stats.gamesPlayed === 1 ? 'partida' : 'partidas'} · ${game.stats.gamesWon} ${game.stats.gamesWon === 1 ? 'victoria' : 'victorias'}` : 'Sin jugar'}
                   value={hasStats ? `${game.stats.points} pts` : undefined}
