@@ -47,9 +47,12 @@ export function ResultsRecords({ id, title = 'Récords de la partida', records }
   </Panel>;
 }
 
-/** Acciones de `ResultsShell`: «Continuar sesión» y «Terminar sesión» para el host; para el resto, la espera. */
-export function ResultsHostActions({ host, onLobby, onEnd, waitingText = 'Esperando al host…' }: { host: boolean; onLobby(): void; onEnd(): void; waitingText?: string }) {
+/**
+ * Acciones de `ResultsShell`: «Continuar sesión» (o `continueLabel`, p. ej. «Ver clasificación final» al acabar la
+ * sesión) y «Terminar sesión» para el host; para el resto, la espera.
+ */
+export function ResultsHostActions({ host, onLobby, onEnd, waitingText = 'Esperando al host…', continueLabel = 'Continuar sesión' }: { host: boolean; onLobby(): void; onEnd(): void; waitingText?: string; continueLabel?: string }) {
   return host
-    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>Continuar sesión</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
+    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>{continueLabel}</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
     : <p className={s.waiting}>{waitingText}</p>;
 }

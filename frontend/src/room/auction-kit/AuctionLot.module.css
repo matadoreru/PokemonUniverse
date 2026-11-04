@@ -1,0 +1,357 @@
+/*
+ * Escena de la subasta: la banda de la adjudicación arriba; el lote (carta) a la izquierda y las cifras de la puja a la
+ * derecha. En escritorio llena el alto libre y la carta crece con él; en el móvil, una franja compacta en fila.
+ */
+.panel {
+  min-height: 0;
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+  /* Si no cabe (escritorio bajo con la banda), se desplaza por dentro en vez de recortarse. */
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.lot {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 20rem);
+  align-items: center;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+.kicker {
+  flex: none;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+/* La carta del lote crece con el alto libre, con tope de ancho (no se estira a lo ancho). */
+.media {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 9rem;
+}
+.media > * {
+  width: min(100%, 22rem);
+}
+/* En la carta llena solo encoge el sprite: el nombre (con `overflow: hidden`) y los datos no se aplastan. */
+.media > * > :not([data-part='art']) {
+  flex: none;
+}
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+
+/* Cifras: la puja actual en grande; quién gana, la mínima y el turno en texto. */
+.figures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.figures dt {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.figures dd {
+  min-width: 0;
+}
+.current dd {
+  font: 800 var(--fs-44) / 1.05 var(--font-display);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  white-space: nowrap;
+  animation: bid-bump 360ms var(--ease-bounce) both;
+}
+.amount strong {
+  line-height: 1.05;
+}
+.amount small {
+  font: 800 var(--fs-18) / 1 var(--font-text);
+  color: var(--ink-2);
+}
+.none {
+  font-size: var(--fs-26);
+  color: var(--ink-2);
+}
+.leaderName {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font: 800 var(--fs-22) / 1.15 var(--font-display);
+  color: var(--ink);
+}
+.leaderName > :first-child:not(.name) {
+  flex: none;
+}
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.muted {
+  font: 700 var(--fs-18) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.minimum dd {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 800 var(--fs-18) / 1.2 var(--font-text);
+  color: var(--ink);
+}
+.turn dd {
+  font: 800 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--ink);
+}
+.empty {
+  grid-column: 1 / -1;
+  justify-self: center;
+  font: 800 var(--fs-22) / 1.2 var(--font-display);
+  color: var(--ink-2);
+}
+
+@keyframes bid-bump {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Banda de la adjudicación: azul noche con borde del tono, a todo el ancho. */
+.award {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--ol-3) solid var(--yellow);
+  border-radius: var(--r-card);
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: var(--sh-hard-3);
+}
+.unsold {
+  border-color: var(--red-l);
+}
+.fresh {
+  animation: award-in var(--t-cutin, 420ms) var(--ease) both;
+}
+@keyframes award-in {
+  from {
+    transform: translateX(-1.5rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.awardSprite {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.awardIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  color: var(--yellow);
+}
+.unsold .awardIcon {
+  color: var(--red-l);
+}
+.awardText {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.awardKicker {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.awardNew {
+  padding: 1px var(--sp-2);
+  border-radius: var(--r-badge);
+  background: var(--yellow);
+  color: var(--navy);
+  letter-spacing: 0;
+}
+.awardTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-22) / 1.15 var(--font-display);
+}
+.awardDetail {
+  flex: none;
+  font: 800 var(--fs-18) / 1.2 var(--font-text);
+  color: var(--yellow);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .amount,
+  .fresh {
+    animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* Móvil y tableta: la carta pequeña a la izquierda y las cifras a la derecha, en una franja. */
+  .lot {
+    grid-template-columns: minmax(7rem, 9.5rem) minmax(0, 1fr);
+    gap: var(--sp-3);
+    align-items: start;
+  }
+  .media {
+    flex: none;
+    min-height: 0;
+    height: 9.5rem;
+  }
+  .media > * {
+    width: 100%;
+  }
+  .figures {
+    gap: var(--sp-2);
+  }
+  .current dd {
+    font-size: var(--fs-34);
+  }
+  .leaderName {
+    font-size: var(--fs-18);
+  }
+  .minimum dd,
+  .muted {
+    font-size: var(--fs-15);
+  }
+}
+@media (max-width: 639px) {
+  .kicker {
+    display: none;
+  }
+  /* La cantidad baja a su propia línea (bajo el texto) y el kicker parte antes que pisarla. */
+  .award {
+    flex-wrap: wrap;
+    gap: 2px var(--sp-2);
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .awardText {
+    flex: 1 1 0;
+  }
+  .awardKicker {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+  .awardDetail {
+    flex-basis: 100%;
+    padding-left: calc(36px + var(--sp-2));
+  }
+  .awardSprite,
+  .awardIcon {
+    width: 36px;
+    height: 36px;
+  }
+  .awardTitle {
+    font-size: var(--fs-15);
+  }
+  .awardDetail {
+    font-size: var(--fs-15);
+  }
+}
+/* Escritorio bajo (720 px): sin kicker, banda y cifras más bajas; la carta gana alto. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .body {
+    gap: var(--sp-2);
+  }
+  .kicker {
+    display: none;
+  }
+  .media {
+    min-height: 7rem;
+  }
+  .award {
+    padding-block: var(--sp-1);
+  }
+  .awardSprite,
+  .awardIcon {
+    width: 40px;
+    height: 40px;
+  }
+  .figures {
+    gap: var(--sp-2);
+  }
+  .current dd {
+    font-size: var(--fs-34);
+  }
+}
+/* Escritorio grande (≥1600×900): la puja y la carta crecen. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .lot {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 28rem);
+  }
+  .media > * {
+    width: min(100%, 30rem);
+  }
+  .current dd {
+    font-size: var(--fs-68);
+  }
+  .amount strong {
+  line-height: 1.05;
+}
+.amount small {
+    font-size: var(--fs-22);
+  }
+  .leaderName {
+    font-size: var(--fs-26);
+  }
+  .awardTitle {
+    font-size: var(--fs-26);
+  }
+}

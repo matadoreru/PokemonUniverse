@@ -47,10 +47,10 @@ const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor J
  * Juegos de la captura genérica rediseñados con Arcade DS (F6, F7 y F8): su captura a los tres tamaños se mide con `ARCADE`
  * (13 px y sin scroll de página ni del `main`).
  */
-const ARCADE_GAMES = new Set(['most-likely-to', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'pokemon-bingo', 'poke-taboo', 'sketchmon']);
+const ARCADE_GAMES = new Set(['most-likely-to', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'pokemon-bingo', 'poke-taboo', 'sketchmon', 'pokemon-team-auction']);
 
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
-const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon']);
+const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'pokemon-team-auction']);
 
 /** Texto del aviso de error del lobby o de la sala, si hay alguno visible. */
 async function avisos(page: Page): Promise<string> {
@@ -4436,6 +4436,197 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await expect(host.page.getByTestId('sketch-gallery-item')).toHaveCount(3);
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-sketchmon-clasificacion', { opts: ARCADE });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+/**
+ * Cambia la cantidad de la siguiente `RAISE_BID` que envía la página (su `/ws` pasa por aquí): así se fuerza un
+ * rechazo del servidor que la interfaz nunca dejaría enviar (más monedas de las que se tienen).
+ */
+async function pujasTrucables(page: Page): Promise<{ trucarSiguiente(cantidad: number): void }> {
+  let cantidad: number | null = null;
+  await page.routeWebSocket(/\/ws$/, (ws) => {
+    const server = ws.connectToServer();
+    ws.onMessage((message) => {
+      const texto = String(message);
+      if (cantidad !== null && texto.includes('"RAISE_BID"')) {
+        const nueva = cantidad;
+        cantidad = null;
+        server.send(texto.replace(/"amount":\s*\d+/, `"amount":${nueva}`));
+        return;
+      }
+      server.send(message);
+    });
+    server.onMessage((message) => ws.send(message));
+  });
+  return { trucarSiguiente(nueva) { cantidad = nueva; } };
+}
+
+/**
+ * Pokémon Team Auction con tres jugadores, 2 monedas cada uno y 120 s por turno. Lote 1: quien abre puja 1 (con los
+ * atajos), el siguiente intenta una puja que el servidor rechaza (trucada a 999: el aviso global y el foco de vuelta en
+ * «Pujar») y luego puja 2; los demás no llegan a 3 y el motor los pasa: se adjudica. Lote 2: la banda de la
+ * adjudicación, «Sin presupuesto» del ganador y el equipo de un rival en su diálogo. Después, cada turno puja todo hasta
+ * agotar las monedas y la clasificación. Se capturan el lote, la puja, la adjudicación y la clasificación.
+ */
+test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación, los equipos y la clasificación', async ({ browser }) => {
+  test.setTimeout(240_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Pokémon Team Auction');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    await host.page.getByRole('spinbutton', { name: 'Presupuesto personalizado' }).fill('2');
+    await expect(host.page.getByRole('radio', { name: 'Otro' })).toHaveAttribute('aria-checked', 'true');
+    const tiempo = host.page.getByRole('slider', { name: 'Tiempo por turno' });
+    await tiempo.focus();
+    await tiempo.press('End');
+    await tiempo.blur();
+    await expect(tiempo).toHaveValue('120');
+    await expect(host.page.getByRole('switch', { name: 'Incluir formas alternativas' })).toBeVisible();
+    for (const { w, h } of SIZES) {
+      await host.page.setViewportSize({ width: w, height: h });
+      await tiempo.scrollIntoViewIfNeeded();
+      const { id, problems } = await layoutProblems(host.page, 'lobby-pokemon-team-auction-ajustes', true, false, { minFontPx: 13 });
+      expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    }
+    await host.page.setViewportSize({ width: 1280, height: 720 });
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+
+    // Todas las páginas pasan su `/ws` por el trucador (quién puja segundo sale del sorteo) y vuelven a la sala.
+    const trucadores = new Map<Page, { trucarSiguiente(cantidad: number): void }>();
+    for (const { page } of jugadores) {
+      trucadores.set(page, await pujasTrucables(page));
+      await page.reload();
+      await page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
+      await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
+    }
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
+
+    const paginas = jugadores.map((j) => j.page);
+    const nombreDe = (page: Page) => jugadores.find((j) => j.page === page)!.name;
+    const viva = (page: Page) => page.getByTestId('auction-screen').locator('[aria-live]');
+    const pujar = (page: Page) => page.getByTestId('bid-submit');
+    const placa = (page: Page) => page.locator('#bid-controls-title');
+    /** La página con el turno: la única con «Pujar» activo. */
+    const turno = async (otras: readonly Page[] = paginas) => {
+      let encontrada: Page | undefined;
+      await expect.poll(async () => {
+        for (const page of otras) if (await pujar(page).isEnabled().catch(() => false)) { encontrada = page; return true; }
+        return false;
+      }, { timeout: 20_000 }).toBe(true);
+      return encontrada!;
+    };
+
+    // Lote 1: el lote en una carta, sin pujas; una sola región viva en cada página.
+    for (const page of paginas) {
+      await expect(page.getByText('Lote 1 de 18', { exact: true })).toBeVisible({ timeout: 20_000 });
+      await expect(viva(page)).toHaveCount(1);
+    }
+    const p1 = await turno();
+    await expect(p1.getByRole('heading', { level: 1 })).toHaveText('Tu turno');
+    await expect(placa(p1)).toHaveText('Tu turno');
+    await expect(p1.getByTestId('auction-current-bid')).toHaveText('Sin pujas');
+    await expect(p1.getByTestId('bid-budget')).toContainText('2');
+    await expect(p1.getByTestId('bid-step')).toContainText(['Mínima: 1', 'Todo: 2']);
+    for (const page of paginas.filter((page) => page !== p1)) await expect(page.getByRole('heading', { level: 1 })).toHaveText(`Turno de ${nombreDe(p1)}`);
+    await capturarTamanos(p1, 'juego-pokemon-team-auction-lote', { sigue: placa(p1).filter({ hasText: 'Tu turno' }), opts: ARCADE });
+    // A 390×844 sin desplazar: el lote, la puja actual y los controles.
+    await p1.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await p1.evaluate(() => window.scrollTo(0, 0));
+    await expect(p1.getByTestId('auction-pokemon')).toBeInViewport();
+    await expect(p1.getByTestId('auction-current-bid')).toBeInViewport({ ratio: 1 });
+    await expect(pujar(p1)).toBeInViewport({ ratio: 1 });
+    await expect(p1.getByTestId('bid-pass')).toBeInViewport({ ratio: 1 });
+    expect(await sinTapar(p1.getByTestId('auction-current-bid')), 'a 390: la puja actual sin tapar por los controles').toBe(true);
+    await p1.setViewportSize({ width: 1280, height: 720 });
+
+    // Atajos (fuera del campo): 2 pone «Todo», 1 vuelve a la mínima. Escribiendo en el campo no se disparan.
+    const campo = p1.getByRole('spinbutton', { name: 'Tu puja (monedas)' });
+    await placa(p1).focus();
+    await p1.keyboard.press('2');
+    await expect(campo).toHaveValue('2');
+    await p1.keyboard.press('1');
+    await expect(campo).toHaveValue('1');
+    await campo.focus();
+    await p1.keyboard.press('2');
+    await expect(campo).toHaveValue('12');
+    await expect(pujar(p1)).toBeDisabled();
+    await expect(p1.getByText('No te llega: máximo 2 monedas.')).toBeVisible();
+    await campo.fill('1');
+    await pujar(p1).click();
+    await expect(placa(p1)).toHaveText('Ya vas ganando', { timeout: 5_000 });
+    await expect(pujar(p1)).toHaveText('Ya vas ganando');
+    await expect(p1.getByTestId('auction-leader')).toContainText(nombreDe(p1));
+
+    // La puja que compite: el siguiente turno.
+    const p2 = await turno(paginas.filter((page) => page !== p1));
+    await expect(p2.getByTestId('auction-current-bid')).toContainText('1');
+    await expect(p2.getByTestId('auction-leader')).toContainText(nombreDe(p1));
+    await expect(p2.getByTestId('bid-history-row').first()).toContainText('Pujó 1 moneda');
+    await expect(viva(p2)).toContainText(`${nombreDe(p1)} puja 1 moneda por`);
+    await expect(pujar(p2)).toHaveText('Pujar 2');
+    await capturarTamanos(p2, 'juego-pokemon-team-auction-puja', { sigue: placa(p2).filter({ hasText: 'Tu turno' }), opts: ARCADE });
+
+    // Rechazo forzado (999 monedas): el aviso global, el foco de vuelta en «Pujar» y el turno sigue siendo suyo.
+    trucadores.get(p2)!.trucarSiguiente(999);
+    await pujar(p2).click();
+    await expect(p2.getByRole('alert').filter({ hasText: /monedas/ })).toBeVisible({ timeout: 5_000 });
+    await expect(pujar(p2)).toBeFocused();
+    await expect(placa(p2)).toHaveText('Tu turno');
+    // El aviso global tapa la píldora: se puja con el teclado desde el foco devuelto.
+    await p2.keyboard.press('Enter');
+
+    // Los demás no llegan a 3: el motor los pasa y adjudica el lote 1. La banda lo dice en el lote 2.
+    for (const page of paginas) await expect(page.getByText('Lote 2 de 18', { exact: true })).toBeVisible({ timeout: 10_000 });
+    const banda = p2.getByTestId('auction-award');
+    await expect(banda).toContainText('Lote 1 adjudicado');
+    await expect(banda).toContainText(`para ${nombreDe(p2)}`);
+    await expect(banda).toContainText('por 2 monedas');
+    await expect(banda).toHaveAttribute('data-fresh', 'true');
+    await expect(placa(p2)).toHaveText('Sin presupuesto');
+    await expect(pujar(p2)).toBeDisabled();
+    await expect(p2.getByTestId('budget-row').filter({ hasText: nombreDe(p2) })).toContainText('Equipo 1/6');
+    await expect(viva(p2)).toContainText(`Lote 1:`);
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+    await capturarTamanos(p2, 'juego-pokemon-team-auction-adjudicacion', { sigue: banda.filter({ hasText: 'Lote 1 adjudicado' }), opts: ARCADE });
+
+    // El equipo de un rival en su diálogo; Esc lo cierra y el foco vuelve a su botón.
+    const ver = p1.getByRole('button', { name: `Ver equipo de ${nombreDe(p2)}` });
+    await ver.click();
+    const dialogo = p1.getByRole('dialog', { name: `Equipo de ${nombreDe(p2)}` });
+    await expect(dialogo).toBeVisible();
+    await expect(dialogo.getByTestId('team-dialog-summary')).toContainText('Equipo 1/6');
+    await expect(dialogo.getByTestId('team-dialog-summary')).toContainText('0 monedas');
+    await p1.keyboard.press('Escape');
+    await expect(dialogo).toBeHidden();
+    await expect(ver).toBeFocused();
+
+    // Cada turno puja todo lo que tiene (el último incremento) hasta que no quedan monedas: la clasificación.
+    const final = host.page.getByRole('heading', { name: 'La mesa final', level: 1 });
+    while (!(await final.isVisible())) {
+      let actual: Page | undefined;
+      await expect.poll(async () => {
+        if (await final.isVisible()) return true;
+        for (const page of paginas) if (await pujar(page).isEnabled().catch(() => false)) { actual = page; return true; }
+        return false;
+      }, { timeout: 20_000 }).toBe(true);
+      if (!actual) break;
+      await actual.getByTestId('bid-step').last().click();
+      await pujar(actual).click();
+      await expect(pujar(actual)).toBeDisabled({ timeout: 5_000 });
+    }
+
+    await expect(final).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByText(/^BST \d+ · \d+ Pokémon · \d+ legendarios? · \d+ míticos? · 0 monedas · \d+ lotes? ganados?$/)).toHaveCount(3);
+    await expect(host.page.getByRole('heading', { name: 'Pokémon sin dueño' })).toBeVisible();
+    await expect(host.page.getByText(/🏆|🥇/u)).toHaveCount(0);
+    await sinScorePop(host.page);
+    await capturarTamanos(host.page, 'juego-pokemon-team-auction-clasificacion', { opts: ARCADE });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

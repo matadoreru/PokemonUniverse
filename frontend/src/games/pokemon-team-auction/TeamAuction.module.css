@@ -1,0 +1,106 @@
+/* Piezas propias de Pokémon Team Auction: datos del lote, sprites de los equipos, el diálogo y los resultados. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-1);
+}
+.turn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.strip {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.strip img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.dialogSummary {
+  font: 800 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink);
+}
+
+/* Resultados: sprites del equipo en la franja, la regla y los Pokémon sin dueño. */
+.teamLine {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.teamLine img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.rule {
+  margin-top: var(--sp-3);
+  font: 700 var(--fs-15) / 1.4 var(--font-text);
+  color: var(--sky-2);
+}
+.unowned {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.unownedTitle {
+  font: 800 var(--fs-18) / 1.2 var(--font-display);
+  color: var(--ink);
+}
+.unownedHelp {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.unownedList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: var(--sp-2);
+}
+
+/* Ajustes del lobby. */
+.config {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.label {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.budgetRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-3);
+}
+.custom {
+  flex: 0 1 10rem;
+  min-width: 8rem;
+}
+.help {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}

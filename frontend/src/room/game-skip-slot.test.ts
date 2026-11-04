@@ -139,6 +139,11 @@ describe('skipRowInLayout', () => {
     for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...sketch, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...sketch, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Pokémon Team Auction la lleva dentro de su pantalla mientras se puja, no en los resultados', () => {
+    const auction = { ...(base as object), selectedGameId: 'pokemon-team-auction', game: { gameId: 'pokemon-team-auction' } };
+    expect(skipRowInLayout({ ...auction, phase: 'ROUND_ACTIVE' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...auction, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

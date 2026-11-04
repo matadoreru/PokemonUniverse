@@ -1,37 +1,114 @@
-import type { PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, RoomMemberView, RoomView, TeamAuctionParticipant } from '@pokemon-universe/shared/public';
-import { ArrowUp, Coins, Eye, Gavel, PackageOpen, UserRound, XCircle } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { ServerTimer } from '../components/ServerTimer';
-import { useServerOffset } from '../hooks/useServerTime';
+import type { PokemonTeamAuctionConfig, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { LucideIcon } from 'lucide-react';
+import { Clock3, Coins, Crown, Eye, Gavel, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
+import {
+  currentLotEvents, PASS_RULE, TEAM_SIZE, TEAM_STATUS_TEXT, teamAnnouncement, teamAward, teamBlockInput, teamBst, teamHeading, teamStatus, type TeamStatus,
+} from '../games/pokemon-team-auction/presentation';
+import { PokemonFacts, TeamDialog, TeamStrip } from '../games/pokemon-team-auction/TeamParts';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { useServerOffset } from '../hooks/useServerTime';
+import { Card, Chip, Icon, Pill, type ChipProps } from '../ui';
+import {
+  AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
+} from './auction-kit';
+import { useFocusOnTransition } from './focus-transition';
+import { playerColor } from './player-color';
+import s from '../games/pokemon-team-auction/TeamAuction.module.css';
 
-function member(room: RoomView, id: string): RoomMemberView | undefined { return room.members.find((candidate) => candidate.id === id); }
+const GAME_NAME = 'Pokémon Team Auction';
+const STATUS_ICON: Record<TeamStatus, LucideIcon> = { turn: Gavel, leading: Crown, passed: SkipForward, full: PackageCheck, noBudget: Coins, bidding: Hourglass, closed: Lock };
+const STATUS_TONE: Record<TeamStatus, NonNullable<ChipProps['tone']>> = { turn: 'warn', leading: 'ok', passed: 'neutral', full: 'ok', noBudget: 'bad', bidding: 'neutral', closed: 'neutral' };
 
-function TeamCard({ room, playerId, participant, current }: { room: RoomView; playerId: string; participant: TeamAuctionParticipant; current: boolean }) {
-  const person = member(room, playerId);
-  const bst = participant.team.reduce((total, pokemon) => total + pokemon.baseStatTotal, 0);
-  return <article className={`rounded-2xl border p-3 ${current ? 'border-aqua/45 bg-aqua/[.06]' : 'border-ink/10 bg-surface-raised'}`}><header className="flex items-center gap-2"><Avatar name={person?.displayName ?? playerId} avatar={person?.avatar} presence={person?.presence} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? playerId}</strong><small className="font-bold text-ink/55">Equipo {participant.team.length}/6</small></span><span className="flex items-center gap-1 font-black text-electric"><Coins size={15} />{participant.coins}</span></header><div className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-6">{participant.team.map((pokemon, index) => <div key={`${pokemon.id}-${index}`} className="min-w-0 rounded-lg bg-surface p-1 text-center" title={`${pokemon.name} · BST ${pokemon.baseStatTotal}`}><img src={pokemon.sprite} alt="" className="mx-auto h-12 w-12 object-contain [image-rendering:pixelated]" /><span className="block truncate text-[10px] font-extrabold">{pokemon.name}</span></div>)}{participant.team.length === 0 && <p className="col-span-full py-4 text-center text-xs font-bold text-ink/45">Sin Pokémon todavía</p>}</div><div className="mt-2 flex items-center justify-between text-xs font-extrabold"><span className="text-ink/55">BST acumulado</span><strong className="text-aqua">{bst}</strong></div></article>;
-}
+type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
-function BidControls({ game, player, onAction }: { game: PokemonTeamAuctionPublicState; player: PokemonTeamAuctionPlayerState; onAction(action: unknown): Promise<void> }) {
-  const [amount, setAmount] = useState(game.minimumBid); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
-  useEffect(() => { setAmount(game.minimumBid); setError(''); }, [game.minimumBid, game.lotNumber]);
-  async function send(action: unknown) { if (busy) return; setBusy(true); setError(''); try { await onAction(action); } catch (caught) { setError(caught instanceof Error ? caught.message : 'La acción fue rechazada.'); } finally { setBusy(false); } }
-  function submit(event: FormEvent) { event.preventDefault(); void send({ type: 'RAISE_BID', amount }); }
-  if (!player.canRaise && !player.canPass) return <section className="rounded-2xl border border-ink/10 bg-surface p-5 text-center"><Eye className="mx-auto text-aqua" size={34} /><strong className="mt-2 block font-display text-xl">Esperando el turno</strong><p className="mt-1 text-sm font-bold text-ink/60">La puja actual y el equipo ganador provisional son públicos.</p></section>;
-  return <form onSubmit={submit} className="rounded-2xl border border-aqua/30 bg-aqua/[.05] p-4" aria-labelledby="team-bid-controls"><div className="flex items-start justify-between gap-3"><div><h2 id="team-bid-controls" className="font-display text-2xl">Tu turno</h2><p className="mt-1 text-sm font-bold text-ink/60">Mínimo {game.minimumBid} · tienes {player.coins} monedas.</p></div><Gavel className="text-aqua" /></div>{player.canRaise && <><div className="mt-4 flex items-stretch gap-2"><label className="min-w-0 flex-1"><span className="sr-only">Nueva puja</span><input className="field min-h-12 text-center text-xl font-black tabular-nums" type="number" min={game.minimumBid} max={player.coins} value={amount} onChange={(event) => setAmount(Number(event.target.value))} /></label><button type="submit" className="btn-primary shrink-0" disabled={busy || amount < game.minimumBid || amount > player.coins}><ArrowUp size={18} /> Pujar</button></div><div className="mt-2 flex flex-wrap gap-2">{[game.minimumBid, Math.min(player.coins, game.minimumBid + 2), Math.min(player.coins, game.minimumBid + 5)].filter((value, index, values) => value >= game.minimumBid && values.indexOf(value) === index).map((value) => <button key={value} type="button" className="btn-ghost min-h-9 !px-3 text-sm" onClick={() => setAmount(value)}>Pujar {value}</button>)}</div></>}{player.canPass && <button type="button" className="mt-4 min-h-11 w-full rounded-xl border border-berry/25 bg-berry/[.06] font-extrabold text-berry hover:bg-berry/10" disabled={busy} onClick={() => void send({ type: 'PASS_BID' })}>Pasar este Pokémon</button>}{error && <p className="status-error mt-3" role="alert">{error}</p>}</form>;
-}
-
-function LotHistory({ room, game }: { room: RoomView; game: PokemonTeamAuctionPublicState }) {
-  return <section className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card" aria-labelledby="team-lot-history"><div className="mb-3 flex items-center justify-between gap-2"><h2 id="team-lot-history" className="font-display text-xl">Lotes cerrados</h2><span className="chip">{game.lotHistory.length}/{game.totalLots}</span></div>{game.lotHistory.length ? <ol className="max-h-[28rem] space-y-2 overflow-y-auto pr-1">{game.lotHistory.map((lot) => { const winner = lot.winnerId ? member(room, lot.winnerId) : null; return <li key={lot.lotNumber} className={`flex items-center gap-2 rounded-xl p-2 ${winner ? 'bg-aqua/[.05]' : 'bg-ink/[.04]'}`}><strong className="w-5 text-center text-xs text-ink/45">{lot.lotNumber}</strong><img src={lot.pokemon.sprite} alt="" className="h-10 w-10 object-contain" /><span className="min-w-0 flex-1"><strong className="block truncate text-sm">{lot.pokemon.name}</strong><small className={`font-bold ${winner ? 'text-ink/55' : 'text-berry'}`}>{winner ? `${winner.displayName} · ${lot.bid}` : 'Sin dueño'}</small></span>{winner ? <Coins className="shrink-0 text-electric" size={15} /> : <XCircle className="shrink-0 text-berry" size={16} />}</li>; })}</ol> : <div className="empty-state !p-5">Aún no se ha cerrado ningún lote.</div>}</section>;
-}
-
-export function PokemonTeamAuctionGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const offset = useServerOffset(room.serverNow);
+/**
+ * Pokémon Team Auction con el kit de subasta (spec §2 y §6 «Juegos»): arriba, la placa del lote («Lote N de M», de quién
+ * es el turno y su plazo) y el lote en una `Card` con su BST, la puja actual, quién va ganando y la siguiente mínima,
+ * con la banda de la última adjudicación encima. Abajo, los controles de la puja con el presupuesto propio. Al lado,
+ * los presupuestos y equipos de todos (cada equipo se abre en un `Dialog`) y el historial: las pujas del lote y los
+ * lotes cerrados.
+ *
+ * Privacidad: la subasta es visible; el motor publica pujas, monedas y equipos de todos y la pantalla no pinta nada más.
+ */
+export function PokemonTeamAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
   const game = room.game as PokemonTeamAuctionPublicState;
-  const player = room.gamePlayerState as PokemonTeamAuctionPlayerState;
+  const player = room.gamePlayerState as PokemonTeamAuctionPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonTeamAuctionConfig> | null;
+  const offset = useServerOffset(room.serverNow);
   useSfxCue(game.currentBid != null ? 'game.bid' : null, `${game.lotNumber}:${game.currentBid ?? ''}`);
-  const currentPerson = game.currentTurnPlayerId ? member(room, game.currentTurnPlayerId) : undefined;
-  return <section className="mx-auto max-w-[96rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface px-4 py-3 shadow-card"><div><span className="label !mb-0">Lote {Math.min(game.lotNumber, game.totalLots)} de {game.totalLots}</span><h1 className="flex items-center gap-2 font-display text-2xl sm:text-3xl"><Gavel className="text-electric" /> Pokémon Team Auction</h1></div>{game.roundEndsAt != null && <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} label="Turno de puja" />}<div className="flex items-center gap-2 rounded-xl bg-electric/[.08] px-3 py-2"><Coins className="text-electric" /><span className="text-sm font-extrabold">Subasta ascendente visible</span></div></header><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="min-w-0 space-y-4"><section className="rounded-2xl border border-electric/25 bg-electric/[.06] p-4 text-center shadow-card sm:p-6" aria-labelledby="current-auction-pokemon"><span className="label !mb-0">Pokémon en subasta</span>{game.currentPokemon ? <><img src={game.currentPokemon.sprite} alt="" className="mx-auto h-44 w-44 object-contain [image-rendering:pixelated] sm:h-56 sm:w-56" /><h2 id="current-auction-pokemon" className="font-display text-3xl sm:text-4xl">{game.currentPokemon.name}</h2><div className="mt-4 flex flex-wrap items-center justify-center gap-5"><div><small className="block text-xs font-black uppercase text-ink/50">Puja actual</small><strong className="font-display text-3xl text-electric">{game.currentBid ?? '—'}</strong>{game.currentBidderId && <span className="ml-2 text-sm font-bold text-ink/60">de {member(room, game.currentBidderId)?.displayName ?? game.currentBidderId}</span>}</div><div><small className="block text-xs font-black uppercase text-ink/50">Siguiente mínima</small><strong className="font-display text-3xl text-aqua">{game.minimumBid}</strong></div></div></> : <p className="py-12 font-bold text-ink/60">La subasta ha terminado.</p>}</section><section className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><div><h2 className="font-display text-xl">{currentPerson ? `Turno de ${currentPerson.displayName}` : 'Subasta cerrada'}</h2><p className="text-sm font-bold text-ink/60">Quien pasa vuelve a participar en el siguiente lote si aún tiene huecos.</p></div>{game.currentTurnPlayerId && <span className="chip"><UserRound size={15} /> {game.currentTurnPlayerId === room.members.find((member) => member.isHost)?.id ? 'Host' : 'Turno activo'}</span>}</div>{player.role === 'PLAYER' ? <BidControls game={game} player={player} onAction={onAction} /> : <div className="rounded-xl bg-ink/[.04] p-4 text-center"><Eye className="mx-auto text-aqua" /><strong className="mt-1 block">Estás observando</strong><p className="text-sm font-bold text-ink/60">Los equipos, monedas y pujas son públicos.</p></div>}</section><section aria-labelledby="all-team-status"><div className="mb-3 flex items-center gap-2"><PackageOpen className="text-aqua" /><h2 id="all-team-status" className="font-display text-xl">Equipos y monedas</h2></div><div className="grid gap-3 md:grid-cols-2">{Object.entries(game.participants).map(([playerId, participant]) => <TeamCard key={playerId} room={room} playerId={playerId} participant={participant} current={playerId === game.currentBidderId} />)}</div></section></main><aside className="xl:sticky xl:top-4"><LotHistory room={room} game={game} /></aside></div></section>;
+
+  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
+  const colorOf = (id: string) => playerColor(members.get(id)?.index ?? 0);
+  const [teamOf, setTeamOf] = useState<string | null>(null);
+
+  const block = bidBlock(teamBlockInput(game, player, selfId, nameOf));
+  const epoch = bidEpoch(game.lotNumber, game.bidHistory.length);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  // Cambia con el lote y con el estado propio (al pujar, la placa pasa a «Ya vas ganando» y el botón se deshabilita).
+  useFocusOnTransition(`${game.phase}-${game.lotNumber}-${block.reason}`, titleRef);
+
+  const pokemon = game.phase === 'ROUND_ACTIVE' ? game.currentPokemon : null;
+  const lotNumber = Math.min(Math.max(1, game.lotNumber), game.totalLots);
+  const award = teamAward(game, nameOf);
+  const bidSeconds = config?.bidSeconds ?? 20;
+  const leader = game.currentBidderId ? members.get(game.currentBidderId) : undefined;
+  const turnText = game.currentTurnPlayerId ? (game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`) : null;
+
+  const stage = <AuctionLot kicker={`Lote ${lotNumber} · en subasta`}
+    item={pokemon && <Card size="fill" sprite={pokemon.sprite} name={pokemon.name} decorativeSprite eager attrs={{ 'data-testid': 'auction-pokemon' }}><PokemonFacts pokemon={pokemon} /></Card>}
+    currentBid={game.currentBid} minimumBid={game.minimumBid}
+    leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId, avatar: <Avatar name={nameOf(game.currentBidderId)} avatar={leader?.member.avatar} size="sm" /> } : null}
+    turn={turnText && <span className={s.turn}><Icon icon={Clock3} size={18} />{turnText}</span>}
+    award={award && <AuctionAward {...award} />} />;
+
+  const order = game.turnOrder.length > 0 ? game.turnOrder : Object.keys(game.participants);
+  const budgets: BudgetEntry[] = order.flatMap((id) => {
+    const participant = game.participants[id];
+    if (!participant) return [];
+    const status = teamStatus(game, id);
+    const entry = members.get(id);
+    const name = nameOf(id);
+    return [{
+      id, name, budget: participant.coins, color: colorOf(id), self: id === selfId,
+      disconnected: entry?.member.presence !== undefined && entry.member.presence !== 'CONNECTED',
+      status: { tone: STATUS_TONE[status], text: TEAM_STATUS_TEXT[status], icon: STATUS_ICON[status] },
+      detail: <><span>{`Equipo ${participant.team.length}/${TEAM_SIZE} · BST ${teamBst(participant.team)}`}</span><TeamStrip team={participant.team} /></>,
+      action: <Pill size="round" variant="blue" icon={Eye} aria-label={id === selfId ? 'Ver tu equipo' : `Ver equipo de ${name}`} data-testid="team-open" onClick={() => setTeamOf(id)} />,
+    }];
+  });
+
+  const lotEntries = bidLog(currentLotEvents(game), nameOf, { colorOf, selfId });
+  const closedEntries: BidLogEntry[] = game.lotHistory.map((lot, index): BidLogEntry => ({
+    key: `lot-${lot.lotNumber}`,
+    name: lot.pokemon.name,
+    sprite: lot.pokemon.sprite,
+    text: lot.winnerId ? `Lote ${lot.lotNumber} · ${nameOf(lot.winnerId)}` : `Lote ${lot.lotNumber} · Sin dueño`,
+    tone: lot.winnerId ? 'win' : 'none',
+    ...(lot.winnerId ? { value: String(lot.bid), color: colorOf(lot.winnerId), self: lot.winnerId === selfId } : {}),
+    fresh: index === game.lotHistory.length - 1,
+  })).reverse();
+  const side = <>
+    <BudgetPlate title="Presupuestos y equipos" entries={budgets} note={PASS_RULE} />
+    <BidHistory title="Historial" idBase="team-auction-history" views={[
+      { key: 'lot', label: 'Este lote', entries: lotEntries, emptyText: 'Aún no hay pujas en este lote.' },
+      { key: 'closed', label: 'Cerrados', badge: `${game.lotHistory.length}/${game.totalLots}`, entries: closedEntries, emptyText: 'Aún no se ha cerrado ningún lote.' },
+    ]} />
+  </>;
+
+  const bottom = <BidControls titleRef={titleRef} block={block} min={game.minimumBid} max={player?.coins ?? 0} epoch={epoch}
+    budget={player?.role === 'PLAYER' ? player.coins : null} passLabel="Pasar este Pokémon"
+    onBid={(amount) => onAction({ type: 'RAISE_BID', amount })} onPass={() => onAction({ type: 'PASS_BID' })} />;
+
+  const shown = teamOf ? game.participants[teamOf] : undefined;
+  return <>
+    <AuctionScreen gameName={GAME_NAME} roundNumber={lotNumber} totalRounds={game.totalLots} roundLabel={`Lote ${lotNumber} de ${game.totalLots}`}
+      heading={teamHeading(game, selfId, nameOf)}
+      meta={<><Chip tone="info" icon={<Icon icon={Eye} size={18} />}>Subasta ascendente visible</Chip>{bidSeconds === 0 && <Chip tone="neutral">Sin límite de tiempo</Chip>}</>}
+      timer={{ deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Turno de puja', ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) }}
+      announcement={teamAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />
+    <TeamDialog open={Boolean(teamOf && shown)} name={teamOf === selfId ? 'Tu equipo' : `Equipo de ${teamOf ? nameOf(teamOf) : ''}`} team={shown?.team ?? []} coins={shown?.coins ?? 0} onClose={() => setTeamOf(null)} />
+  </>;
 }

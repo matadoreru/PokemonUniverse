@@ -1,0 +1,117 @@
+/*
+ * Controles de la puja: la fila del estado (de la placa del kit de adivinar) con el presupuesto a la derecha y, debajo,
+ * los incrementos, el campo, «Pujar» y «Pasar». En escritorio todo en una fila si cabe; en el móvil, compacto.
+ */
+.plate {
+  gap: var(--sp-3);
+}
+.text {
+  min-width: 0;
+}
+.budget {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+.budgetLabel {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.budgetValue {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  font: 800 var(--fs-34) / 1.1 var(--font-display);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.budgetValue strong {
+  line-height: 1.1;
+}
+.budgetValue small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+  color: var(--ink-2);
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  min-width: 0;
+  /* Hueco para la insignia del atajo, que sobresale por arriba. */
+  padding-top: var(--sp-2);
+}
+.send {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+.field {
+  flex: 0 1 9rem;
+  min-width: 7rem;
+}
+.field input {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.submit {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 639px) {
+  /* Móvil: sin icono ni ayuda; el presupuesto en pequeño junto al título. */
+  .icon,
+  .help {
+    display: none;
+  }
+  .plate {
+    gap: var(--sp-2);
+  }
+  .budgetValue {
+    font-size: var(--fs-22);
+  }
+  .controls {
+    gap: var(--sp-2);
+  }
+  .steps {
+    padding-top: var(--sp-1);
+  }
+  .field {
+    flex-basis: 6.5rem;
+    min-width: 6rem;
+  }
+  /* La etiqueta del campo solo para lectores: el título ya dice qué se hace. */
+  .field label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+/* Escritorio bajo (720 px): la ayuda no ocupa alto; el lote gana ese sitio. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .help {
+    display: none;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .budgetValue {
+    font-size: var(--fs-44);
+  }
+}

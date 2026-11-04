@@ -1,18 +1,52 @@
 import type { PokemonTeamAuctionConfig } from '@pokemon-universe/shared/public';
-import { Coins, Sparkles } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { ConfigRange } from '../../room/ConfigRange';
+import { cx, Field, Segmented, Toggle } from '../../ui';
+import s from './TeamAuction.module.css';
 
 const budgets = [10, 20, 30, 50] as const;
+const CUSTOM = 'custom';
 
+/** Presupuesto válido para el motor (`initialBudget`: entero de 1 a 100) o `null`. */
+export function parseBudget(text: string): number | null {
+  if (!/^\d+$/.test(text.trim())) return null;
+  const value = Number(text);
+  return value >= 1 && value <= 100 ? value : null;
+}
+
+/**
+ * Ajustes de Pokémon Team Auction con los controles del catálogo: generaciones (el selector heredado, F9), presupuesto
+ * inicial (`Segmented` con los cuatro de siempre y «Otro», más el campo libre de 1 a 100), tiempo por turno
+ * (`ConfigRange` de 0 a 120, 0 sin límite) y el interruptor de las formas alternativas.
+ */
 export function PokemonTeamAuctionConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonTeamAuctionConfig;
-  return <fieldset disabled={disabled} className="space-y-7">
+  const [draft, setDraft] = useState(String(value.initialBudget));
+  const customRef = useRef<HTMLInputElement>(null);
+  useEffect(() => { setDraft(String(value.initialBudget)); }, [value.initialBudget]);
+  const preset = (budgets as readonly number[]).includes(value.initialBudget) ? String(value.initialBudget) : CUSTOM;
+  const draftValid = parseBudget(draft) !== null;
+  return <fieldset disabled={disabled} className={s.config}>
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="La pool contiene exactamente seis lotes por jugador. Las formas alternativas cuentan como Pokémon independientes." onChange={(generations) => void onChange({ ...value, generations })} />
-    <section aria-labelledby="team-auction-budget"><div className="mb-2 flex items-center gap-2"><Coins className="text-electric" size={19} /><span id="team-auction-budget" className="font-extrabold">Presupuesto inicial por jugador</span></div><div className="grid gap-2 sm:grid-cols-[repeat(4,minmax(0,1fr))_minmax(8rem,1fr)]">{budgets.map((initialBudget) => <button type="button" key={initialBudget} aria-pressed={value.initialBudget === initialBudget} onClick={() => void onChange({ ...value, initialBudget })} className={`min-h-11 rounded-xl border font-extrabold ${value.initialBudget === initialBudget ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{initialBudget}</button>)}<label><span className="sr-only">Presupuesto personalizado</span><input className="field min-h-11 text-center font-extrabold" type="number" min={1} max={100} value={value.initialBudget} onChange={(event) => { const initialBudget = Number(event.target.value); if (Number.isInteger(initialBudget) && initialBudget >= 1 && initialBudget <= 100) void onChange({ ...value, initialBudget }); }} /></label></div><p className="mt-2 text-sm font-bold text-ink/60">Las pujas empiezan en 1 y pueden saltar directamente a cualquier cantidad que puedas pagar.</p></section>
-    <label className="block font-extrabold">Tiempo por turno (segundos)
-      <input className="field mt-2" type="number" min={0} max={120} value={value.bidSeconds ?? 20} onChange={(event) => { const bidSeconds = Number(event.target.value); if (Number.isInteger(bidSeconds) && bidSeconds >= 0 && bidSeconds <= 120) void onChange({ ...value, bidSeconds }); }} />
-      <span className="mt-2 block text-sm font-bold text-ink/60">Al agotarse el tiempo, pasas ese lote. Usa 0 para jugar sin límite.</span>
-    </label>
-    <button type="button" aria-pressed={value.includeForms} onClick={() => void onChange({ ...value, includeForms: !value.includeForms })} className={`flex min-h-20 w-full items-center gap-3 rounded-xl border p-3 text-left transition-colors ${value.includeForms ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised hover:border-aqua/45'}`}><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${value.includeForms ? 'bg-aqua text-night' : 'bg-ink/[.07]'}`}><Sparkles size={20} /></span><span className="min-w-0 flex-1"><strong className="block font-display text-lg">Incluir formas alternativas</strong><small className="block font-bold text-ink/65">Las formas regionales ocupan su propio lote y se valoran con su BST.</small></span><span className="font-black text-leaf">{value.includeForms ? '✓' : ''}</span></button>
+    <div className={s.pair}>
+      <div className={s.field}>
+        <span className={s.label} id="team-auction-budget">Presupuesto inicial por jugador</span>
+        <div className={s.budgetRow}>
+          <Segmented label="Presupuesto inicial por jugador" value={preset}
+            options={[...budgets.map((budget) => ({ value: String(budget), label: String(budget), disabled })), { value: CUSTOM, label: 'Otro', disabled }]}
+            onChange={(next) => { if (next === CUSTOM) customRef.current?.focus(); else void onChange({ ...value, initialBudget: Number(next) }); }} />
+          <Field ref={customRef} label="Presupuesto personalizado" type="number" inputMode="numeric" min={1} max={100} step={1} value={draft} className={cx(s.custom)} disabled={disabled}
+            aria-invalid={draftValid ? undefined : true} {...(draftValid ? {} : { hint: 'Entre 1 y 100.' })}
+            onChange={(event) => { setDraft(event.target.value); const initialBudget = parseBudget(event.target.value); if (initialBudget !== null && initialBudget !== value.initialBudget) void onChange({ ...value, initialBudget }); }}
+            onBlur={() => setDraft(String(value.initialBudget))} />
+        </div>
+        <p className={s.help}>Las pujas empiezan en 1 y pueden saltar directamente a cualquier cantidad que puedas pagar.</p>
+      </div>
+      <ConfigRange label="Tiempo por turno" value={value.bidSeconds ?? 20} min={0} max={120} disabled={disabled}
+        formatValue={(seconds) => (seconds === 0 ? 'Sin límite' : `${seconds} s`)} hint="Al agotarse el tiempo, pasas ese lote. Usa 0 para jugar sin límite."
+        onCommit={(bidSeconds) => onChange({ ...value, bidSeconds })} />
+    </div>
+    <Toggle label="Incluir formas alternativas" hint="Las formas regionales ocupan su propio lote y se valoran con su BST." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => void onChange({ ...value, includeForms })} />
   </fieldset>;
 }

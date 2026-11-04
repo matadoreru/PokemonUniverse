@@ -1,9 +1,65 @@
 import { isSessionComplete, type PokemonTeamAuctionPublicState, type RoomView } from '@pokemon-universe/shared/public';
-import { Coins, RotateCcw, StopCircle, Trophy, XCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import { Coins, Equal, Gavel, Sparkles } from 'lucide-react';
+import { useMemo } from 'react';
+import { teamStatsLine } from '../games/pokemon-team-auction/presentation';
+import s from '../games/pokemon-team-auction/TeamAuction.module.css';
+import { Card, Chip, cx, Icon, Panel } from '../ui';
+import { guessTop } from './guess-kit';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
 
+/**
+ * Resultados de Pokémon Team Auction: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
+ * insignia y «+N», los puntos en BST) con, en texto, BST, Pokémon, legendarios, míticos, monedas y lotes ganados, y los
+ * sprites del equipo; la regla del desempate. Al lado, los récords y los Pokémon sin dueño. Abajo, la acción del host
+ * («Ver clasificación final» si la sesión ha terminado). Sin medallas emoji.
+ */
 export function PokemonTeamAuctionResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
-  const game = room.game as PokemonTeamAuctionPublicState; const host = room.hostId === selfId; const unowned = game.lotHistory.filter((lot) => lot.winnerId === null);
+  const game = room.game as PokemonTeamAuctionPublicState;
+  const host = room.hostId === selfId;
+  const standings = game.results?.standings ?? [];
+  const unowned = game.lotHistory.filter((lot) => lot.winnerId === null);
   const sessionComplete = isSessionComplete(room.sessionMode, room.gamesPlayed, room.sessionStandings.map((standing) => standing.sessionPoints));
-  return <section className="mx-auto max-w-6xl px-3 py-8 sm:px-5"><div className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-7"><Trophy className="mx-auto text-electric" size={50} /><span className="label mt-2 text-center">Pokémon Team Auction · Resultados</span><h1 className="mb-2 text-center font-display text-3xl sm:text-4xl">La mesa final</h1><p className="mx-auto mb-6 max-w-2xl text-center font-bold text-ink/60">Gana el equipo con mayor BST. En caso de empate cuentan las monedas, los legendarios y los míticos.</p><div className="space-y-2.5">{game.results?.standings.map((entry) => { const person = room.members.find((candidate) => candidate.id === entry.playerId); const participant = game.participants[entry.playerId]; return <article key={entry.playerId} className={`rounded-xl border p-3 ${entry.position === 1 ? 'border-electric/45 bg-electric/[.07]' : 'border-ink/10 bg-surface-raised/70'}`}><div className="grid items-center gap-3 sm:grid-cols-[auto_auto_1fr_auto]"><strong className="w-9 text-center font-display text-2xl">{entry.position === 1 ? '🏆' : entry.position}</strong><Avatar name={person?.displayName ?? entry.playerId} avatar={person?.avatar} size="md" /><div className="min-w-0"><strong className="block truncate font-display text-xl">{person?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/65">BST {entry.stats.bstTotal ?? 0} · {entry.stats.pokemonWon ?? 0} Pokémon · {entry.stats.legendaryCount ?? 0} legendarios · {entry.stats.mythicalCount ?? 0} míticos</p><div className="mt-1 flex flex-wrap gap-1.5 text-xs font-extrabold"><span className="rounded-full bg-electric/10 px-2 py-0.5 text-electric"><Coins className="mr-1 inline" size={13} />{entry.stats.coinsRemaining ?? participant?.coins ?? 0} monedas</span><span className="rounded-full bg-aqua/10 px-2 py-0.5 text-aqua">{entry.stats.lotsWon ?? 0} lotes ganados</span></div></div><strong className="justify-self-end text-xl text-electric">{entry.points} BST</strong></div><div className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-6">{participant?.team.map((pokemon, index) => <div key={`${pokemon.id}-${index}`} className="rounded-lg bg-surface p-1 text-center"><img src={pokemon.sprite} alt="" className="mx-auto h-12 w-12 object-contain" /><span className="block truncate text-[10px] font-extrabold">{pokemon.name}</span></div>)}</div></article>; })}</div>{unowned.length > 0 && <section className="mt-7 border-t border-ink/10 pt-6" aria-labelledby="unowned-pokemon"><div className="mb-3 flex items-center gap-2"><XCircle className="text-berry" /><div><h2 id="unowned-pokemon" className="font-display text-xl">Pokémon sin dueño</h2><p className="text-sm font-bold text-ink/60">No hubo ninguna puja mínima válida para estos lotes.</p></div></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{unowned.map((lot) => <div key={lot.lotNumber} className="flex items-center gap-2 rounded-xl bg-berry/[.06] p-2"><img src={lot.pokemon.sprite} alt="" className="h-12 w-12 object-contain" /><span className="min-w-0"><strong className="block truncate text-sm">{lot.pokemon.name}</strong><small className="font-bold text-berry">Lote {lot.lotNumber}</small></span></div>)}</div></section>}{host ? <div className="mt-7 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> {sessionComplete ? 'Ver clasificación final' : 'Continuar sesión'}</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/65">Esperando a que el host continúe la sesión…</p>}</div></section>;
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const nameOf = (playerId: string) => members.get(playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    const team = game.participants[standing.playerId]?.team ?? [];
+    const stats = { ...standing.stats, coinsRemaining: standing.stats.coinsRemaining ?? game.participants[standing.playerId]?.coins ?? 0 };
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>
+        {sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
+        <span>{teamStatsLine(stats)}</span>
+        {team.length > 0 && <span className={s.teamLine}>{team.map((pokemon, i) => <img key={`${pokemon.id}-${i}`} src={pokemon.sprite} alt={pokemon.name} title={`${pokemon.name} · BST ${pokemon.baseStatTotal}`} />)}</span>}
+      </>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const lots = guessTop(entries, 'lotsWon');
+  const coins = guessTop(entries, 'coinsRemaining');
+  const legends = guessTop(entries, (stats) => (stats.legendaryCount ?? 0) + (stats.mythicalCount ?? 0));
+  const records = <ResultsRecords id="team-auction-records-title" records={[
+    { key: 'lots', title: 'Más lotes ganados', icon: Gavel, names: lots?.names ?? null, value: String(lots?.value ?? ''), unit: lots?.value === 1 ? 'lote ganado' : 'lotes ganados' },
+    { key: 'coins', title: 'Más ahorrador', icon: Coins, names: coins?.names ?? null, value: String(coins?.value ?? ''), unit: coins?.value === 1 ? 'moneda sin gastar' : 'monedas sin gastar' },
+    { key: 'legends', title: 'Legendarios y míticos', icon: Sparkles, names: legends?.names ?? null, value: String(legends?.value ?? ''), unit: legends?.value === 1 ? 'Pokémon legendario o mítico' : 'Pokémon legendarios o míticos' },
+  ]} />;
+  const unownedPanel = unowned.length > 0 && <Panel variant="cream" as="section" aria-labelledby="unowned-pokemon" bodyClassName={cx(s.unowned)}>
+    <h2 id="unowned-pokemon" className={s.unownedTitle}>Pokémon sin dueño</h2>
+    <p className={s.unownedHelp}>No hubo ninguna puja mínima válida para estos lotes.</p>
+    <ul className={s.unownedList}>{unowned.map((lot) => <li key={lot.lotNumber}><Card size="sm" sprite={lot.pokemon.sprite} name={lot.pokemon.name} decorativeSprite><Chip tone="bad">Lote {lot.lotNumber}</Chip></Card></li>)}</ul>
+  </Panel>;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La mesa final" subtitle="Pokémon Team Auction · Resultados"
+    standings={rows} selfId={selfId} winnersNeedPoints pointsLabel={(points) => `${points} BST`} aside={<>{records}{unownedPanel}</>}
+    actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} continueLabel={sessionComplete ? 'Ver clasificación final' : 'Continuar sesión'} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    <p className={s.rule}>Gana el equipo con mayor BST. En caso de empate cuentan las monedas, los legendarios y los míticos.</p>
+  </ResultsShell>;
 }
