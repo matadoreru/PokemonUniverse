@@ -13,6 +13,12 @@ import s from './Layout.module.css';
 export const HEADER_NOTICES_ID = 'app-header-notices';
 
 /**
+ * Hueco izquierdo de la cabecera para la placa de la sala (código y «Salir»), que pinta la sesión de sala con un portal.
+ * Vacío no ocupa sitio; a menos de 640 px baja a su propia fila bajo la placa del HUD para no solaparse con ella.
+ */
+export const HEADER_ROOM_ID = 'app-header-room';
+
+/**
  * Cabecera de HUD (spec §6, ajustada por el usuario el 2026-11-04): una sola placa a la derecha con el inicio (casa), el sonido,
  * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Sin logotipo ni Novedades (las novedades
  * están en Inicio). Todo son píldoras redondas de 44 px, así que cabe a 390 px sin menú; el perfil muestra el nombre
@@ -22,8 +28,11 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
   const isAdmin = user?.kind === 'USER' && user.role === 'ADMIN';
   const profileLabel = user ? `Abrir perfil de ${user.displayName}` : '';
   return (
-    <header className="relative z-hud" data-layout="hud-plates">
-      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-end gap-2 px-3 pb-1 pt-3 sm:px-4 lg:px-6">
+    // Reserva, como el `main`, el hueco de su barra de scroll: así la fila queda centrada igual que el contenido de debajo.
+    <header className="relative z-hud overflow-hidden [scrollbar-gutter:stable]" data-layout="hud-plates">
+      {/* Mismos bordes que el contenido (`content-row`). */}
+      <div className="content-row flex flex-wrap items-stretch justify-end gap-3 pb-2 pt-3 sm:flex-nowrap">
+        <div id={HEADER_ROOM_ID} className="order-last flex w-full min-w-0 empty:hidden sm:order-none sm:w-auto sm:flex-1" />
         <HudPlate>
           <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
           <AudioButton />
@@ -84,7 +93,7 @@ export function Layout() {
   return (
     <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
       <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
-      <main className="min-h-0 overflow-y-auto">
+      <main className="min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
         <ScreenTransition routeKey={pathname} focusHeading>
           <Suspense fallback={<RouteLoadingFallback />}>
             <Outlet />

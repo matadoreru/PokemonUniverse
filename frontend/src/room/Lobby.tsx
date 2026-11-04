@@ -1,5 +1,5 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { ArrowRight, BookOpen, Check, CheckCircle2, Copy, Gamepad2, Headphones, LockKeyhole, LogOut, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff, X } from 'lucide-react';
+import { ArrowRight, BookOpen, CheckCircle2, Gamepad2, Headphones, LockKeyhole, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff, X } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GameLoadingFallback } from '../components/LoadingFallback';
@@ -12,6 +12,7 @@ import { PlayerList } from './PlayerList';
 interface Props {
   room: RoomView;
   selfId: string;
+  /** Sin uso: la salida vive en la placa de la sala de la cabecera (RoomPlate). Se mantiene porque RoomPage aún lo pasa. */
   onLeave(): void;
   onReady(ready: boolean): Promise<void>;
   onStart(): Promise<void>;
@@ -33,7 +34,7 @@ function normalizeSearch(value: string): string {
 type LobbyTab = 'games' | 'config' | 'session';
 const lobbyTabs: LobbyTab[] = ['games', 'config', 'session'];
 
-export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, onConfig, onGameConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
+export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, onGameConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
   const canEditGame = hasRoomPermission(roomRole, 'EDIT_GAME_CONFIG');
@@ -47,7 +48,6 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const connectedPlayers = room.members.filter((member) => member.presence === 'CONNECTED').length;
   const pendingReady = room.members.filter((member) => member.presence === 'CONNECTED' && member.id !== room.hostId && !member.ready);
   const hostMember = room.members.find((member) => member.id === room.hostId);
-  const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
   const [readyBusy, setReadyBusy] = useState(false);
   const [starting, setStarting] = useState(false);
@@ -90,10 +90,6 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
     setActiveTab(next);
     document.getElementById(`lobby-tab-${next}`)?.focus();
   };
-  const copyCode = () => void navigator.clipboard.writeText(room.code).then(() => {
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1_800);
-  }).catch(report);
   const transferHost = (playerId: string) => {
     const target = room.members.find((member) => member.id === playerId);
     if (!target || !window.confirm(`¿Transferir el Host a ${target.displayName}?\n\nTú pasarás a ser Co-host.`)) return;
@@ -151,21 +147,9 @@ export function Lobby({ room, selfId, onLeave, onReady, onStart, onSelectGame, o
   const feedbackUrl = `/feedback?${new URLSearchParams({ game: room.selectedGameId, room: room.code })}`;
 
   return (
-    <section className="page-shell max-w-[90rem]">
-      <header className="panel mb-4 flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-5">
-        <div className="min-w-0">
-          <p className="text-sm font-extrabold text-ink/65">Prepara la partida</p>
-          <h1 className="font-display text-2xl font-bold sm:text-3xl">Lobby de la sala</h1>
-        </div>
-        <div className="flex flex-1 items-center justify-end gap-2 sm:flex-none">
-          <button className="group inline-flex min-h-11 items-center gap-2 rounded-xl px-2 text-left hover:bg-ink/[.05]" onClick={copyCode} aria-label={`Copiar código de sala ${room.code}`}>
-            <span><span className="block text-xs font-extrabold text-ink/60">Código</span><strong className="block font-display text-xl tracking-[.12em] sm:text-2xl">{room.code}</strong></span>
-            {copied ? <Check size={19} className="shrink-0 text-leaf" /> : <Copy size={18} className="shrink-0 text-ink/50 transition-colors group-hover:text-aqua" />}
-          </button>
-          <span className="sr-only" aria-live="polite">{copied ? 'Código copiado' : ''}</span>
-          <button className="btn-ghost px-3 sm:px-4" onClick={onLeave}><LogOut size={18} /><span className="hidden sm:inline">Salir</span></button>
-        </div>
-      </header>
+    <section className="content-row py-4 sm:py-6">
+      {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
+      <h1 className="sr-only">Lobby de la sala</h1>
 
       {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && <div className="mb-4 flex items-start gap-3 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 font-bold" role="status" aria-live="polite"><WifiOff className="mt-0.5 shrink-0 text-electric" size={19} /><span><strong className="block">El host está reconectando.</strong><span className="text-sm text-ink/65">La sala conserva la configuración y esperará antes de transferir el control.</span></span></div>}
 

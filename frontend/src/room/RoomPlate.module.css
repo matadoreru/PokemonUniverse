@@ -1,0 +1,43 @@
+/* Placa de la sala en la cabecera: ocupa el hueco de la izquierda y cede ancho a la placa del HUD de la derecha. */
+.plate.plate {
+  /* Llena todo el ancho que deja libre la placa del HUD: título a la izquierda, código y «Salir» a la derecha. */
+  flex: 1 1 auto;
+  max-width: 100%;
+  min-width: 0;
+  padding-left: var(--sp-4);
+  padding-right: var(--sp-2);
+}
+.text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.kicker {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: color-mix(in srgb, var(--white) 72%, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.title {
+  display: block;
+  font: 800 var(--fs-18) / 1.2 var(--font-display);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* El código se lee como código: más espaciado y a tamaño de título. */
+.code {
+  letter-spacing: 0.12em;
+}
+.actions {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sp-2);
+}
+@media (min-width: 1024px) {
+  .title {
+    font-size: var(--fs-22);
+  }
+}

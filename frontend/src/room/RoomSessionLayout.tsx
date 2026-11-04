@@ -1,13 +1,14 @@
-import { MessageSquareWarning, WifiOff, X } from 'lucide-react';
+import { WifiOff, X } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useRoomMusic } from '../audio/useRoomMusic';
 import { useAuth } from '../auth/AuthContext';
 import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import { RoomProvider, useRoom } from './RoomContext';
+import { RoomPlatePortal } from './RoomPlate';
 import { SkipGameControl } from './SkipGameControl';
 
 /** Región `status` del aviso de conexión: siempre montada para que se anuncie el cambio; vacía no ocupa alto. */
@@ -41,19 +42,22 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
 }
 
 function RoomSessionContent() {
-  const { connected, error, clearError, room, setGameSkipVote } = useRoom();
+  const { connected, error, clearError, room, setGameSkipVote, leaveRoom } = useRoom();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   useRoomMusic(room?.phase ?? null);
   // Revelación común a los minijuegos al entrar en resultados de ronda (salvo los que ya piden la suya).
   useSfxCue('game.reveal', roomRevealKey(room?.game as { gameId?: string; phase?: string; roundNumber?: number } | null | undefined));
   // Victoria común al llegar a los resultados de la partida si ganó el jugador local (salvo los que ya la dan).
   useSfxCue('game.win', gameWinCue(room, user?.id));
-  const feedbackUrl = room ? `/feedback?${new URLSearchParams({ game: (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId, room: room.code })}` : '';
-  const gameOwnsFeedbackLink = (room?.game as { gameId?: string } | null)?.gameId === 'shiny-vote' && room?.phase !== 'GAME_RESULTS';
+  // Si falla, el error ya sale en el aviso de la sala y se sigue en ella.
+  const leave = () => void leaveRoom().then(() => navigate('/play')).catch(() => undefined);
   return <>
-    {room && <div className="mx-auto flex w-full max-w-[96rem] flex-wrap items-center justify-end gap-2 px-3 pt-3 sm:px-5 lg:px-8">
-      {room.gameSkipState && <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />}
-      {!gameOwnsFeedbackLink && <Link className="inline-flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-extrabold text-ink/60 no-underline transition-colors hover:bg-ink/[.06] hover:text-ink" to={feedbackUrl}><MessageSquareWarning size={18} />Reportar problema o sugerencia</Link>}
+    {/* La placa de la sala (código y «Salir») va a la cabecera solo en `/room`: en `/play` la pantalla ya ofrece volver o salir. */}
+    {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={leave} />}
+    {room?.gameSkipState && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
+      <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
     <Outlet />
     <ConnectionNotice connected={connected} />

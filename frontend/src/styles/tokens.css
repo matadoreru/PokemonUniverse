@@ -110,6 +110,11 @@
   --sp-5: 24px;
   --sp-6: 32px;
 
+  /* ---------- ancho de contenido: la cabecera y las pantallas comparten bordes ---------- */
+  --content-max: 1600px;
+  /* Margen lateral: 16 px en móvil, 24 px desde 640 y 32 px desde 1024 (abajo). */
+  --gutter: var(--sp-4);
+
   /* ---------- radios ---------- */
   --r-pill: 999px;
   --r-dialog: 20px;
@@ -158,6 +163,17 @@
   /* ---------- foco ---------- */
   --focus-ring: var(--yellow);
   --focus-ring-on-yellow: var(--white);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --gutter: var(--sp-5);
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --gutter: var(--sp-6);
+  }
 }
 
 /* Reducción de movimiento (§3.4): todo a 0 ms salvo los fundidos de opacidad de 120 ms. */

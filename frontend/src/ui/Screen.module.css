@@ -9,9 +9,10 @@
   grid-template-rows: auto auto;
   gap: var(--sp-5);
   width: 100%;
-  max-width: 1600px;
+  /* Mismos bordes que la fila de la cabecera. */
+  max-width: var(--content-max);
   margin-inline: auto;
-  padding: var(--sp-5) var(--sp-4) var(--sp-4);
+  padding: var(--sp-5) var(--gutter) var(--sp-4);
 }
 
 .content {
@@ -42,17 +43,11 @@
   min-width: 0;
 }
 
-@media (min-width: 640px) {
-  .screen {
-    padding-inline: var(--sp-5);
-  }
-}
-
 @media (min-width: 1024px) {
   .screen {
     grid-template-rows: minmax(0, 1fr) auto;
     height: calc(100% - var(--screen-reserve, 0px));
-    padding: var(--sp-5) var(--sp-6);
+    padding-block: var(--sp-5);
   }
   /* Sin pie, el contenido ocupa todo el alto. */
   .bare {

@@ -3,9 +3,10 @@ import { createElement, type PropsWithChildren } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
+import { RoomPlate, roomPlateHeading } from './RoomPlate';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 
-const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null, clearError: vi.fn(), setGameSkipVote: vi.fn() }));
+const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn() }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'self' } }) }));
 
@@ -29,6 +30,28 @@ describe('global room actions', () => {
 
   it.each(['LOBBY', 'GAME_RESULTS', 'SESSION_RESULTS', 'NEXT_GAME_VOTE'] as const)('has no skip control in %s', (phase) => {
     expect(render('higher-lower', phase, null)).not.toContain('Saltar minijuego');
+  });
+});
+
+describe('room plate', () => {
+  it('no longer renders the floating «Reportar problema» link', () => {
+    expect(render('higher-lower', 'LOBBY', null)).not.toContain('Reportar problema');
+    expect(render('higher-lower', 'ROUND_ACTIVE', skip)).not.toContain('Reportar problema');
+  });
+
+  it('shows the code with its copy button and an accessible «Salir de la sala»', () => {
+    const room = { code: 'ABC234', selectedGameId: 'higher-lower', phase: 'LOBBY', game: null, availableGames: [] } as unknown as RoomView;
+    const markup = renderToStaticMarkup(createElement(RoomPlate, { room, onLeave: vi.fn() }));
+    expect(markup).toContain('aria-label="Copiar código de sala ABC234"');
+    expect(markup).toContain('Lobby de la sala');
+    expect(markup).toContain('Prepara la partida');
+    expect(markup.match(/aria-label="Salir de la sala"/g)).toHaveLength(2);
+    expect(markup).not.toContain('<h1');
+  });
+
+  it('names the current game during a match', () => {
+    const room = { phase: 'ROUND_ACTIVE', selectedGameId: 'higher-lower', game: { gameId: 'higher-lower' }, availableGames: [{ id: 'higher-lower', name: 'Más o menos' }] } as unknown as RoomView;
+    expect(roomPlateHeading(room)).toEqual({ kicker: 'Sala', title: 'Más o menos' });
   });
 });
 

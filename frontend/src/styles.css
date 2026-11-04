@@ -96,6 +96,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 ::-webkit-scrollbar-thumb { border: 2px solid var(--navy-2); border-radius: 999px; background: var(--yellow); }
 
 @layer components {
+  /* Fila de contenido: mismos bordes que la cabecera (`--content-max` y `--gutter`, en tokens.css). */
+  .content-row { width: 100%; max-width: var(--content-max); margin-inline: auto; padding-inline: var(--gutter); }
   .page-shell { @apply mx-auto w-full max-w-[96rem] px-3 py-4 sm:px-5 sm:py-6 lg:px-8; }
   .card { @apply rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5; }
   .panel { @apply rounded-2xl border border-ink/10 bg-surface; }

@@ -69,8 +69,7 @@ export function PlayPage() {
   }
 
   if (room) return (
-    // Encima, en el mismo `main`, va la fila de la sala (reportar, saltar: `pt-3` + 44 px); `reserve` la descuenta.
-    <Screen width="narrow" reserve="3.5rem">
+    <Screen width="narrow">
       <Panel variant="cream" aria-labelledby="sala-activa-title" className="w-full">
         <div className="flex flex-col items-center gap-4 px-2 pb-2 pt-3 text-center 2xl:gap-6 2xl:px-6 2xl:pb-5 2xl:pt-6">
           <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[color:var(--yellow)] text-[color:var(--navy)] 2xl:h-20 2xl:w-20"><Icon icon={DoorOpen} size={32} className="2xl:h-10 2xl:w-10" /></span>
