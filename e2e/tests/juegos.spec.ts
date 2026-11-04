@@ -3062,7 +3062,17 @@ test('pokemon-connections: tablero con teclado, errores, la revelación de los g
     await expect(host.page.locator('#guess-plate-title'), 'el foco no cae al body tras comprobar').toBeFocused();
     const acerto = (await resultado.innerText()).trim() === 'Grupo encontrado';
     test.info().annotations.push({ type: 'connections', description: `primer intento del anfitrión: ${await resultado.innerText()}` });
-    if (!acerto) await expect(host.page.getByTestId('connections-lives')).toHaveText('Queda 1 error de 2');
+    if (acerto) {
+      // Acierto por azar: el grupo pasa a ser una banda con su tema y sus cartas salen del tablero.
+      await expect(host.page.locator('[data-connection-group]')).toHaveCount(1);
+      await expect(host.page.locator('[data-connection-group] strong')).not.toHaveText('');
+      await expect(cartas(host.page)).toHaveCount(12);
+      await expect(host.page.getByTestId('connections-lives')).toHaveText('Quedan 2 errores de 2');
+    } else {
+      test.info().annotations.push({ type: 'connections', description: 'sin acierto por azar: la banda de un grupo encontrado en plena ronda la cubre el test de render' });
+      await expect(host.page.locator('[data-connection-group]')).toHaveCount(0);
+      await expect(host.page.getByTestId('connections-lives')).toHaveText('Queda 1 error de 2');
+    }
     await capturarTamanos(host.page, 'juego-pokemon-connections-intento', { sigue: resultado, opts: ARCADE });
 
     // Lo que cada uno veía antes de revelar.

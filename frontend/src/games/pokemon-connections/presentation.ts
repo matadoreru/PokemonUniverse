@@ -36,9 +36,9 @@ export function connectionsPlateKind(phase: PokemonConnectionsPublicState['phase
  * Clave del foco (ver `useFocusOnTransition`): tras cada intento propio (al enviar, la selección se vacía y la píldora
  * «Comprobar» queda deshabilitada: el foco no debe caer al `body`) y al revelar, el título de la placa.
  */
-export function connectionsFocusKey(kind: ConnectionsPlateKind, roundNumber: number, feedback: ConnectionAttemptFeedback | null): string | null {
+export function connectionsFocusKey(kind: ConnectionsPlateKind, roundNumber: number, feedback: ConnectionAttemptFeedback | null, fresh = true): string | null {
   if (kind === 'reveal') return `reveal-${roundNumber}`;
-  if (kind === 'waiting' || kind === 'watching' || !feedback) return null;
+  if (kind === 'waiting' || kind === 'watching' || !feedback || !fresh) return null;
   return `attempt-${roundNumber}-${feedback.attemptedAt}`;
 }
 
@@ -90,6 +90,33 @@ export function connectionsRevealOrder<T extends { completionRank: number | null
 export function connectionsStatsLine(stats: Readonly<Record<string, number | undefined>>): string {
   const { groupsFound = 0, boardsSolved = 0, roundsPlayed = 0, mistakes = 0, nearMisses = 0, podiumFinishes = 0 } = stats;
   return `${plural(groupsFound, 'grupo', 'grupos')} · ${boardsSolved}/${roundsPlayed} tableros · ${plural(mistakes, 'error', 'errores')} · ${nearMisses} a una · ${plural(podiumFinishes, 'podio', 'podios')}`;
+}
+
+/** Paso del deslizador «Tiempo por puzle» y sus límites (los del contrato). */
+export const CONNECTIONS_TIME = { min: 30, max: 300, step: 30 } as const;
+
+/**
+ * Valor que enseña el deslizador del tiempo: un `roundSeconds` antiguo fuera de la rejilla de 30 s (el contrato admite
+ * cualquier entero de 30 a 300) se muestra en el paso más cercano. Solo se pinta así: la configuración no cambia hasta
+ * que el host mueve el deslizador.
+ */
+export function connectionsSnapSeconds(seconds: number): number {
+  const { min, max, step } = CONNECTIONS_TIME;
+  return Math.min(max, Math.max(min, min + Math.round((seconds - min) / step) * step));
+}
+
+/**
+ * Intento propio que merece llevar el foco a la placa: solo uno nuevo, visto llegar con la pantalla montada. Al montar
+ * (o al reconectar con un `lastAttempt` previo) se toma como visto y no roba el foco; si el estado del jugador desaparece
+ * y vuelve con el mismo intento, tampoco.
+ */
+export interface AttemptFocusState { seen: number | null; fresh: number | null }
+
+export function nextAttemptFocus(state: AttemptFocusState | null, attemptedAt: number | null): AttemptFocusState {
+  if (state === null) return { seen: attemptedAt, fresh: null };
+  if (attemptedAt === null) return { seen: state.seen, fresh: null };
+  if (state.seen === null || attemptedAt > state.seen) return { seen: attemptedAt, fresh: attemptedAt };
+  return { seen: state.seen, fresh: state.fresh === attemptedAt ? attemptedAt : null };
 }
 
 /** Tiempo por puzle de los ajustes: «2 min», «1 min 30 s» o «30 s». */

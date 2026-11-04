@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { PokemonConnectionsConfigPanel } from '../games/pokemon-connections/ConfigPanel';
-import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, connectionsRevealOrder, connectionsRoundLine, connectionsStatsLine, connectionsTimeLabel } from '../games/pokemon-connections/presentation';
+import { connectionsSnapSeconds, nextAttemptFocus, connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, connectionsRevealOrder, connectionsRoundLine, connectionsStatsLine, connectionsTimeLabel } from '../games/pokemon-connections/presentation';
 import { PokemonConnectionsGame } from './PokemonConnectionsGame';
 import { PokemonConnectionsResults } from './PokemonConnectionsResults';
 
@@ -160,6 +160,35 @@ describe('presentación de Pokémon Connections', () => {
     expect(connectionsTimeLabel(90)).toBe('1 min 30 s');
     expect(connectionsTimeLabel(120)).toBe('2 min');
     expect(connectionsTimeLabel(30)).toBe('30 s');
+  });
+});
+
+describe('retoques de la revisión', () => {
+  it('el tiempo antiguo fuera de la rejilla de 30 s se enseña en el paso más cercano sin tocar la configuración', () => {
+    expect(connectionsSnapSeconds(45)).toBe(60);
+    expect(connectionsSnapSeconds(44)).toBe(30);
+    expect(connectionsSnapSeconds(100)).toBe(90);
+    expect(connectionsSnapSeconds(120)).toBe(120);
+    expect(connectionsSnapSeconds(299)).toBe(300);
+    let committed = false;
+    const config = { ...defaultPokemonConnectionsConfig, roundSeconds: 100 };
+    const html = renderToStaticMarkup(createElement(PokemonConnectionsConfigPanel, { config, disabled: false, onChange: async () => { committed = true; } }));
+    expect(html).toMatch(/min="30" max="300" step="30"[^>]*value="90"/);
+    expect(html).toContain('1 min 30 s');
+    expect(committed).toBe(false);
+  });
+
+  it('el foco solo va a la placa con un intento nuevo, no con el que había al montar o reconectar', () => {
+    const mounted = nextAttemptFocus(null, 2_000);
+    expect(mounted).toEqual({ seen: 2_000, fresh: null });
+    const fresh = nextAttemptFocus(mounted, 3_000);
+    expect(fresh.fresh).toBe(3_000);
+    expect(nextAttemptFocus(fresh, 3_000).fresh).toBe(3_000);
+    // El estado del jugador desaparece y vuelve con el mismo intento: no es nuevo.
+    const gone = nextAttemptFocus(fresh, null);
+    expect(nextAttemptFocus(gone, 3_000).fresh).toBeNull();
+    expect(nextAttemptFocus(null, null)).toEqual({ seen: null, fresh: null });
+    expect(nextAttemptFocus({ seen: null, fresh: null }, 1_000).fresh).toBe(1_000);
   });
 });
 

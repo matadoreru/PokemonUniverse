@@ -389,19 +389,30 @@
   .grid > [data-connection-card] > span:nth-of-type(2) {
     font-size: var(--fs-22);
   }
+  /* Las bandas escalan con el ancho del tablero (contenedor `inline-size`): el tema y los sprites llenan la franja. */
+  .band {
+    gap: var(--sp-5);
+    padding-inline: var(--sp-5);
+  }
   .bandLabel {
-    font-size: var(--fs-26);
+    font-size: clamp(var(--fs-26), 2.6cqw, var(--fs-44));
   }
   .bandExplanation,
   .foundBy {
-    font-size: var(--fs-15);
+    font-size: clamp(var(--fs-15), 1.3cqw, var(--fs-22));
+  }
+  .bandPokemon {
+    gap: clamp(var(--sp-2), 1.2cqw, var(--sp-5));
   }
   .bandPokemon > li {
-    width: 6rem;
+    width: clamp(6rem, 10cqw, 10rem);
   }
   .bandPokemon img {
-    width: 64px;
-    height: 64px;
+    width: clamp(64px, 7.5cqw, 120px);
+    height: clamp(64px, 7.5cqw, 120px);
+  }
+  .bandPokemon span {
+    font-size: clamp(var(--fs-13), 1.2cqw, var(--fs-18));
   }
   .points {
     font-size: var(--fs-44);

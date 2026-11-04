@@ -3,7 +3,7 @@ import { Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Icon, Segmented } from '../../ui';
-import { connectionsTimeLabel } from './presentation';
+import { CONNECTIONS_TIME, connectionsSnapSeconds, connectionsTimeLabel } from './presentation';
 import s from './ConfigPanel.module.css';
 
 const groupSizes = [3, 4, 5] as const;
@@ -33,7 +33,7 @@ export function PokemonConnectionsConfigPanel({ config, disabled, onChange }: { 
     </div>
     <div className={s.pair}>
       <ConfigRange label="Errores permitidos" value={value.mistakesAllowed} min={1} max={10} disabled={disabled} formatValue={(mistakes) => (mistakes === 1 ? '1 error' : `${mistakes} errores`)} onCommit={(mistakesAllowed) => onChange({ ...value, mistakesAllowed })} />
-      <ConfigRange label="Tiempo por puzle" value={value.roundSeconds} min={30} max={300} step={30} disabled={disabled} formatValue={connectionsTimeLabel} hint="El puzle se cierra antes si todos terminan." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Tiempo por puzle" value={connectionsSnapSeconds(value.roundSeconds)} min={CONNECTIONS_TIME.min} max={CONNECTIONS_TIME.max} step={CONNECTIONS_TIME.step} disabled={disabled} formatValue={connectionsTimeLabel} hint="El puzle se cierra antes si todos terminan." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
     <ConfigRange label="Número de puzles" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 puzle' : `${rounds} puzles`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     <p className={s.note}><Icon icon={Lightbulb} size={22} /> Un intento con todos menos uno del mismo grupo mostrará «Te falta uno».</p>

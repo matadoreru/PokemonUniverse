@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScorePop } from '../components/ScorePop';
 import { ServerTimer } from '../components/ServerTimer';
 import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from '../games/pokemon-connections/ConnectionsParts';
-import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, type ConnectionsPlateKind } from '../games/pokemon-connections/presentation';
+import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from '../games/pokemon-connections/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, cx, Icon, Pill, ScreenSplit } from '../ui';
@@ -52,7 +52,11 @@ export function PokemonConnectionsGame({ room, selfId, onAction }: { room: RoomV
   const feedback = own?.lastAttempt ?? null;
   useSfxCue(feedback ? feedback.kind === 'CORRECT' ? 'hit' : 'miss' : null, feedback?.attemptedAt ?? null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useFocusOnTransition(connectionsFocusKey(kind, game.roundNumber, feedback), titleRef);
+  // Solo un intento nuevo (no el que ya había al montar o al reconectar) lleva el foco a la placa.
+  const attemptFocus = useRef<AttemptFocusState | null>(null);
+  attemptFocus.current = nextAttemptFocus(attemptFocus.current, feedback?.attemptedAt ?? null);
+  const freshAttempt = feedback !== null && attemptFocus.current.fresh === feedback.attemptedAt;
+  useFocusOnTransition(connectionsFocusKey(kind, game.roundNumber, feedback, freshAttempt), titleRef);
 
   const canSelect = kind === 'select' && !submitting;
   function toggle(id: string) {
