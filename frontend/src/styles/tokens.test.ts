@@ -77,6 +77,8 @@ describe('contraste AA de las parejas de texto (§3.1)', () => {
     ['navy sobre bad', colors.navy, colors.bad],
     ['navy sobre info', colors.navy, colors.info],
     ['blanco sobre red-text', colors.white, colors.redText],
+    // Rellenos `bg-aqua`/`bg-berry` dentro de `.on-cream` (alias de migración): tinta blanca.
+    ['blanco sobre red-d', colors.white, colors.redD],
     ['yellow sobre navy-2', colors.yellow, colors.navy2],
     ['sky-2 sobre navy-2', colors.sky2, colors.navy2],
   ];

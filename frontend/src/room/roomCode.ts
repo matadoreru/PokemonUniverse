@@ -40,6 +40,7 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * - «Not in a room»: `RoomCoordinator.requiredRoom` e `inRequiredRoom` (`leave` y otras órdenes sin sala).
  * - Del lobby: «This setting can only be changed in the lobby», «Player not found», «Unknown game», «Cannot end the
  *   session during a game» y «No game in progress».
+ * - De partida y resultados: «You cannot act in the current game» y «Game has not finished».
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
@@ -53,6 +54,9 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Unknown game': 'Ese minijuego no existe.',
   'Cannot end the session during a game': 'No se puede finalizar la sesión durante una partida.',
   'No game in progress': 'No hay ninguna partida en curso.',
+  // Partida y resultados (`RoomCoordinator.action` y `returnLobby`): no salen del lobby, pero pasan por las mismas órdenes.
+  'You cannot act in the current game': 'No puedes hacer eso en esta partida.',
+  'Game has not finished': 'La partida todavía no ha terminado.',
 };
 
 /**

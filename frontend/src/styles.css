@@ -64,6 +64,10 @@
  * de Tailwind vuelven a la tinta oscura. `berry` va en `--red-d` y no en `--red-text`: `.status-error` (texto sobre
  * berry/10) se queda en 4,06:1 con `--red-text` y llega a 5,11:1 con `--red-d`. `aqua` → `--blue-d` (6,90:1).
  * `electric` y `leaf` no cambian: sus rellenos llevan texto azul noche y sus iconos son decorativos.
+ * Los rellenos sólidos `bg-aqua`/`bg-berry` (opción elegida de los ConfigPanel, GenerationSelector) pasan a ser
+ * oscuros (`--blue-d`, `--red-d`): dentro de ellos la tinta `night` se vuelve blanca (7,33:1 y 6,39:1). Las tintas
+ * translúcidas (`text-night/75`) van opacas: el blanco al 75 % sobre `--red-d` se quedaría en 4,16:1. `.bg-aqua` solo
+ * casa con el relleno sólido: los tintes (`bg-aqua/10`) son otra clase y conservan la tinta oscura.
  */
 .on-cream {
   color-scheme: light;
@@ -74,6 +78,14 @@
   --color-aqua: 30 79 184; /* --blue-d */
   --focus-ring: var(--navy);
   --focus-ring-on-yellow: var(--navy);
+}
+.on-cream .bg-aqua,
+.on-cream .bg-berry {
+  --color-night: 255 255 255; /* --white */
+}
+.on-cream :is(.bg-aqua, .bg-berry)[class*='text-night/'],
+.on-cream :is(.bg-aqua, .bg-berry) [class*='text-night/'] {
+  color: rgb(255 255 255);
 }
 
 /* Barra de desplazamiento amarilla sobre azul noche (§3.7). */
