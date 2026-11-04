@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { ballotState, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, typingTarget, votesText } from './presentation';
+import { describe, expect, it, vi } from 'vitest';
+import { ballotState, bindChoiceShortcuts, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, typingTarget, votesText } from './presentation';
 
 const names: Record<string, string> = { p1: 'Snorlax', p2: 'Psyduck', p3: 'Gengar' };
 const nameOf = (id: string) => names[id] ?? id;
@@ -87,5 +87,39 @@ describe('social-kit: atajos de las opciones', () => {
     expect(choiceFromKey({ key: '1', defaultPrevented: true }, ids)).toBeNull();
     expect(typingTarget(field('textarea'))).toBe(true);
     expect(typingTarget({})).toBe(false);
+  });
+});
+
+describe('social-kit: escucha de los atajos', () => {
+  /** Un destino de eventos mínimo (en la app, `window`). */
+  function target() {
+    const listeners = new Set<(event: KeyboardEvent) => void>();
+    return {
+      listeners,
+      addEventListener: (_: 'keydown', listener: (event: KeyboardEvent) => void) => { listeners.add(listener); },
+      removeEventListener: (_: 'keydown', listener: (event: KeyboardEvent) => void) => { listeners.delete(listener); },
+      press(key: string, extra: Partial<KeyboardEvent> = {}) {
+        const event = { key, preventDefault: vi.fn(), ...extra } as unknown as KeyboardEvent;
+        for (const listener of listeners) listener(event);
+        return event;
+      },
+    };
+  }
+
+  it('1 y 2 eligen (con preventDefault); otras teclas y los campos de texto, nada; al soltar deja de escuchar', () => {
+    const t = target();
+    const chosen: string[] = [];
+    const unbind = bindChoiceShortcuts(t, ['A', 'B'], (id) => chosen.push(id));
+    expect(t.listeners.size).toBe(1);
+    expect(t.press('2').preventDefault).toHaveBeenCalled();
+    t.press('1');
+    expect(t.press('x').preventDefault).not.toHaveBeenCalled();
+    t.press('1', { target: { closest: () => ({}) } as unknown as EventTarget });
+    t.press('2', { ctrlKey: true });
+    expect(chosen).toEqual(['B', 'A']);
+    unbind();
+    expect(t.listeners.size).toBe(0);
+    t.press('1');
+    expect(chosen).toEqual(['B', 'A']);
   });
 });

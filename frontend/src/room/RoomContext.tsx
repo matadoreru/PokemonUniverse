@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
 import { createRealtime } from '../lib/socket';
-import { requestCommand } from './room-command';
+import { commandRequest, gameActionPayload, requestCommand } from './room-command';
 import { roomActionErrorMessage } from './roomCode';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
@@ -73,11 +73,11 @@ export function RoomProvider({ children }: PropsWithChildren) {
    * lo que valida ella antes de enviar. Con `report = false` el fallo no pasa al aviso global (ni lo limpia): lo enseña
    * quien llama (Jugar, en su campo).
    */
-  const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E>, report = true) => {
+  const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E> | (() => CommandPayload<E>), report = true) => {
     const socket = socketRef.current;
-    if (!socket) throw new Error('Sin conexión con el servidor');
+    // Sin socket, `socketRef.current === socket` (los dos nulos): «Sin conexión» también sale en el aviso global.
     const reporter = report ? { clear: () => setError(null), set: (message: string) => { if (socketRef.current === socket) setError(roomActionErrorMessage(message)); } } : null;
-    return requestCommand(() => socket.request(event, payload), reporter);
+    return requestCommand(commandRequest(socket, event, payload), reporter);
   }, []);
 
   const optimisticEmit = useCallback(<E extends CommandEvent,>(event: E, payload: CommandPayload<E>, update: OptimisticLobbyUpdate) => (
@@ -117,13 +117,8 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async endSession() { await emit('room:end-session', {}); },
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
     async skipIntro(request) { await emit('game:intro:skip', request); },
-    async gameAction(action) {
-      const gameInstanceId = room?.gameSkipState?.gameInstanceId;
-      if (!gameInstanceId) throw new Error('No hay un minijuego activo.');
-      const actionEpoch = room?.gameActionEpoch;
-      if (!actionEpoch) throw new Error('Actualiza la conexión para recuperar la ronda.');
-      await emit('game:action', { gameInstanceId, actionEpoch, action });
-    },
+    // Las guardas (sin minijuego activo, sin época) van dentro de la petición: su fallo también sale en el aviso global.
+    async gameAction(action) { await emit('game:action', () => gameActionPayload(room, action)); },
   }), [connected, emit, error, optimisticEmit, room]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }

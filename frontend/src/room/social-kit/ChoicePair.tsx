@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { cx, Panel, TextCard } from '../../ui';
-import { choiceFromKey } from './presentation';
+import { bindChoiceShortcuts } from './presentation';
 import s from './ChoicePair.module.css';
 
 /** Una de las dos opciones enfrentadas. */
@@ -52,15 +52,7 @@ export function ChoicePair<T extends string>({ kicker, help, options, value, onC
 
   useEffect(() => {
     if (disabled || !shortcuts) return undefined;
-    const ids = idsKey.split('|') as T[];
-    function handleKeyDown(event: KeyboardEvent) {
-      const id = choiceFromKey(event, ids);
-      if (!id) return;
-      event.preventDefault();
-      onChangeRef.current(id);
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return bindChoiceShortcuts(window, idsKey.split('|') as T[], (id) => onChangeRef.current(id));
   }, [disabled, shortcuts, idsKey]);
 
   const card = (option: ChoiceOption<T>, index: number) => <li className={s.option} data-choice-option={option.id}>

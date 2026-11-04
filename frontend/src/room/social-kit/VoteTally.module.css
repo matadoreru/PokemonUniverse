@@ -86,10 +86,30 @@
 }
 @media (min-width: 1600px) and (min-height: 900px) {
   .intro {
-    font-size: var(--fs-18);
+    font-size: var(--fs-22);
   }
   .summary {
+    font-size: var(--fs-34);
+  }
+  /* Escritorio grande: las franjas crecen (letra, barra y relleno) para llenar la pantalla de arriba en vez de dejar vacío. */
+  .rows {
+    gap: var(--sp-3);
+    --row-name-fs: var(--fs-22);
+    --row-meta-fs: var(--fs-15);
+    --row-value-fs: var(--fs-34);
+  }
+  .rows.rows > li > * {
+    padding-block: var(--sp-4);
+  }
+  .text {
     font-size: var(--fs-26);
+  }
+  .votes {
+    font-size: var(--fs-22);
+  }
+  .detail,
+  .voters {
+    font-size: var(--fs-15);
   }
 }
 /* Escritorio bajo (720 px): la pregunta ya está en la ronda; el resumen y las franjas ganan su sitio. */

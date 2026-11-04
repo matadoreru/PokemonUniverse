@@ -70,7 +70,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
 
   const pokemon = result?.pokemon ?? game.pokemon;
   const modeChip = <Chip tone={green ? 'ok' : 'bad'} icon={<Icon icon={green ? Heart : Flag} size={18} />}>{green ? 'Green Flag' : 'Red Flag'}</Chip>;
-  const prompt = <SocialPrompt kicker={green ? 'Green Flag de esta ronda' : 'Red Flag de esta ronda'} className={s.prompt}
+  const prompt = <SocialPrompt kicker={green ? 'Green Flag de esta ronda' : 'Red Flag de esta ronda'} className={cx(s.prompt, voting && s.promptVoting)}
     text={pokemon ? redFlagQuestion(mode, pokemon.name) : 'Preparando el Pokémon de la ronda…'}
     help={writing ? 'Escribe en secreto. Nadie verá quién escribió qué hasta el resultado.' : voting ? 'Las respuestas están barajadas y sin autor.' : undefined}
     {...(pokemon ? { media: <span className={cx(s.pokemon, voting && s.pokemonVoting)}><Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="sm" eager /></span> } : {})} />;

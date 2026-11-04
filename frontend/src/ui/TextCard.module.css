@@ -85,7 +85,9 @@
   font: 800 var(--fs-22) / 1.2 var(--font-display);
 }
 @media (max-width: 639px) {
+  /* Móvil: dos cartas lado a lado de alto distinto; el texto arriba en las dos (centrado en vertical se desalinea). */
   .lg {
+    align-items: flex-start;
     padding: var(--sp-3);
   }
   .lg .name {

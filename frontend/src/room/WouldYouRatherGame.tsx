@@ -3,7 +3,7 @@ import { CheckCircle2, Clock3, Eye, Lock, Scale, Send, Trophy, Users, X } from '
 import { useMemo, useRef, useState } from 'react';
 import {
   WYR_OPTIONS, wouldYouRatherAnnouncement, wouldYouRatherCurrentStep, wouldYouRatherHeading, wouldYouRatherPlayerLine, wouldYouRatherRound,
-  wouldYouRatherSteps, wouldYouRatherSummary, wouldYouRatherVerdict,
+  submitBallot, wouldYouRatherSteps, wouldYouRatherSummary, wouldYouRatherVerdict,
 } from '../games/would-you-rather/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, Icon, Pill } from '../ui';
@@ -64,14 +64,8 @@ export function WouldYouRatherGame({ room, selfId, onAction }: { room: RoomView;
 
   const submit = async () => {
     if (!open || busy || !current.preference || !current.prediction) return;
-    const round = game.roundNumber;
-    setBusyRound(round);
-    try {
-      await onAction({ type: 'SUBMIT_BALLOT', preference: current.preference, prediction: current.prediction });
-    } catch {
-      // El fallo ya sale en el aviso global de la sala (un dueño por error): aquí solo se suelta el botón.
-      setBusyRound((value) => (value === round ? null : value));
-    }
+    const { preference, prediction } = current;
+    await submitBallot(game.roundNumber, () => onAction({ type: 'SUBMIT_BALLOT', preference, prediction }), setBusyRound);
   };
 
   const ownPreference = result?.players.find((entry) => entry.playerId === selfId)?.preference ?? null;

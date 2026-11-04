@@ -165,3 +165,24 @@ export function typingTarget(target: unknown): boolean {
   if (!element || typeof element.closest !== 'function') return false;
   return Boolean(element.closest('input, textarea, select, [contenteditable="true"], [contenteditable=""]'));
 }
+
+/** Lo que necesita `bindChoiceShortcuts` del destino de los eventos (en la app, `window`). */
+export interface ShortcutTarget {
+  addEventListener(type: 'keydown', listener: (event: KeyboardEvent) => void): void;
+  removeEventListener(type: 'keydown', listener: (event: KeyboardEvent) => void): void;
+}
+
+/**
+ * Escucha los atajos de `ChoicePair` en `target` y llama a `onChoose` con la opción (con `preventDefault`). Devuelve la
+ * función que deja de escuchar (la del efecto de React).
+ */
+export function bindChoiceShortcuts<T extends string>(target: ShortcutTarget, ids: readonly T[], onChoose: (id: T) => void): () => void {
+  const listener = (event: KeyboardEvent) => {
+    const id = choiceFromKey(event, ids);
+    if (!id) return;
+    event.preventDefault();
+    onChoose(id);
+  };
+  target.addEventListener('keydown', listener);
+  return () => target.removeEventListener('keydown', listener);
+}

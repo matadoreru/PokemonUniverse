@@ -65,3 +65,18 @@ export function wouldYouRatherVerdict(result: WouldYouRatherRoundResult, selfId:
   if (own.totalPoints > 0) return { tone: 'ok', text: `Sumas por ${namesList(parts)}`, points: own.totalPoints, detail: rule };
   return { tone: 'info', text: result.majority ? 'Esta vez no sumas' : 'Empate: nadie suma', points: 0, detail: rule };
 }
+
+/**
+ * Envío de la papeleta, sin React (para probarlo): marca la ronda como «enviando» y, si el servidor la rechaza, la suelta
+ * (solo si sigue siendo esa ronda). Con éxito queda «enviando» a propósito hasta que vuelve `ownBallot` y la placa pasa a
+ * «Papeleta bloqueada»: así no hay doble envío. Si el servidor aceptase sin devolverla, se libera en la ronda siguiente.
+ */
+export async function submitBallot(round: number, submit: () => Promise<void>, setBusyRound: (update: (current: number | null) => number | null) => void): Promise<void> {
+  setBusyRound(() => round);
+  try {
+    await submit();
+  } catch {
+    // El fallo ya sale en el aviso global de la sala (un dueño por error): aquí solo se suelta el botón.
+    setBusyRound((current) => (current === round ? null : current));
+  }
+}

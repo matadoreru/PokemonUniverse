@@ -64,7 +64,11 @@
   /* Respuestas escritas (hasta 100 caracteres): la rejilla se desplaza por dentro con menos alto, así la consigna, el
      plazo y «Confirmar voto» se ven juntos sin desplazar la página. */
   .ballot.ballot [data-testid='ballot-options'] {
-    max-height: 18svh;
+    max-height: 25svh;
+  }
+  /* Votando, el modo ya va en el chip de la placa de la ronda: el kicker de la consigna cede su línea a las respuestas. */
+  .promptVoting span:has(+ [data-testid='social-prompt']) {
+    display: none;
   }
 }
 
