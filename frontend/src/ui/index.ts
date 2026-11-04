@@ -38,6 +38,8 @@ export { Cutin, CutinBand, CUTIN_DELAYED_LINE_MS, CUTIN_HOLD_MS } from './Cutin'
 export type { CutinBandProps, CutinClassName, CutinProps, CutinTone } from './Cutin';
 export { ScorePop, SCORE_POP_MS, scorePopLabel } from './ScorePop';
 export type { ScorePopProps } from './ScorePop';
+export { Screen, ScreenHeader } from './Screen';
+export type { ScreenHeaderProps, ScreenProps, ScreenWidth } from './Screen';
 export { ScreenSplit } from './ScreenSplit';
 export type { ScreenSplitProps } from './ScreenSplit';
 export { ScreenTransition } from './ScreenTransition';

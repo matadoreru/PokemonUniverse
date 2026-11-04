@@ -13,7 +13,7 @@ import { useSearchParams } from 'react-router-dom';
 import { feedbackErrorMessage } from '../feedback/feedbackErrors';
 import { api } from '../lib/api';
 import type { FeedbackCreateResponse } from '../lib/api-contract';
-import { Chip, Icon, Panel, Pill, PillLink, Segmented, SelectField, StateBox, TextArea } from '../ui';
+import { Chip, Icon, Panel, Pill, PillLink, Screen, ScreenHeader, Segmented, SelectField, StateBox, TextArea } from '../ui';
 
 interface GameOption extends MiniGameManifest { defaultConfig: unknown }
 
@@ -39,7 +39,8 @@ function GroupLabel({ children }: { children: string }) {
 /**
  * Feedback en un panel crema: el tema (y el minijuego si es de uno), el tipo en `Segmented`, la descripción con
  * contador y «Enviar». Un fallo al enviar se ve en un `StateBox` en español; al acabar, el mismo panel da las gracias
- * y ofrece volver a la partida (si se llegó desde una sala) o enviar otro. En escritorio cabe sin scroll de página.
+ * y ofrece volver a la partida (si se llegó desde una sala) o enviar otro. En escritorio cabe sin scroll de página,
+ * centrado en el alto libre (`Screen`), y la descripción crece con la pantalla.
  */
 export function FeedbackPage() {
   const [params] = useSearchParams();
@@ -114,17 +115,15 @@ export function FeedbackPage() {
   const canSend = description.trim().length >= MIN_DESCRIPTION && !(reference === 'MINIGAME' && (loadingGames || !selectedGame));
 
   return (
-    <div className="mx-auto grid w-full max-w-[1600px] gap-4 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-5 lg:px-8 lg:pt-5">
-      <header className="mx-auto flex w-full max-w-[76rem] flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="ol2 font-display text-34 font-extrabold text-[color:var(--white)] lg:text-44">Enviar feedback</h1>
-          <p className="mt-2 text-15 font-bold text-[color:var(--sky-2)] lg:text-18">Cuéntanos qué ha fallado o qué mejorarías. Lo lee el equipo de administración.</p>
-        </div>
-        {!sent && <PillLink to={backTo} variant="cream" icon={ArrowLeft}>{backLabel}</PillLink>}
-      </header>
+    <Screen width={sent ? 'medium' : 'form'}>
+      <ScreenHeader
+        title="Enviar feedback"
+        subtitle="Cuéntanos qué ha fallado o qué mejorarías. Lo lee el equipo de administración."
+        aside={sent ? undefined : <PillLink to={backTo} variant="cream" icon={ArrowLeft}>{backLabel}</PillLink>}
+      />
 
       {sent ? (
-        <Panel variant="cream" title="Mensaje enviado" className="mx-auto w-full max-w-[44rem] lg:self-center" bodyClassName="px-5 py-7 sm:px-8">
+        <Panel variant="cream" title="Mensaje enviado" className="w-full" bodyClassName="px-5 py-7 sm:px-8 2xl:py-10">
           <div className="flex flex-col items-center text-center" role="status">
             <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--ok)] text-[color:var(--navy)]" aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
             <h3 ref={thanks} tabIndex={-1} className="mt-4 font-display text-34 font-extrabold text-[color:var(--ink)] outline-none">Gracias por avisar</h3>
@@ -138,9 +137,9 @@ export function FeedbackPage() {
           </div>
         </Panel>
       ) : (
-        <Panel variant="cream" title="Tu mensaje" scroll className="mx-auto w-full max-w-[76rem] lg:self-start lg:max-h-full" bodyClassName="px-4 py-5 sm:px-6 lg:px-7 lg:py-4">
-          <form className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-8" onSubmit={(event) => void submit(event)} noValidate>
-            <div className="flex min-w-0 flex-col gap-5">
+        <Panel variant="cream" title="Tu mensaje" scroll className="w-full lg:min-h-0" bodyClassName="px-4 py-5 sm:px-6 lg:px-7 lg:py-4 2xl:px-9 2xl:py-7">
+          <form className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-8 2xl:gap-12" onSubmit={(event) => void submit(event)} noValidate>
+            <div className="flex min-w-0 flex-col gap-5 2xl:gap-7">
               <div className="flex flex-col gap-2">
                 <SelectField
                   label="¿Sobre qué nos escribes?"
@@ -169,7 +168,8 @@ export function FeedbackPage() {
                 </div>
               )}
             </div>
-            <div className="flex min-w-0 flex-col gap-4">
+            {/* La descripción crece con el alto de la pantalla: en escritorio grande el formulario la llena con intención. */}
+            <div className="flex min-w-0 flex-col gap-4 lg:[&_textarea]:min-h-[clamp(7.5rem,24dvh,16rem)] 2xl:[&_textarea]:min-h-[clamp(10rem,30dvh,22rem)]">
               <TextArea
                 id={DESCRIPTION_ID}
                 label="Descripción"
@@ -190,6 +190,6 @@ export function FeedbackPage() {
           </form>
         </Panel>
       )}
-    </div>
+    </Screen>
   );
 }

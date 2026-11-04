@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
 import { normalizeRoomCode, ROOM_CODE_LENGTH, roomErrorMessage } from '../room/roomCode';
-import { Field, Icon, Panel, Pill, StateBox } from '../ui';
+import { Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
 
 type Busy = 'create' | 'join' | 'leave' | null;
 const CODE_ID = 'room-code';
@@ -15,8 +15,8 @@ function PanelTitle({ icon, children }: { icon: typeof Crown; children: string }
 
 /**
  * Jugar (spec §6): crear una sala o unirse con su código, en dos paneles crema lado a lado (apilados en móvil),
- * centrados en la pantalla. En escritorio cabe sin scroll.
- * Si ya hay una sala activa, solo se ofrece volver a ella o salir.
+ * centrados en la pantalla (`Screen`). En escritorio cabe sin scroll y crece a 1536 y 1920 px.
+ * Si ya hay una sala activa, solo se ofrece volver a ella o salir, en una tarjeta centrada en el hueco libre.
  */
 export function PlayPage() {
   const { createRoom, joinRoom, leaveRoom, connected, room } = useRoom();
@@ -69,33 +69,29 @@ export function PlayPage() {
   }
 
   if (room) return (
-    <div className="mx-auto grid w-full max-w-[1600px] px-4 pb-6 pt-6 sm:px-6 lg:px-8 lg:pt-[clamp(1rem,12dvh,10rem)]">
-      {/* Sin alto completo: encima va la fila de la sala (reportar, saltar), que también ocupa el `main`. */}
-      <Panel variant="cream" aria-labelledby="sala-activa-title" className="w-full max-w-[520px] justify-self-center">
-        <div className="flex flex-col items-center gap-4 px-2 pb-2 pt-3 text-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[color:var(--yellow)] text-[color:var(--navy)]"><Icon icon={DoorOpen} size={32} /></span>
-          <h1 id="sala-activa-title" className="font-display text-26 font-extrabold text-[color:var(--navy)] sm:text-34">Ya tienes una sala activa</h1>
-          <p className="text-15 font-bold text-[color:var(--ink-2)]">
-            Código <strong className="ml-1 font-display text-26 tracking-[.3em] text-[color:var(--ink)]">{room.code}</strong>
+    // Encima, en el mismo `main`, va la fila de la sala (reportar, saltar: `pt-3` + 44 px); `reserve` la descuenta.
+    <Screen width="narrow" reserve="3.5rem">
+      <Panel variant="cream" aria-labelledby="sala-activa-title" className="w-full">
+        <div className="flex flex-col items-center gap-4 px-2 pb-2 pt-3 text-center 2xl:gap-6 2xl:px-6 2xl:pb-5 2xl:pt-6">
+          <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[color:var(--yellow)] text-[color:var(--navy)] 2xl:h-20 2xl:w-20"><Icon icon={DoorOpen} size={32} className="2xl:h-10 2xl:w-10" /></span>
+          <h1 id="sala-activa-title" className="font-display text-26 font-extrabold text-[color:var(--navy)] sm:text-34 2xl:text-44">Ya tienes una sala activa</h1>
+          <p className="flex flex-wrap items-baseline justify-center gap-x-2 text-15 font-bold text-[color:var(--ink-2)] 2xl:text-18">
+            Código <strong className="font-display text-26 tracking-[.3em] text-[color:var(--ink)] lg:text-34 2xl:text-44">{room.code}</strong>
           </p>
-          <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
-            <Pill variant="yellow" icon={DoorOpen} disabled={busy !== null} onClick={() => navigate('/room')}>Volver a la sala</Pill>
-            <Pill variant="cream" icon={LogOut} loading={busy === 'leave'} disabled={busy !== null || !connected} onClick={() => void leave()}>Salir de la sala</Pill>
+          <div className="grid w-full gap-3 sm:grid-cols-2 2xl:mt-2 2xl:gap-4">
+            <Pill variant="yellow" icon={DoorOpen} block disabled={busy !== null} onClick={() => navigate('/room')}>Volver a la sala</Pill>
+            <Pill variant="cream" icon={LogOut} block loading={busy === 'leave'} disabled={busy !== null || !connected} onClick={() => void leave()}>Salir de la sala</Pill>
           </div>
           {leaveError && <div className="w-full"><StateBox kind="error" title="No se pudo salir de la sala" text={leaveError} onCream /></div>}
         </div>
       </Panel>
-    </div>
+    </Screen>
   );
 
   const off = busy !== null || !connected;
   return (
-    <div className="mx-auto grid w-full max-w-[1100px] px-4 pb-6 pt-6 sm:px-6 lg:h-full lg:content-center lg:px-8 lg:py-6 2xl:max-w-[1300px]">
-      <div className="flex min-w-0 flex-col gap-6">
-        <header className="text-center lg:text-left">
-          <h1 className="ol2 font-display text-34 font-extrabold text-[color:var(--white)] lg:text-44 2xl:text-68">Entrar en partida</h1>
-          <p className="mt-2 text-18 font-extrabold text-[color:var(--sky-2)] 2xl:mt-3 2xl:text-22">Crea tu sala o entra en la de tu grupo con su código.</p>
-        </header>
+    <Screen width="form">
+      <ScreenHeader title="Entrar en partida" subtitle="Crea tu sala o entra en la de tu grupo con su código." centerOnMobile />
         <div className="grid gap-6 md:grid-cols-2">
           <Panel
             variant="cream"
@@ -132,7 +128,6 @@ export function PlayPage() {
             </form>
           </Panel>
         </div>
-      </div>
-    </div>
+    </Screen>
   );
 }

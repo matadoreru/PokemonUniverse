@@ -3,7 +3,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { authError, type AuthError, type AuthField } from '../auth/authErrors';
-import { Field, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
+import { LegalLine } from '../components/LegalLine';
+import { Field, Panel, Pill, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 
 type Mode = 'login' | 'register' | 'guest';
 const ID = 'acceso';
@@ -62,14 +63,14 @@ export function AuthPage() {
   const fieldError = (field: AuthField) => (error?.field === field ? error.message : null);
 
   return (
-    <div className="mx-auto grid w-full max-w-[1600px] gap-6 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-rows-[minmax(0,1fr)_auto] lg:px-8 lg:pt-4">
-      <Panel variant="cream" aria-labelledby={`${ID}-title`} className="w-full max-w-[520px] self-start justify-self-center lg:mt-[clamp(0px,calc((100dvh_-_720px)_/_2),12rem)]">
-        <div className="pb-1 pt-2 sm:px-3">
-          <div className="mb-5 flex items-center gap-3 sm:gap-4">
-            <img src="/favicon.png" alt="" aria-hidden="true" className="h-12 w-12 shrink-0 sm:h-14 sm:w-14 drop-shadow-[0_3px_0_var(--navy)]" />
+    <Screen width="narrow" footer={<LegalLine />}>
+      <Panel variant="cream" aria-labelledby={`${ID}-title`} className="w-full">
+        <div className="pb-1 pt-2 sm:px-3 2xl:px-5 2xl:pb-4 2xl:pt-5">
+          <div className="mb-5 flex items-center gap-3 sm:gap-4 2xl:mb-6">
+            <img src="/favicon.png" alt="" aria-hidden="true" className="h-12 w-12 shrink-0 sm:h-14 sm:w-14 2xl:h-16 2xl:w-16 drop-shadow-[0_3px_0_var(--navy)]" />
             <div className="min-w-0">
-              <h1 id={`${ID}-title`} className="font-display text-26 font-extrabold sm:text-34 text-[color:var(--navy)]">Qué bueno verte</h1>
-              <p className="mt-1 text-15 font-bold text-[color:var(--ink-2)]">{SUBTITLE[mode]}</p>
+              <h1 id={`${ID}-title`} className="font-display text-26 font-extrabold sm:text-34 2xl:text-44 text-[color:var(--navy)]">Qué bueno verte</h1>
+              <p className="mt-1 text-15 font-bold text-[color:var(--ink-2)] 2xl:mt-2 2xl:text-18">{SUBTITLE[mode]}</p>
             </div>
           </div>
           <Tabs items={TABS} active={mode} onChange={changeMode} label="Método de acceso" idBase={ID} className="max-sm:!gap-1.5 max-sm:!px-1 max-sm:[&_svg]:hidden" />
@@ -89,9 +90,6 @@ export function AuthPage() {
           </TabPanel>
         </div>
       </Panel>
-      <p className="mx-auto max-w-[80ch] text-center text-13 font-bold text-[color:var(--sky-2)]">
-        Proyecto fan no afiliado a Nintendo, Game Freak ni The Pokémon Company. Todos los nombres de productos son marcas registradas de sus respectivos dueños.
-      </p>
-    </div>
+    </Screen>
   );
 }

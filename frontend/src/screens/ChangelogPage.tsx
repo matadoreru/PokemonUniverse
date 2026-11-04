@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ChangelogEntryView, formatChangelogDate } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
 import { selectedChangelogEntry, unreadVersions } from '../changelog/changelog-state';
-import { Badge, cx, Panel, PillLink, RowLink, type StateBoxProps } from '../ui';
+import { Badge, cx, Panel, PillLink, RowLink, Screen, ScreenHeader, type StateBoxProps } from '../ui';
 
 const NONE: ReadonlySet<string> = new Set();
 
@@ -43,15 +43,13 @@ export function ChangelogPage() {
         : null;
 
   return (
-    <div className="mx-auto grid w-full max-w-[1600px] gap-4 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-5 lg:px-8 lg:pt-5">
-      <header>
-        <h1 className="ol2 font-display text-34 font-extrabold text-[color:var(--white)] lg:text-44">Novedades</h1>
-        <p className="mt-2 text-15 font-bold text-[color:var(--sky-2)] lg:text-18">Qué ha cambiado en cada versión: minijuegos nuevos, ajustes, mejoras y correcciones.</p>
-      </header>
+    // Con versiones llena el alto (dos paneles con scroll propio); sin ellas, el aviso va centrado.
+    <Screen width={status || !shown ? 'medium' : 'wide'} fill={!status && Boolean(shown)}>
+      <ScreenHeader title="Novedades" subtitle="Qué ha cambiado en cada versión: minijuegos nuevos, ajustes, mejoras y correcciones." />
       {status || !shown ? (
-        <Panel title="Versiones publicadas" status={status} className="lg:max-w-[40rem] lg:self-start" />
+        <Panel title="Versiones publicadas" status={status} className="w-full" />
       ) : (
-        <div className="grid gap-4 lg:min-h-0 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-6 2xl:grid-cols-[minmax(22rem,30rem)_minmax(0,1fr)]">
+        <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-6 2xl:grid-cols-[minmax(22rem,30rem)_minmax(0,1fr)] 2xl:gap-8">
           <Panel title="Versiones" right={`${entries.length} ${entries.length === 1 ? 'versión' : 'versiones'}`} scroll className={cx(selected && 'max-lg:hidden')}>
             <nav aria-label="Versiones publicadas">
               <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1">
@@ -73,6 +71,6 @@ export function ChangelogPage() {
           </div>
         </div>
       )}
-    </div>
+    </Screen>
   );
 }

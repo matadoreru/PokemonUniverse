@@ -6,7 +6,7 @@ import { useAuth } from '../auth/AuthContext';
 import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
 import { formatDerivedMetric, formatStoredMetric, sortProfileGames, winRate } from '../profile/profileStats';
-import { cx, HudPlate, Panel, Pill, Row, StateBox, type StateBoxProps } from '../ui';
+import { cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
 
 type ProfileGame = UserProfileResponse['games'][number];
 
@@ -75,19 +75,21 @@ export function ProfilePage() {
 
   if (status || !profile) {
     return (
-      <div className="mx-auto grid w-full max-w-[40rem] gap-4 px-4 pb-4 pt-6 sm:px-6 lg:px-8 lg:pt-5">
+      <Screen width="narrow">
         {/* Mientras carga o si falla, la pantalla sigue teniendo su `h1` (el foco de ruta y los lectores de pantalla lo buscan). */}
-        <h1 className="ol2 font-display text-26 font-extrabold text-[color:var(--white)] sm:text-34">Perfil de entrenador</h1>
+        <ScreenHeader title="Perfil de entrenador" />
         <Panel status={status} className="w-full" aria-label="Perfil de entrenador" />
-      </div>
+      </Screen>
     );
   }
 
   const { globalStats } = profile;
   const played = games.filter((game) => game.stats.gamesPlayed > 0).length;
   return (
-    <div className="mx-auto grid w-full max-w-[1600px] gap-5 px-4 pb-4 pt-6 sm:px-6 lg:h-full lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 lg:px-8 lg:py-5 2xl:gap-12">
-      <div className="flex min-w-0 flex-col gap-5 lg:min-h-0">
+    <Screen fill>
+      <div className="grid gap-5 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 2xl:gap-12">
+      {/* La placa y el resumen, centrados en el alto junto a la lista, que lo llena con su scroll. */}
+      <div className="flex min-w-0 flex-col gap-5 lg:min-h-0 lg:justify-center 2xl:gap-6">
         <HudPlate className="w-full !gap-5 !p-5 lg:!p-6">
           <AvatarEditor
             name={profile.user.username}
@@ -148,6 +150,7 @@ export function ProfilePage() {
           })}
         </ul>
       </Panel>
-    </div>
+      </div>
+    </Screen>
   );
 }
