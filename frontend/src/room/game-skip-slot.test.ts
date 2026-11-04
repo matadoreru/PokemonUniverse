@@ -62,6 +62,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...entry, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...entry, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Guess from Stats la lleva dentro de su pantalla salvo en los resultados', () => {
+    const stats = { ...(base as object), selectedGameId: 'guess-from-stats', game: { gameId: 'guess-from-stats' } };
+    expect(skipRowInLayout(stats as never)).toBe(false);
+    expect(skipRowInLayout({ ...stats, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...stats, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

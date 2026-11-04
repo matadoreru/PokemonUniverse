@@ -35,6 +35,15 @@
     height: 100%;
     object-fit: contain;
   }
+  /* Una sola respuesta con su detalle (Guess from Stats): la ficha al lado de la carta, no debajo (cabe sin desplazar). */
+  .cards:not(.several) .withDetail {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-4);
+  }
+  .cards:not(.several) .withDetail .answerDetail {
+    width: clamp(14rem, 18vw, 20rem);
+  }
 }
 .cards {
   grid-area: cards;
@@ -108,6 +117,20 @@
   /* Móvil y tableta: la pista desvelada al lado de la carta, si cabe; si no, debajo. */
   .reveal {
     overflow-y: auto;
+  }
+  /* Una sola respuesta con su detalle: los datos arriba y, debajo, la carta con la ficha al lado, a todo el ancho. */
+  .reveal:has(.cards:not(.several) .withDetail) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'text' 'cards' 'clue';
+  }
+  .cards:not(.several) .withDetail {
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .cards:not(.several) .withDetail .answerDetail {
+    flex: 1 1 auto;
   }
 }
 @media (max-width: 639px) {

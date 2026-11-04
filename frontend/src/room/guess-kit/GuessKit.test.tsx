@@ -162,6 +162,12 @@ describe('guess-kit: paneles', () => {
     expect(several).toContain('2 respuestas válidas');
   });
 
+  it('escena de la revelación con una respuesta y su detalle: la ficha va con su carta (al lado en escritorio)', () => {
+    const html = renderToStaticMarkup(<GuessRoundReveal answers={[{ id: 'mew', name: 'Mew', sprite: '/mew.png', detail: <span data-testid="answer-detail">PS 100</span> }]} />);
+    expect(html).toMatch(/<li class="[^"]*_withDetail_[^"]*">.*data-answer-card="true".*data-testid="answer-detail".*<\/li>/);
+    expect(html).not.toContain('respuestas válidas');
+  });
+
   it('escena de la revelación con 6 respuestas: cada una con su clave y su detalle bajo la carta', () => {
     // Dos formas pueden compartir nombre: la clave es el id (React avisaría de claves repetidas con el nombre).
     const answers = ['a', 'b', 'c', 'd', 'e', 'f'].map((letter, index) => ({ id: `rotom-${letter}`, name: index < 2 ? 'Rotom' : `Rotom ${letter}`, sprite: `/rotom-${letter}.png`, detail: <span data-testid="answer-detail">PS {50 + index}</span> }));

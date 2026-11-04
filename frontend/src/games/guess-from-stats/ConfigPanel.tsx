@@ -1,9 +1,12 @@
 import type { GuessFromStatsConfig } from '@pokemon-universe/shared/public';
-import { BarChart3, Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { ConfigRange } from '../../room/ConfigRange';
+import { Chip, Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 export { validateGuessFromStatsConfig } from './validation';
 
-const roundTimes = [15, 20, 30, 45, 60]; const roundCounts = [5, 10, 15, 20];
+const STATS_LABEL = 'Stats mostradas';
+const HINT_KINDS_LABEL = 'Qué pistas salen';
 const statOptions: Array<{ key: keyof GuessFromStatsConfig['stats']; label: string }> = [
   { key: 'hp', label: 'PS' }, { key: 'attack', label: 'Ataque' }, { key: 'defense', label: 'Defensa' }, { key: 'specialAttack', label: 'At. Especial' }, { key: 'specialDefense', label: 'Def. Especial' }, { key: 'speed', label: 'Velocidad' }, { key: 'bst', label: 'Total de Stats (BST)' },
 ];
@@ -11,15 +14,35 @@ const hintOptions: Array<{ key: keyof GuessFromStatsConfig['hints']; label: stri
   { key: 'generation', label: 'Generación' }, { key: 'types', label: 'Tipos' }, { key: 'typeCount', label: 'Nº de tipos' }, { key: 'evolution', label: 'Etapa evolutiva' }, { key: 'height', label: 'Altura' }, { key: 'weight', label: 'Peso' }, { key: 'category', label: 'Legendario / Mítico' },
 ];
 
+/**
+ * Ajustes de Guess from Stats con los controles del catálogo: generaciones, los tiempos (`ConfigRange`, en los límites
+ * del contrato: 15–60 s y 1–20 rondas), qué estadísticas se ven (`Toggle`, al menos 2, con su cuenta en un `Chip`) y
+ * las pistas adicionales con sus tipos.
+ */
 export function GuessFromStatsConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
-  const value = config as GuessFromStatsConfig; const statCount = Object.values(value.stats).filter(Boolean).length;
-  function toggleStat(key: keyof GuessFromStatsConfig['stats']) { void onChange({ ...value, stats: { ...value.stats, [key]: !value.stats[key] } }); }
-  function toggleHint(key: keyof GuessFromStatsConfig['hints']) { void onChange({ ...value, hints: { ...value.hints, [key]: !value.hints[key] } }); }
-  return <fieldset disabled={disabled} className="space-y-6">
-    <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className="grid gap-5 lg:grid-cols-2"><section><span className="label">Tiempo por ronda</span><div className="grid grid-cols-5 gap-2">{roundTimes.map((seconds) => <button type="button" key={seconds} aria-pressed={value.roundSeconds === seconds} onClick={() => void onChange({ ...value, roundSeconds: seconds })} className={`min-h-11 rounded-xl border font-extrabold ${value.roundSeconds === seconds ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>{seconds}s</button>)}</div></section><section><span className="label">Número de rondas</span><div className="grid grid-cols-4 gap-2">{roundCounts.map((rounds) => <button type="button" key={rounds} aria-pressed={value.rounds === rounds} onClick={() => void onChange({ ...value, rounds })} className={`min-h-11 rounded-xl border font-extrabold ${value.rounds === rounds ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>{rounds}</button>)}</div></section></div>
-    <section><div className="mb-3 flex items-center justify-between gap-2"><div><span className="label !mb-0">Stats mostradas</span><p className="text-sm font-bold text-ink/65">Los valores visibles definen todas las respuestas correctas.</p></div><span className={`chip ${statCount < 2 ? 'text-berry' : 'text-leaf'}`}>{statCount} activas</span></div><div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{statOptions.map((option) => <button type="button" key={option.key} aria-pressed={value.stats[option.key]} onClick={() => toggleStat(option.key)} className={`flex min-h-12 items-center gap-2 rounded-xl border px-3 text-left font-extrabold ${value.stats[option.key] ? 'border-aqua/40 bg-aqua/10 text-aqua' : 'border-ink/10 bg-surface-raised text-ink/60'}`}><BarChart3 size={17} />{value.stats[option.key] ? '✓ ' : ''}{option.label}</button>)}</div>{statCount < 2 && <p className="mt-2 rounded-xl bg-berry/10 p-3 text-sm font-extrabold text-berry" role="alert">Selecciona al menos 2 estadísticas.</p>}</section>
-    <section><button type="button" aria-pressed={value.hintsEnabled} onClick={() => void onChange({ ...value, hintsEnabled: !value.hintsEnabled })} className={`flex min-h-20 w-full items-center gap-3 rounded-2xl border p-3 text-left ${value.hintsEnabled ? 'border-electric bg-electric/10' : 'border-ink/10 bg-surface-raised'}`}><span className={`grid h-11 w-11 place-items-center rounded-xl ${value.hintsEnabled ? 'bg-electric text-night' : 'bg-ink/[0.07] text-ink/60'}`}><Lightbulb /></span><span className="flex-1"><strong className="block font-display text-xl">Pistas adicionales</strong><small className="font-bold text-ink/65">{value.hintsEnabled ? 'También forman parte de la equivalencia.' : 'Solo se mostrarán las stats seleccionadas.'}</small></span><span className={`grid h-6 w-6 place-items-center rounded-full font-black ${value.hintsEnabled ? 'bg-leaf text-night' : 'bg-ink/10'}`}>{value.hintsEnabled ? '✓' : ''}</span></button>{value.hintsEnabled && <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{hintOptions.map((option) => <button type="button" key={option.key} aria-pressed={value.hints[option.key]} onClick={() => toggleHint(option.key)} className={`min-h-11 rounded-xl border px-3 text-left font-extrabold ${value.hints[option.key] ? 'border-leaf/40 bg-leaf/10 text-leaf' : 'border-ink/10 bg-surface-raised text-ink/60'}`}>{value.hints[option.key] ? '✓ ' : ''}{option.label}</button>)}</div>}</section>
-    <p className="rounded-xl bg-ink/[0.04] p-3 text-sm font-bold text-ink/65">Las formas con ID y Base Stats propios participan. Si dos formas son indistinguibles por la información pública, ambas se aceptan.</p>
+  const value = config as GuessFromStatsConfig;
+  const update = (next: Partial<GuessFromStatsConfig>) => void onChange({ ...value, ...next });
+  const statCount = Object.values(value.stats).filter(Boolean).length;
+  return <fieldset disabled={disabled} className={s.panel}>
+    <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => update({ generations })} />
+    <div className={s.ranges}>
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+    </div>
+    <div className={s.group} role="group" aria-label={STATS_LABEL}>
+      <div className={s.head}>
+        <span className={s.label} aria-hidden="true">{STATS_LABEL}</span>
+        <Chip tone={statCount < 2 ? 'bad' : 'ok'}>{statCount} activas</Chip>
+      </div>
+      <p className={s.help}>Los valores visibles definen todas las respuestas correctas.</p>
+      <div className={s.kinds}>{statOptions.map((stat) => <Toggle key={stat.key} label={stat.label} checked={value.stats[stat.key]} disabled={disabled} onChange={(on) => update({ stats: { ...value.stats, [stat.key]: on } })} />)}</div>
+      {statCount < 2 && <p className={s.note} role="alert">Selecciona al menos 2 estadísticas.</p>}
+    </div>
+    <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'También forman parte de la equivalencia.' : 'Solo se mostrarán las stats seleccionadas.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
+    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => update({ hints: { ...value.hints, [hint.key]: on } })} />)}</div>
+    </div>}
+    <p className={s.note}>Las formas con ID y Base Stats propios participan. Si dos formas son indistinguibles por la información pública, ambas se aceptan.</p>
   </fieldset>;
 }

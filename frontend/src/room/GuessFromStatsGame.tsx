@@ -1,59 +1,82 @@
-import type { GuessFromStatsHint, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, PokemonLegendaryStatus, RoomView } from '@pokemon-universe/shared/public';
-import { BarChart3, CheckCircle2, Eye, History, Lightbulb, Search, XCircle } from 'lucide-react';
-import { useState } from 'react';
-import { Avatar } from '../components/Avatar';
-import { PokemonTypeBadge } from '../components/PokemonTypeBadge';
-import { ServerTimer } from '../components/ServerTimer';
+import type { GuessFromStatsConfig, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, RoomView } from '@pokemon-universe/shared/public';
+import type { CSSProperties } from 'react';
+import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
+import { Bar, cx, TypeBadge } from '../ui';
+import {
+  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+} from './guess-kit';
+import s from '../games/guess-from-stats/Stats.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
-const statLabels: Record<GuessFromStatsVisibleStat['key'], string> = { hp: 'PS', attack: 'Ataque', defense: 'Defensa', specialAttack: 'At. Esp.', specialDefense: 'Def. Esp.', speed: 'Velocidad', bst: 'Total (BST)' };
-const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'Normal', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
-const evolutionLabels = { BASE: 'Pokémon base', MIDDLE: 'Evolución intermedia', FINAL: 'Evolución final', NO_EVOLUTION: 'No evoluciona' } as const;
-const ordinal = (value: number) => `${value}.º`;
+const GAME_NAME = 'Guess from Stats';
+const QUESTION = '¿De quién son estas estadísticas?';
+const SCORING = 'Vale cualquier Pokémon con las mismas estadísticas; cuanto antes aciertes, más puntos.';
 
-function StatsGrid({ stats, compact = false }: { stats: GuessFromStatsVisibleStat[]; compact?: boolean }) {
-  return <section aria-label="Estadísticas base" className={`grid gap-2 ${compact ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3'}`}>{stats.map((stat) => <article key={stat.key} className={`rounded-2xl bg-ink/[0.045] text-center ${compact ? 'p-2' : 'p-3 sm:p-4'}`}><span className="block text-[10px] font-black uppercase tracking-wider text-ink/60">{statLabels[stat.key]}</span><strong className={`block font-display tabular-nums ${compact ? 'text-2xl' : 'text-4xl sm:text-5xl'}`}>{stat.value}</strong><span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-ink/10" aria-hidden="true"><span className="block h-full rounded-full bg-gradient-to-r from-aqua to-electric" style={{ width: `${Math.min(100, stat.value / 255 * 100)}%` }} /></span></article>)}</section>;
+/**
+ * Estadísticas base, una por fila: el nombre y el número en texto y una `Bar` decorativa (escala fija: 255 por
+ * estadística y 780 para el total). En la pista escalan con el sitio libre; en la ficha de la revelación van pequeñas.
+ */
+export function StatRows({ stats, label = 'Estadísticas base', compact = false }: { stats: readonly GuessFromStatsVisibleStat[]; label?: string; /** Ficha de la revelación: barras finas. */ compact?: boolean }) {
+  return <ul className={s.stats} aria-label={label} data-testid="stat-rows" style={{ '--rows': stats.length, '--rows2': Math.ceil(stats.length / 2) } as CSSProperties}>
+    {stats.map((stat) => <li key={stat.key} className={cx(s.row, stat.key === 'bst' && s.total)} data-testid="stat-row">
+      <span className={s.label}>{statLabels[stat.key]}</span>
+      <span className={s.bar}><Bar value={stat.value} max={statMax(stat.key)} tone={stat.key === 'bst' ? 'info' : 'yellow'} label={statLabels[stat.key]} size={compact ? 'md' : 'lg'} decorative /></span>
+      <strong className={s.value}>{stat.value}</strong>
+    </li>)}
+  </ul>;
 }
 
-function HintPanel({ hints }: { hints: GuessFromStatsHint[] }) {
-  if (!hints.length) return null;
-  return <section aria-label="Pistas adicionales" className="flex flex-wrap items-center gap-2 rounded-2xl border border-electric/20 bg-electric/[0.06] p-3"><span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-electric"><Lightbulb size={17} /> Pistas</span>{hints.map((hint, index) => {
-    if (hint.kind === 'TYPES') return <span key={`${hint.kind}-${index}`} className="flex flex-wrap gap-1">{hint.value.map((type) => <PokemonTypeBadge key={type} type={type} compact />)}</span>;
-    const text = hint.kind === 'GENERATION' ? `Generación ${hint.value}` : hint.kind === 'TYPE_COUNT' ? hint.value === 1 ? 'Monotipo' : 'Doble tipo' : hint.kind === 'EVOLUTION' ? evolutionLabels[hint.value] : hint.kind === 'HEIGHT' ? `Altura ${(hint.decimeters / 10).toFixed(1)} m` : hint.kind === 'WEIGHT' ? `Peso ${(hint.hectograms / 10).toFixed(1)} kg` : categoryLabels[hint.value];
-    return <span key={`${hint.kind}-${index}`} className="rounded-full border border-electric/20 bg-night/20 px-3 py-1.5 text-sm font-extrabold text-electric">{text}</span>;
-  })}</section>;
+/** Ficha completa de una respuesta en la revelación: sus tipos y sus siete estadísticas. */
+function AnswerSheet({ pokemon }: { pokemon: GuessFromStatsPokemonReveal }) {
+  return <div className={s.sheet}>
+    <span className={s.types}>{pokemon.types.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type]} size="sm" />)}</span>
+    <StatRows stats={fullStats(pokemon)} label={`Estadísticas de ${pokemon.name}`} compact />
+  </div>;
 }
 
-function GuessPanel({ pokemon, poolLoading, onRetry, player, game, serverOffset, participating, loadError, actionError, onGuess }: { pokemon: readonly PokemonSearchOption[]; poolLoading: boolean; onRetry(): void; player: GuessFromStatsPlayerState; game: GuessFromStatsPublicState; serverOffset: number; participating: boolean; loadError: string; actionError: string; onGuess(id: string): Promise<void> }) {
-  const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
-  if (!participating) return <div className="grid min-h-28 place-items-center rounded-2xl bg-ink/[0.04] text-center"><div><Eye className="mx-auto text-aqua" /><strong className="block font-display text-xl">Estás observando</strong><span className="text-sm font-bold text-ink/65">Los espectadores no pueden responder.</span></div></div>;
-  if (player.solved) return <div className="reveal-pop grid min-h-28 place-items-center rounded-2xl border border-leaf/30 bg-leaf/[0.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={38} /><strong className="block font-display text-2xl text-leaf">¡Has acertado!</strong><span className="font-bold text-ink/65">{ordinal(player.solveOrder!)} en resolverlo · +{player.roundPoints} pts</span><small className="block font-bold text-ink/55">Esperando al resto…</small></div></div>;
-  return <section aria-label="Tu respuesta"><div className="mb-2 flex items-end justify-between gap-2"><div><span className="label !mb-0 text-aqua">Tu respuesta</span><h2 className="flex items-center gap-2 font-display text-xl"><Search size={19} /> Buscar Pokémon</h2></div><small className="font-bold text-ink/55">{player.attemptCount} intento{player.attemptCount === 1 ? '' : 's'}</small></div>{player.lastAttempt?.result === 'INCORRECT' && <p className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-berry/[0.08] px-3 py-2 text-sm font-extrabold text-berry" role="status"><span className="flex items-center gap-1.5"><XCircle size={17} /> No es una respuesta válida</span><span>{cooldownMs > 0 ? `Nuevo intento en ${(cooldownMs / 1_000).toFixed(1)}s` : 'Ya puedes volver a intentarlo'}</span></p>}{actionError && <p className="mb-2 rounded-xl bg-berry/10 p-3 text-sm font-extrabold text-berry" role="alert">{actionError}</p>}<PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={!player.canGuess} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={`Buscar respuesta para la ronda ${game.roundNumber}`} onSelect={onGuess} /></section>;
-}
-
-function PlayersPanel({ room, game }: { room: RoomView; game: GuessFromStatsPublicState }) {
-  const solved = new Map(game.solvedPlayers.map((entry) => [entry.playerId, entry.solveOrder])); return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><h2 className="mb-3 font-display text-xl">Jugadores</h2><div className="space-y-2">{room.members.map((member) => { const order = solved.get(member.id); return <div key={member.id} className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 ${order ? 'bg-leaf/[0.08]' : 'bg-ink/[0.035]'}`}><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="sm" /><div className="min-w-0 flex-1"><strong className="block truncate text-sm">{member.displayName}</strong><small className="font-bold text-ink/55">{game.scores[member.id] ?? 0} pts</small></div>{member.role === 'SPECTATOR' ? <span className="flex items-center gap-1 text-xs font-bold text-ink/55"><Eye size={15} /> Espectador</span> : order ? <span className="text-xs font-black text-leaf">✓ {ordinal(order)} en acertar</span> : <span className="text-xs font-bold text-ink/60">buscando…</span>}</div>; })}</div></section>;
-}
-
-function AttemptsPanel({ room, game }: { room: RoomView; game: GuessFromStatsPublicState }) {
-  return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl"><History className="text-berry" size={20} /> Intentos recientes</h2>{game.attempts.length ? <div className="max-h-72 space-y-1.5 overflow-y-auto overscroll-contain pr-1" aria-live="polite">{game.attempts.slice().reverse().map((attempt, index) => { const member = room.members.find((candidate) => candidate.id === attempt.playerId); return <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-xl bg-berry/[0.07] p-2"><Avatar name={member?.displayName ?? attempt.playerId} avatar={member?.avatar} size="xs" /><span className="min-w-0 flex-1 text-sm"><strong>{member?.displayName ?? attempt.playerId}</strong><span className="text-ink/60"> probó </span><strong>{attempt.guessedPokemon.name}</strong></span><img src={attempt.guessedPokemon.sprite} alt="" className="h-8 w-8 object-contain [image-rendering:pixelated]" /><XCircle className="shrink-0 text-berry" size={16} /></div>; })}</div> : <p className="rounded-xl border border-dashed border-ink/10 p-5 text-center text-sm font-bold text-ink/60">Todavía no hay intentos incorrectos.</p>}</section>;
-}
-
-function FullPokemonStats({ pokemon }: { pokemon: GuessFromStatsPokemonReveal }) { return <StatsGrid compact stats={[{ key: 'hp', value: pokemon.hp }, { key: 'attack', value: pokemon.attack }, { key: 'defense', value: pokemon.defense }, { key: 'specialAttack', value: pokemon.specialAttack }, { key: 'specialDefense', value: pokemon.specialDefense }, { key: 'speed', value: pokemon.speed }, { key: 'bst', value: pokemon.bst }]} />; }
-
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: GuessFromStatsPublicState; serverOffset: number }) {
-  const result = game.lastRound!; const multiple = result.answers.length > 1; const ordered = room.members.filter((member) => member.role !== 'SPECTATOR').sort((a, b) => (result.solves[a.id]?.solveOrder ?? 999) - (result.solves[b.id]?.solveOrder ?? 999));
-  return <section className="mx-auto max-w-7xl px-3 py-5 sm:px-5"><div className="overflow-hidden rounded-2xl border border-leaf/25 bg-surface/95 shadow-card reveal-pop"><header className="flex items-start justify-between gap-3 border-b border-ink/10 px-4 py-4 sm:px-6"><div><span className="label !mb-0">Reveal · Ronda {game.roundNumber}</span><h1 className="font-display text-3xl text-leaf sm:text-4xl">{multiple ? `¡Había ${result.answers.length} respuestas válidas!` : `¡Era ${result.answers[0]?.name}!`}</h1>{multiple && <p className="text-sm font-bold text-ink/65">Todas coinciden exactamente con las pistas mostradas.</p>}</div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="space-y-5 p-4 sm:p-6"><HintPanel hints={result.hints} /><div className="grid max-h-[38rem] gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">{result.answers.map((answer) => <article key={answer.id} className="rounded-2xl border border-leaf/20 bg-leaf/[0.055] p-3"><div className="mb-2 flex items-center gap-3"><img src={answer.sprite} alt={answer.name} className="h-24 w-24 object-contain [image-rendering:pixelated]" /><div><strong className="block font-display text-xl">{answer.name}</strong><div className="flex flex-wrap gap-1">{answer.types.map((type) => <PokemonTypeBadge key={type} type={type} compact />)}</div></div></div><FullPokemonStats pokemon={answer} /></article>)}</div><div className="grid gap-2 sm:grid-cols-2">{ordered.map((member) => { const solve = result.solves[member.id]; const attempts = result.attemptCounts[member.id] ?? 0; return <article key={member.id} className={`flex items-center gap-3 rounded-2xl border p-3 ${solve ? 'border-leaf/30 bg-leaf/[0.07]' : 'border-berry/20 bg-berry/[0.05]'}`}><strong className="w-8 text-center font-display text-xl">{solve ? solve.solveOrder <= 3 ? ['🥇', '🥈', '🥉'][solve.solveOrder - 1] : solve.solveOrder : '—'}</strong><Avatar name={member.displayName} avatar={member.avatar} size="sm" /><div className="min-w-0 flex-1"><strong className="block truncate">{member.displayName}</strong>{solve ? <><small className="block truncate font-bold text-leaf">Eligió {solve.submittedPokemon.name}</small><small className="font-bold text-ink/60">{attempts} intentos · {(solve.elapsedMs / 1_000).toFixed(1)}s</small></> : <small className="font-bold text-berry">No acertó · {attempts} intentos</small>}</div><strong className={solve ? 'text-leaf' : 'text-ink/50'}>+{solve?.points ?? 0}</strong></article>; })}</div></div></div></section>;
-}
-
+/**
+ * Guess from Stats con el kit de adivinar (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda, las
+ * estadísticas (barras con nombre y número en texto, llenan el sitio libre) y las pistas adicionales; en la revelación,
+ * la carta de cada respuesta válida con su ficha completa. Abajo se actúa: el buscador, el acierto con sus puntos o el
+ * veredicto. Al lado, el marcador y los intentos (o los puntos de la ronda, con lo que eligió cada uno).
+ *
+ * Privacidad: las estadísticas no dicen el nombre; las respuestas solo llegan en `lastRound`, que el servidor manda al
+ * revelar, y la pantalla solo las usa en `ROUND_RESULTS`.
+ */
 export function GuessFromStatsGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as GuessFromStatsPublicState; const player = room.gamePlayerState as GuessFromStatsPlayerState; const config = room.selectedGameConfig as { generations: number[] };
-  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: true }); const [actionError, setActionError] = useState(''); const serverOffset = useServerOffset(room.serverNow); const participating = room.members.find((member) => member.id === selfId)?.role === 'PLAYER';
-  async function guess(pokemonId: string) { setActionError(''); try { await onAction({ type: 'GUESS_POKEMON', pokemonId }); } catch (error) { setActionError(error instanceof Error ? error.message : 'No se pudo enviar el intento.'); } }
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/85 px-4 py-3 shadow-card"><div><span className="block text-[10px] font-black uppercase tracking-[.16em] text-ink/60">Ronda {game.roundNumber} / {game.totalRounds}</span><h1 className="font-display text-xl sm:text-3xl">Guess from Stats</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></header><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="space-y-4"><section className="rounded-2xl border border-aqua/20 bg-[linear-gradient(145deg,rgba(29,201,224,.08),rgba(255,255,255,.02))] p-4 shadow-card sm:p-6"><div className="mb-4 text-center"><BarChart3 className="mx-auto text-aqua" size={34} /><span className="label !mb-0 text-aqua">Base Stats</span><h2 className="font-display text-2xl sm:text-3xl">¿Qué Pokémon es?</h2></div><StatsGrid stats={game.visibleStats} /></section><HintPanel hints={game.hints} /><div className="rounded-2xl border border-ink/10 bg-surface/90 p-4 shadow-card sm:p-5"><GuessPanel pokemon={pokemon} poolLoading={poolLoading} onRetry={retryPool} player={player} game={game} serverOffset={serverOffset} participating={Boolean(participating)} loadError={loadError} actionError={actionError} onGuess={guess} /></div></main><aside className="grid gap-4 md:grid-cols-2 xl:sticky xl:top-4 xl:grid-cols-1"><PlayersPanel room={room} game={game} /><AttemptsPanel room={room} game={game} /></aside></div></section>;
+  const game = room.game as GuessFromStatsPublicState;
+  const player = room.gamePlayerState as GuessFromStatsPlayerState | null;
+  const config = room.selectedGameConfig as Partial<GuessFromStatsConfig> | null;
+  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: true });
+  const round = useGuessRound({ room, selfId, game, player, answer: (result) => statsAnswerText(result.answers.map((answer) => answer.name)), roundSeconds: config?.roundSeconds });
+  const { members, colors, active, lastRound, announcement, timer } = round;
+  const several = (lastRound?.answers.length ?? 0) > 1;
+  const heading = lastRound ? several ? `¡Valían ${lastRound.answers.length} Pokémon!` : `¡Era ${lastRound.answers[0]?.name ?? ''}!` : 'Reconoce sus stats';
+
+  const clue = lastRound
+    ? <GuessRoundReveal answers={lastRound.answers.map((answer) => ({ id: answer.id, name: answer.name, sprite: answer.sprite, detail: <AnswerSheet pokemon={answer} /> }))}
+      details={several ? <>Todas coinciden exactamente con lo que se mostró.</> : <>Generación {lastRound.answers[0]?.generation}</>} />
+    : <GuessClue label="Estadísticas del Pokémon misterioso" className={s.stage}>
+      <StatRows stats={game.visibleStats} />
+    </GuessClue>;
+
+  const hints = active && game.hints.length > 0
+    ? <GuessHints hints={game.hints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describeStatsHint(hint) }))} />
+    : null;
+
+  const side = lastRound
+    ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
+      detail={({ solve }) => solve ? `Eligió ${solve.submittedPokemon.name}` : null} />
+    : <>
+      <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
+      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+    </>;
+
+  const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME}
+    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
+
+  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+    announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }
