@@ -1,5 +1,5 @@
 import type { PokemonLegendaryStatus, WhosThatPokemonHint } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 
 const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'No legendario', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
 

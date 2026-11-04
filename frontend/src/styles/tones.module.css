@@ -1,0 +1,53 @@
+/*
+ * Tintas y fondos de token para las pantallas maquetadas con Tailwind (inicio, acceso, perfil, administración…).
+ * Tailwind solo maqueta (spec §11): el color va siempre por estos tokens, nunca por valores arbitrarios en `className`.
+ */
+.textBlueD {
+  color: var(--blue-d);
+}
+.textInk {
+  color: var(--ink);
+}
+.textInk2 {
+  color: var(--ink-2);
+}
+.textNavy {
+  color: var(--navy);
+}
+.textRedD {
+  color: var(--red-d);
+}
+.textRedText {
+  color: var(--red-text);
+}
+.textSky2 {
+  color: var(--sky-2);
+}
+.textWhite {
+  color: var(--white);
+}
+.textYellow {
+  color: var(--yellow);
+}
+.bgCream2 {
+  background-color: var(--cream-2);
+}
+.bgNavy {
+  background-color: var(--navy);
+}
+.bgOk {
+  background-color: var(--ok);
+}
+.bgYellow {
+  background-color: var(--yellow);
+}
+.borderNavy {
+  border-color: var(--navy);
+}
+.borderRedText {
+  border-color: var(--red-text);
+}
+/* Anillo de foco propio (elementos con `tabIndex` sobre crema). */
+.focusNavy:focus-visible {
+  outline-color: var(--navy);
+}

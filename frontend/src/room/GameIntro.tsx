@@ -52,7 +52,7 @@ export function GameIntro({ room, intro, selfId, onSkip, skipControl }: Props) {
     : <Panel title={name}><div className={s.fallback}><p>Prepárate: la partida empieza enseguida.</p>{timer}</div></Panel>}</div>;
 
   // El recuento, «Saltar minijuego» y «Empezar ya» juntos: abajo en el móvil, bajo el carrusel en escritorio.
-  const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+  const action = <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
     <div className={s.status}>
       <span className={s.kicker}>{progress.canSkip ? '¿Preparado?' : 'Espectador'}</span>
       <p className={s.ready} role="status" aria-live="polite">

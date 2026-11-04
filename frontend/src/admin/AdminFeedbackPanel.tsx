@@ -15,6 +15,7 @@ import { api } from '../lib/api';
 import { Badge, Chip, cx, Field, Panel, SelectField, StateBox, type ChipProps } from '../ui';
 import { adminListStatus, pickSelected } from './admin-format';
 import { Detail, DetailGrid, ListDetail, MetaParts, Pagination, rowControlId, SelectRow, useListDetail } from './AdminParts';
+import tone from '../styles/tones.module.css';
 
 interface FeedbackPageResponse extends PaginatedAdminResponse<FeedbackItem> { overview: FeedbackOverview }
 const emptyOverview: FeedbackOverview = { newBugs: 0, newSuggestions: 0, reviewing: 0, resolved: 0 };
@@ -78,7 +79,7 @@ export function AdminFeedbackView(props: AdminFeedbackViewProps) {
         <dl className="flex flex-wrap gap-x-4 gap-y-2" aria-label="Resumen del feedback">
           {([['Problemas nuevos', overview.newBugs], ['Sugerencias nuevas', overview.newSuggestions], ['En revisión', overview.reviewing], ['Solucionados', overview.resolved]] as const).map(([label, value]) => (
             <div key={label} className="flex items-center gap-2">
-              <dt className="text-13 font-extrabold text-[color:var(--ink-2)]">{label}</dt>
+              <dt className={cx('text-13 font-extrabold', tone.textInk2)}>{label}</dt>
               <dd><Badge tone="navy">{value}</Badge></dd>
             </div>
           ))}
@@ -123,7 +124,7 @@ export function AdminFeedbackView(props: AdminFeedbackViewProps) {
             <Panel variant="cream" title={`${FEEDBACK_TYPE_LABELS[selected.type]} · ${feedbackSubject(selected)}`} {...(titleRef ? { titleRef } : {})} scroll className="lg:min-h-0 lg:flex-1" bodyClassName="flex flex-col gap-5 lg:px-6 lg:py-5">
               <div className="flex flex-wrap items-end gap-3">
                 <SelectField label="Estado" className="w-full sm:w-60" value={selected.status} disabled={saving} onChange={(value) => props.onChangeStatus(value as FeedbackStatus)} options={(['NEW', 'REVIEWING', 'RESOLVED'] as const).map((value) => ({ value, label: FEEDBACK_STATUS_LABELS[value] }))} />
-                {saving && <span className="pb-3 text-15 font-extrabold text-[color:var(--ink-2)]" role="status">Actualizando estado…</span>}
+                {saving && <span className={cx('pb-3 text-15 font-extrabold', tone.textInk2)} role="status">Actualizando estado…</span>}
               </div>
               <p className="whitespace-pre-wrap text-18 font-bold leading-relaxed">{selected.description}</p>
               <DetailGrid>

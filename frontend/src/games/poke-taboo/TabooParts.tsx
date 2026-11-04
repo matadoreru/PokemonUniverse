@@ -1,7 +1,7 @@
 import type { PokeTabooHint, PokeTabooSecretPokemon } from '@pokemon-universe/shared/public';
 import { Ban, LockKeyhole, Send, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 import { guessSprite } from '../../room/guess-kit';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, Row } from '../../ui';
 import { forbiddenHintMessage, TABOO_HINT_MAX, TABOO_MAX_HINTS, tabooForbiddenWords, tabooHintProblem } from './presentation';

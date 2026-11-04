@@ -16,7 +16,7 @@ import { playerColor } from '../../room/player-color';
 import { PokemonSelector } from '../../room/PokemonSelector';
 import { ResultsShell } from '../../room/ResultsShell';
 import type { ResultsStanding } from '../../room/ResultsShell';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
 import { Badge, Chip, TypeBadge, TypeOption } from '../Badge';

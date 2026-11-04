@@ -3,7 +3,7 @@ import { POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Check, Clock3, Eye, Hourglass, Mic, PenLine, Trophy, X } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import {
   TABOO_STEPS, TURN_STATUS_TEXT, tabooAnnouncement, tabooCurrentStep, tabooHeading, tabooRevealSummary, tabooRole, tabooRoundLabel,
   tabooTurnStatus, tabooVerdict, type TabooTurnStatus,

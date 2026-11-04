@@ -40,13 +40,6 @@ describe('tokens.css ↔ tokens.ts', () => {
     expect(tipos).toHaveLength(18);
     for (const t of tipos) expect(cssHex(`--type-${t}`), t).toBe(typeColors[t]);
   });
-  it('el triplete --type-<t>-rgb coincide con el hex', () => {
-    for (const t of tipos) {
-      const h = typeColors[t];
-      const rgb = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join(' ');
-      expect(rootBlock, t).toContain(`--type-${t}-rgb: ${rgb};`);
-    }
-  });
   it('la tinta de cada tipo coincide con --type-<t>-ink', () => {
     for (const t of tipos) {
       const m = rootBlock.match(new RegExp(`--type-${t}-ink:\\s*var\\(--(navy|white)\\);`));
@@ -77,7 +70,6 @@ describe('contraste AA de las parejas de texto (§3.1)', () => {
     ['navy sobre bad', colors.navy, colors.bad],
     ['navy sobre info', colors.navy, colors.info],
     ['blanco sobre red-text', colors.white, colors.redText],
-    // Rellenos `bg-aqua`/`bg-berry` dentro de `.on-cream` (alias de migración): tinta blanca.
     ['blanco sobre red-d', colors.white, colors.redD],
     ['yellow sobre navy-2', colors.yellow, colors.navy2],
     ['sky-2 sobre navy-2', colors.sky2, colors.navy2],
@@ -131,65 +123,38 @@ describe('capas (§3.5)', () => {
   });
 });
 
-describe('insignias de tipo', () => {
-  it('tipos con tinta blanca llevan anillo', () => {
-    const blancos = tipos.filter((t) => typeInk[t] === colors.white);
-    expect(blancos).toHaveLength(5);
-    for (const t of blancos) {
-      const regla = styles.match(new RegExp(`\\.type-badge-${t}\\s*\\{([^}]*)\\}`));
-      expect(regla, `.type-badge-${t}`).not.toBeNull();
-      expect(regla![1], t).toMatch(/box-shadow:\s*0 0 0 2px var\(--white\)/);
-    }
+describe('sin alias heredados (§11, F9)', () => {
+  it('styles.css ya no define los alias `--color-*` ni la remezcla `.on-cream`', () => {
+    expect(styles).not.toMatch(/--color-[a-z-]+:/);
+    expect(styles).not.toMatch(/rgb\(var\(--color-/);
+    expect(styles).not.toContain('.on-cream');
   });
-});
-
-describe('alias de Tailwind (§11)', () => {
-  it('--color-berry es el triplete de --red-l', () => {
-    const rgb = [1, 3, 5].map((i) => parseInt(colors.redL.slice(i, i + 2), 16)).join(' ');
-    expect(styles).toMatch(new RegExp(`--color-berry:\\s*${rgb};`));
+  it('tailwind.config no tiene colores ni sombras propios: solo maquetación', () => {
+    expect(tailwind.theme.extend).not.toHaveProperty('colors');
+    expect(tailwind.theme.extend).not.toHaveProperty('boxShadow');
   });
+  /*
+   * Cada superficie crema del catálogo fija su propia tinta: sin `.on-cream`, el texto de diálogos, paneles crema,
+   * pestañas y campos sigue en --ink, con anillo de foco azul noche y controles nativos en claro.
+   */
   it.each([
-    ['navy-2', colors.navy2],
-    ['navy', colors.navy],
-    ['navy-3', colors.navy3],
-  ])('red-l sobre %s ≥ 4,5:1 (texto berry)', (_n, bg) => {
-    expect(contrast(colors.redL, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-  it('blanco sobre red-text ≥ 4,5:1 (botón principal)', () => {
-    expect(contrast(colors.white, colors.redText)).toBeGreaterThanOrEqual(4.5);
-  });
-});
-
-describe('.on-cream (§11): los alias vuelven a la tinta oscura dentro del crema', () => {
-  const block = styles.match(/\n\.on-cream\s*\{([^}]*)\}/)?.[1] ?? '';
-  const triplet = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(' ');
-  /** Color del alias en `.on-cream` como `#RRGGBB`. */
-  function alias(name: string): string {
-    const m = block.match(new RegExp(`--color-${name}:\\s*(\\d+) (\\d+) (\\d+);`));
-    if (!m) throw new Error(`--color-${name} no está en .on-cream`);
-    return `#${[m[1], m[2], m[3]].map((v) => Number(v).toString(16).padStart(2, '0')).join('')}`.toUpperCase();
-  }
-  it('reasigna ink, surface, surface-raised, berry y aqua a tokens del sistema', () => {
-    expect(block).toMatch(new RegExp(`--color-ink:\\s*${triplet(colors.ink)};`));
-    expect(block).toMatch(new RegExp(`--color-surface:\\s*${triplet(colors.cream)};`));
-    expect(block).toMatch(new RegExp(`--color-surface-raised:\\s*${triplet(colors.cream2)};`));
-    expect(block).toMatch(new RegExp(`--color-berry:\\s*${triplet(colors.redD)};`));
-    expect(block).toMatch(new RegExp(`--color-aqua:\\s*${triplet(colors.blueD)};`));
-  });
-  it('anillo de foco azul noche, también sobre amarillo', () => {
+    ['Panel.module.css', '.cream'],
+    ['Dialog.module.css', '.dialog'],
+    ['Tabs.module.css', '.panel'],
+    ['Field.module.css', '.field'],
+  ])('%s %s: tinta, foco y esquema de color propios del crema', (file, selector) => {
+    const source = readFileSync(path.join(here, '..', 'ui', file), 'utf8');
+    const block = source.match(new RegExp(`\\n\\${selector}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
+    expect(block).toMatch(/\bcolor:\s*var\(--ink\);/);
     expect(block).toMatch(/--focus-ring:\s*var\(--navy\);/);
     expect(block).toMatch(/--focus-ring-on-yellow:\s*var\(--navy\);/);
-    expect(contrast(colors.navy, colors.cream)).toBeGreaterThanOrEqual(3);
+    expect(block).toMatch(/color-scheme:\s*light;/);
+    expect(block).toMatch(/--caret:\s*var\(--blue-d\);/);
   });
-  it.each([
-    ['ink/70 sobre surface', () => contrast(mix(alias('ink'), alias('surface'), 0.7), alias('surface'))],
-    ['ink/70 sobre surface-raised', () => contrast(mix(alias('ink'), alias('surface-raised'), 0.7), alias('surface-raised'))],
-    ['ink sobre surface-raised (.btn-ghost, .field)', () => contrast(alias('ink'), alias('surface-raised'))],
-    ['berry sobre berry/10 (.status-error)', () => contrast(alias('berry'), mix(alias('berry'), alias('surface'), 0.1))],
-    ['berry sobre berry/15 (tono berry de «Cómo se juega»)', () => contrast(alias('berry'), mix(alias('berry'), alias('surface'), 0.15))],
-    ['aqua sobre aqua/5', () => contrast(alias('aqua'), mix(alias('aqua'), alias('surface'), 0.05))],
-  ])('%s ≥ 4,5:1', (_n, ratio) => {
-    expect(ratio()).toBeGreaterThanOrEqual(4.5);
+  it('tinta y foco del crema ≥ 4,5:1 y ≥ 3:1', () => {
+    expect(contrast(colors.ink, colors.cream)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(colors.navy, colors.cream)).toBeGreaterThanOrEqual(3);
+    expect(contrast(colors.blueD, colors.cream)).toBeGreaterThanOrEqual(3);
   });
 });
 

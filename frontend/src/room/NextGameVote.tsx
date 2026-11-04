@@ -85,7 +85,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
     </ol>
   </Panel>;
 
-  const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+  const action = <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
     <div className={s.status}>
       <span className={s.kicker}>{status.kicker}</span>
       {/* Región viva siempre montada (existe antes del revelado, así el resultado se anuncia): solo el título; la cuenta

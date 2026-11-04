@@ -2,7 +2,7 @@ import type { PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePublicBoard } from
 import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, EqualApproximately, Minus, X } from 'lucide-react';
 import { memo, useMemo, type CSSProperties } from 'react';
-import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { Badge, Chip, cx, Icon, Panel, StateBox, TypeBadge } from '../ui';
 import { guessSprite } from './guess-kit';
 import { formatPokeddleFeedback, getPokeddleColumns, latestGuessRound, POKEDDLE_LEGEND, pokeddleAttemptsText, type PokeddleColumn, type PokeddleFeedbackSemantic } from './pokeddle-presentation';

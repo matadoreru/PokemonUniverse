@@ -1,5 +1,5 @@
 import type { GamePhase, GameResults, LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetMoveGroup, LearnsetMoveHint, LearnsetRoundResult, MoveCategory, PokemonType } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 
 /** Nombre de un tipo en español (el color del tipo nunca va solo). */
 export const typeLabel = (type: PokemonType) => pokemonTypeLabels[type];

@@ -68,7 +68,6 @@ export function sketchmonHistoryShortcut(event: Pick<KeyboardEvent, 'ctrlKey' | 
   return event.shiftKey ? 'REDO_STROKE' : 'UNDO_STROKE';
 }
 
-/** Distancia mínima entre dos puntos seguidos de un trazo (en la escala 0–1 del lienzo). */
 /**
  * Si una pulsación empieza un trazo: solo con el lienzo habilitado (`canDraw`), el puntero principal y, con ratón, el
  * botón izquierdo. Sin `canDraw` no se pinta nada en local (el servidor lo rechazaría y saldría el aviso de sincronizar).
@@ -77,6 +76,7 @@ export function strokeStartAllowed(enabled: boolean, event: Pick<PointerEvent, '
   return enabled && event.isPrimary && (event.pointerType !== 'mouse' || event.button === 0);
 }
 
+/** Distancia mínima entre dos puntos seguidos de un trazo (en la escala 0–1 del lienzo). */
 export const SKETCH_POINT_DISTANCE = 0.002;
 
 export function farEnough(left: SketchmonPoint, right: SketchmonPoint, distance = SKETCH_POINT_DISTANCE): boolean {

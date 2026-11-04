@@ -7,6 +7,7 @@ import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
 import { formatDerivedMetric, formatStoredMetric, sortProfileGames, winRate } from '../profile/profileStats';
 import { cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
+import tone from '../styles/tones.module.css';
 
 type ProfileGame = UserProfileResponse['games'][number];
 
@@ -16,8 +17,8 @@ const memberSince = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'l
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex min-w-0 flex-col gap-1">
-      <strong className="ol font-display text-34 font-extrabold tabular-nums text-[color:var(--yellow)] lg:text-44">{value}</strong>
-      <span className="text-13 font-extrabold uppercase tracking-[.06em] text-[color:var(--sky-2)]">{label}</span>
+      <strong className={cx('ol font-display text-34 font-extrabold tabular-nums lg:text-44', tone.textYellow)}>{value}</strong>
+      <span className={cx('text-13 font-extrabold uppercase tracking-[.06em]', tone.textSky2)}>{label}</span>
     </div>
   );
 }
@@ -32,10 +33,10 @@ function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
     ...(profileStats.derivedMetrics ?? []).map((metric): [string, string] => [metric.label, formatDerivedMetric(metric, stats.metrics)]),
   ];
   return (
-    <dl id={id} className="mx-2 grid grid-cols-2 gap-x-4 gap-y-3 rounded-b-[var(--r-franja)] border-x-[2.5px] border-b-[2.5px] border-[color:var(--navy)] bg-[var(--cream-2)] px-4 pb-3 pt-4 text-[color:var(--ink)] sm:grid-cols-3">
+    <dl id={id} className={cx('mx-2 grid grid-cols-2 gap-x-4 gap-y-3 rounded-b-[var(--r-franja)] border-x-[2.5px] border-b-[2.5px] px-4 pb-3 pt-4 sm:grid-cols-3', tone.borderNavy, tone.bgCream2, tone.textInk)}>
       {items.map(([label, value]) => (
         <div key={label} className="min-w-0">
-          <dt className="text-13 font-bold text-[color:var(--ink-2)]">{label}</dt>
+          <dt className={cx('text-13 font-bold', tone.textInk2)}>{label}</dt>
           <dd className="font-display text-22 font-extrabold tabular-nums">{value}</dd>
         </div>
       ))}
@@ -97,9 +98,9 @@ export function ProfilePage() {
             onSaved={(nextUser) => { updateUser(nextUser); setProfile((current) => current ? { ...current, user: { ...current.user, avatar: nextUser.avatar } } : current); }}
           />
           <div className="min-w-0">
-            <p className="text-13 font-extrabold uppercase tracking-[.08em] text-[color:var(--sky-2)]">Perfil de entrenador</p>
-            <h1 className="ol2 font-display text-26 font-extrabold text-[color:var(--white)] [overflow-wrap:anywhere] sm:text-34 2xl:text-44">{profile.user.username}</h1>
-            <p className="mt-1 text-15 font-bold text-[color:var(--sky-2)]">Miembro desde el {memberSince.format(new Date(profile.user.createdAt))}</p>
+            <p className={cx('text-13 font-extrabold uppercase tracking-[.08em]', tone.textSky2)}>Perfil de entrenador</p>
+            <h1 className={cx('ol2 font-display text-26 font-extrabold [overflow-wrap:anywhere] sm:text-34 2xl:text-44', tone.textWhite)}>{profile.user.username}</h1>
+            <p className={cx('mt-1 text-15 font-bold', tone.textSky2)}>Miembro desde el {memberSince.format(new Date(profile.user.createdAt))}</p>
           </div>
         </HudPlate>
         <Panel title="Resumen" variant="dark" right={`${played} de ${games.length} juegos`} bodyClassName="px-5 py-5">

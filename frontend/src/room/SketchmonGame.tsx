@@ -3,7 +3,7 @@ import { SKETCHMON_DRAWER_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Brush, Check, Clock3, Eye, Hourglass, Palette, Radio, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
-import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import {
   SKETCH_STEPS, SKETCH_TURN_TEXT, sketchAnnouncement, sketchCanvasLabel, sketchCurrentStep, sketchHeading, sketchRevealSummary, sketchRole, sketchRoundLabel,
   sketchTurnStatus, sketchVerdict, type SketchTurnStatus,

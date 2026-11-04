@@ -1,6 +1,6 @@
 import type { PokemonType } from '@pokemon-universe/shared/public';
 import type { CSSProperties, ReactNode } from 'react';
-import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { Chip, cx, TypeBadge } from '../ui';
 import { typeDuelSolutionsText } from './type-duel-result';
 import s from '../games/type-duel/TypeDuel.module.css';

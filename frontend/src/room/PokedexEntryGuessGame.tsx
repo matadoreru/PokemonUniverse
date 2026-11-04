@@ -3,7 +3,7 @@ import { BookOpenText } from 'lucide-react';
 import { useLayoutEffect, useRef } from 'react';
 import { describePokedexEntryHint, entrySegments, fitFontSize } from '../games/pokedex-entry-guess/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { Chip } from '../ui';
+import { Chip, Icon } from '../ui';
 import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
@@ -71,7 +71,7 @@ export function PokedexEntryGuessGame({ room, selfId, onAction }: { room: RoomVi
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>{lastRound.entry.versionLabel} · Generación {lastRound.entry.generation}</>}
       clueTitle="La entrada completa" clue={<blockquote className={s.reveal}>“{lastRound.entry.text}”</blockquote>} className={s.scene} />
     : <GuessClue label="Entrada de la Pokédex" className={s.stage}>
-      <BookOpenText className={s.mark} aria-hidden="true" />
+      <Icon icon={BookOpenText} className={s.mark} />
       <EntryText text={game.entryText ?? ''} />
     </GuessClue>;
 

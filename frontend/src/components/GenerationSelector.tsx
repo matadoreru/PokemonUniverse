@@ -9,8 +9,6 @@ interface GenerationSelectorProps {
   onChange(generations: number[]): void;
   label?: string;
   description?: string;
-  /** Sin efecto desde Arcade DS: la generación elegida es siempre la píldora amarilla con ✓ (se acepta por compatibilidad). */
-  accent?: 'aqua' | 'electric';
 }
 
 /** La selección tras pulsar una generación, ordenada; `null` si dejaría la lista vacía (siempre queda al menos una). */

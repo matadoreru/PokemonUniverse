@@ -4,7 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { authError, type AuthError, type AuthField } from '../auth/authErrors';
 import { LegalLine } from '../components/LegalLine';
-import { Field, Panel, Pill, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
+import { cx, Field, Panel, Pill, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
+import tone from '../styles/tones.module.css';
 
 type Mode = 'login' | 'register' | 'guest';
 const ID = 'acceso';
@@ -69,8 +70,8 @@ export function AuthPage() {
           <div className="mb-5 flex items-center gap-3 sm:gap-4 2xl:mb-6">
             <img src="/favicon.png" alt="" aria-hidden="true" className="h-12 w-12 shrink-0 sm:h-14 sm:w-14 2xl:h-16 2xl:w-16 drop-shadow-[0_3px_0_var(--navy)]" />
             <div className="min-w-0">
-              <h1 id={`${ID}-title`} className="font-display text-26 font-extrabold sm:text-34 2xl:text-44 text-[color:var(--navy)]">Qué bueno verte</h1>
-              <p className="mt-1 text-15 font-bold text-[color:var(--ink-2)] 2xl:mt-2 2xl:text-18">{SUBTITLE[mode]}</p>
+              <h1 id={`${ID}-title`} className={cx('font-display text-26 font-extrabold sm:text-34 2xl:text-44', tone.textNavy)}>Qué bueno verte</h1>
+              <p className={cx('mt-1 text-15 font-bold 2xl:mt-2 2xl:text-18', tone.textInk2)}>{SUBTITLE[mode]}</p>
             </div>
           </div>
           <Tabs items={TABS} active={mode} onChange={changeMode} label="Método de acceso" idBase={ID} className="max-sm:!gap-1.5 max-sm:!px-1 max-sm:[&_svg]:hidden" />
@@ -81,7 +82,7 @@ export function AuthPage() {
               {mode !== 'guest' && <Field label="Contraseña" name="password" type="password" minLength={mode === 'register' ? 10 : 1} required autoComplete={mode === 'register' ? 'new-password' : 'current-password'} error={fieldError('password')} {...(mode === 'register' ? { hint: 'Mínimo 10 caracteres.' } : {})} />}
               {mode === 'guest' && <Field label="Tu nombre temporal" name="displayName" minLength={2} maxLength={24} required placeholder="Entrenador/a" error={fieldError('displayName')} />}
               {error && !error.field && (
-                <div ref={errorBox} tabIndex={-1} className="rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[color:var(--navy)]">
+                <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
                   <StateBox kind="error" title={FAILED[mode]} text={error.message} onCream />
                 </div>
               )}

@@ -44,7 +44,7 @@ export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomV
   </div>;
 
   const side = room.sessionHistory.length > 0
-    ? <Panel title="Evolución de puntos" aria-label="Evolución de puntos" variant="cream" scroll className={cx('on-cream', s.history)}>
+    ? <Panel title="Evolución de puntos" aria-label="Evolución de puntos" variant="cream" scroll className={cx(s.history)}>
       <div className={s.tableWrap}>
         <table className={s.table}>
           <thead><tr><th scope="col" className={s.nameCell}>Entrenador</th>{room.sessionHistory.map((game) => <th scope="col" key={`${game.gameId}-${game.gameNumber}`} title={gameNames.get(game.gameId) ?? game.gameId}>P{game.gameNumber}</th>)}<th scope="col" className={s.total}>Total</th></tr></thead>
@@ -64,7 +64,7 @@ export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomV
     </Panel>
     : null;
 
-  const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+  const action = <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
     <div className={s.status}>
       <span className={s.kicker}>Fin de la sesión</span>
       <p className={s.actionTitle}>{host ? '¿Otra partida?' : `Esperando a ${hostName ?? 'el host'}…`}</p>

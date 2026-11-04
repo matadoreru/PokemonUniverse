@@ -1,6 +1,7 @@
 import { CHANGELOG_CATEGORIES, CHANGELOG_CATEGORY_LABELS, type ChangelogCategory, type ChangelogEntry } from '@pokemon-universe/shared/public';
 import { Bug, Code2, Gamepad2, Palette, Scale, Sparkles, Wrench } from 'lucide-react';
-import { Badge, Chip, Icon as UiIcon, type ChipProps } from '../ui';
+import { cx, Badge, Chip, Icon as UiIcon, type ChipProps } from '../ui';
+import tone from '../styles/tones.module.css';
 
 const categoryIcons = {
   NEW: Sparkles,
@@ -37,13 +38,13 @@ export function ChangelogEntryView({ entry, compact = false, latest = false }: {
     <header className="flex flex-wrap items-center gap-x-3 gap-y-2">
       <Badge tone="yellow">v{entry.version}</Badge>
       <h3 className="min-w-0 font-display text-22 font-extrabold">{entry.title}</h3>
-      <time className="ml-auto text-13 font-extrabold text-[color:var(--sky-2)]" dateTime={entry.date}>{formatChangelogDate(entry.date)}</time>
+      <time className={cx('ml-auto text-13 font-extrabold', tone.textSky2)} dateTime={entry.date}>{formatChangelogDate(entry.date)}</time>
     </header>
     <div className="mt-4 grid gap-4 xl:grid-cols-2">
       {groups.map(({ type, changes }) => <section key={type} aria-labelledby={`${entry.id}-compact-${type}`}>
         <h4 id={`${entry.id}-compact-${type}`}><Chip tone={categoryChipTones[type]} icon={<UiIcon icon={categoryIcons[type]} size={18} />}>{CHANGELOG_CATEGORY_LABELS[type]}</Chip></h4>
         <ul className="mt-2 grid gap-1.5 text-15">
-          {changes.map((change, index) => <li className="flex gap-2" key={`${type}-${index}`}><span className="mt-[.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--yellow)]" aria-hidden="true" /><span>{change.text}</span></li>)}
+          {changes.map((change, index) => <li className="flex gap-2" key={`${type}-${index}`}><span className={cx('mt-[.55em] h-1.5 w-1.5 shrink-0 rounded-full', tone.bgYellow)} aria-hidden="true" /><span>{change.text}</span></li>)}
         </ul>
       </section>)}
     </div>
@@ -54,10 +55,10 @@ export function ChangelogEntryView({ entry, compact = false, latest = false }: {
   return <article id={entryId} aria-labelledby={`${entryId}-title`}>
     <header>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <h3 id={`${entryId}-title`} className="min-w-0 font-display text-26 font-extrabold text-[color:var(--ink)] lg:text-34">{entry.title}</h3>
+        <h3 id={`${entryId}-title`} className={cx('min-w-0 font-display text-26 font-extrabold lg:text-34', tone.textInk)}>{entry.title}</h3>
         {latest && <Badge tone="yellow">Última versión</Badge>}
       </div>
-      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-15 font-bold text-[color:var(--ink-2)]">
+      <p className={cx('mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-15 font-bold', tone.textInk2)}>
         <time dateTime={entry.date}>{formatChangelogDate(entry.date)}</time>
         <span aria-hidden="true">·</span>
         <span>{entry.content.length} {entry.content.length === 1 ? 'cambio' : 'cambios'}</span>
@@ -69,10 +70,10 @@ export function ChangelogEntryView({ entry, compact = false, latest = false }: {
       {groups.map(({ type, changes }) => <section key={type} aria-labelledby={`${entryId}-${type}`}>
         <h4 id={`${entryId}-${type}`} className="flex items-center gap-2">
           <Chip tone={categoryChipTones[type]} icon={<UiIcon icon={categoryIcons[type]} size={18} />}>{CHANGELOG_CATEGORY_LABELS[type]}</Chip>
-          <span className="text-13 font-extrabold tabular-nums text-[color:var(--ink-2)]">{changes.length}</span>
+          <span className={cx('text-13 font-extrabold tabular-nums', tone.textInk2)}>{changes.length}</span>
         </h4>
-        <ul className="mt-3 grid gap-2.5 text-18 font-semibold leading-snug text-[color:var(--ink)]">
-          {changes.map((change, index) => <li className="flex gap-3" key={`${type}-${index}`}><span className="mt-[.5em] h-2 w-2 shrink-0 rounded-full border-2 border-[color:var(--navy)] bg-[var(--yellow)]" aria-hidden="true" /><span>{change.text}</span></li>)}
+        <ul className={cx('mt-3 grid gap-2.5 text-18 font-semibold leading-snug', tone.textInk)}>
+          {changes.map((change, index) => <li className="flex gap-3" key={`${type}-${index}`}><span className={cx('mt-[.5em] h-2 w-2 shrink-0 rounded-full border-2', tone.borderNavy, tone.bgYellow)} aria-hidden="true" /><span>{change.text}</span></li>)}
         </ul>
       </section>)}
     </div>

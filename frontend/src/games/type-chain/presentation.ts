@@ -1,5 +1,5 @@
 import type { PokemonType, TypeChainElimination, TypeChainEvent, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 
 /** Espera tras un intento que no vale (la del motor, `TYPE_CHAIN` en `packages/shared`): textos de ayuda y aviso. */
 export const TYPE_CHAIN_COOLDOWN_SECONDS = 1;

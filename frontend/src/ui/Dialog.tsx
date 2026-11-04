@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useId, useRef } from 'react';
 import { uiSound } from '../audio/uiSound';
-import { cx } from './cx';
 import { Pill } from './Pill';
 import type { PillVariant } from './Pill';
 import s from './Dialog.module.css';
@@ -133,8 +132,7 @@ export function Dialog({ open, title, onClose, children, actions = [], width }: 
   return (
     <dialog
       ref={ref}
-      // `on-cream` (alias de migración, se borra en F9): el contenido antiguo con clases de Tailwind se lee sobre crema.
-      className={cx(s.dialog, 'on-cream')}
+      className={s.dialog}
       style={style}
       aria-labelledby={titleId}
       onCancel={(e) => {

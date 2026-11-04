@@ -13,7 +13,7 @@ import s from './ConfigPanel.module.css';
 export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as LearnsetGuessConfig; const reference = Math.max(...value.generations) as keyof typeof GENERATION_LEARNSET_SOURCES;
   return <fieldset disabled={disabled} className={s.panel}>
-    <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" accent="electric" onChange={(generations) => void onChange({ ...value, generations })} />
+    <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.reference}>
       <span className={s.referenceIcon}><Icon icon={BookOpenCheck} size={24} /></span>
       <div className={s.referenceText}>

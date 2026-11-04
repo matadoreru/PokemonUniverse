@@ -10,8 +10,9 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { useChangelog } from '../changelog/ChangelogContext';
 import { formatChangelogDate } from '../changelog/ChangelogEntryView';
 import { api } from '../lib/api';
-import { Chip, Dialog, Field, Panel, Pill, SelectField, TextArea, Toggle, ToastStack, useToasts, type StateBoxProps } from '../ui';
+import { cx, Chip, Dialog, Field, Panel, Pill, SelectField, TextArea, Toggle, ToastStack, useToasts, type StateBoxProps } from '../ui';
 import { ListDetail, rowControlId, SelectRow, useListDetail } from './AdminParts';
+import tone from '../styles/tones.module.css';
 
 export interface ChangelogForm {
   id: string | null;
@@ -171,7 +172,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
         detail={
           <form className="flex flex-col gap-3 lg:min-h-0 lg:flex-1" onSubmit={(event) => void save(event)} aria-label={form.id ? `Editar v${form.version}` : 'Nueva versión'}>
             <Panel variant="cream" title={form.id ? `Editar v${form.version}` : 'Nueva versión'} titleRef={detail.titleRef} right={form.id ? <Chip tone={form.published ? 'ok' : 'neutral'}>{form.published ? 'Publicada' : 'Borrador'}</Chip> : undefined} scroll className="lg:min-h-0 lg:flex-1" bodyClassName="flex flex-col gap-5 lg:px-6 lg:py-5">
-              <p className="text-15 font-bold text-[color:var(--ink-2)]">Los borradores solo son visibles para administradores.</p>
+              <p className={cx('text-15 font-bold', tone.textInk2)}>Los borradores solo son visibles para administradores.</p>
               <div className="grid gap-4 sm:grid-cols-[13rem_minmax(0,1fr)]">
                 <Field label="Versión" value={form.version} onChange={(event) => setForm((current) => ({ ...current, version: event.target.value }))} placeholder="0.8.0" required />
                 <Field label="Título" value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder="Pokémon Bingo Update" required />
@@ -180,9 +181,9 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
               </div>
               <fieldset className="flex flex-col gap-3">
                 <legend className="font-display text-22 font-extrabold">Cambios</legend>
-                <p className="text-15 font-bold text-[color:var(--ink-2)]">Agrupa cada nota por su tipo para que el historial sea fácil de recorrer.</p>
+                <p className={cx('text-15 font-bold', tone.textInk2)}>Agrupa cada nota por su tipo para que el historial sea fácil de recorrer.</p>
                 {form.content.map((change, index) => (
-                  <div className="grid gap-2 rounded-[var(--r-franja)] border-[2.5px] border-[color:var(--navy)] bg-[var(--cream-2)] p-3 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-start" key={index}>
+                  <div className={cx('grid gap-2 rounded-[var(--r-franja)] border-[2.5px] p-3 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-start', tone.borderNavy, tone.bgCream2)} key={index}>
                     <SelectField label={`Tipo del cambio ${index + 1}`} hideLabel value={change.type} onChange={(value) => updateChange(index, { type: value as ChangelogCategory })} options={CATEGORY_OPTIONS} />
                     <TextArea label={`Texto del cambio ${index + 1}`} hideLabel rows={3} value={change.text} onChange={(text) => updateChange(index, { text })} placeholder="Describe el cambio para los jugadores" error={invalid.includes(index) ? 'Describe el cambio antes de guardar.' : null} />
                     <Pill size="round" variant="danger" icon={Trash2} disabled={form.content.length === 1} aria-label={`Eliminar cambio ${index + 1}`} title="Eliminar cambio" onClick={() => { setForm((current) => ({ ...current, content: current.content.filter((_, changeIndex) => changeIndex !== index) })); setInvalid([]); }} />
@@ -190,7 +191,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
                 ))}
                 <Pill icon={Plus} className="self-start" onClick={() => setForm((current) => ({ ...current, content: [...current.content, { type: 'NEW', text: '' }] }))}>Añadir cambio</Pill>
               </fieldset>
-              {form.id && <p className="text-13 font-bold text-[color:var(--ink-2)]">Fecha visible: {formatChangelogDate(`${form.date}T12:00:00.000Z`)}</p>}
+              {form.id && <p className={cx('text-13 font-bold', tone.textInk2)}>Fecha visible: {formatChangelogDate(`${form.date}T12:00:00.000Z`)}</p>}
             </Panel>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>{form.id && <Pill variant="danger" icon={Trash2} disabled={saving} onClick={() => setConfirmRemove(true)}>Eliminar versión</Pill>}</div>

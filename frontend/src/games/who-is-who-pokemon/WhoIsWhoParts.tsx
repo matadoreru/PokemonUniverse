@@ -86,7 +86,7 @@ function TeamCursors({ boardRef, selfId, members, colors }: { boardRef: RefObjec
     const name = members.get(cursor.playerId)?.displayName ?? 'Compañero';
     const style = { transform: `translate(${position.left}px, ${position.top}px)`, '--player': playerColor(colors.get(cursor.playerId) ?? 0) } as CSSProperties;
     return <span key={cursor.playerId} className={s.cursor} style={style} data-testid="who-cursor" data-player={name}>
-      <MousePointer2 className={s.cursorArrow} size={24} strokeWidth={2} aria-hidden="true" />
+      <Icon icon={MousePointer2} size={24} className={s.cursorArrow} />
       <span className={cx(s.cursorName, label.beside ? s.beside : s.above, position.labelLeft && s.left, label.quiet && s.quiet)} {...(label.top !== null ? { style: { top: label.top } } : {})} data-testid="who-cursor-name" data-quiet={label.quiet ? 'true' : 'false'}>{name}</span>
     </span>;
   })}</div>;

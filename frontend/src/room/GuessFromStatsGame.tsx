@@ -1,6 +1,6 @@
 import type { GuessFromStatsConfig, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, RoomView } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
-import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Bar, cx, TypeBadge } from '../ui';

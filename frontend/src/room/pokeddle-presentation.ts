@@ -1,5 +1,5 @@
 import type { GamePhase, PokeddleBoardRow, PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePokemonReveal, PokeddlePublicBoard, PokeddleRacePlayerState } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 
 /** Lo que dice una casilla del tablero: acierto, parcial, fallo, o fallo con el objetivo por encima o por debajo. */
 export type PokeddleFeedbackSemantic = 'higher' | 'lower' | 'match' | 'partial' | 'none';

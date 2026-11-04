@@ -32,8 +32,4 @@ describe('GenerationSelector', () => {
     expect(toggleGeneration([1, 2, 3], 2)).toEqual([1, 3]);
     expect(toggleGeneration([4], 4)).toBeNull();
   });
-
-  it('acepta `accent` por compatibilidad (la elegida es siempre amarilla con ✓)', () => {
-    expect(render([1], { accent: 'electric' })).toBe(render([1]));
-  });
 });

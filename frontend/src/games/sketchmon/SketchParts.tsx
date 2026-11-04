@@ -1,7 +1,7 @@
 import type { PokemonType, RoomMemberView, SketchmonDrawerPokemon, SketchmonGalleryEntry, SketchmonHint, SketchmonStroke } from '@pokemon-universe/shared/public';
 import { Check, Eraser, EyeOff, LockKeyhole, PaintBucket, Pencil, Redo2, Sparkles, Trash2, TriangleAlert, Undo2, X } from 'lucide-react';
 import type { KeyboardEvent, ReactNode, Ref } from 'react';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 import { useRemainingMs } from '../../hooks/useServerTime';
 import { GuessHints, guessSprite } from '../../room/guess-kit';
 import { SketchmonCanvasSurface, type SketchPad } from '../../room/SketchmonCanvas';

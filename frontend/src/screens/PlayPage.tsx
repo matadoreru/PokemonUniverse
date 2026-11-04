@@ -3,7 +3,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
 import { normalizeRoomCode, ROOM_CODE_LENGTH, roomErrorMessage } from '../room/roomCode';
-import { Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
+import { cx, Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
+import tone from '../styles/tones.module.css';
 
 type Busy = 'create' | 'join' | 'leave' | null;
 const CODE_ID = 'room-code';
@@ -72,10 +73,10 @@ export function PlayPage() {
     <Screen width="narrow">
       <Panel variant="cream" aria-labelledby="sala-activa-title" className="w-full">
         <div className="flex flex-col items-center gap-4 px-2 pb-2 pt-3 text-center 2xl:gap-6 2xl:px-6 2xl:pb-5 2xl:pt-6">
-          <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[color:var(--yellow)] text-[color:var(--navy)] 2xl:h-20 2xl:w-20"><Icon icon={DoorOpen} size={32} className="2xl:h-10 2xl:w-10" /></span>
-          <h1 id="sala-activa-title" className="font-display text-26 font-extrabold text-[color:var(--navy)] sm:text-34 2xl:text-44">Ya tienes una sala activa</h1>
-          <p className="flex flex-wrap items-baseline justify-center gap-x-2 text-15 font-bold text-[color:var(--ink-2)] 2xl:text-18">
-            Código <strong className="font-display text-26 tracking-[.3em] text-[color:var(--ink)] lg:text-34 2xl:text-44">{room.code}</strong>
+          <span className={cx('grid h-16 w-16 place-items-center rounded-full border-[3px] 2xl:h-20 2xl:w-20', tone.borderNavy, tone.bgYellow, tone.textNavy)}><Icon icon={DoorOpen} size={32} className="2xl:h-10 2xl:w-10" /></span>
+          <h1 id="sala-activa-title" className={cx('font-display text-26 font-extrabold sm:text-34 2xl:text-44', tone.textNavy)}>Ya tienes una sala activa</h1>
+          <p className={cx('flex flex-wrap items-baseline justify-center gap-x-2 text-15 font-bold 2xl:text-18', tone.textInk2)}>
+            Código <strong className={cx('font-display text-26 tracking-[.3em] lg:text-34 2xl:text-44', tone.textInk)}>{room.code}</strong>
           </p>
           <div className="grid w-full gap-3 sm:grid-cols-2 2xl:mt-2 2xl:gap-4">
             <Pill variant="yellow" icon={DoorOpen} block disabled={busy !== null} onClick={() => navigate('/room')}>Volver a la sala</Pill>
@@ -100,10 +101,10 @@ export function PlayPage() {
             status={createError ? { kind: 'error', title: 'No se pudo crear la sala', text: createError, action: { label: 'Reintentar', onClick: () => void create() } } : null}
           >
             <div className="flex flex-1 flex-col gap-4 px-1 pb-1 pt-2 2xl:gap-5 2xl:px-3 2xl:pb-3 2xl:pt-4">
-              <ul className="flex flex-col gap-2 text-15 font-bold text-[color:var(--ink)] 2xl:gap-3 2xl:text-18">
-                <li className="flex items-center gap-2"><Icon icon={Gamepad2} size={18} className="shrink-0 text-[color:var(--blue-d)]" />Eliges el minijuego y sus ajustes</li>
-                <li className="flex items-center gap-2"><Icon icon={KeyRound} size={18} className="shrink-0 text-[color:var(--blue-d)]" />Compartes un código de 6 caracteres</li>
-                <li className="flex items-center gap-2"><Icon icon={Users} size={18} className="shrink-0 text-[color:var(--blue-d)]" />Tu grupo entra y empezáis a jugar</li>
+              <ul className={cx('flex flex-col gap-2 text-15 font-bold 2xl:gap-3 2xl:text-18', tone.textInk)}>
+                <li className="flex items-center gap-2"><Icon icon={Gamepad2} size={18} className={cx('shrink-0', tone.textBlueD)} />Eliges el minijuego y sus ajustes</li>
+                <li className="flex items-center gap-2"><Icon icon={KeyRound} size={18} className={cx('shrink-0', tone.textBlueD)} />Compartes un código de 6 caracteres</li>
+                <li className="flex items-center gap-2"><Icon icon={Users} size={18} className={cx('shrink-0', tone.textBlueD)} />Tu grupo entra y empezáis a jugar</li>
               </ul>
               <Pill variant="yellow" size="main" icon={Plus} block className="mt-auto" loading={busy === 'create'} disabled={off} onClick={() => void create()}>¡Crear sala!</Pill>
             </div>

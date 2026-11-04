@@ -1,5 +1,5 @@
 import type { GamePhase, GameResults, PokemonType, TypeDuelAttempt, TypeDuelPlayerState, TypeDuelPublicState, TypeDuelRoundResult } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 
 /** Pantalla inferior de Type Duel: qué placa toca. */
 export type TypeDuelPlateKind = 'pick' | 'locked' | 'reveal' | 'search' | 'watching' | 'invalid' | 'result' | 'waiting';

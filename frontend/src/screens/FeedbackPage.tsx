@@ -13,7 +13,8 @@ import { useSearchParams } from 'react-router-dom';
 import { feedbackErrorMessage } from '../feedback/feedbackErrors';
 import { api } from '../lib/api';
 import type { FeedbackCreateResponse } from '../lib/api-contract';
-import { Chip, Icon, Panel, Pill, PillLink, Screen, ScreenHeader, Segmented, SelectField, StateBox, TextArea } from '../ui';
+import { cx, Chip, Icon, Panel, Pill, PillLink, Screen, ScreenHeader, Segmented, SelectField, StateBox, TextArea } from '../ui';
+import tone from '../styles/tones.module.css';
 
 interface GameOption extends MiniGameManifest { defaultConfig: unknown }
 
@@ -33,7 +34,7 @@ const PLACEHOLDER: Record<FeedbackType, string> = {
 
 /** Etiqueta visible de un grupo sin `<label>` (el `Segmented` ya lleva su `aria-label`). */
 function GroupLabel({ children }: { children: string }) {
-  return <span className="font-display text-15 font-extrabold text-[color:var(--ink)]" aria-hidden="true">{children}</span>;
+  return <span className={cx('font-display text-15 font-extrabold', tone.textInk)} aria-hidden="true">{children}</span>;
 }
 
 /**
@@ -125,10 +126,10 @@ export function FeedbackPage() {
       {sent ? (
         <Panel variant="cream" title="Mensaje enviado" className="w-full" bodyClassName="px-5 py-7 sm:px-8 2xl:py-10">
           <div className="flex flex-col items-center text-center" role="status">
-            <span className="grid h-16 w-16 place-items-center rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--ok)] text-[color:var(--navy)]" aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
-            <h3 ref={thanks} tabIndex={-1} className="mt-4 font-display text-34 font-extrabold text-[color:var(--ink)] outline-none">Gracias por avisar</h3>
-            <p className="mt-2 max-w-[48ch] text-18 font-semibold text-[color:var(--ink-2)]">
-              Tu {sent.type === 'BUG' ? 'reporte' : 'sugerencia'} sobre <strong className="text-[color:var(--ink)]">{sent.gameName ?? FEEDBACK_REFERENCE_LABELS[sent.reference]}</strong> ya está en la bandeja de administración.
+            <span className={cx('grid h-16 w-16 place-items-center rounded-full border-[3px]', tone.borderNavy, tone.bgOk, tone.textNavy)} aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
+            <h3 ref={thanks} tabIndex={-1} className={cx('mt-4 font-display text-34 font-extrabold outline-none', tone.textInk)}>Gracias por avisar</h3>
+            <p className={cx('mt-2 max-w-[48ch] text-18 font-semibold', tone.textInk2)}>
+              Tu {sent.type === 'BUG' ? 'reporte' : 'sugerencia'} sobre <strong className={cx(tone.textInk)}>{sent.gameName ?? FEEDBACK_REFERENCE_LABELS[sent.reference]}</strong> ya está en la bandeja de administración.
             </p>
             <div className="mt-6 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
               <PillLink to={backTo} variant="yellow">{backLabel}</PillLink>
@@ -147,7 +148,7 @@ export function FeedbackPage() {
                   options={FEEDBACK_REFERENCES.map((value) => ({ value, label: FEEDBACK_REFERENCE_LABELS[value] }))}
                   onChange={(value) => { const next = value as FeedbackReference; setReference(next); if (next !== 'MINIGAME') setGameId(''); }}
                 />
-                <p className="text-13 font-semibold text-[color:var(--ink-2)]">Déjalo en «{FEEDBACK_REFERENCE_LABELS.GENERAL}» si no necesitas concretar.</p>
+                <p className={cx('text-13 font-semibold', tone.textInk2)}>Déjalo en «{FEEDBACK_REFERENCE_LABELS.GENERAL}» si no necesitas concretar.</p>
               </div>
               {reference === 'MINIGAME' && (gameError
                 ? <StateBox kind="error" title="No se pudieron cargar los minijuegos" text="Comprueba la conexión y vuelve a intentarlo." action={{ label: 'Reintentar', onClick: () => { loadGames(); } }} onCream />
@@ -181,7 +182,7 @@ export function FeedbackPage() {
                 placeholder={PLACEHOLDER[type]}
               />
               {error && (
-                <div ref={errorBox} tabIndex={-1} className="rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-[color:var(--navy)]">
+                <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
                   <StateBox kind="error" title="No se pudo enviar el feedback" text={error} onCream />
                 </div>
               )}

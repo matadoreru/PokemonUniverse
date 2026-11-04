@@ -8,7 +8,8 @@ import { useListDetail } from '../admin/AdminParts';
 import { AdminRecordsView, type AdminRecords } from '../admin/AdminRecords';
 import { AdminSyncView, type SyncSource } from '../admin/AdminSyncPanel';
 import { api } from '../lib/api';
-import { Dialog, HudPlate, Icon, Screen, TabPanel, Tabs, type TabItem } from '../ui';
+import { cx, Dialog, HudPlate, Icon, Screen, TabPanel, Tabs, type TabItem } from '../ui';
+import tone from '../styles/tones.module.css';
 
 const emptyPage = <T,>(): PaginatedAdminResponse<T> => ({ items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 });
 const TAB_ID = 'admin';
@@ -25,11 +26,11 @@ const TABS: TabItem<AdminTab>[] = [
 function SummaryFigure({ icon, label, value }: { icon: LucideIcon; label: string; value: number | undefined }) {
   return (
     <div className="flex min-w-0 items-center gap-2">
-      <Icon icon={icon} size={22} className="shrink-0 text-[color:var(--sky-2)]" />
+      <Icon icon={icon} size={22} className={cx('shrink-0', tone.textSky2)} />
       {/* El número va encima de su etiqueta: en el DOM, `dt` y luego `dd` (orden válido de `<dl>`). */}
       <div className="flex min-w-0 flex-col-reverse">
-        <dt className="text-13 font-extrabold text-[color:var(--sky-2)]">{label}</dt>
-        <dd className="ol font-display text-26 font-extrabold leading-none tabular-nums text-[color:var(--yellow)]">{value ?? '—'}</dd>
+        <dt className={cx('text-13 font-extrabold', tone.textSky2)}>{label}</dt>
+        <dd className={cx('ol font-display text-26 font-extrabold leading-none tabular-nums', tone.textYellow)}>{value ?? '—'}</dd>
       </div>
     </div>
   );
@@ -137,8 +138,8 @@ export function AdminPage() {
     <Screen fill>
       <HudPlate className="w-full !flex-col !items-stretch !gap-4 !px-5 !py-4 lg:!flex-row lg:!items-center lg:!justify-between">
         <div className="min-w-0">
-          <h1 className="ol2 font-display text-26 font-extrabold leading-tight text-[color:var(--white)] 2xl:text-34">Administración de Pokémon Universe</h1>
-          <p className="text-13 font-extrabold text-[color:var(--sky-2)]">{summary ? `Actualizado ${formatAdminTime(summary.updatedAt)}` : 'Versiones, feedback, salas, partidas y cuentas'}</p>
+          <h1 className={cx('ol2 font-display text-26 font-extrabold leading-tight 2xl:text-34', tone.textWhite)}>Administración de Pokémon Universe</h1>
+          <p className={cx('text-13 font-extrabold', tone.textSky2)}>{summary ? `Actualizado ${formatAdminTime(summary.updatedAt)}` : 'Versiones, feedback, salas, partidas y cuentas'}</p>
         </div>
         <dl className="grid grid-cols-2 gap-x-5 gap-y-3 sm:grid-cols-4" aria-label="Resumen">
           <SummaryFigure icon={DoorOpen} label="Salas activas" value={summary?.activeRooms} />

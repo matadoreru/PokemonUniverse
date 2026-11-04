@@ -4,6 +4,7 @@ import type { ReactNode, Ref } from 'react';
 import { cx, Field, Panel, Row, Segmented, SelectField } from '../ui';
 import { adminListStatus, adminStatusOptions, formatAdminDate, formatCount, pickSelected, type AdminTab, type RoomMode } from './admin-format';
 import { Detail, DetailGrid, ListDetail, MetaParts, Pagination, rowControlId, SelectRow, StatusChip } from './AdminParts';
+import tone from '../styles/tones.module.css';
 
 /** Registros de una sección con tabla, según su tipo. */
 export type AdminRecords =
@@ -64,7 +65,7 @@ function activeRoom(room: AdminActiveRoom): RecordView {
       </DetailGrid>
       <h3 className="mt-6 font-display text-18 font-extrabold">Participantes</h3>
       {room.participants.length === 0
-        ? <p className="mt-2 text-15 font-bold text-[color:var(--ink-2)]">Ninguno</p>
+        ? <p className={cx('mt-2 text-15 font-bold', tone.textInk2)}>Ninguno</p>
         : <ul className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-2" aria-label="Participantes">
           {room.participants.map((participant) => (
             <li key={participant.id}>
@@ -106,7 +107,7 @@ function game(item: AdminGameHistoryItem): RecordView {
       </DetailGrid>
       <h3 className="mt-6 font-display text-18 font-extrabold">Resultados</h3>
       {item.participants.length === 0
-        ? <p className="mt-2 text-15 font-bold text-[color:var(--ink-2)]">Sin resultado final</p>
+        ? <p className={cx('mt-2 text-15 font-bold', tone.textInk2)}>Sin resultado final</p>
         : <ol className="mt-2 grid grid-cols-[minmax(0,1fr)] gap-2" aria-label="Resultados">
           {item.participants.map((participant) => (
             <li key={`${participant.position}-${participant.displayName}`}>

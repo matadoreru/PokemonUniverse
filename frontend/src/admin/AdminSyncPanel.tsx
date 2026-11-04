@@ -1,9 +1,10 @@
 import type { AdminDataSyncItem } from '@pokemon-universe/shared/public';
 import { RefreshCw, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
-import { Dialog, Panel, Pill, StateBox } from '../ui';
+import { cx, Dialog, Panel, Pill, StateBox } from '../ui';
 import { adminListStatus, formatAdminDate, formatCount, formatDuration } from './admin-format';
 import { Detail, DetailGrid, StatusChip } from './AdminParts';
+import tone from '../styles/tones.module.css';
 
 export type SyncSource = 'pokemon' | 'tcg' | 'all';
 
@@ -36,7 +37,7 @@ export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
           <h2 id="data-sync-title" className="font-display text-22 font-extrabold">Fuentes de datos</h2>
-          <p className="mt-1 max-w-3xl text-15 font-bold text-[color:var(--ink-2)]">PostgreSQL es la fuente de verdad. Las APIs externas solo actualizan estos datasets y un fallo conserva la última versión válida.</p>
+          <p className={cx('mt-1 max-w-3xl text-15 font-bold', tone.textInk2)}>PostgreSQL es la fuente de verdad. Las APIs externas solo actualizan estos datasets y un fallo conserva la última versión válida.</p>
         </div>
         <div className="flex flex-wrap gap-2 lg:shrink-0 lg:flex-nowrap">
           <Pill icon={RefreshCw} disabled={active} onClick={() => onSync('all')}>Sincronizar todo</Pill>
@@ -65,7 +66,7 @@ export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry 
                 <Detail label="Omitidos">{formatCount(item.skipped)}</Detail>
                 <Detail label="Próxima">{formatAdminDate(item.nextSyncAt)}</Detail>
               </DetailGrid>
-              {item.error && <p className="rounded-[var(--r-franja)] border-[2.5px] border-[color:var(--red-text)] bg-[var(--cream-2)] px-3 py-2 text-15 font-bold text-[color:var(--red-text)]" role="status">{item.error}</p>}
+              {item.error && <p className={cx('rounded-[var(--r-franja)] border-[2.5px] px-3 py-2 text-15 font-bold', tone.borderRedText, tone.bgCream2, tone.textRedText)} role="status">{item.error}</p>}
             </Panel>
           ))}
         </div>

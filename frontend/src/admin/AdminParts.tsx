@@ -2,6 +2,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Chip, cx, Pill, Row, type RowProps } from '../ui';
 import { adminStatusLabel, adminStatusTone, pageBounds, paginationText } from './admin-format';
+import tone from '../styles/tones.module.css';
 
 /** Chip de estado o de rol con su texto (el color nunca va solo). */
 export function StatusChip({ value, scope }: { value: string; scope?: 'game' }) {
@@ -20,7 +21,7 @@ export function MetaParts({ parts }: { parts: string[] }) {
 export function Detail({ label, children, wide = false }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
     <div className={cx('min-w-0', wide && 'sm:col-span-2')}>
-      <dt className="text-13 font-extrabold uppercase tracking-[.06em] text-[color:var(--ink-2)]">{label}</dt>
+      <dt className={cx('text-13 font-extrabold uppercase tracking-[.06em]', tone.textInk2)}>{label}</dt>
       <dd className="mt-1 break-words text-15 font-bold">{children}</dd>
     </div>
   );
@@ -39,7 +40,7 @@ export function Pagination({ label, page, totalPages, total, onPage }: { label: 
   const { prev, next } = pageBounds(page, totalPages);
   return (
     <nav aria-label={label} className="flex items-center justify-between gap-3">
-      <p className="text-13 font-extrabold text-[color:var(--ink-2)]" aria-live="polite">{paginationText(page, totalPages, total)}</p>
+      <p className={cx('text-13 font-extrabold', tone.textInk2)} aria-live="polite">{paginationText(page, totalPages, total)}</p>
       <div className="flex gap-2">
         <Pill size="round" variant="cream" icon={ChevronLeft} aria-label="Página anterior" disabled={!prev} onClick={() => onPage(page - 1)} />
         <Pill size="round" variant="cream" icon={ChevronRight} aria-label="Página siguiente" disabled={!next} onClick={() => onPage(page + 1)} />

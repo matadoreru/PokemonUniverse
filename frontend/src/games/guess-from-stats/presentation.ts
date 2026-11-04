@@ -1,5 +1,5 @@
 import type { GuessFromStatsHint, GuessFromStatsPokemonReveal, GuessFromStatsVisibleStat, PokemonLegendaryStatus } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
+import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 
 type StatKey = GuessFromStatsVisibleStat['key'];
 

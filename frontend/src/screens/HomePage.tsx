@@ -4,7 +4,8 @@ import { useAuth } from '../auth/AuthContext';
 import { ChangelogEntryView } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
 import { LegalLine } from '../components/LegalLine';
-import { Panel, PillLink, Screen, type StateBoxProps } from '../ui';
+import { cx, Panel, PillLink, Screen, type StateBoxProps } from '../ui';
+import tone from '../styles/tones.module.css';
 
 /** Cambios de la última versión que caben en la portada; el resto está en Novedades. */
 const PREVIEW_CHANGES = 8;
@@ -67,8 +68,8 @@ export function HomePage() {
               fetchPriority="high"
             />
           </div>
-          <h1 className="ol2 mt-2 font-display text-44 font-extrabold text-[color:var(--white)] lg:text-68">
-            Pokémon <span className="inline-block text-[color:var(--yellow)]">Universe</span>
+          <h1 className={cx('ol2 mt-2 font-display text-44 font-extrabold lg:text-68', tone.textWhite)}>
+            Pokémon <span className={cx('inline-block', tone.textYellow)}>Universe</span>
           </h1>
           <nav className="mt-6 flex w-full max-w-[22rem] flex-col gap-3 2xl:mt-8 2xl:max-w-[26rem] 2xl:gap-4" aria-label="Empezar">
             <PillLink to={user ? '/play' : '/auth'} variant="yellow" size="main" icon={Play} block>Empezar a jugar</PillLink>

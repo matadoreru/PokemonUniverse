@@ -122,7 +122,7 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   const readOnlyChip = <Chip icon={<Icon icon={LockKeyhole} size={18} />}>Solo lectura</Chip>;
 
   const action = (
-    <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+    <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
       <div className={s.status}>
         <span className={s.kicker}>{status.kicker}</span>
         <h2 className={s.actionTitle}>{status.title}</h2>
@@ -281,9 +281,9 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
       <div className={s.tabbed}>
         <Tabs items={TABS} active={activeTab} onChange={setActiveTab} label="Secciones del lobby" idBase={TAB_ID} className={cx(s.tabs)} />
         {/* Los tres paneles quedan montados: cambiar de pestaña no pierde búsquedas ni ajustes a medio confirmar. */}
-        <TabPanel idBase={TAB_ID} tabKey="games" hidden={activeTab !== 'games'} className={cx('on-cream', s.body)}>{gamesPanel}</TabPanel>
-        <TabPanel idBase={TAB_ID} tabKey="config" hidden={activeTab !== 'config'} className={cx('on-cream', s.body)}>{configPanel}</TabPanel>
-        <TabPanel idBase={TAB_ID} tabKey="session" hidden={activeTab !== 'session'} className={cx('on-cream', s.body)}>{sessionPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="games" hidden={activeTab !== 'games'} className={cx(s.body)}>{gamesPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="config" hidden={activeTab !== 'config'} className={cx(s.body)}>{configPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="session" hidden={activeTab !== 'session'} className={cx(s.body)}>{sessionPanel}</TabPanel>
       </div>
     </div>
   );

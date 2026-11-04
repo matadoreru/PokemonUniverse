@@ -3,8 +3,9 @@ import { Camera, Check, ImagePlus, RotateCcw, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { api } from '../lib/api';
 import { authErrorMessage } from '../auth/authErrors';
-import { Dialog, Pill, Slider } from '../ui';
+import { cx, Dialog, Pill, Slider } from '../ui';
 import { Avatar } from './Avatar';
+import tone from '../styles/tones.module.css';
 
 const MAX_CLIENT_BYTES = 5 * 1024 * 1024;
 
@@ -49,13 +50,13 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
 
   return <>
     <span className="relative inline-flex shrink-0">
-      <Avatar name={name} avatar={avatar} size="xxl" className="border-[3px] border-[color:var(--navy)]" />
+      <Avatar name={name} avatar={avatar} size="xxl" className={cx('border-[3px]', tone.borderNavy)} />
       <span className="absolute -bottom-1 -right-1" data-layer>
         <Pill size="round" variant="yellow" icon={Camera} aria-label="Cambiar avatar" title="Cambiar avatar" onClick={() => setOpen(true)} />
       </span>
     </span>
     <Dialog open={open} title="Elige tu avatar" onClose={() => setOpen(false)} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined, autoFocus: true }]}>
-      <h3 className="font-display text-15 font-extrabold text-[color:var(--ink)]">Tu imagen</h3>
+      <h3 className={cx('font-display text-15 font-extrabold', tone.textInk)}>Tu imagen</h3>
       <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={chooseFile} />
       {!source
         ? <div className="mt-3 flex flex-wrap gap-3">
@@ -63,7 +64,7 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
             {avatar.type === 'CUSTOM' && <Pill variant="danger" icon={Trash2} loading={busy} onClick={() => void removeAvatar()}>Quitar mi imagen</Pill>}
           </div>
         : <div className="mt-3 grid gap-5 sm:grid-cols-[14rem_minmax(0,1fr)]">
-            <div className="mx-auto h-56 w-56 overflow-hidden rounded-full border-[3px] border-[color:var(--navy)] bg-[var(--navy)]"><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div>
+            <div className={cx('mx-auto h-56 w-56 overflow-hidden rounded-full border-[3px]', tone.borderNavy, tone.bgNavy)}><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div>
             <div className="flex min-w-0 flex-col gap-3">
               <Slider label="Zoom" value={zoom} onChange={setZoom} min={1} max={3} step={0.1} valueText={(v) => `${v.toFixed(1)}×`} disabled={busy} />
               <Slider label="Mover horizontalmente" value={offsetX} onChange={setOffsetX} min={-100} max={100} step={1} disabled={busy} />
@@ -74,8 +75,8 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
               </div>
             </div>
           </div>}
-      {error && <p className="mt-4 text-15 font-bold text-[color:var(--red-d)]" role="alert">{error}</p>}
-      <p className="mt-4 text-13 font-semibold text-[color:var(--ink-2)]">JPEG, PNG o WEBP · máximo 5 MB · se guarda como un cuadrado de 256 px.</p>
+      {error && <p className={cx('mt-4 text-15 font-bold', tone.textRedD)} role="alert">{error}</p>}
+      <p className={cx('mt-4 text-13 font-semibold', tone.textInk2)}>JPEG, PNG o WEBP · máximo 5 MB · se guarda como un cuadrado de 256 px.</p>
     </Dialog>
   </>;
 }
