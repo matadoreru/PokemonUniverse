@@ -1,0 +1,303 @@
+/*
+ * Pokédex Distance (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Arriba la placa del objetivo y la regla; abajo el buscador o el estado; al lado, los jugadores.
+ */
+.screen {
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para la sombra dura de las placas (la columna recorta lo que se sale al desplazarse). */
+  padding-bottom: var(--sp-2);
+}
+
+/* Placa del objetivo: ronda a la izquierda, objetivo en el centro, tiempo a la derecha. */
+/* Cada pieza con su alto: la columna se desplaza por dentro, nada se encoge (el panel recortaría). */
+.top > * {
+  flex: none;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.round {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.points {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font: 800 var(--fs-15) / 1 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  color: var(--sky-2);
+  white-space: nowrap;
+}
+.target {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.targetIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--white);
+  box-shadow: var(--sh-hard-3);
+}
+.targetTitle {
+  display: flex;
+  flex-direction: column;
+}
+.targetKicker {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.targetNumber {
+  font: 800 var(--fs-68) / 1.05 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--yellow);
+}
+.timer {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+/* Quién ha elegido: el recuento y un chip por jugador de la ronda (✓ o reloj de arena, con el nombre). */
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+.pickCount {
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  color: var(--white);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.chipName {
+  display: inline-block;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+.lead {
+  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
+  color: var(--sky-2);
+}
+.skip {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Columna lateral: el panel y, debajo, «Saltar minijuego». */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+@media (min-width: 1024px) {
+  .side {
+    height: 100%;
+  }
+}
+
+/* Columna lateral: la lista se desplaza dentro del panel. */
+.sidePanel {
+  max-height: 22rem;
+}
+@media (min-width: 1024px) {
+  .sidePanel {
+    flex: 0 1 auto;
+    max-height: none;
+  }
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowSprite {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transform: scale(1.25);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+}
+.clip {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+.distance {
+  white-space: nowrap;
+}
+.distance small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+/* Pantalla inferior: el buscador cabe en el alto que deja la placa a 720 px y se desplaza por dentro. */
+@media (min-width: 1024px) {
+  .selector :global(.pokemon-selector-results) {
+    max-height: clamp(8.5rem, 100dvh - 33rem, 24rem);
+  }
+}
+@media (max-width: 1023px) {
+  .selector :global(.pokemon-selector-results) {
+    max-height: min(18rem, 34dvh);
+  }
+}
+
+/* Estado sin buscador (elección bloqueada, observando, veredicto): como la acción del lobby. */
+.actionBody {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+@media (min-width: 1024px) {
+  .actionBody {
+    gap: var(--sp-4);
+  }
+}
+.actionIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+}
+.ok {
+  background: var(--ok);
+}
+.info {
+  background: var(--info);
+}
+.warn {
+  background: var(--warn);
+}
+.status {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.kicker {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.actionTitle {
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+  color: var(--ink);
+}
+.help {
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.aside {
+  flex: none;
+}
+/* La carta elegida, sin estirarse. */
+.pick {
+  display: block;
+  width: 7.5rem;
+}
+
+@media (max-width: 639px) {
+  .hud {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'round timer' 'target target';
+    padding: var(--sp-3);
+  }
+  .round {
+    grid-area: round;
+  }
+  .timer {
+    grid-area: timer;
+  }
+  .target {
+    grid-area: target;
+    justify-content: center;
+  }
+  .targetIcon {
+    width: 44px;
+    height: 44px;
+  }
+  .targetNumber {
+    font-size: var(--fs-44);
+  }
+  .actionIcon,
+  .kicker {
+    display: none;
+  }
+  .actionTitle {
+    font-size: var(--fs-18);
+  }
+  .pick {
+    width: 6rem;
+  }
+}
+
+/* Escritorio bajo (720 px): la placa del objetivo, algo más baja. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hud {
+    padding-block: var(--sp-2);
+  }
+  .targetNumber {
+    font-size: var(--fs-44);
+  }
+  .targetIcon {
+    width: 44px;
+    height: 44px;
+  }
+}

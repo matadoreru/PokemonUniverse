@@ -39,7 +39,9 @@ describe('PokedexDistanceResults', () => {
     expect(html).toContain('<span class="sr-only">R1 · D1: a 161, cayó</span>');
     expect(html).toContain('Acierto exacto en R1 · D1');
     expect(html).not.toContain('aria-label="R1');
-    expect(html).toContain('overflow-x-auto');
+    expect(html).toContain('role="region"');
+    expect(html).not.toMatch(/btn-|ranking-row|text-berry/);
+    expect(html.match(/Ganador/g)).toHaveLength(1);
     expect(html).toContain('Continuar sesión');
   });
 

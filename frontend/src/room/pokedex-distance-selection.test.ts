@@ -2,7 +2,7 @@ import type { PokedexDistancePublicState } from '@pokemon-universe/shared/public
 import { describe, expect, it } from 'vitest';
 import {
   DISTANCE_HIDDEN_PICKED_LABEL, DISTANCE_SELECTION_VISIBILITY_LABEL, distanceMemberStatus, distanceSelectionVisibilityLabels,
-  DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceSpectatorHint,
+  DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint,
 } from './pokedex-distance-selection';
 
 function game(overrides: Partial<PokedexDistancePublicState>): PokedexDistancePublicState {
@@ -29,6 +29,13 @@ describe('distanceMemberStatus', () => {
 
   it('sin elegir sigue seleccionando', () => {
     expect(distanceMemberStatus(game({ selectedIds: ['p1'] }), 'p2')).toEqual({ kind: 'picking' });
+  });
+
+  it('fuera de la ronda dice por qué: desempate, observa o eliminado', () => {
+    const tiebreak = game({ eligibleIds: ['p1'], survivorIds: ['p1', 'p2'], spectatorIds: ['p4'] });
+    expect(distanceMemberStatus(tiebreak, 'p2')).toEqual({ kind: 'waiting' });
+    expect(distanceMemberStatus(tiebreak, 'p4')).toEqual({ kind: 'watching' });
+    expect(distanceMemberStatus(tiebreak, 'p3')).toEqual({ kind: 'out' });
   });
 });
 
@@ -83,5 +90,19 @@ describe('distancePickedCountText', () => {
 describe('acierto exacto', () => {
   it('se anuncia en español', () => {
     expect(DISTANCE_EXACT_HIT_TITLE).toBe('¡Acierto exacto!');
+  });
+});
+
+describe('distanceRoundRows', () => {
+  const sel = (distance: number) => ({ pokemonId: `p${distance}`, pokemonName: `P${distance}`, sprite: '/s.png', dexNumber: 25 + distance, distance, selectedAt: 1 });
+  it('ordena de la más cercana a la más lejana y deja al final a quien no respondió', () => {
+    const rows = distanceRoundRows({ eligibleIds: ['a', 'b', 'c', 'd'], selections: { a: sel(12), b: sel(0), d: sel(12) }, reason: 'NO_RESPONSE', eliminatedIds: ['c'], tiedIds: [] });
+    expect(rows.map((row) => row.playerId)).toEqual(['b', 'a', 'd', 'c']);
+    expect(rows[0]).toMatchObject({ exact: true, eliminated: false, distance: 0 });
+    expect(rows[3]).toMatchObject({ distance: null, eliminated: true });
+  });
+  it('en un empate forzado el eliminado no lleva «Empate»', () => {
+    const rows = distanceRoundRows({ eligibleIds: ['a', 'b'], selections: { a: sel(5), b: sel(5) }, reason: 'FARTHEST', eliminatedIds: ['b'], tiedIds: ['a', 'b'] });
+    expect(rows.map((row) => [row.playerId, row.tied, row.eliminated])).toEqual([['a', true, false], ['b', false, true]]);
   });
 });

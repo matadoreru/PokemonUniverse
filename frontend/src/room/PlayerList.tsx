@@ -5,7 +5,7 @@ import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
 import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
 import { playerColor } from './player-color';
-import { DISTANCE_HIDDEN_PICKED_LABEL, distanceMemberStatus } from './pokedex-distance-selection';
+import { distanceMemberStatus, distanceMemberStatusLabels } from './pokedex-distance-selection';
 import s from './PlayerList.module.css';
 
 interface Props {
@@ -84,11 +84,9 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
           const away = member.presence !== 'CONNECTED';
           const meta = selection
             ? <span className={s.clip}>→ {selection.pokemonName}</span>
-            : status?.kind === 'hidden-picked' && member.role === 'PLAYER'
-              ? <span>{DISTANCE_HIDDEN_PICKED_LABEL}</span>
-              : game && member.role === 'PLAYER'
-                ? <span>seleccionando…</span>
-                : <>
+            : status && status.kind !== 'picked' && member.role === 'PLAYER'
+              ? <span className={status.kind === 'out' ? s.away : undefined}>{distanceMemberStatusLabels[status.kind]}</span>
+              : <>
                   {member.id === selfId && <span className={s.you}>(tú)</span>}
                   {member.roomRole === 'HOST' && <Badge tone="navy"><Icon icon={Crown} size={18} /> Host</Badge>}
                   {member.roomRole === 'CO_HOST' && <Badge tone="cream"><Icon icon={Star} size={18} /> Co-host</Badge>}

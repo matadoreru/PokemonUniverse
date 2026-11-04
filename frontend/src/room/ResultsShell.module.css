@@ -73,3 +73,87 @@
   gap: var(--sp-1) var(--sp-2);
   min-width: 0;
 }
+.headText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
+}
+
+/* Pantalla ancha (con `aside`): clasificación y métricas en dos columnas. */
+.wide {
+  max-width: 76rem;
+}
+.columns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+.column {
+  min-width: 0;
+}
+.column > :last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 640px) {
+  /* Cabecera en fila: trofeo a la izquierda, subtítulo y título al lado (ahorra alto). */
+  .wideHead {
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--sp-4);
+    text-align: left;
+  }
+  .wideHead .headText {
+    align-items: flex-start;
+    gap: var(--sp-1);
+  }
+}
+@media (min-width: 1024px) {
+  /* Llena el alto del `main` (como `SessionScreen`): cada columna se desplaza por dentro. */
+  .wide {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+  /* Mide lo que necesita (a 1920 no se estira vacío) y, si no cabe, las columnas se desplazan por dentro. */
+  .widePanel {
+    max-height: 100%;
+  }
+  .wideBody {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .wideHead {
+    flex: none;
+    margin-bottom: var(--sp-4);
+  }
+  .columns {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--sp-5);
+  }
+  .column {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--yellow) transparent;
+    /* Sitio para la sombra dura y el anillo de foco de lo que va dentro. */
+    padding: 2px 4px 6px 2px;
+  }
+  .wideActions {
+    flex: none;
+    margin-top: var(--sp-4);
+  }
+}

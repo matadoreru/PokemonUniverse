@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
-import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, SIZES, type CaptureOptions, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -36,6 +36,9 @@ const SOCKET_IO = /\/socket\.io\//;
 
 /** Estado de un jugador de Pokédex Distance que ya ha elegido con las elecciones ocultas (`pokedex-distance-selection.ts`). */
 const DISTANCE_PICKED = '✓ Ya ha elegido';
+
+/** Pantallas rediseñadas con Arcade DS (F5): texto de 13 px o más y, en escritorio, sin scroll de página ni del `main`. */
+const ARCADE: CaptureOptions = { minFontPx: 13, noPageScroll: true };
 
 /** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
@@ -185,12 +188,12 @@ for (const manifest of registry) {
  * después de cada captura se comprueba que sigue visible: una fase que avanza sola no debe fotografiar la siguiente.
  * Con `completa`, el PNG es de página completa (para paneles más altos que la vista; el medidor ya mide toda la página).
  */
-async function capturarTamanos(page: Page, nombre: string, { sigue, completa = false }: { sigue?: Locator; completa?: boolean } = {}): Promise<void> {
+async function capturarTamanos(page: Page, nombre: string, { sigue, completa = false, opts }: { sigue?: Locator; completa?: boolean; opts?: CaptureOptions } = {}): Promise<void> {
   const comprobar = async () => { if (sigue) await expect(sigue, `${nombre}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 }); };
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await page.waitForFunction(() => [...document.images].every((img) => img.complete), undefined, { timeout: 3_000 }).catch(() => undefined);
-    const { id, problems } = await layoutProblems(page, nombre, true, completa);
+    const { id, problems } = await layoutProblems(page, nombre, true, completa, opts);
     await comprobar();
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
@@ -628,20 +631,20 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await seleccionarJuego(host.page, 'Pokédex Distance');
     // Panel: «Ocultas» por defecto; «Visibles» muestra el aviso de copia. Se captura con el aviso y se vuelve a ocultas.
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
-    const ocultas = host.page.getByRole('button', { name: 'Ocultas', exact: true });
-    const visibles = host.page.getByRole('button', { name: 'Visibles', exact: true });
-    await expect(ocultas).toHaveAttribute('aria-pressed', 'true');
+    const ocultas = host.page.getByRole('radio', { name: 'Ocultas', exact: true });
+    const visibles = host.page.getByRole('radio', { name: 'Visibles', exact: true });
+    await expect(ocultas).toHaveAttribute('aria-checked', 'true');
     const aviso = host.page.getByText('Permite copiar: los demás ven tu elección al momento.');
     await expect(aviso).toHaveCount(0);
     await visibles.click();
-    await expect(visibles).toHaveAttribute('aria-pressed', 'true');
+    await expect(visibles).toHaveAttribute('aria-checked', 'true');
     await expect(aviso).toBeVisible();
     // Desde arriba, como el resto de capturas del lobby: con la página desplazada la cabecera fija solapa las pestañas.
     await host.page.evaluate(() => window.scrollTo(0, 0));
     // Página completa: a 390×844 el grupo «Elecciones de los rivales» queda bajo las generaciones.
-    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { completa: true });
+    await capturarTamanos(host.page, 'lobby-config-pokedex-distance', { completa: true, opts: { minFontPx: 13 } });
     await ocultas.click();
-    await expect(ocultas).toHaveAttribute('aria-pressed', 'true');
+    await expect(ocultas).toHaveAttribute('aria-checked', 'true');
     await expect(aviso).toHaveCount(0);
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
@@ -659,7 +662,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);
     await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible();
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-oculta', { sigue: yaHaElegido, opts: ARCADE });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -677,10 +680,10 @@ async function elegirPokemon(page: Page, nombre: string): Promise<void> {
 }
 
 /** Capturas de una fase que dura poco: lo que mida `measureLayout` se anota en vez de hacer fallar el test. */
-async function capturarAnotando(page: Page, nombre: string, sigue: Locator, sizes: readonly { w: number; h: number }[] = SIZES): Promise<void> {
+async function capturarAnotando(page: Page, nombre: string, sigue: Locator, sizes: readonly { w: number; h: number }[] = SIZES, opts: CaptureOptions = {}): Promise<void> {
   for (const { w, h } of sizes) {
     await page.setViewportSize({ width: w, height: h });
-    const { id, problems } = await layoutProblems(page, nombre, true);
+    const { id, problems } = await layoutProblems(page, nombre, true, false, opts);
     await expect(sigue, `${id}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 });
     if (problems.length) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problems.join(' · ')}` });
   }
@@ -728,7 +731,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     }
     const enLaRonda = host.page.getByRole('heading', { name: 'En la ronda' });
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-ronda-oculta', { sigue: enLaRonda, opts: ARCADE });
 
     // El tercero recarga: la app le ofrece «Volver a la sala» y vuelve al buscador antes de que venza la gracia de 8 s,
     // con la ronda aún abierta.
@@ -747,7 +750,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
 
     await expect(host.page.getByText('Resultado de la ronda')).toBeVisible({ timeout: 15_000 });
     await expect(host.page.getByRole('heading', { name: '⏱️ Tiempo agotado' })).toHaveCount(0);
-    const tarjeta = host.page.locator('article').filter({ hasText: tercero.name });
+    const tarjeta = host.page.getByRole('list', { name: 'Distancias de la ronda' }).getByRole('listitem').filter({ hasText: tercero.name });
     await expect(tarjeta).toContainText('Charmander');
     await expect(tarjeta).not.toContainText('Sin respuesta');
     // Revelación: regla con el objetivo en el centro y un marcador por jugador (6 s en pantalla). La suite fija la
@@ -763,7 +766,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     expect(await animacionDe(marcadores.first()), 'marcador con movimiento').toBe('motion-enter-up');
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-revelacion', { sigue: regla, opts: ARCADE });
     expect(antiguas, 'peticiones a /api/pokemon').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
@@ -793,7 +796,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     await saltarIntro(jugadores.map((j) => j.page));
 
     // El objetivo es público («Objetivo #N»): el host elige el Pokémon de ese número (forma por defecto, de la BD local).
-    const objetivo = host.page.locator('.label', { hasText: 'Objetivo' }).locator('xpath=following-sibling::div[1]');
+    const objetivo = host.page.getByRole('heading', { name: /^Objetivo/ });
     await expect(host.page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 20_000 });
     const numero = Number((await objetivo.innerText()).replace(/\D/g, ''));
     expect(numero, 'número del objetivo').toBeGreaterThan(0);
@@ -809,7 +812,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     try {
       await expect(banda).toContainText(`#${String(numero).padStart(3, '0')}`);
       await host.page.evaluate(() => window.scrollTo(0, 0));
-      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda });
+      await capturarTamanos(host.page, 'juego-pokedex-distance-acierto-exacto', { sigue: banda, opts: ARCADE });
     } finally {
       await host.page.clock.resume();
     }
@@ -856,7 +859,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
     await expect(vacio).toBeVisible({ timeout: 10_000 });
     const borrar = host.page.getByRole('button', { name: 'Borrar búsqueda' });
     await expect(borrar).toBeVisible();
-    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio });
+    await capturarTamanos(host.page, 'juego-buscador-vacio', { sigue: vacio, opts: ARCADE });
     await borrar.click();
     await expect(buscador).toHaveValue('');
     await expect(buscador).toBeFocused();
@@ -864,7 +867,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
 
     const alerta = invitado.page.getByRole('alert').filter({ hasText: 'No se pudo cargar el buscador de Pokémon.' });
     await expect(alerta).toBeVisible({ timeout: 20_000 });
-    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta });
+    await capturarTamanos(invitado.page, 'juego-buscador-error', { sigue: alerta, opts: ARCADE });
     bloqueado = false;
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
     await expect(alerta).toHaveCount(0, { timeout: 10_000 });
@@ -939,9 +942,9 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     const forzado = titulo('⚔️ Empate tras 3 desempates');
     await expect(forzado).toBeVisible({ timeout: 15_000 });
     await expect(host.page.getByText('Cae quien eligió último; si eligieron a la vez, caen todos.')).toBeVisible();
-    await expect(host.page.locator('article').filter({ hasText: invitado.name })).toContainText('Eliminado');
+    await expect(host.page.getByRole('list', { name: 'Distancias de la ronda' }).getByRole('listitem').filter({ hasText: invitado.name })).toContainText('Eliminado');
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarAnotando(host.page, 'juego-pokedex-distance-empate-forzado', forzado);
+    await capturarAnotando(host.page, 'juego-pokedex-distance-empate-forzado', forzado, SIZES, ARCADE);
 
     // Resultados propios: clasificación con la ronda de caída, mejor acierto y distancia por ronda (R1 y sus tres
     // desempates), sin NaN ni scroll horizontal de la página aunque la tabla tenga muchas columnas.
@@ -958,7 +961,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     await host.page.setViewportSize({ width: 390, height: 844 });
     expect(await host.page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'sin scroll horizontal de la página a 390').toBe(true);
     await host.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, completa: true });
+    await capturarTamanos(host.page, 'juego-pokedex-distance-resultados', { sigue: tabla, completa: true, opts: ARCADE });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

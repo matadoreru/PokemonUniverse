@@ -1,0 +1,23 @@
+import { describe, expect, it } from 'vitest';
+import { skipRowInLayout } from './game-skip-slot';
+
+const skip = { gameInstanceId: 'g1', votes: 0, requiredVotes: 2, currentUserVoted: false, canVote: true } as never;
+const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'type-duel', game: { gameId: 'type-duel' } } as never;
+
+describe('skipRowInLayout', () => {
+  it('pone la fila encima de los juegos sin rediseñar', () => {
+    expect(skipRowInLayout(base)).toBe(true);
+  });
+  it('sin votación no hay fila', () => {
+    expect(skipRowInLayout({ ...(base as object), gameSkipState: null } as never)).toBe(false);
+  });
+  it('en la intro va dentro de su pantalla', () => {
+    expect(skipRowInLayout({ ...(base as object), phase: 'GAME_STARTING', gameIntro: { gameInstanceId: 'g1' } } as never)).toBe(false);
+  });
+  it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
+    const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
+    expect(skipRowInLayout(distance as never)).toBe(false);
+    expect(skipRowInLayout({ ...distance, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...distance, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
+});

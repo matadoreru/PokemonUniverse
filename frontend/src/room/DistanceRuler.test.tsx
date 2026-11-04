@@ -18,6 +18,13 @@ const round: PublicRoundResult = {
 describe('DistanceRuler', () => {
   const html = renderToStaticMarkup(createElement(DistanceRuler, { round, members, selfId: 'p2' }));
 
+  it('pinta cada marcador con el color de su jugador y marca el propio', () => {
+    expect(html).toContain('--player:var(--info)');
+    expect(html).toContain('--player:var(--yellow)');
+    expect(html.match(/data-self="true"/g)).toHaveLength(1);
+    expect(html).toContain('data-tone="ok"');
+  });
+
   it('pone el objetivo en el centro y cada respuesta en la regla, animada', () => {
     expect(html).toContain('Distancia al objetivo');
     expect(html).toContain('#025');
@@ -42,14 +49,13 @@ describe('DistanceRuler', () => {
     const crowded = renderToStaticMarkup(createElement(DistanceRuler, { round: crowd, members, selfId: 'p1' }));
     expect(crowded.match(/data-testid="distance-ruler-marker"/g)).toHaveLength(5);
     expect(crowded.match(/<img /g)).toHaveLength(1);
-    expect(crowded).toContain('height:8.75rem');
+    expect(crowded).toContain('height:10rem');
   });
 
   it('marca en eléctrico a los empatados que no caen', () => {
     const tie: PublicRoundResult = { ...round, eliminatedIds: [], reason: 'TIE', tiedIds: ['p2'] };
     const tied = renderToStaticMarkup(createElement(DistanceRuler, { round: tie, members, selfId: 'p1' }));
-    expect(tied).toContain('ring-electric');
-    expect(tied).toContain('bg-electric/20 text-electric');
+    expect(tied).toContain('data-tone="warn"');
     expect(tied).toContain('Ana: #004, a 21, empate');
   });
 });

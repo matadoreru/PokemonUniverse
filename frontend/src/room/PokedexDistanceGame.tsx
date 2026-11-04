@@ -1,30 +1,45 @@
 import type { PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
-import { AlertTriangle, Clock3, Crosshair, Eye, Target, Trophy, UserX } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Check, Clock3, Crosshair, Eye, Hourglass, Lock, Ruler, Swords, Target, TimerOff, Trophy, UserX } from 'lucide-react';
 import { RevealCutIn } from '../components/RevealCutIn';
+import { Avatar } from '../components/Avatar';
+import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, ScreenSplit } from '../ui';
 import { formatDexNumber } from './distance-ruler';
+import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
+import { GameSkipSlot } from './GameSkipSlot';
 import { PlayerList } from './PlayerList';
+import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
-import { DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceSpectatorHint } from './pokedex-distance-selection';
+import { DISTANCE_EXACT_HIT_TITLE, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
+import s from './PokedexDistanceGame.module.css';
 
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
+
+/**
+ * Pokédex Distance (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, el objetivo y el tiempo, quién ha
+ * elegido y, al revelar, la regla. Abajo se actúa: el buscador o la elección bloqueada (y, al revelar, el veredicto con
+ * el tiempo hasta la siguiente ronda). En la columna lateral, los jugadores de la ronda y, al revelar, sus distancias.
+ */
 export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as PokedexDistancePublicState;
   const playerState = room.gamePlayerState as PokedexDistancePlayerState | null;
   const config = room.selectedGameConfig as PokedexDistanceConfig;
-  const generations = config.generations;
-  const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations });
+  const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config.generations });
   const serverOffset = useServerOffset(room.serverNow);
-  const remainingMs = useRemainingMs(game.roundEndsAt, serverOffset); const totalMs = config.roundSeconds * 1_000;
-  const resultsRemainingMs = useRemainingMs(game.nextTransitionAt, serverOffset);
-  const remaining = Math.ceil(remainingMs / 1_000); const progress = Math.min(100, remainingMs / totalMs * 100);
   const member = room.members.find((item) => item.id === selfId);
-  const outcome = game.lastRound ? distanceRoundOutcome(game.lastRound) : null;
+  const lastRound = game.lastRound;
+  const revealing = game.phase === 'ROUND_RESULTS' && lastRound !== null;
+  const outcome = lastRound ? distanceRoundOutcome(lastRound) : null;
   const activePhase = game.phase === 'ROUND_ACTIVE' || game.phase === 'TIEBREAKER_ACTIVE';
-  const eligible = game.eligibleIds.includes(selfId); const hasSelection = Boolean(playerState?.selection);
+  const eligible = game.eligibleIds.includes(selfId);
+  const hasSelection = Boolean(playerState?.selection);
   // Una ronda y sus desempates comparten `roundNumber`: la clave lleva también la profundidad.
   const roundKey = `${game.roundNumber}-${game.tiebreakDepth}`;
   const exactHitNow = activePhase && Boolean(playerState?.exactHit);
@@ -33,29 +48,108 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   // Solo `selectedIds` (quién, nunca qué): con las elecciones ocultas no adelanta nada.
   const pickedCount = game.selectedIds.filter((id) => game.eligibleIds.includes(id)).length;
   const targetLabel = formatDexNumber(game.targetDexNumber ?? 0);
-  return <section className="mx-auto max-w-7xl px-4 py-5 md:px-8">
-    <div className="mb-5 grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-      <div className="flex flex-wrap gap-2"><span className="chip">Ronda {game.roundNumber}</span>{game.tiebreakDepth > 0 && <span className="chip bg-berry/15 text-berry">Desempate {game.tiebreakDepth}</span>}{activePhase && <span className="chip tabular-nums" aria-live="polite">{distancePickedCountText(pickedCount, game.eligibleIds.length)}</span>}</div>
-      <div className="text-center"><span className="label">Objetivo</span><div className="font-display text-5xl font-bold sm:text-6xl"><Target className="mr-2 inline text-berry" size={38} />{targetLabel}</div></div>
-      <div className="flex items-center justify-end gap-2"><Trophy size={18} className="text-berry" /><span className="font-extrabold tabular-nums">{member?.sessionPoints ?? 0} pts</span></div>
+  const memberOf = (playerId: string) => room.members.find((item) => item.id === playerId);
+  const colorOf = (playerId: string) => playerColor(Math.max(0, room.members.findIndex((item) => item.id === playerId)));
+  // La elección propia sale del catálogo público del buscador (nombre y sprite, nunca el número).
+  const ownPick = playerState?.selection ? pokemon.find((entry) => entry.id === playerState.selection!.pokemonId) ?? null : null;
+
+  const hud = <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
+    <div className={s.round}>
+      <Badge>Ronda {game.roundNumber}</Badge>
+      {game.tiebreakDepth > 0 && <Chip tone="warn">Desempate {game.tiebreakDepth}</Chip>}
+      <span className={s.points}><Icon icon={Trophy} size={18} />{member?.sessionPoints ?? 0} pts</span>
     </div>
+    <div className={s.target}>
+      <span className={s.targetIcon}><Icon icon={Target} size={32} /></span>
+      <h2 className={s.targetTitle}>
+        <span className={s.targetKicker}>Objetivo</span>
+        <span className={cx(s.targetNumber, 'ol2')}>{targetLabel}</span>
+      </h2>
+    </div>
+    <div className={s.timer}>
+      {activePhase && <ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} totalMs={config.roundSeconds * 1_000} label="Tiempo" />}
+      {revealing && <ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" />}
+    </div>
+  </Panel>;
+
+  const picks = activePhase && <div className={s.picks}>
+    <p className={s.pickCount} aria-live="polite">{distancePickedCountText(pickedCount, game.eligibleIds.length)}</p>
+    <ul className={s.chips} aria-label="Quién ha elegido">{game.eligibleIds.map((playerId) => {
+      const picked = game.selectedIds.includes(playerId);
+      return <li key={playerId}><Chip tone={picked ? 'ok' : 'neutral'} icon={<Icon icon={picked ? Check : Hourglass} size={18} />}>
+        <span className={s.chipName} title={memberOf(playerId)?.displayName ?? playerId}>{memberOf(playerId)?.displayName ?? playerId}</span>
+        <span className="sr-only">{picked ? ': ya ha elegido' : ': eligiendo'}</span>
+      </Chip></li>;
+    })}</ul>
+  </div>;
+
+  const top = <div className={s.top}>
+    {hud}
+    {picks}
+    {revealing
+      ? <DistanceRuler round={lastRound} members={room.members} selfId={selfId} />
+      : <DexStrip target={game.targetDexNumber} generations={config.generations} />}
+    {!activePhase && !revealing && <p className={s.lead}>Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: cae quien quede más lejos.</p>}
+  </div>;
+
+  const panel = revealing
+    ? <Panel title="Resultado de la ronda" variant="dark" scroll scrollLabel="Distancias de la ronda" className={cx(s.sidePanel)}>
+      <ul className={s.rows} aria-label="Distancias de la ronda">{distanceRoundRows(lastRound).map((row) => {
+        const rowMember = memberOf(row.playerId);
+        const name = rowMember?.displayName ?? row.playerId;
+        const selection = lastRound.selections[row.playerId];
+        return <li key={row.playerId}>
+          <Row
+            name={name}
+            color={colorOf(row.playerId)}
+            self={row.playerId === selfId}
+            avatar={selection ? <img className={s.rowSprite} src={selection.sprite} alt="" /> : <Avatar name={name} avatar={rowMember?.avatar} size="sm" />}
+            meta={<span className={s.rowMeta}>
+              {selection ? <span className={s.clip}>{selection.pokemonName} · {formatDexNumber(selection.dexNumber)}</span> : <span className={s.strong}>Sin respuesta</span>}
+              {row.eliminated && <Chip tone="bad" icon={<Icon icon={UserX} size={18} />}>Eliminado</Chip>}
+              {row.tied && <Chip tone="warn">Empate</Chip>}
+              {row.exact && <Chip tone="ok" icon={<Icon icon={Crosshair} size={18} />}>{DISTANCE_EXACT_HIT_TITLE}</Chip>}
+            </span>}
+            value={selection ? <span className={s.distance}><small>a </small>{selection.distance}</span> : <span className={s.distance}>—</span>}
+          />
+        </li>;
+      })}</ul>
+    </Panel>
+    : <Panel title="En la ronda" variant="dark" scroll scrollLabel="Jugadores de la ronda" className={cx(s.sidePanel)} right={<Badge tone="cream">{`${game.survivorIds.length} siguen`}</Badge>}>
+      <PlayerList members={room.members} game={game} selfId={selfId} />
+    </Panel>;
+  const side = <div className={s.side}>{panel}<GameSkipSlot className={s.skip} /></div>;
+
+  const bottom = revealing
+    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={`Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note ? 'warn' : 'info'} />
+    : activePhase && eligible && !hasSelection
+      ? <div className={s.selector}><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} /></div>
+      : member?.role === 'SPECTATOR' || !eligible
+        ? <ActionStatus icon={Eye} kicker="Sin elección esta ronda" title="Estás observando" text={distanceSpectatorHint(config.selectionVisibility)} tone="info" />
+        : hasSelection
+          ? <ActionStatus icon={playerState?.exactHit ? Crosshair : Lock} kicker={playerState?.exactHit ? 'Distancia 0' : 'Elección bloqueada'}
+            title={playerState?.exactHit ? DISTANCE_EXACT_HIT_TITLE : '¡Selección confirmada!'}
+            text={playerState?.exactHit ? 'Has elegido exactamente el Pokémon objetivo.' : 'Ya está bloqueada en el servidor.'}
+            tone={playerState?.exactHit ? 'ok' : 'info'}
+            aside={ownPick ? <span className={s.pick}><Card size="sm" name={ownPick.name} sprite={ownPick.sprite} decorativeSprite state={playerState?.exactHit ? 'correct' : 'selected'} /></span> : null} />
+          : <ActionStatus icon={Clock3} kicker="Pokédex Distance" title="Siguiente ronda en breve…" text="El servidor prepara el próximo objetivo." tone="info" />;
+
+  return <div className={cx('content-row', s.screen)}>
+    <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} />}
-    {activePhase && <div className="mb-5"><div className="mb-1.5 flex items-center justify-between text-sm font-extrabold"><span className="flex items-center gap-1.5"><Clock3 size={17} /> Tiempo del servidor</span><span className={`tabular-nums ${remaining <= 5 ? 'timer-pulse text-xl text-berry' : ''}`}>{remaining}s</span></div><div className="timer-track h-3 overflow-hidden rounded-full"><div className={`h-full w-full origin-left transition-transform duration-100 motion-reduce:transition-none ${remaining <= 5 ? 'bg-berry' : 'bg-aqua'}`} style={{ transform: `scaleX(${progress / 100})` }} /></div></div>}
-    {game.phase === 'ROUND_RESULTS' && game.lastRound && <div className="reveal-pop mb-6 rounded-2xl border border-aqua/45 bg-surface p-4 shadow-card sm:p-6">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><span className="label">Resultado de la ronda</span><h2 className="font-display text-3xl font-bold">{outcome!.title}</h2></div><span className="chip"><Clock3 size={16} /> {Math.max(1, Math.ceil(resultsRemainingMs / 1_000))}s</span></div>
-      <DistanceRuler round={game.lastRound} members={room.members} selfId={selfId} />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{game.lastRound.eligibleIds.map((playerId) => {
-        const selection = game.lastRound!.selections[playerId]; const eliminated = game.lastRound!.eliminatedIds.includes(playerId); const tied = outcome!.showTiedChip(playerId); const exact = selection?.distance === 0; const resultMember = room.members.find((item) => item.id === playerId); const displayName = resultMember?.displayName ?? playerId;
-        return <article key={playerId} className={`rounded-2xl border p-4 ${eliminated ? 'border-berry bg-berry/10' : tied ? 'border-electric bg-electric/10' : exact ? 'border-leaf bg-leaf/10' : 'border-ink/10 bg-surface-raised'}`}>
-          <div className="mb-3 flex items-center gap-2"><Avatar name={displayName} avatar={resultMember?.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate font-display text-xl">{displayName}</strong>{eliminated && <span className="chip bg-berry/15 text-berry"><UserX size={15} /> Eliminado</span>}{tied && <span className="chip bg-electric/20 text-electric"><AlertTriangle size={15} /> Empate</span>}</div>
-          {selection ? <><div className="flex items-center gap-3"><img src={selection.sprite} alt={selection.pokemonName} className="h-20 w-20 object-contain [image-rendering:pixelated]" /><div><strong className="block font-display text-lg">{selection.pokemonName}</strong><span className="font-extrabold tabular-nums text-ink/70">{formatDexNumber(selection.dexNumber)}</span></div></div><div className="mt-3 rounded-xl bg-night/40 px-3 py-2 font-extrabold">Distancia: <span className={`tabular-nums ${exact ? 'text-leaf' : 'text-aqua'}`}>{selection.distance}</span></div>{exact && <p className="mt-2 flex items-center gap-2 font-display font-bold text-leaf"><Crosshair size={18} /> {DISTANCE_EXACT_HIT_TITLE}</p>}</> : <div className="grid min-h-28 place-items-center rounded-xl bg-night/30 text-center"><div><UserX className="mx-auto mb-2 text-berry" /><strong className="text-berry">Sin respuesta</strong></div></div>}
-        </article>;
-      })}</div>
-      {outcome!.note && <p className="mt-4 rounded-2xl bg-electric/15 p-3 text-center font-extrabold text-electric">{outcome!.note}</p>}
-    </div>}
-    {game.phase !== 'ROUND_RESULTS' && <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
-      <aside className="card !p-4"><div className="mb-3 flex items-center justify-between"><h2 className="font-display text-xl font-bold">En la ronda</h2><span className="chip">{game.survivorIds.length} siguen</span></div><PlayerList members={room.members} game={game} selfId={selfId} /></aside>
-      <div>{activePhase && eligible && !hasSelection ? <PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className={`card grid min-h-[280px] place-items-center text-center ${playerState?.exactHit ? '!border-leaf bg-leaf/10' : ''}`}><div>{member?.role === 'SPECTATOR' || !eligible ? <><Eye className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Estás observando</h2><p className="mt-2 font-bold text-ink/65">{distanceSpectatorHint(config.selectionVisibility)}</p></> : hasSelection && playerState?.exactHit ? <div className="reveal-pop"><div className="mx-auto grid h-24 w-24 place-items-center rounded-full border-4 border-leaf bg-leaf/20 text-leaf shadow-card"><Crosshair size={52} /></div><span className="label mt-5 text-leaf">Distancia 0</span><h2 className="mt-1 font-display text-4xl font-bold text-leaf">{DISTANCE_EXACT_HIT_TITLE}</h2><p className="mt-2 font-bold text-ink/60">Has elegido exactamente el Pokémon objetivo.</p><span className="chip mt-4 bg-leaf/15 text-leaf">Selección bloqueada ✓</span></div> : hasSelection ? <><div className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-leaf/20 text-4xl">✓</div><h2 className="mt-4 font-display text-2xl font-bold">¡Selección confirmada!</h2><p className="mt-2 font-bold text-ink/65">Ya está bloqueada en el servidor.</p></> : <><Clock3 className="mx-auto text-aqua" size={48} /><h2 className="mt-4 font-display text-2xl font-bold">Siguiente ronda en breve…</h2></>}</div></div>}</div>
-    </div>}
-  </section>;
+  </div>;
 }
+
+/** Pantalla inferior sin buscador: placa crema con icono, estado y, a la derecha, el tiempo o la carta elegida. */
+function ActionStatus({ icon, kicker, title, text, tone, aside }: { icon: LucideIcon; kicker: string; title: string; text: string; tone: 'ok' | 'info' | 'warn'; aside?: ReactNode }) {
+  return <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
+    <span className={cx(s.actionIcon, s[tone])}><Icon icon={icon} size={32} /></span>
+    <div className={s.status}>
+      <span className={s.kicker}>{kicker}</span>
+      <h2 className={s.actionTitle}>{title}</h2>
+      <p className={s.help}>{text}</p>
+    </div>
+    {aside && <div className={s.aside}>{aside}</div>}
+  </Panel>;
+}
+

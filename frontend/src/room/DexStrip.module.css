@@ -1,0 +1,81 @@
+/* Tira de la Pokédex nacional (pista de Pokédex Distance): bandas por generación y la chincheta del objetivo. */
+.strip {
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--navy-2);
+  box-shadow: var(--sh-hard-3);
+}
+.caption {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.track {
+  position: relative;
+  display: flex;
+  height: 22px;
+  margin-top: var(--sp-4);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-badge);
+  background: var(--navy-3);
+}
+.band {
+  min-width: 0;
+  border-right: var(--ol-1-5) solid var(--navy);
+  opacity: 0.4;
+}
+.band:last-of-type {
+  border-right: 0;
+}
+.on {
+  background: var(--blue);
+  opacity: 1;
+}
+.range {
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.labels {
+  display: flex;
+  margin-top: var(--sp-2);
+}
+.gen {
+  min-width: 0;
+  overflow: hidden;
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--sky-2);
+}
+.genOn {
+  color: var(--white);
+}
+/* Chincheta: palo amarillo que sobresale por arriba y por abajo, con cabeza redonda. */
+.pin {
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  left: var(--at);
+  width: 6px;
+  margin-left: -3px;
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: 3px;
+  background: var(--yellow);
+}
+.head {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  background: var(--yellow);
+}

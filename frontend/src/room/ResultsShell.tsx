@@ -53,23 +53,36 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
 /**
  * Marco de los resultados de una partida o de la sesión: trofeo, subtítulo y título (`h1`) en un panel azul noche (los hijos de los juegos aún sin migrar esperan fondo oscuro). Con
  * `standings` pinta además la clasificación del catálogo; sin ella, cada juego pone la suya en `children`.
+ *
+ * Con `aside` (las métricas propias del juego) pasa a pantalla ancha: desde 1024 px llena el alto del `main` sin scroll
+ * de página, con la clasificación (y `children`) a la izquierda y `aside` a la derecha, cada columna con su propio
+ * desplazamiento; en el móvil, una columna. `actions` queda abajo, siempre a la vista en escritorio.
  */
-export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; children: ReactNode }) {
+export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, aside, actions, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; aside?: ReactNode; actions?: ReactNode; children?: ReactNode }) {
   // Solo al montar: un cambio posterior de `won` no repite el sonido.
   const initial = useRef({ podium, won });
   useEffect(() => {
     const cue = resultsCue(initial.current);
     if (cue) audio.play(cue);
   }, []);
-  return <section className={s.shell}>
-    <Panel variant="dark" as="div" bodyClassName={cx(s.body)}>
-      <header className={s.head}>
+  const wide = aside != null;
+  const ranking = standings && <ResultsStandings standings={standings} selfId={selfId} {...(pointsLabel ? { pointsLabel } : {})} {...(winnersNeedPoints ? { winnersNeedPoints } : {})} />;
+  return <section className={cx(s.shell, wide && s.wide)}>
+    <Panel variant="dark" as="div" className={cx(wide && s.widePanel)} bodyClassName={cx(s.body, wide && s.wideBody)}>
+      <header className={cx(s.head, wide && s.wideHead)}>
         <span className={s.trophy}><Icon icon={Trophy} size={32} /></span>
-        <span className={s.subtitle}>{subtitle}</span>
-        <h1 className={s.title}>{title}</h1>
+        <span className={s.headText}>
+          <span className={s.subtitle}>{subtitle}</span>
+          <h1 className={s.title}>{title}</h1>
+        </span>
       </header>
-      {standings && <ResultsStandings standings={standings} selfId={selfId} {...(pointsLabel ? { pointsLabel } : {})} />}
-      {children}
+      {wide
+        ? <div className={s.columns}>
+          <div className={s.column}>{ranking}{children}</div>
+          <div className={s.column}>{aside}</div>
+        </div>
+        : <>{ranking}{children}</>}
+      {actions && <div className={cx(s.actions, wide && s.wideActions)}>{actions}</div>}
     </Panel>
   </section>;
 }

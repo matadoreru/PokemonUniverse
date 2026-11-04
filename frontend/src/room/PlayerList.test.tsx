@@ -58,7 +58,7 @@ describe('PlayerList', () => {
   });
 
   it('en Pokédex Distance muestra la elección y oculta las insignias del lobby', () => {
-    const game = { survivorIds: ['host', 'co'], selectedIds: ['host'], selections: { host: { pokemonId: 25, pokemonName: 'Pikachu', sprite: '/p.png' } } } as unknown as PokedexDistancePublicState;
+    const game = { eligibleIds: ['host', 'co'], survivorIds: ['host', 'co'], spectatorIds: [], selectedIds: ['host'], selections: { host: { pokemonId: 25, pokemonName: 'Pikachu', sprite: '/p.png' } } } as unknown as PokedexDistancePublicState;
     const markup = render({ game });
     expect(markup).not.toContain('Controla el inicio');
     expect(markup).not.toContain(' pts');

@@ -12,6 +12,7 @@ import { createConnectionNotice, type ConnectionNoticeKind } from './connection-
 import n from './ConnectionNotice.module.css';
 import { RoomProvider, useRoom } from './RoomContext';
 import { RoomPlatePortal } from './RoomPlate';
+import { skipRowInLayout } from './game-skip-slot';
 import { SkipGameControl } from './SkipGameControl';
 
 /**
@@ -93,8 +94,8 @@ function RoomSessionContent() {
       ]}>
       <p>Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.</p>
     </Dialog>
-    {/* En la intro el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
-    {room?.gameSkipState && !(room.phase === 'GAME_STARTING' && room.gameIntro) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
+    {/* En la intro y en los juegos rediseñados el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
+    {room?.gameSkipState && skipRowInLayout(room) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
     <Outlet />

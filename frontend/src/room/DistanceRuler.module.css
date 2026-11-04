@@ -1,0 +1,157 @@
+/*
+ * Regla de la revelación de Pokédex Distance (spec §6 «Juegos»): losa azul noche con la pista, el objetivo en el centro
+ * y un marcador por jugador enmarcado en su color (`--player`).
+ */
+.ruler {
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--navy-2);
+  box-shadow: var(--sh-hard-3);
+}
+.caption {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.body {
+  padding: var(--sp-2) var(--sp-5) 0;
+}
+.lanes {
+  position: relative;
+  isolation: isolate;
+}
+.marker {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(-50%);
+}
+.markerBody {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+/* Sprite del jugador en un círculo crema con el aro de su color (el nombre va en el texto accesible y en las franjas). */
+.sprite {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: var(--ol-3) solid var(--player, var(--sky));
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: 0 0 0 var(--ol-2) var(--navy);
+}
+.sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.5);
+  image-rendering: pixelated;
+}
+/* El propio: anillo amarillo por fuera (además del texto accesible). */
+.self {
+  box-shadow: 0 0 0 var(--ol-2) var(--navy), 0 0 0 5px var(--yellow);
+}
+/* Compacto (más de tres carriles): una banda del color del jugador sobre el chip. */
+.dot {
+  width: 22px;
+  height: 6px;
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--player, var(--sky));
+}
+.stem {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--sky-2);
+  opacity: 0.45;
+}
+.track {
+  position: relative;
+  height: 8px;
+  margin-top: var(--sp-1);
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--navy-3);
+}
+.tick {
+  position: absolute;
+  top: -5px;
+  width: 2px;
+  height: 14px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--sky-2);
+}
+.tickTarget {
+  top: -9px;
+  width: 6px;
+  height: 22px;
+  margin-left: -3px;
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: 2px;
+  background: var(--yellow);
+}
+.scale {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+.edge {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  color: var(--sky-2);
+}
+.edgeRight {
+  text-align: right;
+}
+.target {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.targetSprite {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  transform: scale(1.4);
+  image-rendering: pixelated;
+}
+.targetText {
+  min-width: 0;
+  text-align: left;
+}
+.targetNumber {
+  display: block;
+  font: 800 var(--fs-26) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--yellow);
+}
+.targetName {
+  display: block;
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  color: var(--white);
+}
+.missing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+@media (max-width: 639px) {
+  .body {
+    padding-inline: var(--sp-4);
+  }
+}

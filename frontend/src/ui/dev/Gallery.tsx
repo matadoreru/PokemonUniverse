@@ -845,6 +845,11 @@ function GamePiecesSection() {
           <p>Aquí cada juego añade lo suyo (mejor acierto, tablas) y las acciones del anfitrión.</p>
         </ResultsShell>
       </Fig>
+      <Fig id="results-shell-aside" caption="Resultados de partida en dos columnas (ResultsShell con aside y acciones)" wide>
+        <ResultsShell title="Resultado de la partida" subtitle="Pokédex Distance · Partida 2" standings={RESULTS} selfId="ash"
+          aside={<Panel variant="cream" as="div"><p>Métricas propias del juego: mejor acierto, distancia por ronda…</p></Panel>}
+          actions={<><Pill variant="yellow">Continuar sesión</Pill><Pill variant="ghost">Terminar sesión</Pill></>} />
+      </Fig>
     </Section>
   );
 }

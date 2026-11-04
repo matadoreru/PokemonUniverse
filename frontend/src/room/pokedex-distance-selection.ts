@@ -15,17 +15,36 @@ export const DISTANCE_HIDDEN_PICKED_LABEL = '✓ Ya ha elegido';
 export type DistanceMemberStatus =
   | { kind: 'picked'; pokemonName: string; sprite: string }
   | { kind: 'hidden-picked' }
-  | { kind: 'picking' };
+  | { kind: 'picking' }
+  /** Sigue en la partida pero no juega esta ronda de desempate. */
+  | { kind: 'waiting' }
+  /** Entró con la partida empezada: la observa. */
+  | { kind: 'watching' }
+  /** Cayó en una ronda anterior. */
+  | { kind: 'out' };
+
+/** Texto del estado de un jugador en la lista de la ronda (el de `hidden-picked` lo buscan las E2E). */
+export const distanceMemberStatusLabels: Record<Exclude<DistanceMemberStatus['kind'], 'picked'>, string> = {
+  'hidden-picked': DISTANCE_HIDDEN_PICKED_LABEL,
+  picking: 'seleccionando…',
+  waiting: 'Espera el desempate',
+  watching: 'Observando',
+  out: 'Eliminado',
+};
 
 /**
  * Qué se sabe de la elección de un jugador en la ronda en curso: el Pokémon si la proyección lo publica (`LIVE`),
- * solo que ya ha elegido si está oculta (`HIDDEN`, por `selectedIds`), o que aún está eligiendo.
+ * solo que ya ha elegido si está oculta (`HIDDEN`, por `selectedIds`), que aún está eligiendo o, si no juega la ronda,
+ * por qué (espera el desempate, observa o ya cayó).
  */
 export function distanceMemberStatus(game: PokedexDistancePublicState, memberId: string): DistanceMemberStatus {
   const selection = game.selections[memberId];
   if (selection) return { kind: 'picked', pokemonName: selection.pokemonName, sprite: selection.sprite };
   if (game.selectedIds.includes(memberId)) return { kind: 'hidden-picked' };
-  return { kind: 'picking' };
+  if (game.eligibleIds.includes(memberId)) return { kind: 'picking' };
+  if (game.survivorIds.includes(memberId)) return { kind: 'waiting' };
+  if (game.spectatorIds.includes(memberId)) return { kind: 'watching' };
+  return { kind: 'out' };
 }
 
 /** Texto para quien observa la ronda: en `HIDDEN` no hay selecciones en directo que seguir. */
@@ -62,4 +81,29 @@ export function distanceRoundOutcome(round: Pick<PokedexDistancePublicState['las
 /** Cuántos de los que juegan la ronda ya han elegido (solo `selectedIds`: nunca qué). */
 export function distancePickedCountText(selected: number, eligible: number): string {
   return `${selected} de ${eligible} ${selected === 1 ? 'ha' : 'han'} elegido`;
+}
+
+/** Franja de un jugador en los resultados de la ronda. */
+export interface DistanceRoundRow {
+  playerId: string;
+  /** `null`: no respondió. */
+  distance: number | null;
+  eliminated: boolean;
+  /** Lleva la etiqueta «Empate» (como `showTiedChip`). */
+  tied: boolean;
+  exact: boolean;
+}
+
+/**
+ * Franjas del resultado de una ronda, de la más cercana a la más lejana y, al final, quien no respondió; con la misma
+ * distancia mantiene el orden de la ronda. Solo usa la ronda ya resuelta (`lastRound`).
+ */
+export function distanceRoundRows(round: Pick<PokedexDistancePublicState['lastRound'] & object, 'eligibleIds' | 'selections' | 'reason' | 'eliminatedIds' | 'tiedIds'>): DistanceRoundRow[] {
+  const outcome = distanceRoundOutcome(round);
+  const rows = round.eligibleIds.map((playerId) => {
+    const distance = round.selections[playerId]?.distance ?? null;
+    return { playerId, distance, eliminated: round.eliminatedIds.includes(playerId), tied: outcome.showTiedChip(playerId), exact: distance === 0 };
+  });
+  const key = (row: DistanceRoundRow) => row.distance ?? Number.POSITIVE_INFINITY;
+  return rows.map((row, index) => ({ row, index })).sort((a, b) => key(a.row) - key(b.row) || a.index - b.index).map(({ row }) => row);
 }

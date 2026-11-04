@@ -86,9 +86,10 @@ describe('Pokédex Distance: resultados', () => {
   });
 
   it('writes the stats line with plurals and tiebreaks only when there are any', () => {
-    expect(distanceStatsLine({ exactHits: 1, averageDistance: 12.5, tiebreaksWon: 1 })).toBe('1 acierto exacto · distancia media 12.5 · 1 desempate superado');
+    expect(distanceStatsLine({ exactHits: 1, averageDistance: 12.5, tiebreaksWon: 1 })).toBe('1 acierto exacto · distancia media 12,5 · 1 desempate superado');
     expect(distanceStatsLine({ exactHits: 0, averageDistance: 0, tiebreaksWon: 0 })).toBe('0 aciertos exactos · distancia media 0');
     expect(distanceStatsLine({ exactHits: 2, averageDistance: 3, tiebreaksWon: 2 })).toBe('2 aciertos exactos · distancia media 3 · 2 desempates superados');
+    expect(distanceStatsLine({ exactHits: 0, averageDistance: 181.754, tiebreaksWon: 0 })).toBe('0 aciertos exactos · distancia media 181,75');
   });
 
   it('explains a forced-tie elimination at the tiebreak cap', () => {

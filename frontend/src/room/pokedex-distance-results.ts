@@ -117,11 +117,14 @@ export function distanceCell(record: DistanceRoundRecord, playerId: string): Dis
   return { text, mark: null, tone: 'ink', label: `${round}: ${what}` };
 }
 
+/** Media con coma decimal y dos decimales como mucho: `181,75`. */
+const formatAverage = (value: number) => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2 }).format(value);
+
 const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 
 /** Estadísticas de una fila de la clasificación (`GameStanding.stats` de Distance). */
 export function distanceStatsLine(stats: Readonly<Record<string, number | undefined>>): string {
-  const parts = [plural(stats.exactHits ?? 0, 'acierto exacto', 'aciertos exactos'), `distancia media ${stats.averageDistance ?? 0}`];
+  const parts = [plural(stats.exactHits ?? 0, 'acierto exacto', 'aciertos exactos'), `distancia media ${formatAverage(stats.averageDistance ?? 0)}`];
   const tiebreaks = stats.tiebreaksWon ?? 0;
   if (tiebreaks > 0) parts.push(plural(tiebreaks, 'desempate superado', 'desempates superados'));
   return parts.join(' · ');
