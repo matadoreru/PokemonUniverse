@@ -16,7 +16,7 @@ function gridColumns(buttons: readonly HTMLElement[]): number {
   return Math.max(1, columns);
 }
 
-export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, loading = false, loadError = '', onRetry, initialQuery = '', onSelect }: { pokemon: readonly PokemonSearchOption[]; locked: Set<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; loading?: boolean; loadError?: string; onRetry?(): void; /** Búsqueda inicial (galería y pruebas). */ initialQuery?: string; onSelect(id: string): Promise<void> }) {
+export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, loading = false, loadError = '', onRetry, initialQuery = '', onSelect }: { pokemon: readonly PokemonSearchOption[]; locked: ReadonlySet<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; loading?: boolean; loadError?: string; onRetry?(): void; /** Búsqueda inicial (galería y pruebas). */ initialQuery?: string; onSelect(id: string): Promise<void> }) {
   const [query, setQuery] = useState(initialQuery);
   const [pending, setPending] = useState('');
   const [error, setError] = useState('');

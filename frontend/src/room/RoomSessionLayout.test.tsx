@@ -28,7 +28,7 @@ describe('global room actions', () => {
     expect(markup).toContain('1/4');
   });
 
-  it.each(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race'])('%s pinta «Saltar minijuego» dentro de su pantalla, no en el armazón', (gameId) => {
+  it.each(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain'])('%s pinta «Saltar minijuego» dentro de su pantalla, no en el armazón', (gameId) => {
     expect(render(gameId, 'ROUND_ACTIVE', skip)).not.toContain('Votar para saltar el minijuego');
   });
 

@@ -23,6 +23,8 @@ export interface GuessSelectorProps {
   inputLabel: string;
   /** Cambia con la ronda: el buscador se vuelve a montar vacío. */
   roundKey: string | number;
+  /** Pokémon que no se pueden elegir (p. ej. los ya usados en la cadena de Type Chain); por defecto, ninguno. */
+  locked?: ReadonlySet<string> | undefined;
   /**
    * Envía el intento (`GUESS_POKEMON`). Su fallo no se pinta aquí (lo dice el aviso global de la sala): el kit lo
    * descarta, así el buscador nunca muestra `caught.message`.
@@ -88,7 +90,7 @@ export function GuessPanel(props: GuessPanelProps) {
     </div>
     {kind === 'guess' && selector && <div className={s.search}>
       <PokemonSelector key={selector.roundKey} pokemon={selector.pokemon} loading={selector.loading} loadError={selector.loadError} onRetry={selector.onRetry}
-        locked={EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={selector.inputLabel}
+        locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={selector.inputLabel}
         onSelect={(pokemonId) => selector.onGuess(pokemonId).catch(ignoreFailure)} />
     </div>}
   </Panel>;

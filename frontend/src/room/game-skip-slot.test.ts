@@ -74,6 +74,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...race, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...race, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Type Chain la lleva dentro de su pantalla salvo en los resultados', () => {
+    const chain = { ...(base as object), selectedGameId: 'type-chain', game: { gameId: 'type-chain' } };
+    expect(skipRowInLayout(chain as never)).toBe(false);
+    expect(skipRowInLayout({ ...chain, phase: 'TURN_ACTIVE' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...chain, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

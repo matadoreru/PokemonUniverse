@@ -1,57 +1,99 @@
-import type { RoomView, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
-import { Clock3, Eye, History, Skull, Trophy, Users, XCircle } from 'lucide-react';
-import { memo, useState } from 'react';
-import { Avatar } from '../components/Avatar';
-import { PokemonTypeBadge, pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import type { RoomView, TypeChainConfig, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
+import { Clock3, Eye, Hourglass, Search, Skull, X } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { TypeChainAttempts, TypeChainChain, TypeChainHud, TypeChainPlayers, TypeChainStage } from '../games/type-chain/TypeChainParts';
+import { typeChainAnnouncement, typeChainEliminationLabels, typeChainFocusKey, typeChainPlateKind, typeChainReasonLabels, typeChoiceText, type TypeChainPlateKind } from '../games/type-chain/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { Chip, cx, Icon, ScreenSplit } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
+import s from '../games/type-chain/TypeChain.module.css';
 
-const reasonLabels: Record<TypeChainInvalidReason, string> = {
-  ALREADY_USED: 'Este Pokémon ya ha sido utilizado.', NO_SHARED_TYPE: 'No comparte ningún tipo.',
-  MULTIPLE_SHARED_TYPES: 'Comparte los dos tipos. Debe compartir exactamente uno.', OUT_OF_POOL: 'Pokémon fuera de las generaciones permitidas.',
-};
-
-const TurnTimer = memo(function TurnTimer({ deadline, serverOffset }: { deadline: number | null; serverOffset: number }) {
-  const remaining = Math.ceil(useRemainingMs(deadline, serverOffset, 250) / 1_000);
-  return <strong role="timer" aria-label={`${remaining} segundos restantes`} className={`inline-flex min-w-[4.7ch] items-center justify-center gap-1.5 font-display text-3xl tabular-nums ${remaining <= 5 ? 'pokeddle-timer-urgent text-berry' : remaining <= 10 ? 'text-electric' : 'text-aqua'}`}><Clock3 size={22} />{remaining}s</strong>;
-});
-
-function EventBanner({ room, game }: { room: RoomView; game: TypeChainPublicState }) {
-  const event = game.events.at(-1); if (!event) return null; const name = (id: string) => room.members.find((member) => member.id === id)?.displayName ?? id;
-  if (event.kind === 'CHAIN_RESET') return <div className="reveal-pop rounded-2xl border border-electric/30 bg-electric/[0.08] p-3 text-center"><strong className="font-display text-xl text-electric">⛓ Cadena bloqueada · nueva cadena</strong><p className="text-sm font-bold text-ink/65">La anterior alcanzó {event.previousLength} Pokémon. Nadie ha sido eliminado.</p></div>;
-  if (event.kind === 'ELIMINATION') return <div className="reveal-pop rounded-2xl border border-berry/30 bg-berry/[0.08] p-3 text-center"><strong className="font-display text-xl text-berry">💥 {name(event.playerId)} eliminado</strong><p className="text-sm font-bold text-ink/65">{event.reason === 'TIMEOUT' ? 'No encontró una respuesta válida a tiempo.' : 'Se desconectó durante su turno.'}</p></div>;
-  return <div className="reveal-pop rounded-2xl border border-leaf/25 bg-leaf/[0.07] p-3 text-center"><strong className="font-display text-lg text-leaf">✓ {name(event.playerId)} continúa</strong><p className="text-sm font-bold text-ink/65">{event.from.name} → {event.to.name} · comparte {pokemonTypeLabels[event.sharedType]}</p></div>;
-}
-
-function CurrentPokemon({ game }: { game: TypeChainPublicState }) {
-  const current = game.chain.at(-1)!;
-  return <section className="text-center"><span className="label !mb-0">Pokémon actual</span><div className="mx-auto mt-2 grid min-h-64 max-w-xl place-items-center rounded-2xl border border-aqua/15 bg-[radial-gradient(circle_at_center,rgba(29,201,224,.12),transparent_67%)] p-4"><img src={current.pokemon.sprite} alt={current.pokemon.name} className="h-44 w-44 object-contain drop-shadow-lg [image-rendering:pixelated] sm:h-52 sm:w-52" /><h2 className="font-display text-3xl sm:text-4xl">{current.pokemon.name}</h2><div className="mt-2 flex flex-wrap justify-center gap-2">{current.pokemon.types.map((type) => <PokemonTypeBadge key={type} type={type} />)}</div></div><p className="mt-3 font-bold text-ink/65">Encuentra otro Pokémon que comparta <strong className="text-electric">exactamente un tipo</strong>.</p></section>;
-}
-
-function TurnAction({ room, selfId, game, player, pokemon, poolLoading, loadError, onRetry, serverOffset, onAction }: { room: RoomView; selfId: string; game: TypeChainPublicState; player: TypeChainPlayerState; poolLoading: boolean; loadError: string; onRetry(): void; pokemon: readonly PokemonSearchOption[]; serverOffset: number; onAction(action: unknown): Promise<void> }) {
-  const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset); const currentName = room.members.find((member) => member.id === game.currentPlayerId)?.displayName ?? 'otro jugador';
-  if (!player.canSubmit) return <section className="grid min-h-36 place-items-center rounded-2xl border border-ink/10 bg-ink/[0.03] p-4 text-center"><div>{player.eliminated || room.members.find((member) => member.id === selfId)?.role === 'SPECTATOR' ? <Eye className="mx-auto text-aqua" size={32} /> : <Clock3 className="mx-auto text-electric" size={32} />}<strong className="mt-2 block font-display text-2xl">{player.eliminated ? 'Observas la cadena' : `Esperando a ${currentName}…`}</strong><p className="text-sm font-bold text-ink/65">{player.eliminated ? 'Has sido eliminado, pero puedes seguir toda la partida.' : 'El buscador aparecerá automáticamente en tu turno.'}</p></div></section>;
-  return <section className="rounded-2xl border border-electric/40 bg-electric/[0.06] p-4 shadow-card"><div className="mb-3 flex flex-wrap items-center justify-between gap-3"><div><span className="label !mb-0 text-electric">Tu turno</span><h2 className="font-display text-2xl">Continúa la cadena</h2></div><TurnTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></div>{player.lastAttempt && <p className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-berry/[0.09] p-3 text-sm font-extrabold text-berry" role="status"><span className="flex items-center gap-1.5"><XCircle size={17} /> {reasonLabels[player.lastAttempt.reason]}</span>{cooldownMs > 0 && <span>Nuevo intento en {(cooldownMs / 1_000).toFixed(1)}s</span>}</p>}<PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.turnNumber} pokemon={pokemon} locked={new Set(game.usedPokemonIds)} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" inputLabel={`Buscar Pokémon para continuar desde ${game.chain.at(-1)?.pokemon.name}`} onSelect={(pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId })} /></section>;
-}
-
-function PlayersPanel({ room, game }: { room: RoomView; game: TypeChainPublicState }) {
-  const order = game.turnOrder.map((id) => room.members.find((member) => member.id === id)).filter(Boolean);
-  return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><div className="mb-3 flex items-center justify-between"><h2 className="flex items-center gap-2 font-display text-xl"><Users size={19} className="text-aqua" /> Jugadores</h2><span className="chip">{game.activePlayerIds.length} vivos</span></div><div className="space-y-2">{order.map((member) => { const eliminated = game.eliminatedPlayerIds.includes(member!.id); const current = game.currentPlayerId === member!.id; return <div key={member!.id} className={`flex items-center gap-2.5 rounded-xl border px-2.5 py-2 ${current ? 'border-electric/40 bg-electric/10' : eliminated ? 'border-transparent bg-ink/[0.025] opacity-45' : 'border-transparent bg-ink/[0.04]'}`}><Avatar name={member!.displayName} avatar={member!.avatar} presence={member!.presence} size="sm" /><strong className="min-w-0 flex-1 truncate text-sm">{member!.displayName}</strong>{current ? <span className="text-xs font-black text-electric">🎮 TURNO</span> : eliminated ? <span className="flex items-center gap-1 text-xs font-bold text-berry"><Skull size={14} /> Eliminado</span> : <span className="text-xs font-bold text-ink/55">Esperando</span>}</div>; })}</div>{game.nextPlayerId && <p className="mt-3 text-center text-xs font-extrabold text-ink/60">Siguiente: {room.members.find((member) => member.id === game.nextPlayerId)?.displayName}</p>}</section>;
-}
-
-function ChainHistory({ game }: { game: TypeChainPublicState }) {
-  const [expanded, setExpanded] = useState(false); const nodes = expanded ? game.chain : game.chain.slice(-8);
-  return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><div><span className="label !mb-0">Cadena #{game.chainNumber}</span><h2 className="font-display text-xl">{game.chain.length} Pokémon · récord {game.longestChain}</h2></div>{game.chain.length > 8 && <button type="button" className="btn-ghost !min-h-9 !px-3 !py-1 text-sm" aria-expanded={expanded} onClick={() => setExpanded((value) => !value)}>{expanded ? 'Ver recientes' : 'Ver cadena completa'}</button>}</div><div className="max-h-[32rem] space-y-1 overflow-y-auto overscroll-contain pr-1">{nodes.map((node, index) => <div key={`${node.pokemon.id}-${node.turnNumber}-${index}`} className="reveal-pop"><div className="flex items-center gap-3 rounded-xl bg-ink/[0.035] p-2"><img src={node.pokemon.sprite} alt="" className="h-12 w-12 object-contain [image-rendering:pixelated]" /><div className="min-w-0 flex-1"><strong className="block truncate">{node.pokemon.name}</strong><div className="flex flex-wrap gap-1">{node.pokemon.types.map((type) => <PokemonTypeBadge key={type} type={type} compact highlighted={type === node.sharedType} />)}</div></div></div>{index < nodes.length - 1 && <div className="flex h-7 items-center justify-center gap-1.5 text-xs font-black text-electric"><span>↓</span>{nodes[index + 1]?.sharedType ? pokemonTypeLabels[nodes[index + 1]!.sharedType!] : ''}</div>}</div>)}</div></section>;
-}
-
-function AttemptsPanel({ room, game }: { room: RoomView; game: TypeChainPublicState }) {
-  return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl"><History size={19} className="text-berry" /> Intentos inválidos</h2>{game.invalidAttempts.length ? <div className="max-h-64 space-y-1.5 overflow-y-auto overscroll-contain pr-1" aria-live="polite">{game.invalidAttempts.slice().reverse().map((attempt, index) => { const member = room.members.find((item) => item.id === attempt.playerId); return <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-xl bg-berry/[0.06] p-2"><Avatar name={member?.displayName ?? attempt.playerId} avatar={member?.avatar} size="xs" /><span className="min-w-0 flex-1 text-sm"><strong>{member?.displayName}</strong><span className="text-ink/60"> probó </span><strong>{attempt.pokemon.name}</strong><small className="block truncate font-bold text-berry">{reasonLabels[attempt.reason]}</small></span><XCircle className="text-berry" size={16} /></div>; })}</div> : <p className="rounded-xl border border-dashed border-ink/10 p-4 text-center text-sm font-bold text-ink/60">Todavía no hay fallos.</p>}</section>;
-}
-
+/**
+ * Type Chain (spec §2 y §6 «Juegos»). Arriba se mira: la placa del turno (de quién es, con su color, y el plazo), el
+ * Pokémon actual en una `Card` con sus tipos, la regla y el último movimiento; en escritorio, al lado, la cadena entera
+ * con desplazamiento interior. Abajo se actúa: el buscador en tu turno (los usados bloqueados) o, si no, a quién se
+ * espera, o que observas. En la columna lateral, los jugadores en orden de turno (eliminados y por qué, en texto) y los
+ * intentos fallidos. Una sola región viva dice el último movimiento, el turno y por qué no valió tu intento.
+ *
+ * No tiene revelación: el servidor encadena turnos (`TURN_ACTIVE`) hasta que queda uno (`GAME_RESULTS`). El fallo de
+ * una orden lo dice el aviso global de la sala (el kit lo descarta con `ignoreFailure`).
+ */
 export function TypeChainGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as TypeChainPublicState; const player = room.gamePlayerState as TypeChainPlayerState; const config = room.selectedGameConfig as { generations: number[] };
-  const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: true }); const serverOffset = useServerOffset(room.serverNow); const currentMember = room.members.find((member) => member.id === game.currentPlayerId);
-  return <section className="mx-auto max-w-[92rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 grid gap-3 rounded-2xl border border-ink/10 bg-surface/85 px-4 py-3 shadow-card sm:grid-cols-[1fr_auto_1fr] sm:items-center"><div><span className="label !mb-0">Type Chain · Turno {game.turnNumber}</span><h1 className="font-display text-2xl sm:text-3xl">Cadena de {game.chain.length}</h1></div><div className="text-center"><span className="block text-[10px] font-black uppercase tracking-wider text-ink/55">Turno de {currentMember?.displayName}</span><TurnTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></div><div className="flex justify-start gap-2 sm:justify-end"><span className="chip"><Users size={15} /> {game.activePlayerIds.length} vivos</span><span className="chip"><Trophy size={15} /> Récord {game.longestChain}</span></div></header><div className="mb-4"><EventBanner room={room} game={game} /></div><div className="grid items-start gap-4 xl:grid-cols-[19rem_minmax(0,1fr)_22rem]"><aside className="order-3 grid gap-4 md:grid-cols-2 xl:order-1 xl:sticky xl:top-4 xl:grid-cols-1"><PlayersPanel room={room} game={game} /><AttemptsPanel room={room} game={game} /></aside><main className="order-1 space-y-4 xl:order-2"><div className="rounded-2xl border border-ink/10 bg-surface/90 p-4 shadow-card sm:p-6"><CurrentPokemon game={game} /></div><TurnAction poolLoading={poolLoading} loadError={poolError} onRetry={retryPool} room={room} selfId={selfId} game={game} player={player} pokemon={pokemon} serverOffset={serverOffset} onAction={onAction} /></main><aside className="order-2 xl:order-3 xl:sticky xl:top-4"><ChainHistory game={game} /></aside></div></section>;
+  const game = room.game as TypeChainPublicState;
+  const player = room.gamePlayerState as TypeChainPlayerState | null;
+  const config = room.selectedGameConfig as Partial<TypeChainConfig> | null;
+  const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: true });
+  const offset = useServerOffset(room.serverNow);
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const used = useMemo(() => new Set(game.usedPokemonIds), [game.usedPokemonIds]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const spectator = members.get(selfId)?.role === 'SPECTATOR';
+  const kind = typeChainPlateKind({ game, player, spectator });
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
+  const current = game.chain.at(-1)?.pokemon;
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(typeChainFocusKey(kind, game.turnNumber), titleRef);
+  const lastEvent = game.events.at(-1);
+  useSfxCue(lastEvent?.kind === 'SUCCESS' && lastEvent.playerId === selfId ? 'hit' : null, lastEvent?.at ?? null);
+  useSfxCue(player?.lastAttempt ? 'miss' : null, player?.lastAttempt?.attemptedAt ?? null);
+
+  const announcement = typeChainAnnouncement({ game, player, kind, nameOf });
+  const ownElimination = game.eliminations.find((entry) => entry.playerId === selfId);
+  const lastAttempt = kind === 'turn' && player?.lastAttempt && (game.turnStartedAt === null || player.lastAttempt.attemptedAt >= game.turnStartedAt) ? player.lastAttempt : null;
+  const content = plateContent({ kind, game, current: current?.name ?? '', types: current?.types ?? [], nameOf, cooldownMs, lastAttempt, eliminatedReason: ownElimination?.reason ?? null });
+
+  const top = <div className={s.top}>
+    <TypeChainHud game={game} members={members} colors={colors} selfId={selfId} timer={{ deadline: game.roundEndsAt, serverOffset: offset, totalMs: (config?.turnSeconds ?? 15) * 1_000 }} />
+    <div className={s.board}>
+      <TypeChainStage game={game} members={members} />
+      <TypeChainChain game={game} members={members} colors={colors} className={s.chainPanel} />
+    </div>
+  </div>;
+  const side = <div className={s.side}>
+    <TypeChainPlayers game={game} members={members} colors={colors} selfId={selfId} className={s.playersPanel} />
+    <TypeChainAttempts game={game} members={members} colors={colors} className={s.attemptsPanel} />
+  </div>;
+  const bottom = <GuessPanel kind={kind === 'turn' ? 'guess' : 'waiting'} titleRef={titleRef} question="" content={content} cooldownMs={cooldownMs}
+    selector={{
+      pokemon, loading: poolLoading, loadError: poolError, onRetry: retryPool, locked: used, roundKey: game.turnNumber,
+      inputLabel: `Buscar Pokémon para continuar desde ${current?.name ?? 'el Pokémon actual'}`,
+      onGuess: (pokemonId) => onAction({ type: 'SUBMIT_POKEMON', pokemonId }),
+    }} />;
+
+  return <div className={cx('content-row', s.screen)} data-testid="type-chain-screen">
+    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
+    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+  </div>;
+}
+
+function plateContent({ kind, game, current, types, nameOf, cooldownMs, lastAttempt, eliminatedReason }: {
+  kind: TypeChainPlateKind;
+  game: TypeChainPublicState;
+  current: string;
+  types: TypeChainPublicState['chain'][number]['pokemon']['types'];
+  nameOf(id: string): string;
+  cooldownMs: number;
+  lastAttempt: TypeChainPlayerState['lastAttempt'];
+  eliminatedReason: 'TIMEOUT' | 'DISCONNECTED' | null;
+}): GuessPlateContent {
+  const next = game.nextPlayerId ? `Después: ${nameOf(game.nextPlayerId)}.` : '';
+  switch (kind) {
+    case 'turn': return {
+      icon: Search, tone: 'warn', kicker: 'Tu turno', title: `Continúa desde ${current}`,
+      text: `Exactamente un tipo en común: ${typeChoiceText(types)}. Los ya usados no se pueden elegir.`,
+      // La espera tras un fallo se ve aquí (la región viva ya la anuncia); después, por qué no valió.
+      aside: cooldownMs > 0
+        ? <span aria-hidden="true" data-testid="type-chain-cooldown"><Chip tone="warn" icon={<Icon icon={Hourglass} size={18} />}>Nuevo intento en {guessSeconds(cooldownMs)}</Chip></span>
+        : lastAttempt ? <span data-testid="type-chain-reason"><Chip tone="bad" icon={<Icon icon={X} size={18} />}>{lastAttempt.pokemonName}: {typeChainReasonLabels[lastAttempt.reason]}</Chip></span> : undefined,
+    };
+    case 'waiting': return { icon: Clock3, tone: 'info', kicker: game.currentPlayerId ? `Turno de ${nameOf(game.currentPlayerId)}` : 'Esperando', title: `Esperando a ${game.currentPlayerId ? nameOf(game.currentPlayerId) : 'otro jugador'}…`, text: `El buscador aparece solo en tu turno. ${next}`.trim() };
+    case 'eliminated': return { icon: Skull, tone: 'bad', kicker: eliminatedReason ? `Eliminado: ${typeChainEliminationLabels[eliminatedReason]}` : 'Eliminado', title: 'Observas la cadena', text: 'Puedes seguir toda la partida hasta el final.' };
+    case 'spectator': return { icon: Eye, tone: 'info', kicker: 'Espectador', title: 'Observas la cadena', text: 'Los espectadores no juegan turnos: la cadena y los fallos se ven en directo.' };
+    default: return { icon: Clock3, tone: 'info', kicker: 'Type Chain', title: 'Preparando la cadena…', text: 'El servidor elige el primer Pokémon.' };
+  }
 }
