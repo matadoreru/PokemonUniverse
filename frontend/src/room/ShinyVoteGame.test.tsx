@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { shinyCardState } from '../games/shiny-vote/ShinyOptionCard';
 import { shinyRanking } from '../games/shiny-vote/ShinyGameSidebar';
+import { shinyStatusAnnouncement } from '../games/shiny-vote/ShinyVoteStatus';
 import { ShinyVoteGame } from './ShinyVoteGame';
 import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
 
@@ -238,6 +239,32 @@ describe('Shiny Quiz UI', () => {
     const html = render(publicGame({ phase: 'GAME_STARTING', options: [], roundEndsAt: null }), player({ canVote: false }));
     expect(html).toContain('aria-label="Cargando opciones"');
     expect(html).toContain('Preparando la ronda');
+  });
+
+  it('anuncia el estado en una única región status siempre montada y deja el título enfocable por programa', () => {
+    const states = [
+      render(publicGame()),
+      render(publicGame({ votes: { p1: { optionId: 'B', votedAt: 2_000 } }, votedPlayerIds: ['p1'] }), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 } })),
+      render(revealGame(), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 }, roundResult: { correct: true, points: 4 } })),
+    ];
+    for (const html of states) {
+      expect(html.match(/role="status"/g)).toHaveLength(1);
+      expect(html).toMatch(/<p class="sr-only" role="status" aria-live="polite">/);
+      expect(html).toMatch(/<h2 tabindex="-1" class="[^"]*actionTitle/);
+    }
+    expect(states[1]).toContain('Voto registrado: opción B. Esperando al resto de entrenadores.');
+    expect(states[2]).toContain('Revelación: la respuesta correcta es la B. Has acertado: +4 puntos.');
+  });
+
+  it('redacta el aviso de cada estado', () => {
+    const base = { active: true, loading: false, reveal: false, participant: true, ownVote: null, correctOptionId: null, points: 0 };
+    expect(shinyStatusAnnouncement({ ...base, loading: true })).toBe('Cargando cartas…');
+    expect(shinyStatusAnnouncement(base)).toBe('Cartas listas: elige una opción.');
+    expect(shinyStatusAnnouncement({ ...base, participant: false })).toBe('');
+    expect(shinyStatusAnnouncement({ ...base, active: false })).toBe('Preparando la ronda.');
+    expect(shinyStatusAnnouncement({ ...base, active: false, reveal: true, correctOptionId: 'C', ownVote: { optionId: 'A', votedAt: 1 } })).toBe('Revelación: la respuesta correcta es la C. Has fallado: +0 puntos.');
+    expect(shinyStatusAnnouncement({ ...base, active: false, reveal: true, correctOptionId: 'C' })).toBe('Revelación: la respuesta correcta es la C. Tiempo agotado: +0 puntos.');
+    expect(shinyStatusAnnouncement({ ...base, active: false, reveal: true, correctOptionId: 'C', participant: false })).toBe('Revelación: la respuesta correcta es la C.');
   });
 
   it('elige el estado de la carta del catálogo', () => {

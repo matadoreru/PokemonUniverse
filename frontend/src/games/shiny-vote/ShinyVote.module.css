@@ -322,6 +322,8 @@
 
 /* Pantalla inferior: placa crema con icono, estado y, a la derecha, la acción o los puntos. */
 .action {
+  /* Contiene la región `sr-only` (absoluta) del aviso. */
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--sp-3);
@@ -372,6 +374,15 @@
   gap: var(--sp-2);
   font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
   color: var(--ink);
+}
+/* El título recibe foco por programa al votar o revelar: anillo solo con teclado, como el resto del catálogo. */
+.actionTitle:focus {
+  outline: none;
+}
+.actionTitle:focus-visible {
+  outline: var(--ol-3) solid var(--navy);
+  outline-offset: 2px;
+  border-radius: var(--r-badge);
 }
 .help {
   margin-top: var(--sp-1);

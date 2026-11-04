@@ -13,10 +13,16 @@ const imageSource = (source: string) => source.startsWith('/api/') ? `${API_ORIG
 const ignoreSettled = () => undefined;
 
 /**
- * Sprites ya cargados (o fallidos). Al votar o al revelar la carta pasa de botón a caja y su contenido se vuelve a
- * montar: con esto el sprite vuelve visible desde el primer pintado, sin esqueleto ni fundido encima del giro.
+ * Sprites ya cargados (los fallidos no: al volver a montarse se reintentan, con su esqueleto). Al votar o al revelar la
+ * carta pasa de botón a caja y su contenido se vuelve a montar: con esto el sprite vuelve visible desde el primer
+ * pintado, sin esqueleto ni fundido encima del giro. Se vacía al salir de la partida (`clearShinySprites`).
  */
 const settledSprites = new Set<string>();
+
+/** Olvida los sprites cargados (la pantalla del juego lo llama al desmontarse). */
+export function clearShinySprites(): void {
+  settledSprites.clear();
+}
 
 /**
  * Sprite de la carta (en el hueco de arte de `Card`): la imagen se monta siempre (para que cargue) y el esqueleto la cubre
@@ -26,22 +32,23 @@ const settledSprites = new Set<string>();
 function PokemonSprite({ option, loading, dimmed = false, onSettled }: { option: ShinyOption; loading: boolean; dimmed?: boolean; onSettled(optionId: ShinyOption['id']): void }) {
   const [loaded, setLoaded] = useState(() => settledSprites.has(option.sprite));
   const image = useRef<HTMLImageElement>(null);
-  const markLoaded = () => {
-    settledSprites.add(option.sprite);
+  // Cargada o fallida, la carta deja de esperar (el esqueleto no bloquea la ronda); solo la cargada se recuerda.
+  const markSettled = (ok: boolean) => {
+    if (ok) settledSprites.add(option.sprite);
     setLoaded(true);
     onSettled(option.id);
   };
   // Una imagen ya en caché (o rota) puede terminar antes de que React enganche onLoad/onError.
   useEffect(() => {
-    if (!image.current?.complete && !settledSprites.has(option.sprite)) return;
-    settledSprites.add(option.sprite);
-    setLoaded(true);
-    onSettled(option.id);
+    const img = image.current;
+    if (settledSprites.has(option.sprite)) markSettled(true);
+    else if (img?.complete) markSettled(img.naturalWidth > 0);
+    // `markSettled` solo usa estas mismas dependencias.
   }, [onSettled, option.id, option.sprite]);
   const visible = loaded && !loading;
   return <span className={cx(s.stage, dimmed && s.dimmed)} data-dimmed={dimmed ? 'true' : undefined}>
     {!visible && <span className={s.skeleton} data-testid="shiny-card-skeleton" />}
-    <img ref={image} className={cx(s.sprite, visible && s.spriteOn)} src={imageSource(option.sprite)} alt="" onLoad={markLoaded} onError={markLoaded} />
+    <img ref={image} className={cx(s.sprite, visible && s.spriteOn)} src={imageSource(option.sprite)} alt="" onLoad={() => markSettled(true)} onError={() => markSettled(false)} />
   </span>;
 }
 

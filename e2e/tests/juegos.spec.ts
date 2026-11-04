@@ -1012,6 +1012,9 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await opcionA(host.page).click();
     await host.page.getByRole('button', { name: 'Confirmar voto' }).click();
     await expect(host.page.getByText('Voto confirmado:')).toBeVisible({ timeout: 10_000 });
+    // La píldora y las cartas-botón desaparecen al confirmar: el foco no cae en `body`, va al título de la placa.
+    await expect(host.page.getByRole('heading', { name: /Voto confirmado/ })).toBeFocused();
+    expect(await host.page.evaluate(() => document.activeElement !== document.body && Boolean(document.activeElement?.closest('main'))), 'foco dentro de la pantalla del juego').toBe(true);
     await expect(invitado.page.getByText('Votó', { exact: true })).toHaveCount(1, { timeout: 10_000 });
     for (const { page } of jugadores) await expect(votantes(page)).toHaveCount(0);
     await expect(invitado.page.getByText('Votos al revelar')).toBeVisible();

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { ShinyGameHeader } from '../games/shiny-vote/ShinyGameHeader';
 import { ShinyGameSidebar } from '../games/shiny-vote/ShinyGameSidebar';
-import { ShinyBeforeAfter, ShinyOptionCard } from '../games/shiny-vote/ShinyOptionCard';
+import { clearShinySprites, ShinyBeforeAfter, ShinyOptionCard } from '../games/shiny-vote/ShinyOptionCard';
 import { ShinyVoteStatus } from '../games/shiny-vote/ShinyVoteStatus';
 import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from '../games/shiny-vote/interaction';
 import { SHINY_CARDS_TIMEOUT_MS, shinyCardsReady, shinyRoundFeedback } from '../games/shiny-vote/reveal';
@@ -84,6 +84,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   useEffect(() => {
     setDraft(null);
   }, [game.roundNumber]);
+  useEffect(() => clearShinySprites, []);
 
   const selectOption = useCallback((optionId: ShinyOptionId) => {
     setDraft((current) => updateShinyDraft(current, optionId, canVote && !submitting));
