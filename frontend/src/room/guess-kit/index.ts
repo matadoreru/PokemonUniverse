@@ -18,3 +18,5 @@ export {
 export type { GuessAttemptLike, GuessPanelKind, GuessRevealLine, GuessRevealSolveLike, GuessScoreLine, GuessVerdict } from './presentation';
 export { guessRecords, guessRoundFirsts, guessStatsLine, guessTop } from './results';
 export type { GuessRecord, GuessStats } from './results';
+export { useGuessRound } from './useGuessRound';
+export type { GuessRound, GuessRoundGame, GuessRoundOptions, GuessRoundPanelProps, GuessRoundPlayer, GuessRoundResultLike } from './useGuessRound';

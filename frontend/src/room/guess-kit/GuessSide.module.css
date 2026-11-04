@@ -17,9 +17,25 @@
   white-space: normal;
   line-height: 1.15;
 }
-/* Las cifras (tiempo, intentos, detalle) no se parten: una línea, con elipsis y `title` si no caben. */
+/* Las cifras (tiempo, intentos) no se parten: una línea, con elipsis y `title` si no caben. */
 .rowMeta > .stat {
   white-space: nowrap;
+}
+/*
+ * El detalle de cada juego («Rapidez 10 + orden 3», «Zoom ×5 · +4 extra»): su propia línea y, si no cabe, dos líneas
+ * partidas en cualquier punto antes que una elipsis que esconda la información.
+ */
+.rowMeta > .detail {
+  display: -webkit-box;
+  flex-basis: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  font-variant-numeric: tabular-nums;
 }
 .score {
   display: inline-block;
@@ -51,7 +67,8 @@
     --row-value-fs: var(--fs-22);
   }
   .attemptBy,
-  .stat {
+  .stat,
+  .rowMeta > .detail {
     font-size: var(--fs-15);
   }
   .attemptSprite {

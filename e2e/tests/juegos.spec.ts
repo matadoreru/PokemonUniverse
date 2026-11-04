@@ -1527,10 +1527,35 @@ async function siluetaMasParecida(page: Page, sombra: string, candidatos: Readon
   }, { sombra, candidatos });
 }
 
-/** Elige un Pokémon con el buscador de ¿Quién es ese Pokémon? (su etiqueta lleva la ronda). */
-async function adivinarSilueta(page: Page, nombre: string): Promise<void> {
-  await page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ }).fill(nombre, { timeout: 20_000 });
+/**
+ * Buscador de respuesta de los juegos de adivinar: su etiqueta lleva la ronda, la paleta o el grito («Buscar respuesta
+ * para la ronda 3», «… para la paleta 1», «… para el grito 2»). `elegirPokemon` usa el de «Buscar Pokémon».
+ */
+const BUSCADOR_RESPUESTA = /^Buscar respuesta para (la|el) (ronda|paleta|grito) \d+$/;
+const buscadorRespuesta = (page: Page) => page.getByRole('textbox', { name: BUSCADOR_RESPUESTA });
+
+/** Elige un Pokémon con el buscador de respuesta de un juego de adivinar. */
+async function adivinar(page: Page, nombre: string): Promise<void> {
+  await buscadorRespuesta(page).fill(nombre, { timeout: 20_000 });
   await page.getByRole('button', { name: nombre, exact: true }).click({ timeout: 10_000 });
+}
+
+/**
+ * Prueba los candidatos por orden hasta que la placa diga `titulo` («¡Acertado!»); cada fallo espera su enfriamiento
+ * (1 s). Devuelve el que acertó, o '' si ninguno (el `expect` de quien llama lo dice).
+ */
+async function acertarEnOrden(page: Page, candidatos: readonly string[], titulo: string): Promise<string> {
+  const acertado = page.getByRole('heading', { name: titulo });
+  for (const nombre of candidatos) {
+    await expect(page.getByTestId('guess-cooldown')).toHaveCount(0, { timeout: 5_000 });
+    await adivinar(page, nombre);
+    const ok = await Promise.race([
+      acertado.waitFor({ timeout: 5_000 }).then(() => true, () => false),
+      page.getByTestId('guess-cooldown').waitFor({ timeout: 5_000 }).then(() => false, () => false),
+    ]);
+    if (ok || await acertado.isVisible()) return nombre;
+  }
+  return '';
 }
 
 test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la clasificación', async ({ browser }) => {
@@ -1569,7 +1594,7 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string; sprite: string }> };
     const silueta = host.page.getByRole('img', { name: 'Silueta de un Pokémon misterioso' });
     await expect(silueta).toBeVisible({ timeout: 20_000 });
-    const buscador = (page: Page) => page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ });
+    const buscador = buscadorRespuesta;
     await expect(buscador(host.page)).toBeVisible();
 
     // La respuesta no está en el DOM: solo la silueta opaca, sin nombre en `alt` ni `title`.
@@ -1590,7 +1615,7 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     await host.page.setViewportSize({ width: 1280, height: 720 });
 
     // Un fallo: el aviso de la espera se ve, la región viva lo dice una vez y los demás ven el intento.
-    await adivinarSilueta(host.page, deduccion.peor === deduccion.mejor ? 'Pikachu' : deduccion.peor);
+    await adivinar(host.page, deduccion.peor === deduccion.mejor ? 'Pikachu' : deduccion.peor);
     await expect(host.page.getByTestId('guess-cooldown')).toBeVisible({ timeout: 5_000 });
     await expect(host.page.getByRole('status').filter({ hasText: /^Incorrecto \(1 intento\)/ })).toHaveCount(1);
     await expect(primero.page.getByTestId('guess-attempt')).toHaveCount(1, { timeout: 5_000 });
@@ -1609,7 +1634,7 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     await buscador(host.page).fill('');
 
     // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
-    await adivinarSilueta(host.page, deduccion.mejor);
+    await adivinar(host.page, deduccion.mejor);
     const acertado = host.page.getByRole('heading', { name: '¡Acertado!' });
     await expect(acertado).toBeVisible({ timeout: 5_000 });
     await expect(acertado).toBeFocused();
@@ -1621,7 +1646,7 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó», «Sin conexión»).
     // Lo que queda de ronda antes del segundo acierto: si se acerca a 0, el test va justo de tiempo.
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
-    await adivinarSilueta(primero.page, deduccion.mejor);
+    await adivinar(primero.page, deduccion.mejor);
     await expect(primero.page.getByRole('heading', { name: '¡Acertado!' })).toBeVisible({ timeout: 5_000 });
     await segundo.context.close();
     const era = host.page.getByRole('heading', { name: `¡Era ${deduccion.mejor}!`, level: 1 });
@@ -1636,6 +1661,7 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
     await capturarAnotando(host.page, 'juego-whos-that-pokemon-revelacion', era, SIZES, ARCADE);
 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
+    await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-whos-that-pokemon-clasificacion', { opts: ARCADE });
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
@@ -1643,7 +1669,10 @@ test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la
   }
 });
 
-/** Busca en una trama del `/ws` el estado público del juego dado (el primer objeto con ese `gameId`). */
+/**
+ * Busca en una trama del `/ws` el estado público del juego dado: el primer objeto con ese `gameId`, `phase` y
+ * `roundNumber` (así no se confunde con otro objeto que solo nombre el juego, como el juego elegido de la sala).
+ */
 function juegoEnTrama<T>(payload: string | Buffer, gameId: string): T | null {
   let frame: unknown;
   try { frame = JSON.parse(String(payload)); } catch { return null; }
@@ -1651,7 +1680,7 @@ function juegoEnTrama<T>(payload: string | Buffer, gameId: string): T | null {
   while (pendientes.length) {
     const actual = pendientes.pop();
     if (!actual || typeof actual !== 'object') continue;
-    if ((actual as { gameId?: unknown }).gameId === gameId && 'phase' in actual) return actual as T;
+    if ((actual as { gameId?: unknown }).gameId === gameId && 'phase' in actual && 'roundNumber' in actual) return actual as T;
     pendientes.push(...Object.values(actual));
   }
   return null;
@@ -1720,15 +1749,9 @@ function candidatosZoomed(estado: ZoomedVisible, ids: readonly string[], colores
     .sort((a, b) => a.distancia - b.distancia).map((p) => p.id);
 }
 
-/** Elige un Pokémon con el buscador de los juegos de adivinar cuya etiqueta lleva la ronda. */
-async function adivinarRonda(page: Page, nombre: string): Promise<void> {
-  await page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ }).fill(nombre, { timeout: 20_000 });
-  await page.getByRole('button', { name: nombre, exact: true }).click({ timeout: 10_000 });
-}
-
 /** Espera a que se desmonte el «+N» (`ScorePop`, 400 ms) del ganador: mientras sube, pisa la línea de métricas. */
 async function sinScorePop(page: Page): Promise<void> {
-  await expect(page.locator('main span.ol[aria-hidden="true"]').filter({ hasText: /^\+\d+$/ })).toHaveCount(0, { timeout: 3_000 });
+  await expect(page.getByTestId('score-pop')).toHaveCount(0, { timeout: 3_000 });
 }
 
 test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la clasificación', async ({ browser }) => {
@@ -1776,7 +1799,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const recorte = host.page.getByRole('img', { name: 'Detalle ampliado del Pokémon misterioso' });
     await expect(recorte).toBeVisible({ timeout: 20_000 });
-    const buscador = (page: Page) => page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ });
+    const buscador = buscadorRespuesta;
     await expect(buscador(host.page)).toBeVisible();
     await expect.poll(() => (estado as ZoomedVisible | null)?.phase === 'ROUND_ACTIVE' && Boolean((estado as ZoomedVisible | null)?.imageUrl), { timeout: 10_000 }).toBe(true);
     const visible = estado as unknown as ZoomedVisible;
@@ -1785,7 +1808,8 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     const candidatos = candidatosZoomed(visible, catalogo.map((p) => p.id), await coloresOpacos(host.page, visible.imageUrl!)).map((id) => nombres.get(id)!);
     test.info().annotations.push({ type: 'zoomed', description: `pistas ${JSON.stringify(visible.visibleHints)} → candidatos ${candidatos.join(', ')}` });
     expect(candidatos.length, 'candidatos con las pistas visibles').toBeGreaterThanOrEqual(1);
-    expect(candidatos.length, `demasiados candidatos para probarlos antes del final de la ronda: ${candidatos.join(', ')}`).toBeLessThanOrEqual(8);
+    // Cada candidato fallido cuesta su enfriamiento: con más de 8 la ronda de 60 s puede no bastar, así que se para aquí.
+    expect(candidatos.length, `las pistas dejan ${candidatos.length} candidatos (máximo 8 para probarlos en una ronda de 60 s): ${candidatos.join(', ')}`).toBeLessThanOrEqual(8);
     // La respuesta no está en el DOM: ni el nombre de ningún candidato, ni en `alt` o `title`.
     for (const nombre of candidatos) {
       await expect(host.page.locator('main')).not.toContainText(nombre);
@@ -1806,7 +1830,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     // Un fallo seguro (un Pokémon que no cumple las pistas): el aviso de la espera se ve, la región viva lo dice una vez
     // y los demás ven el intento.
     const fallo = catalogo.find((p) => !candidatos.includes(p.name))!.name;
-    await adivinarRonda(host.page, fallo);
+    await adivinar(host.page, fallo);
     await expect(host.page.getByTestId('guess-cooldown')).toBeVisible({ timeout: 5_000 });
     await expect(host.page.getByRole('status').filter({ hasText: /^Incorrecto \(1 intento\)/ })).toHaveCount(1);
     await expect(primero.page.getByTestId('guess-attempt')).toHaveCount(1, { timeout: 5_000 });
@@ -1826,16 +1850,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
 
     // El acierto: se prueban los candidatos por orden (casi siempre basta el primero; cada fallo espera 1 s).
     const acertado = host.page.getByRole('heading', { name: '¡Acertado!' });
-    let respuesta = '';
-    for (const nombre of candidatos) {
-      await expect(host.page.getByTestId('guess-cooldown')).toHaveCount(0, { timeout: 5_000 });
-      await adivinarRonda(host.page, nombre);
-      const ok = await Promise.race([
-        acertado.waitFor({ timeout: 5_000 }).then(() => true, () => false),
-        host.page.getByTestId('guess-cooldown').waitFor({ timeout: 5_000 }).then(() => false, () => false),
-      ]);
-      if (ok || await acertado.isVisible()) { respuesta = nombre; break; }
-    }
+    const respuesta = await acertarEnOrden(host.page, candidatos, '¡Acertado!');
     test.info().annotations.push({ type: 'zoomed', description: `respuesta ${respuesta} (puesto ${candidatos.indexOf(respuesta) + 1} de ${candidatos.length})` });
     await expect(acertado).toBeVisible({ timeout: 5_000 });
     await expect(acertado).toBeFocused();
@@ -1846,7 +1861,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
-    await adivinarRonda(primero.page, respuesta);
+    await adivinar(primero.page, respuesta);
     await expect(primero.page.getByRole('heading', { name: '¡Acertado!' })).toBeVisible({ timeout: 5_000 });
     await segundo.context.close();
     const era = host.page.getByRole('heading', { name: `¡Era ${respuesta}!`, level: 1 });
@@ -1876,7 +1891,9 @@ interface PaletteVisible { phase: string; colors: string[] }
 /**
  * Respuesta de Adivina por la Paleta. No está en el cliente, pero la paleta de la ronda son los primeros colores de
  * `metadata.palette` del Pokémon (`visiblePalette` del motor) y la BD local la tiene: se buscan, entre los Pokémon del
- * buscador, los que empiezan por esos mismos colores. Devuelve los ids que encajan (debe ser uno) y uno que no.
+ * buscador, los que empiezan por esos mismos colores. Devuelve los ids que encajan, del más al menos probable, y uno
+ * que no. El test pide 8 colores a propósito: con la paleta entera casi nunca encajan dos; con menos (5–7) pueden
+ * coincidir varios, y entonces se prueban por orden (primero los de paleta más corta, cuyo prefijo cubre más).
  */
 function paletaEnBd(colores: readonly string[], ids: readonly string[]): { encajan: string[]; otro: string } {
   const filas = psql(
@@ -1884,21 +1901,15 @@ function paletaEnBd(colores: readonly string[], ids: readonly string[]): { encaj
     { ids: ids.join(',') },
   );
   const buscados = colores.map((c) => c.toLowerCase());
-  const encajan: string[] = [];
+  const encajan: Array<{ id: string; sobrantes: number }> = [];
   let otro = '';
   for (const fila of filas.split('\n').filter(Boolean)) {
     const [id, json] = fila.split('|') as [string, string];
     const paleta = (JSON.parse(json) as string[]).map((c) => c.toLowerCase());
-    if (paleta.length >= buscados.length && buscados.every((c, i) => paleta[i] === c)) encajan.push(id);
+    if (paleta.length >= buscados.length && buscados.every((c, i) => paleta[i] === c)) encajan.push({ id, sobrantes: paleta.length - buscados.length });
     else if (!otro && paleta.length >= 3) otro = id;
   }
-  return { encajan, otro };
-}
-
-/** Elige un Pokémon con el buscador de Adivina por la Paleta (su etiqueta lleva la paleta). */
-async function adivinarPaleta(page: Page, nombre: string): Promise<void> {
-  await page.getByRole('textbox', { name: /^Buscar respuesta para la paleta \d+$/ }).fill(nombre, { timeout: 20_000 });
-  await page.getByRole('button', { name: nombre, exact: true }).click({ timeout: 10_000 });
+  return { encajan: encajan.sort((a, b) => a.sobrantes - b.sobrantes).map((p) => p.id), otro };
 }
 
 test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación y la clasificación', async ({ browser }) => {
@@ -1940,19 +1951,24 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const barra = host.page.getByRole('img', { name: /^Paleta de \d colores con peso aproximado/ });
     await expect(barra).toBeVisible({ timeout: 20_000 });
-    const buscador = (page: Page) => page.getByRole('textbox', { name: /^Buscar respuesta para la paleta \d+$/ });
+    const buscador = buscadorRespuesta;
     await expect(buscador(host.page)).toBeVisible();
     await expect.poll(() => (estado as PaletteVisible | null)?.phase === 'ROUND_ACTIVE' && ((estado as PaletteVisible | null)?.colors.length ?? 0) > 0, { timeout: 10_000 }).toBe(true);
     const { colors } = estado as unknown as PaletteVisible;
     const { encajan, otro } = paletaEnBd(colors, catalogo.map((p) => p.id));
     test.info().annotations.push({ type: 'paleta', description: `${colors.join(' ')} → ${encajan.map((id) => nombres.get(id)).join(', ')}` });
-    expect(encajan, 'Pokémon del buscador con esta paleta').toHaveLength(1);
-    const respuesta = nombres.get(encajan[0]!)!;
+    // Lo normal es uno; si encajan varios se prueban por orden (ver `paletaEnBd`), sin dar el test por roto.
+    expect(encajan.length, `ningún Pokémon del buscador empieza por esta paleta: ${colors.join(' ')}`).toBeGreaterThanOrEqual(1);
+    expect(encajan.length, `demasiadas paletas iguales para probarlas en una ronda: ${encajan.map((id) => nombres.get(id)).join(', ')}`).toBeLessThanOrEqual(8);
+    if (encajan.length > 1) test.info().annotations.push({ type: 'paleta', description: `varias paletas encajan: se prueban por orden` });
+    const candidatos = encajan.map((id) => nombres.get(id)!);
     const fallo = nombres.get(otro)!;
 
     // La respuesta no está en el DOM: ni en el texto, ni en `alt` o `title`.
-    await expect(host.page.locator('main')).not.toContainText(respuesta);
-    expect(await host.page.locator(`main [alt="${respuesta}"], main [title="${respuesta}"]`).count()).toBe(0);
+    for (const nombre of candidatos) {
+      await expect(host.page.locator('main')).not.toContainText(nombre);
+      expect(await host.page.locator(`main [alt="${nombre}"], main [title="${nombre}"]`).count()).toBe(0);
+    }
     // Cada color lleva su nombre y su porcentaje en texto (el color nunca va solo).
     const leyenda = host.page.getByTestId('palette-legend').getByRole('listitem');
     await expect(leyenda).toHaveCount(colors.length);
@@ -1972,7 +1988,7 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
 
     // Un fallo seguro (un Pokémon con otra paleta): el aviso de la espera se ve, la región viva lo dice una vez y los
     // demás ven el intento.
-    await adivinarPaleta(host.page, fallo);
+    await adivinar(host.page, fallo);
     await expect(host.page.getByTestId('guess-cooldown')).toBeVisible({ timeout: 5_000 });
     await expect(host.page.getByRole('status').filter({ hasText: /^Incorrecto \(1 intento\)/ })).toHaveCount(1);
     await expect(primero.page.getByTestId('guess-attempt')).toHaveCount(1, { timeout: 5_000 });
@@ -1991,7 +2007,7 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     await buscador(host.page).fill('');
 
     // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
-    await adivinarPaleta(host.page, respuesta);
+    const respuesta = await acertarEnOrden(host.page, candidatos, '¡Paleta acertada!');
     const acertado = host.page.getByRole('heading', { name: '¡Paleta acertada!' });
     await expect(acertado).toBeVisible({ timeout: 5_000 });
     await expect(acertado).toBeFocused();
@@ -2002,7 +2018,7 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
 
     // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó»).
     test.info().annotations.push({ type: 'tiempo', description: `quedan ${await primero.page.getByRole('timer').first().innerText()} s antes del acierto del segundo` });
-    await adivinarPaleta(primero.page, respuesta);
+    await adivinar(primero.page, respuesta);
     await expect(primero.page.getByRole('heading', { name: '¡Paleta acertada!' })).toBeVisible({ timeout: 5_000 });
     await segundo.context.close();
     const era = host.page.getByRole('heading', { name: `¡Era ${respuesta}!`, level: 1 });

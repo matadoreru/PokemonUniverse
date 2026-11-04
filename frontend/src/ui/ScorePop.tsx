@@ -37,7 +37,7 @@ export function ScorePop({ points, color, reducedMotion, className, self }: Scor
   if (!visible) return null;
   const style = color ? ({ '--player': color } as CSSProperties) : undefined;
   return (
-    <span className={cx(className, s.pop, !reduced && s.anim, 'ol')} style={style} aria-hidden="true">
+    <span className={cx(className, s.pop, !reduced && s.anim, 'ol')} style={style} data-testid="score-pop" aria-hidden="true">
       {scorePopLabel(points)}
     </span>
   );

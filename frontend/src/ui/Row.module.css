@@ -67,8 +67,16 @@
   color: var(--ink-2);
 }
 .offLabel {
+  flex: none;
   color: var(--ink);
   font-weight: 800;
+  /* «Sin conexión» no se parte en dos junto a un chip. */
+  white-space: nowrap;
+}
+/* Desconectado: si «Sin conexión» y el resto no caben en una línea, el resto baja a la siguiente (sin partir chips). */
+.off .meta {
+  flex-wrap: wrap;
+  row-gap: 2px;
 }
 .value {
   flex: none;

@@ -58,7 +58,8 @@ export function GuessAttemptsFeed({ attempts, members, colors, title = 'Intentos
 /**
  * Cómo acabó cada jugador en la revelación (columna lateral): por orden de acierto, con el puesto, el tiempo, los
  * intentos y los puntos de la ronda; quien no acertó lo dice en texto («No acertó»). `detail` añade lo propio de cada
- * juego (p. ej. «Rapidez 10 + orden 3», «Zoom ×4», «Eligió X»).
+ * juego (p. ej. «Rapidez 10 + orden 3», «Zoom ×4», «Eligió X»), en su propia línea y partido en dos si no cabe: nunca
+ * se corta con elipsis (el `title` no llega al teclado ni al tacto).
  */
 export function GuessRevealBoard<S extends GuessRevealSolveLike>({ lines, selfId, detail, title = 'Puntos de la ronda', className }: { lines: readonly GuessRevealLine<S>[]; selfId: string; detail?: (line: GuessRevealLine<S>) => ReactNode; title?: string; className?: string | undefined }) {
   return <Panel title={title} variant="dark" scroll scrollLabel="Puntos de la ronda" {...(className ? { className } : {})}>
@@ -71,7 +72,7 @@ export function GuessRevealBoard<S extends GuessRevealSolveLike>({ lines, selfId
           meta={<span className={s.rowMeta}>{solve
             ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.stat} title={`${guessSeconds(solve.elapsedMs)} · ${attemptsText(attempts)}`}>{guessSeconds(solve.elapsedMs)} · {attemptsText(attempts)}</span></>
             : <><Chip tone="bad" icon={<Icon icon={X} size={18} />}>No acertó</Chip><span className={s.stat}>{attemptsText(attempts)}</span></>}
-          {extra && <span className={s.stat} {...(typeof extra === 'string' ? { title: extra } : {})}>{extra}</span>}</span>}
+          {extra && <span className={s.detail} data-testid="guess-reveal-detail">{extra}</span>}</span>}
           value={<span className={s.score}>+{solve?.points ?? 0}</span>} />
       </li>;
     })}</ol>

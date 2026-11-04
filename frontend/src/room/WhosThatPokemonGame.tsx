@@ -1,15 +1,11 @@
 import { whoPokemonScoringLabel, type RoomView, type WhosThatPokemonConfig, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
 import { Lightbulb } from 'lucide-react';
-import { useMemo, useRef } from 'react';
 import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Icon } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
 import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
-  guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, guessVerdict,
+  guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
 } from './guess-kit';
 import s from '../games/whos-that-pokemon/WhosThat.module.css';
 
@@ -29,26 +25,10 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: { room: RoomView
   const player = room.gamePlayerState as WhosThatPokemonPlayerState | null;
   const config = room.selectedGameConfig as Partial<WhosThatPokemonConfig> | null;
   const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeRegionalForms ?? false });
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const offset = useServerOffset(room.serverNow);
-  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
-  const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
-  const active = game.phase === 'ROUND_ACTIVE';
-  const participating = members.get(selfId)?.role === 'PLAYER';
-  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
-  const kind = guessPanelKind(game.phase, player ? { participating, canGuess: player.canGuess, solved: player.solved } : null, lastRound !== null);
-  const ownLast = active ? guessOwnLastAttempt(game.attempts, selfId) : null;
-
-  // Todos los hooks van antes de elegir la escena: el número de hooks no cambia entre fases.
-  useSfxCue('hit', active && player?.solved ? game.roundNumber : null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  useFocusOnTransition(guessFocusKey(kind, game.roundNumber), titleRef);
-
-  const last = game.roundNumber >= game.totalRounds;
+  const round = useGuessRound({ room, selfId, game, player, answer: (result) => result.pokemon.name, roundSeconds: config?.roundSeconds });
+  const { members, colors, active, lastRound, transitionRemaining, announcement, timer } = round;
   const solved = guessSolvedOrders(game.solvedPlayers);
   const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce su silueta';
-  const announcement = guessAnnouncement({ kind, roundNumber: game.roundNumber, answer: lastRound?.pokemon.name ?? null, solveOrder: player?.solveOrder ?? null, roundPoints: player?.roundPoints ?? 0, lastWrong: ownLast?.guessedPokemon.name ?? null, attemptCount: player?.attemptCount ?? 0 });
 
   const clue = lastRound
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {whoPokemonScoringLabel()}</>}
@@ -71,15 +51,8 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: { room: RoomView
       <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
     </>;
 
-  const bottom = <GuessPanel kind={kind} titleRef={titleRef} question={GAME_NAME} guessText={whoPokemonScoringLabel()} gameName={GAME_NAME}
-    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }}
-    cooldownMs={cooldownMs} lastWrong={ownLast?.guessedPokemon.name ?? null} attemptCount={player?.attemptCount ?? 0}
-    solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0}
-    verdict={lastRound ? guessVerdict(lastRound.solves, selfId, participating) : null} countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} />;
-
-  const timer = active
-    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
-    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+  const bottom = <GuessPanel {...round.panel} question={GAME_NAME} guessText={whoPokemonScoringLabel()} gameName={GAME_NAME}
+    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
   return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
