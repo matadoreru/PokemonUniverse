@@ -5,11 +5,15 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
+import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
 import { AudioButton } from './AudioButton';
 import { RouteLoadingFallback } from './LoadingFallback';
 import s from './Layout.module.css';
 
-/** Hueco de la cabecera para avisos de toda la página, como el de conexión de la sala: van bajo las placas, nunca encima. */
+/**
+ * Hueco de avisos flotantes de toda la página, como el de conexión de la sala: una capa de alto cero arriba del `main`,
+ * así quedan bajo las placas de la cabecera (nunca encima) y no ocupan sitio.
+ */
 export const HEADER_NOTICES_ID = 'app-header-notices';
 
 /**
@@ -27,6 +31,8 @@ export const HEADER_ROOM_ID = 'app-header-room';
 export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(): void }) {
   const isAdmin = user?.kind === 'USER' && user.role === 'ADMIN';
   const profileLabel = user ? `Abrir perfil de ${user.displayName}` : '';
+  // Dentro de una sala lleva su contexto (`?game=&room=`), que pone la sesión de sala.
+  const feedback = useFeedbackHref();
   return (
     // Reserva, como el `main`, el hueco de su barra de scroll: así la fila queda centrada igual que el contenido de debajo.
     <header className="relative z-hud overflow-hidden [scrollbar-gutter:stable]" data-layout="hud-plates">
@@ -36,7 +42,7 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
         <HudPlate>
           <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
           <AudioButton />
-          {user && <PillLink nav to="/feedback" size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}
+          {user && <PillLink nav to={feedback} size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}
           {isAdmin && (
             <>
               <span className="contents xl:hidden">
@@ -77,7 +83,6 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
           {user && <Pill size="round" variant="danger" icon={LogOut} aria-label="Cerrar sesión" title="Cerrar sesión" onClick={onLogout} />}
         </HudPlate>
       </div>
-      <div id={HEADER_NOTICES_ID} />
     </header>
   );
 }
@@ -91,15 +96,19 @@ export function Layout() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   return (
-    <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
-      <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
-      <main className="min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
-        <ScreenTransition routeKey={pathname} focusHeading>
-          <Suspense fallback={<RouteLoadingFallback />}>
-            <Outlet />
-          </Suspense>
-        </ScreenTransition>
-      </main>
-    </div>
+    <FeedbackTargetProvider>
+      <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
+        <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
+        <main className="min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
+          {/* Hueco de avisos flotantes (conexión de la sala): capa de alto cero pegada arriba, bajo la cabecera. */}
+          <div id={HEADER_NOTICES_ID} className="sticky top-0 z-toast h-0" />
+          <ScreenTransition routeKey={pathname} focusHeading>
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <Outlet />
+            </Suspense>
+          </ScreenTransition>
+        </main>
+      </div>
+    </FeedbackTargetProvider>
   );
 }

@@ -60,24 +60,26 @@ describe('room connection notice', () => {
     context.connected = false;
     try {
       const markup = render('higher-lower', 'LOBBY', null);
-      expect(markup).toContain('<div class="connection-notice-region" role="status" aria-live="polite"></div>');
+      expect(markup).toMatch(/<div class="connection-notice-region [^"]*" role="status" aria-live="polite" data-layer="notice"><\/div>/);
       expect(markup).not.toContain('Conectando con la sala');
     } finally { context.connected = true; }
   });
 
-  it('renders the connecting and lost notices in the flow, never as a fixed overlay', () => {
+  it('renders the connecting and lost notices as a floating card, with a spinner only while connecting', () => {
     const connecting = renderToStaticMarkup(createElement(ConnectionNoticeRegion, { kind: 'connecting' }));
-    expect(connecting).toContain('class="connection-notice"');
+    expect(connecting).toMatch(/class="connection-notice [^"]*card/);
+    expect(connecting).toContain('spinner');
     expect(connecting).toContain('Conectando con la sala');
     expect(connecting).not.toMatch(/\bfixed\b/);
     const lost = renderToStaticMarkup(createElement(ConnectionNoticeRegion, { kind: 'lost' }));
     expect(lost).toContain('Conexión perdida');
     expect(lost).toContain('Reconectando… Tu sesión sigue guardada.');
     expect(lost).not.toContain('<button');
+    expect(lost).not.toContain('spinner');
   });
 
   it('keeps an empty status region while connected', () => {
     const markup = render('higher-lower', 'LOBBY', null);
-    expect(markup).toContain('<div class="connection-notice-region" role="status" aria-live="polite"></div>');
+    expect(markup).toMatch(/<div class="connection-notice-region [^"]*" role="status" aria-live="polite" data-layer="notice"><\/div>/);
   });
 });

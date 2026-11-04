@@ -39,7 +39,7 @@ const test = base.extend<{ crearJugador: (prefijo: string, w?: number, h?: numbe
 /** En la página del host, el invitado aparece en la lista y el contador marca 2 / 8. */
 async function esperarInvitado(host: Page, nombre: string): Promise<void> {
   await expect(host.getByText(nombre, { exact: true }).first()).toBeVisible();
-  await expect(host.locator('.chip').filter({ hasText: /2\s*\/\s*8/ })).toBeVisible();
+  await expect(host.getByRole('region', { name: 'Jugadores' }).getByText('2 / 8', { exact: true })).toBeVisible();
 }
 
 test('dos jugadores crean una sala, se unen y empiezan la partida', async ({ crearJugador }) => {
@@ -127,6 +127,38 @@ for (const { w, h } of SIZES) {
     expect(guest.errors).toEqual([]);
   });
 }
+
+test('el host gestiona a un jugador desde su franja y lo expulsa tras confirmarlo', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+  const gestionar = host.page.getByRole('button', { name: `Gestionar a ${guest.name}` });
+
+  // Esc cierra el menú y el foco vuelve a la píldora.
+  await gestionar.click();
+  const menu = host.page.getByRole('dialog', { name: `Gestionar a ${guest.name}` });
+  await expect(menu).toBeVisible();
+  await capture(host.page, 'lobby-gestionar-jugador');
+  await host.page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await expect(gestionar).toBeFocused();
+
+  // Expulsar pide confirmación; «Cancelar» tiene el foco y no expulsa.
+  await gestionar.click();
+  await menu.getByRole('button', { name: 'Expulsar de la sala' }).click();
+  const confirmar = host.page.getByRole('dialog', { name: `¿Expulsar a ${guest.name}?` });
+  await expect(confirmar).toBeVisible();
+  await expect(confirmar.getByRole('button', { name: 'Cancelar' })).toBeFocused();
+  await capture(host.page, 'lobby-expulsar-confirmacion');
+  await confirmar.getByRole('button', { name: 'Expulsar de la sala' }).click();
+  await expect(confirmar).toBeHidden();
+  await expect(host.page.getByRole('region', { name: 'Jugadores' }).getByText('1 / 8', { exact: true })).toBeVisible();
+  await expect(host.page.getByText(guest.name, { exact: true })).toHaveCount(0);
+
+  expect(host.errors).toEqual([]);
+});
 
 /**
  * Fija el aviso de conexión sin depender de lo que tarde el backend en frío. Con `perdida = false` el `/ws` de la sala

@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { cx } from './cx';
 import s from './Screen.module.css';
 
@@ -12,8 +12,6 @@ export interface ScreenProps {
   fill?: boolean;
   /** Pie fijo al fondo de la pantalla en escritorio (la línea legal). */
   footer?: ReactNode;
-  /** Alto que ya ocupa otra fila encima en el mismo `main` (CSS, p. ej. `3.5rem`); se descuenta para no hacer scroll. */
-  reserve?: string;
   className?: string;
   contentClassName?: string;
 }
@@ -22,10 +20,9 @@ export interface ScreenProps {
  * Pantalla pública (spec §2): en escritorio llena el alto del `main`, centra su contenido en los dos ejes con los
  * mismos márgenes en todas las pantallas y lo deja crecer por pasos a 1536 y 1920 px; en móvil apila arriba.
  */
-export function Screen({ children, width = 'wide', fill = false, footer, reserve, className, contentClassName }: ScreenProps) {
-  const style = reserve ? ({ '--screen-reserve': reserve } as CSSProperties) : undefined;
+export function Screen({ children, width = 'wide', fill = false, footer, className, contentClassName }: ScreenProps) {
   return (
-    <div className={cx(s.screen, s[width], fill && s.fill, footer == null && s.bare, className)} style={style}>
+    <div className={cx(s.screen, s[width], fill && s.fill, footer == null && s.bare, className)}>
       <div className={cx(s.content, contentClassName)}>{children}</div>
       {footer != null && <div className={s.footer}>{footer}</div>}
     </div>

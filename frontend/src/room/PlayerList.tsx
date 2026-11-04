@@ -1,9 +1,12 @@
 import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
-import { ArrowRightLeft, CheckCircle2, Circle, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog, WifiOff } from 'lucide-react';
-import { memo, useEffect, useRef } from 'react';
+import { ArrowRightLeft, CheckCircle2, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog } from 'lucide-react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
+import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
+import { playerColor } from './player-color';
 import { DISTANCE_HIDDEN_PICKED_LABEL, distanceMemberStatus } from './pokedex-distance-selection';
+import s from './PlayerList.module.css';
 
 interface Props {
   members: RoomMemberView[];
@@ -14,12 +17,6 @@ interface Props {
   onTransferHost?(id: string): void;
   onKick?(id: string): void;
 }
-
-const roomRoleCopy = {
-  HOST: { label: 'Host', icon: Crown, className: 'text-electric' },
-  CO_HOST: { label: 'Co-host', icon: Star, className: 'text-aqua' },
-  MEMBER: { label: 'Miembro', icon: null, className: 'text-ink/60' },
-} as const;
 
 function sameMembers(left: RoomMemberView[], right: RoomMemberView[]): boolean {
   return left.length === right.length && left.every((member, index) => {
@@ -45,64 +42,97 @@ export function presenceChange(before: RoomMemberView[], after: RoomMemberView[]
   return joined ? 'join' : left ? 'leave' : null;
 }
 
+/** Estado de la franja en el lobby, siempre en texto: el host controla el inicio; el resto, conexión o «Listo». */
+export function memberReadiness(member: RoomMemberView): { kind: 'host' | 'away' | 'ready' | 'pending'; label: string } {
+  if (member.roomRole === 'HOST') return { kind: 'host', label: 'Controla el inicio' };
+  if (member.presence !== 'CONNECTED') return { kind: 'away', label: member.presence === 'LEFT' ? 'Fuera de la sala' : 'Reconectando…' };
+  return member.ready ? { kind: 'ready', label: 'Listo' } : { kind: 'pending', label: 'Sin confirmar' };
+}
+
+/** Acción del host pendiente de confirmar (las que no tienen vuelta atrás fácil). */
+type Pending = { kind: 'kick' | 'transfer'; member: RoomMemberView };
+
+const confirmCopy = {
+  kick: { title: (name: string) => `¿Expulsar a ${name}?`, body: 'Saldrá de la sala ahora mismo.', action: 'Expulsar de la sala' },
+  transfer: { title: (name: string) => `¿Transferir el Host a ${name}?`, body: 'Tú pasarás a ser Co-host.', action: 'Transferir Host' },
+} as const;
+
 export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, onSetRoomRole, onTransferHost, onKick }: Props) {
   const previousMembers = useRef(members);
+  // Menú del host para un jugador y, aparte, la confirmación: dos diálogos para que cada uno tenga su Esc y su foco.
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+  const [pending, setPending] = useState<Pending | null>(null);
   useEffect(() => {
     const change = presenceChange(previousMembers.current, members, selfId);
     previousMembers.current = members;
     if (change) audio.play(change === 'join' ? 'room.join' : 'room.leave');
   }, [members, selfId]);
+  const menuMember = menuFor ? members.find((member) => member.id === menuFor) ?? null : null;
+  const closeMenu = () => setMenuFor(null);
+  const ask = (kind: Pending['kind'], member: RoomMemberView) => { setMenuFor(null); setPending({ kind, member }); };
+  const confirm = pending ? confirmCopy[pending.kind] : null;
   return (
-    <div className="space-y-2.5">
-      {members.map((member) => {
-        const role = roomRoleCopy[member.roomRole];
-        const RoleIcon = role.icon;
-        const manageable = canManage && member.roomRole !== 'HOST' && member.id !== selfId;
-        const status = game ? distanceMemberStatus(game, member.id) : null;
-        const selection = status?.kind === 'picked' ? status : null;
-        const readiness = member.roomRole === 'HOST'
-          ? { label: 'Controla el inicio', className: 'text-electric', icon: Crown }
-          : member.presence !== 'CONNECTED'
-            ? { label: member.presence === 'LEFT' ? 'Fuera de la sala' : 'Reconectando…', className: 'text-electric', icon: WifiOff }
-            : member.ready
-              ? { label: 'Listo', className: 'text-leaf', icon: CheckCircle2 }
-              : { label: 'Sin confirmar', className: 'text-ink/55', icon: Circle };
-        const ReadinessIcon = readiness.icon;
-        return (
-          <div key={member.id} className={`relative flex min-h-16 items-center gap-3 rounded-2xl border p-2.5 ${member.presence === 'LEFT' ? 'border-ink/5 bg-ink/[.03] opacity-60' : 'border-ink/10 bg-surface-raised'}`}>
-            <Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 font-extrabold">
-                <span className="truncate" title={member.displayName}>{member.displayName}</span>
-                {member.id === selfId && <span className="text-xs text-ink/55">(tú)</span>}
-                {!member.connected && <WifiOff size={14} className="shrink-0 text-electric" aria-hidden="true" />}
-              </div>
-              {selection ? <p className="truncate text-sm font-bold text-ink/70">→ {selection.pokemonName}</p> : status?.kind === 'hidden-picked' && member.role === 'PLAYER' ? <p className="text-sm font-bold text-leaf">{DISTANCE_HIDDEN_PICKED_LABEL}</p> : game && member.role === 'PLAYER' ? <p className="text-sm font-bold text-ink/55">seleccionando…</p> : <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-extrabold">
-                <span className={`inline-flex items-center gap-1 ${role.className}`}>{RoleIcon && <RoleIcon size={13} fill="currentColor" />} {role.label}</span>
-                <span className="text-ink/45">·</span>
-                <span className="text-ink/60">{member.role === 'SPECTATOR' ? 'Espectador' : `${member.sessionPoints} pts`}</span>
-                {!game && <><span className="text-ink/45">·</span><span className={`inline-flex items-center gap-1 ${readiness.className}`}><ReadinessIcon size={13} aria-hidden="true" /> {readiness.label}</span></>}
-              </div>}
-            </div>
-            {selection && <img className="h-12 w-12 object-contain" src={selection.sprite} alt="" />}
-            {game && member.role === 'SPECTATOR' && <Eye size={17} className="text-ink/60" />}
-            {manageable && (
-              <details className="group relative">
-                <summary className="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-xl text-ink/65 transition hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aqua [&::-webkit-details-marker]:hidden" aria-label={`Gestionar a ${member.displayName}`}>
-                  <MoreVertical size={19} />
-                </summary>
-                <div className="absolute right-0 top-11 z-content w-56 rounded-2xl border border-ink/10 bg-surface p-2 shadow-card">
-                  <button className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-extrabold hover:bg-ink/5" onClick={() => onSetRoomRole?.(member.id, member.roomRole === 'CO_HOST' ? 'MEMBER' : 'CO_HOST')}>
-                    <UserRoundCog size={16} /> {member.roomRole === 'CO_HOST' ? 'Quitar Co-host' : 'Hacer Co-host'}
-                  </button>
-                  {member.presence === 'CONNECTED' && <button className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-extrabold hover:bg-ink/5" onClick={() => onTransferHost?.(member.id)}><ArrowRightLeft size={16} /> Transferir Host</button>}
-                  <button className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-extrabold text-berry hover:bg-berry/10" onClick={() => onKick?.(member.id)}><UserMinus size={16} /> Expulsar de la sala</button>
-                </div>
-              </details>
-            )}
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <ul className={s.list}>
+        {members.map((member, index) => {
+          const manageable = canManage && member.roomRole !== 'HOST' && member.id !== selfId;
+          const status = game ? distanceMemberStatus(game, member.id) : null;
+          const selection = status?.kind === 'picked' ? status : null;
+          const readiness = memberReadiness(member);
+          const away = member.presence !== 'CONNECTED';
+          const meta = selection
+            ? <span className={s.clip}>→ {selection.pokemonName}</span>
+            : status?.kind === 'hidden-picked' && member.role === 'PLAYER'
+              ? <span>{DISTANCE_HIDDEN_PICKED_LABEL}</span>
+              : game && member.role === 'PLAYER'
+                ? <span>seleccionando…</span>
+                : <>
+                  {member.id === selfId && <span className={s.you}>(tú)</span>}
+                  {member.roomRole === 'HOST' && <Badge tone="navy"><Icon icon={Crown} size={18} /> Host</Badge>}
+                  {member.roomRole === 'CO_HOST' && <Badge tone="cream"><Icon icon={Star} size={18} /> Co-host</Badge>}
+                  {member.role === 'SPECTATOR' && <span>Espectador</span>}
+                  {!game && (readiness.kind === 'ready'
+                    ? <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Listo</Chip>
+                    : <span className={readiness.kind === 'away' ? s.away : undefined}>{readiness.label}</span>)}
+                </>;
+          return (
+            <li key={member.id}>
+              <Row
+                name={member.displayName}
+                avatar={<Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" />}
+                meta={<span className={s.meta}>{meta}</span>}
+                value={!game && member.role === 'PLAYER' ? <span className={s.points}>{member.sessionPoints}<small> pts</small></span> : undefined}
+                color={playerColor(index)}
+                self={member.id === selfId}
+                disconnected={away}
+              >
+                {selection && <img className={s.sprite} src={selection.sprite} alt="" />}
+                {game && member.role === 'SPECTATOR' && <Icon icon={Eye} size={18} label="Espectador" />}
+                {manageable && <Pill size="round" variant="blue" icon={MoreVertical} aria-label={`Gestionar a ${member.displayName}`} title={`Gestionar a ${member.displayName}`} onClick={() => setMenuFor(member.id)} />}
+              </Row>
+            </li>
+          );
+        })}
+      </ul>
+      {canManage && <>
+        <Dialog open={Boolean(menuMember)} title={menuMember ? `Gestionar a ${menuMember.displayName}` : 'Gestionar jugador'} onClose={closeMenu} width={420}
+          actions={[{ label: 'Cerrar', variant: 'blue', onClick: closeMenu }]}>
+          {menuMember && <div className={s.menu}>
+            <Pill variant="cream" block icon={UserRoundCog} onClick={() => { closeMenu(); onSetRoomRole?.(menuMember.id, menuMember.roomRole === 'CO_HOST' ? 'MEMBER' : 'CO_HOST'); }}>
+              {menuMember.roomRole === 'CO_HOST' ? 'Quitar Co-host' : 'Hacer Co-host'}
+            </Pill>
+            {menuMember.presence === 'CONNECTED' && <Pill variant="cream" block icon={ArrowRightLeft} onClick={() => ask('transfer', menuMember)}>Transferir Host</Pill>}
+            <Pill variant="danger" block icon={UserMinus} onClick={() => ask('kick', menuMember)}>Expulsar de la sala</Pill>
+          </div>}
+        </Dialog>
+        <Dialog open={Boolean(pending)} title={pending && confirm ? confirm.title(pending.member.displayName) : 'Confirmar'} onClose={() => setPending(null)} width={420}
+          actions={pending && confirm ? [
+            { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
+            { label: confirm.action, variant: pending.kind === 'kick' ? 'danger' : 'yellow', onClick: () => (pending.kind === 'kick' ? onKick : onTransferHost)?.(pending.member.id) },
+          ] : []}>
+          {confirm && <p>{confirm.body}</p>}
+        </Dialog>
+      </>}
+    </>
   );
 }, (previous, next) => previous.selfId === next.selfId && previous.canManage === next.canManage && previous.game === next.game && sameMembers(previous.members, next.members));

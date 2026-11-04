@@ -41,9 +41,9 @@ describe('lobby information hierarchy', () => {
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');
     expect(markup).toContain('Hablando es mejor');
     expect(markup).toContain('Discord, Zoom');
-    expect(markup).toContain('Tu opinión cuenta');
-    expect(markup).toContain('Reporta un bug o envía feedback');
-    expect(markup).toContain('/feedback?game=pokedex-distance&amp;room=ABC234');
+    // El feedback con contexto sale de la píldora de la cabecera: sin tarjeta duplicada en el lobby.
+    expect(markup).not.toContain('Tu opinión cuenta');
+    expect(markup).not.toContain('/feedback');
     expect(markup).toContain('>Jugadores<');
     expect(markup).toContain('Iniciar partida');
   });

@@ -1,0 +1,51 @@
+/* Lista de jugadores: franjas del catálogo (`Row`) con insignias de texto; el color de cada jugador va en la banda. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+}
+/* Los iconos de las insignias a la altura del texto de 13 px. */
+.meta svg {
+  width: 14px;
+  height: 14px;
+}
+.clip {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.you {
+  color: var(--navy);
+  font-weight: 800;
+}
+.away {
+  color: var(--ink);
+  font-weight: 800;
+}
+.points {
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.sprite {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}

@@ -1,7 +1,6 @@
 /*
  * Pantalla pública (spec §2). En móvil y tableta, una columna arriba del todo con sus márgenes. Desde 1024 px llena el
- * alto del `main` (menos `--screen-reserve`, lo que ocupe encima otra fila del mismo `main`), centra el contenido en los
- * dos ejes y deja el pie, si lo hay, al fondo. El ancho del contenido crece por pasos a 1536 y 1920 px.
+ * alto del `main`, centra el contenido en los dos ejes y deja el pie, si lo hay, al fondo. El ancho del contenido crece por pasos a 1536 y 1920 px.
  */
 .screen {
   display: grid;
@@ -46,7 +45,7 @@
 @media (min-width: 1024px) {
   .screen {
     grid-template-rows: minmax(0, 1fr) auto;
-    height: calc(100% - var(--screen-reserve, 0px));
+    height: 100%;
     padding-block: var(--sp-5);
   }
   /* Sin pie, el contenido ocupa todo el alto. */

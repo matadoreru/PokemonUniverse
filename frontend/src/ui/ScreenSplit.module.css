@@ -11,6 +11,14 @@
   grid-template-rows: 1fr auto auto;
   grid-template-areas: 'top' 'side' 'bottom';
 }
+.sideFirst {
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: 'side' 'top' 'bottom';
+}
+/* Con `fill` en móvil hay hueco entre las piezas (en escritorio ya lo pone la rejilla). */
+.fill {
+  row-gap: var(--sp-4);
+}
 .top {
   grid-area: top;
   min-width: 0;
@@ -44,6 +52,21 @@
   .withSide {
     grid-template-columns: minmax(0, 1fr) 320px;
     grid-template-areas: 'top side' 'bottom side';
+  }
+  /* Llena el alto del padre: las filas no crecen con el contenido, `top` y `side` se desplazan por dentro. */
+  .fill {
+    height: 100%;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .fill .top {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .fill .side {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
   .hinge {
     display: none;

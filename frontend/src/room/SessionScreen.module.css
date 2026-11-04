@@ -1,0 +1,11 @@
+/* Alto del `main` (el de `ScreenTransition`) para que `ScreenSplit fill` lo llene; los mismos márgenes que `Screen`. */
+.screen {
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}

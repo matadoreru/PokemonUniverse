@@ -1,13 +1,14 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { ArrowRight, BookOpen, CheckCircle2, Gamepad2, Headphones, LockKeyhole, MessageSquareWarning, Play, Search, Settings2, Shuffle, UsersRound, WifiOff, X } from 'lucide-react';
+import { BookOpen, CheckCircle2, Gamepad2, Headphones, LockKeyhole, Play, Search, Settings2, Shuffle, WifiOff, X } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { gameHowToPlay } from '../games/how-to-play';
 import { clientGameRegistry } from '../games/registry';
 import { GameHowToPlayDialog } from './GameHowToPlayDialog';
 import { GameSelectionConfig } from './GameSelectionConfig';
-import { PlayerList } from './PlayerList';
+import { Panel } from '../ui';
+import { RoomPlayersPanel } from './RoomPlayersPanel';
+import { SessionScreen } from './SessionScreen';
 
 interface Props {
   room: RoomView;
@@ -90,16 +91,9 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
     setActiveTab(next);
     document.getElementById(`lobby-tab-${next}`)?.focus();
   };
-  const transferHost = (playerId: string) => {
-    const target = room.members.find((member) => member.id === playerId);
-    if (!target || !window.confirm(`¿Transferir el Host a ${target.displayName}?\n\nTú pasarás a ser Co-host.`)) return;
-    void onTransferHost(playerId).catch(report);
-  };
-  const kick = (playerId: string) => {
-    const target = room.members.find((member) => member.id === playerId);
-    if (!target || !window.confirm(`¿Expulsar a ${target.displayName} de la sala?`)) return;
-    void onKick(playerId).catch(report);
-  };
+  // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
+  const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(report); };
+  const kick = (playerId: string) => { void onKick(playerId).catch(report); };
 
   const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
   // In a rotation, a player-count requirement (manifest range or impostor parity) excludes the game, like the server.
@@ -142,18 +136,34 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   const playerRange = selectedManifest.maxPlayers === undefined
     ? `${selectedManifest.minPlayers}+ jugadores`
     : `${selectedManifest.minPlayers}–${selectedManifest.maxPlayers} jugadores`;
-  // Un solo aviso en el árbol accesible: la copia oculta por `display: none` no se anuncia.
+  // Un solo aviso, junto a la acción principal.
   const errorAlert = (placement: string) => error ? <div role="alert" className={`status-error motion-enter-up items-start justify-between gap-2 ${placement}`}><span className="min-w-0 py-0.5">{error}</span><button type="button" className="icon-button -my-2 -mr-2 shrink-0" onClick={() => setError('')} aria-label="Cerrar aviso"><X size={18} /></button></div> : null;
-  const feedbackUrl = `/feedback?${new URLSearchParams({ game: room.selectedGameId, room: room.code })}`;
+
+  const action = (
+    <Panel variant="cream" as="div" className="on-cream" bodyClassName="flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="min-w-0 lg:flex-1">
+        <span className="label !mb-0 hidden lg:block">{startReason ? 'Falta algo' : 'Todo listo'}</span>
+        <h2 className="font-display text-lg font-bold lg:text-xl">Iniciar partida</h2>
+        <p id="start-help" className={`text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>
+      </div>
+      {errorAlert('flex lg:max-w-sm')}
+      <div className="flex flex-col gap-2 sm:flex-row lg:shrink-0">
+        {self?.roomRole !== 'HOST' && <button type="button" className={`w-full sm:w-auto ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
+        <button className="btn-primary w-full sm:w-auto sm:min-w-56" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
+      </div>
+    </Panel>
+  );
+  const players = <RoomPlayersPanel className="lg:flex-1" members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />;
 
   return (
-    <section className="content-row py-4 sm:py-6">
+    <>
+    <SessionScreen side={players} action={action} main={<>
       {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
       <h1 className="sr-only">Lobby de la sala</h1>
 
       {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && <div className="mb-4 flex items-start gap-3 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 font-bold" role="status" aria-live="polite"><WifiOff className="mt-0.5 shrink-0 text-electric" size={19} /><span><strong className="block">El host está reconectando.</strong><span className="text-sm text-ink/65">La sala conserva la configuración y esperará antes de transferir el control.</span></span></div>}
 
-      <div className="mb-4 grid gap-3 md:grid-cols-2">
+      <div className="mb-4">
         <aside className="voice-callout flex items-center gap-3 rounded-2xl border border-aqua/30 bg-aqua/[.08] px-4 py-3 sm:px-5" aria-label="Recomendación para jugar">
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-aqua text-night"><Headphones size={23} /></span>
           <div>
@@ -161,19 +171,9 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
             <p className="text-sm font-bold text-ink/70">Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.</p>
           </div>
         </aside>
-        <aside className="feedback-callout flex items-center gap-3 rounded-2xl border border-berry/30 bg-berry/[.08] px-4 py-3 sm:px-5" aria-label="Ayuda a mejorar Pokémon Universe">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-berry text-night"><MessageSquareWarning size={22} /></span>
-          <div className="min-w-0 flex-1">
-            <strong className="block font-display text-lg">Tu opinión cuenta</strong>
-            <p className="text-sm font-bold text-ink/70">Reporta un bug o envía feedback sobre esta sala, un minijuego o el proyecto.</p>
-            <Link className="mt-1.5 inline-flex min-h-8 items-center gap-1.5 font-extrabold text-berry underline decoration-berry/30 underline-offset-4 hover:text-ink" to={feedbackUrl}>Enviar feedback <ArrowRight size={16} /></Link>
-          </div>
-        </aside>
       </div>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] xl:grid-cols-[minmax(0,1fr)_23rem]">
-        <main className="min-w-0">
-          {errorAlert('mb-4 flex lg:hidden')}
+      <div className="min-w-0">
           <article className="panel overflow-hidden">
             <nav className="grid grid-cols-3 border-b border-ink/10 bg-ink/[.025] px-2 pt-2 sm:px-4" role="tablist" aria-label="Secciones del lobby">
               <button id="lobby-tab-games" type="button" role="tab" tabIndex={activeTab === 'games' ? 0 : -1} aria-selected={activeTab === 'games'} aria-controls="lobby-panel-games" onClick={() => setActiveTab('games')} onKeyDown={(event) => moveTabFocus(event, 'games')} className={`lobby-tab ${activeTab === 'games' ? 'lobby-tab-active' : ''}`}><Gamepad2 className="hidden sm:block" size={18} /> Minijuegos</button>
@@ -264,26 +264,9 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
               </section>
             </section>
           </article>
-        </main>
-
-        <aside className="card !p-4 lg:sticky lg:top-20">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div><span className="label !mb-0">Sala</span><h2 className="font-display text-xl font-bold">Jugadores</h2></div>
-            <span className="chip tabular-nums"><UsersRound className="mr-1.5" size={15} /> {connectedPlayers} / {room.maxPlayers}</span>
-          </div>
-          <PlayerList members={room.members} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />
-
-          <div className="mt-4 border-t border-ink/10 pt-4">
-            <div className="mb-3"><span className="label !mb-0">{startReason ? 'Falta algo' : 'Todo listo'}</span><h2 className="font-display text-xl font-bold">Iniciar partida</h2></div>
-            {/* En escritorio (columna fija), junto a la acción principal; por debajo de lg va arriba de la columna principal. */}
-            {errorAlert('mb-3 hidden lg:flex')}
-            {self?.roomRole !== 'HOST' && <button type="button" className={`mb-2 w-full ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
-            <button className="btn-primary w-full" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
-            <p id="start-help" className={`mt-2 text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>
-          </div>
-        </aside>
       </div>
-      {howToPlay && <GameHowToPlayDialog gameId={howToPlay.gameId} gameName={howToPlay.gameName} open onClose={() => setHowToPlay(null)} />}
-    </section>
+    </>} />
+    {howToPlay && <GameHowToPlayDialog gameId={howToPlay.gameId} gameName={howToPlay.gameName} open onClose={() => setHowToPlay(null)} />}
+    </>
   );
 }

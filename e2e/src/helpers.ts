@@ -206,7 +206,7 @@ export async function crearSalaConJugadores(browser: Browser, n: number, viewpor
       await joinRoom(invitado.page, code);
       await expect(host.page.getByText(invitado.name, { exact: true }).first()).toBeVisible();
     }
-    await expect(host.page.locator('.chip').filter({ hasText: new RegExp(`^\\s*${n}\\s*/`) })).toBeVisible();
+    await expect(host.page.getByRole('region', { name: 'Jugadores' }).getByText(new RegExp(`^${n} / \\d+$`))).toBeVisible();
     return { code, host, invitados, jugadores, cerrar };
   } catch (error) {
     await cerrar();

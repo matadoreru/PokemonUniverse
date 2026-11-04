@@ -6,24 +6,37 @@ import { useRoomMusic } from '../audio/useRoomMusic';
 import { useAuth } from '../auth/AuthContext';
 import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
+import { useFeedbackTarget } from '../components/feedback-target';
+import { cx, Icon } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
+import n from './ConnectionNotice.module.css';
 import { RoomProvider, useRoom } from './RoomContext';
 import { RoomPlatePortal } from './RoomPlate';
 import { SkipGameControl } from './SkipGameControl';
 
-/** Región `status` del aviso de conexión: siempre montada para que se anuncie el cambio; vacía no ocupa alto. */
+/**
+ * Región `status` del aviso de conexión: siempre montada para que se anuncie el cambio; vacía no se ve. Con aviso es una
+ * ventana flotante (crema, contorno y sombra dura) con un anillo que gira mientras conecta. Las clases globales
+ * `connection-notice*` solo sirven de gancho a las E2E.
+ */
 export function ConnectionNoticeRegion({ kind }: { kind: ConnectionNoticeKind }) {
-  return <div className="connection-notice-region" role="status" aria-live="polite">
-    {kind && <div className="connection-notice">
-      <WifiOff className="shrink-0 text-electric" size={18} aria-hidden="true" />
-      <span className="min-w-0 flex-1"><strong className="block">{kind === 'lost' ? 'Conexión perdida' : 'Conectando con la sala'}</strong><span className="block text-sm font-semibold text-ink/70">{kind === 'lost' ? 'Reconectando… Tu sesión sigue guardada.' : 'Estamos recuperando el estado de la sesión.'}</span></span>
+  return <div className={`connection-notice-region ${n.region}`} role="status" aria-live="polite" data-layer="notice">
+    {kind && <div className={cx('connection-notice', n.card, kind === 'lost' && n.lost)}>
+      <span className={n.badge}>
+        <Icon icon={WifiOff} size={22} />
+        {kind === 'connecting' && <span className={n.spinner} aria-hidden="true" />}
+      </span>
+      <span className={n.text}>
+        <strong className={n.title}>{kind === 'lost' ? 'Conexión perdida' : 'Conectando con la sala'}</strong>
+        <span className={n.line}>{kind === 'lost' ? 'Reconectando… Tu sesión sigue guardada.' : 'Estamos recuperando el estado de la sesión.'}</span>
+      </span>
     </div>}
   </div>;
 }
 
 /**
- * Aviso de conexión de la sala. Vive en el hueco de avisos de la cabecera fija: así sigue a la vista al hacer scroll y
- * nunca tapa la marca ni la navegación, tarde lo que tarde el primer `/ws`. «Conectando» solo aparece si la conexión
+ * Aviso de conexión de la sala. Vive en el hueco de avisos, bajo la fila de la cabecera: así sigue a la vista al hacer
+ * scroll y nunca tapa las placas, tarde lo que tarde el primer `/ws`. «Conectando» solo aparece si la conexión
  * tarda más de `CONNECTING_NOTICE_DELAY_MS`; una conexión perdida se avisa al momento (`connection-notice.ts`).
  */
 function ConnectionNotice({ connected }: { connected: boolean }) {
@@ -47,6 +60,8 @@ function RoomSessionContent() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   useRoomMusic(room?.phase ?? null);
+  // La píldora «Enviar feedback» de la cabecera lleva el minijuego en curso (o el elegido) y la sala.
+  useFeedbackTarget(room ? (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId : null, room?.code);
   // Revelación común a los minijuegos al entrar en resultados de ronda (salvo los que ya piden la suya).
   useSfxCue('game.reveal', roomRevealKey(room?.game as { gameId?: string; phase?: string; roundNumber?: number } | null | undefined));
   // Victoria común al llegar a los resultados de la partida si ganó el jugador local (salvo los que ya la dan).

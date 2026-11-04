@@ -19,14 +19,13 @@ describe('Screen', () => {
     expect(html).not.toContain('style=');
   });
 
-  it('con pie, ancho de tarjeta, relleno y alto reservado', () => {
+  it('con pie, ancho de tarjeta y relleno', () => {
     const html = renderToStaticMarkup(
-      <Screen width="narrow" fill reserve="3.5rem" footer={<small>Legal</small>}><p>Hola</p></Screen>,
+      <Screen width="narrow" fill footer={<small>Legal</small>}><p>Hola</p></Screen>,
     );
     const root = classesOf(html);
     expect(root).toEqual(expect.arrayContaining(['screen', 'narrow', 'fill']));
     expect(root).not.toContain('bare');
-    expect(html).toContain('--screen-reserve:3.5rem');
     expect(classesOf(html, 2)).toContain('footer');
     expect(html.indexOf('Hola')).toBeLessThan(html.indexOf('Legal'));
   });
