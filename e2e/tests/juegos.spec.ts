@@ -4999,6 +4999,14 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     await senalar(companero, c1);
     await expect(cursorDe(azul, nombreDe(companero))).toBeVisible({ timeout: 5_000 });
     expect(await sinTapar(carta(azul, c1)), 'el cursor no tapa la carta (no captura el puntero)').toBe(true);
+    // La etiqueta va fuera de la franja del nombre de la carta señalada y, quieta 1,5 s, se apaga (queda la flecha).
+    const etiqueta = cursorDe(azul, nombreDe(companero)).getByTestId('who-cursor-name');
+    await expect(etiqueta).toHaveAttribute('data-quiet', 'false');
+    const [cajaEtiqueta, cajaNombre] = await Promise.all([etiqueta.boundingBox(), carta(azul, c1).locator('[data-part="name"]').boundingBox()]);
+    const pisa = cajaEtiqueta!.x < cajaNombre!.x + cajaNombre!.width && cajaNombre!.x < cajaEtiqueta!.x + cajaEtiqueta!.width && cajaEtiqueta!.y < cajaNombre!.y + cajaNombre!.height && cajaNombre!.y < cajaEtiqueta!.y + cajaEtiqueta!.height;
+    expect(pisa, 'la etiqueta del cursor no pisa el nombre de la carta señalada').toBe(false);
+    await expect(etiqueta).toHaveAttribute('data-quiet', 'true', { timeout: 3_000 });
+    await senalar(companero, c1);
     // Con movimiento reducido (por defecto en la suite) no se anima; sin él, una transición corta de `transform`.
     expect(await cursorDe(azul, nombreDe(companero)).evaluate((el) => getComputedStyle(el).transitionDuration)).toBe('0s');
     await conMovimiento(azul);
@@ -5017,6 +5025,8 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
       const { id, problems } = await layoutProblems(azul, 'juego-who-is-who-tablero', true, false, ARCADE);
       expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
       cartas[w] = Number(await tablero(azul).getAttribute('data-card'));
+      // En escritorio el tablero de 24 cabe entero: su panel no se desplaza.
+      if (w >= 1024) expect(await tablero(azul).evaluate((el) => { const cuerpo = el.closest('[role="region"]')!; return cuerpo.scrollHeight - cuerpo.clientHeight; }), `${w}: el tablero cabe sin desplazar`).toBeLessThanOrEqual(1);
     }
     test.info().annotations.push({ type: 'cartas', description: `ancho de carta a 1280: ${cartas[1280]} px; a 1920: ${cartas[1920]} px; a 390: ${cartas[390]} px` });
     expect(cartas[1920]!, 'a 1920 las cartas crecen').toBeGreaterThan(cartas[1280]! * 1.25);
@@ -5025,6 +5035,11 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     await expect(tablero(azul)).toBeInViewport();
     await expect(adivinar(azul)).toBeInViewport({ ratio: 1 });
     await expect(azul.getByRole('button', { name: 'Terminar turno' })).toBeInViewport({ ratio: 1 });
+    // Placa compacta: se ven al menos dos filas enteras del tablero, sin tapar.
+    const columnas = Number(await tablero(azul).getAttribute('data-columns'));
+    const segundaFila = tablero(azul).locator('button[data-pokemon-id]').nth(columnas);
+    await expect(segundaFila).toBeInViewport({ ratio: 1 });
+    expect(await sinTapar(segundaFila), 'a 390: la segunda fila del tablero sin tapar por la placa').toBe(true);
     await azul.setViewportSize({ width: 1280, height: 720 });
 
     // «Adivinar Pokémon»: el diálogo del catálogo con todas las cartas (las bajadas lo dicen) y el buscador.

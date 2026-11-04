@@ -85,9 +85,18 @@
   white-space: nowrap;
 }
 
-/* En las cartas pequeñas la marca va sin icono: «Bajada» cabe entera. */
+/* En las cartas pequeñas la marca va sin icono y con menos relleno: «Bajada» cabe entera. */
+.grid:not(.large) .downTag {
+  padding-inline: var(--sp-1);
+}
 .grid:not(.large) .downTag > svg {
   display: none;
+}
+/* Escritorio bajo (720 px): menos relleno alrededor del tablero para que quepan tres filas de 24. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .boardPanel > .boardBody {
+    padding: var(--sp-2);
+  }
 }
 
 /* ── Cursores del equipo: una capa sin puntero; se mueven con `transform` ───────────────────────────────────────── */
@@ -132,15 +141,34 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.above {
-  bottom: 18px;
+.cursorName {
+  transition: opacity var(--t-fade) linear;
 }
-.below {
-  top: 22px;
+/* Quieta 1,5 s: solo queda la flecha de color (con movimiento reducido se apaga sin transición). */
+.quiet {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursorName {
+    transition: none;
+  }
+}
+:global(body.static) .cursorName {
+  transition: none;
+}
+.above {
+  bottom: 22px;
+}
+.beside {
+  top: -16px;
+  left: 22px;
 }
 .left {
   right: 6px;
   left: auto;
+}
+.beside.left {
+  right: 22px;
 }
 
 /* ── Columna lateral ─────────────────────────────────────────────────────────────────────────────────────────────── */
@@ -264,11 +292,29 @@
   gap: var(--sp-2);
 }
 @media (max-width: 639px) {
+  /*
+   * Móvil: placa compacta para que se vea más tablero. La ayuda del turno se queda en el kicker y el título (y en la
+   * región viva); solo se ve la de un fallo propio. Las dos acciones en una fila, sin icono.
+   */
   .plateHelp {
+    display: none;
+  }
+  .plateMiss {
     font-size: var(--fs-13);
   }
   .actions {
+    flex-wrap: nowrap;
     justify-content: flex-start;
+    width: 100%;
+  }
+  .actions > button {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-inline: var(--sp-3);
+    font-size: var(--fs-15);
+  }
+  .actions > button > svg {
+    display: none;
   }
 }
 /* Escritorio bajo (720 px): la ayuda en 13 px para que el tablero conserve alto. */

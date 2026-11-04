@@ -8,7 +8,7 @@ import { useRefocusAfterReject } from '../../room/focus-transition';
 import { playerColor } from '../../room/player-color';
 import { searchPokemonOptions } from '../../room/pokemon-search';
 import { Badge, Card, Chip, cx, Dialog, Field, Icon, Panel, Pill, Row, StateBox } from '../../ui';
-import { boardLayout, boardMove, CARD_RATIO, downCountText, TEAM_COLOR, TEAM_NAME, teamStatus, type BoardLayout } from './presentation';
+import { boardLayout, boardMove, CARD_RATIO, cursorLabel, downCountText, TEAM_COLOR, TEAM_NAME, teamStatus, type BoardLayout } from './presentation';
 import s from './WhoIsWho.module.css';
 
 const BOARD_GAP = 8;
@@ -41,41 +41,53 @@ function useBoardLayout(ref: RefObject<HTMLElement | null>, count: number): Boar
 
 /**
  * Cursores de los compañeros sobre el tablero (llegan por su canal propio, nunca por el aviso global): una flecha con el
- * color del jugador y su nombre. Es una capa sin puntero (`pointer-events: none`, `data-layer`), así que no tapa las
+ * color del jugador y su nombre. Es una capa sin puntero (`pointer-events: none`, `data-layer`), así que no bloquea las
  * cartas ni los controles; se mueve con `transform` y, con movimiento reducido o `body.static`, salta sin transición.
- * Un cursor quieto 4 s desaparece.
+ * La etiqueta va encima de la punta (fuera de la franja del nombre de la carta) y se apaga a los 1,5 s sin moverse:
+ * queda la flecha de color. Un cursor quieto 4 s desaparece.
  */
 function TeamCursors({ boardRef, selfId, members, colors }: { boardRef: RefObject<HTMLDivElement | null>; selfId: string; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number> }) {
   const [cursors, setCursors] = useState<Record<string, WhoIsWhoCursorEvent>>({});
+  // Hora local de llegada de cada cursor (no la del servidor: así un reloj desfasado no apaga la etiqueta).
+  const receivedRef = useRef(new Map<string, number>());
+  const [now, setNow] = useState(() => Date.now());
   const [, redraw] = useState(0);
   useEffect(() => subscribeWhoIsWhoCursors((message) => {
-    if (message.type === 'RESET') { setCursors({}); return; }
-    if (message.type === 'CLEAR') { setCursors((current) => Object.fromEntries(Object.entries(current).filter(([id]) => id !== message.playerId))); return; }
-    if (message.cursor.playerId !== selfId) setCursors((current) => ({ ...current, [message.cursor.playerId]: message.cursor }));
+    if (message.type === 'RESET') { receivedRef.current.clear(); setCursors({}); return; }
+    if (message.type === 'CLEAR') { receivedRef.current.delete(message.playerId); setCursors((current) => Object.fromEntries(Object.entries(current).filter(([id]) => id !== message.playerId))); return; }
+    if (message.cursor.playerId === selfId) return;
+    const at = Date.now();
+    receivedRef.current.set(message.cursor.playerId, at);
+    setNow(at);
+    setCursors((current) => ({ ...current, [message.cursor.playerId]: message.cursor }));
   }), [selfId]);
+  const active = Object.keys(cursors).length > 0;
   useEffect(() => {
     const resize = () => redraw((value) => value + 1);
     window.addEventListener('resize', resize);
     const timer = window.setInterval(() => {
-      const cutoff = Date.now() - 4_000;
+      const at = Date.now();
+      if (active) setNow(at);
+      const cutoff = at - 4_000;
       setCursors((current) => {
-        const kept = Object.entries(current).filter(([, cursor]) => cursor.updatedAt >= cutoff);
+        const kept = Object.entries(current).filter(([id]) => (receivedRef.current.get(id) ?? 0) >= cutoff);
         return kept.length === Object.keys(current).length ? current : Object.fromEntries(kept);
       });
-    }, 1_000);
+    }, 500);
     return () => { window.removeEventListener('resize', resize); window.clearInterval(timer); };
-  }, []);
+  }, [active]);
   const board = boardRef.current;
   const rect = board?.getBoundingClientRect();
   return <div className={s.cursors} aria-hidden="true" data-layer="team-cursors" data-testid="who-cursors">{rect && board && Object.values(cursors).map((cursor) => {
     const card = cursor.pokemonId ? Array.from(board.querySelectorAll<HTMLElement>('[data-pokemon-id]')).find((element) => element.dataset.pokemonId === cursor.pokemonId) : undefined;
     const cardRect = card?.getBoundingClientRect();
     const position = projectBoardCursor(cursor, rect.width, rect.height, 8, cardRect ? { left: cardRect.left - rect.left, top: cardRect.top - rect.top, width: cardRect.width, height: cardRect.height } : undefined);
+    const label = cursorLabel(position.top, now - (receivedRef.current.get(cursor.playerId) ?? now));
     const name = members.get(cursor.playerId)?.displayName ?? 'Compañero';
     const style = { transform: `translate(${position.left}px, ${position.top}px)`, '--player': playerColor(colors.get(cursor.playerId) ?? 0) } as CSSProperties;
     return <span key={cursor.playerId} className={s.cursor} style={style} data-testid="who-cursor" data-player={name}>
       <MousePointer2 className={s.cursorArrow} size={24} strokeWidth={2} aria-hidden="true" />
-      <span className={cx(s.cursorName, position.labelBelow ? s.below : s.above, position.labelLeft && s.left)}>{name}</span>
+      <span className={cx(s.cursorName, label.beside ? s.beside : s.above, position.labelLeft && s.left, label.quiet && s.quiet)} data-testid="who-cursor-name" data-quiet={label.quiet ? 'true' : 'false'}>{name}</span>
     </span>;
   })}</div>;
 }

@@ -1,6 +1,6 @@
 import type { WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { boardLayout, boardMove, CARD_MIN, CARD_RATIO, downCountText, previousTurnGuess, teamStatus, whoAnnouncement, whoFocusKey, whoHeading, whoResultRule, whoResultTitle, whoStatsLine } from './presentation';
+import { boardLayout, boardMove, CARD_MIN, CARD_RATIO, cursorLabel, downCountText, previousTurnGuess, teamStatus, whoAnnouncement, whoFocusKey, whoHeading, whoResultRule, whoResultTitle, whoStatsLine } from './presentation';
 
 const base = {
   gameId: 'who-is-who-pokemon', phase: 'TURN_ACTIVE', board: [{ id: 'pikachu', nationalDexNumber: 25, name: 'Pikachu', sprite: '/p.png' }],
@@ -19,13 +19,19 @@ describe('boardLayout', () => {
     expect(rows * layout.card * CARD_RATIO + (rows - 1) * 8).toBeLessThanOrEqual(420.5);
     expect(layout.card).toBeGreaterThanOrEqual(CARD_MIN);
   });
+  it('a 1280×720 el tablero de 24 (por defecto) cabe entero en el cuerpo del panel (~840×236): tres filas', () => {
+    const layout = boardLayout(24, 840, 236, 8);
+    expect(layout.fits).toBe(true);
+    expect(Math.ceil(24 / layout.columns)).toBeLessThanOrEqual(3);
+    expect(layout.card).toBeGreaterThanOrEqual(44);
+  });
   it('a 1920 las cartas crecen', () => {
     expect(boardLayout(24, 1150, 720, 8).card).toBeGreaterThan(boardLayout(24, 850, 420, 8).card * 1.25);
   });
   it('sin sitio para el mínimo: tantas columnas como quepan y se desplaza', () => {
     const layout = boardLayout(50, 340, 300, 8);
     expect(layout.fits).toBe(false);
-    expect(layout.columns).toBe(4);
+    expect(layout.columns).toBe(Math.floor((340 + 8) / (CARD_MIN + 8)));
     expect(layout.card).toBeGreaterThanOrEqual(CARD_MIN);
   });
   it('sin medir, una reserva que no rompe', () => {
@@ -33,6 +39,15 @@ describe('boardLayout', () => {
   });
   it('con pocas cartas no pasan del máximo', () => {
     expect(boardLayout(5, 3000, 3000, 8).card).toBe(200);
+  });
+});
+
+describe('cursorLabel', () => {
+  it('encima de la punta o al lado en la primera fila (nunca sobre la franja del nombre); apagada a los 1,5 s quieta', () => {
+    expect(cursorLabel(120, 0)).toEqual({ beside: false, quiet: false });
+    expect(cursorLabel(20, 0).beside).toBe(true);
+    expect(cursorLabel(120, 1_400).quiet).toBe(false);
+    expect(cursorLabel(120, 1_600).quiet).toBe(true);
   });
 });
 

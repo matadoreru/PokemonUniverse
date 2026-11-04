@@ -96,7 +96,7 @@ export function whoResultRule(winner: WhoIsWhoTeam | null, guessed: boolean): st
 /** Alto de una carta por cada píxel de ancho (sprite, nombre y la marca «Bajada»). */
 export const CARD_RATIO = 1.15;
 /** Ancho mínimo de una carta: por debajo el tablero no encoge más y se desplaza dentro de su panel. */
-export const CARD_MIN = 76;
+export const CARD_MIN = 62;
 /** Ancho máximo de una carta: con pocas cartas no crecen sin fin. */
 export const CARD_MAX = 200;
 
@@ -128,6 +128,19 @@ export function boardLayout(count: number, width: number, height: number, gap: n
   const columns = Math.max(1, Math.min(n, Math.floor((width + gap) / (CARD_MIN + gap))));
   const card = Math.min(CARD_MAX, Math.floor((width - (columns - 1) * gap) / columns));
   return { columns, card: Math.max(1, card), fits: false };
+}
+
+/** Alto que necesita la etiqueta del cursor encima de la punta (si no, va al lado, a la altura de la punta). */
+export const CURSOR_LABEL_ROOM = 44;
+/** A los 1,5 s sin moverse la etiqueta se apaga y queda la flecha de color. */
+export const CURSOR_LABEL_MS = 1_500;
+
+/**
+ * Etiqueta del cursor de un compañero: encima de la punta, o al lado y a su altura si no cabe encima (primera fila).
+ * Nunca debajo: así no tapa la franja del nombre de la carta señalada, que está abajo. Apagada si lleva 1,5 s quieto.
+ */
+export function cursorLabel(top: number, sinceMoveMs: number): { beside: boolean; quiet: boolean } {
+  return { beside: top < CURSOR_LABEL_ROOM, quiet: sinceMoveMs > CURSOR_LABEL_MS };
 }
 
 /** Foco itinerante del tablero: índice al que lleva la tecla, o `null` si la tecla no mueve. */

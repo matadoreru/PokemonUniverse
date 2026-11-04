@@ -112,7 +112,7 @@ export function WhoIsWhoPokemonGame({ room, selfId, onAction }: { room: RoomView
       </div>,
     };
   }
-  const bottom = <SocialPlate titleRef={titleRef} content={content} className={s.plate} textClassName={s.plateHelp} />;
+  const bottom = <SocialPlate titleRef={titleRef} content={content} className={s.plate} textClassName={ownMiss && ready ? s.plateMiss : s.plateHelp} />;
 
   return <>
     <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} roundLabel={whoRoundLabel(game)} heading={heading} meta={meta} timer={timer}
