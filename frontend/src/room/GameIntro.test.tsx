@@ -24,20 +24,26 @@ function room(): RoomView {
 const render = (selfId: string) => renderToStaticMarkup(createElement(GameIntro, { room: room(), intro, selfId, onSkip: async () => undefined }));
 
 describe('GameIntro', () => {
-  it('shows the steps of the game, the countdown and who is ready', () => {
+  it('shows the cut-in, the steps of the game, the countdown and who is ready', () => {
     const markup = render('p1');
+    expect(markup).toContain('aria-label="Intro de Learnset Guess"');
+    expect(markup).toContain('¡Empieza la partida!');
     expect(markup).toContain('Cómo se juega a Learnset Guess');
     expect(markup).toContain('Paso 1 de 3');
     expect(markup).toContain('role="timer"');
-    expect(markup).toContain('tabular-nums');
     expect(markup).toContain('1 de 3 listos');
-    expect(markup).toMatch(/<button type="button" class="btn-primary[^"]*"[^>]*>Empezar ya<\/button>/);
-    // Más bajo que la guía del lobby, y sin barra fija que tape la navegación del carrusel.
-    expect(markup).toContain('min-h-[24rem]');
-    expect(markup).not.toContain('sticky');
-    // La acción y el recuento van en la cabecera del carrusel, antes de la navegación de pasos.
-    expect(markup.indexOf('Empezar ya')).toBeLessThan(markup.indexOf('Ver paso 1'));
-    expect(markup.indexOf('1 de 3 listos')).toBeLessThan(markup.indexOf('Ver paso 1'));
+    expect(markup).toMatch(/<button type="button" class="[^"]*"[^>]*>(?:(?!<\/button>).)*Empezar ya<\/span><\/button>/);
+    // Sin estilos heredados: la acción es una píldora del catálogo en la franja de abajo, tras la navegación de pasos.
+    expect(markup).not.toMatch(/btn-|class="card/);
+    expect(markup.indexOf('Ver paso 1')).toBeLessThan(markup.indexOf('Empezar ya'));
+    expect(markup).toContain('data-layer="screen-bottom"');
+  });
+
+  it('falls back to a panel with the name when the game has no steps', () => {
+    const markup = renderToStaticMarkup(createElement(GameIntro, { room: { ...room(), selectedGameId: 'unknown', game: { gameId: 'unknown' }, availableGames: [{ ...room().availableGames[0]!, id: 'unknown', name: 'Juego raro' }] }, intro, selfId: 'p1', onSkip: async () => undefined }));
+    expect(markup).toContain('Juego raro');
+    expect(markup).toContain('Prepárate: la partida empieza enseguida.');
+    expect(markup).not.toContain('Paso 1 de 3');
   });
 
   it('waits for the others once the player has skipped', () => {
@@ -48,7 +54,7 @@ describe('GameIntro', () => {
 
   it('gives spectators no skip button', () => {
     const markup = render('watcher');
-    expect(markup).not.toContain('btn-primary');
+    expect(markup).not.toContain('Empezar ya');
     expect(markup).toContain('Empieza cuando los jugadores estén listos.');
   });
 });

@@ -33,6 +33,8 @@ interface CutinContent {
 export interface CutinProps extends CutinContent {
   holdMs?: number;
   reducedMotion?: boolean;
+  /** Sin `game.cutin`: la pantalla ya suena por su cuenta al aparecer (p. ej. `game.start` en la intro). */
+  silent?: boolean;
   onDone?(): void;
 }
 
@@ -120,13 +122,13 @@ export function isSkipKey(e: Pick<KeyboardEvent, 'key' | 'code' | 'repeat' | 'al
  * sustituye al actual); para repetir la misma, móntala con `key`. Con reducción de movimiento aparece sin desplazarse
  * y la `delayedLine` se monta al momento.
  */
-export function Cutin({ holdMs = CUTIN_HOLD_MS, reducedMotion, onDone, ...content }: CutinProps) {
+export function Cutin({ holdMs = CUTIN_HOLD_MS, reducedMotion, silent = false, onDone, ...content }: CutinProps) {
   const prefersReduced = usePrefersReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
   const armKey = `${content.tone}|${content.title}`;
   const visible = useTimedVisibility(holdMs, armKey, onDone);
   // Suena al aparecer (y con cada anuncio nuevo), también con reducción de movimiento.
-  useEffect(() => { audio.play('game.cutin'); }, [armKey]);
+  useEffect(() => { if (!silent) audio.play('game.cutin'); }, [armKey, silent]);
   const delayedShown = useDelayElapsed(CUTIN_DELAYED_LINE_MS, armKey, reduced);
   const onSkipRef = useRef(content.onSkip);
   useEffect(() => {

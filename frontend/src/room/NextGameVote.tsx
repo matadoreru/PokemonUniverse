@@ -1,14 +1,18 @@
-import { supportsPlayerCount, type GameResults as GameResultsData, type RoomView } from '@pokemon-universe/shared/public';
-import { Check, LoaderCircle, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
+import { supportsPlayerCount, type RoomView } from '@pokemon-universe/shared/public';
+import { Check, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
 import { useState } from 'react';
+import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { Badge, Card, Chip, Cutin, cx, Icon, Panel, Pill, Row, ScreenSplit } from '../ui';
 import { gameAvailabilityReason } from './GameSelectionConfig';
 import { summarizeGameConfig } from './game-config-summary';
+import { voteActionStatus, votesLabel } from './next-game-vote';
+import { sessionPodium } from './session-results';
+import s from './NextGameVote.module.css';
 
 export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; selfId: string; onVote(gameId: string): Promise<void>; onEnd(): void }) {
   const vote = room.nextGameVote!;
-  const results = (room.game as { results?: GameResultsData | null } | null)?.results;
   const active = room.phase === 'NEXT_GAME_VOTE';
   const [draft, setDraft] = useState<string | null>(vote.ownVoteGameId);
   const [submitting, setSubmitting] = useState(false);
@@ -19,7 +23,10 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
   const eligible = vote.eligibleVoterIds.includes(selfId);
   const canVote = active && eligible && !vote.ownVoteGameId;
   const playerCount = room.members.filter((member) => member.presence === 'CONNECTED').length;
-  const members = new Map(room.members.map((member) => [member.id, member]));
+  const standings = sessionPodium(room, selfId).standings;
+  const gameName = (id: string | null) => (id ? vote.options.find((game) => game.id === id)?.name ?? null : null);
+  const resolvedName = gameName(vote.resolvedGameId);
+  const status = voteActionStatus({ active, eligible, ownVote: gameName(vote.ownVoteGameId), draftName: gameName(draft), resolvedName, revealSeconds: Math.ceil(revealRemainingMs / 1_000) });
 
   async function confirmVote() {
     if (!draft || !canVote || submitting) return;
@@ -31,45 +38,67 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
     finally { setSubmitting(false); }
   }
 
-  return <section className="page-shell max-w-5xl py-6 sm:py-10">
-    <header className="mb-5 flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-      <div><span className="label !mb-1">Partida {room.gamesPlayed} completada</span><h1 className="font-display text-3xl font-bold sm:text-4xl">Elige el siguiente minijuego</h1><p className="mt-1 font-bold text-ink/60">El más votado será el próximo. En caso de empate, decide el azar.</p></div>
-      {active ? <ServerTimer deadline={vote.endsAt} serverOffset={serverOffset} label="Para votar" /> : <div className="text-center"><span className="label !mb-0">Siguiente juego</span><strong className="font-display text-xl text-leaf">Elegido</strong></div>}
+  const top = <div className={s.main}>
+    <header className={s.head}>
+      <div className={s.headText}>
+        <span className={s.eyebrow}>Partida {room.gamesPlayed} completada</span>
+        <h1 className={s.title}>Elige el siguiente minijuego</h1>
+        <p className={s.lead}>El más votado será el próximo. En caso de empate, decide el azar.</p>
+      </div>
+      <div className={s.clock}>
+        {active ? <ServerTimer deadline={vote.endsAt} serverOffset={serverOffset} label="Para votar" /> : <Badge tone="yellow"><Icon icon={Check} size={18} />Elegido</Badge>}
+        <Chip tone="info" icon={<Icon icon={UsersRound} size={18} />}><span className={s.tabular}>{vote.votedPlayerIds.length}/{vote.eligibleVoterIds.length} votos</span></Chip>
+      </div>
     </header>
-
-    {results && <div className="panel mb-5 flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
-      <span className="inline-flex items-center gap-2 font-display text-lg font-bold"><Trophy size={20} className="text-electric" /> Resultado anterior</span>
-      <div className="flex flex-1 flex-wrap gap-2">{results.standings.slice(0, 3).map((standing) => <span key={standing.playerId} className="chip"><strong className="mr-1 text-berry">{standing.position}.</strong>{members.get(standing.playerId)?.displayName ?? standing.playerId} · +{standing.points}</span>)}</div>
-      <span className="inline-flex items-center gap-1.5 text-sm font-extrabold text-ink/60"><UsersRound size={17} /> {vote.votedPlayerIds.length}/{vote.eligibleVoterIds.length} votos</span>
-    </div>}
-
-    {!active && vote.resolvedGameId && <div className="reveal-pop mb-5 rounded-xl border border-leaf/40 bg-leaf/10 p-4 text-center">
-      <Check className="mr-2 inline text-leaf" size={22} /><strong className="font-display text-xl">La sala ha elegido {vote.options.find((game) => game.id === vote.resolvedGameId)?.name}</strong>
-      <p className="mt-1 text-sm font-bold text-ink/65">La siguiente partida empieza en {Math.max(1, Math.ceil(revealRemainingMs / 1_000))} s…</p>
-    </div>}
-
-    <div className="grid gap-3 md:grid-cols-3">
+    <ul className={s.grid} aria-label="Opciones de voto">
       {vote.options.map((game) => {
         const selected = (vote.ownVoteGameId ?? draft) === game.id;
         const winner = vote.resolvedGameId === game.id;
         const tally = vote.tallies?.[game.id] ?? 0;
         const unavailableReason = active ? gameAvailabilityReason(game, playerCount) : null;
-        return <button key={game.id} type="button" disabled={!canVote || submitting || Boolean(unavailableReason)} aria-pressed={selected} title={unavailableReason ?? undefined} onClick={() => setDraft(game.id)} className={`relative min-h-0 rounded-2xl border p-4 text-left transition-colors md:min-h-48 md:p-5 ${winner ? 'border-leaf bg-leaf/10' : selected ? 'border-aqua bg-aqua/10' : active ? 'border-ink/10 bg-surface hover:border-aqua/60 hover:bg-ink/[.04]' : 'border-ink/10 bg-surface-raised opacity-70'} disabled:cursor-default`}>
-          <span className="mb-3 flex items-start justify-between gap-3 md:mb-5"><span className="text-3xl md:text-4xl" aria-hidden="true">{game.icon}</span>{winner ? <span className="chip bg-leaf/15 text-leaf"><Trophy size={15} /> Ganador</span> : selected && <span className="chip bg-aqua/15 text-aqua"><Check size={15} /> Tu voto</span>}</span>
-          <span className="flex flex-wrap items-center gap-2"><strong className="font-display text-xl">{game.name}</strong>{game.recommended && <span className="recommended-badge">TOP</span>}{game.experimental && <span className="experimental-badge">Experimental</span>}</span><span className={`mt-1 block text-sm font-bold leading-snug ${unavailableReason ? 'text-berry' : 'text-ink/60'}`}>{unavailableReason ?? game.description}</span>
-          {!unavailableReason && <span className="mt-3 inline-flex rounded-lg bg-ink/[.06] px-2.5 py-1.5 text-xs font-extrabold text-ink/60">{summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
-          {!active && <span className="mt-4 inline-flex items-center gap-1.5 font-extrabold text-ink/70"><Vote size={17} /> {tally} {tally === 1 ? 'voto' : 'votos'}</span>}
-        </button>;
+        // Votando: la carta es el conmutador; votado o revelado, carta sin botón (el ganador se resalta en amarillo).
+        const choice = canVote ? { onSelect: () => setDraft(game.id), disabled: submitting || Boolean(unavailableReason) } : {};
+        return <li key={game.id} className={cx(s.cell, !active && !winner && s.lost)}>
+          <Card art={game.icon} name={game.name} state={(active ? selected : winner) ? 'selected' : 'idle'} {...choice}>
+            {(winner || selected || game.recommended || game.experimental) && <span className={s.badges}>
+              {winner && <Badge tone="navy"><Icon icon={Trophy} size={18} />Ganador</Badge>}
+              {selected && <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Tu voto</Chip>}
+              {game.recommended && <Badge>TOP</Badge>}
+              {game.experimental && <Badge tone="cream">Experimental</Badge>}
+            </span>}
+            <span className={cx(s.desc, unavailableReason && s.bad)}>{unavailableReason ?? game.description}</span>
+            {!unavailableReason && <span className={s.config}>{summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
+            {!active && <span className={s.tally}><Badge tone={winner ? 'yellow' : 'cream'}><Icon icon={Vote} size={18} />{votesLabel(tally)}</Badge></span>}
+          </Card>
+        </li>;
       })}
-    </div>
+    </ul>
+  </div>;
 
-    {canVote && <div className="sticky-action-bar mx-auto mt-5 max-w-xl items-center">
-      <p className="flex-1 text-center font-bold sm:text-left">{draft ? <>Has elegido <strong className="text-aqua">{vote.options.find((game) => game.id === draft)?.name}</strong>.</> : 'Selecciona una opción para preparar tu voto.'}</p>
-      <button type="button" className="btn-primary w-full whitespace-nowrap sm:w-auto" disabled={!draft || submitting} onClick={() => void confirmVote()}>{submitting ? <LoaderCircle className="animate-spin" size={18} /> : <Vote size={18} />}{submitting ? 'Confirmando…' : 'Confirmar voto'}</button>
-    </div>}
-    {vote.ownVoteGameId && active && <p className="mt-4 text-center font-extrabold text-leaf"><Check className="mr-1.5 inline" size={19} />Tu voto está registrado.</p>}
-    {!eligible && active && <p className="mt-4 text-center font-bold text-ink/60">Te has desconectado de la votación. Podrás seguir cuando recuperes la conexión.</p>}
-    {error && <p role="alert" className="status-error mx-auto mt-4 max-w-xl text-center">{error}</p>}
-    {host && <button type="button" className="btn-ghost mx-auto mt-6 flex" onClick={onEnd}><StopCircle size={18} /> Terminar sesión</button>}
-  </section>;
+  // En la votación ya no hay partida (`room.game` es nulo): la columna lleva la clasificación de la sesión.
+  const side = <Panel title="Clasificación de la sesión" aria-label="Clasificación de la sesión" scroll className={cx(s.sidePanel)} status={standings.length > 0 ? null : { kind: 'empty', title: 'Sin puntos todavía', text: 'Cada partida reparte puntos de sesión según el puesto.' }}>
+    <ol className={s.previous}>
+      {standings.map((standing) => <li key={standing.id}>
+        <Row rank={standing.position} avatar={<Avatar name={standing.name} avatar={standing.avatar} size="sm" />} name={standing.name} self={standing.id === selfId} value={`${standing.points} pts`} {...(standing.color ? { color: standing.color } : {})} />
+      </li>)}
+    </ol>
+  </Panel>;
+
+  const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+    <div className={s.status} role={active ? undefined : 'status'} aria-live={active ? undefined : 'polite'}>
+      <span className={s.kicker}>{status.kicker}</span>
+      <p className={s.actionTitle}>{status.title}</p>
+      <p className={s.help}>{status.text}</p>
+    </div>
+    {error && <p role="alert" className={s.alert}>{error}</p>}
+    <div className={s.buttons}>
+      {canVote && <Pill variant="yellow" size="main" icon={Vote} loading={submitting} disabled={!draft} onClick={() => void confirmVote()}>Confirmar voto</Pill>}
+      {host && <Pill variant="danger" icon={StopCircle} className={s.end} title="Terminar sesión" onClick={onEnd}><span className={s.endLabel}>Terminar sesión</span></Pill>}
+    </div>
+  </Panel>;
+
+  return <div className={cx('content-row', s.screen)}>
+    {!active && resolvedName && <Cutin key={vote.resolvedGameId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" />}
+    <ScreenSplit fill top={top} side={side} bottom={action} />
+  </div>;
 }

@@ -1,0 +1,120 @@
+/* Intro de partida: alto del `main` como `SessionScreen`, sin scroll de página en escritorio. */
+.screen {
+  min-height: 100%;
+  padding-top: var(--sp-3);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-4);
+  }
+}
+/* El carrusel no se estira a 1600 px: la intro queda centrada. */
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+  max-width: 56rem;
+  min-height: 100%;
+  margin-inline: auto;
+}
+.fill {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+/* Hueco para la sombra dura del carrusel (la pantalla superior recorta lo que se sale). */
+.top {
+  padding-bottom: var(--sp-2);
+}
+/* `ScreenSplit` centra con márgenes automáticos: en una columna flex encogería sin un ancho explícito. */
+.split {
+  flex: 1 1 auto;
+  width: 100%;
+}
+.fallback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font: 700 var(--fs-18) / var(--lh-text) var(--font-text);
+}
+
+/* Acción: recuento y «Empezar ya» en una fila (en el móvil, la píldora baja si no cabe). */
+.actionBody {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+}
+@media (min-width: 640px) {
+  .actionBody {
+    flex-wrap: nowrap;
+    gap: var(--sp-4);
+  }
+}
+.status {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.kicker {
+  display: none;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+@media (min-width: 640px) {
+  .kicker {
+    display: block;
+  }
+}
+.ready {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--ink);
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+  white-space: nowrap;
+}
+@media (min-width: 640px) {
+  .ready {
+    gap: var(--sp-2);
+    margin-top: var(--sp-1);
+    font-size: var(--fs-22);
+  }
+}
+.count {
+  font-variant-numeric: tabular-nums;
+}
+.help {
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.skipGame {
+  flex: none;
+  min-width: 0;
+}
+.go {
+  flex: 1 1 100%;
+}
+@media (min-width: 640px) {
+  .go {
+    flex: none;
+  }
+}
+
+/* En escritorio el carrusel y su acción van juntos, centrados en el alto (a 1920×1080 sobra sitio). */
+@media (min-width: 1024px) {
+  .inner {
+    height: 100%;
+    justify-content: center;
+  }
+  .fill {
+    flex-grow: 0;
+  }
+}

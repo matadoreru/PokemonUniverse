@@ -1276,7 +1276,16 @@ test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
         await expect(objetivo, `${w}×${h}`).toBeInViewport({ ratio: 1 });
       }
     }
+    // La captura de revisión enseña la intro sin el cut-in de entrada (1,6 s).
+    await expect(intro.getByText('¡Empieza la partida!')).toHaveCount(0, { timeout: 5_000 });
     await capturarTamanos(host.page, 'juego-intro', { sigue: intro });
+    // En escritorio la intro cabe entera: sin scroll de página ni de `main`, y texto de 13 px o más.
+    for (const { w, h } of SIZES) {
+      await host.page.setViewportSize({ width: w, height: h });
+      const { id, problems } = await layoutProblems(host.page, 'juego-intro', false, false, { noPageScroll: true, minFontPx: 13 });
+      expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    }
+    await host.page.setViewportSize({ width: 1280, height: 720 });
 
     // Uno pulsa «Empezar ya»: él espera al resto y los demás ven el recuento.
     const saltar = empezar;

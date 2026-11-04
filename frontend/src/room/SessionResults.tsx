@@ -1,28 +1,81 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
-import { Crown, History, RotateCcw } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ResultsShell } from './ResultsShell';
+import { Crown, LogOut, RotateCcw, Trophy } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { audio } from '../audio';
+import { cx, Icon, Panel, Pill, ScreenSplit } from '../ui';
+import { resultsCue, ResultsStandings } from './ResultsShell';
+import { joinNames, sessionPodium } from './session-results';
+import s from './SessionResults.module.css';
 
-export function SessionResults({ room, selfId, onLobby }: { room: RoomView; selfId: string; onLobby(): void }) {
-  const ranking = [...room.sessionStandings].sort((a, b) => b.sessionPoints - a.sessionPoints || a.displayName.localeCompare(b.displayName)); const host = room.hostId === selfId;
-  const winningPoints = ranking[0]?.sessionPoints ?? 0;
-  const champions = ranking.filter((standing) => standing.sessionPoints === winningPoints);
-  const tied = champions.length > 1;
+/**
+ * Clasificación final de la sesión (`SESSION_RESULTS`): podio y resto en franjas, la evolución de puntos por partida
+ * y, abajo, «Otra partida» (el host vuelve al lobby con la clasificación a cero) y «Terminar» (salir de la sala).
+ */
+export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomView; selfId: string; onLobby(): void; /** «Terminar»: salir de la sala. */ onLeave?: () => void }) {
+  const podium = sessionPodium(room, selfId);
+  const host = room.hostId === selfId;
+  const hostName = room.members.find((member) => member.id === room.hostId)?.displayName;
   const gameNames = new Map(room.availableGames.map((game) => [game.id, game.name]));
-  return <ResultsShell podium won={champions.some((standing) => standing.id === selfId)} title={tied ? 'Campeones de la sesión' : 'Campeón de la sesión'} subtitle={`${room.gamesPlayed} partida${room.gamesPlayed === 1 ? '' : 's'} disputada${room.gamesPlayed === 1 ? '' : 's'}`}>
-    <div className="mb-7 text-center"><Crown className="mx-auto fill-electric text-ink" size={64} /><p className="mx-auto mt-2 max-w-xl text-pretty font-display text-3xl font-bold">{champions.map((standing) => standing.displayName).join(' y ') || 'Sin ganador'}</p><p className="font-extrabold text-berry">{winningPoints} puntos</p></div>
-    <p className="mb-3 text-sm font-bold text-ink/60">La sesión premia la posición en cada partida. Los puntos propios de cada minijuego se conservan en sus resultados.</p>
-    <div className="space-y-2">{ranking.map((member, index) => <div key={member.id} className="flex items-center gap-3 rounded-2xl bg-ink/5 px-4 py-3"><strong className="w-8 font-display text-xl">{index + 1}</strong><Avatar name={member.displayName} avatar={member.avatar} size="sm" /><span className="flex-1 font-extrabold">{member.displayName}</span><span className="font-extrabold text-berry">{member.sessionPoints} pts</span></div>)}</div>
-    {room.sessionHistory.length > 0 && <section className="mt-7" aria-labelledby="session-history-title">
-      <h2 id="session-history-title" className="mb-3 flex items-center gap-2 font-display text-xl font-bold"><History size={20} className="text-aqua" /> Evolución de puntos</h2>
-      <div className="overflow-x-auto rounded-xl border border-ink/10">
-        <table className="w-full min-w-[32rem] border-collapse text-sm">
-          <thead><tr className="bg-ink/[.04] text-left"><th className="px-3 py-2.5 font-extrabold">Entrenador</th>{room.sessionHistory.map((game) => <th key={`${game.gameId}-${game.gameNumber}`} className="px-3 py-2.5 text-center font-extrabold" title={gameNames.get(game.gameId) ?? game.gameId}>P{game.gameNumber}</th>)}<th className="px-3 py-2.5 text-right font-extrabold">Total</th></tr></thead>
-          <tbody>{ranking.map((member) => <tr key={member.id} className="border-t border-ink/10"><th scope="row" className="max-w-48 px-3 py-2.5 text-left font-bold"><span className="block truncate">{member.displayName}</span></th>{room.sessionHistory.map((game) => { const points = game.points[member.id] ?? 0; const won = game.winnerIds.includes(member.id); return <td key={`${game.gameId}-${game.gameNumber}`} className={`px-3 py-2.5 text-center font-extrabold ${won ? 'text-leaf' : 'text-ink/65'}`} aria-label={`${points} puntos en la partida ${game.gameNumber}${won ? ', ganador' : ''}`}>{won && <Crown className="mr-1 inline-block fill-electric text-ink" size={13} aria-hidden="true" />}+{points}</td>; })}<td className="px-3 py-2.5 text-right font-black text-berry">{member.sessionPoints}</td></tr>)}</tbody>
+  const played = room.gamesPlayed > 0;
+  // El podio de la sesión: `game.win` al campeón y `game.podium` al resto, solo al llegar.
+  const initial = useRef({ podium: true, won: podium.won });
+  useEffect(() => {
+    const cue = resultsCue(initial.current);
+    if (cue) audio.play(cue);
+  }, []);
+
+  const top = <div className={s.main}>
+    <header className={s.head}>
+      <span className={s.trophy}><Icon icon={Trophy} size={32} /></span>
+      <div className={s.headText}>
+        <span className={s.subtitle}>{podium.subtitle}</span>
+        <h1 className={s.title}>{podium.title}</h1>
+        {podium.champions.length > 0 && <p className={s.champions}>
+          <Icon icon={Crown} size={22} className={s.crown} />
+          <span>{joinNames(podium.champions.map((standing) => standing.name))}</span>
+          <span className={s.points}>{podium.champions[0]!.points} puntos</span>
+        </p>}
+      </div>
+    </header>
+    <Panel title="Clasificación" variant="dark" scroll className={cx(s.standings)} status={played ? null : { kind: 'empty', title: 'Aún no se ha jugado ninguna partida', text: 'La clasificación se llena con cada partida: el puesto en cada una da puntos de sesión.' }}>
+      <ResultsStandings standings={podium.standings} selfId={selfId} />
+      <p className={s.note}>La sesión premia la posición en cada partida. Los puntos propios de cada minijuego se conservan en sus resultados.</p>
+    </Panel>
+  </div>;
+
+  const side = room.sessionHistory.length > 0
+    ? <Panel title="Evolución de puntos" aria-label="Evolución de puntos" variant="cream" scroll className={cx('on-cream', s.history)}>
+      <div className={s.tableWrap}>
+        <table className={s.table}>
+          <thead><tr><th scope="col" className={s.nameCell}>Entrenador</th>{room.sessionHistory.map((game) => <th scope="col" key={`${game.gameId}-${game.gameNumber}`} title={gameNames.get(game.gameId) ?? game.gameId}>P{game.gameNumber}</th>)}<th scope="col" className={s.total}>Total</th></tr></thead>
+          <tbody>{podium.standings.map((member) => <tr key={member.id}>
+            <th scope="row" className={s.nameCell}><span className={s.truncate}>{member.name}</span></th>
+            {room.sessionHistory.map((game) => {
+              const points = game.points[member.id] ?? 0;
+              const won = game.winnerIds.includes(member.id);
+              return <td key={`${game.gameId}-${game.gameNumber}`} className={cx(won && s.won)} aria-label={`${points} puntos en la partida ${game.gameNumber}${won ? ', ganador' : ''}`}>{won && <Icon icon={Crown} size={18} className={s.cellCrown} />}+{points}</td>;
+            })}
+            <td className={s.total}>{member.points}</td>
+          </tr>)}</tbody>
         </table>
       </div>
-      <p className="mt-2 text-xs font-bold text-ink/55">P1, P2… representan cada partida. En sesiones largas se muestran las 100 más recientes.</p>
-    </section>}
-    {host ? <button className="btn-primary mx-auto mt-7 flex" onClick={onLobby}><RotateCcw size={18} /> Nueva sesión</button> : <p className="mt-6 text-center font-bold text-ink/65">Esperando al host…</p>}
-  </ResultsShell>;
+      <p className={s.foot}>P1, P2… son las partidas; la corona marca al ganador. En sesiones largas se muestran las 100 más recientes.</p>
+    </Panel>
+    : null;
+
+  const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+    <div className={s.status}>
+      <span className={s.kicker}>Fin de la sesión</span>
+      <p className={s.actionTitle}>{host ? '¿Otra partida?' : `Esperando a ${hostName ?? 'el host'}…`}</p>
+      <p className={s.help}>{host ? 'Volvéis al lobby con la misma sala y la clasificación a cero.' : `${hostName ?? 'El host'} decide si jugáis otra sesión.`}</p>
+    </div>
+    <div className={s.buttons}>
+      {host && <Pill variant="yellow" size="main" icon={RotateCcw} onClick={onLobby}>Otra partida</Pill>}
+      {onLeave && <Pill variant="danger" icon={LogOut} className={s.end} title="Terminar: salir de la sala" onClick={onLeave}><span className={s.endLabel}>Terminar</span></Pill>}
+    </div>
+  </Panel>;
+
+  return <div className={cx('content-row', s.screen)}>
+    <ScreenSplit fill top={top} side={side} bottom={action} />
+  </div>;
 }

@@ -71,7 +71,8 @@ function RoomSessionContent() {
   return <>
     {/* La placa de la sala (código y «Salir») va a la cabecera solo en `/room`: en `/play` la pantalla ya ofrece volver o salir. */}
     {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={leave} />}
-    {room?.gameSkipState && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
+    {/* En la intro el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
+    {room?.gameSkipState && !(room.phase === 'GAME_STARTING' && room.gameIntro) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
     <Outlet />

@@ -53,6 +53,30 @@ describe('priority session experience', () => {
     expect(markup).toContain('Campeones de la sesión');
     expect(markup).toContain('Ana y Eru');
     expect(markup).toContain('Evolución de puntos');
-    expect(markup).toContain('Nueva sesión');
+    expect(markup).toContain('Otra partida');
+    expect(markup).not.toContain('Terminar');
+    // Empate: los dos comparten el primer puesto y la insignia de ganador.
+    expect(markup.match(/Ganador/g)).toHaveLength(2);
+    expect(markup).toContain('aria-label="Clasificación"');
+    expect(markup).not.toMatch(/btn-|text-xs/);
+
+    const guest = renderToStaticMarkup(createElement(SessionResults, { room: { ...room, hostId: 'departed' }, selfId: 'host', onLobby: () => undefined, onLeave: () => undefined }));
+    expect(guest).not.toContain('Otra partida');
+    expect(guest).toContain('Terminar');
+  });
+
+  it('shows an empty standings state when the session ends before any game', () => {
+    const room: RoomView = {
+      code: 'ABC234', phase: 'SESSION_RESULTS', hostId: 'host', maxPlayers: 8,
+      members: [member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true })],
+      availableGames: [], selectedGameId: 'one', selectedGameConfig: {}, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' },
+      nextGameVote: null, gamesPlayed: 0, sessionStandings: [{ id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, sessionPoints: 0 }],
+      sessionHistory: [], game: null, gamePlayerState: null, serverNow: 1_000,
+    };
+    const markup = renderToStaticMarkup(createElement(SessionResults, { room, selfId: 'host', onLobby: () => undefined }));
+    expect(markup).toContain('Sesión terminada');
+    expect(markup).toContain('Aún no se ha jugado ninguna partida');
+    expect(markup).not.toContain('Ganador');
+    expect(markup).not.toContain('Evolución de puntos');
   });
 });

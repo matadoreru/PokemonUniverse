@@ -1,0 +1,223 @@
+/* Resultados de la sesión: alto del `main` como `SessionScreen`, sin scroll de página en escritorio. */
+.screen {
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+/* En escritorio la clasificación ocupa el alto que queda y se desplaza por dentro. */
+@media (min-width: 1024px) {
+  .main {
+    height: 100%;
+    min-height: 0;
+  }
+  /* La clasificación ocupa lo que necesita (a 1920 no se estira vacía) y se desplaza si no cabe. */
+  .standings {
+    flex: 0 1 auto;
+  }
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.headText {
+  min-width: 0;
+}
+.trophy {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-4);
+}
+.subtitle {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.title {
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-26) / var(--lh-display) var(--font-display);
+  color: var(--white);
+  text-wrap: balance;
+}
+@media (min-width: 640px) {
+  .title {
+    font-size: var(--fs-34);
+  }
+}
+.champions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-18) / var(--lh-text) var(--font-display);
+  color: var(--white);
+}
+.crown {
+  color: var(--yellow);
+}
+.points {
+  color: var(--yellow);
+  font-variant-numeric: tabular-nums;
+}
+.note {
+  margin-top: var(--sp-2);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+
+.history {
+  flex: 0 1 auto;
+}
+.tableWrap {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.table th,
+.table td {
+  padding: var(--sp-2);
+  text-align: center;
+  white-space: nowrap;
+}
+.table thead th {
+  border-bottom: var(--ol-2) solid var(--navy);
+  color: var(--ink-2);
+}
+.table tbody tr + tr {
+  border-top: 1px solid var(--cream-2);
+}
+.table td {
+  color: var(--ink-2);
+}
+.nameCell {
+  text-align: left !important;
+  max-width: 9rem;
+}
+.truncate {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+}
+.won {
+  color: var(--ink) !important;
+  background: var(--yellow-l);
+}
+.cellCrown {
+  margin-right: 2px;
+  vertical-align: -3px;
+}
+.total {
+  text-align: right !important;
+  color: var(--red-d) !important;
+}
+.foot {
+  margin-top: var(--sp-2);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+
+/* Acción: como el lobby y la votación. */
+.actionBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+@media (min-width: 1024px) {
+  .actionBody {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-4);
+  }
+}
+.status {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.kicker {
+  display: none;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+@media (min-width: 1024px) {
+  .kicker {
+    display: block;
+  }
+}
+.actionTitle {
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+  color: var(--ink);
+}
+@media (min-width: 1024px) {
+  .actionTitle {
+    font-size: var(--fs-22);
+  }
+}
+.help {
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.buttons > * {
+  flex: 1 1 auto;
+}
+@media (min-width: 1024px) {
+  .buttons {
+    flex: none;
+    flex-wrap: nowrap;
+  }
+  .buttons > * {
+    flex: none;
+  }
+}
+/* En el móvil la secundaria («Terminar…») queda en icono junto a la principal; el nombre accesible sigue entero. */
+@media (max-width: 639px) {
+  .buttons {
+    flex-wrap: nowrap;
+  }
+  .buttons > .end:not(:only-child) {
+    flex: none;
+    padding-inline: var(--sp-3);
+  }
+  .buttons > .end:not(:only-child) .endLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

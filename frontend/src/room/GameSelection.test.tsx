@@ -86,10 +86,23 @@ describe('game selection UI', () => {
     expect(active).toContain('Confirmar voto');
     expect(active).toContain('0/3 votos');
     expect(active).not.toContain('Ganador');
+    expect(active).toContain('aria-label="Opciones de voto"');
+    expect(active.match(/aria-pressed="false"/g)).toHaveLength(3);
+    expect(active).toContain('Terminar sesión');
+    expect(active).not.toMatch(/btn-|class="chip|class="panel|text-xs/);
+    // La clasificación de la sesión en franjas.
+    expect(active).toContain('Clasificación de la sesión');
+    expect(active).toContain('5 pts');
+
+    const guest = renderToStaticMarkup(createElement(NextGameVote, { room: room('NEXT_GAME_VOTE'), selfId: 'p2', onVote: async () => undefined, onEnd: () => undefined }));
+    expect(guest).not.toContain('Terminar sesión');
 
     const result = renderToStaticMarkup(createElement(NextGameVote, { room: room('NEXT_GAME_VOTE_RESULTS'), selfId: 'p1', onVote: async () => undefined, onEnd: () => undefined }));
     expect(result).toContain('La sala ha elegido Juego dos');
     expect(result).toContain('Ganador');
     expect(result).toContain('3 votos');
+    expect(result).toContain('Siguiente minijuego');
+    expect(result).not.toContain('Confirmar voto');
+    expect(result).not.toContain('aria-pressed');
   });
 });

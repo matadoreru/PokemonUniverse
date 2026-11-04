@@ -1,25 +1,29 @@
 import type { GameIntroView, RoomView, SkipGameIntroRequest } from '@pokemon-universe/shared/public';
-import { Check, LoaderCircle, UsersRound } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Check, Play, UsersRound } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { audio } from '../audio';
 import { HowToPlayCarousel } from '../components/HowToPlayCarousel';
 import { ServerTimer } from '../components/ServerTimer';
 import { gameHowToPlay } from '../games/how-to-play';
 import { useServerOffset } from '../hooks/useServerTime';
+import { Cutin, cx, Icon, Panel, Pill, ScreenSplit } from '../ui';
 import { gameIntroProgress, introReadyLabel, introSkipLabel } from './game-intro';
+import s from './GameIntro.module.css';
 
 interface Props {
   room: RoomView;
   intro: GameIntroView;
   selfId: string;
   onSkip(request: SkipGameIntroRequest): Promise<void>;
+  /** «Saltar minijuego» de la sala: en la intro va en la franja de acción (la pantalla llena el alto sin scroll). */
+  skipControl?: ReactNode;
 }
 
 /**
- * Intro de partida en `GAME_STARTING` (Fase 2): los 3 pasos del minijuego, la cuenta atrás de la sala y «Saltar».
- * La partida empieza al vencer el plazo o cuando todos los jugadores conectados han saltado.
+ * Intro de partida en `GAME_STARTING` (Fase 2): cut-in con el nombre del juego, sus 3 pasos, la cuenta atrás de la sala
+ * y «Empezar ya». La partida empieza al vencer el plazo o cuando todos los jugadores conectados lo han pulsado.
  */
-export function GameIntro({ room, intro, selfId, onSkip }: Props) {
+export function GameIntro({ room, intro, selfId, onSkip, skipControl }: Props) {
   const gameId = (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId;
   const name = room.availableGames.find((game) => game.id === gameId)?.name ?? 'el minijuego';
   const slides = gameHowToPlay[gameId];
@@ -39,24 +43,33 @@ export function GameIntro({ room, intro, selfId, onSkip }: Props) {
     finally { setSubmitting(false); }
   }
 
-  // Cabecera del carrusel: cuenta atrás, «Empezar ya» y recuento juntos, siempre a la vista con la navegación de pasos.
-  const actions = <div className="flex shrink-0 flex-col items-end gap-2">
-    <ServerTimer deadline={intro.endsAt} serverOffset={serverOffset} label="Empieza en" />
-    {progress.canSkip
-      ? <button type="button" className="btn-primary whitespace-nowrap" onClick={() => void skip()} disabled={progress.selfSkipped} aria-busy={submitting || undefined}>
-        {submitting ? <LoaderCircle className="animate-spin" size={18} aria-hidden="true" /> : progress.selfSkipped && <Check size={18} aria-hidden="true" />}
-        {introSkipLabel(progress.selfSkipped)}
-      </button>
-      : <p className="max-w-[9rem] text-right text-sm font-bold text-ink/65">Empieza cuando los jugadores estén listos.</p>}
-    <p className="inline-flex items-center gap-1.5 text-sm font-extrabold text-ink/70" role="status" aria-live="polite">
-      <UsersRound size={16} aria-hidden="true" />
-      <span className="tabular-nums">{introReadyLabel(progress)}</span>
-    </p>
-  </div>;
+  // La cuenta atrás en la cabecera del carrusel, siempre a la vista con el título.
+  const timer = <ServerTimer deadline={intro.endsAt} serverOffset={serverOffset} label="Empieza en" />;
+  const top = <div className={s.top}>{slides
+    ? <HowToPlayCarousel slides={slides} kicker="Antes de empezar" heading={`Cómo se juega a ${name}`} idPrefix="game-intro" itemLabel="paso" loop={false} compact headerAction={timer} />
+    : <Panel title={name}><div className={s.fallback}><p>Prepárate: la partida empieza enseguida.</p>{timer}</div></Panel>}</div>;
 
-  return <section className="page-shell max-w-3xl py-3 sm:py-4" aria-label={`Intro de ${name}`}>
-    {slides
-      ? <HowToPlayCarousel slides={slides} kicker="Antes de empezar" heading={`Cómo se juega a ${name}`} idPrefix="game-intro" itemLabel="paso" loop={false} compact headerAction={actions} />
-      : <div className="card flex items-start justify-between gap-3"><h2 className="font-display text-2xl sm:text-3xl">{name}</h2>{actions}</div>}
+  // El recuento, «Saltar minijuego» y «Empezar ya» juntos: abajo en el móvil, bajo el carrusel en escritorio.
+  const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+    <div className={s.status}>
+      <span className={s.kicker}>{progress.canSkip ? '¿Preparado?' : 'Espectador'}</span>
+      <p className={s.ready} role="status" aria-live="polite">
+        <Icon icon={UsersRound} size={22} />
+        <span className={s.count}>{introReadyLabel(progress)}</span>
+      </p>
+      {!progress.canSkip && <p className={s.help}>Empieza cuando los jugadores estén listos.</p>}
+    </div>
+    {skipControl && <div className={s.skipGame}>{skipControl}</div>}
+    {progress.canSkip && <Pill variant="yellow" size="main" className={s.go} icon={progress.selfSkipped ? Check : Play} loading={submitting} disabled={progress.selfSkipped} onClick={() => void skip()}>
+      {introSkipLabel(progress.selfSkipped)}
+    </Pill>}
+  </Panel>;
+
+  return <section className={cx('content-row', s.screen)} aria-label={`Intro de ${name}`}>
+    {/* Sin sonido propio: la intro ya da `game.start`. Sin `onSkip`: no tapa los clics de «Empezar ya». */}
+    <Cutin tone="yellow" title={name} subtitle="¡Empieza la partida!" silent />
+    <div className={s.inner}>
+      <div className={s.fill}><ScreenSplit fill className={cx(s.split)} top={top} bottom={action} /></div>
+    </div>
   </section>;
 }

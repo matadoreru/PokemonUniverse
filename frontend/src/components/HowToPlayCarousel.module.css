@@ -114,6 +114,11 @@
     order: -1;
     flex: 1 0 100%;
   }
+  /* Intro de partida (sin «Entendido»): flechas solas y puntos caben en una fila; así cabe con su acción a 390×844. */
+  .compact .dots {
+    order: 0;
+    flex: 0 1 auto;
+  }
 }
 /* Con poco ancho, flechas solas (el nombre accesible sigue en `aria-label`) y menos relleno. */
 .navLabel {

@@ -129,7 +129,7 @@ export function HowToPlayCarousel({ slides = generalSlides, heading = 'Cómo jug
   const label = itemLabel.charAt(0).toLocaleUpperCase('es') + itemLabel.slice(1);
   const titleId = `${idPrefix}-title`;
 
-  return <section className={cx(s.root, onCream && s.onCream, !inDialog && s.framed, !inDialog && (compact ? 'min-h-[24rem]' : 'min-h-[31rem]'))} {...(inDialog ? { 'aria-label': heading } : { 'aria-labelledby': titleId })} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
+  return <section className={cx(s.root, onCream && s.onCream, !inDialog && s.framed, compact && lastAction === undefined && s.compact, !inDialog && (compact ? 'min-h-[24rem]' : 'min-h-[31rem]'))} {...(inDialog ? { 'aria-label': heading } : { 'aria-labelledby': titleId })} aria-roledescription="carrusel" onKeyDown={onKeyDown}>
     {!inDialog && <header className={s.head}>
       <div className="min-w-0">
         <span className={s.kicker}>{kicker}</span>
