@@ -46,6 +46,25 @@ describe('lobby information hierarchy', () => {
     expect(markup).not.toContain('/feedback');
     expect(markup).toContain('>Jugadores<');
     expect(markup).toContain('Iniciar partida');
+    // Las tres pestañas quedan montadas (la activa visible): cambiar de pestaña no pierde el estado.
+    expect(markup.match(/role="tabpanel"/g)).toHaveLength(3);
+    expect(markup.match(/role="tabpanel"[^>]*hidden=""/g)).toHaveLength(2);
+    expect(markup).toContain('Ajustes de Pokédex Distance');
+  });
+
+  it('gives the host the red start pill and game cards as toggle buttons, without the ready pill', () => {
+    const markup = renderToStaticMarkup(<MemoryRouter><Lobby
+      room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+    /></MemoryRouter>);
+    expect(markup).toContain('¡Empezar partida!');
+    expect(markup).toContain('id="start-help"');
+    expect(markup).not.toContain('Marcarme listo');
+    expect(markup).toContain('aria-label="Minijuegos"');
+    expect(markup).toMatch(/<button[^>]*aria-pressed="true"[^>]*>(?:(?!<\/button>).)*Pokédex Distance/);
+    expect(markup).toContain('Seleccionado');
+    expect(markup).not.toContain('Solo lectura');
   });
 });
 
@@ -58,8 +77,22 @@ describe('lobby how to play', () => {
     /></MemoryRouter>);
     expect(markup).toContain('aria-label="Cómo se juega a Pokédex Distance"');
     expect(markup).toContain('aria-label="Cómo se juega a Shiny Quiz"');
-    expect(markup).toContain('class="lobby-game-cell"');
     expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*aria-label="Cómo se juega/);
+  });
+
+  it('shows a guest read-only cards, their own ready pill and no start pill', () => {
+    const markup = renderToStaticMarkup(<MemoryRouter><Lobby
+      room={{ ...room, members: room.members.map((member) => member.id === 'guest' ? { ...member, ready: false } : member) }} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+    /></MemoryRouter>);
+    expect(markup).not.toContain('Empezar partida');
+    expect(markup).toContain('Marcarme listo');
+    expect(markup).toContain('Márcate listo para que Eru pueda empezar.');
+    expect(markup).toContain('Solo lectura');
+    // Las cartas del invitado no son botones (no se atenúan): ningún conmutador de juego.
+    expect(markup).not.toMatch(/<button[^>]*aria-pressed="(?:true|false)"[^>]*>(?:(?!<\/button>).)*Pokédex Distance/);
+    expect(markup).toContain('Seleccionado');
   });
 });
 

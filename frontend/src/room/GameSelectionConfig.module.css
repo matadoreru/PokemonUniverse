@@ -1,0 +1,230 @@
+/*
+ * Rotación de minijuegos (lobby, pestaña «Modo y sesión»): tres cartas de método, la lista de juegos con su casilla y,
+ * al lado o debajo según el ancho que deja la sala (consulta de contenedor), el editor de ajustes del juego.
+ */
+.choices {
+  display: grid;
+  gap: var(--sp-3);
+}
+@media (min-width: 640px) {
+  .choices {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.choiceText {
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+
+.rotation {
+  container: rotation / inline-size;
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-5);
+  border-top: var(--ol-2) dashed var(--navy-3);
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+.title {
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+}
+.lead {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.warn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  font: 800 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--red-d);
+}
+
+/* Lista y editor: apilados; uno junto a otro cuando la rotación tiene sitio para los dos. */
+.split {
+  display: grid;
+  gap: var(--sp-4);
+  align-items: start;
+}
+@container rotation (min-width: 60rem) {
+  .split {
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+  }
+  .items {
+    max-height: 36rem;
+  }
+}
+.list {
+  min-width: 0;
+  padding: var(--sp-3);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream-2);
+}
+.listTools {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+.search {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-height: 24rem;
+  overflow-y: auto;
+  padding-right: var(--sp-1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-3) transparent;
+}
+
+/* Fila de juego: franja crema; elegida con contorno azul noche y, la que se edita, en amarillo. */
+.item {
+  flex: none;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-1);
+  border: var(--ol-2) solid color-mix(in srgb, var(--navy) 35%, transparent);
+  border-radius: var(--r-franja);
+  background: var(--cream);
+  color: var(--ink);
+}
+.on {
+  border-color: var(--navy);
+}
+.editing {
+  border-color: var(--navy);
+  background: var(--yellow-l);
+}
+.itemMain {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-1);
+}
+.toggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-block: -6px;
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  cursor: pointer;
+}
+.toggle:disabled {
+  cursor: not-allowed;
+}
+.box {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-badge);
+  background: var(--white);
+  transition: transform var(--t-press) var(--ease);
+}
+.toggle:hover:not(:disabled) .box {
+  transform: scale(1.06);
+}
+.toggle:active:not(:disabled) .box {
+  transform: scale(0.94);
+}
+.toggle[aria-pressed='true'] .box {
+  background: var(--yellow);
+}
+.toggle:disabled .box {
+  opacity: 0.45;
+}
+.itemText {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 2px;
+}
+.itemName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+}
+.name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+}
+.summary {
+  margin-top: 2px;
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+.summaryBad {
+  color: var(--red-d);
+}
+.itemFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-2);
+  padding-left: var(--sp-2);
+  border-top: var(--ol-2) dashed color-mix(in srgb, var(--navy) 30%, transparent);
+}
+.off {
+  color: var(--ink-2);
+}
+
+/* Editor de ajustes del juego elegido de la rotación. */
+.editor {
+  min-width: 0;
+}
+.editorHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+}
+.editorLead {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.editorNote {
+  margin-top: var(--sp-2);
+  font: 800 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.editorNoteBad {
+  color: var(--red-d);
+}
+.editorBody {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: var(--ol-2) dashed var(--navy-3);
+}
+.readonly {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    transition: none;
+  }
+}

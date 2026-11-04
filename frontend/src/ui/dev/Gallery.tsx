@@ -574,6 +574,7 @@ const BULBASAUR_TYPES = [
 
 function CardSection() {
   const [selected, setSelected] = useState(false);
+  const [gameSelected, setGameSelected] = useState(true);
   return (
     <Section name="card" title="Card">
       {CARD_STATES.map((c) => (
@@ -583,6 +584,24 @@ function CardSection() {
       ))}
       <Fig id="card-button" caption="Seleccionable (botón)">
         <Card name="Bulbasaur" number={1} types={BULBASAUR_TYPES} state={selected ? 'selected' : 'idle'} onSelect={() => setSelected((v) => !v)} />
+      </Fig>
+      <Fig id="card-game" caption="Minijuego (arte en lugar del sprite) · seleccionable">
+        <Card size="sm" art="⚔️" name="Type Duel" state={gameSelected ? 'selected' : 'idle'} onSelect={() => setGameSelected((v) => !v)}>
+          <span className="text-13 font-bold">2–8 jugadores</span>
+          <span className="flex flex-wrap justify-center gap-1">
+            {gameSelected && <Badge tone="navy">Seleccionado</Badge>}
+            <Badge>TOP</Badge>
+          </span>
+        </Card>
+      </Fig>
+      <Fig id="card-game-readonly" caption="Minijuego · solo lectura (sin botón), elegida">
+        <Card size="sm" art="🕵️" name="Pokémon Impostor" state="selected">
+          <span className="text-13 font-bold">3+ jugadores</span>
+          <span className="flex flex-wrap justify-center gap-1">
+            <Badge tone="navy">Seleccionado</Badge>
+            <Badge tone="cream">Experimental</Badge>
+          </span>
+        </Card>
       </Fig>
       <Fig id="card-photo" caption="Avatar (ilustración en círculo)">
         <Card name="Aqua" sprite="/avatars/presets/trainer-aqua.webp" photo onSelect={() => undefined} />

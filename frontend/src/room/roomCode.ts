@@ -38,6 +38,8 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * - «Leave your current room first»: `RoomCoordinator.join` (dos veces).
  * - «Already in a room»: `RoomCoordinator.create` (dos veces).
  * - «Not in a room»: `RoomCoordinator.requiredRoom` e `inRequiredRoom` (`leave` y otras órdenes sin sala).
+ * - Del lobby: «This setting can only be changed in the lobby», «Player not found», «Unknown game», «Cannot end the
+ *   session during a game» y «No game in progress».
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
@@ -45,6 +47,12 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Leave your current room first': OTHER_ROOM,
   'Already in a room': OTHER_ROOM,
   'Not in a room': 'Ya no estás en ninguna sala.',
+  // Órdenes del lobby (`RoomCoordinator`): ajustes, gestión de jugadores y fin de sesión.
+  'This setting can only be changed in the lobby': 'Este ajuste solo se puede cambiar en el lobby.',
+  'Player not found': 'Ese jugador ya no está en la sala.',
+  'Unknown game': 'Ese minijuego no existe.',
+  'Cannot end the session during a game': 'No se puede finalizar la sesión durante una partida.',
+  'No game in progress': 'No hay ninguna partida en curso.',
 };
 
 /**
@@ -65,4 +73,22 @@ export function roomErrorMessage(error: unknown): string {
   // `/^[A-Z2-9]{6}$/` (`RoomCommandParsers.roomCode`).
   if (raw.includes(ROOM_CODE_PATTERN)) return 'El código tiene 6 letras o números.';
   return GENERIC;
+}
+
+/** Palabras que delatan un texto en español del servidor (la mayoría de los rechazos del lobby ya llegan así). */
+const SPANISH_HINT = /[áéíóúñü¿¡]|\b(?:el|la|los|las|de|del|que|un|una|ya|se|en|tu|al|por|para|con|hay|puedes|jugador|jugadores|minijuego|minijuegos|sala|partida|host)\b/i;
+
+/**
+ * Texto en español para un error de una orden de la sala (lobby: listo, empezar, ajustes, roles). A diferencia de
+ * `roomErrorMessage`, deja pasar los rechazos del servidor que ya están en español («Falta por confirmar: …», «No tienes
+ * permiso…», «Pokémon Impostor: …»), porque explican qué falta. Traduce los conocidos en inglés y lo demás (incidencias
+ * de validación, «Action rejected», errores sin texto) se queda en el genérico.
+ */
+export function roomActionErrorMessage(error: unknown): string {
+  const raw = (typeof error === 'string' ? error : error instanceof Error ? error.message : '').trim();
+  if (Object.hasOwn(ROOM_ERROR_TRANSLATIONS, raw)) return ROOM_ERROR_TRANSLATIONS[raw]!;
+  if (SPANISH.has(raw)) return raw;
+  // Las incidencias de validación llegan como JSON (`ZodIssues.stringify`): no son para leer.
+  if (!raw || raw.startsWith('[') || raw.startsWith('{')) return GENERIC;
+  return SPANISH_HINT.test(raw) ? raw : GENERIC;
 }

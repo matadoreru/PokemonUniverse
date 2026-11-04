@@ -121,12 +121,57 @@ for (const { w, h } of SIZES) {
     const guest = await crearJugador('Inv', w, h);
     await joinRoom(guest.page, code);
     await esperarInvitado(host.page, guest.name);
-    await capture(host.page, 'lobby');
+    // Escritorio: sin scroll de página ni del `main`, y «¡Empezar partida!» a la vista sin desplazar.
+    await capture(host.page, 'lobby', { minFontPx: 13, noPageScroll: true });
+    await expect(host.page.getByRole('button', { name: '¡Empezar partida!' })).toBeInViewport({ ratio: 1 });
+    await expect(guest.page.getByRole('button', { name: 'Marcarme listo' })).toBeInViewport({ ratio: 1 });
 
     expect(host.errors).toEqual([]);
     expect(guest.errors).toEqual([]);
   });
 }
+
+test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultados', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+
+  // Invitado: la configuración del juego en solo lectura, enmarcada en su panel.
+  await guest.page.getByRole('tab', { name: 'Configuración' }).click();
+  await expect(guest.page.getByRole('heading', { name: 'Ajustes de Pokédex Distance' })).toBeVisible();
+  await expect(guest.page.getByText('Solo el host y los co-hosts pueden cambiar estos ajustes.')).toBeVisible();
+  for (const { w, h } of SIZES) {
+    await guest.page.setViewportSize({ width: w, height: h });
+    await capture(guest.page, 'lobby-invitado-configuracion', { minFontPx: 13, noPageScroll: true });
+  }
+
+  // Host: el modo de la sesión con el minijuego fijo (sin rotación).
+  await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
+  await expect(host.page.getByRole('button', { name: /^Mismo minijuego/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(host.page.getByRole('button', { name: /^Infinita/ })).toHaveAttribute('aria-pressed', 'true');
+  for (const { w, h } of SIZES) {
+    await host.page.setViewportSize({ width: w, height: h });
+    await capture(host.page, 'lobby-modo-sesion', { minFontPx: 13, noPageScroll: true });
+  }
+
+  // Búsqueda de minijuegos sin coincidencias: estado vacío con acción para volver a la rejilla.
+  await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+  const buscar = host.page.getByLabel('Buscar minijuego');
+  await buscar.fill('zzzz');
+  await expect(host.page.getByText('No hay minijuegos que coincidan con “zzzz”.')).toBeVisible();
+  for (const { w, h } of SIZES) {
+    await host.page.setViewportSize({ width: w, height: h });
+    await capture(host.page, 'lobby-busqueda-vacia', { minFontPx: 13, noPageScroll: true });
+  }
+  await host.page.getByRole('button', { name: 'Borrar búsqueda' }).click();
+  await expect(buscar).toHaveValue('');
+  await expect(host.page.getByRole('list', { name: 'Minijuegos' })).toBeVisible();
+
+  expect(host.errors).toEqual([]);
+  expect(guest.errors).toEqual([]);
+});
 
 test('el host gestiona a un jugador desde su franja y lo expulsa tras confirmarlo', async ({ crearJugador }) => {
   const host = await crearJugador('Host');

@@ -28,12 +28,17 @@ export interface CardProps {
   action?: boolean;
   /** Con `onSelect`: botón deshabilitado. */
   disabled?: boolean;
+  /**
+   * Arte decorativo en el hueco del sprite cuando no hay imagen (p. ej. el icono de un minijuego). Va oculto a los
+   * lectores de pantalla: el nombre de la carta ya lo dice.
+   */
+  art?: ReactNode;
   onSelect?: () => void;
   children?: ReactNode;
 }
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
-export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', decorativeSprite, action, disabled, onSelect, children }: CardProps) {
+export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', decorativeSprite, action, disabled, art, onSelect, children }: CardProps) {
   // Suena al pasar a `revealing` (la carta se da la vuelta).
   const before = useRef<CardState>(state);
   useEffect(() => {
@@ -43,7 +48,15 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
   const body = (
     <>
       <span className={cx(s.art, photo && s.photoArt)}>
-        {sprite ? <img src={sprite} alt={photo || decorativeSprite ? '' : name} loading="lazy" decoding="async" className={cx(s.img, photo && s.photo)} /> : <span className={s.placeholder} aria-hidden="true">?</span>}
+        {sprite ? (
+          <img src={sprite} alt={photo || decorativeSprite ? '' : name} loading="lazy" decoding="async" className={cx(s.img, photo && s.photo)} />
+        ) : art != null ? (
+          <span className={s.glyph} aria-hidden="true">
+            {art}
+          </span>
+        ) : (
+          <span className={s.placeholder} aria-hidden="true">?</span>
+        )}
       </span>
       <span className={s.name}>{name}</span>
       {number != null && <span className={s.num}>Nº {String(number).padStart(3, '0')}</span>}

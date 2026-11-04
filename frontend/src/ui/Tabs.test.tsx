@@ -43,6 +43,10 @@ describe('Tabs', () => {
     const p = renderToStaticMarkup(createElement(TabPanel, { idBase: 'x', tabKey: 'a' }, 'hola'));
     expect(p).toContain('role="tabpanel"');
     expect(p).toContain('id="x-panel-a"');
+    expect(p).not.toContain('hidden');
+  });
+  it('un panel inactivo puede quedarse montado y oculto', () => {
+    expect(renderToStaticMarkup(createElement(TabPanel, { idBase: 'x', tabKey: 'b', hidden: true }, 'hola'))).toContain('hidden=""');
   });
 });
 

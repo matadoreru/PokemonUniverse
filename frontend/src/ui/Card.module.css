@@ -97,6 +97,13 @@
   object-fit: cover;
   image-rendering: auto;
 }
+.glyph {
+  font-size: var(--fs-34);
+  line-height: 1;
+}
+.sm .glyph {
+  font-size: var(--fs-26);
+}
 .placeholder {
   font: 800 var(--fs-34) / 1 var(--font-display);
   color: var(--ink-2);

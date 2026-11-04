@@ -92,12 +92,17 @@ export interface TabPanelProps {
   tabKey: string;
   children?: ReactNode;
   className?: string;
+  /**
+   * Oculto pero montado: para tener un panel por pestaña y conservar su estado (búsquedas, ajustes a medio confirmar)
+   * al cambiar de pestaña. Sin él, quien llama pinta solo el panel activo.
+   */
+  hidden?: boolean;
 }
 
 /** Cuerpo de una pestaña: crema, unido a la lista. */
-export function TabPanel({ idBase, tabKey, children, className }: TabPanelProps) {
+export function TabPanel({ idBase, tabKey, children, className, hidden }: TabPanelProps) {
   return (
-    <div role="tabpanel" id={`${idBase}-panel-${tabKey}`} aria-labelledby={`${idBase}-tab-${tabKey}`} className={cx(s.panel, className)}>
+    <div role="tabpanel" id={`${idBase}-panel-${tabKey}`} aria-labelledby={`${idBase}-tab-${tabKey}`} className={cx(s.panel, className)} hidden={hidden}>
       {children}
     </div>
   );

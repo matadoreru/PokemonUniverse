@@ -118,14 +118,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .session-card strong { @apply block font-display text-lg; }
   .session-card > span:last-child { @apply mt-0.5 block text-sm font-bold text-ink/65; }
   .session-card-selected { @apply border-aqua bg-aqua/10; }
-  .lobby-tab { @apply inline-flex min-h-12 min-w-0 items-center justify-center gap-2 border-b-2 border-transparent px-1 text-xs font-extrabold text-ink/55 transition-colors hover:text-ink sm:px-4 sm:text-sm; }
-  .lobby-tab-active { @apply border-aqua text-ink; }
-  .lobby-game-grid { @apply grid gap-3; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
-  .lobby-game-option { @apply flex min-h-44 flex-col items-stretch rounded-xl border border-ink/10 bg-surface-raised p-3.5 text-left transition-colors hover:border-aqua/50 hover:bg-ink/[.055] disabled:cursor-not-allowed; }
-  .lobby-game-option-selected { @apply border-aqua bg-aqua/10; }
-  /* Celda de la rejilla del lobby: la tarjeta (un <button>) y, debajo, «Cómo se juega», que no puede ir dentro. */
-  .lobby-game-cell { @apply flex min-w-0 flex-col gap-2; }
-  .lobby-game-cell > .lobby-game-option { @apply flex-1; }
   /* Opción de un grupo de botones de configuración (`aria-pressed`); la elegida añade su color de acento con utilidades. */
   .toggle-option { @apply min-h-11 rounded-xl border border-ink/10 bg-surface-raised px-3 py-2 font-extrabold text-ink/70 transition-colors hover:border-aqua/50 disabled:cursor-not-allowed disabled:opacity-55; }
   .experimental-badge { @apply inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-xs font-black text-white; background: #c92a42; }
@@ -172,18 +164,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   /* Respuestas de Higher or Lower: pegadas al borde inferior (mismo patrón que `.connections-submit`) para que se vean sin desplazar en móvil. */
   .answer-dock { position: sticky; bottom: .5rem; z-index: var(--z-sticky); border: 1px solid rgb(var(--color-ink) / .1); border-radius: .75rem; background: rgb(var(--color-surface) / .97); padding: .5rem; }
 }
-
-.lobby-readonly { opacity: .72; }
-/* En la rejilla de juegos solo se atenúan las tarjetas: «Cómo se juega» sigue activo para los invitados. */
-.lobby-game-grid.lobby-readonly { opacity: 1; }
-.lobby-game-grid.lobby-readonly .lobby-game-option { opacity: .72; }
-.lobby-readonly button:disabled, .lobby-readonly input:disabled { cursor: not-allowed; }
-.lobby-readonly button:disabled { filter: saturate(.62); }
-
-.voice-callout, .feedback-callout { position: relative; }
-.voice-callout::after { content: ''; position: absolute; bottom: -.4rem; left: 2rem; width: .75rem; height: .75rem; transform: rotate(45deg); border-right: 1px solid rgb(var(--color-aqua) / .3); border-bottom: 1px solid rgb(var(--color-aqua) / .3); background: rgb(var(--color-aqua) / .08); }
-.feedback-callout::after { content: ''; position: absolute; bottom: -.4rem; left: 2rem; width: .75rem; height: .75rem; transform: rotate(45deg); border-right: 1px solid rgb(var(--color-berry) / .3); border-bottom: 1px solid rgb(var(--color-berry) / .3); background: rgb(var(--color-berry) / .08); }
-
 
 .pokeball-mark { position: relative; border-radius: 9999px; background: linear-gradient(var(--red) 0 44%, var(--band) 44% 56%, var(--white) 56%); }
 .pokeball-mark::after { content: ''; position: absolute; inset: 32%; border: 3px solid rgb(var(--color-night)); border-radius: 50%; background: rgb(var(--color-surface)); }

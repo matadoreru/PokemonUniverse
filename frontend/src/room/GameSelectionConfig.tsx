@@ -1,9 +1,12 @@
 import { playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
-import { AlertCircle, Check, Repeat2, Search, SearchX, Settings2, Shuffle, Vote, X } from 'lucide-react';
+import { AlertCircle, Check, LockKeyhole, Repeat2, Search, Settings2, Shuffle, Vote } from 'lucide-react';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
+import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../ui';
 import { summarizeGameConfig } from './game-config-summary';
+import g from './GameSelectionConfig.module.css';
+import { filterGames } from './lobby-state';
 
 interface Props {
   availableGames: MiniGameManifest[];
@@ -27,10 +30,6 @@ export function gameAvailabilityReason(game: MiniGameManifest, playerCount: numb
   if (playerCount < game.minPlayers) return `Necesita al menos ${game.minPlayers} jugadores`;
   if (game.maxPlayers !== undefined && playerCount > game.maxPlayers) return `Máximo ${game.maxPlayers} jugadores`;
   return null;
-}
-
-function normalizeSearch(value: string): string {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es').trim();
 }
 
 export function rotationGameConfig(room: RoomView | undefined, gameId: string): unknown {
@@ -66,11 +65,7 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
 
   const selectedKey = selectedIds.join('|');
   const visibleGames = useMemo(() => {
-    const normalized = normalizeSearch(query);
-    const games = normalized
-      ? availableGames.filter((game) => normalizeSearch(`${game.name} ${game.description}`).includes(normalized))
-      : availableGames;
-    return [...games].sort((left, right) =>
+    return filterGames(availableGames, query).sort((left, right) =>
       Number(Boolean(right.recommended)) - Number(Boolean(left.recommended))
       || Number(selected.has(right.id)) - Number(selected.has(left.id))
       || left.name.localeCompare(right.name, 'es'),
@@ -117,32 +112,32 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
   };
 
   return <div>
-    <div className="grid gap-3 sm:grid-cols-3" role="group" aria-label="Método de selección de minijuegos">
+    <div className={g.choices} role="group" aria-label="Método de selección de minijuegos">
       {choices.map((choice) => {
-        const Icon = choice.icon; const active = mode.type === choice.type;
+        const active = mode.type === choice.type;
         const unavailable = compatibleGames.length < choice.requiredGames;
-        return <button key={choice.type} type="button" disabled={disabled || unavailable} aria-pressed={active} title={unavailable ? `Solo hay ${compatibleGames.length} minijuegos compatibles para ${playerCount} jugadores.` : undefined} className={`session-card ${active ? 'session-card-selected' : ''}`} onClick={() => selectMode(choice.type)}>
-          <span className="mb-2 flex items-center justify-between"><Icon size={21} className={active ? 'text-aqua' : 'text-ink/55'} />{active && <Check size={18} className="text-aqua" />}</span>
-          <strong>{choice.title}</strong><span>{unavailable ? `No hay ${choice.requiredGames} juegos compatibles para ${playerCount} jugadores.` : choice.description}</span>
-        </button>;
+        // Solo lectura: carta sin botón, sin atenuar (el método elegido se sigue viendo amarillo).
+        return <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={active ? 'selected' : 'idle'} disabled={unavailable} {...(disabled ? {} : { onSelect: () => selectMode(choice.type) })}>
+          <span className={g.choiceText}>{unavailable ? `No hay ${choice.requiredGames} juegos compatibles para ${playerCount} jugadores.` : choice.description}</span>
+        </Card>;
       })}
     </div>
 
-    {mode.type !== 'FIXED' && <fieldset className="mt-5 border-t border-ink/10 pt-5">
+    {mode.type !== 'FIXED' && <fieldset className={g.rotation}>
       <legend className="sr-only">Minijuegos de la rotación</legend>
-      <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-        <div><h3 className="font-display text-lg font-bold">Configura la rotación</h3><p className="text-sm font-bold text-ink/60">Elige los juegos y revisa sus ajustes uno a uno.</p></div>
-        <span className={`chip tabular-nums ${readyCount < selected.size ? 'bg-berry/10 text-berry' : 'bg-leaf/10 text-leaf'}`}>{readyCount}/{selected.size} listos</span>
+      <div className={g.head}>
+        <div><h3 className={g.title}>Configura la rotación</h3><p className={g.lead}>Elige los juegos y revisa sus ajustes uno a uno.</p></div>
+        <Chip tone={readyCount < selected.size ? 'bad' : 'ok'}>{readyCount}/{selected.size} listos</Chip>
       </div>
-      {excludedCount > 0 && <p className="status-error mb-3" role="status">{excludedCount === 1 ? 'Un juego seleccionado ya no admite' : `${excludedCount} juegos seleccionados ya no admiten`} el número actual de jugadores. Sustitúyelo antes de iniciar.</p>}
+      {excludedCount > 0 && <p className={g.warn} role="status"><Icon icon={AlertCircle} size={18} />{excludedCount === 1 ? 'Un juego seleccionado ya no admite' : `${excludedCount} juegos seleccionados ya no admiten`} el número actual de jugadores. Sustitúyelo antes de iniciar.</p>}
 
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(18rem,0.82fr)_minmax(24rem,1.18fr)]">
-        <section className="rounded-2xl border border-ink/10 bg-ink/[.025] p-3" aria-label="Juegos de la rotación">
-          <div className="mb-3 flex items-center gap-2">
-            <label className="relative min-w-0 flex-1"><span className="sr-only">Buscar en la rotación</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/45" size={16} /><input className="field min-h-11 !pl-9 !text-sm" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar minijuego" /></label>
-            <span className="chip shrink-0 tabular-nums">{selected.size} seleccionados</span>
+      <div className={g.split}>
+        <section className={g.list} aria-label="Juegos de la rotación">
+          <div className={g.listTools}>
+            <Field className={cx(g.search)} label="Buscar en la rotación" hideLabel icon={Search} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar minijuego" />
+            <Badge tone="navy">{selected.size} seleccionados</Badge>
           </div>
-          <div className="max-h-[36rem] space-y-2 overflow-y-auto pr-1">
+          {visibleGames.length > 0 ? <div className={g.items}>
             {visibleGames.map((game) => {
               const active = selected.has(game.id); const locked = active && selected.size <= minimum;
               const unavailableReason = gameAvailabilityReason(game, playerCount);
@@ -152,41 +147,45 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
               const needsReview = Boolean(configReason) && !skipReason;
               const customized = room?.customizedGameIds?.includes(game.id) ?? false;
               const editing = editingGameId === game.id;
-              return <article key={game.id} className={`rounded-xl border p-2.5 transition-colors ${editing ? 'border-aqua bg-aqua/10' : active ? 'border-ink/15 bg-surface-raised' : 'border-transparent bg-ink/[.035] text-ink/60'}`}>
-                <div className="flex items-start gap-2.5">
-                  <button type="button" disabled={disabled || locked || Boolean(unavailableReason)} aria-pressed={active} aria-label={`${active ? 'Quitar' : 'Añadir'} ${game.name} ${active ? 'de' : 'a'} la rotación`} title={unavailableReason ?? (locked ? `Debes mantener al menos ${minimum} juegos` : undefined)} onClick={() => toggleGame(game.id)} className="group -my-2 -ml-2 grid h-11 w-11 shrink-0 place-items-center rounded-lg disabled:cursor-not-allowed"><span className={`grid h-7 w-7 place-items-center rounded-md border group-disabled:opacity-55 ${active ? 'border-aqua bg-aqua text-night' : 'border-ink/20 bg-surface group-hover:border-aqua/60'}`}>{active && <Check size={16} />}</span></button>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-1.5"><span aria-hidden="true">{game.icon}</span><strong className="truncate text-sm text-ink" title={game.name}>{game.name}</strong>{game.experimental && <span className="experimental-badge">Experimental</span>}{game.recommended && <span className="recommended-badge">TOP</span>}</div>
-                    <p className={`mt-0.5 text-xs font-bold leading-snug ${unavailableReason || needsReview ? 'text-berry' : 'text-ink/55'}`}>{unavailableReason ?? configReason ?? summarizeGameConfig(config)}</p>
+              const preload = () => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined);
+              return <article key={game.id} className={cx(g.item, active && g.on, editing && g.editing, !active && g.off)}>
+                <div className={g.itemMain}>
+                  <button type="button" className={g.toggle} disabled={disabled || locked || Boolean(unavailableReason)} aria-pressed={active} aria-label={`${active ? 'Quitar' : 'Añadir'} ${game.name} ${active ? 'de' : 'a'} la rotación`} title={unavailableReason ?? (locked ? `Debes mantener al menos ${minimum} juegos` : undefined)} onClick={() => toggleGame(game.id)}>
+                    <span className={g.box}>{active && <Icon icon={Check} size={18} />}</span>
+                  </button>
+                  <div className={g.itemText}>
+                    <div className={g.itemName}><span aria-hidden="true">{game.icon}</span><strong className={g.name} title={game.name}>{game.name}</strong>{game.recommended && <Badge>TOP</Badge>}{game.experimental && <Badge tone="cream">Experimental</Badge>}</div>
+                    <p className={cx(g.summary, (unavailableReason || needsReview) && g.summaryBad)}>{unavailableReason ?? configReason ?? summarizeGameConfig(config)}</p>
                   </div>
-                  {active && <span className={`mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full ${skipReason ? 'bg-ink/30' : needsReview ? 'bg-berry' : 'bg-leaf'}`} title={skipReason ? 'Se omitirá con los jugadores actuales' : needsReview ? 'Requiere revisión' : 'Configuración lista'} />}
                 </div>
-                {active && <div className="mt-2 flex items-center justify-between gap-2 border-t border-ink/10 pt-2">
-                  <span className={`text-xs font-extrabold uppercase tracking-wide ${skipReason ? 'text-ink/55' : needsReview ? 'text-berry' : customized ? 'text-aqua' : 'text-ink/45'}`}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</span>
-                  <button type="button" onPointerEnter={() => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined)} onFocus={() => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined)} onClick={() => openEditor(game)} className="-my-1.5 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-xs font-extrabold text-aqua hover:bg-aqua/10" aria-pressed={editing}><Settings2 size={14} /> Ajustar</button>
+                {active && <div className={g.itemFoot}>
+                  <Chip tone={skipReason ? 'neutral' : needsReview ? 'bad' : customized ? 'info' : 'neutral'}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</Chip>
+                  <span onPointerEnter={preload} onFocus={preload}>
+                    <Pill variant="ghost" size="small" icon={Settings2} aria-pressed={editing} onClick={() => openEditor(game)}>Ajustar</Pill>
+                  </span>
                 </div>}
               </article>;
             })}
-            {visibleGames.length === 0 && <div className="empty-state !p-4"><SearchX className="mx-auto mb-1 text-ink/45" size={22} /><p className="font-bold">Ningún minijuego coincide con “{query.trim()}”.</p><p className="mt-1 text-sm font-bold">La rotación no cambia: solo filtra la lista.</p><button type="button" className="btn-ghost mt-3" onClick={() => setQuery('')}><X size={17} /> Borrar búsqueda</button></div>}
-          </div>
+          </div> : <StateBox kind="empty" onCream title={`Ningún minijuego coincide con “${query.trim()}”.`} text="La rotación no cambia: solo filtra la lista." action={{ label: 'Borrar búsqueda', onClick: () => setQuery('') }} />}
         </section>
 
-        <section className="min-h-72 rounded-2xl border border-ink/10 bg-surface-raised p-4 sm:p-5" aria-live="polite">
-          {editingGame && editingClient && room && onConfig ? <div key={editingGame.id} className="motion-enter-up">
-            <header className="mb-4 border-b border-ink/10 pb-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div><span className="label !mb-0">Ajustes de la rotación</span><h4 className="font-display text-xl font-bold"><span aria-hidden="true">{editingGame.icon}</span> {editingGame.name}</h4></div>
-                <span className={`chip gap-1 ${editingSkipReason ? '' : editingReason ? 'bg-berry/10 text-berry' : 'bg-leaf/10 text-leaf'}`}>{editingSkipReason ? 'Se omitirá' : editingReason ? <><AlertCircle size={14} /> Revisar</> : <><Check size={14} /> Listo</>}</span>
+        <section className={g.editor} aria-live="polite">
+          {editingGame && editingClient && room && onConfig
+            ? <Panel key={editingGame.id} variant="cream" as="div">
+              <div className={g.editorHead}>
+                <h4 className={g.title}><span aria-hidden="true">{editingGame.icon}</span> {editingGame.name}</h4>
+                <Chip tone={editingSkipReason ? 'neutral' : editingReason ? 'bad' : 'ok'} icon={editingSkipReason ? undefined : <Icon icon={editingReason ? AlertCircle : Check} size={18} />}>{editingSkipReason ? 'Se omitirá' : editingReason ? 'Revisar' : 'Listo'}</Chip>
               </div>
-              <p className="mt-1 text-sm font-bold text-ink/60">{editingGame.description}</p>
+              <p className={g.editorLead}>{editingGame.description}</p>
               {editingSkipReason
-                ? <p className="mt-3 text-sm font-bold text-ink/60" role="status">{editingSkipReason} Se omitirá en la rotación mientras haya {playerCount} jugadores.</p>
-                : editingReason && <p className="status-error mt-3" role="status">{editingReason}</p>}
-            </header>
-            <div className={configDisabled ? 'lobby-readonly' : ''} title={configDisabled ? 'No tienes permiso para editar estos ajustes.' : undefined}>
-              <Suspense fallback={<GameLoadingFallback compact />}><editingClient.ConfigPanel config={editingConfig} disabled={configDisabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
-            </div>
-          </div> : <div className="grid min-h-64 place-items-center text-center"><div><Settings2 className="mx-auto mb-3 text-ink/35" size={30} /><h4 className="font-display text-lg font-bold">Elige un minijuego</h4><p className="mx-auto mt-1 max-w-sm text-sm font-bold text-ink/55">Pulsa “Ajustar” para editar su configuración sin salir del modo de rotación.</p></div></div>}
+                ? <p className={g.editorNote} role="status">{editingSkipReason} Se omitirá en la rotación mientras haya {playerCount} jugadores.</p>
+                : editingReason && <p className={cx(g.editorNote, g.editorNoteBad)} role="status">{editingReason}</p>}
+              <div className={g.editorBody}>
+                {configDisabled && <p className={g.readonly}><Icon icon={LockKeyhole} size={18} />No tienes permiso para editar estos ajustes.</p>}
+                <Suspense fallback={<GameLoadingFallback compact />}><editingClient.ConfigPanel config={editingConfig} disabled={configDisabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
+              </div>
+            </Panel>
+            : <Panel variant="cream" as="div" status={{ kind: 'empty', title: 'Elige un minijuego', text: 'Pulsa «Ajustar» para editar su configuración sin salir del modo de rotación.' }} />}
         </section>
       </div>
     </fieldset>}

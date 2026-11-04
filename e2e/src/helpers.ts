@@ -216,8 +216,10 @@ export async function crearSalaConJugadores(browser: Browser, n: number, viewpor
 
 /** En el lobby (host o co-host), elige el minijuego por su nombre del manifest. */
 export async function seleccionarJuego(page: Page, nombre: string): Promise<void> {
-  const opcion = page.locator('.lobby-game-option').filter({ has: page.locator('strong').getByText(nombre, { exact: true }) });
-  await expect(opcion).toHaveCount(1);
+  // La carta (primer botón de su celda; el segundo es «Cómo se juega a …») de la lista «Minijuegos».
+  const celda = page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) });
+  await expect(celda).toHaveCount(1);
+  const opcion = celda.getByRole('button').first();
   await opcion.click();
   await expect(opcion).toHaveAttribute('aria-pressed', 'true');
 }

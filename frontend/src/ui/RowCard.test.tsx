@@ -46,6 +46,11 @@ describe('Card', () => {
     expect(html).toContain('disabled=""');
     expect(html).toContain('alt=""');
   });
+  it('con arte (icono de minijuego) lo pinta oculto a los lectores en lugar del «?»', () => {
+    const html = renderToStaticMarkup(createElement(Card, { name: 'Type Duel', art: '⚔️', size: 'sm', onSelect: () => undefined }));
+    expect(html).toContain('aria-hidden="true">⚔️</span>');
+    expect(html).not.toContain('>?<');
+  });
   it('correcta muestra texto además del color', () => {
     expect(renderToStaticMarkup(createElement(Card, { name: 'Mew', state: 'correct' }))).toContain('Correcta');
   });

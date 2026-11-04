@@ -1,14 +1,17 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { BookOpen, CheckCircle2, Gamepad2, Headphones, LockKeyhole, Play, Search, Settings2, Shuffle, WifiOff, X } from 'lucide-react';
+import { BookOpen, Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff, X } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { gameHowToPlay } from '../games/how-to-play';
 import { clientGameRegistry } from '../games/registry';
+import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import { GameHowToPlayDialog } from './GameHowToPlayDialog';
 import { GameSelectionConfig } from './GameSelectionConfig';
-import { Panel } from '../ui';
+import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
+import { roomActionErrorMessage } from './roomCode';
 import { SessionScreen } from './SessionScreen';
+import s from './Lobby.module.css';
 
 interface Props {
   room: RoomView;
@@ -28,12 +31,14 @@ interface Props {
   onEndSession(): void;
 }
 
-function normalizeSearch(value: string): string {
-  return value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es').trim();
-}
-
 type LobbyTab = 'games' | 'config' | 'session';
-const lobbyTabs: LobbyTab[] = ['games', 'config', 'session'];
+const TAB_ID = 'lobby';
+const TABS: TabItem<LobbyTab>[] = [
+  { key: 'games', label: 'Minijuegos', icon: Gamepad2 },
+  { key: 'config', label: 'Configuración', icon: Settings2 },
+  // En el móvil se lee «Modo»; el nombre accesible sigue siendo «Modo y sesión».
+  { key: 'session', label: <>Modo<span className="max-sm:sr-only"> y sesión</span></>, icon: Shuffle },
+];
 
 export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, onGameConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
@@ -46,7 +51,7 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   const canManageRoles = hasRoomPermission(roomRole, 'MANAGE_ROLES');
   const gameClient = clientGameRegistry.get(room.selectedGameId);
   const selectedManifest = room.availableGames.find((game) => game.id === room.selectedGameId)!;
-  const connectedPlayers = room.members.filter((member) => member.presence === 'CONNECTED').length;
+  const connectedPlayers = connectedCount(room.members);
   const pendingReady = room.members.filter((member) => member.presence === 'CONNECTED' && member.id !== room.hostId && !member.ready);
   const hostMember = room.members.find((member) => member.id === room.hostId);
   const [error, setError] = useState('');
@@ -61,7 +66,7 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
     return () => window.clearTimeout(preloadTimer);
   }, [gameClient]);
 
-  const report = (caught: unknown) => setError(caught instanceof Error ? caught.message : 'Ha ocurrido un error.');
+  const report = (caught: unknown) => setError(roomActionErrorMessage(caught));
   const toggleReady = async () => {
     if (!self || self.roomRole === 'HOST' || readyBusy) return;
     setReadyBusy(true); setError('');
@@ -79,24 +84,12 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
     if (!canChangeGame || gameId === room.selectedGameId) return;
     void onSelectGame(gameId).catch(report);
   };
-  const moveTabFocus = (event: React.KeyboardEvent<HTMLButtonElement>, current: LobbyTab) => {
-    const currentIndex = lobbyTabs.indexOf(current);
-    const next = event.key === 'ArrowRight'
-      ? lobbyTabs[(currentIndex + 1) % lobbyTabs.length]
-      : event.key === 'ArrowLeft'
-        ? lobbyTabs[(currentIndex - 1 + lobbyTabs.length) % lobbyTabs.length]
-        : event.key === 'Home' ? lobbyTabs[0] : event.key === 'End' ? lobbyTabs.at(-1) : undefined;
-    if (!next) return;
-    event.preventDefault();
-    setActiveTab(next);
-    document.getElementById(`lobby-tab-${next}`)?.focus();
-  };
   // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
   const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(report); };
   const kick = (playerId: string) => { void onKick(playerId).catch(report); };
 
   const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
-  // In a rotation, a player-count requirement (manifest range or impostor parity) excludes the game, like the server.
+  // En una rotación, un requisito de jugadores (rango del manifest o paridad de impostores) excluye el juego, como en el servidor.
   const rotationPlayable = (gameId: string): boolean => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
     return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers)
@@ -119,154 +112,199 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
     ? 'Solo el host puede iniciar la partida.'
     : pendingReady.length > 0
       ? `Falta por confirmar: ${formatPendingReadyNames(pendingReady.map((member) => member.displayName))}.`
-    : room.gameSelectionMode.type === 'RANDOM' && rotationPlayableCount < 2
-      ? 'La rotación aleatoria necesita al menos 2 minijuegos compatibles.'
-    : room.gameSelectionMode.type === 'VOTE' && rotationPlayableCount < 3
-      ? 'La votación necesita al menos 3 minijuegos compatibles.'
-    : rotationConfigReason
-      ? rotationConfigReason
-      : room.gameSelectionMode.type !== 'RANDOM' && selectedGameReason
-        ? selectedGameReason
-      : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig, room) ?? null;
-
-  const normalizedQuery = normalizeSearch(gameQuery);
-  const visibleGames = normalizedQuery
-    ? room.availableGames.filter((game) => normalizeSearch(`${game.name} ${game.description}`).includes(normalizedQuery))
-    : room.availableGames;
-  const playerRange = selectedManifest.maxPlayers === undefined
-    ? `${selectedManifest.minPlayers}+ jugadores`
-    : `${selectedManifest.minPlayers}–${selectedManifest.maxPlayers} jugadores`;
-  // Un solo aviso, junto a la acción principal.
-  const errorAlert = (placement: string) => error ? <div role="alert" className={`status-error motion-enter-up items-start justify-between gap-2 ${placement}`}><span className="min-w-0 py-0.5">{error}</span><button type="button" className="icon-button -my-2 -mr-2 shrink-0" onClick={() => setError('')} aria-label="Cerrar aviso"><X size={18} /></button></div> : null;
+      : room.gameSelectionMode.type === 'RANDOM' && rotationPlayableCount < 2
+        ? 'La rotación aleatoria necesita al menos 2 minijuegos compatibles.'
+        : room.gameSelectionMode.type === 'VOTE' && rotationPlayableCount < 3
+          ? 'La votación necesita al menos 3 minijuegos compatibles.'
+          : rotationConfigReason
+            ? rotationConfigReason
+            : room.gameSelectionMode.type !== 'RANDOM' && selectedGameReason
+              ? selectedGameReason
+              : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig, room) ?? null;
+  const status = lobbyActionStatus({ canStart, ready: Boolean(self?.ready), startReason, hostName: hostMember?.displayName });
+  const visibleGames = filterGames(room.availableGames, gameQuery);
+  const readOnlyChip = <Chip icon={<Icon icon={LockKeyhole} size={18} />}>Solo lectura</Chip>;
 
   const action = (
-    <Panel variant="cream" as="div" className="on-cream" bodyClassName="flex flex-col gap-3 lg:flex-row lg:items-center">
-      <div className="min-w-0 lg:flex-1">
-        <span className="label !mb-0 hidden lg:block">{startReason ? 'Falta algo' : 'Todo listo'}</span>
-        <h2 className="font-display text-lg font-bold lg:text-xl">Iniciar partida</h2>
-        <p id="start-help" className={`text-sm font-bold ${startReason ? 'text-berry' : 'text-leaf'}`}>{startReason ?? 'La sala está lista.'}</p>
+    <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
+      <div className={s.status}>
+        <span className={s.kicker}>{status.kicker}</span>
+        <h2 className={s.actionTitle}>{status.title}</h2>
+        <p id="start-help" className={cx(s.help, status.ok ? s.ok : s.bad)}>{status.text}</p>
       </div>
-      {errorAlert('flex lg:max-w-sm')}
-      <div className="flex flex-col gap-2 sm:flex-row lg:shrink-0">
-        {self?.roomRole !== 'HOST' && <button type="button" className={`w-full sm:w-auto ${self?.ready ? 'btn-ghost border-leaf/40 text-leaf' : 'btn-secondary'}`} disabled={readyBusy || self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} onClick={() => void toggleReady()}><CheckCircle2 size={18} /> {readyBusy ? 'Guardando…' : self?.ready ? 'Estoy listo' : 'Marcarme listo'}</button>}
-        <button className="btn-primary w-full sm:w-auto sm:min-w-56" disabled={Boolean(startReason) || starting} onClick={() => void start()} aria-describedby="start-help"><Play size={18} fill="currentColor" /> {starting ? 'Iniciando…' : 'Empezar partida'}</button>
+      {error && (
+        <div role="alert" className={s.alert}>
+          <span className={s.alertText}>{error}</span>
+          <Pill variant="cream" size="round" icon={X} aria-label="Cerrar aviso" onClick={() => setError('')} />
+        </div>
+      )}
+      <div className={s.buttons}>
+        {self?.roomRole !== 'HOST' && (
+          <Pill variant="yellow" size="main" icon={self?.ready ? Check : CheckCircle2} loading={readyBusy} disabled={self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} aria-describedby="start-help" onClick={() => void toggleReady()}>
+            {self?.ready ? 'Estoy listo' : 'Marcarme listo'}
+          </Pill>
+        )}
+        {canStart && (
+          <Pill variant="red" size="main" icon={Play} loading={starting} disabled={Boolean(startReason)} aria-describedby="start-help" onClick={() => void start()}>
+            ¡Empezar partida!
+          </Pill>
+        )}
       </div>
     </Panel>
   );
-  const players = <RoomPlayersPanel className="lg:flex-1" members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />;
+
+  const side = (
+    <div className={s.side}>
+      <RoomPlayersPanel className="lg:flex-1" members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />
+      <aside className={s.tip} aria-label="Recomendación para jugar">
+        <Icon icon={Headphones} size={22} className={s.tipIcon} />
+        <p>
+          <strong className={s.tipTitle}>Hablando es mejor</strong>
+          Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.
+        </p>
+      </aside>
+    </div>
+  );
+
+  const gamesPanel = (
+    <>
+      <div className={s.head}>
+        <div className={s.headText}>
+          <h2 className={s.title}>Elige un minijuego</h2>
+          <p className={s.lead}>Consulta las reglas de cada juego antes de elegir.</p>
+        </div>
+        <div className={s.tools}>
+          {!canChangeGame && readOnlyChip}
+          <Field className={cx(s.search)} label="Buscar minijuego" hideLabel icon={Search} type="search" value={gameQuery} onChange={(event) => setGameQuery(event.target.value)} placeholder={`Buscar entre ${room.availableGames.length} juegos`} />
+        </div>
+      </div>
+      {visibleGames.length > 0 ? (
+        <ul className={s.grid} aria-label="Minijuegos" aria-describedby={canChangeGame ? undefined : 'game-permission-help'}>
+          {visibleGames.map((game) => {
+            const selected = game.id === room.selectedGameId;
+            const preloadConfig = () => { void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined); };
+            const hasHowTo = Boolean(gameHowToPlay[game.id]);
+            return (
+              <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
+                {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
+                <Card size="sm" art={game.icon} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
+                  <span className={s.desc}>{game.description}</span>
+                  <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
+                  {(game.recommended || game.experimental || selected) && (
+                    <span className={s.badges}>
+                      {selected && <Badge tone="navy"><Icon icon={Check} size={18} />Seleccionado</Badge>}
+                      {game.recommended && <Badge>TOP</Badge>}
+                      {game.experimental && <Badge tone="cream">Experimental</Badge>}
+                    </span>
+                  )}
+                </Card>
+                {/* «Cómo se juega» no cabe dentro de la carta (es un botón): va debajo y funciona también en solo lectura. */}
+                {hasHowTo && <Pill variant="ghost" size="small" icon={BookOpen} className={s.how} aria-label={`Cómo se juega a ${game.name}`} onClick={() => setHowToPlay({ gameId: game.id, gameName: game.name })}>Cómo se juega</Pill>}
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <StateBox kind="empty" onCream title={`No hay minijuegos que coincidan con “${gameQuery.trim()}”.`} text="Busca por nombre o por lo que se hace en el juego, como «tipo» o «shiny»." action={{ label: 'Borrar búsqueda', onClick: () => setGameQuery('') }} />
+      )}
+      {!canChangeGame && <p id="game-permission-help" className={s.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar el minijuego.</p>}
+    </>
+  );
+
+  const configPanel = (
+    <Panel variant="cream" as="div">
+      <div className={s.configHead}>
+        <span className={s.gameTile} aria-hidden="true">{selectedManifest.icon}</span>
+        <div className={s.headText}>
+          <h2 className={s.title}>Ajustes de {selectedManifest.name}</h2>
+          <p className={s.configLead}>
+            <span>{selectedManifest.description} · {playerRangeLabel(selectedManifest)}.</span>
+            {selectedManifest.recommended && <Badge>TOP</Badge>}
+            {selectedManifest.experimental && <Badge tone="cream">Experimental</Badge>}
+          </p>
+        </div>
+      </div>
+      {!canEditGame && <p className={s.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar estos ajustes.</p>}
+      <div className={s.configBody}>
+        <Suspense fallback={<GameLoadingFallback compact />}>
+          <gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} room={room} selfId={selfId} onChange={onConfig} />
+        </Suspense>
+      </div>
+    </Panel>
+  );
+
+  const sessionTarget = room.sessionMode.type === 'GAME_COUNT' || room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : null;
+  const sessionPanel = (
+    <>
+      <div className={s.head}>
+        <div className={s.headText}>
+          <h2 className={s.title}>Modo y sesión</h2>
+          <p className={s.lead}>Define cómo se eligen los juegos y cuándo termina la clasificación.</p>
+        </div>
+      </div>
+      <section className={s.section} aria-labelledby="rotation-heading">
+        <div className={s.head}>
+          <div className={s.headText}>
+            <h3 id="rotation-heading" className={s.subtitle}>Rotación de minijuegos</h3>
+            <p className={s.lead}>Decide qué ocurre al terminar cada partida.</p>
+          </div>
+          {!canEditGameSelection && readOnlyChip}
+        </div>
+        <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} configDisabled={!canEditGame} room={room} selfId={selfId} onChange={gameSelection} onConfig={onGameConfig} />
+      </section>
+      <section className={s.section} aria-labelledby="format-heading">
+        <div className={s.head}>
+          <div className={s.headText}>
+            <h3 id="format-heading" className={s.subtitle}>Final de la sesión</h3>
+            <p className={s.lead}>Elige cuándo se decide la clasificación final.</p>
+          </div>
+          {!canEditSession && readOnlyChip}
+        </div>
+        <div className={s.choices}>
+          {([
+            { type: 'INFINITE', icon: InfinityIcon, name: 'Infinita', text: 'Hasta que el host pare', mode: { type: 'INFINITE' } },
+            { type: 'GAME_COUNT', icon: Hash, name: room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas', text: 'Gana por puntuación', mode: { type: 'GAME_COUNT', target: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode.target : 5 } },
+            { type: 'POINT_TARGET', icon: Trophy, name: room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos', text: 'Primero en llegar', mode: { type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 } },
+          ] satisfies { type: SessionMode['type']; icon: typeof Hash; name: string; text: string; mode: SessionMode }[]).map((choice) => (
+            <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.name} state={room.sessionMode.type === choice.type ? 'selected' : 'idle'} {...(canEditSession ? { onSelect: () => session(choice.mode) } : {})}>
+              <span className={s.desc}>{choice.text}</span>
+            </Card>
+          ))}
+        </div>
+        {room.sessionMode.type === 'GAME_COUNT' && sessionTarget !== null && <Field className={cx(s.target)} label="Número de partidas" type="number" min={1} max={100} disabled={!canEditSession} value={sessionTarget} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 1 && target <= 100) session({ type: 'GAME_COUNT', target }); }} />}
+        {room.sessionMode.type === 'POINT_TARGET' && sessionTarget !== null && <Field className={cx(s.target)} label="Puntos para ganar" type="number" min={5} max={10000} step={5} disabled={!canEditSession} value={sessionTarget} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 5 && target <= 10000) session({ type: 'POINT_TARGET', target }); }} />}
+        {hasRoomPermission(roomRole, 'END_SESSION') && room.gamesPlayed > 0 && <Pill variant="danger" icon={Flag} className={s.endSession} onClick={onEndSession}>Finalizar sesión y ver clasificación</Pill>}
+      </section>
+    </>
+  );
+
+  const main = (
+    <div className={s.main}>
+      {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
+      <h1 className="sr-only">Lobby de la sala</h1>
+      {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && (
+        <div className={s.notice} role="status" aria-live="polite">
+          <span className={s.noticeBadge}><Icon icon={WifiOff} size={22} /></span>
+          <span>
+            <strong className={s.noticeTitle}>El host está reconectando.</strong>
+            <span className={s.noticeText}>La sala conserva la configuración y esperará antes de transferir el control.</span>
+          </span>
+        </div>
+      )}
+      <div className={s.tabbed}>
+        <Tabs items={TABS} active={activeTab} onChange={setActiveTab} label="Secciones del lobby" idBase={TAB_ID} className={cx(s.tabs)} />
+        {/* Los tres paneles quedan montados: cambiar de pestaña no pierde búsquedas ni ajustes a medio confirmar. */}
+        <TabPanel idBase={TAB_ID} tabKey="games" hidden={activeTab !== 'games'} className={cx('on-cream', s.body)}>{gamesPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="config" hidden={activeTab !== 'config'} className={cx('on-cream', s.body)}>{configPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="session" hidden={activeTab !== 'session'} className={cx('on-cream', s.body)}>{sessionPanel}</TabPanel>
+      </div>
+    </div>
+  );
 
   return (
     <>
-    <SessionScreen side={players} action={action} main={<>
-      {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
-      <h1 className="sr-only">Lobby de la sala</h1>
-
-      {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && <div className="mb-4 flex items-start gap-3 rounded-xl border border-electric/30 bg-electric/10 px-4 py-3 font-bold" role="status" aria-live="polite"><WifiOff className="mt-0.5 shrink-0 text-electric" size={19} /><span><strong className="block">El host está reconectando.</strong><span className="text-sm text-ink/65">La sala conserva la configuración y esperará antes de transferir el control.</span></span></div>}
-
-      <div className="mb-4">
-        <aside className="voice-callout flex items-center gap-3 rounded-2xl border border-aqua/30 bg-aqua/[.08] px-4 py-3 sm:px-5" aria-label="Recomendación para jugar">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-aqua text-night"><Headphones size={23} /></span>
-          <div>
-            <strong className="block font-display text-lg">Hablando es mejor</strong>
-            <p className="text-sm font-bold text-ink/70">Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.</p>
-          </div>
-        </aside>
-      </div>
-
-      <div className="min-w-0">
-          <article className="panel overflow-hidden">
-            <nav className="grid grid-cols-3 border-b border-ink/10 bg-ink/[.025] px-2 pt-2 sm:px-4" role="tablist" aria-label="Secciones del lobby">
-              <button id="lobby-tab-games" type="button" role="tab" tabIndex={activeTab === 'games' ? 0 : -1} aria-selected={activeTab === 'games'} aria-controls="lobby-panel-games" onClick={() => setActiveTab('games')} onKeyDown={(event) => moveTabFocus(event, 'games')} className={`lobby-tab ${activeTab === 'games' ? 'lobby-tab-active' : ''}`}><Gamepad2 className="hidden sm:block" size={18} /> Minijuegos</button>
-              <button id="lobby-tab-config" type="button" role="tab" tabIndex={activeTab === 'config' ? 0 : -1} aria-selected={activeTab === 'config'} aria-controls="lobby-panel-config" onClick={() => setActiveTab('config')} onKeyDown={(event) => moveTabFocus(event, 'config')} className={`lobby-tab ${activeTab === 'config' ? 'lobby-tab-active' : ''}`}><Settings2 className="hidden sm:block" size={18} /> Configuración</button>
-              <button id="lobby-tab-session" type="button" role="tab" tabIndex={activeTab === 'session' ? 0 : -1} aria-label="Modo y sesión" aria-selected={activeTab === 'session'} aria-controls="lobby-panel-session" onClick={() => setActiveTab('session')} onKeyDown={(event) => moveTabFocus(event, 'session')} className={`lobby-tab ${activeTab === 'session' ? 'lobby-tab-active' : ''}`}><Shuffle className="hidden sm:block" size={18} /> Modo<span className="hidden sm:inline"> y sesión</span></button>
-            </nav>
-
-            <section id="lobby-panel-games" role="tabpanel" aria-labelledby="lobby-tab-games" hidden={activeTab !== 'games'} className="p-4 sm:p-5">
-              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <span className="label !mb-0">Catálogo completo</span>
-                  <h2 className="font-display text-2xl font-bold">Elige un minijuego</h2>
-                  <p className="mt-1 text-sm font-bold text-ink/60">Consulta las reglas básicas de cada juego antes de elegir.</p>
-                </div>
-                <div className="flex w-full items-center gap-2 sm:w-auto">
-                  {!canChangeGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
-                  <label className="relative block min-w-0 flex-1 sm:w-72"><span className="sr-only">Buscar minijuego</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/50" size={18} /><input className="field !pl-10" type="search" value={gameQuery} onChange={(event) => setGameQuery(event.target.value)} placeholder={`Buscar entre ${room.availableGames.length} juegos`} /></label>
-                </div>
-              </div>
-
-              <div className={`lobby-game-grid ${!canChangeGame ? 'lobby-readonly' : ''}`} aria-describedby={!canChangeGame ? 'game-permission-help' : undefined}>
-                {visibleGames.map((game) => {
-                  const selected = game.id === room.selectedGameId;
-                  const candidate = clientGameRegistry.get(game.id);
-                  const preloadConfig = () => { void candidate.preloadConfig().catch(() => undefined); };
-                  const option = <button type="button" disabled={!canChangeGame} aria-pressed={selected} onClick={() => selectGame(game.id)} onPointerEnter={preloadConfig} onFocus={preloadConfig} className={`lobby-game-option ${selected ? 'lobby-game-option-selected' : ''}`}>
-                    <span className="flex items-start justify-between gap-3">
-                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-ink/[.07] text-xl" aria-hidden="true">{game.icon}</span>
-                      <span className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1.5">
-                        {game.experimental && <span className="experimental-badge">Experimental</span>}
-                        {game.recommended && <span className="recommended-badge">TOP</span>}
-                        {selected && <span className="inline-flex items-center gap-1 text-xs font-extrabold text-aqua"><CheckCircle2 size={15} /> Seleccionado</span>}
-                      </span>
-                    </span>
-                    <span className="mt-3 block min-w-0">
-                      <strong className="block font-display text-lg leading-tight">{game.name}</strong>
-                      <span className="mt-1.5 block text-sm font-bold leading-snug text-ink/65">{game.description}</span>
-                    </span>
-                    <small className="mt-3 block text-xs font-extrabold tabular-nums text-ink/50">{game.minPlayers}{game.maxPlayers ? `–${game.maxPlayers}` : '+'} jugadores</small>
-                  </button>;
-                  // El carrusel no cabe dentro de la tarjeta (es un <button>): «Cómo se juega» va debajo y funciona también en solo lectura.
-                  if (!gameHowToPlay[game.id]) return <div key={game.id} className="lobby-game-cell">{option}</div>;
-                  return <div key={game.id} className="lobby-game-cell">
-                    {option}
-                    <button type="button" className="btn-ghost min-h-11 w-full text-sm" aria-label={`Cómo se juega a ${game.name}`} onClick={() => setHowToPlay({ gameId: game.id, gameName: game.name })}><BookOpen size={17} className="text-aqua" /> Cómo se juega</button>
-                  </div>;
-                })}
-                {visibleGames.length === 0 && <div className="empty-state col-span-full !p-4"><Gamepad2 className="mx-auto mb-1 text-ink/45" size={22} /><p className="font-bold">No hay minijuegos que coincidan con “{gameQuery.trim()}”.</p><p className="mt-1 text-sm font-bold">Busca por nombre o por lo que se hace en el juego, como «tipo» o «shiny».</p><button type="button" className="btn-ghost mt-3" onClick={() => setGameQuery('')}><X size={17} /> Borrar búsqueda</button></div>}
-              </div>
-              {!canChangeGame && <p id="game-permission-help" className="permission-help">Solo el host y los co-hosts pueden cambiar el minijuego.</p>}
-            </section>
-
-            <section id="lobby-panel-config" role="tabpanel" aria-labelledby="lobby-tab-config" hidden={activeTab !== 'config'} className="p-4 sm:p-5">
-              <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <span className="label !mb-0">Minijuego seleccionado</span>
-                  <div className="flex flex-wrap items-center gap-2"><h2 className="font-display text-2xl font-bold">Ajustes de {selectedManifest.name}</h2>{selectedManifest.experimental && <span className="experimental-badge">Experimental</span>}{selectedManifest.recommended && <span className="recommended-badge">TOP</span>}</div>
-                  <p className="mt-1 max-w-3xl text-sm font-bold text-ink/60">{selectedManifest.description} · {playerRange}.</p>
-                </div>
-                {!canEditGame && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}
-              </div>
-              {!canEditGame && <div className="mb-4 flex items-center gap-2 rounded-xl bg-electric/[.07] px-3 py-2 text-sm font-bold text-ink/65"><LockKeyhole size={15} className="text-electric" /> Solo el host y los co-hosts pueden cambiar estos ajustes.</div>}
-              <div className={!canEditGame ? 'lobby-readonly' : ''} title={!canEditGame ? 'Solo el host y los co-hosts pueden cambiar esta configuración.' : undefined}>
-                <Suspense fallback={<GameLoadingFallback compact />}><gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} room={room} selfId={selfId} onChange={onConfig} /></Suspense>
-              </div>
-            </section>
-
-            <section id="lobby-panel-session" role="tabpanel" aria-labelledby="lobby-tab-session" hidden={activeTab !== 'session'} className="p-4 sm:p-5">
-              <div className="mb-5">
-                <span className="label !mb-0">Formato de la partida</span>
-                <h2 className="font-display text-2xl font-bold">Modo y sesión</h2>
-                <p className="mt-1 text-sm font-bold text-ink/60">Define cómo se eligen los juegos y cuándo termina la clasificación.</p>
-              </div>
-              <section aria-labelledby="rotation-heading">
-                <div className="mb-3 flex items-center justify-between gap-3"><div><h3 id="rotation-heading" className="font-display text-lg font-bold">Rotación de minijuegos</h3><p className="text-sm font-bold text-ink/60">Decide qué ocurre al terminar cada partida.</p></div>{!canEditGameSelection && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
-                <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} configDisabled={!canEditGame} room={room} selfId={selfId} onChange={gameSelection} onConfig={onGameConfig} />
-              </section>
-              <section className="mt-6 border-t border-ink/10 pt-5" aria-labelledby="format-heading">
-                <div className="mb-3 flex items-center justify-between gap-3"><div><h3 id="format-heading" className="font-display text-lg font-bold">Final de la sesión</h3><p className="text-sm font-bold text-ink/60">Elige cuándo se decide la clasificación final.</p></div>{!canEditSession && <span className="permission-chip"><LockKeyhole size={14} /> Solo lectura</span>}</div>
-                <div className={`grid gap-2 sm:grid-cols-3 ${!canEditSession ? 'lobby-readonly' : ''}`}>
-                  <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'INFINITE'} className={`session-card ${room.sessionMode.type === 'INFINITE' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'INFINITE' })}><strong>∞ Infinita</strong><span>Hasta que el host pare</span></button>
-                  <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'GAME_COUNT'} className={`session-card ${room.sessionMode.type === 'GAME_COUNT' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'GAME_COUNT', target: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode.target : 5 })}><strong>{room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas'}</strong><span>Gana por puntuación</span></button>
-                  <button disabled={!canEditSession} aria-pressed={room.sessionMode.type === 'POINT_TARGET'} className={`session-card ${room.sessionMode.type === 'POINT_TARGET' ? 'session-card-selected' : ''}`} onClick={() => session({ type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 })}><strong>{room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos'}</strong><span>Primero en llegar</span></button>
-                </div>
-                {room.sessionMode.type === 'GAME_COUNT' && <label className="mt-3 block max-w-xs"><span className="label">Número de partidas</span><input type="number" className="field" min={1} max={100} disabled={!canEditSession} value={room.sessionMode.target} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 1 && target <= 100) session({ type: 'GAME_COUNT', target }); }} /></label>}
-                {room.sessionMode.type === 'POINT_TARGET' && <label className="mt-3 block max-w-xs"><span className="label">Puntos para ganar</span><input type="number" className="field" min={5} max={10000} step={5} disabled={!canEditSession} value={room.sessionMode.target} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 5 && target <= 10000) session({ type: 'POINT_TARGET', target }); }} /></label>}
-                {hasRoomPermission(roomRole, 'END_SESSION') && room.gamesPlayed > 0 && <button className="mt-4 text-sm font-extrabold text-berry underline" onClick={onEndSession}>Finalizar sesión y ver clasificación</button>}
-              </section>
-            </section>
-          </article>
-      </div>
-    </>} />
-    {howToPlay && <GameHowToPlayDialog gameId={howToPlay.gameId} gameName={howToPlay.gameName} open onClose={() => setHowToPlay(null)} />}
+      <SessionScreen side={side} action={action} main={main} />
+      {howToPlay && <GameHowToPlayDialog gameId={howToPlay.gameId} gameName={howToPlay.gameName} open onClose={() => setHowToPlay(null)} />}
     </>
   );
 }
