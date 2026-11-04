@@ -64,7 +64,7 @@ describe('lobby information hierarchy', () => {
     expect(markup).not.toContain('Marcarme listo');
     expect(markup).toContain('aria-label="Minijuegos"');
     expect(markup).toMatch(/<button[^>]*aria-pressed="true"[^>]*>(?:(?!<\/button>).)*Pokédex Distance/);
-    expect(markup).toContain('Seleccionado');
+    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true"/);
     expect(markup).not.toContain('Solo lectura');
   });
 });
@@ -78,7 +78,10 @@ describe('lobby how to play', () => {
     /></MemoryRouter>);
     expect(markup).not.toContain('Cómo se juega');
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>TOP<\/span>/);
-    expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>Experimental<\/span>/);
+    expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*><span aria-hidden="true">Exp<\/span><span class="sr-only">Experimental<\/span>/);
+    // La elegida solo lleva el tick en su esquina: sin insignia «Seleccionado» que agrande la carta.
+    expect(markup).not.toContain('Seleccionado');
+    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true"><svg/);
   });
 
   it('shows a guest read-only cards, their own ready pill and no start pill', () => {
@@ -93,7 +96,7 @@ describe('lobby how to play', () => {
     expect(markup).toContain('Solo lectura');
     // Las cartas del invitado no son botones (no se atenúan): ningún conmutador de juego.
     expect(markup).not.toMatch(/<button[^>]*aria-pressed="(?:true|false)"[^>]*>(?:(?!<\/button>).)*Pokédex Distance/);
-    expect(markup).toContain('Seleccionado');
+    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true"/);
   });
 });
 

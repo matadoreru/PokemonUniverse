@@ -178,12 +178,14 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
                 {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
                 <Card size="sm" art={game.icon} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
                   <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
-                  {selected && <span className={s.badges}><Badge tone="navy"><Icon icon={Check} size={18} />Seleccionado</Badge></span>}
-                  {/* TOP y Experimental en la esquina superior derecha de la carta. */}
+                  {/* Elegida: solo un tick en la esquina superior izquierda, para que la carta no cambie de tamaño
+                      (el estado ya lo dicen el amarillo y `aria-pressed`). */}
+                  {selected && <span className={s.tick} aria-hidden="true"><Icon icon={Check} size={18} /></span>}
+                  {/* TOP y Exp(erimental) en la esquina superior derecha de la carta. */}
                   {(game.recommended || game.experimental) && (
                     <span className={s.corner}>
                       {game.recommended && <Badge>TOP</Badge>}
-                      {game.experimental && <Badge tone="cream">Experimental</Badge>}
+                      {game.experimental && <Badge tone="cream"><span aria-hidden="true">Exp</span><span className="sr-only">Experimental</span></Badge>}
                     </span>
                   )}
                 </Card>
@@ -249,12 +251,11 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
         </div>
         <div className={s.choices}>
           {([
-            { type: 'INFINITE', icon: InfinityIcon, name: 'Infinita', text: 'Hasta que el host pare', mode: { type: 'INFINITE' } },
-            { type: 'GAME_COUNT', icon: Hash, name: room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas', text: 'Gana por puntuación', mode: { type: 'GAME_COUNT', target: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode.target : 5 } },
-            { type: 'POINT_TARGET', icon: Trophy, name: room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos', text: 'Primero en llegar', mode: { type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 } },
+            { type: 'INFINITE', icon: InfinityIcon, name: 'Infinita', mode: { type: 'INFINITE' } },
+            { type: 'GAME_COUNT', icon: Hash, name: room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas', mode: { type: 'GAME_COUNT', target: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode.target : 5 } },
+            { type: 'POINT_TARGET', icon: Trophy, name: room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos', mode: { type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 } },
           ] satisfies { type: SessionMode['type']; icon: typeof Hash; name: string; text: string; mode: SessionMode }[]).map((choice) => (
             <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.name} state={room.sessionMode.type === choice.type ? 'selected' : 'idle'} {...(canEditSession ? { onSelect: () => session(choice.mode) } : {})}>
-              <span className={s.desc}>{choice.text}</span>
             </Card>
           ))}
         </div>

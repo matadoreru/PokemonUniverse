@@ -23,7 +23,7 @@ describe('priority session experience', () => {
       selfId: 'host',
     }));
 
-    expect(markup).toContain('Controla el inicio');
+    expect(markup).not.toContain('Controla el inicio');
     expect(markup).toContain('Listo');
     expect(markup).toContain('Reconectando…');
   });

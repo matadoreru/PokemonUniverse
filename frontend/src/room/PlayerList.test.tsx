@@ -22,14 +22,16 @@ const render = (props: Partial<Parameters<typeof PlayerList>[0]> = {}) =>
   renderToStaticMarkup(createElement(PlayerList, { members, selfId: 'host', ...props }));
 
 describe('PlayerList', () => {
-  it('pinta franjas con insignias de texto: Host con corona, Co-host, Listo, puntos y «(tú)»', () => {
+  it('pinta franjas con insignias de texto: Host con corona, Co-host, Listo y puntos; «(tú)» solo para lectores', () => {
     const markup = render();
     expect(markup).toContain('lucide-crown');
     expect(markup).toContain('Host</span>');
     expect(markup).toContain('Co-host');
     expect(markup).toContain('Listo');
     expect(markup).toContain('12<small> pts</small>');
-    expect(markup.match(/\(tú\)/g)).toHaveLength(1);
+    expect(markup.match(/<span class="sr-only">\(tú\)<\/span>/g)).toHaveLength(1);
+    // El host no lleva descripción («Controla el inicio»): basta la insignia.
+    expect(markup).not.toContain('Controla el inicio');
     expect(markup).toContain('title="Leo"');
   });
 

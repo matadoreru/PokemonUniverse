@@ -87,13 +87,14 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
             : status && status.kind !== 'picked' && member.role === 'PLAYER'
               ? <span className={status.kind === 'out' ? s.away : undefined}>{distanceMemberStatusLabels[status.kind]}</span>
               : <>
-                  {member.id === selfId && <span className={s.you}>(tú)</span>}
+                  {/* Tu fila ya va en otro color: «(tú)» solo para lectores de pantalla. */}
+                  {member.id === selfId && <span className="sr-only">(tú)</span>}
                   {member.roomRole === 'HOST' && <Badge tone="navy"><Icon icon={Crown} size={18} /> Host</Badge>}
                   {member.roomRole === 'CO_HOST' && <Badge tone="cream"><Icon icon={Star} size={18} /> Co-host</Badge>}
                   {member.role === 'SPECTATOR' && <span>Espectador</span>}
                   {!game && (readiness.kind === 'ready'
                     ? <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Listo</Chip>
-                    : <span className={readiness.kind === 'away' ? s.away : undefined}>{readiness.label}</span>)}
+                    : readiness.kind !== 'host' && <span className={readiness.kind === 'away' ? s.away : undefined}>{readiness.label}</span>)}
                 </>;
           return (
             <li key={member.id}>

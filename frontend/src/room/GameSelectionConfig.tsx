@@ -21,9 +21,9 @@ interface Props {
 }
 
 const choices = [
-  { type: 'FIXED' as const, icon: Repeat2, title: 'Mismo minijuego', description: 'Se repite el minijuego elegido durante toda la sesión.', requiredGames: 0 },
-  { type: 'RANDOM' as const, icon: Shuffle, title: 'Aleatorio', description: 'El servidor sortea un minijuego de la selección en cada partida.', requiredGames: 2 },
-  { type: 'VOTE' as const, icon: Vote, title: 'Votación', description: 'Tras la primera partida, todos votan entre 3 opciones aleatorias.', requiredGames: 3 },
+  { type: 'FIXED' as const, icon: Repeat2, title: 'Mismo minijuego', requiredGames: 0 },
+  { type: 'RANDOM' as const, icon: Shuffle, title: 'Aleatorio', requiredGames: 2 },
+  { type: 'VOTE' as const, icon: Vote, title: 'Votación', requiredGames: 3 },
 ];
 
 export function gameAvailabilityReason(game: MiniGameManifest, playerCount: number): string | null {
@@ -118,7 +118,8 @@ export function GameSelectionConfig({ availableGames, mode, playerCount, disable
         const unavailable = compatibleGames.length < choice.requiredGames;
         // Solo lectura: carta sin botón, sin atenuar (el método elegido se sigue viendo amarillo).
         return <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={active ? 'selected' : 'idle'} disabled={unavailable} {...(disabled ? {} : { onSelect: () => selectMode(choice.type) })}>
-          <span className={g.choiceText}>{unavailable ? `No hay ${choice.requiredGames} juegos compatibles para ${playerCount} jugadores.` : choice.description}</span>
+          {/* Sin descripción: solo se explica cuando el modo no está disponible. */}
+          {unavailable && <span className={g.choiceText}>{`No hay ${choice.requiredGames} juegos compatibles para ${playerCount} jugadores.`}</span>}
         </Card>;
       })}
     </div>
