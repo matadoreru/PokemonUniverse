@@ -140,6 +140,7 @@ describe('Global header accessibility', () => {
     expect(markup).not.toContain('Pokémon Universe, inicio');
     expect(markup).not.toContain('Novedades');
     expect(markup).not.toContain('Más opciones');
+    expect(markup).toContain('aria-label="Ir al inicio"');
     expect(markup).toContain('aria-label="Ajustes de sonido"');
     expect(markup).toContain('aria-label="Enviar feedback"');
     expect(markup).toContain('aria-label="Abrir perfil de Eru"');

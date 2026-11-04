@@ -92,7 +92,7 @@ async function placasCaben(page: Page, id: string, w: number): Promise<void> {
 }
 
 /**
- * Cabecera de HUD a los tres tamaños, con el mínimo de 13 px del sistema: una sola placa a la derecha con el sonido,
+ * Cabecera de HUD a los tres tamaños, con el mínimo de 13 px del sistema: una sola placa a la derecha con el inicio (casa), el sonido,
  * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Sin logotipo, sin Novedades y sin menú.
  * Se mide la cabecera: el `main` lleva `data-layout-ignore` durante la medición.
  */
@@ -100,7 +100,7 @@ async function capturarCabecera(page: Page, nombre: string, { perfil, admin = fa
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
     await expect(page.getByRole('button', { name: 'Ajustes de sonido' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Pokémon Universe, inicio' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'Ir al inicio' })).toBeVisible();
     await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveCount(0);
     await expect(page.getByRole('button', { name: /^Más opciones/ })).toHaveCount(0);
     if (perfil) await expect(page.getByRole('link', { name: `Abrir perfil de ${perfil}` })).toBeVisible();

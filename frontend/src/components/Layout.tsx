@@ -1,5 +1,5 @@
 import type { AuthUser } from '@pokemon-universe/shared/public';
-import { LogOut, MessageSquareWarning, ShieldCheck } from 'lucide-react';
+import { House, LogOut, MessageSquareWarning, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -13,7 +13,7 @@ import s from './Layout.module.css';
 export const HEADER_NOTICES_ID = 'app-header-notices';
 
 /**
- * Cabecera de HUD (spec §6, ajustada por el usuario el 2026-11-04): una sola placa a la derecha con el sonido,
+ * Cabecera de HUD (spec §6, ajustada por el usuario el 2026-11-04): una sola placa a la derecha con el inicio (casa), el sonido,
  * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Sin logotipo ni Novedades (las novedades
  * están en Inicio). Todo son píldoras redondas de 44 px, así que cabe a 390 px sin menú; el perfil muestra el nombre
  * desde 1024 px y Administración su texto desde 1280 px.
@@ -25,6 +25,7 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
     <header className="relative z-hud" data-layout="hud-plates">
       <div className="mx-auto flex w-full max-w-[1600px] items-center justify-end gap-2 px-3 pb-1 pt-3 sm:px-4 lg:px-6">
         <HudPlate>
+          <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
           <AudioButton />
           {user && <PillLink nav to="/feedback" size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}
           {isAdmin && (

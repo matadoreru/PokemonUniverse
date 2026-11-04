@@ -110,7 +110,8 @@ export function PillLink(props: PillLinkProps) {
     // `exactOptionalPropertyTypes`: NavLink no acepta `style={undefined}`.
     const { style, ...navRest } = rest;
     return (
-      <NavLink {...navRest} {...(style ? { style } : {})} to={to} className={({ isActive }) => classes(isActive)} onClick={handleClick}>
+      // El inicio (`/`) solo cuenta como página actual en sí mismo, no en todas las rutas que cuelgan de él.
+      <NavLink {...navRest} {...(style ? { style } : {})} to={to} end={to === '/'} className={({ isActive }) => classes(isActive)} onClick={handleClick}>
         {({ isActive }) => body(isActive)}
       </NavLink>
     );
