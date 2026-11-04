@@ -457,6 +457,29 @@
   .search :global(.pokemon-selector-results) {
     max-height: 9rem;
   }
+  /* Franjas de pista compactas: el nivel sin ancho fijo (tipo y categoría caben en una línea) y menos relleno. */
+  .level {
+    min-width: 0;
+  }
+  .clues > li > * {
+    gap: var(--sp-2);
+    padding-block: 4px;
+  }
+  /*
+   * Con la bandeja de resultados abierta, el título de la placa de la ronda («¿Qué Pokémon es?») repite la pregunta de
+   * la placa inferior: queda solo para lectores y las pistas ganan su alto. En la revelación («¡Era X!») no hay bandeja.
+   */
+  /* Con la bandeja abierta, la ayuda del campo se lee por `aria-describedby` pero no ocupa alto (la carta «Enter ↵» ya lo enseña). */
+  .search:has(:global(.pokemon-selector-results)) [id$='-hint'] {
+    display: none;
+  }
+  .screen:has(:global(.pokemon-selector-results)) .heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
   .heading {
     font-size: var(--fs-26);
   }

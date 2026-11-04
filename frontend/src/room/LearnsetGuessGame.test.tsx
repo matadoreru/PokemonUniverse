@@ -65,6 +65,7 @@ describe('LearnsetGuessGame: pantalla', () => {
     expect(html).toContain('Nv. 20');
     // Solo la pista recién llegada lleva «Nueva» y la entrada animada.
     expect(html.match(/>Nueva</g)).toHaveLength(1);
+    expect(html.match(/data-highlight="true"/g)).toHaveLength(1);
     expect(html.indexOf('>Nueva<')).toBeLessThan(html.indexOf('title="Cola Férrea"'));
     expect(html.match(/motion-enter-up/g)).toHaveLength(1);
   });
@@ -78,6 +79,9 @@ describe('LearnsetGuessGame: pantalla', () => {
     const html = render(room('ROUND_ACTIVE', { lastWarning: true, solvedPlayers: [{ playerId: 'p2', solveOrder: 1 }], scores: { p1: 0, p2: 7, p3: 0 } }));
     expect(html.match(/role="status"/g)).toHaveLength(1);
     expect(html).toMatch(/role="status"[^]*¡Último aviso! Solo faltas tú: \d+ segundos?\./);
+    // El chip visible cuenta los segundos y no se anuncia; para los lectores, un texto fijo.
+    expect(html).toMatch(/aria-hidden="true"><span[^>]*>[^]*?¡Último aviso! Solo faltas tú: \d+ segundos?\./);
+    expect(html).toContain('<span class="sr-only">¡Último aviso! Solo faltas tú: la ronda se cierra en unos segundos.</span>');
     expect(html).toContain('Bruno ha acertado');
   });
   it('keeps a live scoreboard: one row per player (no spectators), by points, with the solve order', () => {

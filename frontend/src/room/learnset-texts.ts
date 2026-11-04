@@ -14,6 +14,15 @@ export function learnsetLastWarningText(lastWarning: boolean, solved: boolean, r
 }
 
 /**
+ * El último aviso para lectores de pantalla: un texto fijo (sin la cuenta atrás, que cambia cada segundo y se volvería
+ * a anunciar), que se lee una vez al empezar el aviso.
+ */
+export function learnsetLastWarningAnnouncement(lastWarning: boolean, solved: boolean): string | null {
+  if (!lastWarning) return null;
+  return solved ? 'Último aviso: la ronda se cierra en unos segundos.' : '¡Último aviso! Solo faltas tú: la ronda se cierra en unos segundos.';
+}
+
+/**
  * Lo que vale ahora un acierto, con la misma cuenta que el motor (`learnsetPoints(revealStage, solveOrder)`):
  * la etapa del motor (`revealedExtraGroups`) es la más alta de los grupos visibles, y el siguiente en acertar
  * tendrá el orden `solvedCount + 1`.

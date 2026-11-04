@@ -13,15 +13,20 @@ export interface RowProps {
   /** Color del jugador (viene de los datos del avatar en tiempo de ejecución). */
   color?: string;
   self?: boolean;
+  /**
+   * Destacada (azul cielo, distinta del amarillo de la propia): una entrada recién llegada, p. ej. la pista nueva. El
+   * color nunca va solo: quien la usa pone además un texto («Nueva»).
+   */
+  highlight?: boolean;
   disconnected?: boolean;
   children?: ReactNode;
 }
 
 /** Franja de lista (jugador, marcador): banda de color a la izquierda; el color nunca va solo. */
-export function Row({ rank, avatar, name, meta, value, color, self, disconnected, children }: RowProps) {
+export function Row({ rank, avatar, name, meta, value, color, self, highlight, disconnected, children }: RowProps) {
   const style = color ? ({ '--player': color } as CSSProperties) : undefined;
   return (
-    <div className={cx(s.row, self && s.self, disconnected && s.off)} style={style}>
+    <div className={cx(s.row, self && s.self, highlight && !self && s.highlight, disconnected && s.off)} style={style} {...(highlight ? { 'data-highlight': 'true' } : {})}>
       {color && <span className={s.band} aria-hidden="true" />}
       {rank != null && <span className={s.rank}>{rank}</span>}
       {avatar && <span className={s.avatar}>{avatar}</span>}

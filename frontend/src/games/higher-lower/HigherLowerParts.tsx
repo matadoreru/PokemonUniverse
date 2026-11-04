@@ -7,8 +7,9 @@ import { ScorePop } from '../../components/ScorePop';
 import { apiAsset } from '../../lib/api';
 import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { playerColor } from '../../room/player-color';
+import { sharesPosition } from '../../room/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
-import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, higherLowerTied, type HigherLowerPlateKind } from './presentation';
+import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, type HigherLowerPlateKind } from './presentation';
 import s from './HigherLower.module.css';
 
 // Los sprites llegan como ruta del proxy opaco (`/api/pokemon/{id}/sprite`, sin el número de Pokédex); se sirven desde
@@ -116,7 +117,7 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
           avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
           meta={<span className={s.rowMeta}>
             {chip}
-            {higherLowerTied(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
+            {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
             <span key={streak} className={cx(s.streak, streak > 0 && 'motion-bump')} data-streak={id}><Badge tone={streak > 0 ? 'yellow' : 'cream'}><Icon icon={Flame} size={18} />Racha {streak}</Badge></span>
             {line && <span className={s.outcomeLine} data-outcome-line>{line}</span>}
           </span>}

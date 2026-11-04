@@ -1,7 +1,7 @@
 import type { RoomView, TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Percent, RotateCcw, StopCircle, Swords, Timer } from 'lucide-react';
-import { higherLowerTied } from '../games/higher-lower/presentation';
+import { sharesPosition } from './results-ties';
 import { typeDuelRecords, typeDuelStatsLine, type TypeDuelRecord } from '../games/type-duel/presentation';
 import { Chip, cx, Icon, Panel, Pill } from '../ui';
 import { playerColor } from './player-color';
@@ -43,7 +43,7 @@ export function TypeDuelResults({ room, selfId, onLobby, onEnd }: { room: RoomVi
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
-      meta: <>{higherLowerTied(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{typeDuelStatsLine(standing.stats)}</span></>,
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{typeDuelStatsLine(standing.stats)}</span></>,
     };
   });
   const records = typeDuelRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));

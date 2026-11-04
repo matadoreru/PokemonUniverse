@@ -1,10 +1,11 @@
 import type { HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Flame, RotateCcw, StopCircle, Target } from 'lucide-react';
-import { higherLowerRecord, higherLowerTied, type HigherLowerRecord } from '../games/higher-lower/presentation';
+import { higherLowerRecord, type HigherLowerRecord } from '../games/higher-lower/presentation';
 import { Chip, cx, Icon, Panel, Pill } from '../ui';
 import { higherLowerStatsLine } from './higher-lower-labels';
 import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from '../games/higher-lower/HigherLowerResults.module.css';
 
@@ -47,7 +48,7 @@ export function HigherLowerResults({ room, selfId, onLobby, onEnd }: { room: Roo
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
-      meta: <>{higherLowerTied(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{higherLowerStatsLine(standing.stats)}</span></>,
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{higherLowerStatsLine(standing.stats)}</span></>,
     };
   });
   const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));

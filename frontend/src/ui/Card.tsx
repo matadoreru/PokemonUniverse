@@ -37,6 +37,11 @@ export interface CardProps {
   attrs?: CardAttrs;
   /** Sprite decorativo (`alt=""`) cuando el nombre escrito basta, para que el nombre accesible sea solo el nombre. */
   decorativeSprite?: boolean;
+  /**
+   * Carga la imagen ya y con prioridad alta (sin `loading="lazy"`): para la carta protagonista de una revelación breve,
+   * cuyo sprite no se puede precargar antes sin desvelar la respuesta.
+   */
+  eager?: boolean;
   /** Con `onSelect`: botón de acción (elegir) en vez de conmutador, sin `aria-pressed`. */
   action?: boolean;
   /** Con `onSelect`: botón deshabilitado. */
@@ -51,7 +56,7 @@ export interface CardProps {
 }
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
-export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', flip = false, attrs, decorativeSprite, action, disabled, art, onSelect, children }: CardProps) {
+export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', flip = false, attrs, decorativeSprite, eager = false, action, disabled, art, onSelect, children }: CardProps) {
   // Suena al empezar a girar (`revealing` o `flip`): la carta se da la vuelta.
   const turning = state === 'revealing' || flip;
   const before = useRef(turning);
@@ -63,7 +68,7 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
     <>
       <span className={cx(s.art, photo && s.photoArt)}>
         {sprite ? (
-          <img src={sprite} alt={photo || decorativeSprite ? '' : name} loading="lazy" decoding="async" className={cx(s.img, photo && s.photo)} />
+          <img src={sprite} alt={photo || decorativeSprite ? '' : name} loading={eager ? 'eager' : 'lazy'} decoding="async" {...(eager ? { fetchPriority: 'high' as const } : {})} className={cx(s.img, photo && s.photo)} />
         ) : art != null ? (
           <span className={s.glyph} aria-hidden="true">
             {art}

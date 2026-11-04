@@ -1451,6 +1451,8 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     await expect(tarjetas.filter({ hasText: segundo.name })).not.toContainText('No acertó');
     await expect(tarjetas.filter({ hasText: primero.name })).toContainText('✗ No acertó');
     // La revelación dura 4 s: lo que mida el medidor se anota.
+    // La carta de la respuesta carga con prioridad (`Card eager`): se captura con el sprite ya descodificado.
+    await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
     await capturarAnotando(host.page, 'juego-learnset-guess-revelacion', era, SIZES, ARCADE);
 
     // Clasificación de la partida (una ronda).

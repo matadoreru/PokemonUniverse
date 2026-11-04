@@ -576,6 +576,9 @@ function RowSection() {
       <Fig id="row-self" caption="Propia" wide>
         <Row rank={2} name="Ash (tú)" meta="Listo" value="9 pts" color="var(--yellow)" self />
       </Fig>
+      <Fig id="row-highlight" caption="Destacada (recién llegada)" wide>
+        <Row name="Rueda Fuego" meta="Fuego · Físico" value={<Badge>Nueva</Badge>} highlight />
+      </Fig>
       <Fig id="row-disconnected" caption="Desconectada" wide>
         <Row rank={3} name="Brock" value="4 pts" color="var(--ok)" disconnected />
       </Fig>

@@ -1,9 +1,9 @@
 import type { LearnsetGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Equal, Lightbulb, RotateCcw, StopCircle, Trophy } from 'lucide-react';
-import { higherLowerTied } from '../games/higher-lower/presentation';
 import { learnsetRecords, learnsetStatsLine, type LearnsetRecord } from '../games/learnset-guess/presentation';
 import { Chip, cx, Icon, Panel, Pill } from '../ui';
+import { sharesPosition } from './results-ties';
 import { playerColor } from './player-color';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from '../games/learnset-guess/LearnsetGuessResults.module.css';
@@ -43,7 +43,7 @@ export function LearnsetGuessResults({ room, selfId, onLobby, onEnd }: { room: R
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
-      meta: <>{higherLowerTied(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{learnsetStatsLine(standing.stats)}</span></>,
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{learnsetStatsLine(standing.stats)}</span></>,
     };
   });
   const records = learnsetRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));

@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared';
-import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerMemberStatus, higherLowerPlateKind, higherLowerRanking, higherLowerRecord, higherLowerTied, higherLowerVerdict } from '../games/higher-lower/presentation';
+import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerMemberStatus, higherLowerPlateKind, higherLowerRanking, higherLowerRecord, higherLowerVerdict } from '../games/higher-lower/presentation';
 import { HigherLowerGame } from './HigherLowerGame';
 import { HigherLowerResults } from './HigherLowerResults';
 
@@ -124,14 +124,6 @@ describe('higher-lower presentation', () => {
   });
   it('ranks with shared positions on ties', () => {
     expect(higherLowerRanking({ playerIds: ['a', 'b', 'c'], scores: { a: 1, b: 3, c: 1 } }, (id) => id)).toEqual([{ id: 'b', position: 1 }, { id: 'a', position: 2 }, { id: 'c', position: 2 }]);
-  });
-  it('marks shared positions as a tie (in game, only with points)', () => {
-    const ranking = [{ id: 'a', position: 1 }, { id: 'b', position: 1 }, { id: 'c', position: 3 }];
-    const points = (id: string) => (id === 'c' ? 0 : 2);
-    expect(higherLowerTied(ranking, 'a', points, true)).toBe(true);
-    expect(higherLowerTied(ranking, 'c', points, true)).toBe(false);
-    expect(higherLowerTied([{ id: 'x', position: 1 }, { id: 'y', position: 1 }], 'x', () => 0, true)).toBe(false);
-    expect(higherLowerTied([{ id: 'x', position: 1 }, { id: 'y', position: 1 }], 'x', () => 0)).toBe(true);
   });
   it('shows «Empate» in the scoreboard only for tied players with points', () => {
     expect(render(room('ROUND_ACTIVE'))).not.toContain('Empate');

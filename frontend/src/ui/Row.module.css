@@ -24,6 +24,11 @@
 .self {
   background: var(--yellow);
 }
+/* Destacada: azul cielo con filo informativo por dentro (distinta de la propia, amarilla). */
+.highlight {
+  background: var(--sky-2);
+  box-shadow: inset 0 0 0 2px var(--info);
+}
 /* Sin conexión (manda sobre la fila propia): la franja no se atenúa, el texto sigue en AA; solo la banda y el avatar. */
 .off {
   background: var(--cream-2);

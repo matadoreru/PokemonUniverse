@@ -14,6 +14,16 @@ describe('Row', () => {
   });
 });
 
+describe('Row destacada', () => {
+  it('lleva su clase y data-highlight, y la propia manda sobre ella', () => {
+    const html = renderToStaticMarkup(createElement(Row, { name: 'Rueda Fuego', highlight: true }));
+    expect(html).toContain('data-highlight="true"');
+    expect(html).toMatch(/class="[^"]*highlight/);
+    const own = renderToStaticMarkup(createElement(Row, { name: 'Ash', highlight: true, self: true }));
+    expect(own).not.toMatch(/class="[^"]*highlight/);
+  });
+});
+
 describe('RowLink', () => {
   const link = (current?: boolean) =>
     renderToStaticMarkup(createElement(MemoryRouter, null, createElement(RowLink, { to: '/changelog?v=0.9.0', name: 'v0.9.0', ...(current ? { current } : {}) })));
@@ -29,6 +39,12 @@ describe('RowLink', () => {
 });
 
 describe('Card', () => {
+  it('eager: la imagen carga ya y con prioridad alta', () => {
+    const html = renderToStaticMarkup(createElement(Card, { name: 'Pikachu', sprite: '/p.png', eager: true }));
+    expect(html).toContain('loading="eager"');
+    expect(html).toMatch(/fetchPriority="high"|fetchpriority="high"/);
+    expect(renderToStaticMarkup(createElement(Card, { name: 'Pikachu', sprite: '/p.png' }))).toContain('loading="lazy"');
+  });
   it('con foto la imagen es decorativa: el nombre ya va escrito', () => {
     const html = renderToStaticMarkup(createElement(Card, { name: 'Aqua', sprite: '/a.webp', photo: true, onSelect: () => undefined }));
     expect(html).toContain('alt=""');

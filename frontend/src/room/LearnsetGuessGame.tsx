@@ -10,7 +10,7 @@ import { useTimedVisibility } from '../hooks/useTimedVisibility';
 import { cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './GameSkipSlot';
 import { useFocusOnTransition } from './focus-transition';
-import { learnsetLastWarningText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
+import { learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 import { PokemonSelector } from './PokemonSelector';
 import s from '../games/learnset-guess/LearnsetGuess.module.css';
 
@@ -59,6 +59,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
   useFocusOnTransition(learnsetFocusKey(kind, game.roundNumber), titleRef);
 
   const lastWarning = active ? learnsetLastWarningText(game.lastWarning, solved || !canGuess, roundRemaining) : null;
+  const lastWarningAnnouncement = active ? learnsetLastWarningAnnouncement(game.lastWarning, solved || !canGuess) : null;
   const stake = active && canGuess ? learnsetStakeText(game.visibleGroups, game.solvedPlayers.length) : null;
   const solver = active && solvedNoticeVisible && latestSolverMember ? { key: `${game.roundNumber}:${game.solvedPlayers.length}`, member: latestSolverMember, text: learnsetSolvedAnnouncement(latestSolverMember.displayName) } : null;
   const announcement = learnsetAnnouncement({ kind, game, roundPoints: player?.roundPoints ?? 0 });
@@ -80,7 +81,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
   const top = <div className={s.top}>
     <LearnsetHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} referenceGeneration={game.referenceGeneration} referenceSource={game.referenceSource}
       evolutionHint={active ? game.evolutionHint : null} heading={heading} timer={timer} />
-    <LearnsetNotices lastWarning={lastWarning} solver={solver} announcement={announcement} />
+    <LearnsetNotices lastWarning={lastWarning} lastWarningAnnouncement={lastWarningAnnouncement} solver={solver} announcement={announcement} />
     {lastRound
       ? <LearnsetRevealScene result={lastRound} />
       : <LearnsetClues groups={game.visibleGroups} latestStage={latestStage} stake={stake} nextClueIn={active && game.nextTransitionAt ? transitionRemaining : null} />}

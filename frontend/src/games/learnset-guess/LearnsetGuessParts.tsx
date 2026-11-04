@@ -36,10 +36,11 @@ export function LearnsetHud({ roundNumber, totalRounds, referenceGeneration, ref
  * La única región viva de la pantalla (siempre montada): el último aviso, quién acaba de acertar y, solo para lectores,
  * la pista nueva, el acierto propio o la revelación. Sin avisos visibles no ocupa sitio.
  */
-export function LearnsetNotices({ lastWarning, solver, announcement }: { lastWarning: string | null; solver: { key: string; member: RoomMemberView; text: string } | null; announcement: string }) {
+export function LearnsetNotices({ lastWarning, lastWarningAnnouncement, solver, announcement }: { lastWarning: string | null; /** Texto fijo del último aviso para lectores (el chip visible cuenta los segundos y no se anuncia). */ lastWarningAnnouncement: string | null; solver: { key: string; member: RoomMemberView; text: string } | null; announcement: string }) {
   const visible = Boolean(lastWarning || solver);
   return <div role="status" aria-live="polite" className={cx(s.notices, !visible && s.noticesIdle)}>
-    {lastWarning && <span className={cx(s.warning, 'timer-pulse')}><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
+    {lastWarning && <span className={cx(s.warning, 'timer-pulse')} aria-hidden="true"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
+    {lastWarningAnnouncement && <span className="sr-only">{lastWarningAnnouncement}</span>}
     {solver && <span key={solver.key} className={cx(s.solver, 'motion-bump')}><Chip tone="ok" icon={<Avatar name={solver.member.displayName} avatar={solver.member.avatar} size="xs" />}>{solver.text}</Chip></span>}
     <span className="sr-only">{announcement}</span>
   </div>;
@@ -48,8 +49,8 @@ export function LearnsetNotices({ lastWarning, solver, announcement }: { lastWar
 /** Un movimiento: nivel, nombre, tipo (con su nombre: el color nunca va solo) y categoría con icono. */
 function MoveRow({ move, fresh }: { move: LearnsetMoveHint; fresh: boolean }) {
   return <Row name={move.name}
-    // Recién llegada: la franja va en amarillo (la del jugador propio en el catálogo) y además lo dice el Badge.
-    self={fresh}
+    // Recién llegada: franja destacada (azul cielo) y además lo dice el Badge «Nueva».
+    highlight={fresh}
     // «Nueva» va bajo el nivel (no a la derecha): así la línea del tipo y la categoría no se parte y la franja no crece.
     avatar={<span className={s.level}>{move.level !== null ? <Badge tone="navy">Nv. {move.level}</Badge> : <Badge tone="navy">Mov.</Badge>}{fresh && <span className={s.fresh}><Badge>Nueva</Badge></span>}</span>}
     meta={<span className={s.moveMeta}><TypeBadge type={move.type} label={typeLabel(move.type)} size="sm" /><Chip tone="neutral" icon={<Icon icon={categoryIcons[move.category]} size={18} />}>{categoryLabel[move.category]}</Chip></span>} />;
@@ -123,7 +124,7 @@ export function LearnsetRevealScene({ result }: { result: LearnsetRoundResult })
   const hidden = result.learnset.filter((_, index) => !flags[index]);
   return <Panel variant="cream" as="section" aria-labelledby="learnset-reveal-title" className={cx(s.revealPanel)} bodyClassName={cx(s.reveal)}>
     <div className={s.revealCard}>
-      <Card sprite={learnsetSprite(result.pokemon.sprite)} name={result.pokemon.name} number={result.pokemon.nationalDexNumber} state="correct" flip attrs={{ 'data-answer-card': 'true' }} />
+      <Card sprite={learnsetSprite(result.pokemon.sprite)} name={result.pokemon.name} number={result.pokemon.nationalDexNumber} state="correct" flip eager attrs={{ 'data-answer-card': 'true' }} />
     </div>
     <div className={s.revealText}>
       <span className={s.kicker}>Resultado de la ronda</span>

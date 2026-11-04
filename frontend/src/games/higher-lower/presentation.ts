@@ -17,13 +17,6 @@ export function higherLowerRanking(game: Pick<HigherLowerPublicState, 'playerIds
   return ranking.map((id) => ({ id, position: ranking.findIndex((other) => score(other) === score(id)) + 1 }));
 }
 
-/** ¿Comparte su puesto con otro? Con `withPoints`, un empate a cero (al empezar) no cuenta. */
-export function higherLowerTied(ranking: readonly { id: string; position: number }[], id: string, points: (id: string) => number, withPoints = false): boolean {
-  const own = ranking.find((entry) => entry.id === id);
-  if (!own || (withPoints && points(id) <= 0)) return false;
-  return ranking.filter((entry) => entry.position === own.position).length > 1;
-}
-
 /**
  * Estado de un jugador en el marcador. Solo usa lo proyectado: con «Al revelar» el servidor manda `answers` vacío hasta
  * el revelado y solo se sabe quién ha respondido (`answeredIds`), nunca qué.

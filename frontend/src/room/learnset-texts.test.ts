@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { learnsetLastWarningText, learnsetRevealStatus, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
+import { learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetRevealStatus, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 
 describe('learnsetLastWarningText', () => {
   it('tells the only missing player the real seconds left', () => {
@@ -71,5 +71,13 @@ describe('learnsetScoreboard', () => {
       { id: 'b', displayName: 'Ash', role: 'PLAYER' },
     ] as const;
     expect(learnsetScoreboard(members, { a: 7, c: 0 }).map((entry) => [entry.member.id, entry.points])).toEqual([['a', 7], ['b', 0], ['c', 0]]);
+  });
+});
+
+describe('learnsetLastWarningAnnouncement', () => {
+  it('is a fixed text without the countdown, only during the warning', () => {
+    expect(learnsetLastWarningAnnouncement(false, false)).toBeNull();
+    expect(learnsetLastWarningAnnouncement(true, false)).toBe('¡Último aviso! Solo faltas tú: la ronda se cierra en unos segundos.');
+    expect(learnsetLastWarningAnnouncement(true, true)).not.toMatch(/\d/);
   });
 });

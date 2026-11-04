@@ -7,7 +7,8 @@ import { ScorePop } from '../../components/ScorePop';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, TypeBadge, TypeOption } from '../../ui';
-import { higherLowerRanking, higherLowerTied } from '../higher-lower/presentation';
+import { sharesPosition } from '../../room/results-ties';
+import { higherLowerRanking } from '../higher-lower/presentation';
 import { typeDuelMemberStatus, typeGridMove, typeLabel, type TypeDuelPlateKind } from './presentation';
 import s from './TypeDuel.module.css';
 
@@ -126,7 +127,7 @@ export function TypeDuelSidebar({ game, members, colors, selfId, className }: { 
           meta={<span className={s.rowMeta}>
             {duelist && <span className={s.duelTag}><Icon icon={Swords} size={18} />Duelista</span>}
             <MemberChip game={game} id={id} />
-            {higherLowerTied(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
+            {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
           </span>}
           value={<span className={s.score}>{points(id)}<small> pts</small></span>} />
       </li>;
