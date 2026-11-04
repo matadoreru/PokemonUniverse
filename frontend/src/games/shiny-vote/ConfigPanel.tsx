@@ -1,34 +1,49 @@
-import { SHINY_REVEAL_SECONDS_RANGE, SHINY_VOTE_VISIBILITIES, type ShinyVoteConfig } from '@pokemon-universe/shared/public';
-import { Layers3, Shuffle } from 'lucide-react';
+import { SHINY_REVEAL_SECONDS_RANGE, SHINY_VOTE_VISIBILITIES, type ShinyCandidateMode, type ShinyVoteConfig, type ShinyVoteVisibility } from '@pokemon-universe/shared/public';
+import { Layers3, Shuffle, type LucideIcon } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
+import { Card, Icon, Segmented } from '../../ui';
 import { SHINY_REVEAL_DURATION_LABEL, shinyRevealSecondsLabel } from './reveal';
 import { SHINY_VOTE_VISIBILITY_LABEL, shinyVisibilityLabels } from './vote-visibility';
+import s from './ConfigPanel.module.css';
 
+const CANDIDATE_MODE_LABEL = 'Opciones de Pokémon';
+const OPTION_COUNT_LABEL = 'Número de opciones';
+const OPTION_COUNTS = [3, 4, 5, 6] as const;
+const CANDIDATE_MODES: { value: ShinyCandidateMode; label: string; icon: LucideIcon }[] = [
+  { value: 'SAME_POKEMON', label: 'Mismo Pokémon', icon: Layers3 },
+  { value: 'DIFFERENT_POKEMON', label: 'Pokémon diferentes', icon: Shuffle },
+];
+
+/**
+ * Ajustes de Shiny Quiz con los controles del catálogo: modo de candidatos (`Card` seleccionables), número de opciones
+ * y visibilidad de los votos (`Segmented`, con el aviso de copia en «En directo»), generaciones y los tiempos (`ConfigRange`, el `Slider`).
+ */
 export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as ShinyVoteConfig;
-  return <fieldset disabled={disabled}>
-    <legend className="label">Opciones de Pokemon</legend>
-    <div className="mb-6 grid gap-3 sm:grid-cols-2">
-      <button type="button" className={`rounded-2xl border p-4 text-left transition ${value.candidateMode === 'SAME_POKEMON' ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised'}`} onClick={() => void onChange({ ...value, candidateMode: 'SAME_POKEMON' })}>
-        <Layers3 className="mb-2" size={24} /><strong className="block font-display text-lg">Mismo Pokémon</strong>
-      </button>
-      <button type="button" className={`rounded-2xl border p-4 text-left transition ${value.candidateMode === 'DIFFERENT_POKEMON' ? 'border-aqua bg-aqua text-night' : 'border-ink/10 bg-surface-raised'}`} onClick={() => void onChange({ ...value, candidateMode: 'DIFFERENT_POKEMON' })}>
-        <Shuffle className="mb-2" size={24} /><strong className="block font-display text-lg">Pokémon diferentes</strong>
-      </button>
+  const counts = OPTION_COUNTS.map((count) => ({ value: count, label: String(count), disabled }));
+  const visibilities = SHINY_VOTE_VISIBILITIES.map((visibility) => ({ value: visibility, label: shinyVisibilityLabels[visibility], disabled }));
+  return <fieldset disabled={disabled} className={s.panel}>
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{CANDIDATE_MODE_LABEL}</span>
+      <div className={s.modes} role="group" aria-label={CANDIDATE_MODE_LABEL}>{CANDIDATE_MODES.map((mode) => <Card key={mode.value} size="sm" art={<Icon icon={mode.icon} size={32} />} name={mode.label}
+        state={value.candidateMode === mode.value ? 'selected' : 'idle'} disabled={disabled} onSelect={() => { if (value.candidateMode !== mode.value) void onChange({ ...value, candidateMode: mode.value }); }} />)}</div>
     </div>
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
-    <div className="mt-5"><span className="label">Número de opciones</span><div className="grid grid-cols-4 gap-2">{[3, 4, 5, 6].map((count) => <button type="button" key={count} aria-pressed={value.optionCount === count} className={`rounded-xl border px-3 py-2 font-extrabold transition ${value.optionCount === count ? 'border-berry bg-berry text-night' : 'border-ink/10 bg-surface-raised text-ink/70'}`} onClick={() => void onChange({ ...value, optionCount: count })}>{count}</button>)}</div></div>
-    <div className="mt-5">
-      <span className="label">{SHINY_VOTE_VISIBILITY_LABEL}</span>
-      <div className="grid grid-cols-2 gap-2">{SHINY_VOTE_VISIBILITIES.map((visibility) => <button type="button" key={visibility} aria-pressed={value.voteVisibility === visibility} className={`rounded-xl border px-3 py-3 font-extrabold transition ${value.voteVisibility === visibility ? 'border-aqua bg-aqua text-night' : 'border-ink/10 bg-surface-raised text-ink/70'}`} onClick={() => void onChange({ ...value, voteVisibility: visibility })}>{shinyVisibilityLabels[visibility]}</button>)}</div>
-      {value.voteVisibility === 'LIVE' && <p className="mt-2 text-sm font-bold text-ink/65">{LIVE_VISIBILITY_WARNING}</p>}
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{OPTION_COUNT_LABEL}</span>
+      <Segmented<number> label={OPTION_COUNT_LABEL} value={value.optionCount} options={counts} onChange={(optionCount) => void onChange({ ...value, optionCount })} />
     </div>
-    <div className="mt-5 grid gap-4 md:grid-cols-2">
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{SHINY_VOTE_VISIBILITY_LABEL}</span>
+      <Segmented<ShinyVoteVisibility> label={SHINY_VOTE_VISIBILITY_LABEL} value={value.voteVisibility} options={visibilities} onChange={(voteVisibility) => void onChange({ ...value, voteVisibility })} />
+      {value.voteVisibility === 'LIVE' && <p className={s.warning}>{LIVE_VISIBILITY_WARNING}</p>}
+    </div>
+    <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
-      <ConfigRange label={SHINY_REVEAL_DURATION_LABEL} value={value.revealSeconds} min={SHINY_REVEAL_SECONDS_RANGE.min} max={SHINY_REVEAL_SECONDS_RANGE.max} disabled={disabled} accent="electric" formatValue={shinyRevealSecondsLabel} onCommit={(revealSeconds) => onChange({ ...value, revealSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label={SHINY_REVEAL_DURATION_LABEL} value={value.revealSeconds} min={SHINY_REVEAL_SECONDS_RANGE.min} max={SHINY_REVEAL_SECONDS_RANGE.max} disabled={disabled} formatValue={shinyRevealSecondsLabel} onCommit={(revealSeconds) => onChange({ ...value, revealSeconds })} />
     </div>
   </fieldset>;
 }

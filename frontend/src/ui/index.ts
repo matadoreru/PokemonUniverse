@@ -27,7 +27,7 @@ export type { TimerProps } from './Timer';
 export { Row, RowLink } from './Row';
 export type { RowLinkProps, RowProps } from './Row';
 export { Card } from './Card';
-export type { CardProps, CardState } from './Card';
+export type { CardAttrs, CardProps, CardState } from './Card';
 export { HudPlate } from './HudPlate';
 export type { HudPlateProps } from './HudPlate';
 export { Dialog, createDialogController, dialogCloseReason } from './Dialog';

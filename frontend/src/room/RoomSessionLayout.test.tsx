@@ -17,15 +17,19 @@ function render(gameId: string, phase: RoomView['phase'], state: GameSkipStateVi
 }
 
 describe('global room actions', () => {
-  it.each(['shiny-vote', 'higher-lower', 'future-minigame'])('renders exactly one skip control for %s', (gameId) => {
+  it.each(['type-duel', 'higher-lower', 'future-minigame'])('renders exactly one skip control for %s', (gameId) => {
     expect(render(gameId, 'ROUND_ACTIVE', skip).match(/aria-label="Votar para saltar el minijuego"/g)).toHaveLength(1);
   });
 
   it('keeps the control during an internal reveal and restores its authoritative own vote', () => {
-    const markup = render('shiny-vote', 'ROUND_RESULTS', { ...skip, voterIds: ['self'], votes: 1, currentUserVoted: true });
+    const markup = render('type-duel', 'ROUND_RESULTS', { ...skip, voterIds: ['self'], votes: 1, currentUserVoted: true });
     expect(markup).toContain('aria-pressed="true"');
     expect(markup).toContain('Cancelar voto');
     expect(markup).toContain('1/4');
+  });
+
+  it.each(['pokedex-distance', 'shiny-vote'])('%s pinta «Saltar minijuego» dentro de su pantalla, no en el armazón', (gameId) => {
+    expect(render(gameId, 'ROUND_ACTIVE', skip)).not.toContain('Votar para saltar el minijuego');
   });
 
   it.each(['LOBBY', 'GAME_RESULTS', 'SESSION_RESULTS', 'NEXT_GAME_VOTE'] as const)('has no skip control in %s', (phase) => {

@@ -1,68 +1,57 @@
 import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/shared/public';
-import type { ReactNode } from 'react';
-import { Check, ChevronDown, CircleDashed, Eye, Trophy, X } from 'lucide-react';
+import { Check, CircleDashed, Eye, X } from 'lucide-react';
 import { Avatar } from '../../components/Avatar';
+import { playerColor } from '../../room/player-color';
+import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
+import s from './ShinyVote.module.css';
 
 function memberName(member: RoomMemberView | undefined, id: string) {
   return member?.displayName ?? id;
 }
 
-export function ShinyGameSidebar({ game, members, selfId, top = null }: {
+/** Marcador ordenado por puntos (empates por nombre) con la posición compartida en los empates. */
+export function shinyRanking(game: Pick<ShinyVotePublicState, 'playerIds' | 'scores'>, members: ReadonlyMap<string, RoomMemberView>): { id: string; position: number }[] {
+  const score = (id: string) => game.scores[id] ?? 0;
+  const ranking = [...game.playerIds].sort((left, right) => score(right) - score(left) || memberName(members.get(left), left).localeCompare(memberName(members.get(right), right)));
+  return ranking.map((id) => ({ id, position: ranking.findIndex((other) => score(other) === score(id)) + 1 }));
+}
+
+/**
+ * Marcador de la partida (columna lateral): una franja por jugador con su color, los puntos y si ha votado; la opción
+ * votada solo al revelar (con los votos al revelar, antes no se sabe ni se pinta). Votos de la ronda en la cabecera.
+ */
+export function ShinyGameSidebar({ game, members, colors, selfId, className }: {
   game: ShinyVotePublicState;
   members: ReadonlyMap<string, RoomMemberView>;
+  /** Color de cada jugador por su orden en la sala (`playerColor`). */
+  colors: ReadonlyMap<string, number>;
   selfId: string;
-  /** Contenido sobre el panel de la partida (la franja «Antes / después» en `lg`). */
-  top?: ReactNode;
+  className?: string | undefined;
 }) {
   const reveal = game.phase === 'ROUND_RESULTS';
-  const ranking = [...game.playerIds].sort((left, right) => (game.scores[right] ?? 0) - (game.scores[left] ?? 0) || memberName(members.get(left), left).localeCompare(memberName(members.get(right), right)));
   const voted = new Set(game.votedPlayerIds);
-
-  return <aside className="min-w-0 lg:sticky lg:top-4" aria-label="Estado de la partida">
-    {top}
-    <section className="overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card">
-      <div className="p-3.5 sm:p-4">
-        {/* El feedback de la partida va por «Enviar feedback» de la cabecera (lleva el juego y la sala). */}
-        <h2 className="font-display text-xl font-bold">Partida</h2>
-        <div className="mt-3 flex items-center justify-between rounded-xl bg-ink/[.04] px-3 py-2 text-sm">
-          <span className="font-bold text-ink/60">Votos</span>
-          <strong className="tabular-nums">{game.votedPlayerIds.length} / {game.playerIds.length}</strong>
-        </div>
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <h3 className="font-display text-base font-bold">{game.pendingPlayerIds.length > 0 ? `Pendientes · ${game.pendingPlayerIds.length}` : 'Todos han votado'}</h3>
-          {game.voteVisibility === 'REVEAL' && !reveal && <span className="text-xs font-extrabold text-ink/45">Elección privada</span>}
-        </div>
-        <div className="mt-2 max-h-60 space-y-1.5 overflow-y-auto pr-0.5">{game.playerIds.map((id) => {
-          const member = members.get(id);
-          const hasVoted = voted.has(id);
-          const vote = game.votes[id];
-          const correct = reveal && vote?.optionId === game.correctOptionId;
-          return <div key={id} className={`flex min-h-11 items-center gap-2 rounded-xl px-2.5 py-2 ${id === selfId ? 'bg-aqua/[.08]' : 'bg-ink/[.03]'}`}>
-            <Avatar name={memberName(member, id)} avatar={member?.avatar} presence={member?.presence} size="sm" />
-            <strong className="min-w-0 flex-1 truncate text-sm" title={memberName(member, id)}>{memberName(member, id)}{id === selfId && <span className="ml-1 text-xs font-black text-aqua">TÚ</span>}</strong>
-            {member?.role === 'SPECTATOR' ? <Eye size={15} className="text-ink/45" aria-label="Espectador" /> : !hasVoted ? <span className="inline-flex items-center gap-1 text-xs font-bold text-ink/50"><CircleDashed size={14} />Pendiente</span> : reveal && vote ? <span className={`inline-flex items-center gap-1 text-xs font-black ${correct ? 'text-leaf' : 'text-berry'}`}>{correct ? <Check size={14} /> : <X size={14} />}{vote.optionId}</span> : <span className="inline-flex items-center gap-1 text-xs font-black text-leaf"><Check size={14} />Votó</span>}
-          </div>;
-        })}</div>
-      </div>
-      <details className="group border-t border-ink/10" open>
-        <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 px-3.5 py-2.5 sm:px-4">
-          <Trophy size={18} className="text-electric" aria-hidden="true" />
-          <h2 className="min-w-0 flex-1 font-display text-lg font-bold">Clasificación</h2>
-          <ChevronDown className="text-ink/45 transition-transform group-open:rotate-180" size={18} aria-hidden="true" />
-        </summary>
-        <ol className="max-h-72 space-y-1.5 overflow-y-auto px-3.5 pb-3.5 sm:px-4 sm:pb-4">{ranking.map((id, index) => {
-          const member = members.get(id);
-          const previousId = ranking[index - 1];
-          const tied = previousId !== undefined && (game.scores[previousId] ?? 0) === (game.scores[id] ?? 0);
-          const position = tied ? ranking.findIndex((candidateId) => (game.scores[candidateId] ?? 0) === (game.scores[id] ?? 0)) + 1 : index + 1;
-          return <li key={id} className={`grid min-h-10 grid-cols-[1.5rem_auto_minmax(0,1fr)_auto] items-center gap-2 rounded-xl px-2 py-1.5 ${id === selfId ? 'bg-aqua/[.08]' : 'bg-ink/[.03]'}`} aria-current={id === selfId ? 'true' : undefined}>
-            <span className="text-center font-display text-sm font-bold text-ink/55" title={tied ? 'Empate' : undefined}>{position}</span>
-            <Avatar name={memberName(member, id)} avatar={member?.avatar} size="sm" />
-            <strong className="truncate text-sm">{memberName(member, id)}</strong>
-            <strong className={`tabular-nums text-right text-sm text-berry ${reveal ? 'shiny-score-update' : ''}`}>{game.scores[id] ?? 0}<span className="ml-1 text-xs text-ink/45">pts</span></strong>
-          </li>;
-        })}</ol>
-      </details>
-    </section>
-  </aside>;
+  const privateVotes = game.voteVisibility === 'REVEAL' && !reveal;
+  return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}
+    right={<Badge tone="cream">{`${game.votedPlayerIds.length} / ${game.playerIds.length} votos`}</Badge>}>
+    <p className={s.sideHint}>{game.pendingPlayerIds.length > 0 ? `Pendientes · ${game.pendingPlayerIds.length}` : 'Todos han votado'}{privateVotes && <> · <strong>Elección privada</strong> hasta revelar</>}</p>
+    <ol className={s.rows} aria-label="Clasificación de la partida">{shinyRanking(game, members).map(({ id, position }) => {
+      const member = members.get(id);
+      const name = memberName(member, id);
+      const vote = reveal ? game.votes[id] : undefined;
+      const correct = vote?.optionId === game.correctOptionId;
+      const status = member?.role === 'SPECTATOR'
+        ? <Chip tone="neutral" icon={<Icon icon={Eye} size={18} />}>Espectador</Chip>
+        : !voted.has(id)
+          ? <Chip tone="neutral" icon={<Icon icon={CircleDashed} size={18} />}>Pendiente</Chip>
+          : vote
+            ? <Chip tone={correct ? 'ok' : 'bad'} icon={<Icon icon={correct ? Check : X} size={18} />}>{vote.optionId}<span className="sr-only">{correct ? ': acertó' : ': falló'}</span></Chip>
+            : <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Votó</Chip>;
+      return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
+        <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
+          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          meta={<span className={s.rowMeta}>{status}</span>}
+          value={<span className={cx(s.score)}>{game.scores[id] ?? 0}<small> pts</small></span>} />
+      </li>;
+    })}</ol>
+  </Panel>;
 }

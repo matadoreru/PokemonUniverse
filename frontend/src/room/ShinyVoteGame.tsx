@@ -1,5 +1,6 @@
-import { type RoomMemberView, type RoomView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
+import { type RoomMemberView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ServerTimer } from '../components/ServerTimer';
 import { ShinyGameHeader } from '../games/shiny-vote/ShinyGameHeader';
 import { ShinyGameSidebar } from '../games/shiny-vote/ShinyGameSidebar';
 import { ShinyBeforeAfter, ShinyOptionCard } from '../games/shiny-vote/ShinyOptionCard';
@@ -7,8 +8,14 @@ import { ShinyVoteStatus } from '../games/shiny-vote/ShinyVoteStatus';
 import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from '../games/shiny-vote/interaction';
 import { SHINY_CARDS_TIMEOUT_MS, shinyCardsReady, shinyRoundFeedback } from '../games/shiny-vote/reveal';
 import { shinyVotersVisible } from '../games/shiny-vote/vote-visibility';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
+import { cx, ScreenSplit } from '../ui';
+import { GameSkipSlot } from './GameSkipSlot';
+import s from '../games/shiny-vote/ShinyVote.module.css';
+
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
 
 function ignoresGameShortcuts(target: EventTarget | null): boolean {
   if (!(target instanceof Element)) return false;
@@ -38,23 +45,22 @@ function useShinyCardsReady(roundKey: string, total: number) {
   return { ready, onSettled };
 }
 
+/**
+ * Shiny Quiz (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, la pregunta y el tiempo, y las cartas de
+ * opción (`Card` llena: seleccionable, seleccionada, correcta que gira al revelar, incorrecta). Abajo se actúa: confirmar
+ * el voto o, al revelar, el veredicto con los puntos. En la columna lateral, el antes y el después al revelar y el
+ * marcador; en el móvil, entre las cartas y la pantalla inferior.
+ */
 export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as ShinyVotePublicState;
   const config = room.selectedGameConfig as ShinyVoteConfig;
   const playerState = room.gamePlayerState as ShinyVotePlayerState | null;
   const [draft, setDraft] = useState<ShinyOptionId | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
   const serverOffset = useServerOffset(room.serverNow);
-  const remainingMs = useRemainingMs(game.roundEndsAt, serverOffset);
-  const transitionRemainingMs = useRemainingMs(game.nextTransitionAt, serverOffset);
-  const totalMs = Math.max(1, config.roundSeconds * 1_000);
-  const remaining = Math.max(0, Math.ceil(remainingMs / 1_000));
-  const progress = game.phase === 'ROUND_ACTIVE' ? Math.min(100, Math.max(0, remainingMs / totalMs * 100)) : 0;
   const active = game.phase === 'ROUND_ACTIVE';
   const reveal = game.phase === 'ROUND_RESULTS';
   const revealPhase = game.phase === 'ROUND_RESULTS' || game.phase === 'GAME_RESULTS';
-  const transitionRemaining = Math.max(1, Math.ceil(transitionRemainingMs / 1_000));
   const transitionLabel = game.roundNumber >= game.totalRounds ? 'Resultados finales' : 'Siguiente ronda';
   const ownVote = playerState?.vote ?? game.votes[selfId] ?? null;
   const participant = game.playerIds.includes(selfId);
@@ -63,11 +69,13 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   // Al revelar las cartas ya estaban cargadas: el esqueleto solo bloquea el voto de la ronda abierta.
   const loadingCards = active && game.options.length > 0 && !cards.ready;
   const canVote = active && participant && !ownVote && playerState?.canVote === true && !loadingCards;
+  // Botones mientras se puede votar (o se podrá cuando carguen): con el voto dado o al revelar, cartas fijas sin apagar.
+  const interactive = active && participant && !ownVote && playerState?.canVote === true;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
   const selectedOptionId = ownVote?.optionId ?? draft;
   const selectedOption = game.options.find((option) => option.id === selectedOptionId) ?? null;
   const optionIds = useMemo(() => game.options.map((option) => option.id), [game.options]);
-  const optionGrid = game.options.length === 3 ? 'grid-cols-2 sm:grid-cols-3' : game.options.length <= 4 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3';
   const correctOption = reveal ? game.options.find((option) => option.id === game.correctOptionId) ?? null : null;
   const feedback = reveal && participant ? shinyRoundFeedback(playerState?.roundResult ?? null, Boolean(ownVote)) : null;
   const cardFeedback = feedback ? { ...feedback, points: playerState?.roundResult?.points ?? 0 } : null;
@@ -75,23 +83,18 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
 
   useEffect(() => {
     setDraft(null);
-    setError('');
   }, [game.roundNumber]);
 
   const selectOption = useCallback((optionId: ShinyOptionId) => {
     setDraft((current) => updateShinyDraft(current, optionId, canVote && !submitting));
-    setError('');
   }, [canVote, submitting]);
 
   const confirmVote = useCallback(async () => {
     const action = createShinyVoteAction(draft, canVote, submitting);
     if (!action) return;
     setSubmitting(true);
-    setError('');
     try {
-      await onAction(action);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'El servidor rechazó el voto. Puedes intentarlo de nuevo.');
+      await onAction(action).catch(ignoreFailure);
     } finally {
       setSubmitting(false);
     }
@@ -116,63 +119,59 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [canVote, confirmVote, draft, optionIds, selectOption, submitting]);
 
-  return <section className="mx-auto w-full max-w-[90rem] overflow-x-clip px-3 py-3 sm:px-5 sm:py-5 lg:px-7">
-    <ShinyGameHeader
-      roundNumber={game.roundNumber}
-      totalRounds={game.totalRounds}
-      active={active}
-      voteVisibility={game.voteVisibility}
-      candidateMode={config.candidateMode}
-      remainingSeconds={active ? remaining : transitionRemaining}
-      progress={active ? progress : 100}
-    />
-    <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem] xl:grid-cols-[minmax(0,1fr)_20rem]">
-      <main className="min-w-0" aria-busy={loadingCards ? 'true' : undefined}>
-        {game.options.length > 0 ? <div className={`shiny-option-grid grid gap-2.5 sm:gap-3 ${optionGrid}`} role="group" aria-label="Opciones de Pokémon">{game.options.map((option) => {
-          const voters = Object.entries(game.votes)
-            .filter(([, vote]) => vote.optionId === option.id)
-            .map(([playerId]) => members.get(playerId))
-            .filter((member): member is RoomMemberView => Boolean(member));
-          return <ShinyOptionCard
-            key={option.id}
-            option={option}
-            voters={voters}
-            selected={selectedOptionId === option.id}
-            confirmed={Boolean(ownVote)}
-            disabled={!canVote || submitting}
-            loading={loadingCards}
-            reveal={reveal}
-            correct={game.correctOptionId === option.id}
-            showVoters={shinyVotersVisible(game.voteVisibility, revealPhase)}
-            feedback={cardFeedback}
-            onSelect={() => selectOption(option.id)}
-            onSettled={cards.onSettled}
-          />;
-        })}</div> : <div className="grid grid-cols-2 gap-2.5 sm:gap-3" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <div key={index} className="shiny-option-card rounded-2xl border border-ink/10 bg-surface p-3"><div className="skeleton h-9 w-9" /><div className="skeleton mx-auto mt-3 h-44 w-44 max-w-full" /><div className="skeleton mx-auto mt-3 h-5 w-24 max-w-full" /></div>)}</div>}
-        {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} className="mt-3 lg:hidden" />}
-        <ShinyVoteStatus
-          active={active}
-          loading={loadingCards}
-          reveal={reveal}
-          participant={participant}
-          selectedOption={selectedOption}
-          ownVote={ownVote}
-          correctOptionId={game.correctOptionId}
-          points={playerState?.roundResult?.points ?? 0}
-          submitting={submitting}
-          error={error}
-          transitionLabel={transitionLabel}
-          transitionRemaining={transitionRemaining}
-          onConfirm={() => void confirmVote()}
-        />
-      </main>
-      {/* En lg la franja sube a la columna lateral para quedar a la vista sin desplazar; debajo, sigue bajo la rejilla. */}
-      <ShinyGameSidebar
-        game={game}
-        members={members}
-        selfId={selfId}
-        top={correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} className="mb-3 max-lg:hidden" />}
-      />
-    </div>
-  </section>;
+  const timer = active
+    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} totalMs={Math.max(1, config.roundSeconds * 1_000)} label="Tiempo" />
+    : reveal ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label={transitionLabel} /> : null;
+
+  const grid = game.options.length > 0
+    ? <div className={s.grid} data-count={game.options.length} role="group" aria-label="Opciones de Pokémon" aria-busy={loadingCards ? 'true' : undefined}>{game.options.map((option) => {
+      const voters = Object.entries(game.votes)
+        .filter(([, vote]) => vote.optionId === option.id)
+        .map(([playerId]) => members.get(playerId))
+        .filter((member): member is RoomMemberView => Boolean(member));
+      return <ShinyOptionCard
+        key={option.id}
+        option={option}
+        voters={voters}
+        selected={selectedOptionId === option.id}
+        confirmed={Boolean(ownVote)}
+        interactive={interactive}
+        loading={loadingCards}
+        reveal={reveal}
+        correct={game.correctOptionId === option.id}
+        showVoters={shinyVotersVisible(game.voteVisibility, revealPhase)}
+        feedback={cardFeedback}
+        onSelect={() => selectOption(option.id)}
+        onSettled={cards.onSettled}
+      />;
+    })}</div>
+    : <div className={s.grid} data-count={4} role="status" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <span key={index} className={s.ghostCard}><span className={s.skeleton} /></span>)}</div>;
+
+  const top = <div className={s.top}>
+    <ShinyGameHeader roundNumber={game.roundNumber} totalRounds={game.totalRounds} voteVisibility={game.voteVisibility} candidateMode={config.candidateMode} timer={timer} />
+    {grid}
+  </div>;
+
+  const side = <div className={s.side}>
+    {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} />}
+    <ShinyGameSidebar game={game} members={members} colors={colors} selfId={selfId} className={cx(s.sidePanel)} />
+    <GameSkipSlot className={s.skip} />
+  </div>;
+
+  const bottom = <ShinyVoteStatus
+    active={active}
+    loading={loadingCards}
+    reveal={reveal}
+    participant={participant}
+    selectedOption={selectedOption}
+    ownVote={ownVote}
+    correctOptionId={game.correctOptionId}
+    points={playerState?.roundResult?.points ?? 0}
+    submitting={submitting}
+    onConfirm={() => void confirmVote()}
+  />;
+
+  return <div className={cx('content-row', s.screen)}>
+    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+  </div>;
 }

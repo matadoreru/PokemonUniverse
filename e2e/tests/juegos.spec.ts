@@ -44,7 +44,7 @@ const ARCADE: CaptureOptions = { minFontPx: 13, noPageScroll: true };
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
 
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
-const SCREENSHOT_GAMES = new Set(['type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon']);
+const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon']);
 
 /** Texto del aviso de error del lobby o de la sala, si hay alguno visible. */
 async function avisos(page: Page): Promise<string> {
@@ -975,14 +975,29 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     const { host, invitados, jugadores } = sala;
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Shiny Quiz');
-    // Revelación de 6 s (la máxima): caben las capturas de la revelación.
+    // Panel del catálogo: seis opciones (el peor encaje a 1280×720), una sola ronda (para llegar a los resultados) y la
+    // revelación de 6 s (la máxima): caben las capturas de la revelación.
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const seis = host.page.getByRole('radiogroup', { name: 'Número de opciones' }).getByRole('radio', { name: '6', exact: true });
+    await seis.click();
+    await expect(seis).toHaveAttribute('aria-checked', 'true');
+    const alRevelar = host.page.getByRole('radio', { name: 'Al revelar', exact: true });
+    await expect(alRevelar).toHaveAttribute('aria-checked', 'true');
+    const rondas = host.page.getByRole('slider', { name: 'Número de rondas' });
+    await rondas.focus();
+    await rondas.press('Home');
+    await rondas.blur();
+    await expect(rondas).toHaveValue('1');
     const revelacion = host.page.getByRole('slider', { name: 'Duración de la revelación' });
     await expect(revelacion).toHaveValue('4');
     await revelacion.focus();
     await revelacion.press('End');
     await revelacion.blur();
     await expect(revelacion).toHaveValue('6');
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    // El modo de candidatos (cartas seleccionables) a la vista: está arriba del panel, que se ha desplazado hasta los deslizadores.
+    await host.page.getByRole('group', { name: 'Opciones de Pokémon' }).scrollIntoViewIfNeeded();
+    await capturarTamanos(host.page, 'lobby-config-shiny-vote', { completa: true, opts: { minFontPx: 13 } });
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, [invitado.page]);
     await saltarIntro([host.page, invitado.page]);
@@ -990,6 +1005,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     for (const { page } of jugadores) page.on('request', (r) => { if (/^\/api\/pokemon\/[^/]+\/sprite$/.test(new URL(r.url()).pathname)) normales.push(r.url()); });
     const opcionA = (page: Page) => page.locator('[data-shiny-option="A"]');
     for (const { page } of jugadores) await expect(opcionA(page)).toBeEnabled({ timeout: 20_000 });
+    await expect(host.page.locator('[data-shiny-option]')).toHaveCount(6);
     const votantes = (page: Page) => page.locator('[data-testid^="shiny-voters-"]');
 
     // El host vota: el invitado ve que ha votado, pero ninguna carta muestra votantes hasta el revelado.
@@ -999,8 +1015,15 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await expect(invitado.page.getByText('Votó', { exact: true })).toHaveCount(1, { timeout: 10_000 });
     for (const { page } of jugadores) await expect(votantes(page)).toHaveCount(0);
     await expect(invitado.page.getByText('Votos al revelar')).toBeVisible();
+    // El invitado elige con el teclado (B) sin confirmar: su carta queda seleccionada.
+    await invitado.page.locator('body').press('b');
+    await expect(invitado.page.locator('[data-shiny-option="B"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(invitado.page.getByText('Has seleccionado')).toBeVisible();
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
-    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }) });
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-votos-al-revelar', { sigue: invitado.page.getByRole('button', { name: 'Confirmar voto' }), opts: ARCADE });
+    // El host, con el voto ya bloqueado: cartas fijas y su elección en la pantalla inferior.
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-shiny-vote-voto-confirmado', { sigue: host.page.getByText('Voto confirmado:'), opts: ARCADE });
 
     // Antes de revelar nadie ha pedido el sprite normal: daría la respuesta.
     expect(normales).toEqual([]);
@@ -1010,7 +1033,6 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     const spriteNormal = invitado.page.waitForResponse((r) => /^\/api\/pokemon\/[^/]+\/sprite$/.test(new URL(r.url()).pathname), { timeout: 15_000 });
     await opcionA(invitado.page).click();
     await invitado.page.getByRole('button', { name: 'Confirmar voto' }).click();
-    // La franja se monta dos veces (bajo la rejilla y en la columna lateral en lg): se usa la visible.
     const franja = (page: Page) => page.locator('[data-testid="shiny-before-after"]:visible');
     for (const { page } of jugadores) await expect(franja(page)).toBeVisible({ timeout: 10_000 });
     expect((await spriteNormal).status()).toBe(200);
@@ -1020,24 +1042,33 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
       await expect(franja(page).getByText('Shiny', { exact: true })).toBeVisible();
     }
     await expect(votantes(host.page).filter({ hasText: '2 votos' })).toHaveCount(1);
+    // La correcta gira (la animación del catálogo, `Card` con `flip`) solo con movimiento.
     const correcta = (page: Page) => page.locator('[data-shiny-option][data-correct="true"]');
-    expect(await animacionDe(correcta(host.page))).toBe('motion-flip');
+    expect(await animacionDe(correcta(host.page))).toMatch(/reveal/);
     expect(await animacionDe(correcta(invitado.page))).toBe('none');
-    expect(await animacionDe(franja(invitado.page))).toBe('none');
-    // Una sola franja visible en cada tamaño: bajo la rejilla en móvil y en la columna lateral, a la derecha de la rejilla, en lg.
+    // Un solo antes y después en cada tamaño: bajo las cartas en el móvil y en la columna lateral, a su derecha, en lg.
+    const rejilla = (page: Page) => page.getByRole('group', { name: 'Opciones de Pokémon' });
     for (const { w, h } of SIZES) {
       await invitado.page.setViewportSize({ width: w, height: h });
-      await expect(franja(invitado.page), `franjas visibles a ${w}×${h}`).toHaveCount(1);
+      await expect(franja(invitado.page), `antes y después visibles a ${w}×${h}`).toHaveCount(1);
       const tira = await franja(invitado.page).boundingBox();
-      const rejilla = await invitado.page.locator('.shiny-option-grid').boundingBox();
-      expect(tira && rejilla, 'cajas de la franja y la rejilla').toBeTruthy();
-      if (w >= 1024) expect(tira!.x, `franja en la columna lateral a ${w}×${h}`).toBeGreaterThanOrEqual(rejilla!.x + rejilla!.width);
-      else expect(tira!.y, `franja bajo la rejilla a ${w}×${h}`).toBeGreaterThanOrEqual(rejilla!.y + rejilla!.height);
+      const cartas = await rejilla(invitado.page).boundingBox();
+      expect(tira && cartas, 'cajas del antes y después y de las cartas').toBeTruthy();
+      if (w >= 1024) expect(tira!.x, `antes y después en la columna lateral a ${w}×${h}`).toBeGreaterThanOrEqual(cartas!.x + cartas!.width);
+      else expect(tira!.y, `antes y después bajo las cartas a ${w}×${h}`).toBeGreaterThanOrEqual(cartas!.y + cartas!.height);
     }
     await invitado.page.setViewportSize({ width: 1280, height: 720 });
     await invitado.page.evaluate(() => window.scrollTo(0, 0));
-    // Página completa: la franja «Antes / después» queda bajo la rejilla en móvil y en la columna lateral en lg.
-    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), completa: true });
+    // Página completa: en el móvil el antes y después y el marcador quedan bajo las cartas.
+    await capturarTamanos(invitado.page, 'juego-shiny-vote-revelacion', { sigue: franja(invitado.page), completa: true, opts: ARCADE });
+
+    // Una sola ronda: llegan los resultados con la clasificación del catálogo.
+    for (const { page } of jugadores) await expect(page.getByRole('heading', { name: 'Clasificación shiny' })).toBeVisible({ timeout: 15_000 });
+    const clasificacion = host.page.getByRole('list', { name: 'Clasificación' });
+    await expect(clasificacion.getByRole('listitem')).toHaveCount(2);
+    await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-shiny-vote-resultados', { sigue: clasificacion, completa: true, opts: ARCADE });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

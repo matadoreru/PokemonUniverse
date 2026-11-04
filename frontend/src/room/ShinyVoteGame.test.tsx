@@ -2,9 +2,14 @@ import type { RoomView, ShinyVotePlayerState, ShinyVotePublicState } from '@poke
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { shinyCardState } from '../games/shiny-vote/ShinyOptionCard';
+import { shinyRanking } from '../games/shiny-vote/ShinyGameSidebar';
 import { ShinyVoteGame } from './ShinyVoteGame';
-import { ShinyVoteResults } from './ShinyVoteResults';
+import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
+
+// «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
+vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 const members: RoomView['members'] = ['Eru', 'Ana', 'Leo', 'Marta', 'Iris'].map((displayName, index): RoomView['members'][number] => ({
   id: `p${index + 1}`,
@@ -103,111 +108,119 @@ function revealGame(voteVisibility: ShinyVotePublicState['voteVisibility'] = 'LI
 }
 
 describe('Shiny Quiz UI', () => {
-  it('makes the Pokémon options the responsive, accessible primary surface', () => {
+  it('pinta la placa de la ronda y las opciones como cartas del catálogo, accesibles y con atajos', () => {
     const html = render(publicGame());
     expect(html).toContain('Ronda 1 de 10');
     expect(html).toContain('¿Cuál es el shiny verdadero?');
-    expect(html).toContain('grid-cols-2');
-    expect(html).toContain('lg:grid-cols-[minmax(0,1fr)_18rem]');
+    expect(html).toContain('role="group" aria-label="Opciones de Pokémon"');
+    expect(html).toContain('data-count="4"');
     expect(html).toContain('aria-label="Opción A: Simisear"');
-    expect(html).toContain('shiny-sprite');
-    expect(html).toContain('disabled=""');
-    expect(html).not.toContain('Shiny verdadero');
-    expect(html).not.toContain('—');
+    expect(html).toContain('aria-keyshortcuts="A 1"');
+    expect(html).toContain('role="timer"');
+    expect(html).toContain('Atajos: A–F o 1–6 · Enter confirma');
+    expect(html).not.toContain('shiny verdadero,');
+    expect(html).not.toContain('Antes / después');
   });
 
-  it('shows skeleton cards that cannot be voted until the sprites load', () => {
+  it('enseña esqueletos que no se pueden votar hasta que cargan los sprites', () => {
     const html = render(publicGame());
     expect(html).toContain('aria-busy="true"');
     expect(html).toContain('Cargando cartas…');
-    expect(html).toContain('data-testid="shiny-card-skeleton"');
+    expect(html.match(/data-testid="shiny-card-skeleton"/g)).toHaveLength(4);
     // La imagen sigue montada (para que cargue) bajo el esqueleto.
     expect(html).toContain('/api/rooms/ABC234/games/token/rounds/1/options/A/sprite');
-    expect(html.match(/data-shiny-option="[A-D]"/g)).toHaveLength(4);
-    expect(html.match(/<button[^>]*disabled=""[^>]*data-shiny-option/g)).toHaveLength(4);
+    expect(html.match(/<button[^>]*data-shiny-option="[A-D]"[^>]*disabled=""/g)).toHaveLength(4);
   });
 
-  it('never fetches the normal sprite before the reveal', () => {
+  it('nunca pide el sprite normal antes de revelar', () => {
     expect(render(publicGame())).not.toContain('/api/pokemon/');
-    expect(render(publicGame())).not.toContain('Antes / después');
   });
 
-  it('restores and locks a confirmed vote after a fresh projection', () => {
-    const vote = { optionId: 'B' as const, votedAt: 2_000 };
-    const html = render(publicGame({ votes: { p1: vote }, votedPlayerIds: ['p1'], pendingPlayerIds: ['p2', 'p3', 'p4', 'p5'] }), player({ canVote: false, vote }));
-    expect(html).toContain('Voto confirmado:');
-    expect(html).toContain('Tu voto');
-    expect(html).toContain('aria-label="Opción B: Simisear, voto confirmado"');
-    expect(html).not.toContain('Confirmar voto');
+  it('con los votos al revelar no deja ver a quién ni qué se votó antes de tiempo', () => {
+    // Aunque la proyección trajera votos ajenos, ni las cartas ni el marcador los pintan hasta revelar.
+    const votes = { p1: { optionId: 'A' as const, votedAt: 2_000 }, p2: { optionId: 'C' as const, votedAt: 2_100 } };
+    const hidden = render(publicGame({ voteVisibility: 'REVEAL', votes, votedPlayerIds: ['p1', 'p2'], pendingPlayerIds: ['p3', 'p4', 'p5'] }), player({ canVote: false, vote: votes.p1 }));
+    expect(hidden).not.toContain('data-testid="shiny-voters-');
+    expect(hidden).not.toMatch(/>\d votos?</);
+    expect(hidden).toContain('Votos al revelar');
+    expect(hidden).toContain('Elección privada');
+    // El marcador solo dice quién ha votado: ni una letra de opción en las franjas.
+    expect(hidden.match(/>Votó</g)).toHaveLength(2);
+    expect(hidden).not.toContain(': acertó');
+    expect(hidden).not.toContain(': falló');
+    // Al revelar, los votantes de cada carta y la opción de cada uno en el marcador.
+    const revealed = render(revealGame('REVEAL'), player({ canVote: false, vote: revealVotes.p1!, roundResult: { correct: true, points: 4 } }));
+    expect(revealed).toContain('data-testid="shiny-voters-A"');
+    expect(revealed).toContain('data-testid="shiny-voters-B"');
+    expect(revealed).toContain(': acertó');
+    expect(revealed).toContain(': falló');
+    expect(revealed).not.toContain('Elección privada');
   });
 
-  it('transforms the board into a successful reveal without a modal', () => {
-    const html = render(revealGame(), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 }, roundResult: { correct: true, points: 4 } }));
-    expect(html).toContain('aria-label="Opción B: Simisear, shiny verdadero, tu voto acertado, +4 puntos"');
-    expect(html).toContain('motion-flip');
-    expect(html).toContain('✨');
-    expect(html).toContain('score-pop-leaf');
-    expect(html).not.toContain('aria-busy');
-    expect(html).toContain('Antes / después');
-    expect(html).toContain('/api/pokemon/simisear/sprite');
-    expect(html).toContain('>Normal</figcaption>');
-    expect(html).toContain('>Shiny</figcaption>');
-    // Bajo la rejilla hasta lg y arriba de la columna lateral desde lg.
-    expect(html.match(/data-testid="shiny-before-after"/g)).toHaveLength(2);
-    expect(html).toContain('mt-3 lg:hidden');
-    expect(html).toContain('mb-3 max-lg:hidden');
-    expect(html).toContain('¡Correcto!');
-    expect(html).toContain('+4 puntos');
-    expect(html).toContain('Respuesta correcta:');
-    expect(html).not.toContain('role="dialog"');
-  });
-
-  it('shows an incorrect choice and timeout without hiding the Pokémon', () => {
-    const wrong = render(revealGame(), player({ canVote: false, vote: { optionId: 'C', votedAt: 2_000 }, roundResult: { correct: false, points: 0 } }));
-    expect(wrong).toContain('No era ese shiny');
-    expect(wrong).toContain('aria-label="Opción C: Simisear, tu voto, incorrecta, +0 puntos"');
-    // Un fallo muestra «+0» a propósito (en berry), junto a la etiqueta ✗ «Tu voto».
-    expect(wrong).toMatch(/<span class="score-pop score-pop-berry[^"]*"[^>]*>\+0<\/span>/);
-    // Solo el sprite de las incorrectas se apaga; la tarjeta, la etiqueta y el nombre conservan el contraste.
-    expect(wrong.match(/data-dimmed="true"/g)).toHaveLength(2);
-    expect(wrong).toMatch(/class="shiny-sprite-stage[^"]*opacity-60 grayscale"[^>]*data-dimmed="true"/);
-    expect(wrong).not.toMatch(/<button[^>]*class="[^"]*shiny-option-card[^"]*opacity-60/);
-    expect(wrong).toContain('Shiny verdadero');
-    expect(wrong).toContain('Tu elección:');
-    expect(wrong).toContain('Respuesta correcta:');
-    expect(wrong).toContain('C');
-    expect(wrong).toContain('Simisear');
-    const timeout = render(revealGame('LIVE', { p2: revealVotes.p2! }), player({ canVote: false, vote: null, roundResult: { correct: false, points: 0 } }));
-    expect(timeout).toContain('Tiempo agotado');
-  });
-
-  it('shows bounded avatar summaries live, or only after the reveal by default', () => {
+  it('en directo resume los votantes de cada carta con avatares acotados y su insignia', () => {
     const allVotes = Object.fromEntries(members.map((member, index) => [member.id, { optionId: 'A' as const, votedAt: 2_000 + index }]));
     const visible = render(publicGame({ votes: allVotes, votedPlayerIds: members.map((member) => member.id), pendingPlayerIds: [] }), player({ canVote: false, vote: allVotes.p1! }));
     expect(visible).toContain('data-testid="shiny-voters-A"');
     expect(visible).toContain('5 votos');
     expect(visible).toContain('+2');
     expect(visible).toContain('Votos en directo');
-    const hidden = render(publicGame({ voteVisibility: 'REVEAL', votes: {}, votedPlayerIds: members.map((member) => member.id), pendingPlayerIds: [] }), player({ canVote: false, vote: allVotes.p1! }));
-    expect(hidden).not.toContain('data-testid="shiny-voters-A"');
-    expect(hidden).not.toContain('5 votos');
-    expect(hidden).toContain('Elección privada');
-    expect(hidden).toContain('Votos al revelar');
-    const revealed = render(revealGame('REVEAL'), player({ canVote: false, vote: revealVotes.p1!, roundResult: { correct: true, points: 4 } }));
-    expect(revealed).toContain('data-testid="shiny-voters-A"');
-    expect(revealed).toContain('data-testid="shiny-voters-B"');
-    expect(revealed).not.toContain('Elección privada');
+    expect(visible).toContain('Todos han votado');
   });
 
-  it('renders a non-interactive spectator state', () => {
+  it('restaura y bloquea un voto confirmado: cartas fijas, sin botones ni confirmar', () => {
+    const vote = { optionId: 'B' as const, votedAt: 2_000 };
+    const html = render(publicGame({ votes: { p1: vote }, votedPlayerIds: ['p1'], pendingPlayerIds: ['p2', 'p3', 'p4', 'p5'] }), player({ canVote: false, vote }));
+    expect(html).toContain('Voto confirmado:');
+    expect(html).toContain('Tu voto');
+    expect(html).toContain('Opción B: Simisear, voto confirmado');
+    expect(html).not.toContain('Confirmar voto');
+    expect(html).not.toMatch(/<button[^>]*data-shiny-option/);
+  });
+
+  it('espectador: sin controles de voto, sin atajos y con su estado', () => {
     const spectatorGame = publicGame({ playerIds: ['p1', 'p2', 'p3', 'p4', 'p5'] });
     const spectatorRoom = { ...room(spectatorGame, null), members: [...members, { ...members[0]!, id: 'watcher', displayName: 'Nora', role: 'SPECTATOR' as const }] };
     const html = renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(ShinyVoteGame, { room: spectatorRoom, selfId: 'watcher', onAction: async () => undefined })));
     expect(html).toContain('Estás viendo la votación como espectador');
     expect(html).not.toContain('Confirmar voto');
+    expect(html).not.toContain('Atajos:');
+    expect(html).not.toContain('aria-keyshortcuts');
+    expect(html).not.toMatch(/<button[^>]*data-shiny-option/);
   });
 
-  it('keeps long, different Pokémon names inside a consistent six-option grid', () => {
+  it('revela un acierto sin modal: la correcta gira, «+N», antes y después y el veredicto', () => {
+    const html = render(revealGame(), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 }, roundResult: { correct: true, points: 4 } }));
+    expect(html).toContain('Opción B: Simisear, shiny verdadero, tu voto acertado, +4 puntos');
+    expect(html).toMatch(/<div data-shiny-option="B" data-correct="true" class="[^"]*_flip_/);
+    expect(html).toContain('Correcta');
+    expect(html).toMatch(/aria-hidden="true">\+4<\/span>/);
+    expect(html).not.toContain('aria-busy');
+    expect(html.match(/data-testid="shiny-before-after"/g)).toHaveLength(1);
+    expect(html).toContain('/api/pokemon/simisear/sprite');
+    expect(html).toContain('>Normal</figcaption>');
+    expect(html).toContain('>Shiny</figcaption>');
+    expect(html).toContain('¡Correcto!');
+    expect(html).toContain('Respuesta correcta:');
+    expect(html).toContain('Siguiente ronda');
+    expect(html).not.toContain('role="dialog"');
+  });
+
+  it('enseña un fallo y el tiempo agotado sin esconder el Pokémon; «+0» en la pantalla inferior', () => {
+    const wrong = render(revealGame(), player({ canVote: false, vote: { optionId: 'C', votedAt: 2_000 }, roundResult: { correct: false, points: 0 } }));
+    expect(wrong).toContain('No era ese shiny');
+    expect(wrong).toContain('Opción C: Simisear, tu voto, incorrecta, +0 puntos');
+    expect(wrong).toContain('Incorrecta');
+    // Sin «+N» flotante ni su sonido en un fallo: el «+0» va en el veredicto.
+    expect(wrong).not.toMatch(/aria-hidden="true">\+0<\/span>/);
+    expect(wrong).toMatch(/\+0<small> puntos<\/small>/);
+    // Solo se apagan los sprites de las incorrectas que no votaste.
+    expect(wrong.match(/data-dimmed="true"/g)).toHaveLength(2);
+    expect(wrong).toContain('Tu elección:');
+    const timeout = render(revealGame('LIVE', { p2: revealVotes.p2! }), player({ canVote: false, vote: null, roundResult: { correct: false, points: 0 } }));
+    expect(timeout).toContain('Tiempo agotado');
+  });
+
+  it('mantiene los nombres largos dentro de una rejilla de seis opciones', () => {
     const differentOptions: ShinyVotePublicState['options'] = ['A', 'B', 'C', 'D', 'E', 'F'].map((id, index) => ({
       id: id as 'A' | 'B' | 'C' | 'D' | 'E' | 'F',
       pokemonId: `pokemon-${index}`,
@@ -216,19 +229,35 @@ describe('Shiny Quiz UI', () => {
     }));
     const html = render(publicGame({ options: differentOptions }));
     expect(html).toContain('Pokémon diferentes');
-    expect(html).toContain('md:grid-cols-3');
+    expect(html).toContain('data-count="6"');
     expect(html).toContain('title="Oricorio Estilo Apasionado"');
     expect(html).toContain('aria-keyshortcuts="F 6"');
   });
 
-  it('keeps a stable loading surface while the next round is prepared', () => {
+  it('deja una superficie de carga estable mientras se prepara la ronda', () => {
     const html = render(publicGame({ phase: 'GAME_STARTING', options: [], roundEndsAt: null }), player({ canVote: false }));
-    expect(html).toContain('Cargando opciones');
+    expect(html).toContain('aria-label="Cargando opciones"');
     expect(html).toContain('Preparando la ronda');
-    expect(html).toContain('shiny-option-card');
   });
 
-  it('preserves the dedicated final standings and host controls', () => {
+  it('elige el estado de la carta del catálogo', () => {
+    expect(shinyCardState({ reveal: false, selected: false, correct: false })).toBe('idle');
+    expect(shinyCardState({ reveal: false, selected: true, correct: false })).toBe('selected');
+    expect(shinyCardState({ reveal: true, selected: true, correct: false })).toBe('wrong');
+    expect(shinyCardState({ reveal: true, selected: false, correct: true })).toBe('correct');
+    expect(shinyCardState({ reveal: true, selected: false, correct: false })).toBe('idle');
+  });
+
+  it('ordena el marcador por puntos y comparte la posición en los empates', () => {
+    const byId = new Map(members.map((member) => [member.id, member]));
+    expect(shinyRanking({ playerIds: ['p1', 'p2', 'p3'], scores: { p1: 2, p2: 5, p3: 2 } }, byId)).toEqual([
+      { id: 'p2', position: 1 },
+      { id: 'p1', position: 2 },
+      { id: 'p3', position: 2 },
+    ]);
+  });
+
+  it('conserva la clasificación final propia y los controles del host', () => {
     const finished = publicGame({
       phase: 'GAME_RESULTS',
       roundEndsAt: null,
@@ -240,7 +269,13 @@ describe('Shiny Quiz UI', () => {
     });
     const html = renderToStaticMarkup(createElement(ShinyVoteResults, { room: room(finished, null), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
     expect(html).toContain('Clasificación shiny');
-    expect(html).toContain('100% de precisión');
+    expect(html).toContain('3 aciertos · 100% de precisión');
+    expect(html).toContain('1 acierto · 33% de precisión');
+    expect(html).toContain('Ganador');
     expect(html).toContain('Continuar sesión');
+    const guest = renderToStaticMarkup(createElement(ShinyVoteResults, { room: room(finished, null), selfId: 'p2', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(guest).toContain('Esperando al host…');
+    expect(guest).not.toContain('Continuar sesión');
+    expect(shinyStatsLine({})).toBe('0 aciertos · 0% de precisión');
   });
 });

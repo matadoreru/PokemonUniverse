@@ -51,6 +51,19 @@ describe('Card', () => {
     expect(html).toContain('aria-hidden="true">⚔️</span>');
     expect(html).not.toContain('>?<');
   });
+  it('llena: el nombre recortable lleva title; atributos extra en el botón o la caja', () => {
+    const button = renderToStaticMarkup(createElement(Card, { name: 'Oricorio Estilo Apasionado', size: 'fill', attrs: { 'aria-label': 'Opción A', 'data-option': 'A' }, onSelect: () => undefined }));
+    expect(button).toContain('title="Oricorio Estilo Apasionado"');
+    expect(button).toMatch(/<button[^>]*aria-label="Opción A"[^>]*data-option="A"/);
+    const box = renderToStaticMarkup(createElement(Card, { name: 'Mew', attrs: { 'data-option': 'B' } }));
+    expect(box).toMatch(/<div data-option="B"/);
+    expect(box).not.toContain('title="Mew"');
+  });
+  it('gira con cualquier estado y sigue diciendo su veredicto', () => {
+    const html = renderToStaticMarkup(createElement(Card, { name: 'Mew', state: 'correct', flip: true }));
+    expect(html).toMatch(/class="[^"]*_flip_/);
+    expect(html).toContain('Correcta');
+  });
   it('correcta muestra texto además del color', () => {
     expect(renderToStaticMarkup(createElement(Card, { name: 'Mew', state: 'correct' }))).toContain('Correcta');
   });

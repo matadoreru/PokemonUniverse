@@ -603,6 +603,15 @@ function CardSection() {
           </span>
         </Card>
       </Fig>
+      <Fig id="card-correct-flip" caption="Correcta que gira al revelarse (flip)">
+        <Card name="Mew" number={151} state="correct" flip />
+      </Fig>
+      <Fig id="card-fill" caption="Llena (fill): el sprite crece con su celda · opción de un juego">
+        <div className="grid h-56 w-full grid-cols-2 gap-3">
+          <Card size="fill" name="Pikachu" art={<span className="text-34">⚡</span>} state="selected" onSelect={() => undefined} />
+          <Card size="fill" name="Oricorio Estilo Apasionado" art={<span className="text-34">💃</span>} onSelect={() => undefined} />
+        </div>
+      </Fig>
       <Fig id="card-photo" caption="Carta con avatar de inicial">
         <Card name="Aqua" art={<Avatar name="Aqua" size="xl" />} onSelect={() => undefined} />
       </Fig>

@@ -1,0 +1,487 @@
+/*
+ * Shiny Quiz (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Arriba la placa de la ronda y las cartas (crecen con el hueco); abajo confirmar o el veredicto; al lado, el antes y el
+ * después y el marcador.
+ */
+.screen {
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para la sombra dura de las cartas (la columna recorta lo que se sale). */
+  padding-bottom: var(--sp-2);
+}
+.top > :first-child {
+  flex: none;
+}
+@media (min-width: 1024px) {
+  .top {
+    height: 100%;
+  }
+}
+
+/* Placa de la ronda: ronda y modos arriba, la pregunta debajo, el tiempo a la derecha. */
+.hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hudMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.question {
+  font: 800 var(--fs-34) / 1.1 var(--font-display);
+  color: var(--white);
+}
+.hudTimer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Rejilla de cartas: en escritorio llena el alto que deja la placa, con filas iguales y un tope para no inflar el sprite. */
+.grid {
+  --cols: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--sp-3);
+  perspective: 1200px;
+}
+@media (min-width: 640px) {
+  .grid[data-count='3'],
+  .grid[data-count='5'],
+  .grid[data-count='6'] {
+    --cols: 3;
+  }
+}
+/*
+ * Escritorio: la rejilla llena el alto que deja la placa y centra las cartas en él. Una sola fila (con seis opciones a
+ * 720 px de alto, dos filas dejarían el sprite en nada); con alto de sobra (1080), cinco y seis van en dos filas de tres.
+ * La rejilla es un contenedor de tamaño y cada carta uno de ancho: el sprite mide lo mismo en todas (ver `.stage`).
+ */
+@media (min-width: 1024px) {
+  .grid {
+    --rows: 1;
+    container-type: size;
+    flex: 1 1 0;
+    min-height: 15rem;
+    align-content: center;
+  }
+  .grid[data-count='3'] {
+    --cols: 3;
+  }
+  .grid[data-count='4'] {
+    --cols: 4;
+  }
+  .grid[data-count='5'] {
+    --cols: 5;
+  }
+  .grid[data-count='6'] {
+    --cols: 6;
+  }
+  .grid > [data-shiny-option] {
+    container-type: inline-size;
+    height: auto;
+  }
+}
+@media (min-width: 1024px) and (min-height: 900px) {
+  .grid[data-count='5'],
+  .grid[data-count='6'] {
+    --cols: 3;
+    --rows: 2;
+  }
+}
+
+/* Sprite de la carta (dentro del hueco de arte de `Card`): crece con la carta y se ve entero. */
+.stage {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(5.5rem, 15dvh, 9rem);
+}
+@media (min-width: 1024px) {
+  .stage {
+    /* Lo menor entre el ancho de la carta (cqw) y el alto de su fila en la rejilla (cqh) menos lo fijo de la carta:
+       relleno, contorno, nombre, veredicto y la fila de chips y votantes. */
+    height: max(4rem, min(100cqw, (100cqh - (var(--rows) - 1) * var(--sp-3)) / var(--rows) - 7.5rem));
+  }
+}
+.sprite {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity var(--t-fade) var(--ease);
+}
+.spriteOn {
+  opacity: 1;
+}
+/* Incorrecta al revelar: solo el sprite se apaga; el nombre y la carta conservan el contraste. */
+.dimmed .sprite {
+  opacity: 0.45;
+  filter: grayscale(0.7);
+}
+.skeleton {
+  position: absolute;
+  inset: var(--sp-2);
+  border-radius: var(--r-badge);
+  background: var(--navy);
+  opacity: 0.18;
+  animation: ghost 900ms ease-in-out infinite alternate;
+}
+@keyframes ghost {
+  to {
+    opacity: 0.3;
+  }
+}
+/* Ronda aún sin cartas: siluetas crema con el mismo contorno. */
+.ghostCard {
+  position: relative;
+  display: block;
+  min-height: 10rem;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  box-shadow: var(--sh-hard-4);
+}
+
+/* Letra de la opción (atajo de teclado), en la esquina del sprite. */
+.letter {
+  position: absolute;
+  top: var(--sp-2);
+  left: var(--sp-2);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: 50%;
+  background: var(--cream-2);
+  color: var(--navy);
+  font: 800 var(--fs-18) / 1 var(--font-display);
+}
+.letterOn {
+  background: var(--yellow);
+}
+.letterInline {
+  position: static;
+  flex: none;
+}
+.pop {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-3);
+}
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1) var(--sp-2);
+  max-width: 100%;
+}
+.voters {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.avatars {
+  display: inline-flex;
+}
+.avatars > * + * {
+  margin-left: -10px;
+}
+.more {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  color: var(--ink-2);
+}
+
+/* Columna lateral: el antes y el después, el marcador y «Saltar minijuego». */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.side > * {
+  flex: none;
+}
+.sidePanel {
+  max-height: 18rem;
+}
+@media (min-width: 1024px) {
+  .side {
+    height: 100%;
+  }
+  .side > .sidePanel {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+}
+.skip {
+  /* Contiene el texto `sr-only` (absoluto) del control: sin esto su caja sale del `main` y alarga la página en el móvil. */
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+.sideHint {
+  margin-bottom: var(--sp-2);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+.sideHint strong {
+  color: var(--white);
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.score {
+  white-space: nowrap;
+}
+.score small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+/* Antes y después: el sprite normal junto al shiny verdadero. */
+.beforeName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+  color: var(--ink);
+  text-align: center;
+}
+.figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+}
+.figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.figureStage {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: 6.5rem;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-badge);
+  background: var(--sky-2);
+}
+.figureShiny {
+  background: var(--yellow-l);
+}
+.figureSprite {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.caption,
+.missing {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+
+/* Pantalla inferior: placa crema con icono, estado y, a la derecha, la acción o los puntos. */
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+@media (min-width: 1024px) {
+  .action {
+    gap: var(--sp-4);
+  }
+}
+.actionIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+}
+.ok {
+  background: var(--ok);
+}
+.bad {
+  background: var(--bad);
+}
+.info {
+  background: var(--info);
+}
+.warn {
+  background: var(--warn);
+}
+.actionText {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.kicker {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.actionTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+  color: var(--ink);
+}
+.help {
+  margin-top: var(--sp-1);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.help strong {
+  color: var(--ink);
+}
+.actionAside {
+  flex: none;
+}
+.identity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  max-width: 100%;
+}
+.identityName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.points {
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+
+@media (max-width: 1023px) {
+  .shortcuts {
+    display: none;
+  }
+}
+@media (max-width: 639px) {
+  /* Placa de la ronda en el móvil: ronda y modos a todo el ancho; la pregunta y el tiempo debajo. */
+  .hud {
+    grid-template-areas: 'meta meta' 'question timer';
+    row-gap: var(--sp-2);
+  }
+  .hudMain {
+    display: contents;
+  }
+  .hudMeta {
+    grid-area: meta;
+  }
+  .question {
+    grid-area: question;
+  }
+  .hudTimer {
+    grid-area: timer;
+  }
+  .action {
+    flex-wrap: wrap;
+  }
+  .actionAsideWide {
+    flex-basis: 100%;
+  }
+  .actionAsideWide > button {
+    width: 100%;
+  }
+  .hud {
+    padding: var(--sp-3);
+  }
+  .question {
+    font-size: var(--fs-22);
+  }
+  .actionIcon,
+  .kicker {
+    display: none;
+  }
+  .actionTitle {
+    font-size: var(--fs-18);
+  }
+  .points {
+    font-size: var(--fs-34);
+  }
+}
+/* Escritorio bajo (720 px): la placa de la ronda, algo más baja. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hud {
+    padding-block: var(--sp-2);
+  }
+  .question {
+    font-size: var(--fs-26);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+  .sprite {
+    transition: none;
+  }
+}
+
+/* Resultados: espera del invitado junto a las acciones. */
+.waiting {
+  font: 800 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--sky-2);
+}
+/* Sin sprite: el texto en el centro del hueco. */
+.missing {
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
