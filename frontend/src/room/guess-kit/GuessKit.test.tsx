@@ -1,4 +1,5 @@
 import type { RoomMemberView } from '@pokemon-universe/shared';
+import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen, type GuessPanelProps } from '.';
@@ -107,6 +108,19 @@ describe('guess-kit: GuessPanel', () => {
     expect(reveal).toContain('Siguiente ronda en 4s');
     expect(reveal).toContain('+13');
     expect(reveal).toMatch(/<h2 id="guess-plate-title" tabindex="-1"/);
+  });
+});
+
+describe('guess-kit: GuessPanel con contenido propio', () => {
+  it('`content` sustituye a la placa de `kind` y `guess` sigue montando el buscador', () => {
+    const html = panel({ content: { icon: Search, tone: 'ok', kicker: 'Intento enviado', title: 'Pikachu enviado', text: 'Esperando al resto.' } });
+    expect(html).toContain('Pikachu enviado');
+    expect(html).toContain('Esperando al resto.');
+    expect(html).not.toContain('¿Quién es ese Pokémon?');
+    expect(html).toContain('aria-label="Buscar respuesta para la ronda 2"');
+    const waiting = panel({ kind: 'waiting', content: { icon: Search, tone: 'info', kicker: 'Ronda 2 cerrada', title: 'Siguiente ronda en 3s' } });
+    expect(waiting).toContain('Siguiente ronda en 3s');
+    expect(waiting).not.toContain('Buscar respuesta para la ronda 2');
   });
 });
 

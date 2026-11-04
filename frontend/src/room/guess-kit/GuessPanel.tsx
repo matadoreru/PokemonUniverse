@@ -57,9 +57,16 @@ export interface GuessPanelProps {
   countdown?: string;
   /** Nombre del juego para la placa de espera. */
   gameName?: string;
+  /**
+   * Contenido propio de la placa en lugar del de `kind` (juegos con otros estados, como Pokédle Race: «Intento
+   * enviado», «Pokémon encontrado»). `kind` sigue decidiendo si va el buscador (`guess`).
+   */
+  content?: GuessPlateContent | undefined;
 }
 
-interface PlateContent { icon: LucideIcon; tone: 'ok' | 'bad' | 'info' | 'warn'; kicker: ReactNode; title: string; text?: ReactNode; aside?: ReactNode }
+/** Lo que pinta la placa: icono y tono, kicker, título, ayuda y, a la derecha, el aviso o los puntos. */
+export interface GuessPlateContent { icon: LucideIcon; tone: 'ok' | 'bad' | 'info' | 'warn'; kicker: ReactNode; title: string; text?: ReactNode; aside?: ReactNode }
+type PlateContent = GuessPlateContent;
 
 /**
  * Pantalla inferior de los juegos de adivinar: el buscador (con el aviso del último fallo o de la espera), el acierto
@@ -68,7 +75,7 @@ interface PlateContent { icon: LucideIcon; tone: 'ok' | 'bad' | 'info' | 'warn';
  */
 export function GuessPanel(props: GuessPanelProps) {
   const { kind, titleRef, selector, cooldownMs = 0 } = props;
-  const content = plateContent(props);
+  const content = props.content ?? plateContent(props);
   return <Panel variant="cream" as="section" bodyClassName={cx(s.plate, kind === 'guess' && s.plateSearch)} aria-labelledby="guess-plate-title">
     <div className={s.plateRow}>
       <span className={cx(s.plateIcon, s[`tone_${content.tone}`])}><Icon icon={content.icon} size={32} /></span>

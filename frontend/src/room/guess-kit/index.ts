@@ -5,7 +5,7 @@
 export { GuessScreen, GuessClue } from './GuessScreen';
 export type { GuessScreenProps, GuessTimer } from './GuessScreen';
 export { GuessPanel } from './GuessPanel';
-export type { GuessPanelProps, GuessSelectorProps } from './GuessPanel';
+export type { GuessPanelProps, GuessPlateContent, GuessSelectorProps } from './GuessPanel';
 export { GuessPlayersPanel, GuessAttemptsFeed, GuessRevealBoard } from './GuessSidePanels';
 export { GuessHints } from './GuessHints';
 export type { GuessHint } from './GuessHints';

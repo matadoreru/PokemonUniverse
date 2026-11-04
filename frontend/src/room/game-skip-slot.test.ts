@@ -68,6 +68,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...stats, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...stats, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Pokédle Race la lleva dentro de su pantalla salvo en los resultados', () => {
+    const race = { ...(base as object), selectedGameId: 'pokeddle-race', game: { gameId: 'pokeddle-race' } };
+    expect(skipRowInLayout(race as never)).toBe(false);
+    expect(skipRowInLayout({ ...race, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...race, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

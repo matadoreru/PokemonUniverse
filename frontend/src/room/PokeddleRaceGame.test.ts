@@ -1,26 +1,35 @@
-import type { PokeddleClueKey, PokeddlePublicBoard, PokeddleRacePlayerState, PokeddleRacePublicState, RoomView } from '@pokemon-universe/shared';
+import { defaultPokeddleRaceConfig, type PokeddleClueKey, type PokeddlePublicBoard, type PokeddleRacePlayerState, type PokeddleRacePublicState, type RoomView } from '@pokemon-universe/shared';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { AppHeader } from '../components/Layout';
+import { PokeddleRaceConfigPanel } from '../games/pokeddle-race/ConfigPanel';
 import { PokeddleBoard } from './PokeddleBoard';
-import { formatPokeddleFeedback, getPokeddleColumns, resolveRivalSelection } from './pokeddle-presentation';
-import { getPokeddleRivalSummary, getPokeddleRoundStatus, isPokeddleSearchEnabled, PokeddleRaceGame } from './PokeddleRaceGame';
-import { getPokeddleTimerUrgency } from './PokeddleRaceTimer';
+import {
+  formatPokeddleFeedback, getPokeddleColumns, pokeddleAnnouncement, pokeddleFocusKey, pokeddleMatchCount, pokeddlePlateKind, pokeddleRivalStatus, pokeddleVisibleSecret,
+} from './pokeddle-presentation';
+import { PokeddleRaceGame } from './PokeddleRaceGame';
+import { PokeddleRaceResults } from './PokeddleRaceResults';
+
+// «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
+vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const allClues: PokeddleClueKey[] = ['generation', 'dexNumber', 'types', 'typeCount', 'hp', 'attack', 'defense', 'specialAttack', 'specialDefense', 'speed', 'height', 'weight'];
+const SECRET = { id: 'lucario', name: 'Lucario', sprite: '/secret-lucario.png' };
+const RIVAL_SECRET = { id: 'garchomp', name: 'Garchomp', sprite: '/secret-garchomp.png' };
 
-function board(playerId = 'p1', solved = false): PokeddlePublicBoard {
+function board(playerId = 'p1', solved = false, guesses: [string, string] = ['Charmander', 'Lucario']): PokeddlePublicBoard {
   return {
     playerId,
     rows: [
-      { round: 1, status: 'GUESS', guessedPokemon: { id: 'charmander', name: 'Charmander', sprite: '/charmander.png' }, correct: false, submittedAt: 10, feedback: {
-        generation: { kind: 'NUMERIC', value: 1, result: 'MATCH' }, dexNumber: { kind: 'NUMERIC', value: 4, result: 'HIGHER' }, types: { kind: 'TYPES', value: ['fire'], result: 'PARTIAL' }, typeCount: { kind: 'NUMERIC', value: 1, result: 'HIGHER' }, hp: { kind: 'NUMERIC', value: 39, result: 'HIGHER' }, attack: { kind: 'NUMERIC', value: 52, result: 'LOWER' }, defense: { kind: 'NUMERIC', value: 43, result: 'MATCH' }, specialAttack: { kind: 'NUMERIC', value: 60, result: 'HIGHER' }, specialDefense: { kind: 'NUMERIC', value: 50, result: 'LOWER' }, speed: { kind: 'NUMERIC', value: 65, result: 'LOWER' }, height: { kind: 'NUMERIC', value: 6, result: 'HIGHER' }, weight: { kind: 'NUMERIC', value: 85, result: 'LOWER' },
+      { round: 1, status: 'GUESS', guessedPokemon: { id: guesses[0].toLowerCase(), name: guesses[0], sprite: `/${guesses[0].toLowerCase()}.png` }, correct: false, submittedAt: 10, feedback: {
+        generation: { kind: 'NUMERIC', value: 1, result: 'HIGHER' }, dexNumber: { kind: 'NUMERIC', value: 4, result: 'HIGHER' }, types: { kind: 'TYPES', value: ['fire'], result: 'NONE' }, typeCount: { kind: 'NUMERIC', value: 1, result: 'HIGHER' }, hp: { kind: 'NUMERIC', value: 39, result: 'HIGHER' }, attack: { kind: 'NUMERIC', value: 52, result: 'LOWER' }, defense: { kind: 'NUMERIC', value: 43, result: 'MATCH' }, specialAttack: { kind: 'NUMERIC', value: 60, result: 'HIGHER' }, specialDefense: { kind: 'NUMERIC', value: 50, result: 'LOWER' }, speed: { kind: 'NUMERIC', value: 65, result: 'LOWER' }, height: { kind: 'NUMERIC', value: 6, result: 'HIGHER' }, weight: { kind: 'NUMERIC', value: 85, result: 'LOWER' },
       } },
       { round: 2, status: 'NO_GUESS', guessedPokemon: null, feedback: null, correct: false, submittedAt: null },
-      { round: 3, status: 'GUESS', guessedPokemon: { id: 'lucario', name: 'Lucario', sprite: '/lucario.png' }, correct: solved, submittedAt: 30, feedback: {
-        generation: { kind: 'NUMERIC', value: 4, result: 'MATCH' }, dexNumber: { kind: 'NUMERIC', value: 448, result: 'MATCH' }, types: { kind: 'TYPES', value: ['fighting', 'steel'], result: 'EXACT' }, typeCount: { kind: 'NUMERIC', value: 2, result: 'MATCH' }, hp: { kind: 'NUMERIC', value: 70, result: 'MATCH' }, attack: { kind: 'NUMERIC', value: 110, result: 'MATCH' }, defense: { kind: 'NUMERIC', value: 70, result: 'MATCH' }, specialAttack: { kind: 'NUMERIC', value: 115, result: 'MATCH' }, specialDefense: { kind: 'NUMERIC', value: 70, result: 'MATCH' }, speed: { kind: 'NUMERIC', value: 90, result: 'MATCH' }, height: { kind: 'NUMERIC', value: 12, result: 'MATCH' }, weight: { kind: 'NUMERIC', value: 540, result: 'MATCH' },
+      { round: 3, status: 'GUESS', guessedPokemon: { id: guesses[1].toLowerCase(), name: guesses[1], sprite: `/${guesses[1].toLowerCase()}.png` }, correct: solved, submittedAt: 30, feedback: {
+        generation: { kind: 'NUMERIC', value: 4, result: 'MATCH' }, dexNumber: { kind: 'NUMERIC', value: 448, result: 'MATCH' }, types: { kind: 'TYPES', value: ['fighting', 'steel'], result: solved ? 'EXACT' : 'PARTIAL' }, typeCount: { kind: 'NUMERIC', value: 2, result: 'MATCH' }, hp: { kind: 'NUMERIC', value: 70, result: 'MATCH' }, attack: { kind: 'NUMERIC', value: 110, result: 'MATCH' }, defense: { kind: 'NUMERIC', value: 70, result: 'MATCH' }, specialAttack: { kind: 'NUMERIC', value: 115, result: 'MATCH' }, specialDefense: { kind: 'NUMERIC', value: 70, result: 'MATCH' }, speed: { kind: 'NUMERIC', value: 90, result: 'MATCH' }, height: { kind: 'NUMERIC', value: 12, result: 'MATCH' }, weight: { kind: 'NUMERIC', value: 540, result: 'MATCH' },
       } },
     ],
     solved,
@@ -28,107 +37,243 @@ function board(playerId = 'p1', solved = false): PokeddlePublicBoard {
     solvedAt: solved ? 30 : null,
     validGuesses: 2,
     missedRounds: 1,
-    revealedPokemon: solved ? { id: 'lucario', name: 'Lucario', sprite: '/lucario.png' } : null,
+    revealedPokemon: solved ? SECRET : null,
   };
 }
 
-function gameState(): PokeddleRacePublicState {
-  return { gameId: 'pokeddle-race', phase: 'ROUND_ACTIVE', roundNumber: 4, maxRounds: 10, roundStartedAt: 0, roundEndsAt: null, nextTransitionAt: null, answeredPlayerIds: [], activePlayerIds: ['p1', 'p3'], boards: { p1: board('p1'), p2: board('p2', true), p3: board('p3') }, enabledClues: allClues, results: null };
+type Phase = PokeddleRacePublicState['phase'];
+function gameState(phase: Phase = 'ROUND_ACTIVE', boards: Record<string, PokeddlePublicBoard> = { p1: board('p1'), p2: board('p2', false, ['Pikachu', 'Gible']), p3: board('p3', false, ['Eevee', 'Riolu']) }): PokeddleRacePublicState {
+  return { gameId: 'pokeddle-race', phase, roundNumber: 3, maxRounds: 10, roundStartedAt: 0, roundEndsAt: phase === 'ROUND_ACTIVE' ? 20_000 : null, nextTransitionAt: phase === 'ROUND_RESULTS' ? 23_000 : null, answeredPlayerIds: ['p2'], activePlayerIds: ['p1', 'p2', 'p3'], boards, enabledClues: allClues, results: null };
 }
 
-const playerState: PokeddleRacePlayerState = { canGuess: true, hasGuessedThisRound: false, solved: false };
+const guessing: PokeddleRacePlayerState = { canGuess: true, hasGuessedThisRound: false, solved: false };
 
-describe('Pokédle feedback presentation', () => {
+function roomOf(game: PokeddleRacePublicState, player: PokeddleRacePlayerState | null, spectator = false): RoomView {
+  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, selectedGameId: 'pokeddle-race', selectedGameConfig: { ...defaultPokeddleRaceConfig, generations: [1, 2, 3, 4] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), availableGames: [], game, gamePlayerState: player,
+    members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: index === 2 ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: index === 0 && spectator ? 'SPECTATOR' : 'PLAYER', isHost: index === 0, ready: false, sessionPoints: 0 })) } as RoomView;
+}
+const render = (view: RoomView) => renderToStaticMarkup(createElement(PokeddleRaceGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
+
+describe('Pokédle: presentación de las pistas', () => {
   it.each([
-    ['HIGHER', 'higher', '↑ Mayor'],
-    ['LOWER', 'lower', '↓ Menor'],
-    ['MATCH', 'match', '= Coincide'],
-  ] as const)('represents %s with a distinct semantic and symbol', (result, semantic, label) => {
-    expect(formatPokeddleFeedback('attack', { kind: 'NUMERIC', value: 84, result })).toMatchObject({ value: 84, result: label, semantic });
+    ['HIGHER', 'higher', 'Mayor', 'El objetivo es mayor', 'bad'],
+    ['LOWER', 'lower', 'Menor', 'El objetivo es menor', 'bad'],
+    ['MATCH', 'match', 'Igual', 'Coincidencia exacta', 'ok'],
+  ] as const)('%s tiene su palabra, su frase y su tono', (result, semantic, word, sentence, tone) => {
+    expect(formatPokeddleFeedback('attack', { kind: 'NUMERIC', value: 84, result })).toMatchObject({ value: '84', result: word, accessibleResult: sentence, semantic, tone });
   });
 
-  it('represents partial and absent types without relying on colour', () => {
-    expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['fire'], result: 'PARTIAL' })).toMatchObject({ result: '~ Parcial', semantic: 'partial' });
-    expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['water'], result: 'NONE' })).toMatchObject({ result: '× Ninguno', semantic: 'none' });
+  it('los tipos parciales y sin coincidencia no dependen del color', () => {
+    expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['fire'], result: 'PARTIAL' })).toMatchObject({ result: 'Parcial', semantic: 'partial', tone: 'warn', value: 'Fuego' });
+    expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['water'], result: 'NONE' })).toMatchObject({ result: 'No', semantic: 'none', tone: 'bad' });
   });
 
-  it('describes Pokémon without an evolution line without calling them stage one', () => {
+  it('sin línea evolutiva no dice «etapa 1»: el texto largo para lectores y el corto en la casilla', () => {
     const presentation = formatPokeddleFeedback('evolutionStage', { kind: 'EVOLUTION', value: { stage: 1, stages: 1 }, result: 'MATCH' });
     expect(presentation.value).toBe('Sin evolución · No tiene etapas evolutivas');
-    expect(String(presentation.value)).not.toContain('Etapa 1');
+    expect(presentation.short).toBe('Única');
+    expect(formatPokeddleFeedback('evolutionStage', { kind: 'EVOLUTION', value: { stage: 2, stages: 3 }, result: 'LOWER' })).toMatchObject({ value: 'Etapa 2/3', short: '2/3' });
+  });
+
+  it('formatea altura, peso y número de Pokédex', () => {
+    expect(formatPokeddleFeedback('height', { kind: 'NUMERIC', value: 12, result: 'MATCH' }).value).toBe('1.2 m');
+    expect(formatPokeddleFeedback('weight', { kind: 'NUMERIC', value: 540, result: 'MATCH' })).toMatchObject({ value: '54.0 kg', short: '54.0' });
+    expect(formatPokeddleFeedback('dexNumber', { kind: 'NUMERIC', value: 4, result: 'MATCH' }).value).toBe('#004');
+  });
+
+  it('solo genera las columnas configuradas', () => {
+    expect(getPokeddleColumns(['generation', 'types', 'attack']).map((column) => column.key)).toEqual(['generation', 'types', 'attack']);
+    expect(getPokeddleColumns(['types', 'attack']).map((column) => column.wide)).toEqual([true, false]);
+  });
+
+  it('cuenta las coincidencias exactas de un intento', () => {
+    expect(pokeddleMatchCount(board().rows[0]!)).toBe(1);
+    expect(pokeddleMatchCount(board('p1', true).rows[2]!)).toBe(12);
+    expect(pokeddleMatchCount(board().rows[1]!)).toBe(0);
   });
 });
 
-describe('Pokédle responsive board model', () => {
-  it('only generates configured columns and omits disabled clues', () => {
-    expect(getPokeddleColumns(['generation', 'types', 'attack']).map((column) => column.key)).toEqual(['generation', 'types', 'attack']);
-    expect(getPokeddleColumns(['generation', 'types', 'attack']).some((column) => column.key === 'weight')).toBe(false);
+describe('Pokédle: estado de la placa, foco y anuncios', () => {
+  it('elige la placa según la fase y el jugador', () => {
+    expect(pokeddlePlateKind('ROUND_ACTIVE', guessing, true)).toBe('guess');
+    expect(pokeddlePlateKind('ROUND_ACTIVE', { ...guessing, canGuess: false, hasGuessedThisRound: true }, true)).toBe('submitted');
+    expect(pokeddlePlateKind('ROUND_ACTIVE', { ...guessing, canGuess: false }, true)).toBe('out');
+    expect(pokeddlePlateKind('ROUND_RESULTS', guessing, true)).toBe('reveal');
+    expect(pokeddlePlateKind('ROUND_RESULTS', { ...guessing, solved: true }, true)).toBe('solved');
+    expect(pokeddlePlateKind('GAME_STARTING', guessing, true)).toBe('waiting');
+    expect(pokeddlePlateKind('ROUND_ACTIVE', null, false)).toBe('watching');
+    expect(pokeddlePlateKind('ROUND_ACTIVE', guessing, false)).toBe('watching');
   });
 
-  it('uses one clue model for desktop and mobile renderers', () => {
+  it('mueve el foco al enviar, al cerrar cada ronda y al encontrar el Pokémon (una vez)', () => {
+    expect(pokeddleFocusKey('guess', 2)).toBeNull();
+    expect(pokeddleFocusKey('submitted', 2)).toBe('submitted-2');
+    expect(pokeddleFocusKey('reveal', 2)).toBe('reveal-2');
+    expect(pokeddleFocusKey('solved', 2)).toBe(pokeddleFocusKey('solved', 3));
+  });
+
+  it('anuncia el intento, la ronda cerrada, el acierto y los rivales que lo encuentran', () => {
+    expect(pokeddleAnnouncement({ kind: 'submitted', roundNumber: 3, own: board(), submittedName: 'Riolu', rivalsSolved: [] })).toBe('Intento enviado: Riolu. Esperando al resto.');
+    expect(pokeddleAnnouncement({ kind: 'reveal', roundNumber: 3, own: board(), rivalsSolved: [{ player: 'Ana', pokemon: 'Gible' }] })).toBe('Ronda 3 cerrada: Lucario coincide en 11 de 12 pistas. Ana ha encontrado su Pokémon: Gible.');
+    expect(pokeddleAnnouncement({ kind: 'reveal', roundNumber: 2, own: board(), rivalsSolved: [] })).toBe('Ronda 2 cerrada: sin respuesta.');
+    expect(pokeddleAnnouncement({ kind: 'solved', roundNumber: 3, own: board('p1', true), rivalsSolved: [] })).toBe('¡Pokémon encontrado! Era Lucario, en la ronda 3.');
+    expect(pokeddleAnnouncement({ kind: 'solved', roundNumber: 5, own: board('p1', true), rivalsSolved: [] })).toBe('');
+    expect(pokeddleAnnouncement({ kind: 'guess', roundNumber: 3, own: board(), rivalsSolved: [] })).toBe('');
+  });
+
+  it('resume a un rival sin enseñar sus intentos', () => {
+    expect(pokeddleRivalStatus(board('p2', true), 'ROUND_ACTIVE', false)).toMatchObject({ kind: 'solved', label: 'Resuelto · Lucario', detail: 'Ronda 3 · 2 intentos' });
+    expect(pokeddleRivalStatus(board('p2'), 'ROUND_ACTIVE', true)).toMatchObject({ kind: 'answered', label: 'Intento enviado', detail: '2 intentos · 1 sin responder' });
+    expect(pokeddleRivalStatus(board('p2'), 'ROUND_ACTIVE', false).kind).toBe('thinking');
+    expect(pokeddleRivalStatus(board('p2'), 'ROUND_RESULTS', false).kind).toBe('waiting');
+  });
+
+  it('el Pokémon secreto solo se lee si está resuelto o la partida terminó', () => {
+    const leaked = { ...board('p1'), revealedPokemon: SECRET };
+    expect(pokeddleVisibleSecret(leaked, 'ROUND_ACTIVE')).toBeNull();
+    expect(pokeddleVisibleSecret(leaked, 'ROUND_RESULTS')).toBeNull();
+    expect(pokeddleVisibleSecret(leaked, 'GAME_RESULTS')).toEqual(SECRET);
+    expect(pokeddleVisibleSecret(board('p1', true), 'ROUND_ACTIVE')).toEqual(SECRET);
+  });
+});
+
+describe('Pokédle: tablero', () => {
+  it('una casilla por pista configurada, con valor, icono y la frase para lectores', () => {
     const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: board(), clues: ['generation', 'types', 'attack'] }));
-    expect(markup.match(/data-clue-key="generation"/g)).toHaveLength(3);
+    expect(markup.match(/data-clue-key="generation"/g)).toHaveLength(2);
     expect(markup).not.toContain('data-clue-key="weight"');
-    expect(markup).toContain('aria-label="Ataque: 52. El objetivo es menor.');
+    expect(markup).toContain('Ataque: 52. El objetivo es menor.');
+    expect(markup).toContain('data-feedback="lower"');
+    expect(markup).toContain('>Menor<');
+    expect(markup).toContain('data-type="fire"');
+    // Sin emojis ni clases heredadas.
+    expect(markup).not.toMatch(/🔥|text-aqua|bg-night|text-\[1[01]px\]/);
   });
 
-  it('renders missed rounds as compact bands and identifies the latest valid attempt', () => {
+  it('el último intento va primero y marcado; las rondas sin respuesta son una franja', () => {
     const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: board(), clues: ['generation'] }));
     expect(markup).toContain('data-row-status="no-guess"');
     expect(markup).toContain('Ronda 2 · Sin respuesta');
-    expect(markup).toContain('data-latest="true"');
+    expect(markup.indexOf('Lucario')).toBeLessThan(markup.indexOf('Charmander'));
+    expect(markup.match(/data-latest="true"/g)).toHaveLength(1);
     expect(markup).toContain('Último');
   });
 
-  it('marks a solved row and exposes exact feedback accessibly', () => {
+  it('el intento acertado dice «Encontrado»', () => {
     const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: board('p1', true), clues: ['generation', 'types'] }));
     expect(markup).toContain('data-correct="true"');
-    expect(markup).toContain('Pokémon encontrado');
+    expect(markup).toContain('Encontrado');
     expect(markup).toContain('Coincidencia exacta');
+  });
+
+  it('el vacío enseña a jugar con la leyenda', () => {
+    const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: { ...board(), rows: [], validGuesses: 0, missedRounds: 0 }, clues: allClues }));
+    expect(markup).toContain('Tu primer intento aparecerá aquí.');
+    expect(markup).toContain('aria-label="Cómo leer el tablero"');
+    expect(markup).toContain('El suyo es mayor');
   });
 });
 
-describe('Pokédle race interaction state', () => {
-  it('uses stable normal, warning and urgent timer states', () => {
-    expect(getPokeddleTimerUrgency(11, true)).toBe('normal');
-    expect(getPokeddleTimerUrgency(10, true)).toBe('warning');
-    expect(getPokeddleTimerUrgency(5, true)).toBe('urgent');
-    expect(getPokeddleTimerUrgency(2, false)).toBe('normal');
+describe('Pokédle Race: privacidad', () => {
+  const NAMES = /Lucario|secret-lucario|Garchomp|secret-garchomp/;
+  it('en la ronda no pinta ningún Pokémon secreto, aunque llegue uno en un tablero sin resolver', () => {
+    const boards = { p1: { ...board('p1', false, ['Charmander', 'Riolu']), revealedPokemon: SECRET }, p2: { ...board('p2', false, ['Pikachu', 'Gible']), revealedPokemon: RIVAL_SECRET }, p3: board('p3', false, ['Eevee', 'Abra']) };
+    for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS'] as const) {
+      expect(render(roomOf(gameState(phase, boards), guessing))).not.toMatch(NAMES);
+      expect(render(roomOf(gameState(phase, boards), { ...guessing, canGuess: false, hasGuessedThisRound: true }))).not.toMatch(NAMES);
+      expect(render(roomOf(gameState(phase, { p2: boards.p2, p3: boards.p3 }), null, true))).not.toMatch(NAMES);
+    }
   });
 
-  it('selects any existing rival and falls back to one complete board', () => {
-    expect(resolveRivalSelection(['p2', 'p3'], 'p3')).toBe('p3');
-    expect(resolveRivalSelection(['p2', 'p3'], 'missing')).toBe('p2');
-    expect(resolveRivalSelection([], null)).toBeNull();
+  it('de los rivales solo se ve su progreso: nunca los Pokémon que han probado', () => {
+    const html = render(roomOf(gameState(), guessing));
+    for (const name of ['Pikachu', 'Gible', 'Eevee', 'Riolu', '/gible.png']) expect(html).not.toContain(name);
+    expect(html).toContain('Intento enviado');
+    expect(html).toContain('2 intentos · 1 sin responder');
   });
 
-  it('shows resolved rival Pokémon in its summary', () => {
-    expect(getPokeddleRivalSummary(board('p2', true), 4, false)).toMatchObject({ status: 'Resuelto · Lucario', detail: 'R3 · 2 intentos' });
+  it('el Pokémon de un rival resuelto sí es público (como hasta ahora)', () => {
+    const boards = { p1: board('p1'), p2: { ...board('p2', true, ['Pikachu', 'Garchomp']), revealedPokemon: RIVAL_SECRET } };
+    const html = render(roomOf(gameState('ROUND_ACTIVE', boards), guessing));
+    expect(html).toContain('Resuelto · Garchomp');
+    expect(html).toContain('/secret-garchomp.png');
+  });
+});
+
+describe('Pokédle Race: pantalla', () => {
+  it('ronda: tablero propio, buscador con su etiqueta, la carrera en franjas y una sola región viva', () => {
+    const html = render(roomOf(gameState(), guessing));
+    expect(html.match(/data-board-mode="self"/g)).toHaveLength(1);
+    expect(html).toContain('aria-label="Buscar respuesta para la ronda 3"');
+    expect(html.match(/data-testid="pokeddle-race-row"/g)).toHaveLength(3);
+    expect(html).toContain('Eru (tú)');
+    expect(html).toContain('Sin conexión');
+    expect(html).toContain('Ronda 3 de 10');
+    expect(html).toMatch(/<h1[^>]*>Busca tu Pokémon<\/h1>/);
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expect(html).not.toContain('aria-live="polite" role');
+    expect(html).not.toMatch(/reveal-pop|btn-|role="tablist"/);
   });
 
-  it('locks search after answering and enables it again with next-round state', () => {
-    expect(isPokeddleSearchEnabled({ phase: 'ROUND_ACTIVE' }, playerState)).toBe(true);
-    expect(isPokeddleSearchEnabled({ phase: 'ROUND_ACTIVE' }, { ...playerState, canGuess: false, hasGuessedThisRound: true })).toBe(false);
-    expect(isPokeddleSearchEnabled({ phase: 'ROUND_RESULTS' }, playerState)).toBe(false);
-    expect(isPokeddleSearchEnabled({ phase: 'ROUND_ACTIVE' }, { ...playerState, canGuess: true, hasGuessedThisRound: false })).toBe(true);
+  it('intento enviado: sin buscador, con la espera en texto', () => {
+    const html = render(roomOf(gameState(), { ...guessing, canGuess: false, hasGuessedThisRound: true }));
+    expect(html).not.toContain('Buscar respuesta para la ronda');
+    expect(html).toContain('Intento enviado');
+    expect(html).toContain('Esperando al resto');
   });
 
-  it('provides useful round and reconnection statuses', () => {
-    expect(getPokeddleRoundStatus({ phase: 'ROUND_ACTIVE' }, playerState, 'CONNECTED').title).toBe('Falta tu intento');
-    expect(getPokeddleRoundStatus({ phase: 'ROUND_ACTIVE' }, { ...playerState, hasGuessedThisRound: true }, 'CONNECTED').title).toBe('Intento enviado');
-    expect(getPokeddleRoundStatus({ phase: 'ROUND_ACTIVE' }, playerState, 'TEMPORARILY_DISCONNECTED').kind).toBe('disconnected');
+  it('ronda cerrada: la cuenta atrás y cómo fue el intento propio', () => {
+    const html = render(roomOf(gameState('ROUND_RESULTS'), guessing));
+    expect(html).toMatch(/<h1[^>]*>Pistas de la ronda 3<\/h1>/);
+    expect(html).toContain('Ronda 3 cerrada');
+    expect(html).toMatch(/Siguiente ronda en \d+s/);
+    expect(html).toContain('Lucario coincide en 11 de 12 pistas.');
   });
 
-  it('mounts only one complete rival board and keeps accessible controls', () => {
-    const game = gameState();
-    const room = { code: 'ABC234', phase: 'ROUND_ACTIVE', hostId: 'p1', maxPlayers: 8, selectedGameId: 'pokeddle-race', selectedGameConfig: { generations: [1, 2, 3, 4], roundSeconds: 20 }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), availableGames: [], game, gamePlayerState: playerState, members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'PRESET', value: 'trainer-berry' }, connected: true, presence: 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: 'PLAYER', isHost: index === 0, ready: false, sessionPoints: 0 })) } as RoomView;
-    const markup = renderToStaticMarkup(createElement(PokeddleRaceGame, { room, selfId: 'p1', onAction: async () => undefined }));
-    expect(markup.match(/data-board-mode="self"/g)).toHaveLength(1);
-    expect(markup.match(/data-board-mode="spectator"/g)).toHaveLength(1);
-    expect(markup).toContain('role="tablist"');
-    expect(markup).toContain('role="tabpanel"');
-    expect(markup).toContain('aria-label="Buscar Pokémon para la ronda 4"');
-    expect(markup).toContain('aria-label="Avatar de Ana"');
+  it('encontrado: «¡Era X!», el Pokémon en la placa y sin buscador', () => {
+    const html = render(roomOf(gameState('ROUND_ACTIVE', { p1: board('p1', true), p2: board('p2') }), { canGuess: false, hasGuessedThisRound: false, solved: true }));
+    expect(html).toMatch(/<h1[^>]*>¡Era Lucario!<\/h1>/);
+    expect(html).toContain('¡Pokémon encontrado!');
+    expect(html).not.toContain('Buscar respuesta para la ronda');
+  });
+
+  it('espectador (sin estado de jugador): ve la carrera sin controles ni tablero propio', () => {
+    const html = render(roomOf(gameState('ROUND_ACTIVE', { p2: board('p2'), p3: board('p3') }), null, true));
+    expect(html).toContain('Estás observando');
+    expect(html).not.toContain('Buscar respuesta para la ronda');
+    expect(html).not.toContain('data-board-mode="self"');
+    expect(html.match(/data-testid="pokeddle-race-row"/g)).toHaveLength(2);
+  });
+});
+
+describe('Pokédle Race: resultados y ajustes', () => {
+  const finished = (): PokeddleRacePublicState => ({
+    ...gameState('GAME_RESULTS', { p1: board('p1', true), p2: { ...board('p2'), revealedPokemon: RIVAL_SECRET } }),
+    results: { winnerId: 'p1', standings: [
+      { playerId: 'p1', position: 1, points: 10, won: true, stats: { resolved: 1, unresolved: 0, totalGuesses: 2, guessesToSolveTotal: 2, resolutionRoundsTotal: 3, bestResolutionRounds: 3, bestTimeMs: 42_000, missedRounds: 1, roundsParticipated: 3 } },
+      { playerId: 'p2', position: 2, points: 0, won: false, stats: { resolved: 0, unresolved: 1, totalGuesses: 2, guessesToSolveTotal: 0, resolutionRoundsTotal: 0, bestResolutionRounds: 0, bestTimeMs: 0, missedRounds: 1, roundsParticipated: 3 } },
+    ] },
+  });
+
+  it('clasificación con el Pokémon de cada uno, métricas en texto y récords', () => {
+    const html = renderToStaticMarkup(createElement(PokeddleRaceResults, { room: roomOf(finished(), null), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(html).toContain('Clasificación final');
+    expect(html).toContain('Lucario · ronda 3');
+    expect(html).toContain('No resuelto');
+    expect(html).toContain('Era Garchomp');
+    expect(html).toContain('2 intentos · 1 sin responder · resuelto a los 42.0s');
+    expect(html).toContain('En menos rondas');
+    expect(html).toContain('Resolución más rápida');
+    expect(html).not.toMatch(/🥇|btn-primary|class="card"/);
+  });
+
+  it('ajustes: un interruptor por pista, rondas desde 1 y aviso sin pistas', () => {
+    const html = renderToStaticMarkup(createElement(PokeddleRaceConfigPanel, { config: defaultPokeddleRaceConfig, disabled: false, onChange: async () => undefined }));
+    expect(html.match(/role="switch"/g)).toHaveLength(17);
+    expect(html).toContain('min="1" max="15"');
+    expect(html).not.toContain('class="chip');
+    const none = { ...defaultPokeddleRaceConfig, clues: Object.fromEntries(Object.keys(defaultPokeddleRaceConfig.clues).map((key) => [key, false])) };
+    expect(renderToStaticMarkup(createElement(PokeddleRaceConfigPanel, { config: none, disabled: false, onChange: async () => undefined }))).toContain('Selecciona al menos una pista.');
   });
 });
 

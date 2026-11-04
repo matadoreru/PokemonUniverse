@@ -1,116 +1,102 @@
 import type { PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePublicBoard } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, Minus } from 'lucide-react';
-import { memo, useMemo } from 'react';
-import {
-  formatPokeddleFeedback,
-  getPokeddleColumns,
-  isPokeddleGroupStart,
-  latestGuessRound,
-  pokemonTypeIcons,
-  pokemonTypeLabels,
-  POKEDDLE_GROUP_LABELS,
-  type PokeddleColumn,
-} from './pokeddle-presentation';
+import type { LucideIcon } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, EqualApproximately, Minus, X } from 'lucide-react';
+import { memo, useMemo, type CSSProperties } from 'react';
+import { pokemonTypeLabels } from '../components/PokemonTypeBadge';
+import { Badge, Chip, cx, Icon, Panel, StateBox, TypeBadge } from '../ui';
+import { guessSprite } from './guess-kit';
+import { formatPokeddleFeedback, getPokeddleColumns, latestGuessRound, POKEDDLE_LEGEND, pokeddleAttemptsText, type PokeddleColumn, type PokeddleFeedbackSemantic } from './pokeddle-presentation';
+import s from '../games/pokeddle-race/PokeddleBoard.module.css';
+
+/** Icono de cada resultado: el color nunca va solo (icono y palabra a la vista, frase para lectores). */
+export const POKEDDLE_ICONS: Record<PokeddleFeedbackSemantic, LucideIcon> = { match: Check, partial: EqualApproximately, none: X, higher: ArrowUp, lower: ArrowDown };
 
 export interface PokeddleBoardProps {
   board: PokeddlePublicBoard;
-  clues: PokeddleClueKey[];
-  mode?: 'self' | 'spectator';
-  showLegend?: boolean;
+  clues: readonly PokeddleClueKey[];
+  /** Encabezado del panel (por defecto «Tu tablero»). */
+  title?: string;
+  className?: string | undefined;
 }
 
-const legend = [
-  { semantic: 'higher', symbol: '↑', label: 'Objetivo mayor', tone: 'text-aqua' },
-  { semantic: 'lower', symbol: '↓', label: 'Objetivo menor', tone: 'text-violet-300' },
-  { semantic: 'match', symbol: '=', label: 'Coincide', tone: 'text-leaf' },
-  { semantic: 'partial', symbol: '~', label: 'Parcial', tone: 'text-electric' },
-  { semantic: 'none', symbol: '×', label: 'Ninguno', tone: 'text-berry' },
-] as const;
-
-export function PokeddleLegend() {
-  return <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-extrabold text-ink/70" aria-label="Leyenda de las pistas">
-    {legend.map((item) => <span key={item.semantic} className="inline-flex items-center gap-1.5"><b className={`text-base leading-none ${item.tone}`} aria-hidden="true">{item.symbol}</b>{item.label}</span>)}
-  </div>;
+/** Leyenda de los colores, iconos y palabras del tablero. */
+export function PokeddleLegend({ className }: { className?: string | undefined }) {
+  return <ul className={cx(s.legend, className)} aria-label="Cómo leer el tablero">
+    {POKEDDLE_LEGEND.map(({ semantic, label }) => <li key={semantic} className={cx(s.legendItem, s[`tone_${formatTone(semantic)}`])}>
+      <Icon icon={POKEDDLE_ICONS[semantic]} size={18} />{label}
+    </li>)}
+  </ul>;
 }
 
-function TypeBadges({ entry }: { entry: Extract<PokeddleFeedbackEntry, { kind: 'TYPES' }> }) {
-  return <span className="flex max-w-44 flex-wrap gap-1">{entry.value.map((type) => <span key={type} className="inline-flex items-center gap-1 rounded-full bg-ink/[0.07] px-2 py-0.5 text-[11px] font-black text-ink/80"><span aria-hidden="true">{pokemonTypeIcons[type] ?? '●'}</span>{pokemonTypeLabels[type] ?? type}</span>)}</span>;
-}
+const formatTone = (semantic: PokeddleFeedbackSemantic) => (semantic === 'match' ? 'ok' : semantic === 'partial' ? 'warn' : 'bad');
 
-function FeedbackValue({ column, entry, mobile = false }: { column: PokeddleColumn; entry: PokeddleFeedbackEntry; mobile?: boolean }) {
+/** Una casilla: el valor del intento, el icono y la palabra del resultado, y la frase completa para lectores. */
+function Cell({ column, entry }: { column: PokeddleColumn; entry: PokeddleFeedbackEntry | undefined }) {
+  if (!entry) return <li className={s.cell} data-clue-key={column.key}><span className={s.cellLabel} aria-hidden="true">{column.label}</span><span className={s.value} aria-hidden="true">—</span><span className="sr-only">{column.fullLabel}: sin dato.</span></li>;
   const shown = formatPokeddleFeedback(column.key, entry);
-  return <div
-    className={`pokeddle-feedback ${shown.tone} ${mobile ? 'min-h-[4.15rem] rounded-xl px-2.5 py-2' : 'min-h-14 px-2.5 py-2'}`}
-    data-feedback={shown.semantic}
-    aria-label={`${column.fullLabel}: ${shown.value}. ${shown.accessibleResult}.`}
-  >
-    {entry.kind === 'TYPES' ? <TypeBadges entry={entry} /> : <strong className={`block leading-tight text-ink ${mobile ? 'text-base' : 'text-[15px]'}`}>{shown.value}</strong>}
-    <span className="mt-1 flex items-center gap-1 text-[11px] font-black leading-none"><b className="text-base" aria-hidden="true">{shown.symbol}</b><span>{shown.result.slice(2)}</span></span>
-  </div>;
+  return <li className={cx(s.cell, s[`tone_${shown.tone}`])} data-clue-key={column.key} data-feedback={shown.semantic}>
+    <span className={s.cellLabel} aria-hidden="true">{column.label}</span>
+    <span className={s.value} aria-hidden="true">
+      {entry.kind === 'TYPES'
+        ? <span className={s.types}>{entry.value.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type] ?? type} size="sm" />)}</span>
+        : shown.short}
+    </span>
+    <span className={s.result} aria-hidden="true"><Icon icon={POKEDDLE_ICONS[shown.semantic]} size={18} /><span className={s.resultWord}>{shown.result}</span></span>
+    <span className="sr-only">{column.fullLabel}: {shown.value}. {shown.accessibleResult}.</span>
+  </li>;
 }
 
-function EmptyBoard({ columnCount }: { columnCount?: number }) {
-  if (columnCount) return <tr><td colSpan={columnCount} className="px-4 py-10 text-center font-bold text-ink/60">Tu historial aparecerá aquí al terminar la ronda.</td></tr>;
-  return <div className="rounded-2xl border border-dashed border-ink/15 px-4 py-10 text-center font-bold text-ink/60">Tu historial aparecerá aquí al terminar la ronda.</div>;
-}
-
-function NoGuessBand({ round, mobile = false }: { round: number; mobile?: boolean }) {
-  const content = <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-berry/85" data-row-status="no-guess"><span className="h-px min-w-4 flex-1 bg-berry/20" /><Minus size={15} aria-hidden="true" /><span>Ronda {round} · Sin respuesta</span><span className="h-px min-w-4 flex-1 bg-berry/20" /></div>;
-  return mobile ? <div className="rounded-xl bg-berry/[0.05] px-3 py-2.5">{content}</div> : content;
-}
-
-function PokemonAnchor({ row, latest }: { row: PokeddlePublicBoard['rows'][number]; latest: boolean }) {
-  return <span className="flex min-w-0 items-center gap-2.5">
-    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-ink/[0.05]"><img src={row.guessedPokemon?.sprite} alt="" className="h-10 w-10 object-contain [image-rendering:pixelated]" /></span>
-    <span className="min-w-0"><strong className="block max-w-28 truncate font-display text-[15px] text-ink">{row.guessedPokemon?.name}</strong><small className="flex items-center gap-1 font-bold text-ink/60">Ronda {row.round}{latest && <span className="rounded-full bg-aqua/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-aqua">Último</span>}</small></span>
-    {row.correct && <CheckCircle2 className="shrink-0 text-leaf" size={19} aria-label="Pokémon encontrado" />}
-  </span>;
-}
-
-function DesktopBoard({ board, columns }: { board: PokeddlePublicBoard; columns: PokeddleColumn[] }) {
-  const latestRound = latestGuessRound(board.rows);
-  // Las capas de esta tabla son orden relativo dentro de `isolate`, no capas de página.
-  return <div className="isolate hidden max-h-[34rem] max-w-full overflow-auto overscroll-contain lg:block">
-    <table className="w-max min-w-full border-separate border-spacing-0 text-sm" aria-label={`Historial Pokédle de ${board.playerId}`}>
-      <thead><tr className="text-left text-xs uppercase tracking-wide text-ink/70">
-        <th className="sticky left-0 top-0 z-sticky min-w-48 border-b border-ink/10 bg-night/95 px-3 py-2.5 font-black">Pokémon</th>
-        {columns.map((column, index) => <th key={column.key} data-clue-key={column.key} title={column.fullLabel} className={`sticky top-0 z-hud border-b border-ink/10 bg-night/95 px-2.5 py-2.5 font-black ${column.minWidth} ${isPokeddleGroupStart(columns, index) ? 'border-l !border-l-ink/15' : ''}`}>{column.label}</th>)}
-      </tr></thead>
-      <tbody>{board.rows.length ? board.rows.map((row) => {
-        if (row.status === 'NO_GUESS') return <tr key={row.round} className="border-t border-ink/5"><td colSpan={columns.length + 1} className="bg-night/15 px-3 py-2"><NoGuessBand round={row.round} /></td></tr>;
-        const latest = row.round === latestRound;
-        return <tr key={row.round} data-latest={latest ? 'true' : undefined} data-correct={row.correct ? 'true' : undefined} className={`border-t border-ink/[0.07] transition-opacity ${latest ? 'pokeddle-row-enter bg-aqua/[0.035]' : 'opacity-75 hover:opacity-100'} ${row.correct ? '!bg-leaf/[0.06] !opacity-100' : ''}`}>
-          <td className={`sticky left-0 z-content border-b border-ink/[0.07] px-3 py-2.5 ${latest ? 'bg-aqua/[.08]' : row.correct ? 'bg-leaf/[.08]' : 'bg-surface'}`}><PokemonAnchor row={row} latest={latest} /></td>
-          {columns.map((column, index) => { const feedback = row.feedback?.[column.key]; return <td key={column.key} className={`border-b border-ink/[0.07] p-0 align-top ${isPokeddleGroupStart(columns, index) ? 'border-l !border-l-ink/15' : ''}`}>{feedback ? <FeedbackValue column={column} entry={feedback} /> : <span className="block px-3 py-4 text-ink/20">—</span>}</td>; })}
-        </tr>;
-      }) : <EmptyBoard columnCount={columns.length + 1} />}</tbody>
-    </table>
-  </div>;
-}
-
-function MobileBoard({ board, columns }: { board: PokeddlePublicBoard; columns: PokeddleColumn[] }) {
-  const latestRound = latestGuessRound(board.rows);
-  const groups = useMemo(() => [...new Set(columns.map((column) => column.group))], [columns]);
-  if (!board.rows.length) return <div className="lg:hidden"><EmptyBoard /></div>;
-  return <div className="space-y-2.5 lg:hidden">{board.rows.map((row) => {
-    if (row.status === 'NO_GUESS') return <NoGuessBand key={row.round} round={row.round} mobile />;
-    const latest = row.round === latestRound;
-    return <article key={row.round} data-latest={latest ? 'true' : undefined} data-correct={row.correct ? 'true' : undefined} className={`overflow-hidden rounded-2xl border bg-night/20 ${latest ? 'pokeddle-row-enter border-aqua/35' : 'border-ink/10 opacity-75'} ${row.correct ? '!border-leaf/45 !bg-leaf/[0.06] !opacity-100' : ''}`}>
-      <header className="flex items-center justify-between gap-3 border-b border-ink/[0.07] px-3 py-2.5"><PokemonAnchor row={row} latest={latest} />{row.correct && <span className="inline-flex items-center gap-1 rounded-full bg-leaf/10 px-2 py-1 text-[10px] font-black uppercase tracking-wide text-leaf"><Check size={13} /> Encontrado</span>}</header>
-      <div className="space-y-3 p-3">{groups.map((group) => {
-        const groupColumns = columns.filter((column) => column.group === group);
-        return <section key={group} aria-label={POKEDDLE_GROUP_LABELS[group]}><h3 className="mb-1.5 text-[10px] font-black uppercase tracking-[.14em] text-ink/55">{POKEDDLE_GROUP_LABELS[group]}</h3><div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">{groupColumns.map((column) => { const feedback = row.feedback?.[column.key]; return <div key={column.key} data-clue-key={column.key}><span className="mb-0.5 block px-1 text-[10px] font-extrabold text-ink/65" title={column.fullLabel}>{column.label}</span>{feedback ? <FeedbackValue column={column} entry={feedback} mobile /> : <span className="block px-2 py-3 text-ink/20">—</span>}</div>; })}</div></section>;
-      })}</div>
-    </article>;
-  })}</div>;
-}
-
-export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, mode = 'self', showLegend = mode === 'self' }: PokeddleBoardProps) {
+/**
+ * Tablero de intentos de Pokédle (spec §2: la lista larga se desplaza dentro de su `Panel`). Una fila por ronda, la
+ * última arriba: el Pokémon probado y una casilla por pista con color, icono y palabra (acierto, parcial, fallo, mayor o
+ * menor), y la frase completa para lectores. Las rondas sin respuesta son una franja fina.
+ *
+ * En escritorio las casillas forman columnas bajo una cabecera fija y crecen con el ancho (a 1920 llenan el sitio); si
+ * no caben todas, el tablero se desplaza en horizontal dentro del panel. En el móvil cada fila es una tarjeta compacta
+ * con la etiqueta en cada casilla.
+ */
+export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, title = 'Tu tablero', className }: PokeddleBoardProps) {
   const columns = useMemo(() => getPokeddleColumns(clues), [clues]);
-  return <div className="overflow-hidden rounded-2xl border border-ink/10 bg-surface-raised/45" data-board-mode={mode}>
-    {board.revealedPokemon && <div className="flex items-center gap-3 border-b border-leaf/20 bg-leaf/[0.07] px-4 py-3"><img src={board.revealedPokemon.sprite} alt="" className="h-14 w-14 object-contain [image-rendering:pixelated]" /><div><strong className="block font-display text-xl text-leaf">{board.solved ? 'Pokémon encontrado' : 'Objetivo revelado'}</strong><span className="font-extrabold">{board.revealedPokemon.name}</span>{board.solved && <small className="ml-2 font-bold text-ink/65">Ronda {board.solvedRound}</small>}</div></div>}
-    <DesktopBoard board={board} columns={columns} />
-    <div className="max-h-[58vh] overflow-y-auto overscroll-contain p-2.5 sm:max-h-[32rem] lg:hidden"><MobileBoard board={board} columns={columns} /></div>
-    {showLegend && <div className="border-t border-ink/[0.07] px-3 py-2.5"><PokeddleLegend /></div>}
-  </div>;
+  const template = columns.map((column) => (column.wide ? 'minmax(5.5rem, 1.7fr)' : 'minmax(3rem, 1fr)')).join(' ');
+  const latestRound = latestGuessRound(board.rows);
+  const rows = [...board.rows].reverse();
+  const style = { '--pokeddle-cells': template, '--pokeddle-rows': Math.max(1, rows.length) } as CSSProperties;
+  return <Panel variant="cream" as="section" title={title} right={<Badge tone="cream">{pokeddleAttemptsText(board.validGuesses)}</Badge>} flush
+    className={cx(s.panel, className)} bodyClassName={cx(s.body)}>
+    <div className={s.scroller} tabIndex={0} role="region" aria-label="Tablero de intentos" data-board-mode="self">
+      {rows.length === 0
+        ? <div className={s.empty}>
+          <StateBox kind="empty" live={false} onCream title="Tu primer intento aparecerá aquí." text="Elige un Pokémon cada ronda: al cerrarse verás en qué pistas coincide con tu Pokémon secreto." />
+          <PokeddleLegend />
+        </div>
+        : <div className={s.board} style={style}>
+          <div className={s.head} aria-hidden="true">
+            <span className={s.headAnchor}>Pokémon</span>
+            <span className={s.headCells}>{columns.map((column) => <span key={column.key} title={column.fullLabel}>{column.label}</span>)}</span>
+          </div>
+          <ol className={s.rows} aria-label="Tus intentos, el último primero">{rows.map((row) => {
+            if (row.status === 'NO_GUESS') return <li key={row.round} className={s.missed} data-row-status="no-guess"><Icon icon={Minus} size={18} />Ronda {row.round} · Sin respuesta</li>;
+            const latest = row.round === latestRound;
+            const name = row.guessedPokemon?.name ?? 'Pokémon';
+            return <li key={row.round} className={cx(s.row, latest && s.latest, row.correct && s.correct, latest && 'motion-enter-up')} data-testid="pokeddle-row"
+              data-latest={latest ? 'true' : undefined} data-correct={row.correct ? 'true' : undefined}>
+              <div className={s.anchor}>
+                {row.guessedPokemon && <img className={s.sprite} src={guessSprite(row.guessedPokemon.sprite)} alt="" />}
+                <span className={s.anchorText}>
+                  <strong className={s.name} title={name}>{name}</strong>
+                  <span className={s.anchorMeta}>
+                    <span className={s.round}>Ronda {row.round}</span>
+                    {row.correct
+                      ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Encontrado</Chip>
+                      : latest && <Chip tone="info">Último</Chip>}
+                  </span>
+                </span>
+              </div>
+              <ul className={s.cells} aria-label={`Pistas de ${name}, ronda ${row.round}`}>{columns.map((column) => <Cell key={column.key} column={column} entry={row.feedback?.[column.key]} />)}</ul>
+            </li>;
+          })}</ol>
+          <PokeddleLegend className={s.footLegend} />
+        </div>}
+    </div>
+  </Panel>;
 });
