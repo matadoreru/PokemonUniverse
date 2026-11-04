@@ -84,7 +84,8 @@ test('ignora un tema claro guardado', async ({ page }) => {
 /** La placa de la cabecera cabe en la vista y va pegada a la derecha. */
 async function placasCaben(page: Page, id: string, w: number): Promise<void> {
   await expectNoHorizontalScroll(page, id);
-  const placas = await page.locator('header > div').first().evaluate((fila) => [...fila.children].map((c) => c.getBoundingClientRect().toJSON() as DOMRect));
+  // El hueco de la placa de la sala existe siempre, pero fuera de una sala está vacío (ancho 0): no cuenta.
+  const placas = await page.locator('header > div').first().evaluate((fila) => [...fila.children].map((c) => c.getBoundingClientRect().toJSON() as DOMRect).filter((r) => r.width > 0));
   expect(placas).toHaveLength(1);
   const [placa] = placas as [DOMRect];
   expect(placa.left, `${id}: la placa se sale por la izquierda`).toBeGreaterThanOrEqual(0);

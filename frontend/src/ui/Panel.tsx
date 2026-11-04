@@ -28,7 +28,8 @@ export function Panel({ title, right, variant = 'blue', scroll, flush, status, c
     <Tag className={cx(s.panel, s[variant], status?.kind === 'error' && s.error, className)} {...aria}>
       {(title || right) && (
         <header className={s.head}>
-          {title && <h2 className={s.title}>{title}</h2>}
+          {/* Si el título es texto y no cabe, se recorta con elipsis: `title` deja leer el texto completo. */}
+          {title && <h2 className={s.title} {...(typeof title === 'string' ? { title } : {})}>{title}</h2>}
           {right && <div className={s.right}>{right}</div>}
         </header>
       )}
