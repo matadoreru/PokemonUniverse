@@ -17,15 +17,22 @@ export interface BarProps {
   valueText?: string;
   /** Oculta la barra a las tecnologías de apoyo cuando otro texto ya da el valor. */
   decorative?: boolean;
+  /**
+   * El relleno crece desde 0 al montarse (la transición solo anima los cambios, no el primer pintado): barras que
+   * aparecen con un dato recién revelado. Sin animación con la reducción de movimiento.
+   */
+  grow?: boolean;
+  /** Gruesa (`lg`, 20 px): barras protagonistas de una pantalla de juego. */
+  size?: 'md' | 'lg';
 }
 
 /** Barra de medida; el relleno se escala con transform. */
-export function Bar({ value, max, tone = 'yellow', label, showValue, valueText, decorative }: BarProps) {
+export function Bar({ value, max, tone = 'yellow', label, showValue, valueText, decorative, grow, size = 'md' }: BarProps) {
   const ratio = barRatio(value, max);
   return (
     <span className={s.wrap} aria-hidden={decorative || undefined}>
       <span
-        className={s.bar}
+        className={cx(s.bar, size === 'lg' && s.lg)}
         role="meter"
         aria-label={label}
         aria-valuenow={Math.min(Math.max(value, 0), Math.max(max, 0))}
@@ -33,7 +40,7 @@ export function Bar({ value, max, tone = 'yellow', label, showValue, valueText, 
         aria-valuemax={max}
         {...(valueText ? { 'aria-valuetext': valueText } : {})}
       >
-        <i className={cx(s.fill, s[tone])} style={{ '--ratio': ratio } as React.CSSProperties} />
+        <i className={cx(s.fill, s[tone], grow && s.grow)} style={{ '--ratio': ratio } as React.CSSProperties} />
       </span>
       {showValue && <span className={s.val}>{valueText ?? `${value}/${max}`}</span>}
     </span>

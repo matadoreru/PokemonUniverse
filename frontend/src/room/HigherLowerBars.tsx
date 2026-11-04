@@ -1,35 +1,38 @@
+import { Bar, Chip, cx } from '../ui';
 import { higherLowerBars } from './higher-lower-labels';
+import s from '../games/higher-lower/HigherLower.module.css';
 
 export interface HigherLowerBarsProps {
   previous: { name: string; value: number };
   current: { name: string; value: number };
+  /** Nombre de la stat comparada (va en el nombre accesible del grupo). */
+  category?: string;
 }
 
-const fillTone = (leader: 'previous' | 'current' | 'tie', side: 'previous' | 'current') => leader === 'tie' ? 'bg-electric' : leader === side ? 'bg-leaf' : 'bg-ink/30';
-
 /**
- * Barras del revelado: anterior y actual sobre el mayor de los dos. Solo se monta en `ROUND_RESULTS`, cuando el valor
- * del actual ya es público. La longitud la fija el envoltorio (`scaleX` estático) y el relleno crece con `motion-grow-x`:
- * así la animación (que acaba en `scaleX(1)`) no pisa la escala y, con la reducción de movimiento, la barra ya está en su sitio.
+ * Barras del revelado: anterior y actual sobre el mayor de los dos (`Bar` del catálogo, gruesa y creciendo al montarse).
+ * Solo se monta en `ROUND_RESULTS`, cuando el valor del actual ya es público. El que va por delante en verde (`ok`), el
+ * otro en azul; en un empate, las dos amarillas. El color nunca va solo: cada barra lleva su valor escrito y la del
+ * actual, la diferencia («+40», «−12» o «=»). Las barras son decorativas: el texto ya da los valores.
  */
-export function HigherLowerBars({ previous, current }: HigherLowerBarsProps) {
+export function HigherLowerBars({ previous, current, category }: HigherLowerBarsProps) {
   const bars = higherLowerBars(previous.value, current.value);
+  const max = Math.max(previous.value, current.value);
   const rows = [
-    { side: 'previous' as const, label: 'Anterior', ...previous, scale: bars.previousScale },
-    { side: 'current' as const, label: 'Actual', ...current, scale: bars.currentScale },
+    { side: 'previous' as const, label: 'Anterior', ...previous },
+    { side: 'current' as const, label: 'Actual', ...current },
   ];
-  return <div className="mt-3 grid gap-2.5 text-left" data-testid="higher-lower-bars">
-    {rows.map(({ side, label, name, value, scale }) => <div key={side}>
-      <div className="mb-1 flex items-center gap-2">
-        <span className="min-w-0 flex-1 truncate font-extrabold" title={`${label}: ${name}`}><span className="text-sm text-ink/70">{label} · </span>{name}</span>
-        {side === 'current' && <span className={`chip tabular-nums ${bars.leader === 'tie' ? '!bg-electric/20' : bars.leader === 'current' ? '!bg-leaf/15' : ''}`}><span className="sr-only">Diferencia </span>{bars.diffLabel}</span>}
-        <strong className="font-display text-xl tabular-nums">{value}</strong>
+  const tone = (side: 'previous' | 'current') => bars.leader === 'tie' ? 'yellow' : bars.leader === side ? 'ok' : 'info';
+  return <div className={s.bars} data-testid="higher-lower-bars" role="group" aria-label={category ? `Comparación de ${category}` : 'Comparación'}>
+    {rows.map(({ side, label, name, value }) => <div key={side} className={s.barRow}>
+      <div className={s.barHead}>
+        <span className={s.barName} title={`${label}: ${name}`}><span className={s.barLabel}>{label} · </span>{name}</span>
+        {side === 'current' && <span className={s.barDiff}><Chip tone={bars.leader === 'tie' ? 'warn' : bars.leader === 'current' ? 'ok' : 'info'}><span className={cx(s.diff)}><span className="sr-only">Diferencia </span>{bars.diffLabel}</span></Chip></span>}
+        <strong className={s.barValue}>{value}</strong>
       </div>
-      <div className="timer-track h-3 overflow-hidden rounded-full">
-        <div className="h-full origin-left" style={{ transform: `scaleX(${scale})` }}>
-          <div data-bar={side} className={`h-full w-full motion-grow-x ${fillTone(bars.leader, side)}`} />
-        </div>
-      </div>
+      <span className={s.barTrack} data-bar={side}>
+        <Bar value={value} max={max} tone={tone(side)} label={`${label}: ${name}`} decorative grow size="lg" />
+      </span>
     </div>)}
   </div>;
 }

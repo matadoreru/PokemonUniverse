@@ -1,0 +1,84 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.label {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.warning {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+/* Categorías: interruptores en rejilla (dos columnas en el móvil, cuatro en escritorio). */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-1) var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .categories {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.category {
+  min-width: 0;
+}
+/* Dificultad: cartas seleccionables (cinco en fila desde 768 px). */
+.difficulties {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: var(--sp-3);
+}
+.cardHint {
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+.pips {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 28px;
+}
+.pip {
+  display: block;
+  width: 6px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 2px;
+  background: var(--cream);
+}
+.pip:nth-child(1) { height: 10px; }
+.pip:nth-child(2) { height: 14px; }
+.pip:nth-child(3) { height: 18px; }
+.pip:nth-child(4) { height: 23px; }
+.pip:nth-child(5) { height: 28px; }
+.pipOn {
+  background: var(--red);
+}
+.pair {
+  display: grid;
+  gap: var(--sp-4);
+}
+@media (min-width: 768px) {
+  .pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+.ranges {
+  display: grid;
+  gap: var(--sp-4);
+}
+@media (min-width: 768px) {
+  .ranges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

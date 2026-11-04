@@ -2,6 +2,7 @@ import {
   HIGHER_LOWER_CATEGORIES,
   HIGHER_LOWER_DIFFICULTIES,
   HIGHER_LOWER_VISIBILITIES,
+  type HigherLowerAnswerVisibility,
   type HigherLowerCategory,
   type HigherLowerConfig,
   type HigherLowerDifficulty,
@@ -10,6 +11,8 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
+import { Card, cx, Segmented, Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 
 const categoryLabels: Record<HigherLowerCategory, string> = {
   DEX_NUMBER: 'N.º Pokédex',
@@ -30,6 +33,21 @@ const difficultyCopy: Record<HigherLowerDifficulty, { label: string; description
   VERY_HARD: { label: 'Muy difícil', description: 'Valores casi iguales' },
 };
 
+const CATEGORIES_LABEL = 'Categorías';
+const DIFFICULTY_LABEL = 'Dificultad de comparación';
+const VISIBILITY_LABEL = 'Mostrar votaciones de los otros jugadores';
+
+/** Nivel de la dificultad (1–5) en pips: cuántos van llenos. */
+function DifficultyPips({ level }: { level: number }) {
+  return <span className={s.pips}>{HIGHER_LOWER_DIFFICULTIES.map((difficulty, index) => <i key={difficulty} className={cx(s.pip, index < level && s.pipOn)} />)}</span>;
+}
+
+/**
+ * Ajustes de Higher or Lower con los controles del catálogo: las categorías (`Toggle`, al menos una queda encendida),
+ * la dificultad (`Card` seleccionables con su nivel en pips), las generaciones, si se ve el valor del anterior
+ * (`Toggle`), la visibilidad de las respuestas (`Segmented`, con el aviso de copia en «En directo») y los tiempos
+ * (`ConfigRange`, el `Slider`).
+ */
 export function HigherLowerConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as HigherLowerConfig;
   const toggleCategory = (category: HigherLowerCategory) => {
@@ -38,72 +56,43 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
       : [...value.categories, category];
     if (categories.length) void onChange({ ...value, categories });
   };
+  const visibilities = HIGHER_LOWER_VISIBILITIES.map((visibility) => ({ value: visibility, label: higherLowerVisibilityLabels[visibility], disabled }));
+  const onlyCategory = value.categories.length === 1 ? value.categories[0] : null;
 
-  return (
-    <fieldset disabled={disabled} className="space-y-6">
-      <div>
-        <span className="label">Categorías</span>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {HIGHER_LOWER_CATEGORIES.map((category) => (
-            <button type="button" key={category} aria-pressed={value.categories.includes(category)} onClick={() => toggleCategory(category)} className={`toggle-option text-left ${value.categories.includes(category) ? 'border-electric bg-electric text-night' : ''}`}>
-              {categoryLabels[category]}
-            </button>
-          ))}
-        </div>
+  return <fieldset disabled={disabled} className={s.panel}>
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{CATEGORIES_LABEL}</span>
+      <div className={s.categories} role="group" aria-label={CATEGORIES_LABEL}>{HIGHER_LOWER_CATEGORIES.map((category) => <Toggle key={category} label={categoryLabels[category]} checked={value.categories.includes(category)}
+        disabled={disabled} className={cx(s.category)} {...(onlyCategory === category ? { hint: 'Al menos una' } : {})} onChange={() => toggleCategory(category)} />)}</div>
+    </div>
+
+    <div className={s.group}>
+      <span className={s.label} aria-hidden="true">{DIFFICULTY_LABEL}</span>
+      <div className={s.difficulties} role="group" aria-label={DIFFICULTY_LABEL}>{HIGHER_LOWER_DIFFICULTIES.map((difficulty, index) => {
+        const copy = difficultyCopy[difficulty];
+        return <Card key={difficulty} size="sm" name={copy.label} art={<DifficultyPips level={index + 1} />} state={value.difficulty === difficulty ? 'selected' : 'idle'} disabled={disabled}
+          onSelect={() => { if (value.difficulty !== difficulty) void onChange({ ...value, difficulty }); }}>
+          <span className={s.cardHint}>{copy.description}</span>
+        </Card>;
+      })}</div>
+    </div>
+
+    <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
+
+    <div className={s.pair}>
+      <div className={s.group}>
+        <Toggle label="Mostrar el valor del anterior Pokémon" hint="Si no, los dos valores salen al revelar" checked={value.showPreviousValue} disabled={disabled} onChange={(showPreviousValue) => void onChange({ ...value, showPreviousValue })} />
       </div>
-
-      <div>
-        <span className="label">Dificultad de comparación</span>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-          {HIGHER_LOWER_DIFFICULTIES.map((difficulty) => {
-            const copy = difficultyCopy[difficulty];
-            const selected = value.difficulty === difficulty;
-            return (
-              <button
-                type="button"
-                key={difficulty}
-                onClick={() => void onChange({ ...value, difficulty })}
-                aria-pressed={selected}
-                className={`toggle-option py-3 text-left ${selected ? 'border-berry bg-berry text-night' : 'text-ink'}`}
-              >
-                <span className="block font-extrabold">{copy.label}</span>
-                <span className={`mt-1 block text-xs font-semibold ${selected ? 'text-night/75' : 'text-ink/65'}`}>{copy.description}</span>
-              </button>
-            );
-          })}
-        </div>
+      <div className={s.group}>
+        <span className={s.label} aria-hidden="true">{VISIBILITY_LABEL}</span>
+        <Segmented<HigherLowerAnswerVisibility> label={VISIBILITY_LABEL} value={value.answerVisibility} options={visibilities} onChange={(answerVisibility) => void onChange({ ...value, answerVisibility })} />
+        {value.answerVisibility === 'LIVE' && <p className={s.warning}>{LIVE_VISIBILITY_WARNING}</p>}
       </div>
+    </div>
 
-      <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} accent="aqua" />
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <span className="label">Mostrar el valor del anterior Pokémon</span>
-          <div className="grid grid-cols-2 gap-2">
-            {([[true, 'Sí'], [false, 'No']] as const).map(([choice, label]) => (
-              <button type="button" key={String(choice)} aria-pressed={value.showPreviousValue === choice} onClick={() => void onChange({ ...value, showPreviousValue: choice })} className={`toggle-option ${value.showPreviousValue === choice ? 'border-berry bg-berry text-night' : 'text-ink'}`}>
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div>
-          <span className="label">Mostrar votaciones de los otros jugadores</span>
-          <div className="grid grid-cols-2 gap-2">
-            {HIGHER_LOWER_VISIBILITIES.map((visibility) => (
-              <button type="button" key={visibility} aria-pressed={value.answerVisibility === visibility} onClick={() => void onChange({ ...value, answerVisibility: visibility })} className={`toggle-option ${value.answerVisibility === visibility ? 'border-leaf bg-leaf text-night' : 'text-ink'}`}>
-                {higherLowerVisibilityLabels[visibility]}
-              </button>
-            ))}
-          </div>
-          {value.answerVisibility === 'LIVE' && <p className="mt-2 text-sm font-bold text-ink/65">{LIVE_VISIBILITY_WARNING}</p>}
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-        <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} accent="aqua" formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
-      </div>
-    </fieldset>
-  );
+    <div className={s.ranges}>
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+    </div>
+  </fieldset>;
 }

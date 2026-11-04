@@ -1,7 +1,10 @@
-import type { HigherLowerAnswerVisibility, HigherLowerChoice, HigherLowerOutcome } from '@pokemon-universe/shared/public';
+import type { HigherLowerAnswerVisibility, HigherLowerCategory, HigherLowerChoice, HigherLowerOutcome } from '@pokemon-universe/shared/public';
 
 // Etiquetas en español de las tres respuestas de Higher or Lower (botones, revelado y barra lateral).
 export const higherLowerChoiceLabels: Record<HigherLowerChoice, string> = { HIGHER: 'Mayor', SAME: 'Igual', LOWER: 'Menor' };
+
+// Nombre de cada stat en la pantalla de juego.
+export const higherLowerCategoryLabels: Record<HigherLowerCategory, string> = { DEX_NUMBER: 'N.º Pokédex', HP: 'HP', ATTACK: 'Ataque', DEFENSE: 'Defensa', SPECIAL_ATTACK: 'Ataque Especial', SPECIAL_DEFENSE: 'Defensa Especial', SPEED: 'Velocidad', BASE_STAT_TOTAL: 'Total de stats' };
 
 // Modos de visibilidad de las respuestas del panel de configuración.
 export const higherLowerVisibilityLabels: Record<HigherLowerAnswerVisibility, string> = { LIVE: 'En directo', REVEAL: 'Al revelar' };

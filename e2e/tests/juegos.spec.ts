@@ -589,25 +589,36 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await saltarIntro(jugadores.map((j) => j.page));
     const proxy = /^\/api\/pokemon\/[a-z][a-z0-9-]*\/sprite$/;
-    const sprites = host.page.locator('article.card img');
+    const sprites = host.page.locator('[data-hl-card] img');
     await expect(sprites).toHaveCount(2, { timeout: 20_000 });
     for (const src of await sprites.evaluateAll((imgs) => imgs.map((img) => (img as HTMLImageElement).src))) {
       expect(new URL(src).pathname, 'sprite de Higher or Lower por el proxy').toMatch(proxy);
     }
     await expect.poll(() => imagenes.filter((url) => proxy.test(new URL(url).pathname)).length, { timeout: 10_000 }).toBeGreaterThanOrEqual(2);
 
-    // Ronda activa: a 390×844, sin desplazar, las tres respuestas están a la vista (en el `answer-dock` pegado abajo).
+    // Ronda activa: a 390×844, sin desplazar, lo necesario para responder está a la vista a la vez: las dos cartas, la
+    // stat que se compara, el tiempo y las tres respuestas (en la pantalla inferior pegada abajo), sin que esta tape
+    // las cartas.
     const mayor = (page: Page) => page.getByRole('button', { name: 'Mayor', exact: true });
     const movil = invitados[1]!.page;
     await expect(mayor(movil)).toBeVisible({ timeout: 20_000 });
     await movil.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await movil.evaluate(() => window.scrollTo(0, 0));
     for (const nombre of ['Mayor', 'Igual', 'Menor']) await expect(movil.getByRole('button', { name: nombre, exact: true }), `${nombre} a la vista a 390×844`).toBeInViewport({ ratio: 1 });
+    const cartas = [movil.locator('[data-hl-card="previous"]'), movil.locator('[data-hl-card="current"]')];
+    for (const carta of cartas) await expect(carta, 'carta del duelo a la vista a 390×844').toBeInViewport({ ratio: 1 });
+    await expect(movil.getByRole('heading', { level: 1 }), 'stat comparada a la vista a 390×844').toBeInViewport({ ratio: 1 });
+    await expect(movil.getByRole('timer'), 'tiempo a la vista a 390×844').toBeInViewport({ ratio: 1 });
+    const inferior = await movil.locator('[data-layer="screen-bottom"]').boundingBox();
+    for (const carta of cartas) {
+      const caja = await carta.boundingBox();
+      expect(caja!.y + caja!.height, 'la pantalla inferior no tapa las cartas a 390×844').toBeLessThanOrEqual(inferior!.y + 1);
+    }
     // Las barras solo existen al revelar: antes no hay ningún valor del actual en la página.
     const barras = (page: Page) => page.getByTestId('higher-lower-bars');
     await expect(barras(host.page)).toHaveCount(0);
-    await expect(host.page.locator('article.card').nth(1).getByText('???', { exact: true })).toBeVisible();
-    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page) });
+    await expect(host.page.locator('[data-hl-card="current"]').getByText('???', { exact: true })).toBeVisible();
+    await capturarTamanos(host.page, 'juego-higher-lower', { sigue: mayor(host.page), opts: ARCADE });
 
     // Todos responden: la ronda se revela en cuanto contesta el último y el revelado dura 3 s. Para que quepan los
     // tres tamaños, cada página se fija a un tamaño antes de la última respuesta y se capturan a la vez.
@@ -626,30 +637,37 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
         new MutationObserver(() => { if (document.querySelector('.score-pop')) w.scorePopVisto = true; }).observe(document.body, { childList: true, subtree: true });
       });
     }
-    const elecciones = ['Mayor', 'Igual', 'Menor'];
-    for (const [i, { page }] of jugadores.entries()) await page.getByRole('button', { name: elecciones[i]!, exact: true }).click({ timeout: 20_000 });
+    // El anfitrión pulsa «Mayor»; el del móvil responde «Menor» con el atajo 3; el último, «Igual» con el teclado (Tab
+    // hasta la píldora y Enter): la píldora se desmonta y el foco pasa al título de la placa, no se queda en el `body`.
+    await mayor(host.page).click({ timeout: 20_000 });
+    await movil.keyboard.press('3');
+    await expect(movil.getByRole('heading', { name: 'Respuesta Menor bloqueada.' })).toBeVisible();
+    const ultimo = invitados[0]!.page;
+    await ultimo.getByRole('button', { name: 'Igual', exact: true }).focus();
+    await ultimo.keyboard.press('Enter');
+    await expect(ultimo.locator('[data-layer="screen-bottom"] h2')).toBeFocused();
     for (const { page } of capturas) await page.evaluate(() => window.scrollTo(0, 0));
     const revelado = (page: Page) => page.getByText(/^Respuesta: (Mayor|Igual|Menor)$/);
     for (const { page } of capturas) await expect(barras(page)).toBeVisible({ timeout: 10_000 });
     await expect(host.page.getByText(/^Clasificación en \ds…$/)).toBeVisible();
     // Movimiento antes de capturar: con la reducción no anima nada; con movimiento, el relleno de la barra crece y la
     // racha del que acierta salta (solo transform).
-    const barra = barras(host.page).locator('[data-bar="current"]');
+    const barra = barras(host.page).locator('[data-bar="current"] [role="meter"] > i');
     const racha = host.page.locator('[data-streak].motion-bump');
     await expect(racha, 'solo salta la racha del que acierta').toHaveCount(1);
     expect(await animacionDe(barra), 'barra con reducción de movimiento').toBe('none');
     expect(await animacionDe(racha), 'racha con reducción de movimiento').toBe('none');
     await conMovimiento(host.page);
-    expect(await animacionDe(barra), 'barra con movimiento').toBe('motion-grow-x');
+    expect(await animacionDe(barra), 'barra con movimiento').toMatch(/grow/);
     expect(await animacionDe(racha), 'racha con movimiento').toBe('motion-bump');
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
     // Resultado con texto, no solo con color o glifo: un acierto (con su racha) y dos fallos.
     await expect(host.page.locator('[data-outcome="hit"]')).toHaveCount(1);
     await expect(host.page.locator('[data-outcome="hit"]')).toHaveText(/^✓ \+\d+ acierto$/);
     await expect(host.page.locator('[data-outcome="miss"]')).toHaveText(['✗ Fallo', '✗ Fallo']);
-    await expect(host.page.locator('p', { hasText: /Racha 1( · \+\d+ rapidez)?$/ })).toHaveCount(1);
+    await expect(host.page.locator('[data-outcome-line]', { hasText: /^Racha 1( · \+\d+ rapidez)?$/ })).toHaveCount(1);
     const nombre = 'juego-higher-lower-revelacion';
-    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));
+    const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true, false, ARCADE)));
     for (const { page } of capturas) await expect(revelado(page), 'el revelado sigue en pantalla tras la captura').toBeVisible({ timeout: 500 });
     for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     const vistos = await Promise.all(jugadores.map(({ page }) => page.evaluate(() => (window as unknown as { scorePopVisto?: boolean }).scorePopVisto === true)));
@@ -661,7 +679,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     // Plurales de las estadísticas: nunca «1 aciertos» ni «1 iguales».
     await expect(host.page.getByText(/\d+ aciertos? · \d+ igual(es)? · mejor racha/).first()).toBeVisible();
     await expect(host.page.getByText(/(^|\D)1 (aciertos|iguales)/)).toHaveCount(0);
-    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion');
+    await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { sigue: clasificacion, opts: ARCADE });
     const delatoras = imagenes.filter((url) => /githubusercontent|\/sprites\/pokemon\/|\/\d+\.(png|gif|webp|svg)(\?|$)|\/pokemon\/\d+(\/|$)/.test(url));
     expect(delatoras, 'ninguna imagen de la partida delata el número de Pokédex').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
@@ -1132,11 +1150,11 @@ test('higher-lower: panel de visibilidad', async ({ browser }) => {
     const page = host.page;
     await seleccionarJuego(page, 'Higher or Lower');
     await page.getByRole('tab', { name: 'Configuración' }).click();
-    const alRevelar = page.getByRole('button', { name: 'Al revelar', exact: true });
-    const enDirecto = page.getByRole('button', { name: 'En directo', exact: true });
+    const alRevelar = page.getByRole('radio', { name: 'Al revelar', exact: true });
+    const enDirecto = page.getByRole('radio', { name: 'En directo', exact: true });
     const aviso = page.getByText('Permite copiar: los demás ven tu elección al momento.');
-    await expect(alRevelar).toHaveAttribute('aria-pressed', 'true');
-    await expect(enDirecto).toHaveAttribute('aria-pressed', 'false');
+    await expect(alRevelar).toHaveAttribute('aria-checked', 'true');
+    await expect(enDirecto).toHaveAttribute('aria-checked', 'false');
     await expect(aviso).toHaveCount(0);
     // El grupo de visibilidad queda bajo las categorías y la dificultad: captura de página completa desde arriba (con la
     // página desplazada, la cabecera fija taparía las categorías y el medidor lo cuenta como solape).
@@ -1144,7 +1162,7 @@ test('higher-lower: panel de visibilidad', async ({ browser }) => {
     await capturarTamanos(page, 'lobby-config-higher-lower', { completa: true });
 
     await enDirecto.click();
-    await expect(enDirecto).toHaveAttribute('aria-pressed', 'true');
+    await expect(enDirecto).toHaveAttribute('aria-checked', 'true');
     await expect(aviso).toBeVisible();
     // El aviso de copia a 390×844, donde el texto se parte en varias líneas.
     await page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });

@@ -28,4 +28,11 @@ describe('Bar', () => {
     expect(renderToStaticMarkup(createElement(Bar, { value: 30, max: 10, label: 'x' }))).toContain('aria-valuenow="10"');
     expect(renderToStaticMarkup(createElement(Bar, { value: -3, max: 10, label: 'x' }))).toContain('aria-valuenow="0"');
   });
+  it('crece al montarse y engorda con size="lg" solo si se pide', () => {
+    const plain = renderToStaticMarkup(createElement(Bar, { value: 3, max: 10, label: 'x' }));
+    const grown = renderToStaticMarkup(createElement(Bar, { value: 3, max: 10, label: 'x', grow: true, size: 'lg' }));
+    expect(plain).not.toMatch(/grow|lg/);
+    expect(grown).toMatch(/class="[^"]*grow/);
+    expect(grown).toMatch(/class="[^"]*lg/);
+  });
 });

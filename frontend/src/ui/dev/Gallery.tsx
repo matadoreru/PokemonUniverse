@@ -506,6 +506,11 @@ function BarSection() {
           </span>
         </Fig>
       ))}
+      <Fig id="bar-grow-lg" caption="Gruesa (lg) que crece al montarse (grow)">
+        <span className={s.barBox}>
+          <Bar value={63} max={80} tone="ok" label="Valor revelado" size="lg" grow showValue valueText="63" />
+        </span>
+      </Fig>
     </Section>
   );
 }

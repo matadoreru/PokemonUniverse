@@ -16,6 +16,10 @@
   background: var(--navy-2);
   overflow: hidden;
 }
+.lg {
+  height: 20px;
+  border-width: var(--ol-2-5);
+}
 .fill {
   position: absolute;
   inset: 0;
@@ -42,4 +46,21 @@
   font: 800 var(--fs-13) / 1 var(--font-text);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+/* Crece desde 0 hasta su proporción al montarse (`grow`). */
+.grow {
+  animation: grow var(--t-reveal) var(--ease) both;
+}
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(var(--ratio, 0));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grow {
+    animation: none;
+  }
 }
