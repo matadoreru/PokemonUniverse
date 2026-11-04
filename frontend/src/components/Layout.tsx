@@ -43,12 +43,12 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
           {user?.kind === 'USER' && (
             <>
               <span className="contents lg:hidden">
-                <PillLink nav to="/profile" variant="cream" size="round" aria-label={profileLabel} title={user.displayName}>
+                <PillLink nav to="/profile" size="round" aria-label={profileLabel} title={user.displayName}>
                   <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
                 </PillLink>
               </span>
               <span className="hidden lg:contents">
-                <PillLink nav to="/profile" variant="cream" aria-label={profileLabel} className={s.profile}>
+                <PillLink nav to="/profile" aria-label={profileLabel} className={s.profile}>
                   <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
                   <span className={s.name} title={user.displayName}>
                     {user.displayName}
@@ -65,7 +65,7 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
               </span>
             </span>
           )}
-          {user && <Pill size="round" variant="ghost" icon={LogOut} aria-label="Cerrar sesión" title="Cerrar sesión" onClick={onLogout} />}
+          {user && <Pill size="round" variant="danger" icon={LogOut} aria-label="Cerrar sesión" title="Cerrar sesión" onClick={onLogout} />}
         </HudPlate>
       </div>
       <div id={HEADER_NOTICES_ID} />

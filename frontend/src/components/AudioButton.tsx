@@ -11,7 +11,7 @@ export function AudioButton() {
   const stateId = useId();
   return (
     <>
-      <Pill variant="cream" size="round" icon={muted ? VolumeX : Volume2} aria-label="Ajustes de sonido" aria-describedby={stateId} aria-haspopup="dialog" onClick={() => setOpen(true)} />
+      <Pill size="round" icon={muted ? VolumeX : Volume2} aria-label="Ajustes de sonido" aria-describedby={stateId} aria-haspopup="dialog" onClick={() => setOpen(true)} />
       <span id={stateId} className="sr-only">{muted ? 'Sonido apagado' : 'Sonido activado'}</span>
       <AudioSettingsDialog open={open} onClose={() => setOpen(false)} />
     </>

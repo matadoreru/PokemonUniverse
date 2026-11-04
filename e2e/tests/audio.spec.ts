@@ -63,7 +63,7 @@ test('activar el sonido en los ajustes desbloquea y registra los efectos', async
   await dialogo.getByRole('slider', { name: 'Música' }).fill('40');
   await expect.poll(() => estado(page).then((e) => e.recent)).toContain('ui.tick');
 
-  // Un botón de la cabecera hecho con `Pill` suena como `ui.tap` (cream) o `ui.confirm`.
+  // Un botón de la cabecera hecho con `Pill` suena como `ui.confirm` (o `ui.tap` si es ghost o cream).
   await dialogo.getByRole('button', { name: 'Cerrar' }).click();
   await expect(dialogo).toBeHidden();
   await page.getByRole('button', { name: 'Ajustes de sonido' }).click();
