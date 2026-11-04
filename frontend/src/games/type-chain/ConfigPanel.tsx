@@ -2,6 +2,7 @@ import type { TypeChainConfig } from '@pokemon-universe/shared/public';
 import { Clock3, Link2 } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { Icon, Segmented } from '../../ui';
+import { typeChainCooldownText } from './presentation';
 import s from './ConfigPanel.module.css';
 
 const turnTimes = [10, 15, 20, 30, 45] as const;
@@ -20,7 +21,7 @@ export function TypeChainConfigPanel({ config, disabled, onChange }: { config: u
       <div>
         <strong className={s.ruleTitle}>Exactamente un tipo compartido</strong>
         <p className={s.help}>Los Pokémon usados quedan bloqueados globalmente. Si la cadena se atasca, el servidor crea otra sin eliminar a nadie.</p>
-        <span className={s.note}><Icon icon={Clock3} size={18} /> Cooldown de 1 segundo tras cada fallo</span>
+        <span className={s.note}><Icon icon={Clock3} size={18} /> Cooldown de {typeChainCooldownText} tras cada fallo</span>
       </div>
     </div>
   </fieldset>;

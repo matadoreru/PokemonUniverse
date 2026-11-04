@@ -100,7 +100,7 @@ function plateContent({ kind, game, player, verdict, countdown, optionCount }: {
   switch (kind) {
     case 'answer': return { icon: MousePointerClick, tone: 'warn', kicker: 'Tu respuesta', title: 'Elige una opción', text: `Pulsa una carta o las teclas 1 a ${optionCount}. Acertar rápido da más puntos.` };
     case 'locked': return { icon: Check, tone: 'ok', kicker: 'Respuesta bloqueada', title: `${triviaOptionLabel(game.options, player!.answer!.optionId)} bloqueada`, text: 'Esperando al resto de entrenadores.' };
-    case 'watching': return { icon: Eye, tone: 'info', kicker: 'Sin respuesta esta ronda', title: 'Estás observando', text: 'Los espectadores no responden: el marcador y la solución se ven en directo.' };
+    case 'watching': return { icon: Eye, tone: 'info', kicker: 'Sin respuesta esta ronda', title: 'Estás observando', text: 'Los espectadores no responden: el marcador se ve en directo y la solución, al revelar.' };
     case 'out': return { icon: Eye, tone: 'info', kicker: 'Estás observando', title: 'No respondes esta pregunta', text: 'Entraste con la partida empezada o sin conexión: jugarás en la siguiente.' };
     case 'reveal': return {
       icon: verdict?.tone === 'ok' ? CheckCircle2 : verdict?.tone === 'bad' ? (verdict.text === 'Sin respuesta' ? TimerOff : X) : Eye,

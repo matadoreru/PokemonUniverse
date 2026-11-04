@@ -1,6 +1,10 @@
 import type { PokemonType, TypeChainElimination, TypeChainEvent, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { pokemonTypeLabels } from '../../components/PokemonTypeBadge';
 
+/** Espera tras un intento que no vale (la del motor, `TYPE_CHAIN` en `packages/shared`): textos de ayuda y aviso. */
+export const TYPE_CHAIN_COOLDOWN_SECONDS = 1;
+export const typeChainCooldownText = `${TYPE_CHAIN_COOLDOWN_SECONDS} ${TYPE_CHAIN_COOLDOWN_SECONDS === 1 ? 'segundo' : 'segundos'}`;
+
 /** Motivo de un intento rechazado, en texto. */
 export const typeChainReasonLabels: Record<TypeChainInvalidReason, string> = {
   ALREADY_USED: 'Este Pokémon ya ha sido utilizado.',
@@ -96,7 +100,7 @@ export function typeChainAnnouncement({ game, player, kind, nameOf }: {
     ? `Tu turno: continúa desde ${current?.name ?? 'el Pokémon actual'}.`
     : game.currentPlayerId ? `Turno ${game.turnNumber}: le toca a ${nameOf(game.currentPlayerId)}.` : '';
   const attempt = player?.lastAttempt && kind === 'turn' && (game.turnStartedAt === null || player.lastAttempt.attemptedAt >= game.turnStartedAt)
-    ? `Incorrecto: ${player.lastAttempt.pokemonName}. ${typeChainReasonLabels[player.lastAttempt.reason]} Nuevo intento en 1 segundo.`
+    ? `Incorrecto: ${player.lastAttempt.pokemonName}. ${typeChainReasonLabels[player.lastAttempt.reason]} Nuevo intento en ${typeChainCooldownText}.`
     : '';
   return [attempt, event ? `${event.title}. ${event.text}.` : '', turn].filter(Boolean).join(' ');
 }

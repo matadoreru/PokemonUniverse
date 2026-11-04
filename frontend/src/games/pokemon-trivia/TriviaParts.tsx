@@ -63,6 +63,11 @@ export function TriviaBoard({ game, result, selected, pending, canAnswer, member
             attrs={{ 'aria-label': `${shortcut}. ${option.pokemon.name}`, 'aria-keyshortcuts': shortcut, 'data-trivia-card': option.id }} onSelect={() => onAnswer(option.id)}>{body}</Card>}
       </li>;
     })}</ol>
+    {/* Móvil: las cartas de la revelación van compactas (todas a la vista); la ficha de cada opción, aquí debajo. */}
+    {result && <ul className={s.mobileDetails} aria-label="Ficha de cada opción">{game.options.map((option, index) => {
+      const details = result.optionDetails[option.id];
+      return details ? <li key={option.id}><strong>{triviaShortcut(index)} · {option.pokemon.name}</strong> {triviaDetailsLine(details)}</li> : null;
+    })}</ul>}
   </div>;
 }
 

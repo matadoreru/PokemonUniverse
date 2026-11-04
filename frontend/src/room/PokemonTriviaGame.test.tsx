@@ -97,7 +97,7 @@ describe('Pokémon Trivia: pantalla', () => {
   it('revelación: correcta e incorrectas con icono y texto, la ficha, el dato y quién eligió qué', () => {
     const markup = render(revealed, { role: 'PLAYER', canAnswer: false, answer: { optionId: 'B', answeredAt: 2_000 } });
     expect(markup).toContain('Correcta: Charmander'); expect(markup.match(/>Correcta</g)).toHaveLength(1); expect(markup.match(/>Incorrecta</g)).toHaveLength(2);
-    expect(markup).toContain('Charmander tiene el Ataque más alto'); expect(markup).toContain('Ataque 52'); expect(markup).toContain('Gen 1 · PS 35');
+    expect(markup).toContain('Charmander tiene el Ataque más alto'); expect(markup).toContain('Ataque 52'); expect(markup).toContain('Gen 1 · PS 35'); expect(markup).toContain('aria-label="Ficha de cada opción"');
     expect(markup).toContain('Acertó</span><span'); expect(markup).toContain('Eligió 2 · Charmander'); expect(markup).toContain('Falló</span><span'); expect(markup).toContain('Eligió 1 · Pikachu'); expect(markup).toContain('Nadie la eligió');
     expect(markup).toContain('¡Correcta! Elegiste 2 · Charmander'); expect(markup).toContain('+180');
     expect(markup.match(/aria-live/g)).toHaveLength(1);

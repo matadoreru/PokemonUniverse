@@ -8,7 +8,7 @@ import { GameSkipSlot } from '../../room/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
-import { typeChainEliminationLabels, typeChainEventView, typeChainLinks, typeChainMemberStatus, typeChainReasonShort, typeChoiceText, typeLabel } from './presentation';
+import { typeChainCooldownText, typeChainEliminationLabels, typeChainEventView, typeChainLinks, typeChainMemberStatus, typeChainReasonShort, typeChoiceText, typeLabel } from './presentation';
 import s from './TypeChain.module.css';
 
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -138,7 +138,7 @@ export function TypeChainAttempts({ game, members, colors, className }: { game: 
   return <Panel title="Intentos fallidos" variant="dark" scroll scrollLabel="Intentos fallidos, el último arriba" {...(className ? { className } : {})}
     right={<Badge tone="cream">{String(attempts.length)}</Badge>}>
     {attempts.length === 0
-      ? <p className={s.empty}>Todavía no hay fallos. Un intento que no vale cuesta 1 segundo de espera.</p>
+      ? <p className={s.empty}>Todavía no hay fallos. Un intento que no vale cuesta {typeChainCooldownText} de espera.</p>
       : <ol className={s.rows} aria-label="Intentos fallidos">{attempts.map((attempt) => <li key={`${attempt.playerId}-${attempt.attemptedAt}`} data-testid="type-chain-attempt">
         <Row name={attempt.pokemon.name} color={playerColor(colors.get(attempt.playerId) ?? 0)}
           avatar={<img src={guessSprite(attempt.pokemon.sprite)} alt="" className={s.chainSprite} loading="lazy" />}

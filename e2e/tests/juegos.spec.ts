@@ -2835,7 +2835,8 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       }
 
       // El host responde con el atajo 1: su respuesta queda bloqueada (en texto) y el foco va al título de la placa.
-      await host.page.locator('body').click({ position: { x: 5, y: 5 } }).catch(() => undefined);
+      // El atajo no depende de dónde esté el foco (salvo en un campo): se quita del control que lo tenga.
+      await host.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
       await host.page.keyboard.press('1');
       await expect(host.page.getByRole('heading', { name: /^1 · .+ bloqueada$/ })).toBeVisible({ timeout: 5_000 });
       await expect(host.page.locator('#guess-plate-title')).toBeFocused();
@@ -2854,6 +2855,17 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       await expect(host.page.getByTestId('trivia-pickers').filter({ hasText: 'Tú' })).toHaveCount(1);
       test.info().annotations.push({ type: 'trivia', description: `ronda ${ronda}: ${await titulo.innerText()}` });
       // La revelación dura 4 s: un tamaño por pregunta.
+      if (ronda === 3) {
+        // A 390×844 sin desplazar: las cuatro cartas compactas con su marca y la correcta sin tapar por la placa.
+        await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+        await host.page.evaluate(() => window.scrollTo(0, 0));
+        const correcta = cartas.filter({ hasText: /Correcta/ });
+        await expect(correcta).toBeInViewport({ ratio: 1 });
+        for (const carta of await cartas.all()) {
+          await expect(carta).toBeInViewport({ ratio: 1 });
+          expect(await carta.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.bottom - 6)); }), 'carta de la revelación sin tapar').toBe(true);
+        }
+      }
       await capturarAnotando(host.page, `juego-pokemon-trivia-revelacion-${ronda}`, titulo.filter({ hasText: /^Correcta: / }), [SIZES[ronda - 1]!], ARCADE);
     }
 
