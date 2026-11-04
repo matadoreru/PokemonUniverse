@@ -247,6 +247,12 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     // A 390×844, sin desplazar, los 18 tipos caben en la pantalla inferior.
     await primero.setViewportSize({ width: 390, height: 844 });
     for (const tipo of ['Normal', 'Hada']) await expect(primero.getByRole('button', { name: `Elegir tipo ${tipo}` }), `${tipo} a la vista a 390×844`).toBeInViewport({ ratio: 1 });
+    // Y la pantalla inferior no tapa las tarjetas de los duelistas.
+    const abajo = (await primero.locator('[data-layer="screen-bottom"]').boundingBox())!;
+    for (const tarjeta of await primero.locator('[aria-labelledby="type-duel-pick-title"] [data-duelist]').all()) {
+      const caja = (await tarjeta.boundingBox())!;
+      expect(caja.y + caja.height, 'tarjeta de duelista entera sobre la pantalla inferior').toBeLessThanOrEqual(abajo.y);
+    }
     await primero.setViewportSize({ width: 1280, height: 720 });
 
     // Elige con el teclado: flecha a la derecha desde Normal y Enter; el foco pasa al título de la placa bloqueada.

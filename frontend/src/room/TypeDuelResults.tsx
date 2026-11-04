@@ -8,6 +8,7 @@ import { playerColor } from './player-color';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from '../games/type-duel/TypeDuelResults.module.css';
 
+/** Récord: quién y el valor grande; la línea de ayuda solo da el contexto (sin repetir el número). */
 function RecordTile({ title, icon, record, unit }: { title: string; icon: LucideIcon; record: TypeDuelRecord | null; unit: string }) {
   const names = record?.names.join(', ') ?? '';
   return <li className={s.record}>
@@ -15,10 +16,10 @@ function RecordTile({ title, icon, record, unit }: { title: string; icon: Lucide
     <div className={s.recordText}>
       <h3 className={s.kicker}>{title}</h3>
       {record
-        ? <><strong className={s.recordName} title={names}>{names}</strong><p className={s.help}>{record.value} {unit}</p></>
+        ? <><strong className={s.recordName} title={names}>{names}</strong><p className={s.help}>{unit}</p></>
         : <p className={s.help}>Nadie lo consiguió en esta partida.</p>}
     </div>
-    {record && <strong className={s.recordValue} aria-hidden="true">{record.value}</strong>}
+    {record && <strong className={s.recordValue}>{record.value}</strong>}
   </li>;
 }
 
@@ -49,9 +50,9 @@ export function TypeDuelResults({ room, selfId, onLobby, onEnd }: { room: RoomVi
   const aside = <Panel variant="cream" as="section" aria-labelledby="type-duel-records-title" bodyClassName={cx(s.records)}>
     <h2 id="type-duel-records-title" className={s.sectionTitle}>Récords de la partida</h2>
     <ul className={s.recordList}>
-      <RecordTile title="Más duelos ganados" icon={Swords} record={records.wins} unit={records.wins?.value === '1' ? 'duelo' : 'duelos'} />
-      <RecordTile title="Mejor porcentaje" icon={Percent} record={records.winRate} unit="de duelos ganados" />
-      <RecordTile title="Acierto más rápido" icon={Timer} record={records.fastest} unit="de media" />
+      <RecordTile title="Más duelos ganados" icon={Swords} record={records.wins} unit={records.wins?.value === '1' ? 'duelo ganado' : 'duelos ganados'} />
+      <RecordTile title="Mejor porcentaje" icon={Percent} record={records.winRate} unit="de los duelos jugados" />
+      <RecordTile title="Acierto más rápido" icon={Timer} record={records.fastest} unit="de media por acierto" />
     </ul>
   </Panel>;
   const actions = host

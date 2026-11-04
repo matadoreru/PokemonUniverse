@@ -132,6 +132,7 @@ describe('type-duel presentation', () => {
   });
   it('stats line and records (ties together, nobody when nobody won)', () => {
     expect(typeDuelStatsLine({ duelsPlayed: 2, duelsWon: 1, winRate: 50, incorrectAttempts: 1, averageCorrectTimeMs: 4_200 })).toBe('Ganó 1 de 2 · 50% · 1 fallo · media 4.2s');
+    expect(typeDuelStatsLine({ duelsPlayed: 0, duelsWon: 0, winRate: 0, incorrectAttempts: 0, averageCorrectTimeMs: 0 })).toBe('No jugó ningún duelo');
     const records = typeDuelRecords([
       { name: 'Ana', stats: { duelsWon: 2, winRate: 100, averageCorrectTimeMs: 3_000 } },
       { name: 'Bruno', stats: { duelsWon: 2, winRate: 67, averageCorrectTimeMs: 5_000 } },

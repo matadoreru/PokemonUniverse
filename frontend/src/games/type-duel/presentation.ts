@@ -138,6 +138,8 @@ export function typeGridMove(index: number, key: string, columns: number, count:
 /** Línea de estadísticas de un jugador en los resultados. */
 export function typeDuelStatsLine(stats: Readonly<Record<string, number | undefined>>): string {
   const played = stats.duelsPlayed ?? 0;
+  // Sin duelos, un «0 %» engañaría: solo se dice que no le tocó.
+  if (played === 0) return 'No jugó ningún duelo';
   const won = stats.duelsWon ?? 0;
   const misses = stats.incorrectAttempts ?? 0;
   const average = stats.averageCorrectTimeMs ?? 0;

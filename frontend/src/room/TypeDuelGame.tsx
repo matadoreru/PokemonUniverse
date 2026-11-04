@@ -101,7 +101,7 @@ export function TypeDuelGame({ room, selfId, onAction }: { room: RoomView; selfI
           ? <TypeDuelResultScene lastRound={lastRound} title={resultText.title} detail={resultText.detail} types={resultTypes} winningAttempt={winningAttempt} winnerName={lastRound.winnerId ? nameOf(lastRound.winnerId) : null} />
           : null;
 
-  const top = <div className={cx(s.top, kind === 'search' && s.topSearch, kind === 'pick' && s.topPick)}>
+  const top = <div className={s.top}>
     <TypeDuelHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} phaseLabel={typeDuelPhaseLabel(game.phase)} heading={typeDuelHeading(game.phase, names)} timer={timer} />
     {scene}
   </div>;

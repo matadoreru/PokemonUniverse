@@ -102,6 +102,9 @@ p { text-wrap: pretty; }
 /* Foco visible siempre: anillo de 3 px con 2 px de separación; sobre amarillo, blanco. */
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 .btn-secondary:focus-visible { outline-color: var(--focus-ring-on-yellow); }
+/* Títulos que reciben el foco por programa (`tabIndex={-1}`, p. ej. `room/focus-transition.ts`): no son controles y no
+   llevan anillo (si no, queda pintado entre fases). Solo títulos: los botones con -1 (foco itinerante) conservan el suyo. */
+:is(h1, h2, h3, h4, h5, h6)[tabindex="-1"]:focus { outline: none; }
 ::selection { color: var(--navy-2); background: var(--yellow); }
 ::-webkit-scrollbar { width: .65rem; height: .65rem; }
 ::-webkit-scrollbar-track { background: var(--navy-2); }

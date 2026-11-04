@@ -373,15 +373,6 @@
   font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
   color: var(--ink);
 }
-/* El título recibe foco por programa al votar o revelar: anillo solo con teclado, como el resto del catálogo. */
-.actionTitle:focus {
-  outline: none;
-}
-.actionTitle:focus-visible {
-  outline: var(--ol-3) solid var(--navy);
-  outline-offset: 2px;
-  border-radius: var(--r-badge);
-}
 .help {
   margin-top: var(--sp-1);
   font: 700 var(--fs-13) / 1.35 var(--font-text);
