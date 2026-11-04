@@ -1,44 +1,96 @@
-import type { PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Eye, Headphones, Play, RotateCcw, Volume2, XCircle } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { audio } from '../audio';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import type { PokemonCryQuizConfig, PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { Play, RotateCcw, Volume2 } from 'lucide-react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { CRY_PLAY_FAILED, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
+import { Chip, cx, Pill } from '../ui';
+import {
+  GuessAttemptsFeed, GuessClue, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+} from './guess-kit';
+import s from '../games/pokemon-cry-quiz/Cry.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
+const GAME_NAME = 'Adivina el Grito';
+const QUESTION = '¿De quién es este grito?';
+const SCORING = 'Escúchalo las veces que quieras: cuanto antes aciertes, más puntos.';
+/** Alturas (y desfase del latido) de las barras del ecualizador decorativo. */
+const WAVES = [38, 62, 84, 56, 100, 72, 46, 90, 64, 34, 58].map((height, index) => ({ height, delay: (index * 137) % 600 }));
 
-function CryPlayer({ source, replay = false }: { source: string; replay?: boolean }) {
-  const audioRef = useRef<HTMLAudioElement>(null); const [playing, setPlaying] = useState(false); const [error, setError] = useState('');
-  useEffect(() => { setPlaying(false); setError(''); audioRef.current?.load(); }, [source]);
-  // La música baja mientras suena el grito; al cambiar de grito o desmontar (sin `pause` fiable) vuelve.
-  useEffect(() => () => { audio.music.duck(false); }, [source]);
-  const play = async () => { try { setError(''); if (!audioRef.current) return; audioRef.current.currentTime = 0; await audioRef.current.play(); setPlaying(true); } catch { setError('No se pudo reproducir el audio. Comprueba el volumen o vuelve a intentarlo.'); } };
-  return <div className="text-center"><audio ref={audioRef} src={source} preload="auto" onPlay={() => audio.music.duck(true)} onPause={() => audio.music.duck(false)} onEnded={() => { setPlaying(false); audio.music.duck(false); }} onError={() => { setError('El grito no está disponible temporalmente.'); audio.music.duck(false); }} /><button type="button" onClick={() => void play()} className={`mx-auto grid aspect-square w-40 place-items-center rounded-full border transition-[transform,background-color,border-color] duration-200 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-aqua sm:w-48 ${playing ? 'border-electric bg-electric/15 text-electric' : 'border-aqua/50 bg-aqua/10 text-aqua'}`} aria-label={replay ? 'Volver a escuchar el grito' : 'Reproducir grito'}>{playing ? <Volume2 size={64} className="animate-pulse motion-reduce:animate-none" /> : replay ? <RotateCcw size={58} /> : <Play size={64} className="translate-x-1" />}</button><strong className="mt-3 block font-display text-xl">{playing ? 'Escuchando…' : replay ? 'Volver a escuchar' : 'Pulsa para escuchar'}</strong>{error && <p className="mt-2 text-sm font-bold text-berry" role="alert">{error}</p>}</div>;
+/**
+ * El grito: un `<audio>` con la ruta opaca de la ronda (no dice qué Pokémon es) y un `Pill` grande que dice su estado
+ * en texto («Reproducir grito» / «Sonando…»). Nunca suena solo: hace falta pulsar. Mientras suena, la música de la
+ * sala baja (F2). En la ronda va con un ecualizador decorativo que llena la zona de la pista.
+ */
+export function CryPlayer({ source, replay = false }: { source: string; replay?: boolean }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [error, setError] = useState('');
+  // Al cambiar de grito se recarga; al montarse no (el `src` ya lo precarga: otra carga lo reiniciaría).
+  const loaded = useRef(source);
+  useEffect(() => {
+    if (loaded.current === source) return;
+    loaded.current = source;
+    setPlaying(false); setError(''); audioRef.current?.load();
+  }, [source]);
+  useEffect(() => releaseCryDuck, [source]);
+  const events = cryAudioEvents({ playing: setPlaying, error: setError });
+  const play = async () => {
+    const element = audioRef.current;
+    if (!element) return;
+    try { setError(''); element.currentTime = 0; await element.play(); } catch { setError(CRY_PLAY_FAILED); }
+  };
+  const label = playing ? 'Sonando…' : replay ? 'Volver a escuchar' : 'Reproducir grito';
+  const icon = playing ? Volume2 : replay ? RotateCcw : Play;
+  return <div className={replay ? s.replay : s.player}>
+    {/* `preload="auto"`: el grito llega antes de pulsar (sin `autoplay`). */}
+    <audio ref={audioRef} src={source} preload="auto" {...events} />
+    {!replay && <span className={cx(s.waves, playing && s.on)} aria-hidden="true">
+      {WAVES.map((wave, index) => <i key={index} style={{ '--h': `${wave.height}%`, '--d': `${wave.delay}ms` } as CSSProperties} />)}
+    </span>}
+    {replay
+      ? <Pill variant="yellow" icon={icon} onClick={() => void play()} data-testid="cry-play">{label}</Pill>
+      : <Pill variant="yellow" size="main" icon={icon} className={s.play} onClick={() => void play()} data-testid="cry-play">{label}</Pill>}
+    {error && <p className={s.error} role="alert"><Chip tone="bad">{error}</Chip></p>}
+  </div>;
 }
 
-function GuessArea({ pokemon, poolLoading, onRetry, loadError, game, player, participating, serverOffset, onAction }: { pokemon: readonly PokemonSearchOption[]; poolLoading: boolean; onRetry(): void; loadError: string; game: PokemonCryQuizPublicState; player: PokemonCryQuizPlayerState; participating: boolean; serverOffset: number; onAction(action: unknown): Promise<void> }) {
-  const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
-  if (!participating) return <div className="grid min-h-36 place-items-center text-center"><div><Eye className="mx-auto text-aqua" /><strong className="mt-2 block font-display text-xl">Estás observando</strong><p className="text-sm font-bold text-ink/60">Puedes escuchar el grito y seguir los resultados.</p></div></div>;
-  if (player.solved) return <div className="grid min-h-36 place-items-center rounded-xl bg-leaf/[.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={42} /><strong className="block font-display text-2xl text-leaf">¡Grito acertado!</strong><p className="font-bold text-ink/65">{player.solveOrder}.º · +{player.roundPoints} puntos</p></div></div>;
-  return <div><div className="mb-2 flex items-center justify-between gap-2"><h2 className="font-display text-xl">¿Quién es?</h2><span className="text-xs font-bold text-ink/60">{player.attemptCount} intento{player.attemptCount === 1 ? '' : 's'}</span></div>{player.lastAttempt?.result === 'INCORRECT' && <p className="mb-2 flex items-center justify-between rounded-xl bg-berry/[.08] px-3 py-2 text-sm font-extrabold text-berry" role="status"><span className="flex items-center gap-1"><XCircle size={17} /> Incorrecto</span><span>{cooldownMs > 0 ? `${(cooldownMs / 1_000).toFixed(1)}s` : 'Prueba otra vez'}</span></p>}<PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={!player.canGuess} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={`Buscar respuesta para el grito ${game.roundNumber}`} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} /></div>;
-}
-
-function PlayerStatus({ room, game }: { room: RoomView; game: PokemonCryQuizPublicState }) {
-  const solved = new Map(game.solvedPlayers.map((entry) => [entry.playerId, entry.solveOrder]));
-  return <aside className="rounded-xl border border-ink/10 bg-surface p-3"><h2 className="mb-2 font-display text-lg">Jugadores</h2><div className="space-y-1.5">{room.members.map((member) => <div key={member.id} className="flex items-center gap-2 rounded-lg bg-ink/[.035] p-2"><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="xs" /><strong className="min-w-0 flex-1 truncate text-sm">{member.displayName}</strong><span className="text-xs font-bold text-ink/60">{game.scores[member.id] ?? 0} pts</span>{solved.has(member.id) && <CheckCircle2 className="text-leaf" size={16} />}</div>)}</div></aside>;
-}
-
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: PokemonCryQuizPublicState; serverOffset: number }) {
-  const result = game.lastRound!;
-  return <section className="mx-auto max-w-5xl px-3 py-5 sm:px-5"><header className="mb-4 flex items-start justify-between gap-3"><div><p className="font-bold text-leaf">Ronda {game.roundNumber} resuelta</p><h1 className="font-display text-3xl sm:text-4xl">¡Era {result.pokemon.name}!</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="grid gap-5 rounded-2xl border border-leaf/25 bg-surface p-4 sm:p-6 md:grid-cols-[18rem_1fr]"><div className="text-center"><img src={result.pokemon.sprite} alt={result.pokemon.name} className="mx-auto h-52 w-52 object-contain [image-rendering:pixelated]" /><strong className="font-display text-2xl">{result.pokemon.name}</strong><p className="text-sm font-bold text-ink/60">Generación {result.pokemon.generation} · grito {result.cryVersion === 'LATEST' ? 'actual' : 'clásico'}</p><div className="mt-3"><CryPlayer source={result.cryUrl} replay /></div></div><div className="space-y-2">{room.members.filter((member) => member.role === 'PLAYER').sort((a, b) => (result.solves[a.id]?.solveOrder ?? Infinity) - (result.solves[b.id]?.solveOrder ?? Infinity)).map((member) => { const solve = result.solves[member.id]; return <article key={member.id} className={`flex items-center gap-3 rounded-xl border p-3 ${solve ? 'border-leaf/30 bg-leaf/[.07]' : 'border-ink/10'}`}><Avatar name={member.displayName} avatar={member.avatar} size="sm" /><div className="min-w-0 flex-1"><strong className="block truncate">{member.displayName}</strong><small className="font-bold text-ink/60">{solve ? `${solve.solveOrder}.º · ${(solve.elapsedMs / 1_000).toFixed(1)}s · ${solve.attempts} intentos` : 'No acertó'}</small></div><strong className={solve ? 'text-leaf' : 'text-ink/40'}>+{solve?.points ?? 0}</strong></article>; })}</div></div></section>;
-}
-
+/**
+ * Adivina el Grito con el kit de adivinar (spec §2 y §6 «Juegos»). Arriba se escucha: la placa de la ronda y el grito
+ * (botón grande con su estado en texto y un ecualizador que llena el sitio); en la revelación, la carta del Pokémon con
+ * el grito para volver a oírlo. Abajo se actúa: el buscador, el acierto con sus puntos o el veredicto. Al lado, el
+ * marcador y los intentos (o los puntos de la ronda).
+ *
+ * Privacidad: el grito llega por una ruta opaca (`/options/cry/audio`, sin nombre ni número); la respuesta solo llega
+ * en `lastRound`, que el servidor manda al revelar, y la pantalla solo la usa en `ROUND_RESULTS`.
+ */
 export function PokemonCryQuizGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as PokemonCryQuizPublicState; const player = room.gamePlayerState as PokemonCryQuizPlayerState; const config = room.selectedGameConfig as { generations: number[]; includeRegionalForms: boolean }; const offset = useServerOffset(room.serverNow); const { pokemon, error, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: config.includeRegionalForms }); const self = room.members.find((member) => member.id === selfId); const participating = self?.role === 'PLAYER';
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={offset} />;
-  return <section className="mx-auto max-w-6xl overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex items-center justify-between gap-3"><div><p className="text-xs font-extrabold text-ink/60">Ronda {game.roundNumber} / {game.totalRounds}</p><h1 className="font-display text-2xl sm:text-3xl">Adivina el Grito</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={offset} /></header><div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><main className="rounded-2xl border border-ink/10 bg-surface"><div className="grid min-h-80 place-items-center border-b border-ink/10 p-5"><div><Headphones className="mx-auto mb-3 text-ink/25" size={42} />{game.cryUrl && <CryPlayer source={game.cryUrl} />}</div></div><div className="p-4 sm:p-5"><GuessArea pokemon={pokemon} poolLoading={poolLoading} onRetry={retryPool} loadError={error} game={game} player={player} participating={Boolean(participating)} serverOffset={offset} onAction={onAction} /></div></main><PlayerStatus room={room} game={game} /></div></section>;
+  const game = room.game as PokemonCryQuizPublicState;
+  const player = room.gamePlayerState as PokemonCryQuizPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonCryQuizConfig> | null;
+  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeRegionalForms ?? false });
+  const round = useGuessRound({ room, selfId, game, player, participating: player?.role === 'PLAYER', answer: (result) => result.pokemon.name, roundSeconds: config?.roundSeconds });
+  const { members, colors, lastRound, announcement, timer } = round;
+  const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce su grito';
+
+  const clue = lastRound
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {cryVersionLabel(lastRound.cryVersion)}</>}
+      clueTitle="Su grito" clue={<CryPlayer source={lastRound.cryUrl} replay />} />
+    : <GuessClue label="Grito del Pokémon misterioso" variant="dark" className={s.stage}>
+      {game.cryUrl && <CryPlayer source={game.cryUrl} />}
+    </GuessClue>;
+
+  const side = lastRound
+    ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
+      detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
+    : <>
+      <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
+      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+    </>;
+
+  const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME} solvedTitle="¡Grito acertado!"
+    watchingText="Puedes escuchar el grito y seguir el marcador."
+    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el grito ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
+
+  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+    announcement={announcement} clue={clue} side={side} bottom={bottom} />;
 }

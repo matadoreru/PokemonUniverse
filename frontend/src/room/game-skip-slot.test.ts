@@ -50,6 +50,12 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...palette, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...palette, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Adivina el Grito la lleva dentro de su pantalla salvo en los resultados', () => {
+    const cry = { ...(base as object), selectedGameId: 'pokemon-cry-quiz', game: { gameId: 'pokemon-cry-quiz' } };
+    expect(skipRowInLayout(cry as never)).toBe(false);
+    expect(skipRowInLayout({ ...cry, phase: 'ROUND_RESULTS' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...cry, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

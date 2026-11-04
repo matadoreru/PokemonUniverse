@@ -1,0 +1,82 @@
+/*
+ * Adivina el Grito: la zona de la pista es un ecualizador decorativo que llena el sitio libre (unidades del contenedor
+ * del cuerpo de `GuessClue`) y, debajo, el botón grande para reproducir el grito. Mientras suena, las barras laten
+ * (solo `transform`; quietas con la reducción de movimiento y con `body.static`).
+ */
+.stage > div {
+  padding: var(--sp-3);
+  background: radial-gradient(circle at center, rgb(255 210 63 / 0.18) 0, transparent 62%);
+}
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(var(--sp-2), 4cqh, var(--sp-6));
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.waves {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 1.6cqw, 22px);
+  flex: 1 1 auto;
+  width: min(88cqw, 64rem);
+  min-height: 0;
+  max-height: 34rem;
+}
+.waves > i {
+  flex: 1 1 0;
+  max-width: 4.5rem;
+  height: var(--h);
+  min-height: 6px;
+  border: var(--ol-2) solid var(--navy-2);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--yellow-l), var(--yellow) 55%, var(--yellow-d));
+  box-shadow: var(--sh-hard-3);
+  transform: scaleY(0.45);
+  transform-origin: center;
+  transition: transform var(--t-reveal) var(--ease);
+}
+.on > i {
+  animation: pulse 900ms var(--ease) var(--d, 0ms) infinite alternate;
+}
+@keyframes pulse {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .on > i {
+    animation: none;
+    transform: scaleY(1);
+  }
+}
+:global(body.static) .on > i {
+  transform: scaleY(1);
+}
+.play {
+  flex: none;
+}
+/* Móvil y tableta: el botón arriba, para que siga a la vista con la bandeja del buscador abierta encima. */
+@media (max-width: 1023px) {
+  .player {
+    flex-direction: column-reverse;
+  }
+}
+.error {
+  flex: none;
+}
+
+/* Revelación: el grito para volver a escucharlo, junto a la carta. */
+.replay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
