@@ -1,21 +1,47 @@
 import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, PaginatedAdminResponse } from '@pokemon-universe/shared/public';
-import { Activity, CircleAlert, Database, DoorOpen, FileClock, Gamepad2, MessageSquareWarning, RefreshCw, Search, ShieldCheck, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { Activity, CircleAlert, Database, DoorOpen, FileClock, Gamepad2, MessageSquareWarning, Users, type LucideIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { initialAdminTab, formatAdminTime, type AdminTab, type RoomMode } from '../admin/admin-format';
 import { AdminChangelogPanel } from '../admin/AdminChangelogPanel';
 import { AdminFeedbackPanel } from '../admin/AdminFeedbackPanel';
+import { useListDetail } from '../admin/AdminParts';
+import { AdminRecordsView, type AdminRecords } from '../admin/AdminRecords';
+import { AdminSyncView, type SyncSource } from '../admin/AdminSyncPanel';
 import { api } from '../lib/api';
+import { Dialog, HudPlate, Icon, Screen, TabPanel, Tabs, type TabItem } from '../ui';
 
-type Tab = 'rooms' | 'games' | 'users' | 'changelog' | 'feedback' | 'sync';
-type RoomMode = 'active' | 'history';
 const emptyPage = <T,>(): PaginatedAdminResponse<T> => ({ items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 });
-function initialTab(): Tab {
-  if (typeof window === 'undefined') return 'rooms';
-  const requested = new URLSearchParams(window.location.search).get('tab');
-  return requested === 'games' || requested === 'users' || requested === 'changelog' || requested === 'feedback' || requested === 'sync' ? requested : 'rooms';
+const TAB_ID = 'admin';
+const TABS: TabItem<AdminTab>[] = [
+  { key: 'rooms', label: 'Salas', icon: DoorOpen },
+  { key: 'changelog', label: 'Changelog', icon: FileClock },
+  { key: 'feedback', label: 'Feedback', icon: MessageSquareWarning },
+  { key: 'games', label: 'Partidas', icon: Gamepad2 },
+  { key: 'users', label: 'Usuarios', icon: Users },
+  { key: 'sync', label: 'Datos', icon: Database },
+];
+
+/** Cifra del resumen en la placa: icono, número grande con numerales tabulares y su etiqueta. */
+function SummaryFigure({ icon, label, value }: { icon: LucideIcon; label: string; value: number | undefined }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <Icon icon={icon} size={22} className="shrink-0 text-[color:var(--sky-2)]" />
+      {/* El número va encima de su etiqueta: en el DOM, `dt` y luego `dd` (orden válido de `<dl>`). */}
+      <div className="flex min-w-0 flex-col-reverse">
+        <dt className="text-13 font-extrabold text-[color:var(--sky-2)]">{label}</dt>
+        <dd className="ol font-display text-26 font-extrabold leading-none tabular-nums text-[color:var(--yellow)]">{value ?? '—'}</dd>
+      </div>
+    </div>
+  );
 }
 
+/**
+ * Administración (spec §2, página larga): la placa con el título y las cifras del resumen; debajo, las secciones en
+ * pestañas. Cada sección es una lista y una ficha con su propio scroll (en el móvil, la lista y luego la ficha con
+ * «Volver»). Hace las mismas llamadas a `/api/admin/*` que antes.
+ */
 export function AdminPage() {
-  const [tab, setTab] = useState<Tab>(initialTab);
+  const [tab, setTab] = useState<AdminTab>(() => (typeof window === 'undefined' ? 'rooms' : initialAdminTab(window.location.search)));
   const [roomMode, setRoomMode] = useState<RoomMode>('active');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
@@ -29,15 +55,19 @@ export function AdminPage() {
   const [syncing, setSyncing] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [reload, setReload] = useState(0);
   const [changelogDirty, setChangelogDirty] = useState(false);
+  const [pendingTab, setPendingTab] = useState<AdminTab | null>(null);
+  const records = useListDetail(tab === 'rooms' ? roomMode : tab);
+  const { reset: resetDetail } = records;
 
-  function changeTab(next: Tab) {
+  function changeTab(next: AdminTab) {
     if (next === tab) return;
-    if (tab === 'changelog' && changelogDirty && !window.confirm('Hay cambios del changelog sin guardar. ¿Quieres descartarlos?')) return;
+    if (tab === 'changelog' && changelogDirty) { setPendingTab(next); return; }
     setTab(next);
   }
 
-  useEffect(() => { setPage(1); setStatus(''); setSearch(''); }, [tab, roomMode]);
+  useEffect(() => { setPage(1); setStatus(''); setSearch(''); resetDetail(); }, [tab, roomMode, resetDetail]);
 
   useEffect(() => {
     let active = true;
@@ -70,7 +100,7 @@ export function AdminPage() {
         .finally(() => { if (active) setLoading(false); });
     }, 250);
     return () => { active = false; clearTimeout(timer); };
-  }, [page, roomMode, search, status, tab]);
+  }, [page, reload, roomMode, search, status, tab]);
 
   useEffect(() => {
     if (tab !== 'sync') return;
@@ -88,15 +118,7 @@ export function AdminPage() {
     return () => window.clearInterval(interval);
   }, [page, roomMode, search, tab]);
 
-  const currentPage = tab === 'rooms' ? (roomMode === 'active' ? rooms : roomHistory) : tab === 'games' ? games : users;
-  const statusOptions = useMemo(() => tab === 'users'
-    ? [['', 'Todos los roles'], ['USER', 'Usuarios'], ['ADMIN', 'Administradores']]
-    : tab === 'games'
-      ? [['', 'Todos los estados'], ['IN_PROGRESS', 'En progreso'], ['COMPLETED', 'Completadas'], ['ABANDONED', 'Abandonadas'], ['INTERRUPTED', 'Interrumpidas']]
-      : [['', 'Todos los estados'], ['ACTIVE', 'Activas'], ['CLOSED', 'Cerradas'], ['INTERRUPTED', 'Interrumpidas']], [tab]);
-
-  async function triggerSync(source: 'pokemon' | 'tcg' | 'all', full = false) {
-    if (full && !window.confirm('El Full Sync vuelve a consultar todo el dataset. Los datos actuales se conservarán si la fuente falla. ¿Quieres continuar?')) return;
+  async function triggerSync(source: SyncSource, full = false) {
     setSyncing(source); setError('');
     try {
       await api(`/admin/data-sync/${source}`, { method: 'POST', body: JSON.stringify({ full, confirmFull: full }) });
@@ -105,92 +127,54 @@ export function AdminPage() {
     finally { setSyncing(''); }
   }
 
-  return <section className="page-shell">
-    <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-      <div><h1 className="font-display text-3xl font-bold sm:text-4xl">Administración de Pokémon Universe</h1><p className="mt-1 font-semibold text-ink/65">Gestiona versiones y feedback, y consulta la actividad de salas, partidas y cuentas.</p></div>
-      {summary && <p className="text-sm font-bold text-ink/55">Actualizado {formatTime(summary.updatedAt)}</p>}
-    </header>
+  const retry = () => setReload((current) => current + 1);
+  const recordsData: AdminRecords = tab === 'rooms'
+    ? (roomMode === 'active' ? { kind: 'active', items: rooms.items } : { kind: 'history', items: roomHistory.items })
+    : tab === 'games' ? { kind: 'games', items: games.items } : { kind: 'users', items: users.items };
+  const currentPage = tab === 'rooms' ? (roomMode === 'active' ? rooms : roomHistory) : tab === 'games' ? games : users;
 
-    <dl className="panel mb-5 grid grid-cols-2 divide-x divide-y divide-ink/10 overflow-hidden md:grid-cols-4 md:divide-y-0">
-      <Summary icon={DoorOpen} label="Salas activas" value={summary?.activeRooms} tone="text-aqua" />
-      <Summary icon={Activity} label="En juego" value={summary?.gamesInProgress} tone="text-leaf" />
-      <Summary icon={Users} label="Usuarios" value={summary?.registeredUsers} tone="text-berry" />
-      <Summary icon={CircleAlert} label="Interrumpidas hoy" value={summary?.interruptedToday} tone="text-electric" />
-    </dl>
+  return (
+    <Screen fill>
+      <HudPlate className="w-full !flex-col !items-stretch !gap-4 !px-5 !py-4 lg:!flex-row lg:!items-center lg:!justify-between">
+        <div className="min-w-0">
+          <h1 className="ol2 font-display text-26 font-extrabold leading-tight text-[color:var(--white)] 2xl:text-34">Administración de Pokémon Universe</h1>
+          <p className="text-13 font-extrabold text-[color:var(--sky-2)]">{summary ? `Actualizado ${formatAdminTime(summary.updatedAt)}` : 'Versiones, feedback, salas, partidas y cuentas'}</p>
+        </div>
+        <dl className="grid grid-cols-2 gap-x-5 gap-y-3 sm:grid-cols-4" aria-label="Resumen">
+          <SummaryFigure icon={DoorOpen} label="Salas activas" value={summary?.activeRooms} />
+          <SummaryFigure icon={Activity} label="En juego" value={summary?.gamesInProgress} />
+          <SummaryFigure icon={Users} label="Usuarios" value={summary?.registeredUsers} />
+          <SummaryFigure icon={CircleAlert} label="Interrumpidas hoy" value={summary?.interruptedToday} />
+        </dl>
+      </HudPlate>
 
-    <div className="mb-4 flex gap-1 overflow-x-auto border-b border-ink/10" role="tablist" aria-label="Secciones de administración">
-      {([['rooms', 'Salas', DoorOpen], ['changelog', 'Changelog', FileClock], ['feedback', 'Feedback', MessageSquareWarning], ['games', 'Partidas', Gamepad2], ['users', 'Usuarios', Users], ['sync', 'Datos', Database]] as const).map(([id, label, Icon]) => <button key={id} role="tab" aria-selected={tab === id} onClick={() => changeTab(id)} className={`inline-flex min-h-11 min-w-max items-center gap-2 border-b-2 px-4 text-sm font-extrabold transition ${tab === id ? 'border-berry text-ink' : 'border-transparent text-ink/55 hover:text-ink'}`}><Icon size={18} />{label}</button>)}
-    </div>
-
-    {tab === 'rooms' && <div className="mb-4 inline-flex rounded-xl bg-ink/[.06] p-1" aria-label="Tipo de salas">
-      <button className={`min-h-11 rounded-lg px-4 text-sm font-extrabold ${roomMode === 'active' ? 'bg-surface shadow-card' : 'text-ink/60'}`} onClick={() => setRoomMode('active')}>Activas</button>
-      <button className={`min-h-11 rounded-lg px-4 text-sm font-extrabold ${roomMode === 'history' ? 'bg-surface shadow-card' : 'text-ink/60'}`} onClick={() => setRoomMode('history')}>Historial</button>
-    </div>}
-
-    {tab === 'sync' ? <DataSyncPanel items={syncSources} loading={loading} error={error} syncing={syncing} onSync={triggerSync} /> : tab === 'changelog' ? <AdminChangelogPanel onDirtyChange={setChangelogDirty} /> : tab === 'feedback' ? <AdminFeedbackPanel /> : <div className="panel overflow-hidden">
-      <div className="flex flex-col gap-3 border-b border-ink/10 p-3 sm:flex-row sm:items-center">
-        <label className="relative flex-1"><span className="sr-only">Buscar</span><Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink/45" size={18} /><input className="field pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tab === 'users' ? 'Buscar usuario o email' : 'Buscar sala, anfitrión o jugador'} /></label>
-        {!(tab === 'rooms' && roomMode === 'active') && <label><span className="sr-only">Filtrar estado</span><select className="field min-w-48" value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }}>{statusOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>}
+      <div className="flex flex-col lg:min-h-0 lg:flex-1">
+        <Tabs items={TABS} active={tab} onChange={changeTab} label="Secciones de administración" idBase={TAB_ID} className="max-sm:!gap-1.5 max-sm:!px-1 max-sm:[&_svg]:hidden" />
+        <TabPanel idBase={TAB_ID} tabKey={tab} className="flex flex-col lg:min-h-0 lg:flex-1">
+          {tab === 'sync' ? (
+            <AdminSyncView items={syncSources} loading={loading} error={error} syncing={syncing} onSync={(source, full) => void triggerSync(source, full)} onRetry={retry} />
+          ) : tab === 'changelog' ? (
+            <AdminChangelogPanel onDirtyChange={setChangelogDirty} />
+          ) : tab === 'feedback' ? (
+            <AdminFeedbackPanel />
+          ) : (
+            <AdminRecordsView
+              tab={tab} roomMode={roomMode} records={recordsData} page={currentPage.page} totalPages={currentPage.totalPages} total={currentPage.total}
+              loading={loading} error={error} search={search} status={status} selectedId={records.selectedId} detailOpen={records.detailOpen} titleRef={records.titleRef}
+              onRoomMode={setRoomMode} onSearch={setSearch} onStatus={(value) => { setStatus(value); setPage(1); }} onPage={setPage} onRetry={retry} onOpen={records.open} onBack={records.back}
+            />
+          )}
+        </TabPanel>
       </div>
-      {error ? <p className="status-error m-4" role="alert">{error}</p> : loading ? <LoadingRows /> : currentPage.total === 0 ? <div className="empty-state m-4"><ShieldCheck className="mx-auto mb-2" /><strong>No hay registros con estos filtros.</strong></div> : <>
-        {tab === 'rooms' && roomMode === 'active' && <ActiveRooms items={rooms.items} />}
-        {tab === 'rooms' && roomMode === 'history' && <RoomHistory items={roomHistory.items} />}
-        {tab === 'games' && <Games items={games.items} />}
-        {tab === 'users' && <UsersTable items={users.items} />}
-        <Pagination page={currentPage.page} totalPages={currentPage.totalPages} total={currentPage.total} onPage={setPage} />
-      </>}
-    </div>}
-  </section>;
-}
 
-function Summary({ icon: Icon, label, value, tone }: { icon: typeof Users; label: string; value: number | undefined; tone: string }) {
-  return <div className="flex min-h-20 items-center gap-3 p-3 sm:p-4"><Icon className={tone} size={20} /><div><dt className="text-xs font-extrabold text-ink/55">{label}</dt><dd className="font-display text-2xl font-bold">{value ?? '—'}</dd></div></div>;
+      <Dialog
+        open={pendingTab !== null}
+        title="¿Descartar los cambios del changelog?"
+        onClose={() => setPendingTab(null)}
+        actions={[{ label: 'Descartar', variant: 'danger', onClick: () => { if (pendingTab) setTab(pendingTab); } }, { label: 'Seguir editando', variant: 'cream', autoFocus: true, onClick: () => undefined }]}
+      >
+        <p>Hay cambios del changelog sin guardar. Si cambias de sección, se perderán.</p>
+      </Dialog>
+    </Screen>
+  );
 }
-
-function Status({ value }: { value: string }) {
-  const labels: Record<string, string> = { ACTIVE: 'Activa', CLOSED: 'Cerrada', IN_PROGRESS: 'En progreso', RUNNING: 'Sincronizando', COMPLETED: 'Disponible', NOT_READY: 'Pendiente', FAILED: 'Error', IDLE: 'En espera', ABANDONED: 'Abandonada', INTERRUPTED: 'Interrumpida', USER: 'Usuario', ADMIN: 'Administrador' };
-  const tone = value === 'ACTIVE' || value === 'IN_PROGRESS' || value === 'RUNNING' ? 'bg-aqua/10 text-aqua' : value === 'COMPLETED' ? 'bg-leaf/10 text-leaf' : value === 'FAILED' || value === 'INTERRUPTED' || value === 'ABANDONED' ? 'bg-electric/10 text-electric' : value === 'ADMIN' ? 'bg-berry/10 text-berry' : 'bg-ink/[.07] text-ink/65';
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-extrabold ${tone}`}>{labels[value] ?? value}</span>;
-}
-
-function DataSyncPanel({ items, loading, error, syncing, onSync }: { items: AdminDataSyncItem[]; loading: boolean; error: string; syncing: string; onSync(source: 'pokemon' | 'tcg' | 'all', full?: boolean): Promise<void> }) {
-  const active = items.some((item) => item.status === 'RUNNING') || Boolean(syncing);
-  return <section className="space-y-4" aria-labelledby="data-sync-title">
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><h2 id="data-sync-title" className="font-display text-2xl">Fuentes de datos</h2><p className="mt-1 max-w-3xl text-sm font-semibold text-ink/65">PostgreSQL es la fuente de verdad. Las APIs externas solo actualizan estos datasets y un fallo conserva la última versión válida.</p></div><div className="flex flex-wrap gap-2"><button className="btn-ghost text-sm" disabled={active} onClick={() => void onSync('all')}><RefreshCw size={17} />Sincronizar todo</button><button className="btn-ghost text-sm text-electric" disabled={active} onClick={() => void onSync('all', true)}>Forzar Full Sync</button></div></div>
-    {error && <p className="status-error" role="alert">{error}</p>}
-    {loading && items.length === 0 ? <div className="panel"><LoadingRows /></div> : <div className="panel overflow-hidden"><div className="divide-y divide-ink/10">{items.map((item) => <article className="p-4 sm:p-5" key={item.source}><div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h3 className="font-display text-xl">{item.source === 'POKEAPI' ? 'PokéAPI' : 'TCGdex'}</h3><Status value={item.status} /></div><dl className="mt-3 grid gap-x-7 gap-y-2 text-sm sm:grid-cols-2 xl:grid-cols-4"><Detail label="Última sync">{item.lastSyncAt ? formatDate(item.lastSyncAt) : 'Nunca'}</Detail><Detail label="Duración">{item.durationMs === null ? '—' : formatDuration(item.durationMs)}</Detail><Detail label="Procesados">{item.recordsProcessed.toLocaleString('es-ES')}</Detail><Detail label="Disponibles">{item.recordsAvailable.toLocaleString('es-ES')}</Detail><Detail label="Insertados">{item.inserted.toLocaleString('es-ES')}</Detail><Detail label="Actualizados">{item.updated.toLocaleString('es-ES')}</Detail><Detail label="Omitidos">{item.skipped.toLocaleString('es-ES')}</Detail><Detail label="Próxima">{formatDate(item.nextSyncAt)}</Detail></dl>{item.error && <p className="mt-3 rounded-xl bg-electric/10 px-3 py-2 text-sm font-bold text-electric" role="status">{item.error}</p>}</div><button className="btn-primary shrink-0 text-sm" disabled={active} onClick={() => void onSync(item.source === 'POKEAPI' ? 'pokemon' : 'tcg')}><RefreshCw className={item.status === 'RUNNING' ? 'animate-spin' : ''} size={17} />{item.source === 'POKEAPI' ? 'Sincronizar Pokémon' : 'Sincronizar TCG'}</button></div></article>)}</div></div>}
-  </section>;
-}
-
-function ActiveRooms({ items }: { items: AdminActiveRoom[] }) {
-  return <ResponsiveRows headers={['Sala', 'Estado', 'Anfitrión', 'Jugadores', 'Minijuego', 'Actualizada']} rows={items.map((room) => ({
-    key: room.id,
-    cells: [<strong className="font-display text-base" key="code">{room.code}</strong>, <Status key="status" value={room.gameId ? 'IN_PROGRESS' : 'ACTIVE'} />, room.hostDisplayName, `${room.connectedPlayers}/${room.maxPlayers}`, room.gameName ?? 'En el lobby', formatDate(room.updatedAt)],
-    title: `Sala ${room.code}`, meta: `${room.connectedPlayers}/${room.maxPlayers} conectados · ${room.gameName ?? 'Lobby'}`,
-    details: <><Detail label="Estado"><Status value={room.gameId ? 'IN_PROGRESS' : 'ACTIVE'} /></Detail><Detail label="Anfitrión">{room.hostDisplayName}</Detail><Detail label="Fase">{room.phase}</Detail><Detail label="Participantes">{room.participants.map((participant) => `${participant.displayName}${participant.presence !== 'CONNECTED' ? ' (desconectado)' : ''}`).join(', ') || 'Ninguno'}</Detail><Detail label="Creada">{formatDate(room.createdAt)}</Detail></>,
-  }))} />;
-}
-
-function RoomHistory({ items }: { items: AdminRoomHistoryItem[] }) {
-  return <ResponsiveRows headers={['Sala', 'Estado', 'Anfitrión', 'Partidas', 'Creada', 'Finalizada']} rows={items.map((room) => ({ key: room.id, cells: [<strong key="code">{room.code}</strong>, <Status key="status" value={room.status} />, room.hostDisplayName, room.gamesStarted, formatDate(room.createdAt), room.endedAt ? formatDate(room.endedAt) : '—'], title: `Sala ${room.code}`, meta: `${room.hostDisplayName} · ${room.gamesStarted} partidas`, details: <><Detail label="Estado"><Status value={room.status} /></Detail><Detail label="Capacidad">{room.maxPlayers}</Detail><Detail label="Motivo de cierre">{room.closeReason ?? '—'}</Detail><Detail label="Creada">{formatDate(room.createdAt)}</Detail><Detail label="Finalizada">{room.endedAt ? formatDate(room.endedAt) : '—'}</Detail></> }))} />;
-}
-
-function Games({ items }: { items: AdminGameHistoryItem[] }) {
-  return <ResponsiveRows headers={['Minijuego', 'Sala', 'Estado', 'Jugadores', 'Inicio', 'Final']} rows={items.map((game) => ({ key: game.id, cells: [<strong key="game">{game.gameName}</strong>, game.roomCode, <Status key="status" value={game.status} />, game.playerCount, formatDate(game.startedAt), game.endedAt ? formatDate(game.endedAt) : '—'], title: game.gameName, meta: `Sala ${game.roomCode} · ${game.playerCount} jugadores`, details: <><Detail label="Estado"><Status value={game.status} /></Detail><Detail label="Inicio">{formatDate(game.startedAt)}</Detail><Detail label="Final">{game.endedAt ? formatDate(game.endedAt) : '—'}</Detail><Detail label="Resultados">{game.participants.length ? game.participants.map((participant) => `${participant.position}. ${participant.displayName} (${participant.points} pt)`).join(' · ') : 'Sin resultado final'}</Detail></> }))} />;
-}
-
-function UsersTable({ items }: { items: AdminUserItem[] }) {
-  return <ResponsiveRows headers={['Usuario', 'Email', 'Rol', 'Partidas', 'Victorias', 'Registro']} rows={items.map((user) => ({ key: user.id, cells: [<strong key="user">{user.username}</strong>, user.email, <Status key="role" value={user.role} />, user.gamesPlayed, user.gamesWon, formatDate(user.createdAt)], title: user.username, meta: user.email, details: <><Detail label="Rol"><Status value={user.role} /></Detail><Detail label="Partidas">{user.gamesPlayed}</Detail><Detail label="Victorias">{user.gamesWon}</Detail><Detail label="Puntos">{user.totalPoints}</Detail><Detail label="Registro">{formatDate(user.createdAt)}</Detail></> }))} />;
-}
-
-interface Row { key: string; cells: React.ReactNode[]; title: string; meta: string; details: React.ReactNode }
-function ResponsiveRows({ headers, rows }: { headers: string[]; rows: Row[] }) {
-  return <><div className="hidden overflow-x-auto md:block"><table className="w-full border-collapse text-left"><thead className="bg-ink/[.035] text-xs font-extrabold text-ink/55"><tr>{headers.map((header) => <th className="px-4 py-3" key={header} scope="col">{header}</th>)}</tr></thead><tbody className="divide-y divide-ink/10 text-sm font-semibold">{rows.map((row) => <tr className="hover:bg-ink/[.025]" key={row.key}>{row.cells.map((cell, index) => <td className="px-4 py-3" key={headers[index]}>{cell}</td>)}</tr>)}</tbody></table></div><div className="divide-y divide-ink/10 md:hidden">{rows.map((row) => <details className="group" key={row.key}><summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3"><span className="min-w-0"><strong className="block truncate font-display">{row.title}</strong><span className="block truncate text-sm font-semibold text-ink/55">{row.meta}</span></span><span className="text-ink/45 transition group-open:rotate-180">⌄</span></summary><dl className="grid gap-3 bg-ink/[.025] px-4 py-4 text-sm">{row.details}</dl></details>)}</div></>;
-}
-
-function Detail({ label, children }: { label: string; children: React.ReactNode }) { return <div className="grid grid-cols-[7rem_minmax(0,1fr)] gap-2"><dt className="font-extrabold text-ink/55">{label}</dt><dd className="break-words font-semibold">{children}</dd></div>; }
-function Pagination({ page, totalPages, total, onPage }: { page: number; totalPages: number; total: number; onPage(page: number): void }) { return <div className="flex items-center justify-between gap-3 border-t border-ink/10 px-3 py-3 sm:px-4"><span className="text-sm font-bold text-ink/55">{total} registros</span><div className="flex items-center gap-2"><button className="btn-ghost min-h-11 !px-3 text-sm" disabled={page <= 1} onClick={() => onPage(page - 1)}>Anterior</button><span className="min-w-16 text-center text-sm font-extrabold">{page} / {totalPages}</span><button className="btn-ghost min-h-11 !px-3 text-sm" disabled={page >= totalPages} onClick={() => onPage(page + 1)}>Siguiente</button></div></div>; }
-function LoadingRows() { return <div className="space-y-px" role="status" aria-label="Cargando registros">{Array.from({ length: 5 }, (_, index) => <div className="flex h-14 items-center gap-4 px-4" key={index}><span className="skeleton h-4 w-20" /><span className="skeleton h-4 flex-1" /><span className="skeleton h-4 w-24" /></div>)}</div>; }
-function formatDate(value: string): string { return new Intl.DateTimeFormat('es-ES', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)); }
-function formatTime(value: string): string { return new Intl.DateTimeFormat('es-ES', { timeStyle: 'short' }).format(new Date(value)); }
-function formatDuration(value: number): string { return value < 1_000 ? `${value} ms` : value < 60_000 ? `${(value / 1_000).toFixed(1)} s` : `${Math.floor(value / 60_000)} min ${Math.round(value % 60_000 / 1_000)} s`; }
