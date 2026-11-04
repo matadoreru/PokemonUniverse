@@ -38,7 +38,7 @@ export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomV
       </div>
     </header>
     <Panel title="Clasificación" variant="dark" scroll className={cx(s.standings)} status={played ? null : { kind: 'empty', title: 'Aún no se ha jugado ninguna partida', text: 'La clasificación se llena con cada partida: el puesto en cada una da puntos de sesión.' }}>
-      <ResultsStandings standings={podium.standings} selfId={selfId} />
+      <ResultsStandings standings={podium.standings} selfId={selfId} winnersNeedPoints />
       <p className={s.note}>La sesión premia la posición en cada partida. Los puntos propios de cada minijuego se conservan en sus resultados.</p>
     </Panel>
   </div>;
@@ -52,7 +52,8 @@ export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomV
             <th scope="row" className={s.nameCell}><span className={s.truncate}>{member.name}</span></th>
             {room.sessionHistory.map((game) => {
               const points = game.points[member.id] ?? 0;
-              const won = game.winnerIds.includes(member.id);
+              // Como en el podio: sin puntos no hay corona (una partida en la que nadie puntúa no tiene ganador).
+              const won = points > 0 && game.winnerIds.includes(member.id);
               return <td key={`${game.gameId}-${game.gameNumber}`} className={cx(won && s.won)} aria-label={`${points} puntos en la partida ${game.gameNumber}${won ? ', ganador' : ''}`}>{won && <Icon icon={Crown} size={18} className={s.cellCrown} />}+{points}</td>;
             })}
             <td className={s.total}>{member.points}</td>

@@ -15,13 +15,16 @@ export interface SliderProps {
   /** Texto del valor (por defecto el número). */
   valueText?: (v: number) => string;
   disabled?: boolean;
+  /** Ayuda bajo el deslizador, ligada al rango con `aria-describedby`. */
+  hint?: string;
   className?: string;
   forced?: ForcedState;
 }
 
 /** Deslizador: el rango nativo (transparente, encima) para accesibilidad y una pista pintada debajo. */
-export function Slider({ label, value, onChange, min, max, step, valueText, disabled, className, forced }: SliderProps) {
+export function Slider({ label, value, onChange, min, max, step, valueText, disabled, hint, className, forced }: SliderProps) {
   const id = useId();
+  const hintId = `${id}-hint`;
   const text = valueText ? valueText(value) : String(value);
   const ratio = max > min ? Math.min(1, Math.max(0, (value - min) / (max - min))) : 0;
   return (
@@ -49,6 +52,7 @@ export function Slider({ label, value, onChange, min, max, step, valueText, disa
           value={value}
           disabled={disabled}
           aria-valuetext={text}
+          aria-describedby={hint ? hintId : undefined}
           onChange={(e) => {
             const next = Number(e.target.value);
             if (next === value) return;
@@ -57,6 +61,11 @@ export function Slider({ label, value, onChange, min, max, step, valueText, disa
           }}
         />
       </div>
+      {hint && (
+        <span id={hintId} className={s.hint}>
+          {hint}
+        </span>
+      )}
     </div>
   );
 }

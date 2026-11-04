@@ -1,6 +1,6 @@
 import type { GameIntroView, RoomView, SkipGameIntroRequest } from '@pokemon-universe/shared/public';
 import { Check, Play, UsersRound } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useId, useState, type ReactNode } from 'react';
 import { audio } from '../audio';
 import { HowToPlayCarousel } from '../components/HowToPlayCarousel';
 import { ServerTimer } from '../components/ServerTimer';
@@ -30,8 +30,10 @@ export function GameIntro({ room, intro, selfId, onSkip, skipControl }: Props) {
   const serverOffset = useServerOffset(room.serverNow);
   const progress = gameIntroProgress(intro, room.members, selfId);
   const [submitting, setSubmitting] = useState(false);
-  // Se llega desde el lobby, a menudo desplazado hasta «Empezar partida»: la intro empieza arriba, bajo la cabecera.
-  useEffect(() => { window.scrollTo({ top: 0 }); }, []);
+  const titleId = useId();
+  // Se llega desde el lobby, a menudo desplazado hasta «Empezar partida»: la intro empieza arriba. Quien se desplaza es el
+  // `main` del armazón (la ventana no tiene scroll).
+  useEffect(() => { document.querySelector('main')?.scrollTo({ top: 0 }); }, []);
   useEffect(() => { audio.play('game.start'); }, []);
 
   async function skip() {
@@ -65,7 +67,9 @@ export function GameIntro({ room, intro, selfId, onSkip, skipControl }: Props) {
     </Pill>}
   </Panel>;
 
-  return <section className={cx('content-row', s.screen)} aria-label={`Intro de ${name}`}>
+  return <section className={cx('content-row', s.screen)} aria-labelledby={titleId}>
+    {/* El encabezado de la pantalla (lo busca el foco de ruta al entrar directo): el cut-in y el carrusel ya lo enseñan. */}
+    <h1 id={titleId} className="sr-only">{`Intro de ${name}`}</h1>
     {/* Sin sonido propio: la intro ya da `game.start`. Sin `onSkip`: no tapa los clics de «Empezar ya». */}
     <Cutin tone="yellow" title={name} subtitle="¡Empieza la partida!" silent />
     <div className={s.inner}>

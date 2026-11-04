@@ -320,27 +320,14 @@
     flex: none;
   }
 }
-.alert {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-3);
-  border: var(--ol-2) solid var(--red-d);
-  border-radius: var(--r-franja);
-  background: var(--white);
-  color: var(--red-d);
-  font: 800 var(--fs-13) / 1.35 var(--font-text);
-}
-@media (min-width: 1024px) {
-  .alert {
-    max-width: 22rem;
+
+/* Por debajo de 1024 px la lista de jugadores tiene tope y se desplaza dentro: con 8 jugadores no empuja las pestañas
+   ni la rejilla de juegos fuera de la vista. En escritorio llena la columna lateral. */
+@media (max-width: 1023.98px) {
+  .playersBody {
+    max-height: min(40dvh, 22rem);
   }
 }
-.alertText {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
 /* Columna lateral: jugadores y, debajo, la recomendación de jugar en llamada. */
 .side {
   display: flex;

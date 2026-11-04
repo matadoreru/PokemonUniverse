@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, collectErrors, createRoom, joinRoom, loginAsGuest, saltarIntro, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, collectErrors, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, saltarIntro, SIZES, uniqueName } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -201,8 +201,94 @@ test('el host gestiona a un jugador desde su franja y lo expulsa tras confirmarl
   await expect(confirmar).toBeHidden();
   await expect(host.page.getByRole('region', { name: 'Jugadores' }).getByText('1 / 8', { exact: true })).toBeVisible();
   await expect(host.page.getByText(guest.name, { exact: true })).toHaveCount(0);
+  // La franja expulsada ya no existe: el foco no cae al `body`, va al título del panel de jugadores.
+  await expect(host.page.getByRole('heading', { name: 'Jugadores' })).toBeFocused();
 
   expect(host.errors).toEqual([]);
+});
+
+test('si el host sale del lobby, el invitado pasa a host con sus controles y sin botones muertos', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+  await expect(guest.page.getByRole('button', { name: 'Marcarme listo' })).toBeVisible();
+  await expect(guest.page.getByRole('button', { name: 'Empezar partida' })).toHaveCount(0);
+
+  // En el lobby «Salir» no pide confirmación: el host vuelve a Jugar.
+  await host.page.getByRole('button', { name: 'Salir de la sala' }).click();
+  await expect(host.page.getByRole('dialog')).toHaveCount(0);
+  await expect(host.page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
+
+  // El invitado hereda el Host: «¡Empezar partida!» (deshabilitado solo, con el motivo a la vista) y no «Marcarme listo».
+  const jugadores = guest.page.getByRole('region', { name: 'Jugadores' });
+  await expect(jugadores.getByText('1 / 8', { exact: true })).toBeVisible();
+  await expect(jugadores.getByRole('listitem').filter({ hasText: guest.name })).toContainText('Host');
+  const empezar = guest.page.getByRole('button', { name: 'Empezar partida' });
+  await expect(empezar).toBeVisible();
+  await expect(guest.page.getByRole('button', { name: /Marcarme listo|Estoy listo/ })).toHaveCount(0);
+  await expect(empezar).toHaveAttribute('aria-describedby', 'start-help');
+  await expect(guest.page.locator('#start-help')).toHaveText('Se necesitan al menos 2 jugadores conectados.');
+  // Ya puede cambiar el minijuego (la rejilla no es de solo lectura).
+  await expect(guest.page.getByText('Solo lectura')).toHaveCount(0);
+  await capture(guest.page, 'lobby-host-heredado');
+
+  expect(host.errors).toEqual([]);
+  expect(guest.errors).toEqual([]);
+});
+
+test('un rechazo del servidor sale una sola vez, en español, en el aviso de la sala', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  // El `/ws` del invitado pasa por aquí: «listo» recibe el rechazo en inglés que manda el servidor fuera del lobby.
+  await guest.page.routeWebSocket(/\/ws$/, (ws) => {
+    const server = ws.connectToServer();
+    ws.onMessage((message) => {
+      const frame = JSON.parse(String(message)) as { id?: string; event?: string };
+      if (frame.event === 'room:set-ready' && frame.id) ws.send(JSON.stringify({ id: frame.id, ok: false, error: 'This setting can only be changed in the lobby' }));
+      else server.send(message);
+    });
+    server.onMessage((message) => ws.send(message));
+  });
+  await guest.page.reload();
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+
+  await guest.page.getByRole('button', { name: 'Marcarme listo' }).click();
+  const aviso = guest.page.getByRole('alert');
+  await expect(aviso).toHaveCount(1);
+  await expect(aviso).toContainText('Este ajuste solo se puede cambiar en el lobby.');
+  await expect(guest.page.getByText('This setting can only be changed in the lobby')).toHaveCount(0);
+  for (const { w, h } of SIZES) {
+    await guest.page.setViewportSize({ width: w, height: h });
+    await capture(guest.page, 'sala-aviso-error', { minFontPx: 13 });
+  }
+  await aviso.getByRole('button', { name: 'Cerrar aviso' }).click();
+  await expect(guest.page.getByRole('alert')).toHaveCount(0);
+
+  expect(host.errors).toEqual([]);
+});
+
+test('lobby con 8 jugadores a 390×844: la lista tiene tope y las pestañas siguen cerca', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 8, { width: SIZES[2].w, height: SIZES[2].h });
+  try {
+    const { host, jugadores } = sala;
+    const cuerpo = host.page.getByRole('region', { name: 'Lista de jugadores' });
+    const caja = await cuerpo.boundingBox();
+    // `max-height: min(40dvh, 22rem)`: 337,6 px a 844 de alto.
+    expect(caja && caja.height <= Math.min(0.4 * SIZES[2].h, 352) + 1, `alto de la lista: ${caja?.height}`).toBe(true);
+    expect(await cuerpo.evaluate((el) => el.scrollHeight > el.clientHeight), 'la lista se desplaza por dentro').toBe(true);
+    // Las pestañas quedan en la primera pantalla y media (antes la lista las empujaba muy abajo).
+    const pestañas = await host.page.getByRole('tablist').first().boundingBox();
+    expect(pestañas && pestañas.y < SIZES[2].h * 1.5, `pestañas en y=${pestañas?.y}`).toBe(true);
+    await capture(host.page, 'lobby-8-jugadores', { minFontPx: 13 });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
 });
 
 /**

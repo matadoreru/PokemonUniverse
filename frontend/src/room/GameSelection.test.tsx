@@ -104,5 +104,9 @@ describe('game selection UI', () => {
     expect(result).toContain('Siguiente minijuego');
     expect(result).not.toContain('Confirmar voto');
     expect(result).not.toContain('aria-pressed');
+    // La región viva es el título en las dos fases (existe antes del revelado); la cuenta atrás queda fuera.
+    expect(active).toMatch(/role="status" aria-live="polite">Elige una carta</);
+    expect(result).toMatch(/role="status" aria-live="polite">La sala ha elegido Juego dos</);
+    expect(result).not.toMatch(/aria-live="polite">[^<]*empieza en/);
   });
 });

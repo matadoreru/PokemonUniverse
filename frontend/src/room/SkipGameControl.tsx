@@ -1,6 +1,8 @@
 import type { GameSkipStateView, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
-import { Check, LoaderCircle, SkipForward } from 'lucide-react';
-import { useId, useRef, useState } from 'react';
+import { Check, SkipForward } from 'lucide-react';
+import { useEffect, useId, useRef, useState } from 'react';
+import { Pill } from '../ui';
+import s from './SkipGameControl.module.css';
 
 interface SkipGameControlProps {
   state: GameSkipStateView;
@@ -8,41 +10,59 @@ interface SkipGameControlProps {
   onSetVote(request: SetGameSkipVoteRequest): Promise<void>;
 }
 
+/** Texto que se anuncia al cambiar el recuento o el voto propio. */
+export function skipAnnouncement(state: Pick<GameSkipStateView, 'votes' | 'requiredVotes' | 'currentUserVoted'>): string {
+  return `${state.votes} de ${state.requiredVotes} jugadores quieren saltarlo.${state.currentUserVoted ? ' Tu voto está registrado.' : ''}`;
+}
+
+/**
+ * «Saltar minijuego»: conmutador (`aria-pressed`) con el recuento de votos. La región viva empieza vacía y solo habla
+ * cuando cambia el recuento o el voto propio: al montarse (junto al recuento de listos de la intro) no repite nada.
+ */
 export function SkipGameControl({ state, connected, onSetVote }: SkipGameControlProps) {
   const [pending, setPending] = useState(false);
+  const [announcement, setAnnouncement] = useState('');
   const sending = useRef(false);
+  const previous = useRef({ votes: state.votes, voted: state.currentUserVoted });
   const helpId = useId();
-  const disabled = pending || !connected || !state.canVote;
+  const disabled = !connected || !state.canVote;
   const voted = state.currentUserVoted;
   const label = voted ? 'Retirar voto para saltar el minijuego' : 'Votar para saltar el minijuego';
   const tooltip = state.canVote
     ? 'El minijuego se saltará cuando todos estén de acuerdo. Puedes retirar tu voto.'
     : 'Puedes seguir la votación, pero sólo los participantes del minijuego pueden votar.';
 
+  useEffect(() => {
+    const before = previous.current;
+    if (before.votes === state.votes && before.voted === state.currentUserVoted) return;
+    previous.current = { votes: state.votes, voted: state.currentUserVoted };
+    setAnnouncement(skipAnnouncement(state));
+  }, [state]);
+
   const toggleVote = async () => {
     if (disabled || sending.current) return;
     sending.current = true;
     setPending(true);
     try { await onSetVote({ gameInstanceId: state.gameInstanceId, wantsToSkip: !voted }); }
-    catch { /* RoomContext publishes the server error through the global room alert. */ }
+    catch { /* El fallo ya sale, traducido, en el aviso global de la sala (RoomContext). */ }
     finally { sending.current = false; setPending(false); }
   };
 
-  return <div className="min-w-0" title={tooltip}>
-    <button
-      type="button"
+  return <div className={s.control} title={tooltip}>
+    <Pill
+      variant={voted ? 'yellow' : 'blue'}
+      icon={voted ? Check : SkipForward}
       aria-label={label}
       aria-pressed={voted}
       aria-describedby={helpId}
       disabled={disabled}
+      loading={pending}
       onClick={() => void toggleVote()}
-      className={`inline-flex min-h-11 max-w-full items-center gap-2 rounded-xl border px-3 py-2 text-sm font-extrabold transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50 ${voted ? 'border-aqua/45 bg-aqua/10 text-aqua hover:bg-aqua/15' : 'border-ink/15 bg-surface-raised text-ink/70 hover:border-ink/30 hover:bg-ink/[.07] hover:text-ink'}`}
     >
-      {pending ? <LoaderCircle className="shrink-0 animate-spin motion-reduce:animate-none" size={17} aria-hidden="true" /> : voted ? <Check className="shrink-0" size={17} aria-hidden="true" /> : <SkipForward className="shrink-0" size={17} aria-hidden="true" />}
-      <span>{voted ? 'Cancelar voto' : 'Saltar minijuego'}</span>
-      {state.votes > 0 && <span className="shrink-0 rounded-full bg-ink/[.08] px-2 py-0.5 tabular-nums text-ink/75">{state.votes}/{state.requiredVotes}</span>}
-    </button>
+      {voted ? 'Cancelar voto' : 'Saltar minijuego'}
+      {state.votes > 0 && <span className={s.count}>{state.votes}/{state.requiredVotes}</span>}
+    </Pill>
     <span id={helpId} className="sr-only">{tooltip}</span>
-    <span className="sr-only" role="status">{state.votes} de {state.requiredVotes} jugadores quieren saltarlo.{voted ? ' Tu voto está registrado.' : ''}</span>
+    <span className="sr-only" role="status">{announcement}</span>
   </div>;
 }

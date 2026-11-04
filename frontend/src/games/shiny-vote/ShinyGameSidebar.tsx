@@ -1,18 +1,16 @@
 import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import type { ReactNode } from 'react';
-import { Check, ChevronDown, CircleDashed, Eye, MessageSquareWarning, Trophy, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Check, ChevronDown, CircleDashed, Eye, Trophy, X } from 'lucide-react';
 import { Avatar } from '../../components/Avatar';
 
 function memberName(member: RoomMemberView | undefined, id: string) {
   return member?.displayName ?? id;
 }
 
-export function ShinyGameSidebar({ game, members, selfId, feedbackUrl, top = null }: {
+export function ShinyGameSidebar({ game, members, selfId, top = null }: {
   game: ShinyVotePublicState;
   members: ReadonlyMap<string, RoomMemberView>;
   selfId: string;
-  feedbackUrl: string;
   /** Contenido sobre el panel de la partida (la franja «Antes / después» en `lg`). */
   top?: ReactNode;
 }) {
@@ -24,10 +22,8 @@ export function ShinyGameSidebar({ game, members, selfId, feedbackUrl, top = nul
     {top}
     <section className="overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-card">
       <div className="p-3.5 sm:p-4">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="font-display text-xl font-bold">Partida</h2>
-          <Link className="inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2 text-xs font-extrabold text-ink/50 no-underline transition-colors hover:bg-ink/[.06] hover:text-ink" to={feedbackUrl}><MessageSquareWarning size={15} />Reportar</Link>
-        </div>
+        {/* El feedback de la partida va por «Enviar feedback» de la cabecera (lleva el juego y la sala). */}
+        <h2 className="font-display text-xl font-bold">Partida</h2>
         <div className="mt-3 flex items-center justify-between rounded-xl bg-ink/[.04] px-3 py-2 text-sm">
           <span className="font-bold text-ink/60">Votos</span>
           <strong className="tabular-nums">{game.votedPlayerIds.length} / {game.playerIds.length}</strong>

@@ -17,6 +17,14 @@ const fieldLabels: Record<string, string> = {
   initialBudget: 'de presupuesto',
 };
 
+/** Singular de las etiquetas que cambian con 1 («1 ronda», no «1 rondas»). */
+const singularLabels: Record<string, string> = {
+  rounds: 'ronda',
+  maxRounds: 'ronda máx.',
+  laps: 'vuelta',
+  mistakesAllowed: 'error',
+};
+
 const priority = [
   'generations', 'rounds', 'maxRounds', 'roundSeconds', 'turnSeconds', 'durationSeconds',
   'discussionSeconds', 'selectionSeconds', 'voteSeconds', 'searchSeconds', 'typeSelectSeconds',
@@ -37,7 +45,7 @@ export function summarizeGameConfig(config: unknown): string {
       else if (setting.length > 0 && setting.length <= 3) parts.push(`Gen ${setting.join(', ')}`);
       else if (setting.length > 0) parts.push(`${setting.length} generaciones`);
     } else if (typeof setting === 'number') {
-      parts.push(`${setting} ${fieldLabels[key] ?? key}`);
+      parts.push(`${setting} ${(setting === 1 ? singularLabels[key] : undefined) ?? fieldLabels[key] ?? key}`);
     }
     if (parts.length === 3) break;
   }

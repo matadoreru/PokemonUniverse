@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { ServerTimer, serverTimerTotal } from './ServerTimer';
+import { rememberedTotal, ServerTimer, serverTimerTotal } from './ServerTimer';
 
 describe('serverTimerTotal', () => {
   it('un plazo nuevo toma lo que queda, redondeado al segundo, como total de la barra', () => {
@@ -30,5 +30,23 @@ describe('ServerTimer', () => {
     const html = renderToStaticMarkup(createElement(ServerTimer, { deadline: null, serverOffset: 0 }));
     expect(html).toContain('–');
     expect(html).toContain('aria-label="Tiempo: 0 s"');
+  });
+});
+
+describe('rememberedTotal', () => {
+  it('keeps the first measured total of a deadline across remounts and measures a new one', () => {
+    const store = new Map<number, number>();
+    expect(rememberedTotal(50_000, 19_400, store)).toEqual({ deadline: 50_000, totalMs: 20_000 });
+    // Otro montaje, ya con menos tiempo: la barra no se rellena.
+    expect(rememberedTotal(50_000, 8_000, store)).toEqual({ deadline: 50_000, totalMs: 20_000 });
+    expect(rememberedTotal(90_000, 30_000, store)).toEqual({ deadline: 90_000, totalMs: 30_000 });
+    expect(rememberedTotal(null, 0, store)).toEqual({ deadline: null, totalMs: 0 });
+  });
+
+  it('forgets the oldest deadline past its limit', () => {
+    const store = new Map<number, number>();
+    for (let i = 1; i <= 33; i += 1) rememberedTotal(i * 1_000, 500, store);
+    expect(store.size).toBe(32);
+    expect(store.has(1_000)).toBe(false);
   });
 });

@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, layoutProblems, saltarIntro, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
+import { capture, crearSalaConJugadores, iniciarPartida, layoutProblems, saltarIntro, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
 
 /** Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más. */
 async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Promise<void> {
@@ -60,6 +60,17 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await expect(confirmar(host.page)).toBeDisabled();
     await expect(host.page.getByText('Selecciona una opción para preparar tu voto.')).toBeVisible();
 
+    // Fuera del lobby, «Salir» de la placa pide confirmación: «Cancelar» con el foco y la sala sigue igual.
+    await host.page.getByRole('button', { name: 'Salir de la sala' }).click();
+    const salir = host.page.getByRole('dialog', { name: '¿Salir de la partida?' });
+    await expect(salir).toBeVisible();
+    await expect(salir.getByRole('button', { name: 'Cancelar' })).toBeFocused();
+    await expect(salir.getByRole('button', { name: 'Salir', exact: true })).toBeVisible();
+    await capture(host.page, 'sesion-salir-confirmacion');
+    await salir.getByRole('button', { name: 'Cancelar' }).click();
+    await expect(salir).toBeHidden();
+    await expect(titulo(host.page)).toBeVisible();
+
     const nombres = await opciones(host.page).evaluateAll((cartas) => cartas.map((carta) => carta.querySelector('span:nth-child(2)')?.textContent ?? ''));
     const elegido = nombres.find((nombre) => !SIN_DATOS.has(nombre))!;
     const carta = (page: Page) => page.getByRole('list', { name: 'Opciones de voto' }).getByRole('button', { name: new RegExp(`^${elegido.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) });
@@ -94,10 +105,14 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await host.page.getByRole('button', { name: 'Terminar sesión' }).click();
 
     // Clasificación final: podio en franjas, la evolución por partida y «Otra partida» solo para el host.
-    for (const page of pages) await expect(page.getByRole('heading', { name: /^Campe(ón|ones) de la sesión$/ })).toBeVisible({ timeout: 15_000 });
+    // Si nadie sumó puntos (los dos fallan la única ronda) no hay campeón ni insignia «Ganador»: «Sesión sin ganador».
+    const final = /^(Campe(ón|ones) de la sesión|Sesión sin ganador)$/;
+    for (const page of pages) await expect(page.getByRole('heading', { name: final, level: 1 })).toBeVisible({ timeout: 15_000 });
     const clasificacion = host.page.getByRole('list', { name: 'Clasificación' });
     await expect(clasificacion.getByRole('listitem')).toHaveCount(2);
-    await expect(clasificacion.getByRole('listitem').first()).toContainText('Ganador');
+    const sinGanador = (await host.page.getByRole('heading', { name: final, level: 1 }).innerText()) === 'Sesión sin ganador';
+    if (sinGanador) await expect(clasificacion.getByText('Ganador', { exact: true })).toHaveCount(0);
+    else await expect(clasificacion.getByRole('listitem').first()).toContainText('Ganador');
     await expect(host.page.getByRole('region', { name: 'Evolución de puntos' }).getByRole('columnheader', { name: 'P1' })).toBeVisible();
     await expect(host.page.getByText('1 partida disputada')).toBeVisible();
     await expect(invitado.page.getByRole('button', { name: 'Otra partida' })).toHaveCount(0);
@@ -106,9 +121,13 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await capturarPantalla(host.page, 'sesion-resultados', otra);
     await capturarPantalla(invitado.page, 'sesion-resultados-invitado', invitado.page.getByRole('button', { name: 'Terminar', exact: true }));
 
-    // «Otra partida»: todos vuelven al lobby con la clasificación a cero; «Terminar» saca de la sala.
+    // «Terminar» saca de la sala sin preguntar (es la salida de la pantalla): el invitado vuelve a Jugar.
+    await invitado.page.getByRole('button', { name: 'Terminar', exact: true }).click();
+    await expect(invitado.page).toHaveURL(/\/play$/, { timeout: 15_000 });
+    await expect(invitado.page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
+    // «Otra partida»: el host vuelve al lobby con la clasificación a cero.
     await otra.click();
-    for (const page of pages) await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
+    await expect(host.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

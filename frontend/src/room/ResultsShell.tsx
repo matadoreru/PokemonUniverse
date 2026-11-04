@@ -28,10 +28,13 @@ export interface ResultsStanding {
 
 const defaultPoints = (points: number) => `${points} pts`;
 
-/** Podio (los tres primeros puestos, con avatar grande) y el resto en franjas; los ganadores con insignia y «+N». */
-export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoints }: { standings: readonly ResultsStanding[]; selfId?: string | undefined; pointsLabel?: (points: number) => string }) {
+/**
+ * Podio (los tres primeros puestos, con avatar grande) y el resto en franjas; los ganadores con insignia y «+N». Con
+ * `winnersNeedPoints` (la sesión) el primer puesto solo es ganador si tiene puntos: un empate a cero no corona a nadie.
+ */
+export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoints, winnersNeedPoints = false }: { standings: readonly ResultsStanding[]; selfId?: string | undefined; pointsLabel?: (points: number) => string; winnersNeedPoints?: boolean }) {
   return <ol className={s.standings} aria-label="Clasificación">{standings.map((standing) => {
-    const winner = standing.position === 1;
+    const winner = standing.position === 1 && (!winnersNeedPoints || standing.points > 0);
     const podium = standing.position <= 3;
     return <li key={standing.id} className={podium ? s.podium : undefined} data-podium={podium || undefined}>
       <Row

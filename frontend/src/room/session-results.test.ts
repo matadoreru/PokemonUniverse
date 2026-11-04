@@ -30,6 +30,12 @@ describe('sessionPodium', () => {
     expect(podium.champions).toEqual([]);
     expect(podium).toMatchObject({ won: false, title: 'Sesión terminada' });
   });
+
+  it('crowns nobody when games were played but nobody scored', () => {
+    const podium = sessionPodium({ gamesPlayed: 2, members: [], sessionStandings: [standing('a', 'Eru', 0), standing('b', 'Ana', 0)] }, 'a');
+    expect(podium.champions).toEqual([]);
+    expect(podium).toMatchObject({ tied: false, won: false, title: 'Sesión sin ganador', subtitle: '2 partidas disputadas' });
+  });
 });
 
 describe('joinNames', () => {

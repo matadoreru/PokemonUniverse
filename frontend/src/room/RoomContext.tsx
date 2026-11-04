@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
 import { createRealtime } from '../lib/socket';
 import { requestCommand } from './room-command';
+import { roomActionErrorMessage } from './roomCode';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
@@ -66,11 +67,16 @@ export function RoomProvider({ children }: PropsWithChildren) {
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
 
-  /** Con `report = false` el fallo no pasa al aviso global (ni lo limpia): lo enseña quien llama. */
+  /**
+   * Regla de los errores de la sala: el fallo de una orden al servidor sale solo en el aviso global, ya en español
+   * (`roomActionErrorMessage`); las pantallas solo lo capturan para soltar su botón. En línea una pantalla enseña solo
+   * lo que valida ella antes de enviar. Con `report = false` el fallo no pasa al aviso global (ni lo limpia): lo enseña
+   * quien llama (Jugar, en su campo).
+   */
   const emit = useCallback(async <E extends CommandEvent,>(event: E, payload: CommandPayload<E>, report = true) => {
     const socket = socketRef.current;
     if (!socket) throw new Error('Sin conexión con el servidor');
-    const reporter = report ? { clear: () => setError(null), set: (message: string) => { if (socketRef.current === socket) setError(message); } } : null;
+    const reporter = report ? { clear: () => setError(null), set: (message: string) => { if (socketRef.current === socket) setError(roomActionErrorMessage(message)); } } : null;
     return requestCommand(() => socket.request(event, payload), reporter);
   }, []);
 

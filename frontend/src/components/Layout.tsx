@@ -35,6 +35,9 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
   const feedback = useFeedbackHref();
   return (
     // Reserva, como el `main`, el hueco de su barra de scroll: así la fila queda centrada igual que el contenido de debajo.
+    // `scrollbar-gutter` solo vale con `overflow` distinto de `visible`, de ahí el `overflow-hidden`. No recorta nada: el
+    // anillo de foco (5 px), las insignias (-8 px) y la barra de la píldora actual (-9 px) caben en el relleno de su placa
+    // (8 px + 3 px de contorno) y la sombra de 4 px de la placa, en el `pb-2`.
     <header className="relative z-hud overflow-hidden [scrollbar-gutter:stable]" data-layout="hud-plates">
       {/* Mismos bordes que el contenido (`content-row`). */}
       <div className="content-row flex flex-wrap items-stretch justify-end gap-3 pb-2 pt-3 sm:flex-nowrap">

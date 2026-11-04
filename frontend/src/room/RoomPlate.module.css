@@ -41,3 +41,19 @@
     font-size: var(--fs-22);
   }
 }
+/* Al final: tiene que ganar a las reglas base de `.text` y `.actions` (misma especificidad). */
+/* En el móvil el título ya está en la pantalla: la placa se queda con el código (a lo ancho) y «Salir». */
+@media (max-width: 639.98px) {
+  .text {
+    display: none;
+  }
+  .actions {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  /* El código ocupa el ancho que deja el texto: la placa no queda con un hueco vacío a la izquierda. */
+  .actions > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}

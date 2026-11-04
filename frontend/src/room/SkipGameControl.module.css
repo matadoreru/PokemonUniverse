@@ -1,0 +1,9 @@
+/* «Saltar minijuego» de la sala: píldora del catálogo con el recuento de votos en cifras tabulares. */
+.control {
+  min-width: 0;
+  max-width: 100%;
+}
+.count {
+  margin-left: var(--sp-1);
+  font-variant-numeric: tabular-nums;
+}

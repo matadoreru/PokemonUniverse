@@ -12,7 +12,3 @@
   --focus-ring: var(--navy);
   --focus-ring-on-yellow: var(--navy);
 }
-.hint {
-  font: 700 var(--fs-13) / 1.3 var(--font-text);
-  color: var(--ink-2);
-}

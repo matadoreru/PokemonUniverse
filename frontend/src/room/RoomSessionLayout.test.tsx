@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { RoomPlate, roomPlateHeading } from './RoomPlate';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 
-const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn() }));
+const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn() }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'self' } }) }));
 
@@ -81,5 +81,22 @@ describe('room connection notice', () => {
   it('keeps an empty status region while connected', () => {
     const markup = render('higher-lower', 'LOBBY', null);
     expect(markup).toMatch(/<div class="connection-notice-region [^"]*" role="status" aria-live="polite" data-layer="notice"><\/div>/);
+  });
+});
+
+describe('room error toast', () => {
+  it('shows the (already translated) room error once, as a catalogue toast with a 44 px close button', () => {
+    context.error = 'Este ajuste solo se puede cambiar en el lobby.';
+    try {
+      const markup = render('higher-lower', 'LOBBY', null);
+      expect(markup.match(/role="alert"/g)).toHaveLength(1);
+      expect(markup).toContain('Este ajuste solo se puede cambiar en el lobby.');
+      expect(markup).toContain('aria-label="Cerrar aviso"');
+      expect(markup).not.toContain('bg-berry');
+    } finally { context.error = null; }
+  });
+
+  it('renders no alert without an error', () => {
+    expect(render('higher-lower', 'LOBBY', null)).not.toContain('role="alert"');
   });
 });

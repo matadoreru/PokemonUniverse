@@ -5,7 +5,7 @@ import type { ResultsStanding } from './ResultsShell';
 export interface SessionPodium {
   /** Clasificación con puestos de competición: los empatados comparten puesto (1, 1, 3…). */
   standings: ResultsStanding[];
-  /** Campeones (los del puesto 1); vacío si aún no se ha jugado ninguna partida. */
+  /** Campeones (los del puesto 1 con puntos); vacío sin partidas jugadas o si nadie ha sumado puntos. */
   champions: ResultsStanding[];
   tied: boolean;
   /** El jugador local está entre los campeones. */
@@ -16,7 +16,8 @@ export interface SessionPodium {
 
 /**
  * Podio de la sesión (`SESSION_RESULTS`). Ordena por puntos y, a igualdad, por nombre; el color sale del orden en
- * `room.members` (un jugador que ya se fue no tiene color). Sin partidas jugadas no hay campeón: todos tendrían 0.
+ * `room.members` (un jugador que ya se fue no tiene color). Sin partidas jugadas no hay campeón (todos tendrían 0); con
+ * partidas pero sin puntos para nadie tampoco: «Sin ganador».
  */
 export function sessionPodium(room: Pick<RoomView, 'sessionStandings' | 'members' | 'gamesPlayed'>, selfId: string): SessionPodium {
   const order = new Map(room.members.map((member, index) => [member.id, index]));
@@ -27,14 +28,14 @@ export function sessionPodium(room: Pick<RoomView, 'sessionStandings' | 'members
     return { id: standing.id, position, name: standing.displayName, points: standing.sessionPoints, avatar: standing.avatar, color: index === undefined ? undefined : playerColor(index) };
   });
   const played = room.gamesPlayed > 0;
-  const champions = played ? standings.filter((standing) => standing.position === 1) : [];
+  const champions = played ? standings.filter((standing) => standing.position === 1 && standing.points > 0) : [];
   const tied = champions.length > 1;
   return {
     standings,
     champions,
     tied,
     won: champions.some((standing) => standing.id === selfId),
-    title: !played || champions.length === 0 ? 'Sesión terminada' : tied ? 'Campeones de la sesión' : 'Campeón de la sesión',
+    title: !played ? 'Sesión terminada' : champions.length === 0 ? 'Sesión sin ganador' : tied ? 'Campeones de la sesión' : 'Campeón de la sesión',
     subtitle: `${room.gamesPlayed} partida${room.gamesPlayed === 1 ? '' : 's'} disputada${room.gamesPlayed === 1 ? '' : 's'}`,
   };
 }

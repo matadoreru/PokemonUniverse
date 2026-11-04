@@ -79,7 +79,8 @@ export function PokemonSelector({ pokemon, locked, disabled, confirmationDisable
       const primary = entry.id === firstSelectableId && !blocked;
       return <Card key={entry.id} size="sm" action decorativeSprite name={entry.name} sprite={entry.sprite} state={primary ? 'selected' : 'idle'} disabled={blocked || unavailable} onSelect={() => void select(entry.id)}>
         {primary && <span aria-hidden="true"><Badge tone="navy">Enter ↵</Badge></span>}
-        {unavailable && <span className={s.unavailable} aria-hidden="true">No disponible</span>}
+        {/* Sin `aria-hidden`: forma parte del nombre de la carta deshabilitada y explica por qué no se puede elegir. */}
+        {unavailable && <span className={s.unavailable}>No disponible</span>}
       </Card>;
     })}</div></div>}
   </div>;

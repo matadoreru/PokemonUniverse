@@ -1,5 +1,5 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { BookOpen, Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff, X } from 'lucide-react';
+import { BookOpen, Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { gameHowToPlay } from '../games/how-to-play';
@@ -9,7 +9,6 @@ import { GameHowToPlayDialog } from './GameHowToPlayDialog';
 import { GameSelectionConfig } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
-import { roomActionErrorMessage } from './roomCode';
 import { SessionScreen } from './SessionScreen';
 import s from './Lobby.module.css';
 
@@ -54,7 +53,6 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   const connectedPlayers = connectedCount(room.members);
   const pendingReady = room.members.filter((member) => member.presence === 'CONNECTED' && member.id !== room.hostId && !member.ready);
   const hostMember = room.members.find((member) => member.id === room.hostId);
-  const [error, setError] = useState('');
   const [readyBusy, setReadyBusy] = useState(false);
   const [starting, setStarting] = useState(false);
   const [gameQuery, setGameQuery] = useState('');
@@ -66,27 +64,28 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
     return () => window.clearTimeout(preloadTimer);
   }, [gameClient]);
 
-  const report = (caught: unknown) => setError(roomActionErrorMessage(caught));
+  // El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí solo se captura.
+  const ignoreFailure = () => undefined;
   const toggleReady = async () => {
     if (!self || self.roomRole === 'HOST' || readyBusy) return;
-    setReadyBusy(true); setError('');
-    try { await onReady(!self.ready); } catch (caught) { report(caught); }
+    setReadyBusy(true);
+    try { await onReady(!self.ready); } catch { ignoreFailure(); }
     finally { setReadyBusy(false); }
   };
   const start = async () => {
     if (starting) return;
-    setStarting(true); setError('');
-    try { await onStart(); } catch (caught) { report(caught); setStarting(false); }
+    setStarting(true);
+    try { await onStart(); } catch { setStarting(false); }
   };
-  const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(report); };
-  const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(report); };
+  const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(ignoreFailure); };
+  const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(ignoreFailure); };
   const selectGame = (gameId: string) => {
     if (!canChangeGame || gameId === room.selectedGameId) return;
-    void onSelectGame(gameId).catch(report);
+    void onSelectGame(gameId).catch(ignoreFailure);
   };
   // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
-  const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(report); };
-  const kick = (playerId: string) => { void onKick(playerId).catch(report); };
+  const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(ignoreFailure); };
+  const kick = (playerId: string) => { void onKick(playerId).catch(ignoreFailure); };
 
   const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
   // En una rotación, un requisito de jugadores (rango del manifest o paridad de impostores) excluye el juego, como en el servidor.
@@ -132,12 +131,6 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
         <h2 className={s.actionTitle}>{status.title}</h2>
         <p id="start-help" className={cx(s.help, status.ok ? s.ok : s.bad)}>{status.text}</p>
       </div>
-      {error && (
-        <div role="alert" className={s.alert}>
-          <span className={s.alertText}>{error}</span>
-          <Pill variant="cream" size="round" icon={X} aria-label="Cerrar aviso" onClick={() => setError('')} />
-        </div>
-      )}
       <div className={s.buttons}>
         {self?.roomRole !== 'HOST' && (
           <Pill variant="yellow" size="main" icon={self?.ready ? Check : CheckCircle2} loading={readyBusy} disabled={self?.presence !== 'CONNECTED'} aria-pressed={Boolean(self?.ready)} aria-describedby="start-help" onClick={() => void toggleReady()}>
@@ -155,7 +148,7 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
 
   const side = (
     <div className={s.side}>
-      <RoomPlayersPanel className="lg:flex-1" members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(report)} onTransferHost={transferHost} onKick={kick} />
+      <RoomPlayersPanel className="lg:flex-1" bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} />
       <aside className={s.tip} aria-label="Recomendación para jugar">
         <Icon icon={Headphones} size={22} className={s.tipIcon} />
         <p>

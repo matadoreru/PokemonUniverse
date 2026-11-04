@@ -72,7 +72,6 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const feedback = reveal && participant ? shinyRoundFeedback(playerState?.roundResult ?? null, Boolean(ownVote)) : null;
   const cardFeedback = feedback ? { ...feedback, points: playerState?.roundResult?.points ?? 0 } : null;
   useSfxCue(reveal && participant ? playerState?.roundResult?.correct ? 'hit' : 'miss' : null, reveal ? game.roundNumber : null);
-  const feedbackUrl = `/feedback?${new URLSearchParams({ game: 'shiny-vote', room: room.code })}`;
 
   useEffect(() => {
     setDraft(null);
@@ -172,7 +171,6 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
         game={game}
         members={members}
         selfId={selfId}
-        feedbackUrl={feedbackUrl}
         top={correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} className="mb-3 max-lg:hidden" />}
       />
     </div>

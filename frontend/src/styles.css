@@ -85,7 +85,7 @@
 }
 .on-cream :is(.bg-aqua, .bg-berry)[class*='text-night/'],
 .on-cream :is(.bg-aqua, .bg-berry) [class*='text-night/'] {
-  color: rgb(255 255 255);
+  color: var(--white);
 }
 
 /* Barra de desplazamiento amarilla sobre azul noche (§3.7). */

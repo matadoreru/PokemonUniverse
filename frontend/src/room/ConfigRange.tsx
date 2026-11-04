@@ -78,6 +78,7 @@ export function ConfigRange({ label, value, min, max, step = 1, disabled, format
         step={step}
         disabled={Boolean(disabled)}
         valueText={formatValue}
+        {...(hint ? { hint } : {})}
         onChange={(next) => {
           draftRef.current = next;
           dispatch({ type: 'LOCAL_VALUE', value: next });
@@ -87,7 +88,6 @@ export function ConfigRange({ label, value, min, max, step = 1, disabled, format
           }
         }}
       />
-      {hint && <span className={s.hint}>{hint}</span>}
     </div>
   );
 }

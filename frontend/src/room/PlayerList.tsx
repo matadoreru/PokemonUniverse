@@ -16,6 +16,8 @@ interface Props {
   onSetRoomRole?(id: string, role: 'CO_HOST' | 'MEMBER'): void;
   onTransferHost?(id: string): void;
   onKick?(id: string): void;
+  /** Tras confirmar una expulsión o un traspaso del Host: la fila (o su botón) desaparece, así que el foco va a otro sitio. */
+  onConfirmed?(): void;
 }
 
 function sameMembers(left: RoomMemberView[], right: RoomMemberView[]): boolean {
@@ -57,7 +59,7 @@ const confirmCopy = {
   transfer: { title: (name: string) => `¿Transferir el Host a ${name}?`, body: 'Tú pasarás a ser Co-host.', action: 'Transferir Host' },
 } as const;
 
-export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, onSetRoomRole, onTransferHost, onKick }: Props) {
+export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, onSetRoomRole, onTransferHost, onKick, onConfirmed }: Props) {
   const previousMembers = useRef(members);
   // Menú del host para un jugador y, aparte, la confirmación: dos diálogos para que cada uno tenga su Esc y su foco.
   const [menuFor, setMenuFor] = useState<string | null>(null);
@@ -128,7 +130,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
         <Dialog open={Boolean(pending)} title={pending && confirm ? confirm.title(pending.member.displayName) : 'Confirmar'} onClose={() => setPending(null)} width={420}
           actions={pending && confirm ? [
             { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
-            { label: confirm.action, variant: pending.kind === 'kick' ? 'danger' : 'yellow', onClick: () => (pending.kind === 'kick' ? onKick : onTransferHost)?.(pending.member.id) },
+            { label: confirm.action, variant: pending.kind === 'kick' ? 'danger' : 'yellow', onClick: () => { (pending.kind === 'kick' ? onKick : onTransferHost)?.(pending.member.id); onConfirmed?.(); } },
           ] : []}>
           {confirm && <p>{confirm.body}</p>}
         </Dialog>

@@ -1,5 +1,5 @@
-import { WifiOff, X } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { WifiOff } from 'lucide-react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useRoomMusic } from '../audio/useRoomMusic';
@@ -7,7 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { useFeedbackTarget } from '../components/feedback-target';
-import { cx, Icon } from '../ui';
+import { cx, Dialog, Icon, ToastStack, type ToastData } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import n from './ConnectionNotice.module.css';
 import { RoomProvider, useRoom } from './RoomContext';
@@ -54,6 +54,17 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
   return slot ? createPortal(region, slot) : region;
 }
 
+/**
+ * El aviso global de la sala como pila del catálogo (un único aviso de error, que no se cierra solo). Cada error nuevo
+ * lleva un id nuevo, aunque repita el texto: así se vuelve a anunciar y la pila sube por encima de un diálogo abierto.
+ */
+function useRoomErrorToasts(error: string | null): ToastData[] {
+  const [shown, setShown] = useState<{ error: string | null; id: number }>({ error: null, id: 0 });
+  // Estado derivado del error (patrón de React para ajustar estado al cambiar una prop): nuevo error, nuevo id.
+  if (shown.error !== error) setShown({ error, id: shown.id + 1 });
+  return useMemo(() => (shown.error ? [{ id: shown.id, kind: 'error' as const, text: shown.error }] : []), [shown]);
+}
+
 function RoomSessionContent() {
   const { connected, error, clearError, room, setGameSkipVote, leaveRoom } = useRoom();
   const { user } = useAuth();
@@ -68,19 +79,29 @@ function RoomSessionContent() {
   useSfxCue('game.win', gameWinCue(room, user?.id));
   // Si falla, el error ya sale en el aviso de la sala y se sigue en ella.
   const leave = () => void leaveRoom().then(() => navigate('/play')).catch(() => undefined);
+  // En el lobby se sale sin preguntar; en partida (o votación, resultados…) se confirma antes.
+  const [confirmLeave, setConfirmLeave] = useState(false);
+  const askLeave = () => { if (room?.phase === 'LOBBY') leave(); else setConfirmLeave(true); };
+  const toasts = useRoomErrorToasts(error);
   return <>
     {/* La placa de la sala (código y «Salir») va a la cabecera solo en `/room`: en `/play` la pantalla ya ofrece volver o salir. */}
-    {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={leave} />}
+    {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={askLeave} />}
+    <Dialog open={confirmLeave} title="¿Salir de la partida?" onClose={() => setConfirmLeave(false)} width={420}
+      actions={[
+        { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
+        { label: 'Salir', variant: 'danger', onClick: leave },
+      ]}>
+      <p>Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.</p>
+    </Dialog>
     {/* En la intro el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
     {room?.gameSkipState && !(room.phase === 'GAME_STARTING' && room.gameIntro) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
     <Outlet />
     <ConnectionNotice connected={connected} />
-    {error && <div className="fixed bottom-4 left-1/2 z-toast flex w-[min(92vw,36rem)] -translate-x-1/2 items-start gap-3 rounded-xl bg-berry px-4 py-3 font-bold text-night" role="alert">
-      <span className="min-w-0 flex-1">{error}</span>
-      <button type="button" className="grid h-7 w-7 shrink-0 place-items-center rounded-lg hover:bg-night/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-night" onClick={clearError} aria-label="Cerrar aviso"><X size={17} /></button>
-    </div>}
+    {/* Solo con aviso: montada siempre, su región `status` de 1 px (absoluta, al final del documento) añadía scroll de
+        página. Un `alert` se anuncia al insertarse. */}
+    {toasts.length > 0 && <ToastStack toasts={toasts} onClose={clearError} />}
   </>;
 }
 

@@ -26,7 +26,7 @@ const render = (selfId: string) => renderToStaticMarkup(createElement(GameIntro,
 describe('GameIntro', () => {
   it('shows the cut-in, the steps of the game, the countdown and who is ready', () => {
     const markup = render('p1');
-    expect(markup).toContain('aria-label="Intro de Learnset Guess"');
+    expect(markup).toContain('>Intro de Learnset Guess</h1>');
     expect(markup).toContain('¡Empieza la partida!');
     expect(markup).toContain('Cómo se juega a Learnset Guess');
     expect(markup).toContain('Paso 1 de 3');

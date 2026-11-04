@@ -33,8 +33,9 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
     const selectedGame = vote.options.find((game) => game.id === draft);
     if (!selectedGame || !supportsPlayerCount(selectedGame, playerCount)) { setError('Ese minijuego ya no admite el número actual de jugadores.'); return; }
     setSubmitting(true); setError('');
+    // Un rechazo del servidor sale, traducido, en el aviso global de la sala; en línea solo la validación de arriba.
     try { await onVote(draft); }
-    catch (caught) { setError(caught instanceof Error ? caught.message : 'No se ha podido registrar el voto.'); }
+    catch { /* aviso global */ }
     finally { setSubmitting(false); }
   }
 
@@ -85,9 +86,11 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
   </Panel>;
 
   const action = <Panel variant="cream" as="div" className="on-cream" bodyClassName={cx(s.actionBody)}>
-    <div className={s.status} role={active ? undefined : 'status'} aria-live={active ? undefined : 'polite'}>
+    <div className={s.status}>
       <span className={s.kicker}>{status.kicker}</span>
-      <p className={s.actionTitle}>{status.title}</p>
+      {/* Región viva siempre montada (existe antes del revelado, así el resultado se anuncia): solo el título; la cuenta
+          atrás (cambia cada segundo) queda fuera. Votando lee también «Has elegido…» y «Tu voto está registrado.». */}
+      <p className={s.actionTitle} role="status" aria-live="polite">{status.title}</p>
       <p className={s.help}>{status.text}</p>
     </div>
     {error && <p role="alert" className={s.alert}>{error}</p>}

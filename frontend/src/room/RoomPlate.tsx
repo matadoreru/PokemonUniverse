@@ -18,7 +18,8 @@ export function roomPlateHeading(room: RoomView): { kicker: string; title: strin
 /**
  * Placa de la sala (antes la barra del lobby): antetítulo, título, el código con su botón de copiar y «Salir». El título
  * es texto, no `h1`: el encabezado de cada pantalla sigue en el `main`, que es donde lo busca el foco de ruta.
- * A menos de 1024 px solo quedan el código y «Salir» como píldora redonda.
+ * A menos de 1024 px «Salir» es una píldora redonda; a menos de 640 px se oculta además el texto (antetítulo y título) y
+ * solo quedan el código y «Salir». Fuera del lobby, «Salir» pide confirmación (lo decide `onLeave`, en la sesión).
  */
 export function RoomPlate({ room, onLeave }: { room: RoomView; onLeave(): void }) {
   const [copied, setCopied] = useState(false);
