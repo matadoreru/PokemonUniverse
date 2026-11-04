@@ -1,0 +1,60 @@
+/*
+ * ¿Quién es ese Pokémon?: la silueta llena la zona de la pista y escala con ella (unidades del contenedor del cuerpo de
+ * `GuessClue`): a 1920 crece, a 390 cabe en la franja con tope de alto. Detrás, un foco de luz decorativo.
+ */
+.stage > div {
+  position: relative;
+}
+.stage > div::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--yellow) 0, transparent 58%);
+  opacity: 0.45;
+  pointer-events: none;
+}
+.mark {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-4);
+  font: 800 min(22cqh, 6rem) / 1 var(--font-display);
+  color: var(--navy);
+  opacity: 0.12;
+}
+.silhouette {
+  position: relative;
+  width: min(92cqw, 92cqh);
+  height: min(92cqw, 92cqh);
+  object-fit: contain;
+  /* La silueta ya llega reescalada (bilineal, 320 px): suave, sin escalones al crecer a 1920. */
+  image-rendering: auto;
+}
+/* Revelación: la silueta de la ronda junto a la carta (el sprite de la respuesta en negro, decorativo). */
+.revealShadow {
+  display: grid;
+  place-items: center;
+  width: 9rem;
+  height: 9rem;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: radial-gradient(circle at center, var(--yellow) 0, var(--cream-2) 62%);
+}
+.revealShadow > img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: brightness(0);
+}
+@media (max-width: 639px) {
+  .revealShadow {
+    width: 6rem;
+    height: 6rem;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .revealShadow {
+    width: clamp(14rem, 30vh, 22rem);
+    height: clamp(14rem, 30vh, 22rem);
+  }
+}

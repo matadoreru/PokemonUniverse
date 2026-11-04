@@ -1,0 +1,68 @@
+/* Pistas adicionales: una franja azul noche con el título, los chips y, a la derecha, la siguiente pista. */
+.hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2) var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--navy-2);
+  color: var(--white);
+  box-shadow: var(--sh-hard-3);
+}
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  color: var(--yellow);
+}
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.list > li {
+  display: inline-flex;
+  max-width: 100%;
+}
+.list > li > span {
+  white-space: normal;
+}
+.empty {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+.next {
+  display: inline-flex;
+  margin-left: auto;
+}
+/* Móvil: una sola línea si cabe; el texto del vacío no ocupa alto (la siguiente pista ya dice cuándo llega). */
+@media (max-width: 639px) {
+  .hints {
+    gap: var(--sp-1) var(--sp-2);
+    padding-block: var(--sp-1);
+  }
+  .empty:not(:last-child) {
+    display: none;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .hints {
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .title {
+    font-size: var(--fs-18);
+  }
+  .list > li > span {
+    min-height: 34px;
+    padding-inline: var(--sp-3);
+    font-size: var(--fs-18);
+  }
+  .empty {
+    font-size: var(--fs-15);
+  }
+}

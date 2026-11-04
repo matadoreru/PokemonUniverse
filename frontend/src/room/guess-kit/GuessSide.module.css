@@ -1,0 +1,57 @@
+/* Columna lateral de los juegos de adivinar: marcador en vivo, intentos públicos y puntos de la ronda en franjas. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+/* Un chip largo parte su texto antes que meterse bajo los puntos. */
+.rowMeta > span {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.15;
+}
+.score {
+  display: inline-block;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.score small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.attemptSprite {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.attemptBy,
+.stat {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  font-variant-numeric: tabular-nums;
+}
+/* Escritorio grande: franjas con letra mayor. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .rows {
+    --row-name-fs: var(--fs-18);
+    --row-value-fs: var(--fs-22);
+  }
+  .attemptBy,
+  .stat {
+    font-size: var(--fs-15);
+  }
+  .attemptSprite {
+    width: 56px;
+    height: 56px;
+  }
+}

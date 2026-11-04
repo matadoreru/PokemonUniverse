@@ -12,12 +12,17 @@ export interface StateBoxProps {
   action?: { label: string; onClick(): void };
   /** Sobre fondo crema. */
   onCream?: boolean;
+  /**
+   * Vacío o carga como región viva (`role="status"`, por defecto). Con `false`, sin rol: para un vacío dentro de una
+   * pantalla que ya tiene su única región viva (p. ej. los intentos de los juegos de adivinar). El error sigue siendo `alert`.
+   */
+  live?: boolean;
 }
 
-export function StateBox({ kind, title, text, action, onCream }: StateBoxProps) {
+export function StateBox({ kind, title, text, action, onCream, live = true }: StateBoxProps) {
   if (kind === 'loading') {
     return (
-      <div className={s.ghost} role="status" aria-live="polite" aria-busy="true" aria-label={title}>
+      <div className={s.ghost} {...(live ? { role: 'status', 'aria-live': 'polite' as const } : {})} aria-busy="true" aria-label={title}>
         {[0, 1, 2].map((i) => (
           <i key={i} className={cx(s.row, onCream && s.onCream)} />
         ))}
@@ -25,7 +30,7 @@ export function StateBox({ kind, title, text, action, onCream }: StateBoxProps) 
     );
   }
   return (
-    <div className={cx(s.box, onCream && s.onCream, kind === 'error' && s.error)} role={kind === 'error' ? 'alert' : 'status'}>
+    <div className={cx(s.box, onCream && s.onCream, kind === 'error' && s.error)} {...(kind === 'error' ? { role: 'alert' } : live ? { role: 'status' } : {})}>
       <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} className={s.icon} />
       <strong className={s.title}>{title}</strong>
       {text && <p className={s.text}>{text}</p>}

@@ -1,75 +1,86 @@
-import { whoPokemonScoringLabel, type PokemonLegendaryStatus, type PokemonType, type RoomView, type WhosThatPokemonHint, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Eye, History, Lightbulb, Search, XCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import { whoPokemonScoringLabel, type RoomView, type WhosThatPokemonConfig, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
+import { Lightbulb } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { PokemonSelector } from './PokemonSelector';
-import type { PokemonSearchOption } from './pokemon-search';
+import { useSfxCue } from '../hooks/useSfxCue';
+import { Chip, Icon } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import {
+  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, guessVerdict,
+} from './guess-kit';
+import s from '../games/whos-that-pokemon/WhosThat.module.css';
 
-const EMPTY_LOCKED = new Set<string>();
-const typeLabels: Record<PokemonType, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
-const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'No legendario', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
-const ordinal = (value: number) => `${value}.º`;
+const GAME_NAME = '¿Quién es ese Pokémon?';
 
-function describeHint(hint: WhosThatPokemonHint): string {
-  if (hint.kind === 'GENERATION') return `Generación ${hint.value}`;
-  if (hint.kind === 'TYPE') return `Uno de sus tipos es ${typeLabels[hint.value]}`;
-  if (hint.kind === 'TYPE_COUNT') return hint.value === 1 ? 'Es monotipo' : 'Tiene dos tipos';
-  if (hint.kind === 'CATEGORY') return categoryLabels[hint.value];
-  if (hint.stages <= 1) return 'No evoluciona';
-  if (hint.stage === 1) return 'Pokémon base';
-  if (hint.stage >= hint.stages) return 'Evolución final';
-  return 'Evolución intermedia';
-}
-
-function SilhouetteStage({ source }: { source: string }) {
-  return <div className="who-silhouette-stage relative mx-auto grid aspect-square w-full max-w-[23rem] place-items-center overflow-hidden rounded-2xl border border-aqua/20" aria-label="Silueta misteriosa normalizada">
-    <div className="absolute inset-0 opacity-35 [background-image:radial-gradient(circle_at_center,rgba(240,191,84,.65),transparent_55%)]" />
-    <span className="absolute right-5 top-4 font-display text-5xl text-ink/10" aria-hidden="true">?</span>
-    <img src={source} alt="Silueta de un Pokémon misterioso" className="relative z-content h-[82%] w-[82%] object-contain [image-rendering:pixelated]" />
-  </div>;
-}
-
-function HintPanel({ game, enabled, serverOffset }: { game: WhosThatPokemonPublicState; enabled: boolean; serverOffset: number }) {
-  if (!enabled) return null;
-  return <section className="rounded-2xl border border-electric/20 bg-electric/[0.06] p-3" aria-label="Pistas adicionales"><div className="mb-2 flex items-center justify-between gap-2"><strong className="flex items-center gap-2 font-display text-lg"><Lightbulb className="text-electric" size={19} /> Pistas</strong>{game.nextTransitionAt && <ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente pista" />}</div>{game.visibleHints.length ? <div className="flex flex-wrap gap-2">{game.visibleHints.map((hint, index) => <span key={`${hint.kind}-${index}`} className="reveal-pop rounded-full border border-electric/20 bg-night/30 px-3 py-1.5 text-sm font-extrabold text-electric">Pista {index + 1} · {describeHint(hint)}</span>)}</div> : <p className="text-sm font-bold text-ink/65">La primera pista aparecerá durante la ronda.</p>}</section>;
-}
-
-function GuessPanel({ pokemon, poolLoading, onRetry, player, game, serverOffset, participating, loadError, onAction }: { pokemon: readonly PokemonSearchOption[]; poolLoading: boolean; onRetry(): void; player: WhosThatPokemonPlayerState; game: WhosThatPokemonPublicState; serverOffset: number; participating: boolean; loadError: string; onAction(action: unknown): Promise<void> }) {
-  const cooldownMs = useRemainingMs(player.cooldownUntil, serverOffset);
-  if (!participating) return <div className="grid min-h-28 place-items-center rounded-2xl bg-ink/[0.04] text-center"><div><Eye className="mx-auto text-aqua" /><strong className="mt-1 block font-display text-xl">Estás observando</strong><span className="text-sm font-bold text-ink/65">Los espectadores no pueden enviar respuestas.</span></div></div>;
-  if (player.solved) return <div className="reveal-pop grid min-h-32 place-items-center rounded-2xl border border-leaf/30 bg-leaf/[0.08] text-center"><div><CheckCircle2 className="mx-auto text-leaf" size={42} /><strong className="mt-1 block font-display text-2xl text-leaf">¡Has acertado!</strong><span className="font-bold text-ink/65">{ordinal(player.solveOrder!)} en acertar · +{player.roundPoints} puntos</span><small className="block font-bold text-ink/55">Esperando al resto…</small></div></div>;
-  if (!player.canGuess) return <div className="grid min-h-28 place-items-center rounded-2xl bg-ink/[0.04] font-bold text-ink/65">Esperando al servidor…</div>;
-  return <section aria-label="Enviar intento"><div className="mb-2 flex flex-wrap items-end justify-between gap-2"><div><span className="block text-[10px] font-black uppercase tracking-[.15em] text-aqua">Tu respuesta</span><h2 className="flex items-center gap-2 font-display text-xl"><Search size={19} /> Buscar Pokémon</h2></div><span className="text-xs font-bold text-ink/60">{player.attemptCount} intento{player.attemptCount === 1 ? '' : 's'}</span></div>
-    {player.lastAttempt?.result === 'INCORRECT' && <p className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-berry/[0.08] px-3 py-2 text-sm font-extrabold text-berry" role="status"><span className="flex items-center gap-1.5"><XCircle size={17} /> Incorrecto</span><span>{cooldownMs > 0 ? `Nuevo intento en ${(cooldownMs / 1_000).toFixed(1)}s` : 'Ya puedes volver a intentarlo'}</span></p>}
-    <PokemonSelector loading={poolLoading} loadError={loadError} onRetry={onRetry} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={`Buscar respuesta para la ronda ${game.roundNumber}`} onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId })} />
-  </section>;
-}
-
-function PlayersPanel({ room, game }: { room: RoomView; game: WhosThatPokemonPublicState }) {
-  const solved = new Map(game.solvedPlayers.map((entry) => [entry.playerId, entry.solveOrder]));
-  return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><h2 className="mb-3 font-display text-xl">Jugadores</h2><div className="space-y-2">{room.members.map((member) => { const order = solved.get(member.id); const participating = member.role === 'PLAYER'; return <div key={member.id} className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 ${order ? 'bg-leaf/[0.08]' : 'bg-ink/[0.035]'}`}><Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="sm" /><div className="min-w-0 flex-1"><strong className="block truncate text-sm">{member.displayName}</strong><small className="font-bold text-ink/55">{game.scores[member.id] ?? 0} pts</small></div>{!participating ? <span className="flex items-center gap-1 text-xs font-bold text-ink/55"><Eye size={15} /> Espectador</span> : order ? <span className="flex items-center gap-1 text-xs font-black text-leaf"><CheckCircle2 size={16} /> {ordinal(order)} en acertar</span> : <span className="text-xs font-bold text-ink/60">buscando…</span>}</div>; })}</div></section>;
-}
-
-function AttemptsPanel({ room, game }: { room: RoomView; game: WhosThatPokemonPublicState }) {
-  return <section className="rounded-2xl border border-ink/10 bg-surface/80 p-4"><h2 className="mb-3 flex items-center gap-2 font-display text-xl"><History className="text-berry" size={20} /> Intentos públicos</h2>{game.attempts.length ? <div className="max-h-72 space-y-1.5 overflow-y-auto overscroll-contain pr-1" aria-live="polite">{game.attempts.slice().reverse().map((attempt, index) => { const member = room.members.find((candidate) => candidate.id === attempt.playerId); return <div key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} className="flex items-center gap-2 rounded-xl bg-berry/[0.07] p-2"><Avatar name={member?.displayName ?? attempt.playerId} avatar={member?.avatar} size="xs" /><span className="min-w-0 flex-1 text-sm"><strong className="truncate">{member?.displayName ?? attempt.playerId}</strong><span className="text-ink/60"> probó </span><strong>{attempt.guessedPokemon.name}</strong></span><img src={attempt.guessedPokemon.sprite} alt="" className="h-8 w-8 object-contain [image-rendering:pixelated]" /><XCircle className="shrink-0 text-berry" size={16} /></div>; })}</div> : <p className="rounded-xl border border-dashed border-ink/10 p-5 text-center text-sm font-bold text-ink/60">Todavía no hay intentos incorrectos.</p>}</section>;
-}
-
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: WhosThatPokemonPublicState; serverOffset: number }) {
-  const result = game.lastRound!;
-  const ordered = room.members.filter((member) => member.role !== 'SPECTATOR').sort((left, right) => (result.solves[left.id]?.solveOrder ?? Infinity) - (result.solves[right.id]?.solveOrder ?? Infinity));
-  return <section className="mx-auto max-w-6xl px-3 py-5 sm:px-5"><div className="overflow-hidden rounded-2xl border border-leaf/25 bg-surface/95 shadow-card reveal-pop"><header className="flex items-start justify-between gap-3 border-b border-ink/10 px-4 py-4 sm:px-6"><div><span className="label !mb-0">Resultado · Ronda {game.roundNumber}</span><h1 className="font-display text-3xl text-leaf sm:text-4xl">¡Era {result.pokemon.name}!</h1><p className="text-sm font-bold text-ink/60">{whoPokemonScoringLabel()}</p></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[20rem_1fr]"><div className="who-reveal-stage grid min-h-72 place-items-center rounded-2xl bg-leaf/[0.08] p-4"><img src={result.pokemon.sprite} alt={result.pokemon.name} className="h-64 w-64 object-contain [image-rendering:pixelated]" /><strong className="font-display text-2xl">{result.pokemon.name}</strong></div><div className="grid content-start gap-2 sm:grid-cols-2">{ordered.map((member) => { const solve = result.solves[member.id]; const attempts = result.attemptCounts[member.id] ?? 0; return <article key={member.id} className={`flex items-center gap-3 rounded-2xl border p-3 ${solve ? 'border-leaf/30 bg-leaf/[0.07]' : 'border-berry/20 bg-berry/[0.05]'}`}><strong className="w-8 text-center text-xl">{solve ? solve.solveOrder <= 3 ? ['🥇', '🥈', '🥉'][solve.solveOrder - 1] : solve.solveOrder : '—'}</strong><Avatar name={member.displayName} avatar={member.avatar} size="md" /><div className="min-w-0 flex-1"><strong className="block truncate">{member.displayName}</strong>{solve ? <><small className="block font-bold text-leaf">{ordinal(solve.solveOrder)} · {attempts} intento{attempts === 1 ? '' : 's'} · {(solve.elapsedMs / 1_000).toFixed(1)}s</small><small className="font-bold text-ink/55">Rapidez {solve.speedPoints} + orden {solve.placementBonus}</small></> : <small className="font-bold text-berry">✗ No acertó · {attempts} intentos</small>}</div><strong className={solve ? 'text-leaf' : 'text-ink/50'}>+{solve?.points ?? 0}</strong></article>; })}</div></div></div></section>;
-}
-
+/**
+ * ¿Quién es ese Pokémon? con el kit de adivinar (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda, la
+ * silueta (escala con el sitio libre) y las pistas adicionales; en la revelación, la carta del Pokémon con su silueta al
+ * lado. Abajo se actúa: el buscador, el acierto con sus puntos o el veredicto. Al lado, el marcador en vivo y los
+ * intentos públicos (en la revelación, los puntos de la ronda de cada uno).
+ *
+ * Privacidad: la silueta es una imagen opaca sin nombre (`alt` genérico). La respuesta solo llega en `lastRound`, que
+ * el servidor manda en `ROUND_RESULTS`; aun así la pantalla solo la usa en esa fase.
+ */
 export function WhosThatPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as WhosThatPokemonPublicState; const player = room.gamePlayerState as WhosThatPokemonPlayerState;
-  const config = room.selectedGameConfig as { generations: number[]; hintsEnabled: boolean; includeRegionalForms: boolean };
-  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: config.includeRegionalForms });
-  const serverOffset = useServerOffset(room.serverNow);
-  const self = room.members.find((member) => member.id === selfId); const participating = self?.role === 'PLAYER';
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface/85 px-4 py-3 shadow-card"><div><span className="block text-[10px] font-black uppercase tracking-[.16em] text-ink/60">Ronda {game.roundNumber} / {game.totalRounds}</span><h1 className="font-display text-xl sm:text-3xl">¿Quién es ese Pokémon?</h1><p className="text-xs font-bold text-ink/60">{whoPokemonScoringLabel()}</p></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} /></header>
-    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="overflow-hidden rounded-2xl border border-ink/10 bg-surface/90 shadow-card"><div className="grid gap-4 p-4 sm:p-6 lg:grid-cols-[minmax(18rem,25rem)_1fr] lg:items-center"><div><SilhouetteStage source={game.silhouetteSprite ?? ''} /></div><div className="space-y-4"><div><h2 className="font-display text-2xl sm:text-3xl">Reconoce su forma</h2></div><HintPanel game={game} enabled={config.hintsEnabled} serverOffset={serverOffset} /></div></div><div className="border-t border-ink/[0.08] bg-night/10 p-4 sm:p-5"><GuessPanel pokemon={pokemon} poolLoading={poolLoading} onRetry={retryPool} player={player} game={game} serverOffset={serverOffset} participating={Boolean(participating)} loadError={loadError} onAction={onAction} /></div></main><aside className="grid gap-4 md:grid-cols-2 xl:sticky xl:top-4 xl:grid-cols-1"><PlayersPanel room={room} game={game} /><AttemptsPanel room={room} game={game} /></aside></div>
-  </section>;
+  const game = room.game as WhosThatPokemonPublicState;
+  const player = room.gamePlayerState as WhosThatPokemonPlayerState | null;
+  const config = room.selectedGameConfig as Partial<WhosThatPokemonConfig> | null;
+  const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeRegionalForms ?? false });
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const offset = useServerOffset(room.serverNow);
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
+  const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
+  const active = game.phase === 'ROUND_ACTIVE';
+  const participating = members.get(selfId)?.role === 'PLAYER';
+  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const kind = guessPanelKind(game.phase, player ? { participating, canGuess: player.canGuess, solved: player.solved } : null, lastRound !== null);
+  const ownLast = active ? guessOwnLastAttempt(game.attempts, selfId) : null;
+
+  // Todos los hooks van antes de elegir la escena: el número de hooks no cambia entre fases.
+  useSfxCue('hit', active && player?.solved ? game.roundNumber : null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(guessFocusKey(kind, game.roundNumber), titleRef);
+
+  const last = game.roundNumber >= game.totalRounds;
+  const solved = guessSolvedOrders(game.solvedPlayers);
+  const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce su silueta';
+  const announcement = guessAnnouncement({ kind, roundNumber: game.roundNumber, answer: lastRound?.pokemon.name ?? null, solveOrder: player?.solveOrder ?? null, roundPoints: player?.roundPoints ?? 0, lastWrong: ownLast?.guessedPokemon.name ?? null, attemptCount: player?.attemptCount ?? 0 });
+
+  const clue = lastRound
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {whoPokemonScoringLabel()}</>}
+      clueTitle="Así era su silueta" clue={<span className={s.revealShadow}><img src={guessSprite(lastRound.pokemon.sprite)} alt="" /></span>} />
+    : <GuessClue label="Silueta misteriosa normalizada" className={s.stage}>
+      <span className={s.mark} aria-hidden="true">?</span>
+      {game.silhouetteSprite && <img className={s.silhouette} src={game.silhouetteSprite} alt="Silueta de un Pokémon misterioso" />}
+    </GuessClue>;
+
+  const hints = active && config?.hintsEnabled
+    ? <GuessHints hints={game.visibleHints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describeWhosThatHint(hint) }))} emptyText="La primera pista aparecerá durante la ronda."
+      next={game.nextTransitionAt ? <Chip tone="neutral" icon={<Icon icon={Lightbulb} size={18} />}>Siguiente pista en {Math.max(1, transitionRemaining)}s</Chip> : null} />
+    : null;
+
+  const side = lastRound
+    ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
+      detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
+    : <>
+      <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, solved)} selfId={selfId} />
+      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+    </>;
+
+  const bottom = <GuessPanel kind={kind} titleRef={titleRef} question={GAME_NAME} guessText={whoPokemonScoringLabel()} gameName={GAME_NAME}
+    selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }}
+    cooldownMs={cooldownMs} lastWrong={ownLast?.guessedPokemon.name ?? null} attemptCount={player?.attemptCount ?? 0}
+    solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0}
+    verdict={lastRound ? guessVerdict(lastRound.solves, selfId, participating) : null} countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} />;
+
+  const timer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
+    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+    announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }

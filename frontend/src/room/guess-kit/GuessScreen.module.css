@@ -1,0 +1,224 @@
+/*
+ * Marco de los juegos de adivinar: alto del `main` como `SessionScreen`, sin scroll de página en escritorio. Arriba la
+ * placa de la ronda, la pista (que crece con el sitio libre) y las pistas adicionales; abajo la acción; al lado, el
+ * marcador y los intentos.
+ */
+.screen {
+  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
+  position: relative;
+  min-height: 100%;
+  padding-top: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .screen {
+    height: 100%;
+    padding-block: var(--sp-5);
+  }
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+  /* Hueco para la sombra dura de las placas (la columna recorta lo que se sale al desplazarse). */
+  padding-bottom: var(--sp-2);
+}
+.top > * {
+  flex: none;
+}
+@media (min-width: 1024px) {
+  .top {
+    height: 100%;
+  }
+  /* La pista llena el alto que dejan la placa de la ronda y las pistas adicionales. */
+  .top > .clue {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+.clue {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.clue > * {
+  flex: 1 1 auto;
+}
+
+/* Placa de la ronda: ronda y juego arriba, el título debajo; el plazo y «Saltar minijuego» a la derecha. */
+.hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.hudMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.hudMeta > * {
+  max-width: 100%;
+}
+/* Los chips de la placa pueden partir su texto antes que salirse de su hueco. */
+.hudMeta > span {
+  white-space: normal;
+}
+.gameName {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.heading {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-34) / 1.1 var(--font-display);
+  color: var(--white);
+}
+/* «Saltar minijuego» a la izquierda del plazo, en la misma fila: la placa no crece en alto. */
+.hudSide {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.skip {
+  display: flex;
+  justify-content: flex-end;
+}
+.timer {
+  flex: none;
+}
+
+/* Zona de la pista: llena su hueco y centra el contenido; el cuerpo es un contenedor para escalar con `cq*`. */
+.cluePanel {
+  min-height: 0;
+}
+.clueBody {
+  container-type: size;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  /* Con la bandeja del buscador abierta la pista encoge (y escala con ella) en vez de recortarse. */
+  .cluePanel {
+    min-height: 7rem;
+  }
+}
+
+/* Columna lateral: el marcador y los intentos (o los puntos de la ronda). */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.side > * {
+  flex: none;
+  max-height: 22rem;
+}
+@media (min-width: 1024px) {
+  .side {
+    height: 100%;
+  }
+  /* El primero (marcador) mide lo que necesita con tope; el último (intentos) llena el resto. */
+  .side > :first-child:not(:last-child) {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 60%;
+  }
+  .side > :last-child {
+    flex: 1 1 auto;
+    min-height: 8rem;
+    max-height: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  /*
+   * Móvil y tableta: la pista es una franja con tope de alto, para que la placa de la ronda, la pista y el buscador
+   * (pegado al fondo) se vean juntos sin desplazar.
+   */
+  .cluePanel {
+    height: clamp(8rem, 25svh, 22rem);
+  }
+}
+@media (max-width: 639px) {
+  /* Móvil: ronda y título a la izquierda, el plazo a la derecha y «Saltar minijuego» debajo, a lo ancho. */
+  .hud {
+    grid-template-areas: 'main timer' 'skip skip';
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .hudMain {
+    grid-area: main;
+    gap: var(--sp-1);
+  }
+  .hudSide {
+    display: contents;
+  }
+  .timer {
+    grid-area: timer;
+  }
+  .skip {
+    grid-area: skip;
+  }
+  .skip:empty {
+    display: none;
+  }
+  /* El nombre del juego ya va en la placa de la sala: aquí solo para lectores. */
+  .gameName {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .hudMeta > span {
+    white-space: nowrap;
+  }
+  .heading {
+    font-size: var(--fs-22);
+  }
+}
+/* Escritorio bajo (720 px): la placa de la ronda algo más baja. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hud {
+    padding-block: var(--sp-2);
+  }
+  .heading {
+    font-size: var(--fs-26);
+  }
+}
+/* Escritorio grande (≥1600×900): la pantalla se llena; la placa de la ronda y su título crecen. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .hud {
+    padding: var(--sp-4) var(--sp-5);
+  }
+  .heading {
+    font-size: var(--fs-44);
+  }
+  .gameName {
+    font-size: var(--fs-15);
+  }
+  .hudMeta > span:not(.gameName) {
+    min-height: 30px;
+    padding-inline: var(--sp-3);
+    font-size: var(--fs-15);
+  }
+}

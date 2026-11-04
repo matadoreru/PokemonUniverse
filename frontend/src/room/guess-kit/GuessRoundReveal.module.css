@@ -1,0 +1,120 @@
+/*
+ * Revelación de los juegos de adivinar: la carta (o las cartas) de la respuesta, el nombre y sus datos y, al lado, la
+ * pista desvelada. En escritorio llena la losa de la pista y va centrada; a ≥1600 todo crece.
+ */
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.reveal {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'cards text' 'clue clue';
+  align-items: center;
+  gap: var(--sp-3) var(--sp-5);
+}
+@media (min-width: 1024px) {
+  .reveal {
+    grid-template-areas: 'cards text';
+    align-content: safe center;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .withClue {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'cards text clue';
+  }
+  /* Escritorio: la carta de una sola respuesta más grande que la de las rejillas (crece con el alto). */
+  .cards:not(.several) [data-answer-card] > span:first-child {
+    width: clamp(128px, 22vh, 192px);
+    height: clamp(128px, 22vh, 192px);
+  }
+  .cards [data-answer-card] img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+.cards {
+  grid-area: cards;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  perspective: 900px;
+}
+.several {
+  max-width: min(100%, 36rem);
+}
+.card {
+  display: flex;
+}
+.text {
+  grid-area: text;
+  min-width: 0;
+}
+.kicker {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 var(--fs-44) / 1.05 var(--font-display);
+  color: var(--ink);
+}
+.details {
+  margin-top: var(--sp-1);
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.clue {
+  grid-area: clue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+@media (max-width: 1023px) {
+  /* Móvil y tableta: la pista desvelada al lado de la carta, si cabe; si no, debajo. */
+  .reveal {
+    overflow-y: auto;
+  }
+}
+@media (max-width: 639px) {
+  /* El nombre ya lo dice el título de la cabecera («¡Era X!»): en el móvil, la carta y los datos. */
+  .title {
+    display: none;
+  }
+  .reveal {
+    gap: var(--sp-2) var(--sp-3);
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .reveal {
+    column-gap: var(--sp-6);
+  }
+  .title {
+    font-size: var(--fs-68);
+  }
+  .details {
+    font-size: var(--fs-18);
+  }
+  .kicker {
+    font-size: var(--fs-15);
+  }
+  /* La carta crece con el alto de la vista (sin pasarse): no queda pequeña en una losa grande. */
+  .cards:not(.several) [data-answer-card] > span:first-child {
+    width: clamp(192px, 30vh, 340px);
+    height: clamp(192px, 30vh, 340px);
+  }
+  .several [data-answer-card] > span:first-child {
+    width: 160px;
+    height: 160px;
+  }
+}

@@ -43,6 +43,12 @@ const ARCADE: CaptureOptions = { minFontPx: 13, noPageScroll: true };
 /** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
 
+/**
+ * Juegos de la captura genérica rediseñados con Arcade DS (F6): su captura a los tres tamaños se mide con `ARCADE`
+ * (13 px y sin scroll de página ni del `main`).
+ */
+const ARCADE_GAMES = new Set(['whos-that-pokemon']);
+
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
 const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon']);
 
@@ -142,7 +148,7 @@ for (const manifest of registry) {
         // fuera de 1280×720 lo que mida el medidor solo se anota.
         for (const { w, h } of SIZES) {
           await host.page.setViewportSize({ width: w, height: h });
-          const { id, problems } = await layoutProblems(host.page, `juego-${manifest.id}`, true);
+          const { id, problems } = await layoutProblems(host.page, `juego-${manifest.id}`, true, false, ARCADE_GAMES.has(manifest.id) ? ARCADE : {});
           if (problems.length && w !== 1280) test.info().annotations.push({ type: 'encaje', description: `${id}: ${problems.join(' · ')}` });
         }
         await host.page.setViewportSize({ width: 1280, height: 720 });
@@ -1462,6 +1468,178 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     // Clasificación de la partida (una ronda).
     await expect(host.page.getByRole('heading', { name: 'Clasificación Learnset Guess' })).toBeVisible({ timeout: 15_000 });
     await capturarTamanos(host.page, 'juego-learnset-guess-clasificacion', { opts: ARCADE });
+    for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+/**
+ * La respuesta de ¿Quién es ese Pokémon? no está en el cliente: se deduce de la silueta. En la página (mismo origen)
+ * se recorta la silueta y el sprite de cada candidato del buscador a su caja opaca, se encajan en una rejilla de 32×32 y
+ * gana el de menos casillas distintas (la silueta del servidor es el mismo sprite recortado, encajado y en negro).
+ */
+async function siluetaMasParecida(page: Page, sombra: string, candidatos: ReadonlyArray<{ name: string; sprite: string }>): Promise<{ mejor: string; peor: string; distancias: number[] }> {
+  return page.evaluate(async ({ sombra, candidatos }) => {
+    const N = 32;
+    const rejilla = async (url: string): Promise<Uint8Array | null> => {
+      for (let intento = 0; intento < 5; intento++) {
+        const respuesta = await fetch(url, { credentials: 'include' }).catch(() => null);
+        if (respuesta?.ok) {
+          const imagen = await createImageBitmap(await respuesta.blob());
+          const lienzo = new OffscreenCanvas(imagen.width, imagen.height);
+          const ctx = lienzo.getContext('2d')!;
+          ctx.drawImage(imagen, 0, 0);
+          const { data } = ctx.getImageData(0, 0, imagen.width, imagen.height);
+          let x0 = imagen.width, y0 = imagen.height, x1 = -1, y1 = -1;
+          for (let y = 0; y < imagen.height; y++) for (let x = 0; x < imagen.width; x++) {
+            if (data[(y * imagen.width + x) * 4 + 3]! > 32) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
+          }
+          if (x1 < 0) return null;
+          const w = x1 - x0 + 1, h = y1 - y0 + 1, escala = N / Math.max(w, h);
+          const caja = new OffscreenCanvas(N, N);
+          const cctx = caja.getContext('2d')!;
+          cctx.drawImage(imagen, x0, y0, w, h, (N - w * escala) / 2, (N - h * escala) / 2, w * escala, h * escala);
+          const celdas = cctx.getImageData(0, 0, N, N).data;
+          const salida = new Uint8Array(N * N);
+          for (let i = 0; i < N * N; i++) salida[i] = celdas[i * 4 + 3]! > 96 ? 1 : 0;
+          return salida;
+        }
+        await new Promise((listo) => setTimeout(listo, 250 * (intento + 1)));
+      }
+      return null;
+    };
+    const objetivo = await rejilla(sombra);
+    if (!objetivo) throw new Error('No se pudo leer la silueta');
+    const puntuados: Array<{ name: string; distancia: number }> = [];
+    for (let inicio = 0; inicio < candidatos.length; inicio += 8) {
+      const lote = candidatos.slice(inicio, inicio + 8);
+      const rejillas = await Promise.all(lote.map((candidato) => rejilla(candidato.sprite)));
+      rejillas.forEach((celdas, indice) => {
+        if (!celdas) return;
+        let distancia = 0;
+        for (let i = 0; i < celdas.length; i++) if (celdas[i] !== objetivo[i]) distancia++;
+        puntuados.push({ name: lote[indice]!.name, distancia });
+      });
+    }
+    puntuados.sort((a, b) => a.distancia - b.distancia);
+    return { mejor: puntuados[0]!.name, peor: puntuados.at(-1)!.name, distancias: puntuados.slice(0, 3).map((p) => p.distancia) };
+  }, { sombra, candidatos });
+}
+
+/** Elige un Pokémon con el buscador de ¿Quién es ese Pokémon? (su etiqueta lleva la ronda). */
+async function adivinarSilueta(page: Page, nombre: string): Promise<void> {
+  await page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ }).fill(nombre, { timeout: 20_000 });
+  await page.getByRole('button', { name: nombre, exact: true }).click({ timeout: 10_000 });
+}
+
+test('whos-that-pokemon: una ronda con un fallo, el acierto, la revelación y la clasificación', async ({ browser }) => {
+  test.setTimeout(240_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [primero, segundo] = invitados as [Jugador, Jugador];
+    await seleccionarJuego(host.page, '¿Quién es ese Pokémon?');
+    // Una ronda (para llegar a la clasificación), 45 s, solo la Gen 1 sin formas regionales (para deducir la silueta) y con pistas.
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    for (const gen of [2, 3, 4, 5, 6, 7, 8, 9]) {
+      const boton = host.page.getByRole('button', { name: `Gen ${gen}`, exact: true });
+      await boton.click();
+      await expect(boton).toHaveAttribute('aria-pressed', 'false');
+    }
+    const formas = host.page.getByRole('switch', { name: 'Formas regionales' });
+    await formas.click();
+    await expect(formas).toHaveAttribute('aria-checked', 'false');
+    const pistas = host.page.getByRole('switch', { name: 'Pistas adicionales' });
+    await pistas.click();
+    await expect(pistas).toHaveAttribute('aria-checked', 'true');
+    for (const [nombre, tecla, valor] of [['Número de rondas', 'Home', '1'], ['Tiempo por ronda', 'End', '60']] as const) {
+      const rango = host.page.getByRole('slider', { name: nombre });
+      await rango.focus();
+      await rango.press(tecla);
+      await rango.blur();
+      await expect(rango).toHaveValue(valor);
+    }
+    const tiempo = host.page.getByRole('slider', { name: 'Tiempo por ronda' });
+    await tiempo.focus();
+    for (let paso = 0; paso < 3; paso++) await tiempo.press('ArrowLeft');
+    await tiempo.blur();
+    await expect(tiempo).toHaveValue('45');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+
+    const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
+    const sombra = host.page.waitForResponse((r) => /\/options\/shadow\/sprite$/.test(new URL(r.url()).pathname) && r.status() === 200, { timeout: 30_000 });
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await saltarIntro(jugadores.map((j) => j.page));
+    const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string; sprite: string }> };
+    const silueta = host.page.getByRole('img', { name: 'Silueta de un Pokémon misterioso' });
+    await expect(silueta).toBeVisible({ timeout: 20_000 });
+    const buscador = (page: Page) => page.getByRole('textbox', { name: /^Buscar respuesta para la ronda \d+$/ });
+    await expect(buscador(host.page)).toBeVisible();
+
+    // La respuesta no está en el DOM: solo la silueta opaca, sin nombre en `alt` ni `title`.
+    const deduccion = await siluetaMasParecida(host.page, new URL((await sombra).url()).pathname, catalogo);
+    test.info().annotations.push({ type: 'silueta', description: `${deduccion.mejor} (distancias ${deduccion.distancias.join(', ')} de ${catalogo.length})` });
+    await expect(host.page.locator('main')).not.toContainText(deduccion.mejor);
+    expect(await host.page.locator(`main [alt="${deduccion.mejor}"], main [title="${deduccion.mejor}"]`).count()).toBe(0);
+
+    // Marcador: una fila por jugador; los intentos vacíos enseñan a jugar.
+    await expect(host.page.getByTestId('guess-score-row')).toHaveCount(3);
+    await expect(host.page.getByText('Todavía no hay intentos incorrectos.')).toBeVisible();
+    await capturarTamanos(host.page, 'juego-whos-that-pokemon-pista', { sigue: silueta, opts: ARCADE });
+    // A 390×844, sin desplazar: la silueta y el buscador a la vista.
+    await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await expect(silueta).toBeInViewport({ ratio: 1 });
+    await expect(buscador(host.page)).toBeInViewport({ ratio: 1 });
+    await host.page.setViewportSize({ width: 1280, height: 720 });
+
+    // Un fallo: el aviso de la espera se ve, la región viva lo dice una vez y los demás ven el intento.
+    await adivinarSilueta(host.page, deduccion.peor === deduccion.mejor ? 'Pikachu' : deduccion.peor);
+    await expect(host.page.getByTestId('guess-cooldown')).toBeVisible({ timeout: 5_000 });
+    await expect(host.page.getByRole('status').filter({ hasText: /^Incorrecto \(1 intento\)/ })).toHaveCount(1);
+    await expect(primero.page.getByTestId('guess-attempt')).toHaveCount(1, { timeout: 5_000 });
+    await expect(host.page.getByTestId('guess-cooldown')).toHaveCount(0, { timeout: 5_000 });
+    await expect(host.page.getByText(/ no era$/)).toBeVisible();
+    // Buscando (la bandeja abierta): a 390×844 el primer resultado y la silueta siguen a la vista.
+    await buscador(host.page).fill('a');
+    const primerResultado = host.page.locator('.pokemon-selector-results button').first();
+    await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await expect(primerResultado).toBeInViewport({ ratio: 1 });
+    await expect(silueta).toBeInViewport();
+    await host.page.setViewportSize({ width: 1280, height: 720 });
+    await buscador(host.page).blur();
+    await capturarTamanos(host.page, 'juego-whos-that-pokemon-busqueda', { sigue: primerResultado, opts: ARCADE });
+    await buscador(host.page).fill('');
+
+    // El acierto: la placa lo dice con el puesto y los puntos, y el foco va a su título (no cae al body).
+    await adivinarSilueta(host.page, deduccion.mejor);
+    const acertado = host.page.getByRole('heading', { name: '¡Acertado!' });
+    await expect(acertado).toBeVisible({ timeout: 5_000 });
+    await expect(acertado).toBeFocused();
+    await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
+    await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
+    await capturarTamanos(host.page, 'juego-whos-that-pokemon-acertado', { sigue: acertado, opts: ARCADE });
+    await capturarTamanos(primero.page, 'juego-whos-that-pokemon-marcador', { sigue: buscador(primero.page), opts: ARCADE });
+
+    // El segundo también acierta y el tercero se va: la revelación lo dice en texto («No acertó», «Sin conexión»).
+    await adivinarSilueta(primero.page, deduccion.mejor);
+    await expect(primero.page.getByRole('heading', { name: '¡Acertado!' })).toBeVisible({ timeout: 5_000 });
+    await segundo.context.close();
+    const era = host.page.getByRole('heading', { name: `¡Era ${deduccion.mejor}!`, level: 1 });
+    await expect(era).toBeVisible({ timeout: 50_000 });
+    const filas = host.page.getByTestId('guess-reveal-row');
+    await expect(filas).toHaveCount(3);
+    await expect(filas.first()).toContainText(host.name);
+    await expect(filas.filter({ hasText: segundo.name })).toContainText('No acertó');
+    // La carta de la respuesta carga con prioridad (`Card eager`): se captura con el sprite ya descodificado.
+    await expect.poll(() => host.page.locator('[data-answer-card] img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 3_000 }).toBe(true);
+    // La revelación dura 4 s: lo que mida el medidor se anota.
+    await capturarAnotando(host.page, 'juego-whos-that-pokemon-revelacion', era, SIZES, ARCADE);
+
+    await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 15_000 });
+    await capturarTamanos(host.page, 'juego-whos-that-pokemon-clasificacion', { opts: ARCADE });
     for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

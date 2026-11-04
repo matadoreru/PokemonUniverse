@@ -1,27 +1,25 @@
 import type { WhosThatPokemonConfig } from '@pokemon-universe/shared/public';
-import { Eye, Lightbulb, Sparkles } from 'lucide-react';
-import type { ReactNode } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { ConfigRange } from '../../room/ConfigRange';
+import { Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 
-const roundTimes = [10, 15, 20, 30, 45, 60];
-const roundCounts = [5, 10, 15, 20];
-
-function ToggleCard({ active, title, description, icon, onClick }: { active: boolean; title: string; description: string; icon: ReactNode; onClick(): void }) {
-  return <button type="button" aria-pressed={active} onClick={onClick} className={`flex min-h-20 items-center gap-3 rounded-2xl border p-3 text-left transition ${active ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised text-ink/70'}`}><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${active ? 'bg-aqua text-night' : 'bg-ink/[0.07]'}`}>{icon}</span><span className="min-w-0 flex-1"><strong className="block font-display text-lg text-ink">{title}</strong><small className="block font-bold text-ink/65">{description}</small></span><span className={`grid h-6 w-6 place-items-center rounded-full text-xs font-black ${active ? 'bg-leaf text-night' : 'bg-ink/10'}`}>{active ? '✓' : ''}</span></button>;
-}
-
+/**
+ * Ajustes de ¿Quién es ese Pokémon? con los controles del catálogo: generaciones del pool, pistas adicionales y formas
+ * regionales (`Toggle`) y los tiempos (`ConfigRange`, en los límites del contrato: 10–60 s y 1–20 rondas).
+ */
 export function WhosThatPokemonConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as WhosThatPokemonConfig;
-  return <fieldset disabled={disabled} className="space-y-6">
+  return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del pool" description="La generación normalizada del catálogo compartido también se aplica a las formas regionales." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className="grid gap-5 lg:grid-cols-2">
-      <section><span className="label">Tiempo por ronda</span><div className="grid grid-cols-3 gap-2">{roundTimes.map((seconds) => <button type="button" key={seconds} aria-pressed={value.roundSeconds === seconds} onClick={() => void onChange({ ...value, roundSeconds: seconds })} className={`min-h-11 rounded-xl border font-extrabold ${value.roundSeconds === seconds ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>{seconds}s</button>)}</div></section>
-      <section><span className="label">Número de rondas</span><div className="grid grid-cols-4 gap-2">{roundCounts.map((rounds) => <button type="button" key={rounds} aria-pressed={value.rounds === rounds} onClick={() => void onChange({ ...value, rounds })} className={`min-h-11 rounded-xl border font-extrabold ${value.rounds === rounds ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65'}`}>{rounds}</button>)}</div></section>
+    <div className={s.toggles}>
+      <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Generación, tipo y evolución aparecen poco a poco.' : 'Solo se muestra la silueta.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => void onChange({ ...value, hintsEnabled })} />
+      <Toggle label="Formas regionales" hint="Incluye las formas diferenciadas y con sprite propio del catálogo." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => void onChange({ ...value, includeRegionalForms })} />
     </div>
-    <div className="grid gap-3 md:grid-cols-2">
-      <ToggleCard active={value.hintsEnabled} title="Pistas adicionales" description={value.hintsEnabled ? 'Generación, tipo y evolución aparecerán progresivamente.' : 'Solo se mostrará la silueta.'} icon={value.hintsEnabled ? <Lightbulb /> : <Eye />} onClick={() => void onChange({ ...value, hintsEnabled: !value.hintsEnabled })} />
-      <ToggleCard active={value.includeRegionalForms} title="Formas regionales" description="Incluye las formas diferenciadas y con sprite propio disponibles en el catálogo." icon={<Sparkles />} onClick={() => void onChange({ ...value, includeRegionalForms: !value.includeRegionalForms })} />
+    <div className={s.ranges}>
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
-    <p className="rounded-xl bg-ink/[0.04] p-3 text-sm font-bold text-ink/65">Las formas Gigamax y otras variantes no se activan: el dataset actual solo normaliza de forma fiable las formas regionales.</p>
+    <p className={s.note}>Las formas Gigamax y otras variantes no se activan: el catálogo solo normaliza de forma fiable las formas regionales.</p>
   </fieldset>;
 }

@@ -1,8 +1,41 @@
 import type { RoomView, WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
-import { HelpCircle, RotateCcw, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import { CheckCircle2, Equal, Target, Timer } from 'lucide-react';
+import { whosThatRecords, whosThatStatsLine } from '../games/whos-that-pokemon/presentation';
+import { Chip, Icon } from '../ui';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
 
+/**
+ * Resultados de ¿Quién es ese Pokémon?: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador
+ * con insignia y «+N» y, en texto, aciertos, sin acertar, intentos, precisión, media, mejor tiempo y al primer intento)
+ * y, al lado, los récords de la partida (más aciertos, acierto más rápido y al primer intento; empates juntos). Abajo,
+ * la acción del host. Un empate a cero no corona.
+ */
 export function WhosThatPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as WhosThatPokemonPublicState; const host = room.hostId === selfId;
-  return <section className="mx-auto max-w-4xl px-3 py-8 sm:px-5"><div className="rounded-2xl border border-ink/10 bg-surface/95 p-4 shadow-card sm:p-7"><HelpCircle className="mx-auto text-aqua" size={52} /><span className="label mt-2 text-center">¿Quién es ese Pokémon? — Resultados</span><h1 className="mb-6 text-center font-display text-3xl sm:text-4xl">Clasificación final</h1><div className="space-y-2.5">{game.results?.standings.map((entry) => { const member = room.members.find((candidate) => candidate.id === entry.playerId); const correct = entry.stats.correct ?? 0; const missed = entry.stats.missed ?? 0; const attempts = entry.stats.totalAttempts ?? 0; const accuracy = attempts ? Math.round(correct / attempts * 100) : 0; const averageMs = correct ? (entry.stats.solveTimeTotalMs ?? 0) / correct : 0; return <article key={entry.playerId} className={`grid items-center gap-3 rounded-2xl border p-3 sm:grid-cols-[auto_auto_1fr_auto] ${entry.position === 1 ? 'border-electric/50 bg-electric/[0.08]' : 'border-ink/10 bg-surface-raised/70'}`}><strong className="w-9 text-center font-display text-2xl">{entry.position <= 3 ? ['🥇', '🥈', '🥉'][entry.position - 1] : entry.position}</strong><Avatar name={member?.displayName ?? entry.playerId} avatar={member?.avatar} size="md" /><div className="min-w-0"><strong className="block truncate font-display text-xl">{member?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/65">{correct} aciertos · {missed} sin acertar · {attempts} intentos · {accuracy}% precisión</p><div className="mt-1 flex flex-wrap gap-1.5 text-[11px] font-extrabold"><span className="rounded-full bg-aqua/10 px-2 py-0.5 text-aqua">Media {(averageMs / 1_000).toFixed(1)}s</span><span className="rounded-full bg-leaf/10 px-2 py-0.5 text-leaf">Mejor {entry.stats.bestTimeMs ? `${(entry.stats.bestTimeMs / 1_000).toFixed(1)}s` : '—'}</span><span className="rounded-full bg-electric/10 px-2 py-0.5 text-electric">{entry.stats.firstTry ?? 0} al primer intento</span></div></div><strong className="justify-self-end text-xl text-berry">{entry.points} pts</strong></article>; })}</div>{host ? <div className="mt-7 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/65">Esperando a que el host continúe la sesión…</p>}</div></section>;
+  const standings = game.results?.standings ?? [];
+  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{whosThatStatsLine(standing.stats)}</span></>,
+    };
+  });
+  const records = whosThatRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
+  const aside = <ResultsRecords id="whos-that-records-title" records={[
+    { key: 'correct', title: 'Más aciertos', icon: CheckCircle2, names: records.correct?.names ?? null, value: records.correct?.value ?? '', unit: records.correct?.value === '1' ? 'silueta reconocida' : 'siluetas reconocidas' },
+    { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: records.fastest?.names ?? null, value: records.fastest?.value ?? '', unit: 'desde que salió la silueta' },
+    { key: 'firstTry', title: 'Al primer intento', icon: Target, names: records.firstTry?.names ?? null, value: records.firstTry?.value ?? '', unit: records.firstTry?.value === '1' ? 'acierto sin fallar antes' : 'aciertos sin fallar antes' },
+  ]} />;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`¿Quién es ese Pokémon? · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

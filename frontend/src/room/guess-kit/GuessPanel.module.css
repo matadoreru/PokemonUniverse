@@ -1,0 +1,167 @@
+/* Pantalla inferior de los juegos de adivinar: placa crema con icono, estado y, a la derecha, el aviso o los puntos; debajo, el buscador. */
+.plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.plateRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.plateIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: 50%;
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+}
+.tone_ok {
+  background: var(--ok);
+}
+.tone_bad {
+  background: var(--bad);
+}
+.tone_info {
+  background: var(--info);
+}
+.tone_warn {
+  background: var(--warn);
+}
+.plateText {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.kicker {
+  display: block;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.plateTitle {
+  width: fit-content;
+  max-width: 100%;
+  /* Hueco para el anillo de foco (3 px fuera): no pisa el kicker ni el texto. */
+  margin-block: 3px;
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+  color: var(--ink);
+}
+.help {
+  margin-top: var(--sp-1);
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.plateAside {
+  flex: none;
+  min-width: 0;
+  max-width: 100%;
+}
+/* Un chip largo (la espera) parte su texto antes que salirse de la placa. */
+.plateAside span {
+  white-space: normal;
+}
+.noteName {
+  display: inline-block;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.points {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+.points > :global(.score-pop) {
+  position: absolute;
+  right: 100%;
+  top: -0.5rem;
+  margin-right: var(--sp-2);
+}
+
+/* Buscador: la bandeja de resultados con tope de alto, para que la pista siga a la vista. */
+.search {
+  min-width: 0;
+}
+.search :global(.pokemon-selector-results) {
+  max-height: clamp(7.5rem, 22dvh, 20rem);
+}
+@media (min-width: 1024px) {
+  /* Escritorio: título y aviso a la izquierda, el buscador a la derecha. */
+  .plateSearch {
+    display: grid;
+    grid-template-columns: minmax(15rem, 20rem) minmax(0, 1fr);
+    align-items: start;
+  }
+  .plateSearch .plateRow {
+    flex-wrap: wrap;
+  }
+  .plateSearch .plateAside {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 639px) {
+  /* Móvil: al buscar, la placa sin icono ni kicker (el buscador cabe con la pista a la vista). */
+  .plateIcon,
+  .plateSearch .kicker,
+  .plateSearch .help {
+    display: none;
+  }
+  .plateTitle {
+    font-size: var(--fs-18);
+  }
+  .plateRow {
+    flex-wrap: wrap;
+    row-gap: var(--sp-2);
+  }
+  .plateSearch {
+    gap: var(--sp-2);
+  }
+  .points {
+    font-size: var(--fs-34);
+  }
+  .search :global(.pokemon-selector-results) {
+    max-height: 8.5rem;
+  }
+}
+/* Escritorio bajo (720 px): la bandeja del buscador de una fila de cartas; la ayuda del campo no ocupa alto con ella abierta. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  /* La ayuda bajo la pregunta no ocupa alto: la pista gana ese sitio. */
+  .plateSearch .help {
+    display: none;
+  }
+  .search :global(.pokemon-selector-results) {
+    max-height: 9rem;
+  }
+  .search:has(:global(.pokemon-selector-results)) [id$='-hint'] {
+    display: none;
+  }
+}
+/* Escritorio grande (≥1600×900): título y puntos más grandes. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .plateTitle {
+    font-size: var(--fs-26);
+  }
+  .help {
+    font-size: var(--fs-18);
+  }
+  .points {
+    font-size: var(--fs-68);
+  }
+}

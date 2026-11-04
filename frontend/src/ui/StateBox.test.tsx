@@ -21,4 +21,10 @@ describe('StateBox', () => {
     expect(html).toContain('aria-busy="true"');
     expect(html.match(/<i /g)).toHaveLength(3);
   });
+
+  it('con live={false} el vacío no es región viva (la pantalla ya tiene la suya); el error sigue siendo alerta', () => {
+    expect(renderToStaticMarkup(createElement(StateBox, { kind: 'empty', title: 'Vacío' }))).toContain('role="status"');
+    expect(renderToStaticMarkup(createElement(StateBox, { kind: 'empty', title: 'Vacío', live: false }))).not.toContain('role=');
+    expect(renderToStaticMarkup(createElement(StateBox, { kind: 'error', title: 'Fallo', live: false }))).toContain('role="alert"');
+  });
 });
