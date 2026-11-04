@@ -27,12 +27,12 @@ function personRow(people: ImpostorPeople, id: string) {
     color: playerColor(people.colors.get(id) ?? 0),
     self: id === people.selfId,
     disconnected: member?.presence !== undefined && member.presence !== 'CONNECTED',
-    avatar: <Avatar name={name} avatar={member?.avatar} size="sm" />,
+    avatar: <span className={s.rowAvatar}><Avatar name={name} avatar={member?.avatar} size="sm" /></span>,
   };
 }
 
 /** Placa de la ronda (pantalla superior): ronda, vivos y desempate; el título de la fase y el tiempo a la derecha. */
-export function ImpostorHud({ round, alive, tiebreak, title, timer }: { round: number; alive: number; tiebreak: boolean; title: string; timer: ReactNode }) {
+export function ImpostorHud({ round, alive, tiebreak, title, timer, strip }: { round: number; alive: number; tiebreak: boolean; title: string; timer: ReactNode; /** Rol compacto (solo en el móvil). */ strip?: ReactNode }) {
   return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
     <div className={s.hudMain}>
       <div className={s.hudMeta}>
@@ -43,6 +43,7 @@ export function ImpostorHud({ round, alive, tiebreak, title, timer }: { round: n
       <h1 className={cx(s.title, 'ol')}>{title}</h1>
     </div>
     <div className={s.hudTimer}>{timer}</div>
+    {strip}
   </Panel>;
 }
 
@@ -54,8 +55,9 @@ function roleLook(role: PokemonImpostorPlayerState['role']): { icon: LucideIcon;
 }
 
 /** El Pokémon secreto (solo llega a quien puede verlo: inocentes y expulsados) o el aviso del impostor. */
-function SecretPokemon({ player, size }: { player: PokemonImpostorPlayerState; size: 'md' | 'sm' }) {
-  if (player.secretPokemon) return <div className={s.secret}><Card size={size} name={player.secretPokemon.name} sprite={player.secretPokemon.sprite} decorativeSprite /></div>;
+function SecretPokemon({ player, box }: { player: PokemonImpostorPlayerState; box: 'reveal' | 'side' }) {
+  // Carta llena en una caja que crece con la pantalla (en escritorio grande el sprite se ve en grande).
+  if (player.secretPokemon) return <div className={cx(s.secret, box === 'reveal' ? s.secretReveal : s.secretSide)} data-impostor-secret={player.secretPokemon.name}><Card size="fill" name={player.secretPokemon.name} sprite={player.secretPokemon.sprite} decorativeSprite /></div>;
   if (!player.role) return <p className={s.help}>Observas la partida en directo.</p>;
   return <p className={s.help}>No conoces el Pokémon. Intenta disimular.</p>;
 }
@@ -67,8 +69,23 @@ export function ImpostorRoleReveal({ player }: { player: PokemonImpostorPlayerSt
     <span className={cx(s.roleIcon, s.roleIconLg, look.tone)}><Icon icon={look.icon} size={32} /></span>
     <span className={s.kicker}>Tu rol</span>
     <h2 id="impostor-role-title" className={cx(s.roleName, look.tone && s.roleNameTone, look.tone)}>{look.label}</h2>
-    <SecretPokemon player={player} size="md" />
+    <SecretPokemon player={player} box="reveal" />
   </Panel>;
+}
+
+/**
+ * Tu rol en una línea dentro de la placa de la ronda, solo en el móvil (la columna lateral queda bajo el pliegue): el
+ * sprite y el nombre del Pokémon secreto o, al impostor, que no lo conoce.
+ */
+export function ImpostorRoleStrip({ player }: { player: PokemonImpostorPlayerState }) {
+  if (!player.role) return null;
+  const look = roleLook(player.role);
+  return <p className={s.roleStrip} data-testid="impostor-role-strip">
+    <span className={cx(s.roleTag, look.tone)}><Icon icon={look.icon} size={18} />{look.label}</span>
+    {player.secretPokemon
+      ? <><img className={s.stripSprite} src={player.secretPokemon.sprite} alt="" /><span className={s.stripName} title={player.secretPokemon.name}>{player.secretPokemon.name}</span></>
+      : <span className={s.stripNote}>{player.role === 'IMPOSTOR' ? 'Impostor · no conoces el Pokémon' : 'Sin Pokémon'}</span>}
+  </p>;
 }
 
 /**
@@ -80,7 +97,7 @@ export function ImpostorRolePanel({ player, phase, guessOpen, onToggleGuess }: {
   const guessing = phase === 'CLUE_PHASE' && player.role === 'IMPOSTOR';
   return <Panel title="Tu rol" variant="cream" as="section" bodyClassName={cx(s.rolePanel)}
     right={<span className={cx(s.roleTag, look.tone)}><Icon icon={look.icon} size={18} />{look.label}</span>}>
-    <SecretPokemon player={player} size="sm" />
+    <SecretPokemon player={player} box="side" />
     {!player.alive && player.role && <p className={s.help}><strong>Eliminado</strong> · ahora eres espectador</p>}
     {guessing && <div className={s.guess}>
       <span className={s.guessTitle}><Icon icon={Brain} size={18} />Adivinar el Pokémon</span>
@@ -95,10 +112,10 @@ export function ImpostorRolePanel({ player, phase, guessOpen, onToggleGuess }: {
 /** Orden de turnos con las pistas de cada ronda (pantalla superior en `CLUE_PHASE`). */
 export function ImpostorClueBoard({ game, people, orderedIds }: { game: PokemonImpostorPublicState; people: ImpostorPeople; orderedIds: readonly string[] }) {
   const rounds = Array.from({ length: Math.max(1, game.roundNumber) }, (_, index) => index + 1);
-  return <Panel title="Orden y pistas" variant="dark" scroll scrollLabel="Orden y pistas" className={cx(s.board)}
+  return <Panel title="Orden y pistas" variant="dark" scroll scrollLabel="Orden y pistas" className={cx(s.board)} bodyClassName={cx(s.boardBody)}
     right={<Badge tone="cream">{`${game.clueOrder.length} en el orden`}</Badge>}>
     {game.clueOrder.length === 0 && <p className={s.sideHint}>Nadie puede dar pistas ahora. La votación empezará cuando se acabe el tiempo.</p>}
-    <ol className={s.clueList} aria-label="Orden de turnos">{orderedIds.map((id) => {
+    <ol className={s.clueList} aria-label="Orden de turnos" style={{ '--n': orderedIds.length } as CSSProperties}>{orderedIds.map((id) => {
       const order = game.clueOrder.indexOf(id);
       const eliminated = game.eliminatedIds.includes(id);
       const turn = game.phase === 'CLUE_PHASE' && game.currentCluePlayerId === id;
@@ -143,7 +160,7 @@ export function ImpostorVoteGrid({ game, people, selectedId, interactive, onSele
         const self = id === people.selfId;
         const clue = lastClue(game, id);
         const member = people.members.get(id);
-        return card(id, people.nameOf(id), <Avatar name={people.nameOf(id)} avatar={member?.avatar} size="lg" />,
+        return card(id, people.nameOf(id), <span className={s.bigAvatar}><Avatar name={people.nameOf(id)} avatar={member?.avatar} size="lg" /></span>,
           self ? <Chip tone="neutral">Eres tú</Chip> : clue ? <span className={s.voteClue} title={`«${clue}»`}>«{clue}»</span> : <span className={s.voteClue}>Sin pista</span>, self);
       })}
       {card(IMPOSTOR_SKIP_TARGET, 'Saltar', <span className={s.skipArt}><Icon icon={SkipForward} size={32} /></span>, <span className={s.voteClue}>Nadie es expulsado</span>)}
@@ -182,7 +199,7 @@ export function ImpostorEliminationPlate({ reveal, roleShown, reducedMotion, win
   const name = people.nameOf(reveal.playerId);
   return <Panel variant="dark" as="section" aria-labelledby="impostor-eliminated-name" bodyClassName={cx(s.elimination, 'motion-enter-up')}>
     <span className={cx(s.eliminationBand, tone)} aria-hidden="true" />
-    <Avatar name={name} avatar={member?.avatar} size="lg" />
+    <span className={s.bigAvatar}><Avatar name={name} avatar={member?.avatar} size="lg" /></span>
     <strong id="impostor-eliminated-name" className={cx(s.eliminatedName, 'ol2')}>{name}</strong>
     <p className={cx(s.eliminatedRole, tone, roleShown && !reducedMotion && 'motion-enter-up')}>{roleShown ? `era ${impostor ? 'IMPOSTOR' : 'INOCENTE'}` : ' '}</p>
     {roleShown && winnerTeam && <p className={s.finish}>Partida terminada: ganan {winnerTeam === 'IMPOSTORS' ? 'los impostores' : 'los inocentes'}.</p>}

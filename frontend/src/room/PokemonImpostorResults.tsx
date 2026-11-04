@@ -49,7 +49,7 @@ export function PokemonImpostorResults({ room, selfId, onLobby, onEnd }: { room:
         const index = memberIndex(id);
         const name = nameOf(id);
         return <li key={id}><Row name={name} self={id === selfId} color={playerColor(Math.max(0, index))}
-          avatar={<Avatar name={name} avatar={room.members[index]?.avatar} size="md" />}
+          avatar={<span className={s.rowAvatar}><Avatar name={name} avatar={room.members[index]?.avatar} size="md" /></span>}
           meta={<span className={s.meta}>
             <Chip tone={role === 'IMPOSTOR' ? 'bad' : 'info'}>{role === 'IMPOSTOR' ? 'IMPOSTOR' : 'INOCENTE'}</Chip>
             <span>{impostorResultLine(byPlayer.get(id)?.stats)}</span>
@@ -62,7 +62,7 @@ export function PokemonImpostorResults({ room, selfId, onLobby, onEnd }: { room:
   const aside = <div className={s.aside}>
     {player.secretPokemon && <Panel variant="cream" as="section" aria-labelledby="impostor-secret-title" bodyClassName={cx(s.secret)}>
       <h2 id="impostor-secret-title" className={s.kicker}>Pokémon secreto</h2>
-      <Card name={player.secretPokemon.name} sprite={player.secretPokemon.sprite} decorativeSprite />
+      <div className={s.secretCard}><Card size="fill" name={player.secretPokemon.name} sprite={player.secretPokemon.sprite} decorativeSprite /></div>
     </Panel>}
     {finishText && <Panel variant="cream" as="section" aria-labelledby="impostor-finish-title" bodyClassName={cx(s.finish)}>
       <span className={cx(s.finishIcon, impostorsWon ? s.impostor : s.innocent)}><Icon icon={impostorsWon ? Skull : ShieldCheck} size={32} /></span>

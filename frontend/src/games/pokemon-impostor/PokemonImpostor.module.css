@@ -141,6 +141,15 @@
   justify-content: center;
   margin-top: var(--sp-2);
 }
+/* Carta llena del Pokémon secreto: la caja fija su tamaño y crece en escritorio grande. */
+.secretReveal {
+  width: min(100%, 10rem);
+  height: 11.5rem;
+}
+.secretSide {
+  width: 7.5rem;
+  height: 8rem;
+}
 
 /* Tu rol (columna lateral). */
 .rolePanel {
@@ -152,6 +161,43 @@
 }
 .rolePanel .secret {
   margin-top: 0;
+}
+
+/* Rol compacto en la placa de la ronda: solo en el móvil, donde la columna lateral queda bajo el pliegue. */
+.roleStrip {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  color: var(--white);
+}
+.stripSprite {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  background: var(--sky-2);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.stripName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* El aviso del impostor se parte en dos líneas antes que recortarse. */
+.stripNote {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 1024px) {
+  .roleStrip {
+    display: none;
+  }
 }
 .roleTag {
   display: inline-flex;
@@ -238,6 +284,17 @@
   margin-bottom: var(--sp-2);
   font: 700 var(--fs-13) / 1.35 var(--font-text);
   color: var(--sky-2);
+}
+
+/* Avatares grandes (cartas de voto y expulsión): el tamaño del avatar sale de `--av`. */
+.bigAvatar {
+  --av: 64px;
+  display: inline-flex;
+}
+.bigAvatar > span {
+  width: var(--av);
+  height: var(--av);
+  font-size: calc(var(--av) * 0.36);
 }
 
 /* Candidatos de la votación: cartas llenas con el avatar, el nombre y su última pista. */
@@ -423,6 +480,9 @@
   flex-direction: column;
   gap: var(--sp-2);
 }
+.rowAvatar {
+  display: inline-flex;
+}
 .rowMeta {
   display: flex;
   flex-wrap: wrap;
@@ -477,9 +537,18 @@
   outline: none;
 }
 .actionTitle:focus-visible {
-  outline: var(--ol-3) solid var(--navy);
-  outline-offset: 2px;
+  outline: var(--ol-2-5) solid var(--navy);
+  outline-offset: 3px;
   border-radius: var(--r-badge);
+}
+/* Hueco para el anillo de foco: no pisa el kicker ni el texto. */
+.actionTitle {
+  /* El anillo abraza el texto, no toda la línea. */
+  width: fit-content;
+  max-width: 100%;
+  margin-block: 3px;
+  padding-inline: 4px;
+  margin-inline: -4px;
 }
 .actionAside {
   flex: none;
@@ -550,5 +619,93 @@
   }
   .title {
     font-size: var(--fs-26);
+  }
+}
+
+/*
+ * Escritorio grande (≥1600×900): la pantalla se llena. El orden de pistas reparte el alto entre las franjas (pista en
+ * 24 px), las cartas de voto crecen con su panel, la expulsión y el reparto de roles van en grande.
+ */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .boardBody {
+    container-type: size;
+  }
+  .clueList {
+    display: grid;
+    grid-auto-rows: clamp(4rem, (100cqh - (var(--n) - 1) * var(--sp-2)) / var(--n), 8.5rem);
+    gap: var(--sp-2);
+  }
+  .clueList > li > div {
+    height: 100%;
+  }
+  .clueList .rowAvatar > span {
+    width: 48px;
+    height: 48px;
+    font-size: var(--fs-18);
+  }
+  .clues {
+    gap: var(--sp-1);
+  }
+  .sent .clueText {
+    font-size: 24px;
+  }
+  .clue {
+    font-size: var(--fs-18);
+  }
+  .voteBody {
+    container-type: size;
+  }
+  .voteGrid {
+    grid-auto-rows: clamp(11rem, 75cqh, 22rem);
+    max-width: calc(var(--count) * 18rem + (var(--count) - 1) * var(--sp-3));
+    gap: var(--sp-4);
+  }
+  .voteGrid .bigAvatar,
+  .skipArt {
+    --av: clamp(64px, 30cqh, 128px);
+  }
+  .skipArt {
+    width: var(--av);
+    height: var(--av);
+  }
+  .voteClue {
+    font-size: var(--fs-18);
+  }
+  .elimination .bigAvatar {
+    --av: 128px;
+  }
+  .eliminatedName {
+    font-size: var(--fs-68);
+  }
+  .eliminatedRole {
+    font-size: var(--fs-44);
+  }
+  .finish {
+    font-size: var(--fs-22);
+  }
+  .roleIconLg {
+    width: 112px;
+    height: 112px;
+  }
+  .roleName {
+    font-size: var(--fs-68);
+  }
+  .secretReveal {
+    width: min(100%, 18rem);
+    height: 21rem;
+  }
+  .secretSide {
+    width: 14rem;
+    height: 15rem;
+  }
+  .headline {
+    font-size: var(--fs-34);
+  }
+  .ballot {
+    font-size: var(--fs-18);
+    padding: var(--sp-3) var(--sp-4);
+  }
+  .ballots {
+    max-width: 56rem;
   }
 }

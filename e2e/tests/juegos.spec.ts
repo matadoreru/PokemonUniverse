@@ -299,6 +299,20 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
     const saltar = (page: Page) => page.getByRole('button', { name: 'Saltar', exact: true });
     const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
     for (let ronda = 1; ronda <= 3; ronda++) {
+      if (ronda === 2) {
+        // En el móvil el rol (y el Pokémon del inocente) se ve sin desplazar durante las pistas.
+        let sinPokemon = 0;
+        for (const page of pages) {
+          await page.setViewportSize({ width: 390, height: 844 });
+          const linea = page.getByTestId('impostor-role-strip');
+          await expect(linea).toBeInViewport({ ratio: 1 });
+          const secreto = page.locator('[data-impostor-secret]');
+          if (await secreto.count()) await expect(linea).toContainText((await secreto.first().getAttribute('data-impostor-secret'))!);
+          else { await expect(linea).toContainText('Impostor · no conoces el Pokémon'); sinPokemon++; }
+        }
+        expect(sinPokemon, 'solo el impostor no ve el Pokémon').toBe(1);
+        await ajustar();
+      }
       // Tres turnos de pista: cada vez, la página con el campo visible escribe y envía.
       for (let turno = 0; turno < 3; turno++) {
         const page = await primeraVisible(pages, campo);
