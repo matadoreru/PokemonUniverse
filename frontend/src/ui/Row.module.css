@@ -34,7 +34,8 @@
 }
 .rank {
   min-width: 2ch;
-  font: 800 var(--fs-18) / 1 var(--font-display);
+  /* Los tamaños de letra admiten variables (`--row-*-fs`) para listas que crecen con su hueco (resultados a 1920). */
+  font: 800 var(--row-rank-fs, var(--fs-18)) / 1 var(--font-display);
   text-align: center;
 }
 .avatar {
@@ -49,7 +50,7 @@
   gap: 2px;
 }
 .name {
-  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  font: 800 var(--row-name-fs, var(--fs-15)) / 1.2 var(--font-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -57,7 +58,7 @@
 .meta {
   display: flex;
   gap: var(--sp-2);
-  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  font: 700 var(--row-meta-fs, var(--fs-13)) / 1.2 var(--font-text);
   color: var(--ink-2);
 }
 .offLabel {
@@ -66,7 +67,7 @@
 }
 .value {
   flex: none;
-  font: 800 var(--fs-18) / 1 var(--font-display);
+  font: 800 var(--row-value-fs, var(--fs-18)) / 1 var(--font-display);
   font-variant-numeric: tabular-nums;
 }
 

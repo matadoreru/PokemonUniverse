@@ -8,7 +8,7 @@ import { apiAsset } from '../../lib/api';
 import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
-import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, type HigherLowerPlateKind } from './presentation';
+import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, higherLowerTied, type HigherLowerPlateKind } from './presentation';
 import s from './HigherLower.module.css';
 
 // Los sprites llegan como ruta del proxy opaco (`/api/pokemon/{id}/sprite`, sin el número de Pokédex); se sirven desde
@@ -93,10 +93,12 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
   const reveal = game.phase === 'ROUND_RESULTS' && game.lastRound !== null;
   const answered = game.answeredIds.filter((id) => game.playerIds.includes(id)).length;
   const privateAnswers = !reveal && Object.keys(game.answers).length === 0 && game.answeredIds.length > 0;
+  const ranking = higherLowerRanking(game, (id) => memberName(members.get(id), id));
+  const points = (id: string) => game.scores[id] ?? 0;
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}
     right={<Badge tone="cream">{`${answered} / ${game.playerIds.length} respuestas`}</Badge>}>
     <p className={s.sideHint}>{reveal ? 'Resultado de la ronda' : answered < game.playerIds.length ? `Pendientes · ${game.playerIds.length - answered}` : 'Todos han respondido'}{privateAnswers && <> · <strong>Respuestas privadas</strong> hasta revelar</>}</p>
-    <ol className={s.rows} aria-label="Clasificación de la partida">{higherLowerRanking(game, (id) => memberName(members.get(id), id)).map(({ id, position }) => {
+    <ol className={s.rows} aria-label="Clasificación de la partida">{ranking.map(({ id, position }) => {
       const member = members.get(id);
       const name = memberName(member, id);
       const streak = game.streaks[id] ?? 0;
@@ -114,6 +116,7 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
           avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
           meta={<span className={s.rowMeta}>
             {chip}
+            {higherLowerTied(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
             <span key={streak} className={cx(s.streak, streak > 0 && 'motion-bump')} data-streak={id}><Badge tone={streak > 0 ? 'yellow' : 'cream'}><Icon icon={Flame} size={18} />Racha {streak}</Badge></span>
             {line && <span className={s.outcomeLine} data-outcome-line>{line}</span>}
           </span>}
@@ -184,7 +187,7 @@ function plateContent({ kind, answer, pending, correctAnswer, outcome, participa
         tone: !participant ? 'info' : correct ? 'ok' : 'bad',
         kicker: verdict,
         title: `Respuesta: ${correctAnswer ? higherLowerChoiceLabels[correctAnswer] : '—'}`,
-        text: <>{correct && outcome && <span className={s.helpStrong}>{higherLowerOutcomeLine(outcome)} · </span>}<span>{countdown}</span></>,
+        text: <>{correct && outcome && <span className={s.helpStrong}>{higherLowerOutcomeLine(outcome)}</span>}<span className={s.countdown}>{countdown}</span></>,
         aside: participant ? <strong className={s.points}>{correct && <ScorePop points={points} tone="leaf" self />}+{points}<small> puntos</small></strong> : undefined,
       };
     }

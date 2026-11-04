@@ -39,7 +39,7 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
     return <li key={standing.id} className={podium ? s.podium : undefined} data-podium={podium || undefined}>
       <Row
         rank={standing.position}
-        avatar={<Avatar name={standing.name} avatar={standing.avatar} size={podium ? 'md' : 'sm'} />}
+        avatar={<span className={s.avatarBox}><Avatar name={standing.name} avatar={standing.avatar} size={podium ? 'md' : 'sm'} /></span>}
         name={standing.name}
         self={standing.id === selfId}
         {...(standing.color ? { color: standing.color } : {})}
@@ -58,8 +58,8 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
  * de página, con la clasificación (y `children`) a la izquierda y `aside` a la derecha, cada columna con su propio
  * desplazamiento; en el móvil, una columna. `actions` queda abajo, siempre a la vista en escritorio.
  *
- * Con `fillLarge` (y `aside`), en escritorio grande (≥1600×900) el panel llena todo el alto y la clasificación va en
- * grande, para no dejar tres franjas pequeñas flotando en media pantalla vacía.
+ * Con `fillLarge` (y `aside`), en escritorio grande (≥1600×900) el panel llena todo el alto y las franjas de la
+ * clasificación reparten el alto de su columna (con tope) y van en grande; `aside` mide lo que necesita.
  */
 export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, aside, actions, fillLarge = false, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; aside?: ReactNode; actions?: ReactNode; /** Ver arriba: pantalla llena en escritorio grande. */ fillLarge?: boolean; children?: ReactNode }) {
   // Solo al montar: un cambio posterior de `won` no repite el sonido.

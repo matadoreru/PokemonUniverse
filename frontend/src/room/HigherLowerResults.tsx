@@ -1,8 +1,8 @@
 import type { HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Flame, RotateCcw, StopCircle, Target } from 'lucide-react';
-import { higherLowerRecord, type HigherLowerRecord } from '../games/higher-lower/presentation';
-import { cx, Icon, Panel, Pill } from '../ui';
+import { higherLowerRecord, higherLowerTied, type HigherLowerRecord } from '../games/higher-lower/presentation';
+import { Chip, cx, Icon, Panel, Pill } from '../ui';
 import { higherLowerStatsLine } from './higher-lower-labels';
 import { playerColor } from './player-color';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
@@ -37,6 +37,7 @@ export function HigherLowerResults({ room, selfId, onLobby, onEnd }: { room: Roo
   const game = room.game as HigherLowerPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
   const rows: ResultsStanding[] = standings.map((standing) => {
     const index = room.members.findIndex((member) => member.id === standing.playerId);
     return {
@@ -46,7 +47,7 @@ export function HigherLowerResults({ room, selfId, onLobby, onEnd }: { room: Roo
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
-      meta: <span>{higherLowerStatsLine(standing.stats)}</span>,
+      meta: <>{higherLowerTied(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{higherLowerStatsLine(standing.stats)}</span></>,
     };
   });
   const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));

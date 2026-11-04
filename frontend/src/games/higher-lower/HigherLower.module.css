@@ -381,6 +381,10 @@
 .helpStrong {
   color: var(--ink);
 }
+/* La cuenta atrás del revelado, en su propia línea (en el móvil no se apretuja con la racha). */
+.countdown {
+  display: block;
+}
 .plateAside {
   flex: none;
 }
