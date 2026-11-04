@@ -51,20 +51,20 @@ const definitions: Record<PokeddleClueKey, Omit<PokeddleColumn, 'key'>> = {
 const legendaryLabels: Record<string, string> = { NORMAL: 'Normal', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
 
 const semanticText: Record<PokeddleFeedbackSemantic, Pick<PokeddleFeedbackPresentation, 'result' | 'accessibleResult' | 'tone'>> = {
-  higher: { result: 'Mayor', accessibleResult: 'El objetivo es mayor', tone: 'bad' },
-  lower: { result: 'Menor', accessibleResult: 'El objetivo es menor', tone: 'bad' },
-  match: { result: 'Igual', accessibleResult: 'Coincidencia exacta', tone: 'ok' },
-  partial: { result: 'Parcial', accessibleResult: 'Coincidencia parcial', tone: 'warn' },
-  none: { result: 'No', accessibleResult: 'Ninguna coincidencia', tone: 'bad' },
+  higher: { result: 'Mayor', accessibleResult: 'Distinto: el secreto es mayor', tone: 'bad' },
+  lower: { result: 'Menor', accessibleResult: 'Distinto: el secreto es menor', tone: 'bad' },
+  match: { result: 'Igual', accessibleResult: 'Igual', tone: 'ok' },
+  partial: { result: 'Parcial', accessibleResult: 'Parcial: coincide en parte', tone: 'warn' },
+  none: { result: 'Distinto', accessibleResult: 'Distinto', tone: 'bad' },
 };
 
 /** Leyenda del tablero, en el orden en que se explica (el vacío la usa para enseñar a jugar). */
 export const POKEDDLE_LEGEND: ReadonlyArray<{ semantic: PokeddleFeedbackSemantic; label: string }> = [
   { semantic: 'match', label: 'Igual' },
   { semantic: 'partial', label: 'Parcial' },
-  { semantic: 'none', label: 'No coincide' },
-  { semantic: 'higher', label: 'El suyo es mayor' },
-  { semantic: 'lower', label: 'El suyo es menor' },
+  { semantic: 'none', label: 'Distinto' },
+  { semantic: 'higher', label: 'El secreto es mayor' },
+  { semantic: 'lower', label: 'El secreto es menor' },
 ];
 
 export function getPokeddleColumns(clues: readonly PokeddleClueKey[]): PokeddleColumn[] {
@@ -109,7 +109,7 @@ export function formatPokeddleFeedback(key: PokeddleClueKey, entry: PokeddleFeed
     short = single ? 'Única' : `${entry.value.stage}/${entry.value.stages}`;
   } else if (entry.kind === 'ABILITIES') {
     value = entry.value.map(formatPokemonWords).join(', ');
-    result = entry.matches ? `${entry.matches} en común` : 'Ninguna';
+    result = entry.matches ? `${entry.matches} en común` : 'Distinto';
   } else {
     value = key === 'legendaryStatus' ? legendaryLabels[entry.value] ?? entry.value : formatPokemonWords(entry.value);
   }

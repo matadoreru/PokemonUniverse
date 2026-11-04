@@ -16,14 +16,21 @@ export interface PokeddleBoardProps {
   clues: readonly PokeddleClueKey[];
   /** Encabezado del panel (por defecto «Tu tablero»). */
   title?: string;
+  /** Tablero propio o de un rival (en su diálogo: alto fijo y textos en tercera persona). */
+  mode?: 'self' | 'rival';
+  /** Nombre del dueño (tablero de un rival). */
+  owner?: string;
   className?: string | undefined;
 }
 
-/** Leyenda de los colores, iconos y palabras del tablero. */
-export function PokeddleLegend({ className }: { className?: string | undefined }) {
-  return <ul className={cx(s.legend, className)} aria-label="Cómo leer el tablero">
-    {POKEDDLE_LEGEND.map(({ semantic, label }) => <li key={semantic} className={cx(s.legendItem, s[`tone_${formatTone(semantic)}`])}>
-      <Icon icon={POKEDDLE_ICONS[semantic]} size={18} />{label}
+/**
+ * Leyenda de los colores, iconos y palabras del tablero. Grande (fichas) en el vacío; compacta (`compact`: el icono en
+ * su color y la palabra, sin ficha) en la franja fija bajo las filas, siempre a la vista.
+ */
+export function PokeddleLegend({ className, compact = false }: { className?: string | undefined; compact?: boolean }) {
+  return <ul className={cx(s.legend, compact && s.legendCompact, className)} aria-label="Cómo leer el tablero">
+    {POKEDDLE_LEGEND.map(({ semantic, label }) => <li key={semantic} className={cx(s.legendItem, !compact && s[`tone_${formatTone(semantic)}`])}>
+      <span className={cx(s.legendIcon, compact && s[`tone_${formatTone(semantic)}`])}><Icon icon={POKEDDLE_ICONS[semantic]} size={18} /></span>{label}
     </li>)}
   </ul>;
 }
@@ -55,18 +62,21 @@ function Cell({ column, entry }: { column: PokeddleColumn; entry: PokeddleFeedba
  * no caben todas, el tablero se desplaza en horizontal dentro del panel. En el móvil cada fila es una tarjeta compacta
  * con la etiqueta en cada casilla.
  */
-export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, title = 'Tu tablero', className }: PokeddleBoardProps) {
+export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, title = 'Tu tablero', mode = 'self', owner, className }: PokeddleBoardProps) {
   const columns = useMemo(() => getPokeddleColumns(clues), [clues]);
   const template = columns.map((column) => (column.wide ? 'minmax(5.5rem, 1.7fr)' : 'minmax(3rem, 1fr)')).join(' ');
   const latestRound = latestGuessRound(board.rows);
   const rows = [...board.rows].reverse();
+  const self = mode === 'self';
   const style = { '--pokeddle-cells': template, '--pokeddle-rows': Math.max(1, rows.length) } as CSSProperties;
   return <Panel variant="cream" as="section" title={title} right={<Badge tone="cream">{pokeddleAttemptsText(board.validGuesses)}</Badge>} flush
-    className={cx(s.panel, className)} bodyClassName={cx(s.body)}>
-    <div className={s.scroller} tabIndex={0} role="region" aria-label="Tablero de intentos" data-board-mode="self">
+    className={cx(s.panel, mode === 'rival' && s.inDialog, className)} bodyClassName={cx(s.body)}>
+    <div className={s.scroller} tabIndex={0} role="region" aria-label={self ? 'Tablero de intentos' : `Tablero de intentos de ${owner ?? 'un rival'}`} data-board-mode={mode}>
       {rows.length === 0
         ? <div className={s.empty}>
-          <StateBox kind="empty" live={false} onCream title="Tu primer intento aparecerá aquí." text="Elige un Pokémon cada ronda: al cerrarse verás en qué pistas coincide con tu Pokémon secreto." />
+          {self
+            ? <StateBox kind="empty" live={false} onCream title="Tu primer intento aparecerá aquí." text="Elige un Pokémon cada ronda: al cerrarse verás en qué pistas coincide con tu Pokémon secreto." />
+            : <StateBox kind="empty" live={false} onCream title="Todavía no hay intentos." text="Sus intentos aparecen aquí al cerrarse cada ronda." />}
           <PokeddleLegend />
         </div>
         : <div className={s.board} style={style}>
@@ -74,7 +84,7 @@ export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, title =
             <span className={s.headAnchor}>Pokémon</span>
             <span className={s.headCells}>{columns.map((column) => <span key={column.key} title={column.fullLabel}>{column.label}</span>)}</span>
           </div>
-          <ol className={s.rows} aria-label="Tus intentos, el último primero">{rows.map((row) => {
+          <ol className={s.rows} aria-label={self ? 'Tus intentos, el último primero' : `Intentos de ${owner ?? 'un rival'}, el último primero`}>{rows.map((row) => {
             if (row.status === 'NO_GUESS') return <li key={row.round} className={s.missed} data-row-status="no-guess"><Icon icon={Minus} size={18} />Ronda {row.round} · Sin respuesta</li>;
             const latest = row.round === latestRound;
             const name = row.guessedPokemon?.name ?? 'Pokémon';
@@ -95,8 +105,8 @@ export const PokeddleBoard = memo(function PokeddleBoard({ board, clues, title =
               <ul className={s.cells} aria-label={`Pistas de ${name}, ronda ${row.round}`}>{columns.map((column) => <Cell key={column.key} column={column} entry={row.feedback?.[column.key]} />)}</ul>
             </li>;
           })}</ol>
-          <PokeddleLegend className={s.footLegend} />
         </div>}
     </div>
+    {rows.length > 0 && <PokeddleLegend compact className={s.footLegend} />}
   </Panel>;
 });

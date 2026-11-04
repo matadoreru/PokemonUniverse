@@ -2600,6 +2600,18 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
         }
         await host.page.setViewportSize({ width: 1280, height: 720 });
         await buscadorRespuesta(host.page).fill('');
+        // El tablero completo de un rival (lo público: sus intentos y pistas), en un diálogo abierto desde su franja.
+        const verRival = host.page.getByRole('button', { name: new RegExp(`^Ver tablero de ${primero.name}`) });
+        await verRival.click();
+        const dialogo = host.page.getByRole('dialog', { name: `Tablero de ${primero.name}` });
+        await expect(dialogo).toBeVisible();
+        await expect(dialogo.getByTestId('pokeddle-row')).toHaveCount(2);
+        await expect(dialogo.getByTestId('pokeddle-row').first()).toContainText(relleno[0]!);
+        await expect(dialogo.getByRole('list', { name: 'Cómo leer el tablero' })).toBeVisible();
+        await capturarTamanos(host.page, 'juego-pokeddle-race-rival', { sigue: dialogo, opts: ARCADE });
+        await host.page.keyboard.press('Escape');
+        await expect(dialogo).toBeHidden();
+        await expect(verRival).toBeFocused();
         // A 1280×720 el tablero se desplaza dentro de su panel, nunca la página.
         expect(await tablero.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
       }
@@ -2608,6 +2620,7 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
       probados.push(intento);
       const cerrada = host.page.getByRole('heading', { name: new RegExp(`^(Pistas de la ronda ${ronda}|¡Era .+!)$`), level: 1 });
       await expect(cerrada).toBeVisible({ timeout: 10_000 });
+      textos.push(await textoDeMain(host.page));
       if (!hostId) {
         await expect.poll(() => Object.entries((estado as PokeddleVisible | null)?.boards ?? {}).find(([, b]) => b.rows[0]?.guessedPokemon?.name === intento)?.[0] ?? '', { timeout: 5_000 }).not.toBe('');
         hostId = Object.entries((estado as unknown as PokeddleVisible).boards).find(([, b]) => b.rows[0]?.guessedPokemon?.name === intento)![0];
@@ -2615,9 +2628,9 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
       await expect(host.page.locator('[data-testid="pokeddle-row"][data-latest="true"]')).toContainText(intento);
       // La fila nueva: una casilla por pista con su resultado en texto para lectores.
       await expect(host.page.locator('[data-latest="true"] [data-clue-key]')).toHaveCount(13);
-      await expect(host.page.locator('[data-latest="true"] [data-clue-key="attack"] .sr-only')).toHaveText(/^Ataque: \d+\. (El objetivo es (mayor|menor)|Coincidencia exacta)\.$/);
+      await expect(host.page.locator('[data-latest="true"] [data-clue-key="attack"] .sr-only')).toHaveText(/^Ataque: \d+\. (Distinto: el secreto es (mayor|menor)|Igual)\.$/);
       resuelto = await host.page.getByRole('heading', { name: '¡Pokémon encontrado!' }).isVisible();
-      if (resuelto && ronda < 3) test.info().annotations.push({ type: 'pokeddle', description: `acertó por suerte en la ronda ${ronda}: sin tablero de dos intentos que capturar` });
+      if (resuelto && ronda < 3) test.info().annotations.push({ type: 'aviso', description: `acertó por suerte en la ronda ${ronda}: se saltan las capturas del tablero y del rival y las comprobaciones a 390 de la ronda 3` });
       test.info().annotations.push({ type: 'pokeddle', description: `ronda ${ronda}: ${resuelto ? 'acertado' : 'sin acertar'}` });
       // El foco va al título de la placa (no cae al body): la ronda cerrada o el Pokémon encontrado.
       if (!resuelto) await expect(host.page.getByText(`Ronda ${ronda} cerrada`, { exact: true })).toBeVisible();

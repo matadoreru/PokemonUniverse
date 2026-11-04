@@ -220,22 +220,37 @@
   font: 800 var(--fs-13) / 1.1 var(--font-text);
   color: var(--navy);
 }
+.legendIcon {
+  display: inline-grid;
+  place-items: center;
+}
+/* Compacta: el icono en una ficha de su color y la palabra, sin borde alrededor (franja fija bajo las filas). */
+.legendCompact {
+  column-gap: var(--sp-3);
+  row-gap: 2px;
+}
+.legendCompact .legendItem {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+}
+.legendCompact .legendIcon {
+  width: 20px;
+  height: 20px;
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: 5px;
+}
+/* La franja de la leyenda no se desplaza con las filas: siempre a la vista. */
 .footLegend {
-  margin-top: var(--sp-3);
+  flex: none;
+  padding: var(--sp-1) var(--sp-2);
+  border-top: var(--ol-2) solid var(--navy);
+  background: var(--cream);
 }
 
-/* Escritorio bajo: la leyenda (que ya enseña el vacío) no ocupa el alto de las filas. */
-@media (min-width: 1024px) and (max-height: 899px) {
-  .footLegend {
-    display: none;
-  }
-}
 @media (min-width: 1600px) and (min-height: 900px) {
   .resultWord {
     display: inline;
-  }
-  .result {
-    font-size: var(--fs-15);
   }
 }
 
@@ -251,8 +266,7 @@
   .board {
     width: auto;
   }
-  .head,
-  .footLegend {
+  .head {
     display: none;
   }
   .row {
@@ -300,4 +314,9 @@
   .value {
     font-size: var(--fs-15);
   }
+}
+
+/* Tablero de un rival en su diálogo: alto fijo (el cuerpo es un contenedor de tamaño), también en el móvil. */
+.panel.inDialog {
+  height: min(68dvh, 38rem);
 }

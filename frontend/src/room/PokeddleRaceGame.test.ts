@@ -56,16 +56,16 @@ const render = (view: RoomView) => renderToStaticMarkup(createElement(PokeddleRa
 
 describe('Pokédle: presentación de las pistas', () => {
   it.each([
-    ['HIGHER', 'higher', 'Mayor', 'El objetivo es mayor', 'bad'],
-    ['LOWER', 'lower', 'Menor', 'El objetivo es menor', 'bad'],
-    ['MATCH', 'match', 'Igual', 'Coincidencia exacta', 'ok'],
+    ['HIGHER', 'higher', 'Mayor', 'Distinto: el secreto es mayor', 'bad'],
+    ['LOWER', 'lower', 'Menor', 'Distinto: el secreto es menor', 'bad'],
+    ['MATCH', 'match', 'Igual', 'Igual', 'ok'],
   ] as const)('%s tiene su palabra, su frase y su tono', (result, semantic, word, sentence, tone) => {
     expect(formatPokeddleFeedback('attack', { kind: 'NUMERIC', value: 84, result })).toMatchObject({ value: '84', result: word, accessibleResult: sentence, semantic, tone });
   });
 
   it('los tipos parciales y sin coincidencia no dependen del color', () => {
     expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['fire'], result: 'PARTIAL' })).toMatchObject({ result: 'Parcial', semantic: 'partial', tone: 'warn', value: 'Fuego' });
-    expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['water'], result: 'NONE' })).toMatchObject({ result: 'No', semantic: 'none', tone: 'bad' });
+    expect(formatPokeddleFeedback('types', { kind: 'TYPES', value: ['water'], result: 'NONE' })).toMatchObject({ result: 'Distinto', semantic: 'none', tone: 'bad' });
   });
 
   it('sin línea evolutiva no dice «etapa 1»: el texto largo para lectores y el corto en la casilla', () => {
@@ -142,7 +142,7 @@ describe('Pokédle: tablero', () => {
     const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: board(), clues: ['generation', 'types', 'attack'] }));
     expect(markup.match(/data-clue-key="generation"/g)).toHaveLength(2);
     expect(markup).not.toContain('data-clue-key="weight"');
-    expect(markup).toContain('Ataque: 52. El objetivo es menor.');
+    expect(markup).toContain('Ataque: 52. Distinto: el secreto es menor.');
     expect(markup).toContain('data-feedback="lower"');
     expect(markup).toContain('>Menor<');
     expect(markup).toContain('data-type="fire"');
@@ -163,14 +163,33 @@ describe('Pokédle: tablero', () => {
     const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: board('p1', true), clues: ['generation', 'types'] }));
     expect(markup).toContain('data-correct="true"');
     expect(markup).toContain('Encontrado');
-    expect(markup).toContain('Coincidencia exacta');
+    expect(markup).toContain('Tipos: Lucha / Acero. Igual.');
+  });
+
+  it('con intentos, la leyenda compacta queda fija a la vista con las mismas palabras que las casillas', () => {
+    const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: board(), clues: allClues }));
+    expect(markup).toContain('aria-label="Cómo leer el tablero"');
+    for (const word of ['Igual', 'Parcial', 'Distinto', 'El secreto es mayor', 'El secreto es menor']) expect(markup).toContain(word);
+    expect(markup).not.toMatch(/Coincide|No coincide/);
+  });
+
+  it('el tablero de un rival habla en tercera persona y nunca enseña su secreto sin resolver', () => {
+    const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: { ...board('p2', false, ['Pikachu', 'Gible']), revealedPokemon: RIVAL_SECRET }, clues: allClues, mode: 'rival', owner: 'Ana', title: 'Sus intentos' }));
+    expect(markup).toContain('data-board-mode="rival"');
+    expect(markup).toContain('aria-label="Tablero de intentos de Ana"');
+    expect(markup).toContain('Intentos de Ana, el último primero');
+    expect(markup).toContain('Pikachu');
+    expect(markup).toContain('Gible');
+    expect(markup).not.toMatch(/Garchomp|secret-garchomp/);
+    const empty = renderToStaticMarkup(createElement(PokeddleBoard, { board: { ...board('p2'), rows: [] }, clues: allClues, mode: 'rival', owner: 'Ana' }));
+    expect(empty).toContain('Todavía no hay intentos.');
   });
 
   it('el vacío enseña a jugar con la leyenda', () => {
     const markup = renderToStaticMarkup(createElement(PokeddleBoard, { board: { ...board(), rows: [], validGuesses: 0, missedRounds: 0 }, clues: allClues }));
     expect(markup).toContain('Tu primer intento aparecerá aquí.');
     expect(markup).toContain('aria-label="Cómo leer el tablero"');
-    expect(markup).toContain('El suyo es mayor');
+    expect(markup).toContain('El secreto es mayor');
   });
 });
 
@@ -185,11 +204,14 @@ describe('Pokédle Race: privacidad', () => {
     }
   });
 
-  it('de los rivales solo se ve su progreso: nunca los Pokémon que han probado', () => {
+  it('cada rival es un botón «Ver tablero de X»; su tablero solo se monta al abrirlo (diálogo cerrado)', () => {
     const html = render(roomOf(gameState(), guessing));
-    for (const name of ['Pikachu', 'Gible', 'Eevee', 'Riolu', '/gible.png']) expect(html).not.toContain(name);
-    expect(html).toContain('Intento enviado');
-    expect(html).toContain('2 intentos · 1 sin responder');
+    expect(html).toContain('aria-label="Ver tablero de Ana: Intento enviado, 2 intentos · 1 sin responder"');
+    expect(html).toContain('aria-label="Ver tablero de Pedro: Pensando…, 2 intentos · 1 sin responder"');
+    expect(html).not.toContain('Ver tablero de Eru');
+    expect(html.match(/<button type="button"[^>]*aria-label="Ver tablero de/g)).toHaveLength(2);
+    // Cerrado, el diálogo no pinta los intentos del rival.
+    for (const name of ['Pikachu', 'Gible', 'Eevee', '/gible.png']) expect(html).not.toContain(name);
   });
 
   it('el Pokémon de un rival resuelto sí es público (como hasta ahora)', () => {
@@ -240,6 +262,9 @@ describe('Pokédle Race: pantalla', () => {
   it('espectador (sin estado de jugador): ve la carrera sin controles ni tablero propio', () => {
     const html = render(roomOf(gameState('ROUND_ACTIVE', { p2: board('p2'), p3: board('p3') }), null, true));
     expect(html).toContain('Estás observando');
+    expect(html).toContain('abre el tablero de cada jugador desde su franja');
+    expect(html).not.toMatch(/privados|son de cada uno/);
+    expect(html).toContain('Ver tablero de Ana');
     expect(html).not.toContain('Buscar respuesta para la ronda');
     expect(html).not.toContain('data-board-mode="self"');
     expect(html.match(/data-testid="pokeddle-race-row"/g)).toHaveLength(2);

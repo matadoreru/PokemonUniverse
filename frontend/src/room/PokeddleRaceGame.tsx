@@ -5,7 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { Badge, Chip, cx, Icon, Panel, Row, StateBox } from '../ui';
+import { Badge, Chip, cx, Dialog, Icon, Panel, Row, StateBox } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, GuessScreen, guessSprite, type GuessPlateContent } from './guess-kit';
 import { PokeddleBoard, PokeddleLegend } from './PokeddleBoard';
@@ -30,9 +30,10 @@ const rivalChip: Record<PokeddleRivalStatus['kind'], { tone: 'ok' | 'info' | 'ne
 
 /**
  * La carrera en la columna lateral: una franja por jugador (sin espectadores) con su color, su estado en texto (resuelto
- * con su Pokémon, intento enviado o pensando) y sus cuentas. No enseña los intentos de nadie: solo lo que ya era público.
+ * con su Pokémon, intento enviado o pensando) y sus cuentas. La de cada rival es un botón que abre su tablero completo
+ * (lo que ya proyecta el servidor: sus intentos y pistas, nunca su secreto sin resolver).
  */
-function RacePanel({ game, members, colors, selfId }: { game: PokeddleRacePublicState; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; selfId: string }) {
+function RacePanel({ game, members, colors, selfId, onOpen }: { game: PokeddleRacePublicState; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; selfId: string; onOpen(id: string): void }) {
   const ids = [...members.keys()].filter((id) => game.boards[id]);
   const missing = Object.keys(game.boards).filter((id) => !members.has(id));
   return <Panel title="Carrera" variant="dark" scroll scrollLabel="Progreso de cada jugador" right={<Badge tone="cream">{`${ids.length + missing.length} ${ids.length + missing.length === 1 ? 'jugador' : 'jugadores'}`}</Badge>}>
@@ -44,14 +45,18 @@ function RacePanel({ game, members, colors, selfId }: { game: PokeddleRacePublic
       const secret = pokeddleVisibleSecret(board, game.phase);
       const chip = rivalChip[status.kind];
       const justSolved = board.solved && board.solvedRound === game.roundNumber && game.phase === 'ROUND_RESULTS';
-      return <li key={id} data-testid="pokeddle-race-row" aria-current={id === selfId ? 'true' : undefined}>
-        <Row name={id === selfId ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} highlight={justSolved} disconnected={offline(member)}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
-          meta={<span className={s.rowMeta}>
-            <Chip tone={chip.tone} icon={<Icon icon={chip.icon} size={18} />}>{status.label}</Chip>
-            <span className={s.detail}>{status.detail}</span>
-          </span>}
-          {...(secret ? { value: <img className={s.rowSprite} src={guessSprite(secret.sprite)} alt="" /> } : {})} />
+      const self = id === selfId;
+      const row = <Row name={self ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={self} highlight={justSolved} disconnected={offline(member)}
+        avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+        meta={<span className={s.rowMeta}>
+          <Chip tone={chip.tone} icon={<Icon icon={chip.icon} size={18} />}>{status.label}</Chip>
+          <span className={s.detail}>{status.detail}</span>
+        </span>}
+        {...(secret ? { value: <img className={s.rowSprite} src={guessSprite(secret.sprite)} alt="" /> } : {})}>
+        {!self && <span className={s.open} aria-hidden="true"><Icon icon={Eye} size={18} />Ver</span>}
+      </Row>;
+      return <li key={id} data-testid="pokeddle-race-row" aria-current={self ? 'true' : undefined}>
+        {self ? row : <button type="button" className={s.rowButton} aria-label={`Ver tablero de ${name}: ${status.label}, ${status.detail}`} onClick={() => onOpen(id)}>{row}</button>}
       </li>;
     })}</ol>
   </Panel>;
@@ -75,7 +80,7 @@ function plateContent(kind: PokeddlePlateKind, { game, own, submitted, countdown
       const text = !row || row.status === 'NO_GUESS' ? 'No respondiste a tiempo: la ronda cuenta como sin respuesta.' : `${row.guessedPokemon?.name ?? 'Tu intento'} coincide en ${pokeddleMatchCount(row)} de ${Object.keys(row.feedback ?? {}).length} pistas.`;
       return { icon: Flag, tone: 'info', kicker: `Ronda ${game.roundNumber} cerrada`, title: countdown, text };
     }
-    case 'watching': return { icon: Eye, tone: 'info', kicker: 'No juegas esta partida', title: 'Estás observando', text: 'Ves el progreso de cada jugador en directo; los tableros son de cada uno.' };
+    case 'watching': return { icon: Eye, tone: 'info', kicker: 'No juegas esta partida', title: 'Estás observando', text: 'Sigue la carrera en directo: abre el tablero de cada jugador desde su franja.' };
     case 'out': return { icon: Eye, tone: 'info', kicker: `Ronda ${game.roundNumber}`, title: 'No puedes responder ahora', text: 'Tu tablero sigue guardado en el servidor.' };
     default: return { icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Esperando al servidor…', text: 'La ronda empieza en un momento.' };
   }
@@ -101,6 +106,9 @@ export function PokeddleRaceGame({ room, selfId, onAction }: { room: RoomView; s
   const own = game.boards[selfId] ?? null;
   const active = game.phase === 'ROUND_ACTIVE';
   const kind = pokeddlePlateKind(game.phase, player, own !== null);
+  const [rivalId, setRivalId] = useState<string | null>(null);
+  const rival = rivalId && rivalId !== selfId ? game.boards[rivalId] ?? null : null;
+  const rivalName = rivalId ? members.get(rivalId)?.displayName ?? 'Entrenador' : '';
   const [submitted, setSubmitted] = useState<{ round: number; pokemon: PokemonSearchOption } | null>(null);
   const submittedPokemon = submitted && submitted.round === game.roundNumber && kind === 'submitted' ? submitted.pokemon : null;
   const secret = own ? pokeddleVisibleSecret(own, game.phase) : null;
@@ -125,7 +133,7 @@ export function PokeddleRaceGame({ room, selfId, onAction }: { room: RoomView; s
   const clue = own
     ? <PokeddleBoard board={own} clues={game.enabledClues} />
     : <Panel variant="cream" as="section" title="Tableros" className={cx(s.watchPanel)} bodyClassName={cx(s.watchBody)}>
-      <StateBox kind="empty" live={false} onCream title="Cada jugador busca su propio Pokémon." text="Los tableros son privados: aquí ves la carrera y quién lo ha encontrado." />
+      <StateBox kind="empty" live={false} onCream title="Cada jugador busca su propio Pokémon." text="Abre el tablero de cada jugador desde su franja de la carrera: verás sus intentos y pistas, nunca su Pokémon secreto." />
       <PokeddleLegend />
     </Panel>;
 
@@ -138,7 +146,11 @@ export function PokeddleRaceGame({ room, selfId, onAction }: { room: RoomView; s
   const bottom = <GuessPanel kind={kind === 'guess' ? 'guess' : 'waiting'} titleRef={titleRef} question="¿Cuál es tu Pokémon?" content={plateContent(kind, { game, own, submitted: submittedPokemon, countdown })}
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: submitGuess }} />;
 
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.maxRounds} heading={heading}
+  const dialog = <Dialog open={rival !== null} title={`Tablero de ${rivalName}`} width={1200} onClose={() => setRivalId(null)} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}>
+    {rival && <PokeddleBoard board={rival} clues={game.enabledClues} mode="rival" owner={rivalName} title="Sus intentos" />}
+  </Dialog>;
+
+  return <>{dialog}<GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.maxRounds} heading={heading}
     meta={<Chip tone="neutral" icon={<Icon icon={Users} size={18} />}>{game.activePlayerIds.length} en carrera</Chip>}
-    timer={timer} announcement={announcement} clue={clue} side={<RacePanel game={game} members={members} colors={colors} selfId={selfId} />} bottom={bottom} className={s.screen} />;
+    timer={timer} announcement={announcement} clue={clue} side={<RacePanel game={game} members={members} colors={colors} selfId={selfId} onOpen={setRivalId} />} bottom={bottom} className={s.screen} /></>;
 }
