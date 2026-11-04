@@ -1,0 +1,12 @@
+/* Placa de abajo de los juegos sociales: la base es la de `GuessPanel` (GuessPanel.module.css); aquí, lo propio. */
+.plate {
+  min-width: 0;
+}
+.body {
+  min-width: 0;
+}
+/* El texto de la placa reparte el ancho con el icono y la acción (no baja de línea bajo el icono). */
+.text {
+  flex: 1 1 0;
+  min-width: 8rem;
+}

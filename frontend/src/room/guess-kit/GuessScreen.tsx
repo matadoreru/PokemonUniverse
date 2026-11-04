@@ -22,6 +22,10 @@ export interface GuessScreenProps {
   heading: string;
   /** Chips extra de la cabecera, junto a la ronda (p. ej. «Referencia Gen 4», «Zoom ×4»). */
   meta?: ReactNode;
+  /** Texto de la insignia de la ronda en lugar de «Ronda N de M» (p. ej. «Turno 3 de 6 · Vuelta 1 de 2»). */
+  roundLabel?: ReactNode;
+  /** Fases de la ronda (`PhaseRail` del kit social), entre la placa de la ronda y la pista; `null` si no hay. */
+  phases?: ReactNode;
   timer: GuessTimer;
   /**
    * Texto de la única región viva de la pantalla (siempre montada, solo para lectores): ver `guessAnnouncement`.
@@ -37,6 +41,8 @@ export interface GuessScreenProps {
   /** Pantalla inferior: `GuessPanel`. */
   bottom: ReactNode;
   className?: string | undefined;
+  /** `data-testid` de la pantalla (p. ej. `social-screen`, para contar su región viva en las E2E). */
+  testId?: string;
 }
 
 /**
@@ -48,12 +54,12 @@ export interface GuessScreenProps {
  * pista va arriba con el plazo y la placa de la acción pegada al fondo. El mismo marco sirve a la ronda y a la
  * revelación: así la región viva no se vuelve a montar al cambiar de fase.
  */
-export function GuessScreen({ gameName, roundNumber, totalRounds, heading, meta, timer, announcement, clue, hints, side, bottom, className }: GuessScreenProps) {
+export function GuessScreen({ gameName, roundNumber, totalRounds, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId }: GuessScreenProps) {
   const top = <div className={s.top}>
     <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
       <div className={s.hudMain}>
         <div className={s.hudMeta}>
-          <Badge>Ronda {roundNumber} de {totalRounds}</Badge>
+          <Badge>{roundLabel ?? <>Ronda {roundNumber} de {totalRounds}</>}</Badge>
           <span className={s.gameName}>{gameName}</span>
           {meta}
         </div>
@@ -64,10 +70,11 @@ export function GuessScreen({ gameName, roundNumber, totalRounds, heading, meta,
         {timer.deadline !== null && <div className={s.timer}><ServerTimer deadline={timer.deadline} serverOffset={timer.serverOffset} label={timer.label} {...(timer.totalMs ? { totalMs: timer.totalMs } : {})} /></div>}
       </div>
     </Panel>
+    {phases}
     <div className={s.clue}>{clue}</div>
     {hints}
   </div>;
-  return <div className={cx('content-row', s.screen, className)}>
+  return <div className={cx('content-row', s.screen, className)} {...(testId ? { 'data-testid': testId } : {})}>
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={<div className={s.side}>{side}</div>} bottom={bottom} />
   </div>;

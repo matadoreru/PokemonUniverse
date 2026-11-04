@@ -1,0 +1,197 @@
+/*
+ * Papeleta secreta: la placa crema con las opciones en rejilla (que se desplaza por dentro) y la confirmación debajo (en
+ * escritorio, a la derecha de las opciones: el orden del teclado sigue siendo opciones → confirmar).
+ */
+.ballot {
+  min-width: 0;
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .bodyOpen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(12rem, 15rem);
+    align-items: end;
+    gap: var(--sp-4);
+  }
+  .bodyOpen .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .bodyOpen .choice {
+    flex: none;
+  }
+}
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--sp-3);
+  /* Hueco para la sombra dura y el anillo de foco de las cartas (la rejilla recorta al desplazarse). */
+  padding: 4px 4px var(--sp-2);
+  max-height: clamp(10rem, 34vh, 26rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.textOptions {
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.option {
+  display: flex;
+  min-width: 0;
+}
+.option > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.detail {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+
+/* Opción de texto (respuesta o jugador): como una carta, con el texto entero. */
+.text {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  min-height: 44px;
+  padding: var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-4);
+  text-align: left;
+  font-family: var(--font-text);
+}
+.textButton {
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease);
+}
+.textButton:hover {
+  transform: translateY(-1px);
+}
+.textButton:active {
+  transform: translateY(4px);
+}
+.textButton:focus-visible {
+  outline: var(--ol-3) solid var(--navy);
+  outline-offset: 2px;
+}
+.textSelected {
+  background: var(--yellow-l);
+  border-color: var(--yellow-d);
+  outline: var(--ol-3) solid var(--navy);
+  outline-offset: 1px;
+}
+.textMedia {
+  flex: none;
+  display: inline-flex;
+}
+.textBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.textName {
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  color: var(--navy);
+}
+.textAnswer {
+  overflow-wrap: anywhere;
+  font: 800 var(--fs-18) / 1.25 var(--font-text);
+  color: var(--ink);
+}
+
+/* Confirmación: fuera de la rejilla que se desplaza, siempre a la vista. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+.choice {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font: 700 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+.choice strong {
+  color: var(--ink);
+}
+
+@media (max-width: 639px) {
+  .options {
+    grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+    gap: var(--sp-2);
+    max-height: 36svh;
+  }
+  /* La ayuda ya la dicen la pregunta y la carta propia («Tu respuesta»): la papeleta cabe con la pregunta a la vista. */
+  .help {
+    display: none;
+  }
+  .textOptions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .textAnswer {
+    font-size: var(--fs-15);
+  }
+  .choice {
+    font-size: var(--fs-13);
+  }
+  /* Móvil: la elección en una línea encima y la confirmación a lo ancho, siempre fuera de la rejilla. */
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+  }
+  .actions > button {
+    width: 100%;
+  }
+  .choice {
+    flex: none;
+  }
+}
+@media (min-width: 1024px) and (max-height: 800px) {
+  .options {
+    max-height: 13rem;
+  }
+  /* Escritorio bajo: la ayuda de la placa no ocupa alto (la pregunta gana ese sitio). */
+  .help {
+    display: none;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .options {
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    max-height: 30rem;
+  }
+  /* Escritorio grande: el sprite de cada carta crece (la papeleta llena su hueco). */
+  .options .option [data-part='art'] {
+    width: 96px;
+    height: 96px;
+  }
+  .options .option [data-part='art'] img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .textButton {
+    transition: none;
+  }
+  .textButton:hover,
+  .textButton:active {
+    transform: none;
+  }
+}

@@ -1,48 +1,130 @@
-import type { MostLikelyToConfig, MostLikelyToPlayerState, MostLikelyToPublicState, MostLikelyToRoundResult, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, Crown, Eye, LockKeyhole, MessageCircleQuestion, Sparkles, Users, Vote } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import type { MostLikelyToConfig, MostLikelyToPlayerState, MostLikelyToPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { Check, CheckCircle2, Clock3, Eye, Search, Trophy, X } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { mostLikelyAnnouncement, mostLikelyCurrentStep, mostLikelyHeading, mostLikelySteps, mostLikelyVerdict } from '../games/most-likely-to/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRunoffVote } from '../hooks/useRunoffVote';
-import { useServerOffset } from '../hooks/useServerTime';
+import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { Chip, Icon } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { guessSprite, pointsWord } from './guess-kit';
+import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
+import {
+  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
+  type BallotOption, type SocialPlateContent, type TallyOption,
+} from './social-kit';
+import s from '../games/most-likely-to/MostLikelyTo.module.css';
 
+const GAME_NAME = 'Most Likely To';
 const EMPTY_LOCKED = new Set<string>();
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
 
-function member(room: RoomView, playerId: string): RoomMemberView | undefined {
-  return room.members.find((candidate) => candidate.id === playerId);
-}
-
-function StageRail({ phase }: { phase: string }) {
-  const stages = ['Pregunta', 'Elegir', 'Votar', 'Resultado'];
-  const active = phase === 'ROUND_ACTIVE' ? 1 : phase === 'VOTING' || phase === 'REVOTE' ? 2 : phase === 'ROUND_RESULTS' ? 3 : 0;
-  return <ol className="mt-4 grid grid-cols-4 gap-1.5" aria-label="Fases de la ronda">{stages.map((stage, index) => <li key={stage} aria-current={index === active ? 'step' : undefined} className={`rounded-lg px-2 py-2 text-center text-[10px] font-black uppercase tracking-wide sm:text-xs ${index === active ? 'bg-aqua text-night' : index < active ? 'bg-leaf/10 text-leaf' : 'bg-ink/[.05] text-ink/45'}`}>{index < active ? '✓ ' : ''}{stage}</li>)}</ol>;
-}
-
-function PlayerProgress({ room, game, voting }: { room: RoomView; game: MostLikelyToPublicState; voting: boolean }) {
-  const completed = new Set(voting ? game.votedPlayerIds : game.selectionCompletedIds);
-  return <aside className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card" aria-labelledby="most-likely-progress"><div className="mb-3 flex items-center gap-2"><Users className="text-aqua" /><h2 id="most-likely-progress" className="font-display text-xl">Estado del grupo</h2></div><div className="space-y-2">{game.playerIds.map((playerId) => { const person = member(room, playerId); return <div key={playerId} className="flex min-h-12 items-center gap-2 rounded-xl bg-surface-raised p-2.5"><Avatar name={person?.displayName ?? playerId} avatar={person?.avatar} presence={person?.presence} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? playerId}</strong>{completed.has(playerId) ? <span className="inline-flex items-center gap-1 text-sm font-extrabold text-leaf"><Check size={16} /> Listo</span> : <span className="text-sm font-bold text-ink/55">{voting ? 'Votando…' : 'Pensando…'}</span>}</div>; })}</div><p className="mt-3 flex gap-2 text-sm font-bold text-ink/60"><LockKeyhole className="mt-0.5 shrink-0 text-electric" size={16} />{voting ? 'El destino de cada voto es secreto hasta el resultado.' : 'Las respuestas no se muestran hasta que termina la selección.'}</p></aside>;
-}
-
-function AnswerVoting({ room, selfId, game, player, onVote }: { room: RoomView; selfId: string; game: MostLikelyToPublicState; player: MostLikelyToPlayerState; onVote(playerId: string): Promise<void> }) {
-  const canVote = player.role === 'PLAYER' && player.canVote;
-  const { busyId, error, vote } = useRunoffVote(game.voteRoundNumber, onVote, 'No se pudo registrar el voto.');
-  return <section aria-labelledby="most-likely-vote"><div className="mb-4 flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Autores y Pokémon revelados</span><h2 id="most-likely-vote" className="flex items-center gap-2 font-display text-2xl"><Vote className="text-berry" />{game.phase === 'REVOTE' ? 'Revotación entre empatados' : 'Vota la mejor respuesta'}</h2><p className="mt-1 font-bold text-ink/60">No puedes votar tu propia respuesta. Los Pokémon repetidos siguen siendo candidaturas distintas.</p></div>{player.role === 'PLAYER' && player.ownVotePlayerId && <span className="chip !bg-leaf/10 !text-leaf"><Check size={15} /> Voto bloqueado</span>}</div><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{game.revealedAnswers.map((answer) => { const person = member(room, answer.playerId); const own = answer.playerId === selfId; const candidate = game.voteCandidates.includes(answer.playerId); return <button type="button" key={answer.playerId} disabled={!canVote || own || !candidate || Boolean(busyId)} onClick={() => void vote(answer.playerId)} className={`min-h-40 rounded-xl border p-3 text-left transition-colors ${!candidate ? 'border-ink/5 bg-ink/[.025] opacity-40' : own ? 'border-ink/10 bg-surface-raised opacity-55' : canVote ? 'border-ink/10 bg-surface-raised hover:border-berry/50 hover:bg-berry/[.06]' : 'border-ink/10 bg-surface-raised'}`}><div className="flex items-center gap-2"><Avatar name={person?.displayName ?? answer.playerId} avatar={person?.avatar} presence={person?.presence} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? answer.playerId}</strong>{own && <small className="font-black text-ink/45">TÚ</small>}{candidate && game.phase === 'REVOTE' && <small className="font-black text-electric">EMPATE</small>}</div><div className="mt-3 flex items-center gap-3"><img src={answer.pokemon.sprite} alt="" className="h-20 w-20 shrink-0 object-contain [image-rendering:pixelated]" /><strong className="min-w-0 break-words font-display text-xl">{answer.pokemon.name}</strong></div><span className={`mt-2 block text-center text-sm font-extrabold ${own || !candidate ? 'text-ink/45' : 'text-berry'}`}>{!candidate ? 'Fuera de la revotación' : own ? 'Tu respuesta' : busyId === answer.playerId ? 'Enviando…' : 'Votar esta respuesta'}</span></button>; })}</div>{error && <p className="status-error mt-3" role="alert">{error}</p>}</section>;
-}
-
-function RoundReveal({ room, game, result, serverOffset }: { room: RoomView; game: MostLikelyToPublicState; result: MostLikelyToRoundResult; serverOffset: number }) {
-  const winnerSet = new Set(result.winnerIds);
-  return <section className="page-shell"><div className="overflow-hidden rounded-2xl border border-electric/30 bg-surface shadow-card reveal-pop"><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Ronda {game.roundNumber} · Resultado</span><h1 className="font-display text-3xl text-electric sm:text-4xl">{result.winnerIds.length === 0 ? 'Sin respuesta ganadora' : result.winnerIds.length === 1 ? 'La respuesta favorita' : 'Victoria compartida'}</h1><p className="mt-2 max-w-3xl font-bold text-ink/65">{result.prompt}</p></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="p-4 sm:p-6"><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{result.answers.map((answer) => { const person = member(room, answer.playerId); return <article key={answer.playerId} className={`rounded-xl border p-3 ${answer.won ? 'border-electric/45 bg-electric/[.08]' : 'border-ink/10 bg-surface-raised/70'}`}><div className="flex items-center gap-2"><Avatar name={person?.displayName ?? answer.playerId} avatar={person?.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? answer.playerId}</strong>{answer.won && <Crown className="text-electric" size={19} />}</div><div className="mt-3 flex items-center gap-3"><img src={answer.pokemon.sprite} alt="" className="h-20 w-20 object-contain" /><span className="min-w-0 flex-1"><strong className="block break-words font-display text-xl">{answer.pokemon.name}</strong><small className="font-extrabold text-ink/55">{answer.votesReceived} {answer.votesReceived === 1 ? 'voto decisivo' : 'votos decisivos'}</small></span><strong className="text-leaf">+{result.pointsAwarded[answer.playerId] ?? 0}</strong></div></article>; })}</div>{result.answers.length === 0 && <div className="empty-state">Nadie envió una respuesta a tiempo.</div>}{result.voteRounds.length > 0 && <details className="mt-5 rounded-xl bg-ink/[.035] p-3"><summary className="cursor-pointer font-extrabold">Ver papeletas reveladas</summary><div className="mt-3 space-y-3">{result.voteRounds.map((round) => <section key={round.number}><h2 className="mb-2 font-display text-lg">{round.number === 1 ? 'Votación inicial' : 'Revotación'}</h2><div className="flex flex-wrap gap-2">{Object.entries(round.votes).map(([voterId, targetId]) => <span key={voterId} className="chip">{member(room, voterId)?.displayName ?? voterId} → {member(room, targetId)?.displayName ?? targetId}{winnerSet.has(targetId) ? ' ✓' : ''}</span>)}</div></section>)}</div></details>}</div></div></section>;
-}
-
+/**
+ * Most Likely To con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda con el plazo y «Saltar», las
+ * fases y la pregunta del grupo en un `Panel` (al revelar, el recuento de votos con sus vueltas). Abajo, la acción: el
+ * buscador de Pokémon para responder, la papeleta secreta (con segunda vuelta solo entre los empatados) o el veredicto.
+ * Al lado, quién ha respondido o votado (en texto, nunca el qué) o, al revelar, los puntos de la ronda.
+ *
+ * Privacidad: las respuestas de los demás solo llegan en `revealedAnswers` (votación) y los votos solo en `lastRound`,
+ * que la pantalla lee únicamente en `ROUND_RESULTS`.
+ */
 export function MostLikelyToGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as MostLikelyToPublicState;
-  const player = room.gamePlayerState as MostLikelyToPlayerState;
-  const config = room.selectedGameConfig as MostLikelyToConfig;
-  const serverOffset = useServerOffset(room.serverNow);
+  const player = room.gamePlayerState as MostLikelyToPlayerState | null;
+  const config = room.selectedGameConfig as Partial<MostLikelyToConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const participating = player?.role === 'PLAYER';
   const choosing = game.phase === 'ROUND_ACTIVE';
   const voting = game.phase === 'VOTING' || game.phase === 'REVOTE';
-  const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: config.includeForms, enabled: choosing && player.role === 'PLAYER' });
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} result={game.lastRound} serverOffset={serverOffset} />;
-  return <section className="page-shell"><header className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><div className="flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-2xl sm:text-3xl">Most Likely To</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} label={choosing ? 'Para responder' : game.phase === 'REVOTE' ? 'Para revotar' : 'Para votar'} /></div><StageRail phase={game.phase} /></header><section className="my-4 rounded-2xl border border-aqua/25 bg-aqua/[.05] px-4 py-6 text-center shadow-card sm:px-6" aria-labelledby="most-likely-prompt"><MessageCircleQuestion className="mx-auto text-aqua" size={36} /><span className="label mt-2 !mb-0">La pregunta del grupo</span><h2 id="most-likely-prompt" className="mx-auto max-w-4xl font-display text-2xl leading-tight sm:text-4xl">{game.prompt}</h2></section>{choosing && <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><div className="mb-4"><span className="label !mb-0">Tu respuesta secreta</span><h2 className="font-display text-2xl">Elige un Pokémon</h2><p className="mt-1 font-bold text-ink/60">Puedes cambiar tu elección mientras siga abierta la fase.</p></div>{player.role === 'PLAYER' && player.ownChoice && <div className="mb-4 flex items-center gap-3 rounded-xl bg-leaf/[.07] p-3"><img src={player.ownChoice.sprite} alt="" className="h-16 w-16 object-contain" /><span className="min-w-0 flex-1"><small className="block font-black text-leaf">RESPUESTA GUARDADA</small><strong className="block truncate font-display text-xl">{player.ownChoice.name}</strong></span><CheckCircle2 className="text-leaf" /></div>}{player.role === 'PLAYER' ? <PokemonSelector loading={poolLoading} loadError={poolError} onRetry={retryPool} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={!player.canSelect} variant="embedded" autoFocus={false} inputLabel="Buscar Pokémon para responder" onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : <div className="empty-state"><Eye className="mx-auto mb-2 text-aqua" />Estás observando esta ronda.</div>}</main><PlayerProgress room={room} game={game} voting={false} /></div>}{voting && <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><AnswerVoting room={room} selfId={selfId} game={game} player={player} onVote={(playerId) => onAction({ type: 'VOTE_ANSWER', playerId })} /></main><PlayerProgress room={room} game={game} voting /></div>}{!choosing && !voting && <section className="rounded-2xl bg-surface p-8 text-center shadow-card"><Sparkles className="mx-auto text-electric" /><strong className="mt-2 block font-display text-2xl">Preparando el resultado…</strong></section>}</section>;
+  const runoff = game.phase === 'REVOTE';
+  // La revelación (votos y ganadores) solo en su fase: un `lastRound` sobrante nunca llega al DOM.
+  const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const { pokemon, error: loadError, loading: poolLoading, retry } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeForms ?? false, enabled: choosing && participating });
+  const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
+
+  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
+  const colorOf = (id: string) => playerColor(members.get(id)?.index ?? 0);
+  const ownVote = participating ? player.ownVotePlayerId : null;
+  const locked = voting && ownVote !== null;
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(socialFocusKey(game.phase, game.roundNumber, game.voteRoundNumber, locked), titleRef);
+
+  const last = game.roundNumber >= game.totalRounds;
+  const timer = choosing
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Para responder', totalMs: config?.selectionSeconds ? config.selectionSeconds * 1_000 : undefined }
+    : voting
+      ? { deadline: game.roundEndsAt, serverOffset: offset, label: runoff ? 'Para revotar' : 'Para votar', totalMs: config?.votingSeconds ? config.votingSeconds * 1_000 : undefined }
+      : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  const answerName = (playerId: string) => {
+    const answer = result?.answers.find((entry) => entry.playerId === playerId);
+    return answer ? `${answer.pokemon.name} de ${nameOf(playerId)}` : nameOf(playerId);
+  };
+  const announcement = mostLikelyAnnouncement({
+    phase: game.phase, roundNumber: game.roundNumber, ownChoice: choosing && participating ? player.ownChoice?.name ?? null : null, locked,
+    tiedNames: runoff ? game.voteCandidates.map(nameOf) : [], result, nameOf: answerName,
+  });
+
+  const prompt = <SocialPrompt kicker="La pregunta del grupo" text={game.prompt} help={choosing ? 'Cada jugador elige en secreto el Pokémon que mejor encaja. Se pueden repetir.' : voting ? 'Los Pokémon repetidos siguen siendo candidaturas distintas.' : undefined} />;
+
+  const tallyOptions: TallyOption[] = (result?.answers ?? []).map((answer) => ({
+    id: answer.playerId, name: answer.pokemon.name, detail: `Respuesta de ${nameOf(answer.playerId)}`, color: colorOf(answer.playerId), self: answer.playerId === selfId,
+    media: <img className={s.sprite} src={guessSprite(answer.pokemon.sprite)} alt="" />,
+  }));
+  const stage = result
+    ? <VoteTally idBase="most-likely-tally" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winnerIds} voterName={nameOf} intro={result.prompt}
+      points={(id) => result.pointsAwarded[id] ?? 0} summaryName={answerName} emptyText="Nadie envió una respuesta a tiempo." className={s.tally} />
+    : prompt;
+
+  const side = result
+    ? <ResponseProgress title="Puntos de la ronda" members={room.members} playerIds={game.playerIds} doneIds={[]} selfId={selfId} count={false}
+      status={(id) => {
+        const answer = result.answers.find((entry) => entry.playerId === id);
+        if (!answer) return { tone: 'bad', text: 'Sin respuesta', icon: X };
+        if (answer.won) return { tone: 'ok', text: result.winnerIds.length > 1 ? 'Victoria compartida' : 'Ganó', icon: Trophy };
+        if (result.voteRounds.length > 1 && !result.voteRounds.at(-1)?.candidateIds.includes(id)) return { tone: 'neutral', text: 'Fuera de la segunda vuelta' };
+        return { tone: 'neutral', text: votesText(answer.votesReceived) };
+      }}
+      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+    : <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={voting ? game.votedPlayerIds : game.selectionCompletedIds} selfId={selfId}
+      doneText={voting ? 'Votó' : 'Respondió'} note={voting ? 'El destino de cada voto es secreto hasta el resultado.' : 'Las respuestas no se muestran hasta que termina la selección.'} />;
+
+  const ballotOptions: BallotOption[] = game.revealedAnswers.map((answer) => ({
+    id: answer.playerId, name: answer.pokemon.name, ariaLabel: `${answer.pokemon.name}, respuesta de ${nameOf(answer.playerId)}`, sprite: guessSprite(answer.pokemon.sprite), detail: `de ${nameOf(answer.playerId)}`,
+  }));
+
+  let bottom;
+  if (voting) {
+    bottom = <VoteBallot key={`${game.roundNumber}:${game.voteRoundNumber}`} titleRef={titleRef} roundNumber={game.roundNumber} voteRound={game.voteRoundNumber} options={ballotOptions}
+      candidateIds={game.voteCandidates} runoff={runoff} ownId={participating ? selfId : null} ownVote={ownVote} canVote={participating && player.canVote} participating={participating}
+      onVote={(playerId) => onAction({ type: 'VOTE_ANSWER', playerId })}
+      help="Elige la respuesta que mejor encaja con la pregunta. No puedes votar la tuya." runoffHelp="Hubo empate: solo se vota entre las respuestas empatadas." />;
+  } else if (choosing && participating) {
+    const own = player.ownChoice;
+    const content: SocialPlateContent = own
+      ? { icon: CheckCircle2, tone: 'ok', kicker: 'Respuesta guardada', title: own.name, text: 'Puedes cambiar tu elección mientras siga abierta la fase.', aside: <span className={s.saved}><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Guardada</Chip><img className={s.ownSprite} src={guessSprite(own.sprite)} alt="" /></span> }
+      : { icon: Search, tone: 'info', kicker: 'Tu respuesta secreta', title: 'Elige un Pokémon', text: 'Puedes cambiar tu elección mientras siga abierta la fase.' };
+    bottom = <SocialPlate titleRef={titleRef} content={content} search>
+      <PokemonSelector key={game.roundNumber} pokemon={pokemon} loading={poolLoading} loadError={loadError} onRetry={retry} locked={EMPTY_LOCKED} disabled={!player.canSelect}
+        variant="embedded" autoFocus={false} inputLabel="Buscar Pokémon para responder" onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} />
+    </SocialPlate>;
+  } else if (choosing) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Eye, tone: 'info', kicker: 'No respondes en esta ronda', title: 'Estás observando', text: 'Verás las respuestas en la votación y los votos al final.' }} />;
+  } else if (result) {
+    const verdict = mostLikelyVerdict(result, selfId, participating);
+    const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
+      text: 'Cada victoria vale 3 puntos; en un empate, los 3 puntos van a cada autor empatado.',
+      ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
+    }} />;
+  } else {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
+  }
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={mostLikelyHeading(game.phase, result)} timer={timer}
+    announcement={announcement} phases={<PhaseRail steps={mostLikelySteps(game.phase)} current={mostLikelyCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

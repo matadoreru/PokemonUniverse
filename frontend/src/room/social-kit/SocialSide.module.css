@@ -1,0 +1,36 @@
+/* Columna lateral del kit social: progreso del grupo y puntos de la ronda en franjas. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+/* Un chip largo parte su texto antes que meterse bajo el valor. */
+.rowMeta > span {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.15;
+}
+.value {
+  display: inline-block;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+.note > svg {
+  flex: none;
+  color: var(--yellow);
+}

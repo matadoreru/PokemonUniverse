@@ -1,0 +1,89 @@
+/* Fases de la ronda: una fila de pasos; el actual en amarillo con contorno y flecha, los pasados con ✓. */
+.rail {
+  display: grid;
+  grid-template-columns: repeat(var(--steps), minmax(0, 1fr));
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  min-height: 40px;
+  padding: var(--sp-1) var(--sp-2);
+  border: var(--ol-2) solid var(--navy-3);
+  border-radius: var(--r-franja);
+  background: var(--navy-2);
+  color: var(--sky-2);
+  font: 800 var(--fs-13) / 1.15 var(--font-text);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--navy-3);
+  color: var(--white);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  font-variant-numeric: tabular-nums;
+}
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.done {
+  border-color: var(--ok);
+}
+.done .mark {
+  background: var(--ok);
+  color: var(--navy);
+}
+/* El actual: amarillo, contorno azul noche grueso, sombra dura y la flecha (no solo el color). */
+.current {
+  border: var(--ol-3) solid var(--navy);
+  background: var(--yellow);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+}
+.current .mark {
+  background: var(--navy);
+  color: var(--yellow);
+}
+
+@media (max-width: 639px) {
+  /* Móvil: el actual se lleva el sitio con su nombre; los demás, solo la marca (el nombre, para lectores). */
+  .rail {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    justify-content: start;
+  }
+  .step {
+    padding-inline: var(--sp-1);
+  }
+  .current {
+    padding-inline: var(--sp-2) var(--sp-3);
+  }
+  .step:not(.current) .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .step {
+    min-height: 48px;
+    font-size: var(--fs-15);
+  }
+}

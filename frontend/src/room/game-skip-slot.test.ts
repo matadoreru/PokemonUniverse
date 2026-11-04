@@ -104,6 +104,11 @@ describe('skipRowInLayout', () => {
     expect(skipRowInLayout({ ...bingo, phase: 'ROUND_RESULTS' } as never)).toBe(false);
     expect(skipRowInLayout({ ...bingo, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Most Likely To la lleva dentro de su pantalla en todas sus fases salvo en los resultados', () => {
+    const mostLikely = { ...(base as object), selectedGameId: 'most-likely-to', game: { gameId: 'most-likely-to' } };
+    for (const phase of ['ROUND_ACTIVE', 'VOTING', 'REVOTE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...mostLikely, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...mostLikely, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

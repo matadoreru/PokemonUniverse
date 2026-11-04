@@ -1,13 +1,64 @@
 import type { MostLikelyToPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { Crown, RotateCcw, StopCircle } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
+import { Equal, MessageSquareHeart, Trophy, Vote } from 'lucide-react';
+import { Chip, Icon } from '../ui';
+import { guessTop } from './guess-kit';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import s from '../games/most-likely-to/MostLikelyTo.module.css';
 
+type Stats = NonNullable<MostLikelyToPublicState['results']>['standings'][number]['stats'];
+const num = (stats: Stats, key: string) => Number(stats[key] ?? 0);
+
+/** Línea de métricas en texto: victorias (en solitario y compartidas), votos recibidos y respuestas enviadas. */
+export function mostLikelyStatsLine(stats: Stats): string {
+  const wins = num(stats, 'roundWins');
+  const votes = num(stats, 'votesReceived');
+  return [
+    `${wins} ${wins === 1 ? 'victoria' : 'victorias'}`,
+    `${num(stats, 'soloWins')} en solitario`,
+    `${num(stats, 'sharedWins')} ${num(stats, 'sharedWins') === 1 ? 'compartida' : 'compartidas'}`,
+    `${votes} ${votes === 1 ? 'voto recibido' : 'votos recibidos'}`,
+    `${num(stats, 'answersSubmitted')}/${num(stats, 'roundsPlayed')} respuestas`,
+  ].join(' · ');
+}
+
+/**
+ * Resultados de Most Likely To: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
+ * insignia y «+N» y, en texto, victorias en solitario y compartidas, votos recibidos y respuestas enviadas), la regla de
+ * los 3 puntos y, al lado, los récords (más victorias, más votos recibidos y victorias en solitario; empates juntos).
+ * Abajo, la acción del host. Un empate a cero no corona.
+ */
 export function MostLikelyToResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as MostLikelyToPublicState;
   const host = room.hostId === selfId;
-  return <section className="mx-auto max-w-5xl px-3 py-8 sm:px-5"><div className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-7"><Crown className="mx-auto text-electric" size={50} /><span className="label mt-2 text-center">Most Likely To · Resultados</span><h1 className="mb-2 text-center font-display text-3xl sm:text-4xl">Las respuestas favoritas</h1><p className="mx-auto mb-6 max-w-2xl text-center font-bold text-ink/60">Cada victoria vale 3 puntos. Una victoria compartida otorga los mismos 3 puntos a cada autor empatado.</p><div className="space-y-2.5">{game.results?.standings.map((entry) => { const person = member(room, entry.playerId); return <article key={entry.playerId} className={`grid items-center gap-3 rounded-xl border p-3 sm:grid-cols-[auto_auto_1fr_auto] ${entry.position === 1 ? 'border-electric/45 bg-electric/[.07]' : 'border-ink/10 bg-surface-raised/70'}`}><strong className="w-9 text-center font-display text-2xl">{entry.position <= 3 ? ['🥇', '🥈', '🥉'][entry.position - 1] : entry.position}</strong><Avatar name={person?.displayName ?? entry.playerId} avatar={person?.avatar} size="md" /><div className="min-w-0"><strong className="block truncate font-display text-xl">{person?.displayName ?? entry.playerId}</strong><p className="text-sm font-bold text-ink/65">{entry.stats.roundWins ?? 0} victorias · {entry.stats.votesReceived ?? 0} votos recibidos · {entry.stats.answersSubmitted ?? 0}/{entry.stats.roundsPlayed ?? 0} respuestas</p><div className="mt-1 flex flex-wrap gap-1.5 text-xs font-extrabold"><span className="rounded-full bg-electric/10 px-2 py-0.5 text-electric">{entry.stats.soloWins ?? 0} en solitario</span><span className="rounded-full bg-aqua/10 px-2 py-0.5 text-aqua">{entry.stats.sharedWins ?? 0} compartidas</span></div></div><strong className="justify-self-end text-xl text-berry">{entry.points} pts</strong></article>; })}</div>{host ? <div className="mt-7 flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle /> Terminar sesión</button></div> : <p className="mt-6 text-center font-bold text-ink/65">Esperando a que el host continúe la sesión…</p>}</div></section>;
-}
-
-function member(room: RoomView, playerId: string) {
-  return room.members.find((candidate) => candidate.id === playerId);
+  const standings = game.results?.standings ?? [];
+  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{mostLikelyStatsLine(standing.stats)}</span></>,
+    };
+  });
+  const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
+  const wins = guessTop(entries, 'roundWins');
+  const votes = guessTop(entries, 'votesReceived');
+  const solo = guessTop(entries, 'soloWins');
+  const aside = <ResultsRecords id="most-likely-records-title" records={[
+    { key: 'wins', title: 'Más victorias', icon: Trophy, names: wins?.names ?? null, value: String(wins?.value ?? ''), unit: wins?.value === 1 ? 'ronda ganada' : 'rondas ganadas' },
+    { key: 'votes', title: 'Más votos recibidos', icon: Vote, names: votes?.names ?? null, value: String(votes?.value ?? ''), unit: votes?.value === 1 ? 'voto decisivo' : 'votos decisivos' },
+    { key: 'solo', title: 'Victorias en solitario', icon: MessageSquareHeart, names: solo?.names ?? null, value: String(solo?.value ?? ''), unit: solo?.value === 1 ? 'ronda sin empate' : 'rondas sin empate' },
+  ]} />;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las respuestas favoritas" subtitle={`Most Likely To · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
+    <p className={s.rule}>Cada victoria vale 3 puntos. Una victoria compartida otorga los mismos 3 puntos a cada autor empatado.</p>
+  </ResultsShell>;
 }

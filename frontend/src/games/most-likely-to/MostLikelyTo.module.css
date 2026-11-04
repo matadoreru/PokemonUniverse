@@ -1,0 +1,64 @@
+/* Most Likely To: sprites del recuento y de la respuesta guardada, puntos de la placa y nota de los resultados. */
+.sprite {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.ownSprite {
+  display: block;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.tally {
+  height: 100%;
+}
+.points {
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+/* Regla de puntos bajo la clasificación final. */
+.rule {
+  margin-top: var(--sp-3);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}
+@media (max-width: 639px) {
+  .ownSprite {
+    width: 48px;
+    height: 48px;
+  }
+  .points {
+    font-size: var(--fs-34);
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .sprite {
+    width: 64px;
+    height: 64px;
+  }
+  .points {
+    font-size: var(--fs-68);
+  }
+}
+/* La regla de los puntos en la placa de la revelación: fuera donde falta alto (también sale en los resultados). */
+@media (max-width: 639px), (min-width: 1024px) and (max-height: 800px) {
+  .plateHelp {
+    display: none;
+  }
+}
+/* Respuesta guardada: el chip (en texto) junto al sprite; en el móvil la placa del buscador oculta su kicker. */
+.saved {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}

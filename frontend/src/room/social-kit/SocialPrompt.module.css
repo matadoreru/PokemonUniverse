@@ -1,0 +1,99 @@
+/* La pregunta de la ronda: panel crema que llena el alto libre en escritorio, con el texto centrado y escalado. */
+.panel {
+  min-height: 0;
+}
+.body {
+  container-type: inline-size;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.withMedia {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--sp-4);
+}
+.media {
+  display: grid;
+  place-items: center;
+}
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  max-width: 62rem;
+  min-width: 0;
+  text-align: center;
+}
+.withMedia .copy {
+  align-items: flex-start;
+  text-align: left;
+}
+.kicker {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.text {
+  overflow-wrap: anywhere;
+  font: 800 clamp(var(--fs-22), 4.2cqi, var(--fs-44)) / 1.15 var(--font-display);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.help {
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+
+@media (max-width: 1023px) {
+  .text {
+    font-size: clamp(var(--fs-18), 6cqi, var(--fs-34));
+  }
+}
+@media (max-width: 639px) {
+  .withMedia {
+    grid-template-columns: none;
+    gap: var(--sp-2);
+  }
+  .withMedia .copy {
+    align-items: center;
+    text-align: center;
+  }
+  /* Móvil: la ayuda no ocupa alto (la pregunta y la acción se ven juntas). */
+  .help {
+    display: none;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .help {
+    font-size: var(--fs-18);
+  }
+}
+/*
+ * Escritorio: el panel llena el alto libre y el cuerpo es un contenedor de tamaño, así la letra de la pregunta escala
+ * también con el alto (`cqh`) y nunca se queda cortada; sin sitio, la ayuda se oculta antes que la pregunta.
+ */
+@media (min-width: 1024px) {
+  .panel {
+    min-height: 7rem;
+  }
+  .body {
+    container-type: size;
+  }
+  .text {
+    font-size: clamp(var(--fs-22), min(4.2cqi, 21cqh), var(--fs-44));
+  }
+  @container (max-height: 8.5rem) {
+    .help {
+      display: none;
+    }
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .text {
+    font-size: clamp(var(--fs-34), min(4.2cqi, 21cqh), var(--fs-68));
+  }
+}
