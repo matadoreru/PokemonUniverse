@@ -28,7 +28,7 @@ describe('global room actions', () => {
     expect(markup).toContain('1/4');
   });
 
-  it.each(['pokedex-distance', 'shiny-vote'])('%s pinta «Saltar minijuego» dentro de su pantalla, no en el armazón', (gameId) => {
+  it.each(['pokedex-distance', 'shiny-vote', 'pokemon-impostor'])('%s pinta «Saltar minijuego» dentro de su pantalla, no en el armazón', (gameId) => {
     expect(render(gameId, 'ROUND_ACTIVE', skip)).not.toContain('Votar para saltar el minijuego');
   });
 

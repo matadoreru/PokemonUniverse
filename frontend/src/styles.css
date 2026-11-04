@@ -126,10 +126,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .step-number { @apply grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-aqua text-sm font-black text-night; }
   .permission-chip { @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-ink/10 bg-ink/[.06] px-2.5 py-1 text-xs font-extrabold text-ink/65; }
   .permission-help { @apply mt-3 text-sm font-bold text-ink/65; }
-  .session-card { @apply min-h-20 rounded-xl border border-ink/10 bg-surface-raised p-3.5 text-left transition-colors hover:border-aqua/50 hover:bg-ink/[.06] disabled:cursor-not-allowed; }
-  .session-card strong { @apply block font-display text-lg; }
-  .session-card > span:last-child { @apply mt-0.5 block text-sm font-bold text-ink/65; }
-  .session-card-selected { @apply border-aqua bg-aqua/10; }
   /* Opción de un grupo de botones de configuración (`aria-pressed`); la elegida añade su color de acento con utilidades. */
   .toggle-option { @apply min-h-11 rounded-xl border border-ink/10 bg-surface-raised px-3 py-2 font-extrabold text-ink/70 transition-colors hover:border-aqua/50 disabled:cursor-not-allowed disabled:opacity-55; }
   .experimental-badge { @apply inline-flex min-h-6 items-center rounded-full px-2 py-0.5 text-xs font-black text-white; background: #c92a42; }

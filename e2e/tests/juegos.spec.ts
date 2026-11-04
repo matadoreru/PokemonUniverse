@@ -271,35 +271,68 @@ test('type-duel: resultado con tipos', async ({ browser }) => {
   }
 });
 
-test('pokemon-impostor: votación con Saltar', async ({ browser }) => {
-  test.setTimeout(120_000);
+test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres rondas sin expulsión', async ({ browser }) => {
+  test.setTimeout(180_000);
   const sala = await crearSalaConJugadores(browser, 3);
   try {
     const { host, invitados, jugadores } = sala;
     const pages = jugadores.map((j) => j.page);
+    // Cada página en un tamaño de revisión: las fases cortas (roles 5 s, recuento 3 s) se capturan a la vez en las tres.
+    const ajustar = async () => { for (const [i, page] of pages.entries()) await page.setViewportSize({ width: SIZES[i]!.w, height: SIZES[i]!.h }); };
+    const enParalelo = async (nombre: string) => {
+      const medidas = await Promise.all(pages.map((page) => layoutProblems(page, nombre, true, false, ARCADE)));
+      for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+    };
     await seleccionarJuego(host.page, 'Pokémon Impostor');
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await ajustar();
+    await saltarIntro(pages);
 
-    // Tres turnos de pista: cada vez, la página con el campo visible escribe y envía.
+    // Reparto de roles: cada uno ve el suyo; el impostor, sin el Pokémon.
+    for (const page of pages) await expect(page.getByRole('heading', { name: 'Descubre tu rol' })).toBeVisible({ timeout: 15_000 });
+    await enParalelo('juego-pokemon-impostor-rol');
+    let impostores = 0;
+    for (const page of pages) if (await page.getByText('No conoces el Pokémon. Intenta disimular.').isVisible()) impostores++;
+    expect(impostores, 'un impostor que no conoce el Pokémon').toBe(1);
+
     const campo = (page: Page) => page.getByPlaceholder('Escribe algo relacionado…');
-    for (let turno = 0; turno < 3; turno++) {
-      const page = await primeraVisible(pages, campo);
-      await campo(page).fill('pista');
-      await campo(page).press('Enter');
-      await expect(campo(page)).toBeHidden();
-    }
-
     const saltar = (page: Page) => page.getByRole('button', { name: 'Saltar', exact: true });
-    for (const page of pages) await expect(saltar(page)).toBeVisible({ timeout: 15_000 });
-    await capturarTamanos(host.page, 'juego-pokemon-impostor-votacion', { sigue: saltar(host.page) });
+    const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
+    for (let ronda = 1; ronda <= 3; ronda++) {
+      // Tres turnos de pista: cada vez, la página con el campo visible escribe y envía.
+      for (let turno = 0; turno < 3; turno++) {
+        const page = await primeraVisible(pages, campo);
+        if (ronda === 1 && turno === 1) {
+          await capturarTamanos(page, 'juego-pokemon-impostor-pistas', { sigue: campo(page), opts: ARCADE });
+          await ajustar();
+        }
+        await campo(page).fill(`pista ${ronda}`);
+        await campo(page).press('Enter');
+        await expect(campo(page)).toBeHidden();
+      }
 
-    for (const page of pages) {
-      await saltar(page).click();
-      await page.getByRole('button', { name: 'Confirmar voto' }).click();
+      for (const page of pages) await expect(saltar(page)).toBeVisible({ timeout: 15_000 });
+      if (ronda === 1) {
+        await capturarTamanos(host.page, 'juego-pokemon-impostor-votacion', { sigue: saltar(host.page), opts: ARCADE });
+        await ajustar();
+      }
+      for (const page of pages) {
+        await saltar(page).click();
+        await expect(saltar(page)).toHaveAttribute('aria-pressed', 'true');
+        await confirmar(page).click();
+        // La píldora desaparece al votar: el foco va al título de la placa, no se pierde en `body`.
+        if (ronda === 1 && page === host.page) await expect(page.getByRole('heading', { name: 'Tu voto está bloqueado.' })).toBeFocused();
+      }
+      for (const page of pages) await expect(page.getByText('Se salta la votación: nadie es expulsado')).toBeVisible({ timeout: 10_000 });
+      if (ronda === 1) await enParalelo('juego-pokemon-impostor-recuento');
+      if (ronda < 3) await expect(host.page.getByText(`Ronda ${ronda + 1}`, { exact: true })).toBeVisible({ timeout: 15_000 });
     }
-    await expect(host.page.getByText('Se salta la votación: nadie es expulsado')).toBeVisible({ timeout: 10_000 });
-    await expect(host.page.getByText('Ronda 2', { exact: true })).toBeVisible({ timeout: 15_000 });
+
+    // Tercera ronda seguida sin expulsión: ganan los impostores.
+    const titulo = host.page.getByRole('heading', { name: 'Ganan los impostores' });
+    await expect(titulo).toBeVisible({ timeout: 15_000 });
+    await expect(host.page.getByText('Tres rondas seguidas sin expulsar a nadie.')).toBeVisible();
+    await capturarTamanos(host.page, 'juego-pokemon-impostor-resultados', { sigue: titulo, completa: true, opts: ARCADE });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -365,7 +398,7 @@ test.describe('pokemon-impostor: eliminación', () => {
         await expect(banda(page)).toContainText(expulsado.name);
         await expect(banda(page)).toContainText('…era');
       }
-      const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));
+      const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true, false, ARCADE)));
       for (const page of pages) await expect(banda(page), 'el cut-in sigue a la vista tras la captura').toBeVisible({ timeout: 500 });
       for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
 
