@@ -12,7 +12,7 @@ COPY packages/shared/package.json packages/shared/tsconfig.json ./packages/share
 # Prisma alimenta el postinstall (`db:generate`). No se compila ni se copia a la imagen.
 COPY apps/server/package.json ./apps/server/
 COPY apps/server/prisma ./apps/server/prisma
-COPY frontend/package.json frontend/tsconfig*.json frontend/vite.config.ts frontend/tailwind.config.js frontend/postcss.config.js ./frontend/
+COPY frontend/package.json frontend/tsconfig*.json frontend/vite.config.ts frontend/tailwind.config.js frontend/tailwind.config.d.ts frontend/postcss.config.js ./frontend/
 RUN npm ci
 COPY packages/shared/src ./packages/shared/src
 COPY frontend/src ./frontend/src
