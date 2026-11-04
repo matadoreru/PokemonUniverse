@@ -1,0 +1,356 @@
+/* Quién es Quién: el tablero que crece con su hueco, los cursores del equipo, la columna lateral, el diálogo y los resultados. */
+
+.screen {
+  min-width: 0;
+}
+
+/* ── Tablero ──────────────────────────────────────────────────────────────────────────────────────────────────────── */
+
+.boardPanel {
+  min-width: 0;
+  min-height: 0;
+}
+@media (min-width: 1024px) {
+  .boardPanel {
+    height: 100%;
+  }
+}
+@media (max-width: 1023px) {
+  /* Móvil y tableta: una franja con tope de alto (el tablero se desplaza por dentro) y la acción pegada abajo a la vista. */
+  .boardPanel {
+    height: clamp(14rem, 40svh, 28rem);
+  }
+}
+/* El cuerpo se mide para calcular las cartas (ver `useBoardLayout`); el tablero se centra si sobra alto. */
+.boardBody {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-3);
+}
+.board {
+  position: relative;
+  flex: none;
+  margin-block: auto;
+}
+.grid {
+  display: grid;
+  justify-content: center;
+  align-content: start;
+}
+/* Antes de medir (y en los tests sin DOM): una rejilla de reserva con cartas de tamaño mínimo. */
+.gridFallback {
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  grid-auto-rows: 88px;
+  gap: var(--sp-2);
+}
+/* Cartas compactas: menos relleno y sombra corta; el nombre a 13 px (15 px en las grandes). */
+.grid > [data-pokemon-id] {
+  gap: 2px;
+  padding: var(--sp-1) var(--sp-1) var(--sp-2);
+  box-shadow: var(--sh-hard-3);
+}
+.grid > [data-pokemon-id] > [data-part='name'] {
+  font-size: var(--fs-13);
+}
+.large > [data-pokemon-id] > [data-part='name'] {
+  font-size: var(--fs-15);
+}
+/* Bajada: fondo apagado, borde a trazos, el sprite gris y la marca «Bajada» escrita (el nombre mantiene su contraste). */
+.grid > [data-down='true'] {
+  border-style: dashed;
+  border-color: var(--navy);
+  background: var(--cream-2);
+  box-shadow: none;
+}
+.grid > [data-down='true']:not(:focus-visible) {
+  outline: none;
+}
+.grid > [data-down='true'] > [data-part='art'] {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+.downTag {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  translate: -50% -50%;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--navy);
+  color: var(--white);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  white-space: nowrap;
+}
+
+/* En las cartas pequeñas la marca va sin icono: «Bajada» cabe entera. */
+.grid:not(.large) .downTag > svg {
+  display: none;
+}
+
+/* ── Cursores del equipo: una capa sin puntero; se mueven con `transform` ───────────────────────────────────────── */
+
+.cursors {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-content);
+  pointer-events: none;
+}
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 80ms linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    transition: none;
+  }
+}
+:global(body.static) .cursor {
+  transition: none;
+}
+.cursorArrow {
+  display: block;
+  margin: -3px 0 0 -3px;
+  fill: var(--player);
+  color: var(--navy);
+}
+.cursorName {
+  position: absolute;
+  left: 14px;
+  max-width: 9rem;
+  overflow: hidden;
+  padding: 2px var(--sp-2);
+  border: var(--ol-2) solid var(--player);
+  border-radius: var(--r-badge);
+  background: var(--navy);
+  color: var(--white);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.above {
+  bottom: 18px;
+}
+.below {
+  top: 22px;
+}
+.left {
+  right: 6px;
+  left: auto;
+}
+
+/* ── Columna lateral ─────────────────────────────────────────────────────────────────────────────────────────────── */
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 0;
+}
+.side > * {
+  flex: none;
+}
+.side > .feed {
+  max-height: 18rem;
+}
+@media (min-width: 1024px) {
+  .side {
+    height: 100%;
+  }
+  .side > .teamsPanel {
+    flex: 0 1 auto;
+    min-height: 6rem;
+  }
+  .side > .feed {
+    flex: 1 1 auto;
+    min-height: 7rem;
+    max-height: none;
+  }
+}
+
+.secretWrap {
+  min-width: 0;
+}
+.secretBody {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+}
+.secretBody > :first-child {
+  flex: none;
+  min-width: 6.5rem;
+}
+.secretText {
+  min-width: 0;
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.teamDot {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-right: var(--sp-1);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  background: var(--team);
+  vertical-align: -1px;
+}
+
+.teams {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.team {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-left: var(--sp-2);
+  border-left: 6px solid var(--team);
+}
+.teamHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  color: var(--white);
+}
+.teamFlag {
+  color: var(--team);
+}
+.teamName {
+  margin-right: auto;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.rowMeta > span {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.15;
+}
+.guessSprite {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* ── Placa de abajo ──────────────────────────────────────────────────────────────────────────────────────────────── */
+
+.plate {
+  min-width: 0;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
+@media (max-width: 639px) {
+  .plateHelp {
+    font-size: var(--fs-13);
+  }
+  .actions {
+    justify-content: flex-start;
+  }
+}
+/* Escritorio bajo (720 px): la ayuda en 13 px para que el tablero conserve alto. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .plateHelp {
+    font-size: var(--fs-13);
+  }
+}
+
+/* ── Diálogo «Adivinar Pokémon» / elegir el secreto ─────────────────────────────────────────────────────────────── */
+
+.pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.pickHelp {
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.pickGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: var(--sp-2);
+  max-height: min(45dvh, 26rem);
+  overflow-y: auto;
+  padding: var(--sp-1) var(--sp-1) var(--sp-2);
+  scrollbar-width: thin;
+}
+.pickGrid > :only-child:not([data-candidate]) {
+  grid-column: 1 / -1;
+}
+.pickDown {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+
+/* ── Resultados ──────────────────────────────────────────────────────────────────────────────────────────────────── */
+
+.resultTeams {
+  display: grid;
+  gap: var(--sp-3);
+}
+.resultTeam {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-left: 8px solid var(--team);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: var(--sh-hard-4);
+}
+.resultTeamText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.resultTeamName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 800 var(--fs-18) / 1.2 var(--font-display);
+}
+.resultTeamMembers {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.resultTeam > :first-child {
+  flex: none;
+  min-width: 6.5rem;
+}
+.resultsRule {
+  margin-top: var(--sp-3);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}

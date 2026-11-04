@@ -9,8 +9,8 @@ import s from './Card.module.css';
 
 export type CardState = 'idle' | 'selected' | 'correct' | 'wrong' | 'revealing';
 
-/** Atributos extra del elemento de la carta (botón o caja): nombre accesible, atajos y `data-*` de quien la usa. */
-export type CardAttrs = { 'aria-label'?: string; 'aria-keyshortcuts'?: string } & { [key: `data-${string}`]: string | undefined };
+/** Atributos extra del elemento de la carta (botón o caja): nombre accesible, atajos, foco itinerante y `data-*` de quien la usa. */
+export type CardAttrs = { 'aria-label'?: string; 'aria-keyshortcuts'?: string; /** Foco itinerante de una rejilla de cartas (0 la que entra con Tab, -1 el resto). */ tabIndex?: number } & { [key: `data-${string}`]: string | undefined };
 
 export interface CardProps {
   sprite?: string;

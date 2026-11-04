@@ -1,16 +1,46 @@
 import type { WhoIsWhoPokemonConfig } from '@pokemon-universe/shared/public';
-import { Grid3X3, Shuffle, Target, Timer, Users } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { ConfigRange } from '../../room/ConfigRange';
+import { Segmented, Toggle } from '../../ui';
+import s from './ConfigPanel.module.css';
 
-const boardSizes = [5, 10, 16, 24, 36, 50];
-const turnTimes = [20, 30, 40, 60, 90];
-const roundCounts = [5, 10, 15, 20, 25];
+const turnTimes = [20, 30, 40, 60, 90] as const;
+const roundCounts = [5, 10, 15, 20, 25] as const;
+
+/**
+ * Ajustes de Quién es Quién con los controles del catálogo: generaciones (el selector heredado, F9), cómo se elige el
+ * secreto (`Segmented`), cartas del tablero (`ConfigRange` de 5 a 50, lo que admite el motor), tiempo por turno y rondas
+ * máximas (`Segmented` con los valores de antes), el plazo para elegir el secreto (`ConfigRange`, 0 = sin límite) y las
+ * formas regionales (`Toggle`).
+ */
 export function WhoIsWhoPokemonConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as WhoIsWhoPokemonConfig;
-  return <fieldset disabled={disabled} className="space-y-6"><GenerationSelector selected={value.generations} label="Generaciones del tablero" description="El pool se mezcla en el servidor antes de repartir los secretos." onChange={(generations) => void onChange({ ...value, generations })} />
-    <section><span className="label">Pokémon secreto</span><div className="grid gap-2 sm:grid-cols-2"><button type="button" aria-pressed={value.secretSelection === 'RANDOM'} onClick={() => void onChange({ ...value, secretSelection: 'RANDOM' })} className={`flex min-h-16 items-center gap-3 rounded-xl border p-3 text-left ${value.secretSelection === 'RANDOM' ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised'}`}><Shuffle size={20} /><span><strong className="block">Aleatorio</strong><small className="font-bold text-ink/60">El servidor asigna uno a cada equipo.</small></span></button><button type="button" aria-pressed={value.secretSelection === 'PLAYER_CHOICE'} onClick={() => void onChange({ ...value, secretSelection: 'PLAYER_CHOICE' })} className={`flex min-h-16 items-center gap-3 rounded-xl border p-3 text-left ${value.secretSelection === 'PLAYER_CHOICE' ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised'}`}><Target size={20} /><span><strong className="block">Elegido por el equipo</strong><small className="font-bold text-ink/60">Cada equipo elige en secreto una carta del tablero.</small></span></button></div></section>
-    <section><span className="label flex items-center gap-2"><Grid3X3 size={17} /> Pokémon en el tablero</span><div className="grid grid-cols-3 gap-2 sm:grid-cols-6">{boardSizes.map((boardSize) => <button type="button" key={boardSize} aria-pressed={value.boardSize === boardSize} onClick={() => void onChange({ ...value, boardSize })} className={`min-h-11 rounded-xl border font-extrabold ${value.boardSize === boardSize ? 'border-aqua bg-aqua text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{boardSize}</button>)}</div><p className="mt-2 text-sm font-bold text-ink/60">Rango permitido: 5–50 Pokémon.</p></section>
-    <div className="grid gap-5 lg:grid-cols-2"><section><span className="label flex items-center gap-2"><Timer size={17} /> Tiempo por turno</span><div className="grid grid-cols-3 gap-2 sm:grid-cols-5">{turnTimes.map((turnSeconds) => <button type="button" key={turnSeconds} aria-pressed={value.turnSeconds === turnSeconds} onClick={() => void onChange({ ...value, turnSeconds })} className={`min-h-11 rounded-xl border font-extrabold ${value.turnSeconds === turnSeconds ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{turnSeconds}s</button>)}</div></section><section><span className="label flex items-center gap-2"><Users size={17} /> Rondas máximas</span><div className="grid grid-cols-3 gap-2 sm:grid-cols-5">{roundCounts.map((rounds) => <button type="button" key={rounds} aria-pressed={value.rounds === rounds} onClick={() => void onChange({ ...value, rounds })} className={`min-h-11 rounded-xl border font-extrabold ${value.rounds === rounds ? 'border-electric bg-electric text-night' : 'border-ink/10 bg-surface-raised text-ink/65 hover:border-aqua'}`}>{rounds}</button>)}</div></section></div>
-    <button type="button" aria-pressed={value.includeForms} onClick={() => void onChange({ ...value, includeForms: !value.includeForms })} className={`flex min-h-16 w-full items-center gap-3 rounded-xl border p-3 text-left ${value.includeForms ? 'border-aqua bg-aqua/10' : 'border-ink/10 bg-surface-raised'}`}><span className="min-w-0 flex-1"><strong className="block">Incluir formas regionales y variantes</strong><small className="font-bold text-ink/60">Usa todas las formas que el PokémonRepository marque como compatibles.</small></span><span className="font-black text-leaf">{value.includeForms ? '✓' : ''}</span></button>
-  <label className="block font-extrabold">Tiempo para elegir secreto (segundos)<input className="field mt-2" type="number" min={0} max={120} value={value.selectionSeconds ?? 30} onChange={(event) => { const selectionSeconds = Number(event.target.value); if (Number.isInteger(selectionSeconds) && selectionSeconds >= 0 && selectionSeconds <= 120) void onChange({ ...value, selectionSeconds }); }} /><span className="mt-2 block text-sm font-bold text-ink/60">Al agotarse el tiempo, se asigna un secreto al azar. Usa 0 para elegir sin límite.</span></label></fieldset>;
+  const selection = value.selectionSeconds ?? 30;
+  return <fieldset disabled={disabled} className={s.panel}>
+    <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="El pool se mezcla en el servidor antes de repartir los secretos." onChange={(generations) => void onChange({ ...value, generations })} />
+    <div className={s.field}>
+      <span className={s.label}>Pokémon secreto</span>
+      <Segmented label="Pokémon secreto" value={value.secretSelection} options={[{ value: 'RANDOM', label: 'Aleatorio', disabled }, { value: 'PLAYER_CHOICE', label: 'Por el equipo', disabled }]}
+        onChange={(secretSelection) => void onChange({ ...value, secretSelection })} />
+      <p className={s.help}>{value.secretSelection === 'RANDOM' ? 'El servidor asigna uno a cada equipo.' : 'Cada equipo elige en secreto una carta del tablero.'}</p>
+    </div>
+    <div className={s.pair}>
+      <ConfigRange label="Pokémon en el tablero" value={value.boardSize} min={5} max={50} disabled={disabled} formatValue={(size) => `${size} Pokémon`} hint="Rango permitido: 5–50 Pokémon." onCommit={(boardSize) => onChange({ ...value, boardSize })} />
+      <ConfigRange label="Tiempo para elegir secreto" value={selection} min={0} max={120} step={5} disabled={disabled}
+        formatValue={(seconds) => (seconds === 0 ? 'Sin límite' : `${seconds} s`)} hint="Si lo elige el equipo: al agotarse, se asigna uno al azar. 0 = sin límite." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
+    </div>
+    <div className={s.pair}>
+      <div className={s.field}>
+        <span className={s.label}>Tiempo por turno</span>
+        <Segmented label="Tiempo por turno" value={value.turnSeconds} options={turnTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(turnSeconds) => void onChange({ ...value, turnSeconds })} />
+      </div>
+      <div className={s.field}>
+        <span className={s.label}>Rondas máximas</span>
+        <Segmented label="Rondas máximas" value={value.rounds} options={roundCounts.map((rounds) => ({ value: rounds, label: String(rounds), disabled }))} onChange={(rounds) => void onChange({ ...value, rounds })} />
+        <p className={s.help}>Si nadie adivina antes, la partida acaba en empate.</p>
+      </div>
+    </div>
+    <Toggle label="Incluir formas regionales y variantes" hint="Usa todas las formas que el PokémonRepository marque como compatibles." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => void onChange({ ...value, includeForms })} />
+    <p className={s.note}>Cada equipo solo recibe su propio secreto y sus cartas bajadas; los del rival se revelan al final de la partida.</p>
+  </fieldset>;
 }

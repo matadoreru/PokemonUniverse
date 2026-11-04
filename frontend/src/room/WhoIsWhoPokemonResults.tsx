@@ -1,3 +1,62 @@
 import type { RoomView, WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
-import { Flag, RotateCcw, StopCircle, Trophy } from 'lucide-react';
-export function WhoIsWhoPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) { const game = room.game as WhoIsWhoPublicState; const host = room.hostId === selfId; return <section className="page-shell max-w-4xl"><div className="panel p-4 text-center sm:p-7"><Trophy className="mx-auto text-electric" size={52} /><span className="label mt-2">Quién es Quién — Resultados</span><h1 className="font-display text-3xl sm:text-4xl">{game.winnerTeam ? `¡Ganó ${game.winnerTeam === 'BLUE' ? 'el Equipo Azul' : 'el Equipo Rojo'}!` : 'Empate'}</h1><div className="my-6 grid gap-3 sm:grid-cols-2">{(['BLUE', 'RED'] as const).map((team) => <article key={team} className={`rounded-xl border p-4 ${game.winnerTeam === team ? 'border-electric bg-electric/10' : 'border-ink/10 bg-surface-raised'}`}><Flag className={`mx-auto ${team === 'BLUE' ? 'text-aqua' : 'text-berry'}`} /><strong className="mt-1 block font-display text-xl">Equipo {team === 'BLUE' ? 'Azul' : 'Rojo'}</strong><p className="mt-2 text-sm font-bold text-ink/65">Secreto: {game.revealedSecrets[team]?.name ?? '—'}</p></article>)}</div>{host ? <div className="flex flex-wrap justify-center gap-3"><button className="btn-primary" onClick={onLobby}><RotateCcw size={18} /> Continuar sesión</button><button className="btn-ghost" onClick={onEnd}><StopCircle size={18} /> Terminar sesión</button></div> : <p className="font-bold text-ink/65">Esperando al host…</p>}</div></section>; }
+import { Crown, Equal, Flag } from 'lucide-react';
+import { useMemo, type CSSProperties } from 'react';
+import { TEAM_COLOR, TEAM_NAME, TEAMS, whoResultRule, whoResultTitle, whoStatsLine } from '../games/who-is-who-pokemon/presentation';
+import { Badge, Card, Chip, Icon, Panel } from '../ui';
+import { playerColor } from './player-color';
+import { sharesPosition } from './results-ties';
+import { ResultsHostActions } from './ResultsRecords';
+import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
+
+/**
+ * Resultados de Quién es Quién: «¡Ganó el Equipo X!» o «Empate» (si se acaban las rondas nadie suma), la clasificación
+ * del catálogo con los aciertos y fallos de cada uno y, al lado, los dos equipos con su secreto ya revelado y sus
+ * jugadores. Abajo, la acción del host. Un empate a cero no corona a nadie.
+ */
+export function WhoIsWhoPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+  const game = room.game as WhoIsWhoPublicState;
+  const host = room.hostId === selfId;
+  const standings = game.results?.standings ?? [];
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const nameOf = (playerId: string) => members.get(playerId)?.displayName ?? 'Entrenador';
+  const teamOf = (playerId: string) => TEAMS.find((team) => game.teams[team].playerIds.includes(playerId)) ?? null;
+  const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
+  const rows: ResultsStanding[] = standings.map((standing) => {
+    const index = room.members.findIndex((member) => member.id === standing.playerId);
+    const team = teamOf(standing.playerId);
+    return {
+      id: standing.playerId,
+      position: standing.position,
+      name: nameOf(standing.playerId),
+      points: standing.points,
+      avatar: room.members[index]?.avatar,
+      color: playerColor(Math.max(0, index)),
+      meta: <>
+        {sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
+        {team && <span>{TEAM_NAME[team]}</span>}
+        <span>{whoStatsLine(standing.stats)}</span>
+      </>,
+    };
+  });
+  const winner = game.winnerTeam;
+  const won = winner !== null && game.teams[winner].playerIds.includes(selfId);
+  const aside = <Panel title="Los secretos" variant="dark" scroll scrollLabel="Los secretos de los equipos">
+    <ul className={s.resultTeams} aria-label="Equipos y sus secretos">{TEAMS.map((team) => {
+      const secret = game.revealedSecrets[team];
+      return <li key={team} className={s.resultTeam} style={{ '--team': TEAM_COLOR[team] } as CSSProperties} data-testid={`who-result-${team}`}>
+        {secret ? <Card size="sm" sprite={secret.sprite} name={secret.name} number={secret.nationalDexNumber} decorativeSprite /> : <Card size="sm" name="Sin secreto" />}
+        <span className={s.resultTeamText}>
+          <span className={s.resultTeamName}><Icon icon={Flag} size={18} />{TEAM_NAME[team]}{winner === team && <Badge><Icon icon={Crown} size={18} />Ganador</Badge>}</span>
+          <span className={s.resultTeamMembers}>Secreto: {secret?.name ?? '—'}</span>
+          <span className={s.resultTeamMembers}>{game.teams[team].playerIds.map(nameOf).join(', ') || 'Sin jugadores'}</span>
+        </span>
+      </li>;
+    })}</ul>
+  </Panel>;
+  const guesses = game.guesses.length;
+  return <ResultsShell won={won} title={whoResultTitle(winner)} subtitle={`Quién es Quién · ${game.turnNumber} ${game.turnNumber === 1 ? 'turno' : 'turnos'} · ${guesses} ${guesses === 1 ? 'intento' : 'intentos'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando al host…" />} fillLarge>
+    <p className={s.resultsRule}>{whoResultRule(winner, game.guesses.at(-1)?.correct === true)}</p>
+  </ResultsShell>;
+}

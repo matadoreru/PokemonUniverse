@@ -1,88 +1,123 @@
-import type { RoomMemberView, RoomView, WhoIsWhoCursorEvent, WhoIsWhoPlayerState, WhoIsWhoPokemonCard, WhoIsWhoPublicState, WhoIsWhoTeam } from '@pokemon-universe/shared/public';
-import { Check, EyeOff, Flag, MousePointer2, Search, Target } from 'lucide-react';
-import { memo, useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import type { RoomView, WhoIsWhoPlayerState, WhoIsWhoPokemonConfig, WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
+import { Clock3, Eye, Hourglass, MessageCircleQuestion, Target, X } from 'lucide-react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useServerOffset } from '../hooks/useServerTime';
-import { clearWhoIsWhoCursor, sendWhoIsWhoCursor, subscribeWhoIsWhoCursors } from './who-is-who-cursor-channel';
-import { normalizeBoardPointer, projectBoardCursor } from './who-is-who-cursor-position';
-import { searchPokemonOptions } from './pokemon-search';
-import { Dialog } from '../ui';
+import { Chip, cx, Pill } from '../ui';
+import {
+  previousTurnGuess, secretsReady, TEAM_COLOR, TEAM_NAME, whoAnnouncement, whoFocusKey, whoHeading, whoRole, whoRoundLabel, type WhoRole,
+} from '../games/who-is-who-pokemon/presentation';
+import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel } from '../games/who-is-who-pokemon/WhoIsWhoParts';
+import { useFocusOnTransition } from './focus-transition';
+import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
+import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
 
-const teamName: Record<WhoIsWhoTeam, string> = { BLUE: 'Equipo Azul', RED: 'Equipo Rojo' };
-const otherTeam = (team: WhoIsWhoTeam): WhoIsWhoTeam => team === 'BLUE' ? 'RED' : 'BLUE';
-const tone = { BLUE: { text: 'text-aqua', border: 'border-aqua/45', bg: 'bg-aqua/[.06]', ring: 'ring-aqua/20' }, RED: { text: 'text-berry', border: 'border-berry/45', bg: 'bg-berry/[.06]', ring: 'ring-berry/20' } } as const;
+const GAME_NAME = 'Quién es Quién';
 
-interface TeamBoardProps {
-  team: WhoIsWhoTeam; cards: WhoIsWhoPokemonCard[]; players: RoomMemberView[]; active: boolean; own: boolean;
-  canManage: boolean; discardedIds: string[]; selfId: string; onToggle(id: string): void;
-}
+type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
-const PokemonCard = memo(function PokemonCard({ pokemon, discarded, interactive, team, onToggle }: { pokemon: WhoIsWhoPokemonCard; discarded: boolean; interactive: boolean; team: WhoIsWhoTeam; onToggle(): void }) {
-  return <button type="button" data-pokemon-id={pokemon.id} disabled={!interactive} aria-pressed={discarded} aria-label={`${discarded ? 'Restaurar' : 'Descartar'} ${pokemon.name}`} onClick={onToggle} className={`group relative min-w-0 rounded-xl border px-1.5 pb-2 pt-1 text-center transition-[opacity,filter,border-color,background-color,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 ${discarded ? 'border-transparent bg-ink/[.025] opacity-30 grayscale' : `border-ink/10 bg-surface-raised ${interactive ? `${team === 'BLUE' ? 'hover:border-aqua/70' : 'hover:border-berry/70'} hover:-translate-y-0.5` : ''}`} disabled:cursor-default`}>
-    <img src={pokemon.sprite} alt="" draggable={false} className={`mx-auto aspect-square w-full max-w-20 object-contain [image-rendering:pixelated] ${discarded ? 'brightness-50' : ''}`} />
-    <strong className="block truncate text-[.7rem] leading-tight sm:text-xs" title={pokemon.name}>{pokemon.name}</strong>
-    {discarded && <span className="pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true"><EyeOff className="text-ink/65" size={22} /></span>}
-  </button>;
-});
+/**
+ * Quién es Quién Pokémon con el catálogo (spec §2 y §6 «Juegos»), en un único `SocialScreen`: arriba la placa
+ * («Ronda N de M · Turno T», de quién es el turno y el plazo) y el tablero del equipo, con cartas que se bajan y se
+ * levantan y los cursores de los compañeros; abajo, la acción con el turno en texto («Adivinar Pokémon», «Terminar
+ * turno» o «Elegir nuestro Pokémon»); al lado, el secreto propio, los equipos y los intentos.
+ *
+ * Privacidad: el secreto solo llega en el estado propio del equipo dueño (`ownSecret`) y solo se pinta con él; las
+ * cartas bajadas, igual (`discardedPokemonIds` es el del propio equipo). Los cursores van por su canal propio: moverse
+ * no toca el aviso global. Los fallos de las acciones van al aviso global de la sala (no hay error local).
+ */
+export function WhoIsWhoPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+  const game = room.game as WhoIsWhoPublicState;
+  const player = room.gamePlayerState as WhoIsWhoPlayerState | null;
+  const config = room.selectedGameConfig as Partial<WhoIsWhoPokemonConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const [busy, setBusy] = useState(false);
+  const [dialog, setDialog] = useState<'guess' | 'secret' | null>(null);
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const ready = secretsReady(game);
+  const role: WhoRole = whoRole(game, player);
+  const team = player?.team ?? null;
+  const discarded = team ? player?.discardedPokemonIds ?? [] : [];
 
-function SharedTeamCursors({ boardRef, selfId, members }: { boardRef: React.RefObject<HTMLDivElement | null>; selfId: string; members: Map<string, RoomMemberView> }) {
-  const [cursors, setCursors] = useState<Record<string, WhoIsWhoCursorEvent>>({}); const [, redraw] = useState(0);
-  useEffect(() => subscribeWhoIsWhoCursors((message) => {
-    if (message.type === 'RESET') { setCursors({}); return; }
-    if (message.type === 'CLEAR') { setCursors((current) => Object.fromEntries(Object.entries(current).filter(([id]) => id !== message.playerId))); return; }
-    if (message.cursor.playerId !== selfId) setCursors((current) => ({ ...current, [message.cursor.playerId]: message.cursor }));
-  }), [selfId]);
-  useEffect(() => { const resize = () => redraw((value) => value + 1); window.addEventListener('resize', resize); const timer = window.setInterval(() => { const cutoff = Date.now() - 4_000; setCursors((current) => Object.fromEntries(Object.entries(current).filter(([, cursor]) => cursor.updatedAt >= cutoff))); }, 1_000); return () => { window.removeEventListener('resize', resize); window.clearInterval(timer); }; }, []);
-  const rect = boardRef.current?.getBoundingClientRect();
-  return <div className="pointer-events-none absolute inset-0 z-content overflow-visible" aria-hidden="true">{rect && Object.values(cursors).map((cursor) => { const cardElement = cursor.pokemonId ? Array.from(boardRef.current?.querySelectorAll<HTMLElement>('[data-pokemon-id]') ?? []).find((element) => element.dataset.pokemonId === cursor.pokemonId) : undefined; const cardRect = cardElement?.getBoundingClientRect(); const position = projectBoardCursor(cursor, rect.width, rect.height, 8, cardRect ? { left: cardRect.left - rect.left, top: cardRect.top - rect.top, width: cardRect.width, height: cardRect.height } : undefined); const name = members.get(cursor.playerId)?.displayName ?? 'Compañero'; return <span key={cursor.playerId} className="absolute transition-[left,top,opacity] duration-75 ease-out" style={{ left: position.left, top: position.top }}><MousePointer2 className="fill-electric text-night drop-shadow" size={21} /><small className={`absolute max-w-32 truncate rounded-md bg-night px-1.5 py-0.5 text-[10px] font-black text-white shadow ${position.labelBelow ? 'top-5' : 'bottom-5'} ${position.labelLeft ? 'right-1' : 'left-3'}`}>{name}</small></span>; })}</div>;
-}
+  // Al cerrarse un intento aceptado (un fallo pasa el turno) «Adivinar» se deshabilita: el foco va al título de la placa.
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(whoFocusKey(game, dialog !== null), titleRef);
+  // Un diálogo abierto que ya no tiene sentido (se acabó el turno o ya hay secreto) se cierra.
+  const canChoose = Boolean(player?.canChooseSecret);
+  const canGuess = Boolean(player?.canGuess);
+  useEffect(() => {
+    if (dialog === 'guess' && !canGuess && !busy) setDialog(null);
+    if (dialog === 'secret' && !canChoose && !busy) setDialog(null);
+  }, [dialog, canGuess, canChoose, busy]);
 
-const TeamBoard = memo(function TeamBoard({ team, cards, players, active, own, canManage, discardedIds, selfId, onToggle }: TeamBoardProps) {
-  const boardRef = useRef<HTMLDivElement>(null); const frameRef = useRef<number | null>(null); const lastSentRef = useRef(0); const pendingRef = useRef<{ x: number; y: number } | null>(null); const leaveTimerRef = useRef<number | null>(null); const discarded = useMemo(() => new Set(discardedIds), [discardedIds]); const memberMap = useMemo(() => new Map(players.map((member) => [member.id, member])), [players]);
-  useEffect(() => () => { if (frameRef.current !== null) cancelAnimationFrame(frameRef.current); if (leaveTimerRef.current !== null) window.clearTimeout(leaveTimerRef.current); if (own) clearWhoIsWhoCursor(); }, [own]);
-  const pointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (!own || !canManage || !boardRef.current) return; if (leaveTimerRef.current !== null) { window.clearTimeout(leaveTimerRef.current); leaveTimerRef.current = null; }
-    const position = normalizeBoardPointer(event.clientX, event.clientY, boardRef.current.getBoundingClientRect()); if (!position) return;
-    const cardElement = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-pokemon-id]') : null; const cardRect = cardElement?.getBoundingClientRect();
-    pendingRef.current = cardElement?.dataset.pokemonId && cardRect && cardRect.width > 0 && cardRect.height > 0 ? { ...position, pokemonId: cardElement.dataset.pokemonId, cardX: Math.min(1, Math.max(0, (event.clientX - cardRect.left) / cardRect.width)), cardY: Math.min(1, Math.max(0, (event.clientY - cardRect.top) / cardRect.height)) } : position;
-    if (frameRef.current !== null) return; frameRef.current = requestAnimationFrame((now) => { frameRef.current = null; if (!pendingRef.current || now - lastSentRef.current < 40) return; lastSentRef.current = now; sendWhoIsWhoCursor(pendingRef.current); });
+  // «Adivinar» o «Terminar turno» con el foco que se deshabilitan (el turno pasa, el envío espera): el foco va al título
+  // de la placa antes de que el navegador lo deje caer al `body`.
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const canAct = Boolean(player?.canAct);
+  useLayoutEffect(() => {
+    const active = document.activeElement;
+    if (active instanceof HTMLButtonElement && active.disabled && actionsRef.current?.contains(active)) titleRef.current?.focus({ preventScroll: true });
+  }, [canGuess, canAct, busy]);
+
+  const send = async (action: unknown): Promise<boolean> => {
+    setBusy(true);
+    try { await onAction(action); return true; } catch { return false; } finally { setBusy(false); }
   };
-  const pointerLeave = () => { if (!own) return; leaveTimerRef.current = window.setTimeout(clearWhoIsWhoCursor, 500); };
-  return <section className={`min-w-0 rounded-2xl border bg-surface p-2.5 transition-[border-color,box-shadow] sm:p-3 ${active ? `${tone[team].border} ring-4 ${tone[team].ring}` : 'border-ink/10'}`}>
-    <header className="mb-2.5 flex flex-wrap items-center gap-2"><Flag className={tone[team].text} size={18} /><h2 className={`font-display text-lg ${tone[team].text}`}>{teamName[team]}</h2>{active && <span className={`rounded-full px-2 py-0.5 text-[.65rem] font-black ${tone[team].bg} ${tone[team].text}`}>TURNO</span>}<span className="ml-auto text-xs font-extrabold text-ink/55">{players.length} {players.length === 1 ? 'jugador' : 'jugadores'}</span></header>
-    <div className="mb-3 flex min-h-7 flex-wrap gap-x-3 gap-y-1">{players.map((member) => <span key={member.id} className="inline-flex min-w-0 items-center gap-1.5 text-xs font-bold"><Avatar name={member.displayName} avatar={member.avatar} size="xs" /><span className="max-w-28 truncate">{member.displayName}</span></span>)}</div>
-    <div ref={boardRef} onPointerMove={pointerMove} onPointerLeave={pointerLeave} className="relative overflow-visible"><div className="grid grid-cols-[repeat(auto-fit,minmax(4.6rem,1fr))] gap-1.5 sm:grid-cols-[repeat(auto-fit,minmax(5rem,1fr))]">{cards.map((pokemon) => <PokemonCard key={pokemon.id} pokemon={pokemon} team={team} discarded={own && discarded.has(pokemon.id)} interactive={own && canManage} onToggle={() => onToggle(pokemon.id)} />)}</div>{own && <SharedTeamCursors boardRef={boardRef} selfId={selfId} members={memberMap} />}</div>
-  </section>;
-});
+  const toggle = (pokemonId: string) => { void onAction({ type: 'TOGGLE_DISCARD', pokemonId }).catch(() => undefined); };
+  const confirm = async (pokemonId: string) => {
+    const ok = await send(dialog === 'secret' ? { type: 'SELECT_SECRET', pokemonId } : { type: 'GUESS_POKEMON', pokemonId });
+    if (ok) setDialog(null);
+  };
 
-function SecretPanel({ secret, team, canChoose, canGuess, canEndTurn, busy, onChoose, onGuess, onEndTurn }: { secret: WhoIsWhoPokemonCard | null; team: WhoIsWhoTeam | null; canChoose: boolean; canGuess: boolean; canEndTurn: boolean; busy: boolean; onChoose(): void; onGuess(): void; onEndTurn(): void }) {
-  return <aside className={`mx-auto w-full max-w-sm self-start rounded-2xl border bg-surface p-3 text-center lg:sticky lg:top-3 lg:max-w-none ${team ? tone[team].border : 'border-ink/10'}`}><span className="text-xs font-black text-ink/55">TU POKÉMON</span>{secret ? <><img src={secret.sprite} alt="" className="mx-auto my-2 aspect-square w-36 object-contain [image-rendering:pixelated] lg:w-full lg:max-w-44" /><h2 className="truncate font-display text-xl" title={secret.name}>{secret.name}</h2><p className="text-sm font-extrabold text-ink/55">N.º {secret.nationalDexNumber}</p><span className={`mt-2 inline-flex rounded-full px-3 py-1 text-[.65rem] font-black ${team ? `${tone[team].bg} ${tone[team].text}` : 'bg-ink/5'}`}>SECRETO</span></> : <div className="grid min-h-44 place-items-center"><span className="font-display text-6xl text-ink/25">?</span></div>}
-    <div className="mt-4 grid gap-2">{canChoose ? <button type="button" className="btn-primary !min-h-11 !px-3" disabled={busy} onClick={onChoose}><Target size={17} /> Elegir mi Pokémon</button> : <button type="button" className="btn-primary !min-h-11 !px-3" disabled={!canGuess || busy} onClick={onGuess}><Target size={17} /> Adivinar Pokémon</button>}{canEndTurn && <button type="button" className="btn-ghost !min-h-10 !px-3 text-sm" disabled={busy} onClick={onEndTurn}>Terminar turno</button>}</div></aside>;
-}
+  const heading = whoHeading(game, player);
+  const timer = { deadline: game.roundEndsAt, serverOffset: offset, label: ready ? 'Turno' : 'Elegir secreto', totalMs: ready && config?.turnSeconds ? config.turnSeconds * 1_000 : config?.selectionSeconds ? config.selectionSeconds * 1_000 : undefined };
+  const meta = ready && <Chip tone="warn" icon={<span className={s.teamDot} style={{ '--team': TEAM_COLOR[game.currentTeam] } as CSSProperties} aria-hidden="true" />}>
+    {role === 'turn' ? 'Turno de tu equipo' : `Turno del ${TEAM_NAME[game.currentTeam]}`}
+  </Chip>;
 
-function GuessDialog({ open, cards, busy, choosing = false, onClose, onConfirm }: { open: boolean; cards: WhoIsWhoPokemonCard[]; busy: boolean; choosing?: boolean; onClose(): void; onConfirm(id: string): Promise<void> }) {
-  const [query, setQuery] = useState(''); const [selectedId, setSelectedId] = useState<string | null>(null); const results = useMemo(() => searchPokemonOptions(cards, query, 24), [cards, query]);
-  useEffect(() => { if (!open) { setQuery(''); setSelectedId(null); } }, [open]);
-  const selected = cards.find(({ id }) => id === selectedId);
-  return <Dialog open={open} title={choosing ? 'Elige tu Pokémon secreto' : 'Adivinar Pokémon'} onClose={onClose} width={672} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}><p className="text-sm font-bold text-ink/70">{choosing ? 'Solo tu equipo podrá verlo después de confirmar.' : 'Elige un candidato y confirma tu intento.'}</p>
-    <label className="relative mt-4 block"><span className="sr-only">Buscar candidato</span><Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/50" size={18} /><input data-autofocus="" className="field !pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar Pokémon…" /></label>
-    <div className="mt-3 grid max-h-[45dvh] grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3">{results.map((pokemon) => <button type="button" key={pokemon.id} aria-pressed={selectedId === pokemon.id} onClick={() => setSelectedId(pokemon.id)} className={`relative rounded-xl border-2 p-2 text-center ${selectedId === pokemon.id ? 'border-ink bg-electric/25' : 'border-ink/15 bg-surface-raised hover:border-aqua/60'}`}><img src={pokemon.sprite} alt="" className="mx-auto h-20 w-20 object-contain" /><strong className="block truncate text-sm" title={pokemon.name}>{pokemon.name}</strong>{selectedId === pokemon.id && <Check className="absolute right-2 top-2 text-ink" size={17} />}</button>)}</div>
-    <button type="button" className="btn-primary mt-4 w-full" disabled={!selected || busy} onClick={() => selected && void onConfirm(selected.id).catch(() => undefined)}>Confirmar {selected?.name ?? (choosing ? 'elección' : 'intento')}</button></Dialog>;
-}
+  const boardTitle = team ? `Tablero del ${TEAM_NAME[team]}` : 'Tablero';
+  const stage = <WhoBoard cards={game.board} discardedIds={discarded} interactive={Boolean(player?.canManageBoard && team)} shareCursor={Boolean(team && player?.canManageBoard)}
+    title={boardTitle} selfId={selfId} members={members} colors={colors} onToggle={toggle} />;
 
-export function WhoIsWhoPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as WhoIsWhoPublicState; const player = room.gamePlayerState as WhoIsWhoPlayerState; const offset = useServerOffset(room.serverNow); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [guessing, setGuessing] = useState(false); const [choosing, setChoosing] = useState(false); const memberMap = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const teamMembers = (team: WhoIsWhoTeam) => game.teams[team].playerIds.map((id) => memberMap.get(id)).filter((member): member is RoomMemberView => Boolean(member));
-  const send = async (action: unknown) => { setBusy(true); setError(''); try { await onAction(action); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Acción rechazada.'); throw caught; } finally { setBusy(false); } };
-  const toggle = (pokemonId: string) => { setError(''); void onAction({ type: 'TOGGLE_DISCARD', pokemonId }).catch((caught: unknown) => setError(caught instanceof Error ? caught.message : 'No se pudo actualizar el tablero.')); };
-  const ownTeam = player.team; const mobileTeams: WhoIsWhoTeam[] = ownTeam ? [ownTeam, otherTeam(ownTeam)] : ['BLUE', 'RED'];
-  const secretsReady = game.teams.BLUE.secretReady && game.teams.RED.secretReady;
-  return <section className="mx-auto w-full max-w-[120rem] px-2 py-3 sm:px-4"><header className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-ink/10 bg-surface px-3 py-2.5 sm:px-4"><div><p className="text-xs font-extrabold text-ink/55">Ronda {game.roundNumber} / {game.totalRounds} · Turno {game.turnNumber}</p><h1 className="font-display text-xl sm:text-2xl">Quién es Quién — Pokémon</h1></div><div className="flex items-center gap-2"><span className={`hidden rounded-full px-2.5 py-1 text-xs font-black sm:inline-flex ${tone[game.currentTeam].bg} ${tone[game.currentTeam].text}`}>{teamName[game.currentTeam]}</span><ServerTimer deadline={game.roundEndsAt} serverOffset={offset} label={game.roundStartedAt === null ? "Elegir secreto" : "Turno"} /></div></header>
-    {!secretsReady && <p className="mb-3 rounded-xl bg-aqua/10 p-3 text-center font-bold text-aqua">{player.canChooseSecret ? 'Elige el Pokémon secreto de tu equipo para comenzar.' : 'Esperando a que ambos equipos elijan su Pokémon secreto…'}</p>}
-    <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,42fr)_minmax(10rem,16fr)_minmax(0,42fr)] lg:items-start">{mobileTeams.map((team, index) => <div key={team} className={`${index === 0 ? 'order-2' : 'order-3'} min-w-0 ${team === 'BLUE' ? 'lg:col-start-1' : 'lg:col-start-3'} lg:row-start-1`}><TeamBoard team={team} cards={game.board} players={teamMembers(team)} active={secretsReady && game.currentTeam === team} own={player.team === team} canManage={player.canManageBoard} discardedIds={player.team === team ? player.discardedPokemonIds : []} selfId={selfId} onToggle={toggle} /></div>)}<div className="order-1 min-w-0 lg:col-start-2 lg:row-start-1"><SecretPanel secret={player.ownSecret} team={player.team} canChoose={player.canChooseSecret} canGuess={player.canGuess} canEndTurn={player.canAct} busy={busy} onChoose={() => setChoosing(true)} onGuess={() => setGuessing(true)} onEndTurn={() => void send({ type: 'END_TURN' }).catch(() => undefined)} /></div></div>
-    {player.lastGuess?.correct === false && <p className="mx-auto mt-3 w-fit rounded-full bg-berry/10 px-3 py-1.5 text-sm font-extrabold text-berry">Intento incorrecto · turno terminado</p>}{error && <p className="status-error mx-auto mt-3 w-fit" role="alert">{error}</p>}
-    <GuessDialog open={guessing} cards={game.board} busy={busy} onClose={() => setGuessing(false)} onConfirm={async (pokemonId) => { await send({ type: 'GUESS_POKEMON', pokemonId }); setGuessing(false); }} />
-    <GuessDialog open={choosing} cards={game.board} busy={busy} choosing onClose={() => setChoosing(false)} onConfirm={async (pokemonId) => { await send({ type: 'SELECT_SECRET', pokemonId }); setChoosing(false); }} />
-  </section>;
+  const side = <div className={s.side}>
+    {player?.ownSecret && team && <WhoSecretPanel secret={player.ownSecret} team={team} />}
+    <WhoTeamsPanel game={game} ownTeam={team} members={members} colors={colors} selfId={selfId} />
+    <WhoGuessesFeed guesses={game.guesses} board={game.board} members={members} colors={colors} className={s.feed} />
+  </div>;
+
+  const lastGuess = previousTurnGuess(game);
+  const ownMiss = lastGuess && !lastGuess.correct && lastGuess.team === team ? lastGuess : null;
+  let content: SocialPlateContent;
+  if (!ready) {
+    content = canChoose
+      ? { icon: Target, tone: 'warn', kicker: 'Antes de empezar', title: 'Elegid vuestro Pokémon secreto', text: 'Cualquiera del equipo puede elegirlo; el otro equipo intentará descubrirlo.', aside: <Pill variant="yellow" icon={Target} disabled={busy} onClick={() => setDialog('secret')}>Elegir nuestro Pokémon</Pill> }
+      : { icon: Hourglass, tone: 'info', kicker: 'Antes de empezar', title: 'Esperando los secretos', text: team ? 'Vuestro secreto ya está elegido. Falta el del otro equipo.' : 'Cada equipo elige su Pokémon secreto.' };
+  } else if (role === 'watcher') {
+    content = { icon: Eye, tone: 'info', kicker: `Turno ${game.turnNumber} · Observando`, title: `Pregunta el ${TEAM_NAME[game.currentTeam]}`, text: 'Los secretos y las cartas bajadas solo los ve cada equipo; se revelan al final.' };
+  } else {
+    const turnText = role === 'turn'
+      ? `Preguntad al ${TEAM_NAME[game.currentTeam === 'BLUE' ? 'RED' : 'BLUE']} por voz (sí o no) y bajad las cartas que no encajen. Un intento por turno: fallar pasa el turno.`
+      : `El ${TEAM_NAME[game.currentTeam]} pregunta: responded por voz con sí o no. Podéis seguir bajando cartas.`;
+    const missText = ownMiss ? `${ownMiss.playerId === selfId ? 'Tu' : 'Vuestro'} intento con ${game.board.find((pokemon) => pokemon.id === ownMiss.pokemonId)?.name ?? 'ese Pokémon'} no era: turno terminado. ` : '';
+    content = {
+      icon: ownMiss ? X : role === 'turn' ? MessageCircleQuestion : Clock3,
+      tone: ownMiss ? 'bad' : role === 'turn' ? 'warn' : 'info',
+      kicker: `Turno ${game.turnNumber} · ${role === 'turn' ? 'Tu equipo' : TEAM_NAME[game.currentTeam]}`,
+      title: role === 'turn' ? (player?.guessUsed ? 'Ya habéis intentado adivinar' : 'Preguntad y bajad cartas') : 'Os toca responder',
+      text: `${missText}${turnText}`,
+      aside: <div className={s.actions} ref={actionsRef}>
+        <Pill variant="yellow" icon={Target} disabled={!canGuess || busy} onClick={() => setDialog('guess')}>Adivinar Pokémon</Pill>
+        {player?.canAct && <Pill variant="blue" disabled={busy} onClick={() => void send({ type: 'END_TURN' })}>Terminar turno</Pill>}
+      </div>,
+    };
+  }
+  const bottom = <SocialPlate titleRef={titleRef} content={content} className={s.plate} textClassName={s.plateHelp} />;
+
+  return <>
+    <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} roundLabel={whoRoundLabel(game)} heading={heading} meta={meta} timer={timer}
+      announcement={whoAnnouncement({ game, player, nameOf })} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} />
+    <WhoPickDialog open={dialog !== null} mode={dialog ?? 'guess'} cards={game.board} discardedIds={discarded} busy={busy} epoch={game.turnNumber}
+      onClose={() => setDialog(null)} onConfirm={(pokemonId) => void confirm(pokemonId)} />
+  </>;
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { skipRowInLayout } from './game-skip-slot';
 
 const skip = { gameInstanceId: 'g1', votes: 0, requiredVotes: 2, currentUserVoted: false, canVote: true } as never;
-const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'who-is-who-pokemon', game: { gameId: 'who-is-who-pokemon' } } as never;
+const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'future-minigame', game: { gameId: 'future-minigame' } } as never;
 
 describe('skipRowInLayout', () => {
   it('pone la fila encima de los juegos sin rediseñar', () => {
@@ -148,6 +148,11 @@ describe('skipRowInLayout', () => {
     const bluff = { ...(base as object), selectedGameId: 'pokemon-bluff-auction', game: { gameId: 'pokemon-bluff-auction' } };
     for (const phase of ['ROUND_ACTIVE', 'POKEMON_SEARCH', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...bluff, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...bluff, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
+  it('Quién es Quién la lleva dentro de su pantalla en los turnos, no en los resultados', () => {
+    const who = { ...(base as object), selectedGameId: 'who-is-who-pokemon', game: { gameId: 'who-is-who-pokemon' } };
+    expect(skipRowInLayout({ ...who, phase: 'TURN_ACTIVE' } as never)).toBe(false);
+    expect(skipRowInLayout({ ...who, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
