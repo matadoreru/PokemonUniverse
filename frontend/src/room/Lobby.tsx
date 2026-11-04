@@ -161,7 +161,6 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
       <div className={s.head}>
         <div className={s.headText}>
           <h2 className={s.title}>Elige un minijuego</h2>
-          <p className={s.lead}>Consulta las reglas de cada juego antes de elegir.</p>
         </div>
         <div className={s.tools}>
           {!canChangeGame && readOnlyChip}
