@@ -129,6 +129,11 @@ describe('skipRowInLayout', () => {
     for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...ranking, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...ranking, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Poké Taboo la lleva dentro de su pantalla en el turno y en la revelación, no en los resultados', () => {
+    const taboo = { ...(base as object), selectedGameId: 'poke-taboo', game: { gameId: 'poke-taboo' } };
+    for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...taboo, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...taboo, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);
