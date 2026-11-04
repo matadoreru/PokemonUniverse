@@ -165,17 +165,6 @@
   align-self: stretch;
   justify-content: flex-start;
 }
-.how {
-  max-width: 100%;
-}
-@media (max-width: 639px) {
-  .how svg {
-    display: none;
-  }
-  .how {
-    padding-inline: var(--sp-3);
-  }
-}
 .desc {
   font: 700 var(--fs-13) / 1.3 var(--font-text);
   color: var(--ink-2);
@@ -192,6 +181,17 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--sp-1);
+}
+/* Insignias TOP / Experimental en la esquina superior derecha de la carta (la carta ya es `position: relative`). */
+.corner {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  pointer-events: none;
 }
 
 /* Pestaña Configuración: el ConfigPanel del juego enmarcado en un panel crema con su cabecera. */

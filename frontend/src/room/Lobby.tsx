@@ -1,11 +1,9 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { BookOpen, Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
+import { Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
-import { gameHowToPlay } from '../games/how-to-play';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
-import { GameHowToPlayDialog } from './GameHowToPlayDialog';
 import { GameSelectionConfig } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
@@ -57,7 +55,6 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   const [starting, setStarting] = useState(false);
   const [gameQuery, setGameQuery] = useState('');
   const [activeTab, setActiveTab] = useState<LobbyTab>('games');
-  const [howToPlay, setHowToPlay] = useState<{ gameId: string; gameName: string } | null>(null);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => { void gameClient.preloadGameplay().catch(() => undefined); }, 600);
@@ -176,22 +173,20 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
           {visibleGames.map((game) => {
             const selected = game.id === room.selectedGameId;
             const preloadConfig = () => { void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined); };
-            const hasHowTo = Boolean(gameHowToPlay[game.id]);
             return (
               <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
                 {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
                 <Card size="sm" art={game.icon} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
                   <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
-                  {(game.recommended || game.experimental || selected) && (
-                    <span className={s.badges}>
-                      {selected && <Badge tone="navy"><Icon icon={Check} size={18} />Seleccionado</Badge>}
+                  {selected && <span className={s.badges}><Badge tone="navy"><Icon icon={Check} size={18} />Seleccionado</Badge></span>}
+                  {/* TOP y Experimental en la esquina superior derecha de la carta. */}
+                  {(game.recommended || game.experimental) && (
+                    <span className={s.corner}>
                       {game.recommended && <Badge>TOP</Badge>}
                       {game.experimental && <Badge tone="cream">Experimental</Badge>}
                     </span>
                   )}
                 </Card>
-                {/* «Cómo se juega» no cabe dentro de la carta (es un botón): va debajo y funciona también en solo lectura. */}
-                {hasHowTo && <Pill variant="ghost" size="small" icon={BookOpen} className={s.how} aria-label={`Cómo se juega a ${game.name}`} onClick={() => setHowToPlay({ gameId: game.id, gameName: game.name })}>Cómo se juega</Pill>}
               </li>
             );
           })}
@@ -296,7 +291,6 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   return (
     <>
       <SessionScreen side={side} action={action} main={main} />
-      {howToPlay && <GameHowToPlayDialog gameId={howToPlay.gameId} gameName={howToPlay.gameName} open onClose={() => setHowToPlay(null)} />}
     </>
   );
 }

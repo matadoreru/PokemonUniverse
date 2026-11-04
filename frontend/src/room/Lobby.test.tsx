@@ -70,15 +70,15 @@ describe('lobby information hierarchy', () => {
 });
 
 describe('lobby how to play', () => {
-  it('offers «Cómo se juega» beside each game card that has steps, also for guests', () => {
+  it('no game card offers «Cómo se juega» (the rules are in the game intro) and badges sit in the corner', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     /></MemoryRouter>);
-    expect(markup).toContain('aria-label="Cómo se juega a Pokédex Distance"');
-    expect(markup).toContain('aria-label="Cómo se juega a Shiny Quiz"');
-    expect(markup).not.toMatch(/<button[^>]*disabled=""[^>]*aria-label="Cómo se juega/);
+    expect(markup).not.toContain('Cómo se juega');
+    expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>TOP<\/span>/);
+    expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>Experimental<\/span>/);
   });
 
   it('shows a guest read-only cards, their own ready pill and no start pill', () => {
