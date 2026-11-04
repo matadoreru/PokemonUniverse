@@ -22,7 +22,7 @@ const room: RoomView = {
 const noOp = async () => undefined;
 
 describe('lobby information hierarchy', () => {
-  it('keeps game descriptions visible and separates the lobby into accessible tabs', () => {
+  it('shows game cards without descriptions and separates the lobby into accessible tabs', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
@@ -34,8 +34,9 @@ describe('lobby information hierarchy', () => {
     expect(markup).toContain('Minijuegos');
     expect(markup).toContain('Configuración');
     expect(markup).toContain('Modo y sesión');
-    expect(markup).toContain('Elige el número más cercano.');
-    expect(markup).toContain('Encuentra el shiny verdadero.');
+    // Las cartas solo llevan nombre, jugadores e insignias (la descripción sigue en los ajustes del juego elegido).
+    expect(markup).not.toContain('Encuentra el shiny verdadero.');
+    expect(markup).toContain('Shiny Quiz');
     expect(markup).toContain('Experimental');
     expect(markup).toContain('>TOP<');
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');

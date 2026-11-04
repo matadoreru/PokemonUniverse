@@ -181,7 +181,6 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
               <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
                 {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
                 <Card size="sm" art={game.icon} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
-                  <span className={s.desc}>{game.description}</span>
                   <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
                   {(game.recommended || game.experimental || selected) && (
                     <span className={s.badges}>
