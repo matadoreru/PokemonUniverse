@@ -124,6 +124,11 @@ describe('skipRowInLayout', () => {
     for (const phase of ['ROUND_ACTIVE', 'CHOICE_REVEAL', 'DISCUSSION', 'REVOTE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...fake, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...fake, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('Secret Ranking la lleva dentro de su pantalla al ordenar y en la revelación, no en los resultados', () => {
+    const ranking = { ...(base as object), selectedGameId: 'secret-ranking', game: { gameId: 'secret-ranking' } };
+    for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...ranking, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...ranking, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);

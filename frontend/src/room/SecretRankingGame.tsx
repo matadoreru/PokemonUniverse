@@ -1,45 +1,252 @@
-import type { RoomMemberView, RoomView, SecretRankingPlayerState, SecretRankingPokemon, SecretRankingPublicState, SecretRankingRoundResult } from '@pokemon-universe/shared/public';
-import { ArrowDown, ArrowUp, Check, Eye, ListChecks, LockKeyhole, Sparkles, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import type { RoomView, SecretRankingConfig, SecretRankingPlayerState, SecretRankingPokemon, SecretRankingPublicState, SecretRankingRoundResult } from '@pokemon-universe/shared/public';
+import { ArrowDown, ArrowUp, CheckCircle2, Clock3, Eye, ListOrdered, LockKeyhole, Trophy, X } from 'lucide-react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
-import { useServerOffset } from '../hooks/useServerTime';
+import {
+  MAX_RANKING_DISTANCE, formatDistance, moveRankingItem, rankingFocusAfterMove, rankingMoveText, rankingPlayerStatus, rankingPositionOf, rankingStandings,
+  secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingSteps, secretRankingVerdict, submitRanking,
+  type MoveDirection,
+} from '../games/secret-ranking/presentation';
+import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { Bar, Chip, cx, Icon, Panel, Pill, Row, StateBox } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { guessSprite, pointsWord } from './guess-kit';
+import { playerColor } from './player-color';
+import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, socialFocusKey, type SocialPlateContent } from './social-kit';
+import s from '../games/secret-ranking/SecretRanking.module.css';
 
-function member(room: RoomView, playerId: string): RoomMemberView | undefined {
-  return room.members.find((candidate) => candidate.id === playerId);
+const GAME_NAME = 'Secret Ranking';
+
+/** Lista local de esta ronda: el orden, el último movimiento (para la región viva) y el botón que recibe el foco. */
+interface Draft {
+  key: string;
+  order: SecretRankingPokemon[];
+  move: string | null;
+  seq: number;
+  focus: string | null;
 }
 
-function RankingList({ pokemon, interactive = false, onMove }: { pokemon: SecretRankingPokemon[]; interactive?: boolean; onMove?(index: number, direction: -1 | 1): void }) {
-  return <ol className="space-y-2" aria-label="Ranking de Pokémon">{pokemon.map((entry, index) => <li key={entry.id} className="flex min-h-24 items-center gap-3 rounded-xl border border-ink/10 bg-surface-raised p-2.5"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-aqua/10 font-display text-xl text-aqua" aria-label={`Posición ${index + 1}`}>{index + 1}</span><span className="grid h-20 w-20 shrink-0 place-items-center rounded-lg bg-ink/[.035]"><img src={entry.sprite} alt="" className="h-20 w-20 object-contain [image-rendering:pixelated]" /></span><strong className="min-w-0 flex-1 truncate text-lg">{entry.name}</strong>{interactive && <span className="flex shrink-0 gap-1"><button type="button" className="icon-button !min-h-10 !min-w-10" disabled={index === 0} aria-label={`Subir ${entry.name}`} onClick={() => onMove?.(index, -1)}><ArrowUp size={18} /></button><button type="button" className="icon-button !min-h-10 !min-w-10" disabled={index === pokemon.length - 1} aria-label={`Bajar ${entry.name}`} onClick={() => onMove?.(index, 1)}><ArrowDown size={18} /></button></span>}</li>)}</ol>;
+/**
+ * La lista que se ordena (pantalla de arriba): la pregunta y los cinco Pokémon en franjas numeradas. Con `onMove`, cada
+ * franja lleva «Subir X» y «Bajar X» (teclado y puntero; sin arrastrar). Sin `onMove` (bloqueada u observando), solo
+ * el orden.
+ */
+function RankingBoard({ kicker, prompt, help, order, onMove, listRef, locked }: {
+  kicker: string;
+  prompt: string;
+  help?: string | undefined;
+  order: readonly SecretRankingPokemon[];
+  onMove?: ((index: number, direction: MoveDirection) => void) | undefined;
+  listRef: RefObject<HTMLOListElement | null>;
+  locked: boolean;
+}) {
+  return <Panel variant="cream" as="section" aria-labelledby="ranking-question" className={cx(s.board)} bodyClassName={cx(s.boardBody)}>
+    <div className={s.question}>
+      <span className={s.kicker}>{kicker}</span>
+      <p id="ranking-question" className={s.prompt} data-testid="social-prompt">{prompt}</p>
+      {help && <p className={s.help}>{help}</p>}
+    </div>
+    <ol ref={listRef} className={s.list} aria-label={locked ? 'Tu ranking bloqueado' : onMove ? 'Tu ranking: del primer extremo al último' : 'Pokémon de la ronda'} data-testid="ranking-list">
+      {order.map((pokemon, index) => <li key={pokemon.id} className={s.item} data-ranking-item={pokemon.id}>
+        <Row rank={index + 1} name={pokemon.name} avatar={<img className={s.sprite} src={guessSprite(pokemon.sprite)} alt="" />}>
+          {onMove && <span className={s.moves}>
+            <Pill size="round" variant="cream" icon={ArrowUp} aria-label={`Subir ${pokemon.name}`} data-move={`${pokemon.id}:up`} disabled={index === 0} onClick={() => onMove(index, -1)} />
+            <Pill size="round" variant="cream" icon={ArrowDown} aria-label={`Bajar ${pokemon.name}`} data-move={`${pokemon.id}:down`} disabled={index === order.length - 1} onClick={() => onMove(index, 1)} />
+          </span>}
+        </Row>
+      </li>)}
+    </ol>
+  </Panel>;
 }
 
-function SubmissionStatus({ room, game }: { room: RoomView; game: SecretRankingPublicState }) {
-  const submitted = new Set(game.submittedPlayerIds);
-  return <aside className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card" aria-labelledby="secret-ranking-status"><div className="mb-3 flex items-center gap-2"><Users className="text-aqua" size={20} /><h2 id="secret-ranking-status" className="font-display text-xl">Rankings recibidos</h2></div><div className="space-y-2">{room.members.filter((person) => game.scores[person.id] !== undefined).map((person) => <div key={person.id} className="flex items-center gap-2 rounded-xl bg-surface-raised p-2.5"><Avatar name={person.displayName} avatar={person.avatar} presence={person.presence} size="sm" /><strong className="min-w-0 flex-1 truncate">{person.displayName}</strong>{submitted.has(person.id) ? <span className="inline-flex items-center gap-1 text-sm font-extrabold text-leaf"><Check size={16} /> Listo</span> : <span className="text-sm font-bold text-ink/55">Ordenando…</span>}</div>)}</div><p className="mt-3 flex items-start gap-2 text-sm font-bold text-ink/60"><LockKeyhole className="mt-0.5 shrink-0 text-electric" size={16} />Solo se muestra quién ha terminado; los órdenes permanecen secretos hasta el reveal.</p></aside>;
+/** Revelación (pantalla de arriba): el ranking promedio del grupo y cómo ordenó cada jugador. */
+function RankingReveal({ result, room, selfId }: { result: SecretRankingRoundResult; room: RoomView; selfId: string }) {
+  const members = new Map(room.members.map((member, index) => [member.id, { member, index }]));
+  const players = rankingStandings(result);
+  const nameOf = (playerId: string) => members.get(playerId)?.member.displayName ?? 'Entrenador';
+  // Quién envió ranking, en el orden de la sala: el puesto que dio cada uno a cada Pokémon del consenso.
+  const submitted = room.members.map((member) => member.id).filter((playerId) => result.players[playerId]?.ranking);
+  return <div className={s.reveal}>
+    <Panel variant="cream" as="section" aria-labelledby="ranking-consensus-title" scroll scrollLabel="Ranking promedio del grupo" className={cx(s.revealPanel)} bodyClassName={cx(s.revealBody)}>
+      <h2 id="ranking-consensus-title" className={s.panelKicker}>Ranking promedio del grupo</h2>
+      <p className={s.intro} title={result.prompt} data-testid="social-prompt">{result.prompt}</p>
+      {result.consensus.length
+        ? <ol className={s.rows} aria-label="Consenso del grupo" data-testid="ranking-consensus">{result.consensus.map((entry, index) => <li key={entry.pokemon.id}>
+          <Row rank={index + 1} name={entry.pokemon.name} avatar={<img className={s.consensusSprite} src={guessSprite(entry.pokemon.sprite)} alt="" />}
+            meta={<span className={s.consensusMeta}>
+              <span>Posición media {formatDistance(entry.averagePosition)}</span>
+              {submitted.length > 0 && <span className={s.positions} data-testid="ranking-positions">{submitted.map((playerId) => `${nameOf(playerId)} ${rankingPositionOf(result, playerId, entry.pokemon.id)}.º`).join(' · ')}</span>}
+            </span>} />
+        </li>)}</ol>
+        : <StateBox kind="empty" live={false} onCream title="Nadie completó el ranking a tiempo." />}
+      <p className={s.note}>Este orden usa todos los rankings enviados.</p>
+    </Panel>
+    <Panel variant="cream" as="section" aria-labelledby="ranking-players-title" scroll scrollLabel="Cómo ordenó cada uno" className={cx(s.revealPanel)} bodyClassName={cx(s.revealBody)}>
+      <h2 id="ranking-players-title" className={s.panelKicker}>Cómo ordenó cada uno</h2>
+      <ol className={s.rows} aria-label="Rankings revelados" data-testid="ranking-players">{players.map((playerId) => {
+        const entry = members.get(playerId);
+        const name = entry?.member.displayName ?? 'Entrenador';
+        const ranking = result.players[playerId]?.ranking ?? null;
+        return <li key={playerId} data-testid="ranking-player">
+          <Row name={name} color={playerColor(entry?.index ?? 0)} self={playerId === selfId} avatar={<Avatar name={name} avatar={entry?.member.avatar} size="sm" />}
+            meta={ranking
+              ? <ol className={s.strip} aria-label={`Orden de ${name}`}>{ranking.map((pokemon, index) => <li key={pokemon.id} className={s.stripItem} title={`${index + 1}. ${pokemon.name}`}>
+                <span className={s.stripRank} aria-hidden="true">{index + 1}</span>
+                <img className={s.stripSprite} src={guessSprite(pokemon.sprite)} alt="" />
+                <span className="sr-only">{index + 1}. {pokemon.name}</span>
+              </li>)}</ol>
+              : <Chip tone="bad" icon={<Icon icon={X} size={18} />}>No envió ranking</Chip>} />
+        </li>;
+      })}</ol>
+    </Panel>
+  </div>;
 }
 
-function ConsensusList({ result }: { result: SecretRankingRoundResult }) {
-  return <ol className="space-y-2">{result.consensus.map((entry, index) => <li key={entry.pokemon.id} className="flex min-h-24 items-center gap-3 rounded-xl bg-surface-raised p-2.5"><strong className="grid h-10 w-10 place-items-center rounded-lg bg-electric/10 font-display text-xl text-electric">{index + 1}</strong><img src={entry.pokemon.sprite} alt="" className="h-20 w-20 object-contain [image-rendering:pixelated]" /><span className="min-w-0 flex-1"><strong className="block truncate text-lg">{entry.pokemon.name}</strong><small className="font-bold text-ink/55">Posición media {entry.averagePosition.toFixed(2)}</small></span></li>)}</ol>;
+/** Columna lateral de la revelación: la cercanía de cada jugador al grupo, con su barra, su distancia en texto y los puntos. */
+function ClosenessPanel({ result, room, selfId }: { result: SecretRankingRoundResult; room: RoomView; selfId: string }) {
+  const members = new Map(room.members.map((member, index) => [member.id, { member, index }]));
+  return <Panel title="Cercanía de la ronda" variant="dark" scroll scrollLabel="Cercanía de la ronda">
+    <ol className={s.closeRows} aria-label="Cercanía de la ronda">{rankingStandings(result).map((playerId) => {
+      const entry = members.get(playerId);
+      const name = entry?.member.displayName ?? 'Entrenador';
+      const player = result.players[playerId]!;
+      const status = rankingPlayerStatus(result, playerId);
+      return <li key={playerId} data-testid="ranking-closeness">
+        <Row name={name} {...(player.position !== null ? { rank: player.position } : {})} color={playerColor(entry?.index ?? 0)} self={playerId === selfId}
+          disconnected={entry?.member.presence !== undefined && entry.member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={entry?.member.avatar} size="sm" />}
+          meta={<span className={s.closeMeta}>
+            <Chip tone={status.tone} {...(status.tone === 'ok' ? { icon: <Icon icon={Trophy} size={18} /> } : status.tone === 'bad' ? { icon: <Icon icon={X} size={18} /> } : {})}>{status.text}</Chip>
+            {player.distance !== null && <span className={s.distance}>
+              <Bar value={MAX_RANKING_DISTANCE - player.distance} max={MAX_RANKING_DISTANCE} tone={player.position === 1 ? 'ok' : 'info'} label={`Cercanía de ${name}`} decorative grow />
+              <span className={s.distanceText}>Distancia {formatDistance(player.distance)}</span>
+            </span>}
+          </span>}
+          value={<span className={s.value}>+{player.pointsAwarded}</span>} />
+      </li>;
+    })}</ol>
+    <p className={s.closeNote}><Icon icon={LockKeyhole} size={18} />Distancia a la media de los demás: la de cada persona excluye siempre su propio ranking. Más corta, más puntos.</p>
+  </Panel>;
 }
 
-function RoundReveal({ room, game, serverOffset }: { room: RoomView; game: SecretRankingPublicState; serverOffset: number }) {
-  const result = game.lastRound!;
-  const standings = Object.entries(result.players).sort(([, left], [, right]) => (left.position ?? Infinity) - (right.position ?? Infinity));
-  return <section className="page-shell"><header className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><div><span className="label !mb-0">Ronda {game.roundNumber} de {game.totalRounds} · Reveal</span><h1 className="font-display text-2xl sm:text-3xl">{result.prompt}</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]"><main className="space-y-4"><section className="rounded-2xl border border-electric/25 bg-surface p-4 shadow-card sm:p-5" aria-labelledby="group-consensus"><div className="mb-4 flex items-center gap-2"><Sparkles className="text-electric" /><div><h2 id="group-consensus" className="font-display text-2xl">Ranking promedio del grupo</h2><p className="text-sm font-bold text-ink/60">Este orden visual usa todos los rankings enviados.</p></div></div>{result.consensus.length ? <ConsensusList result={result} /> : <div className="empty-state">Nadie completó el ranking a tiempo.</div>}</section><details className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><summary className="cursor-pointer font-display text-xl">Ver todos los rankings revelados</summary><div className="mt-4 grid gap-4 md:grid-cols-2">{Object.entries(result.players).map(([playerId, player]) => { const person = member(room, playerId); return <section key={playerId} className="rounded-xl bg-surface-raised/70 p-3"><h3 className="mb-2 flex items-center gap-2 font-display"><Avatar name={person?.displayName ?? playerId} avatar={person?.avatar} size="sm" />{person?.displayName ?? playerId}</h3>{player.ranking ? <RankingList pokemon={player.ranking} /> : <p className="empty-state !p-4 text-sm">No envió ranking.</p>}</section>; })}</div></details></main><aside className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card xl:sticky xl:top-4"><h2 className="mb-3 font-display text-xl">Cercanía de la ronda</h2><div className="space-y-2">{standings.map(([playerId, player]) => { const person = member(room, playerId); return <article key={playerId} className={`flex items-center gap-2 rounded-xl p-3 ${player.position === 1 ? 'bg-electric/[.09]' : 'bg-surface-raised'}`}><strong className="w-8 text-center text-lg">{player.position === 1 ? '🏆' : player.position ?? '—'}</strong><Avatar name={person?.displayName ?? playerId} avatar={person?.avatar} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? playerId}</strong><small className="font-bold text-ink/55">{player.distance === null ? 'Sin ranking' : `Distancia ${player.distance.toFixed(2)}`}</small></span><strong className="text-leaf">+{player.pointsAwarded}</strong></article>; })}</div></aside></div></section>;
-}
-
-export function SecretRankingGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+/**
+ * Secret Ranking con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda con el plazo y «Saltar», las
+ * fases y la pregunta con la lista de cinco Pokémon que cada jugador ordena en secreto (botones «Subir»/«Bajar» con
+ * teclado o puntero; el foco sigue al Pokémon movido y la región viva dice a qué puesto pasa). Abajo, «Bloquear ranking»
+ * o el estado; al lado, quién ha terminado (nunca su orden). Al revelar: el ranking promedio, cómo ordenó cada uno y,
+ * al lado, la distancia de cada jugador a los demás con su barra y sus puntos.
+ *
+ * Privacidad: el orden propio solo vuelve en `ownRanking`; los de los demás solo en `lastRound`, que la pantalla lee
+ * únicamente en `ROUND_RESULTS`.
+ */
+export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as SecretRankingPublicState;
-  const player = room.gamePlayerState as SecretRankingPlayerState;
-  const serverOffset = useServerOffset(room.serverNow);
-  const [order, setOrder] = useState<SecretRankingPokemon[]>(game.pokemon);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  const boardKey = useMemo(() => game.pokemon.map((pokemon) => pokemon.id).join('|'), [game.pokemon]);
-  useEffect(() => { setOrder(game.pokemon); setBusy(false); setError(''); }, [game.roundNumber, boardKey]);
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} serverOffset={serverOffset} />;
-  const visibleOrder = player.role === 'PLAYER' && player.ownRanking ? player.ownRanking : order;
-  const move = (index: number, direction: -1 | 1) => setOrder((current) => { const next = [...current]; const target = index + direction; [next[index], next[target]] = [next[target]!, next[index]!]; return next; });
-  const submit = async () => { if (busy || !player.canSubmit) return; setBusy(true); setError(''); try { await onAction({ type: 'SUBMIT_RANKING', pokemonIds: order.map((pokemon) => pokemon.id) }); } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo enviar tu ranking.'); setBusy(false); } };
-  return <section className="page-shell"><header className="mb-4 flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><div><span className="label !mb-0">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-2xl sm:text-3xl">Secret Ranking</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} label="Para ordenar" /></header><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="rounded-2xl border border-aqua/20 bg-surface p-4 shadow-card sm:p-6"><div className="mx-auto max-w-2xl"><div className="mb-5 text-center"><ListChecks className="mx-auto text-aqua" size={34} /><p className="mt-2 text-sm font-extrabold text-aqua">Ordena según esta pregunta</p><h2 className="font-display text-2xl sm:text-3xl">{game.prompt}</h2><p className="mt-2 font-bold text-ink/60">Tu posición 1 debe ser la que mejor encaja con el primer extremo.</p></div><RankingList pokemon={visibleOrder} interactive={player.role === 'PLAYER' && player.canSubmit} onMove={move} />{player.role === 'PLAYER' && player.canSubmit ? <div className="mt-4"><button type="button" className="btn-primary w-full" disabled={busy || order.length !== 5} onClick={() => void submit()}><LockKeyhole size={18} />{busy ? 'Enviando…' : 'Bloquear ranking'}</button><p className="mt-2 text-center text-sm font-bold text-ink/55">Después de enviarlo no podrás cambiar el orden.</p>{error && <p className="status-error mt-3" role="alert">{error}</p>}</div> : player.role === 'PLAYER' && player.ownRanking ? <div className="mt-4 rounded-xl bg-leaf/[.08] p-4 text-center text-leaf"><Check className="mx-auto" /><strong className="mt-1 block">Ranking bloqueado</strong><p className="text-sm font-bold">Esperando a los demás jugadores.</p></div> : <div className="mt-4 rounded-xl bg-ink/[.04] p-4 text-center"><Eye className="mx-auto text-aqua" /><strong className="mt-1 block">Estás observando</strong><p className="text-sm font-bold text-ink/60">Los rankings se revelarán al cerrar la ronda.</p></div>}</div></main><SubmissionStatus room={room} game={game} /></div></section>;
+  const player = room.gamePlayerState as SecretRankingPlayerState | null;
+  const config = room.selectedGameConfig as Partial<SecretRankingConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const participating = player?.role === 'PLAYER';
+  const active = game.phase === 'ROUND_ACTIVE';
+  // La revelación (los rankings de todos) solo en su fase: un `lastRound` sobrante nunca llega al DOM.
+  const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
+  const own = participating ? player.ownRanking : null;
+  const locked = active && own !== null;
+
+  // Orden local de esta ronda (empieza de cero con cada ronda o con otros cinco Pokémon).
+  const boardKey = useMemo(() => `${game.roundNumber}:${game.pokemon.map((pokemon) => pokemon.id).join('|')}`, [game.roundNumber, game.pokemon]);
+  const [draft, setDraft] = useState<Draft>({ key: boardKey, order: game.pokemon, move: null, seq: 0, focus: null });
+  const current = draft.key === boardKey ? draft : { key: boardKey, order: game.pokemon, move: null, seq: 0, focus: null };
+  const [busyRound, setBusyRound] = useState<number | null>(null);
+  const busy = busyRound === game.roundNumber;
+  const open = active && participating && player.canSubmit && !locked;
+
+  const listRef = useRef<HTMLOListElement>(null);
+  // Tras mover, el foco va al botón del Pokémon movido en su nuevo puesto (React mueve su nodo y el foco se perdería).
+  useLayoutEffect(() => {
+    if (!current.focus) return;
+    const target = Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>('[data-move]') ?? []).find((button) => button.dataset.move === current.focus);
+    target?.focus();
+  }, [current.focus, current.seq]);
+
+  const move = (index: number, direction: MoveDirection) => {
+    const pokemon = current.order[index];
+    if (!pokemon || !open || busy) return;
+    const order = moveRankingItem(current.order, index, direction);
+    const to = index + direction;
+    setDraft({ key: boardKey, order, move: rankingMoveText(pokemon.name, to + 1), seq: current.seq + 1, focus: `${pokemon.id}:${rankingFocusAfterMove(to, order.length, direction)}` });
+  };
+
+  const submit = async () => {
+    if (!open || busy) return;
+    const pokemonIds = current.order.map((pokemon) => pokemon.id);
+    await submitRanking(game.roundNumber, () => onAction({ type: 'SUBMIT_RANKING', pokemonIds }), setBusyRound);
+  };
+  // Rechazado (en la misma ronda deja de estar ocupado y sigue abierto): el botón vuelve a estar activo y el foco, que
+  // estaba en él mientras se deshabilitaba, vuelve a él en vez de quedarse en el `body`.
+  const previousBusy = useRef({ round: game.roundNumber, busy });
+  useEffect(() => {
+    const previous = previousBusy.current;
+    previousBusy.current = { round: game.roundNumber, busy };
+    if (previous.round !== game.roundNumber || !previous.busy || busy || !open) return;
+    const active = document.activeElement;
+    if (active && active !== document.body) return;
+    document.querySelector<HTMLButtonElement>('[data-testid="ranking-submit"]')?.focus();
+  }, [busy, open, game.roundNumber]);
+
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const playerIds = useMemo(() => room.members.filter((member) => game.scores[member.id] !== undefined).map((member) => member.id), [room.members, game.scores]);
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(socialFocusKey(game.phase, game.roundNumber, 1, locked), titleRef);
+
+  const last = game.roundNumber >= game.totalRounds;
+  const timer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Para ordenar', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
+    : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  const stage = result
+    ? <RankingReveal result={result} room={room} selfId={selfId} />
+    : <RankingBoard listRef={listRef} prompt={game.prompt} locked={locked}
+      kicker={open ? 'Ordena según esta pregunta' : locked ? 'Tu ranking · solo lo ves tú' : 'Los cinco Pokémon de la ronda'}
+      help={open ? 'Tu posición 1 debe ser la que mejor encaja con el primer extremo.' : undefined}
+      order={own ?? (participating ? current.order : game.pokemon)} onMove={open && !busy ? move : undefined} />;
+
+  const side = result
+    ? <ClosenessPanel result={result} room={room} selfId={selfId} />
+    : <ResponseProgress title="Rankings recibidos" members={room.members} playerIds={playerIds} doneIds={game.submittedPlayerIds} selfId={selfId}
+      doneText="Listo" pendingText="Ordenando…" note="Solo se muestra quién ha terminado; los órdenes permanecen secretos hasta el resultado." />;
+
+  let bottom;
+  if (open) {
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: ListOrdered, tone: 'info', kicker: <span className={s.plateKicker}>Tu ranking secreto</span>, title: 'Una vez bloqueado, no se cambia',
+      text: 'Usa Subir y Bajar en cada uno. Después de enviarlo no podrás cambiar el orden.',
+      aside: <Pill variant="yellow" icon={LockKeyhole} loading={busy} disabled={current.order.length !== 5} onClick={() => void submit()} className={s.submit} data-testid="ranking-submit">Bloquear ranking</Pill>,
+    }} />;
+  } else if (locked) {
+    bottom = <SocialPlate titleRef={titleRef} content={{
+      icon: CheckCircle2, tone: 'ok', kicker: 'Tu ranking', title: 'Ranking bloqueado', text: 'Esperando a los demás jugadores. Solo tú ves tu orden hasta el resultado.',
+      aside: <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Enviado</Chip>,
+    }} />;
+  } else if (active && participating) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'warn', kicker: 'Ranking cerrado', title: 'Se acabó el tiempo', text: 'Esta ronda ya no admite rankings. Verás el resultado en un momento.' }} />;
+  } else if (active) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Eye, tone: 'info', kicker: 'No ordenas en esta ronda', title: 'Estás observando', text: 'Los rankings se revelarán al cerrar la ronda.' }} />;
+  } else if (result) {
+    const verdict = secretRankingVerdict(result, selfId, participating);
+    const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
+    const content: SocialPlateContent = {
+      icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
+      text: 'Los puntos se reparten por cercanía: quien más se parece a la media de los demás, más suma.',
+      ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
+    };
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={content} />;
+  } else {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando la ronda…', text: 'La partida sigue en un momento.' }} />;
+  }
+
+  const announcement = secretRankingAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, locked, move: open ? current.move : null, moveSeq: current.seq, result, nameOf });
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={secretRankingHeading(game.phase, result, locked)} timer={timer}
+    announcement={announcement} phases={<PhaseRail steps={secretRankingSteps} current={secretRankingCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }
