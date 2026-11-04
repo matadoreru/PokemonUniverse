@@ -1,55 +1,214 @@
-import type { OneOfUsIsFakeConfig, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, Eye, MessageCircle, ShieldAlert, Sparkles, UserRoundSearch, Vote } from 'lucide-react';
+import type { FakePokemonChoice, FakeRoundResult, OneOfUsIsFakeConfig, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
+import { CheckCircle2, Clock3, Eye, HelpCircle, Search, ShieldAlert, Sparkles, Trophy, UserRoundX, X } from 'lucide-react';
+import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
+import { fakeAnnouncement, fakeCurrentStep, fakeHeading, fakeSteps, fakeTallySummary, fakeVerdict, FAKE_ROUND_LABELS } from '../games/one-of-us-is-fake/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useServerOffset } from '../hooks/useServerTime';
+import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { Card, Chip, cx, Icon, Panel } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { guessSprite, pointsWord } from './guess-kit';
+import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
+import {
+  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, tallyOutcome,
+  type BallotOption, type SocialPlateContent, type TallyOption,
+} from './social-kit';
+import s from '../games/one-of-us-is-fake/OneOfUsIsFake.module.css';
 
+const GAME_NAME = 'One of Us Is Fake';
 const EMPTY_LOCKED = new Set<string>();
-const stages = ['Categoría', 'Elegir Pokémon', 'Reveal', 'Discusión', 'Votación', 'Resultado'];
+/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
+const ignoreFailure = () => undefined;
 
-function member(room: RoomView, id: string): RoomMemberView | undefined { return room.members.find((candidate) => candidate.id === id); }
+type Seat = { member: RoomMemberView; index: number };
 
-function StageRail({ phase }: { phase: string }) {
-  const active = phase === 'ROUND_ACTIVE' ? 1 : phase === 'CHOICE_REVEAL' ? 2 : phase === 'DISCUSSION' ? 3 : phase === 'REVOTE' ? 4 : phase === 'ROUND_RESULTS' ? 5 : 0;
-  return <ol className="grid grid-cols-3 gap-1.5 sm:grid-cols-6" aria-label="Fases de la ronda">{stages.map((stage, index) => <li key={stage} className={`rounded-lg px-2 py-2 text-center text-[10px] font-black uppercase tracking-wide sm:text-xs ${index === active ? 'bg-aqua text-night' : index < active ? 'bg-leaf/10 text-leaf' : 'bg-ink/[.05] text-ink/45'}`} aria-current={index === active ? 'step' : undefined}><span className="mr-1 hidden sm:inline">{index < active ? '✓' : index + 1}</span>{stage}</li>)}</ol>;
+/**
+ * Las elecciones del grupo (escena de la revelación, del debate y de la segunda vuelta): una `Card` por jugador con su
+ * Pokémon y su nombre. En la revelación, las que faltan salen tapadas («Por revelar») y cada una gira al descubrirse.
+ * Encima, la categoría propia para debatir (o, a quien observa, que siguen en secreto).
+ */
+function ChoiceBoard({ playerIds, picked, choices, revealing, category, seats }: {
+  playerIds: readonly string[];
+  /** Quién eligió (`selectionCompletedIds`, público): quien no eligió sale «Sin elección» desde el principio. */
+  picked: ReadonlySet<string>;
+  choices: ReadonlyMap<string, FakePokemonChoice>;
+  revealing: boolean;
+  category: string | null;
+  seats: ReadonlyMap<string, Seat>;
+}) {
+  return <Panel variant="cream" title="Las elecciones" className={cx(s.board, !revealing && s.voting)} bodyClassName={cx(s.boardBody)} right={<span className={s.count}>{`${choices.size}/${picked.size}`}</span>}>
+    <p className={s.category} data-testid="fake-category">
+      {category !== null
+        ? <><span className={s.categoryKicker}>Tu categoría</span> <span className={s.categoryText}>{category}</span></>
+        : <span className={s.categoryKicker}>Las categorías siguen en secreto hasta el resultado</span>}
+    </p>
+    <ul className={s.grid} data-testid="fake-choices">{playerIds.map((id) => {
+      const pokemon = choices.get(id);
+      const name = seats.get(id)?.member.displayName ?? 'Entrenador';
+      const owner = <span className={s.owner} title={name} style={{ ['--seat' as string]: playerColor(seats.get(id)?.index ?? 0) }}>{name}</span>;
+      return <li key={id} className={s.cell} data-fake-choice={id}>
+        {pokemon
+          ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="fill" flip={revealing}>{owner}</Card>
+          : revealing && picked.has(id)
+            ? <Card name="Por revelar" size="fill" art={<Icon icon={HelpCircle} size={32} />}>{owner}</Card>
+            : <Card name="Sin elección" size="fill" art={<Icon icon={X} size={32} />}>{owner}</Card>}
+      </li>;
+    })}</ul>
+  </Panel>;
 }
 
-function CategoryCard({ player }: { player: Extract<OneOfUsIsFakePlayerState, { role: 'PLAYER' }> }) {
-  return <section className={`overflow-hidden rounded-2xl border shadow-card ${player.isFake ? 'border-berry/35 bg-berry/[.06]' : 'border-aqua/25 bg-surface'}`} aria-labelledby="my-category">
-    <div className="border-b border-ink/10 px-4 py-3 sm:px-6"><span className="label !mb-0">Solo tú puedes ver esto</span><div className="flex items-center gap-2"><h2 id="my-category" className="font-display text-xl">Tu categoría</h2>{player.isFake && <span className="rounded-full bg-berry px-2.5 py-1 text-xs font-black text-night">FAKE</span>}</div></div>
-    <div className="px-4 py-6 text-center sm:px-8"><blockquote className="mx-auto max-w-3xl font-display text-2xl leading-tight sm:text-4xl">“{player.myCategory}”</blockquote>{player.isFake && <p className="mx-auto mt-4 max-w-xl rounded-xl bg-berry/10 px-3 py-2 font-extrabold text-berry"><ShieldAlert className="mr-2 inline" size={18} />Tienes una categoría diferente al resto. No conoces la categoría principal.</p>}</div>
-  </section>;
+/** Quién era el fake y las dos categorías (encima del recuento, solo en `ROUND_RESULTS`). */
+function FakeReveal({ result, seats }: { result: FakeRoundResult; seats: ReadonlyMap<string, Seat> }) {
+  const fake = seats.get(result.fakePlayerId)?.member;
+  const name = fake?.displayName ?? 'Entrenador';
+  return <Panel variant="cream" as="section" aria-label="El fake era" className={cx(s.reveal)} bodyClassName={cx(s.revealBody)}>
+    <div className={s.revealWho}>
+      <Avatar name={name} avatar={fake?.avatar} size="md" />
+      <span className={s.revealCopy}>
+        <span className={s.categoryKicker}>El fake era</span>
+        <strong className={s.revealName} title={name} data-testid="fake-player">{name}</strong>
+        <span className={s.revealHow}>{result.selectedPlayerId === result.fakePlayerId ? 'Descubierto por el grupo' : 'Engañó al grupo'}</span>
+      </span>
+    </div>
+    <dl className={s.categories}>
+      <div className={s.categoryBox}><dt className={s.categoryKicker}>Categoría del grupo</dt><dd className={s.categoryText}>{result.mainCategory}</dd></div>
+      <div className={cx(s.categoryBox, s.categoryFake)}><dt className={s.categoryKicker}>Categoría del fake</dt><dd className={s.categoryText}>{result.fakeCategory}</dd></div>
+    </dl>
+  </Panel>;
 }
 
-function ChoiceGrid({ room, game, selectionMode = false }: { room: RoomView; game: OneOfUsIsFakePublicState; selectionMode?: boolean }) {
-  const byPlayer = new Map(game.revealedChoices.map((choice) => [choice.playerId, choice.pokemon]));
-  return <div className={selectionMode ? 'grid gap-2' : 'grid gap-2 sm:grid-cols-2 xl:grid-cols-4'}>{game.playerIds.map((id) => { const person = member(room, id); const pokemon = byPlayer.get(id); const completed = game.selectionCompletedIds.includes(id); return <article key={id} className={`min-w-0 rounded-xl border p-3 ${pokemon ? 'border-aqua/25 bg-aqua/[.05] reveal-pop' : 'border-ink/10 bg-surface-raised/70'}`}><div className="flex items-center gap-2"><Avatar name={person?.displayName ?? id} avatar={person?.avatar} presence={person?.presence} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? id}</strong>{selectionMode && (completed ? <CheckCircle2 className="shrink-0 text-leaf" size={19} /> : <span className="text-xs font-bold text-ink/50">Eligiendo…</span>)}</div>{pokemon && <div className="mt-3 flex items-center gap-3"><img src={pokemon.sprite} alt="" className="h-20 w-20 shrink-0 object-contain" /><strong className="min-w-0 break-words font-display text-xl">{pokemon.name}</strong></div>}{!selectionMode && !pokemon && game.phase !== 'CHOICE_REVEAL' && <p className="mt-3 text-sm font-bold text-ink/50">Sin elección</p>}</article>; })}</div>;
-}
-
-function VotePanel({ room, selfId, game, player, onAction }: { room: RoomView; selfId: string; game: OneOfUsIsFakePublicState; player: OneOfUsIsFakePlayerState; onAction(action: unknown): Promise<void> }) {
-  const canVote = player.role === 'PLAYER' && player.canVote;
-  return <section className="rounded-2xl border border-berry/20 bg-surface p-4 shadow-card sm:p-5" aria-labelledby="vote-heading"><div className="mb-4 flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Papeleta secreta</span><h2 id="vote-heading" className="flex items-center gap-2 font-display text-2xl"><Vote className="text-berry" />{game.phase === 'REVOTE' ? `Revotación ${game.voteRoundNumber}` : '¿Quién es el fake?'}</h2><p className="mt-1 text-sm font-bold text-ink/60">Los votos se revelarán al terminar la ronda. No puedes votarte.</p></div>{player.role === 'PLAYER' && player.ownVotePlayerId && <span className="chip !bg-leaf/10 !text-leaf"><Check size={15} /> Voto enviado</span>}</div><div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">{game.voteCandidates.map((id) => { const person = member(room, id); const self = id === selfId; return <button type="button" key={id} disabled={!canVote || self} onClick={() => void onAction({ type: 'VOTE_PLAYER', playerId: id })} className={`flex min-h-16 items-center gap-3 rounded-xl border p-3 text-left ${self ? 'border-transparent bg-ink/[.04] opacity-45' : canVote ? 'border-ink/10 bg-surface-raised hover:border-berry/50 hover:bg-berry/[.06]' : 'border-ink/10 bg-surface-raised opacity-65'}`}><Avatar name={person?.displayName ?? id} avatar={person?.avatar} presence={person?.presence} size="sm" /><span className="min-w-0 flex-1"><strong className="block truncate">{person?.displayName ?? id}</strong><small className="font-bold text-ink/55">{self ? 'Eres tú' : game.votedPlayerIds.includes(id) ? 'Ya ha votado' : 'Votar'}</small></span></button>; })}</div></section>;
-}
-
-function RoundResult({ room, game, serverOffset }: { room: RoomView; game: OneOfUsIsFakePublicState; serverOffset: number }) {
-  const result = game.lastRound!; const fake = member(room, result.fakePlayerId);
-  return <section className="mx-auto max-w-6xl overflow-x-clip px-3 py-5 sm:px-5"><div className={`overflow-hidden rounded-2xl border bg-surface shadow-card ${result.winner === 'NORMALS' ? 'border-leaf/35' : 'border-berry/35'}`}><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Ronda {game.roundNumber} · Resultado</span><h1 className={`font-display text-3xl sm:text-5xl ${result.winner === 'NORMALS' ? 'text-leaf' : 'text-berry'}`}>{result.winner === 'NORMALS' ? 'Ganan los normales' : 'Gana el fake'}</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[18rem_minmax(0,1fr)]"><aside className="rounded-2xl bg-berry/[.07] p-5 text-center"><span className="label">El fake era</span>{fake && <Avatar name={fake.displayName} avatar={fake.avatar} size="xl" />}<h2 className="mt-3 break-words font-display text-3xl">{fake?.displayName ?? result.fakePlayerId}</h2><p className="mt-3 text-sm font-extrabold text-berry">{result.selectedPlayerId === result.fakePlayerId ? 'Descubierto por el grupo' : 'Engañó al grupo'}</p></aside><main className="min-w-0"><div className="grid gap-3 sm:grid-cols-2"><div className="rounded-xl bg-aqua/[.07] p-4"><span className="label !mb-1">Categoría principal</span><strong className="block font-display text-xl leading-tight">{result.mainCategory}</strong></div><div className="rounded-xl bg-berry/[.07] p-4"><span className="label !mb-1">Categoría del fake</span><strong className="block font-display text-xl leading-tight">{result.fakeCategory}</strong></div></div><div className="mt-4 grid gap-2 sm:grid-cols-2">{result.players.map((entry) => { const person = member(room, entry.playerId); return <article key={entry.playerId} className={`rounded-xl border p-3 ${entry.isFake ? 'border-berry/35 bg-berry/[.05]' : 'border-ink/10 bg-surface-raised'}`}><div className="flex items-center gap-2"><Avatar name={person?.displayName ?? entry.playerId} avatar={person?.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? entry.playerId}</strong>{entry.isFake && <span className="text-xs font-black text-berry">FAKE</span>}<span className="font-extrabold text-leaf">+{result.pointsAwarded[entry.playerId] ?? 0}</span></div><p className="mt-2 text-xs font-bold leading-snug text-ink/60">{entry.category}</p>{entry.pokemon ? <div className="mt-2 flex items-center gap-2"><img src={entry.pokemon.sprite} alt="" className="h-14 w-14 object-contain" /><strong>{entry.pokemon.name}</strong></div> : <p className="mt-2 text-sm font-bold text-ink/45">Sin elección</p>}</article>; })}</div></main></div></div></section>;
-}
-
+/**
+ * One of Us Is Fake con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda con el plazo y «Saltar», las
+ * fases y la escena: la categoría propia al elegir, las elecciones del grupo en `Card`s al revelarlas y al debatir y, en
+ * el resultado, quién era el fake con las dos categorías y el recuento de la votación. Abajo, la acción: el buscador, la
+ * papeleta secreta (con segunda vuelta solo entre los empatados) o el veredicto. Al lado, quién ha elegido o votado (en
+ * texto, nunca el qué) o, al revelar, los puntos de la ronda.
+ *
+ * Privacidad: cada jugador solo recibe su categoría (`myCategory`; el fake, la suya, y solo con `fakeKnows` sabe que lo
+ * es); las elecciones ajenas llegan en `revealedChoices` (desde la revelación), y el fake, la otra categoría y los votos
+ * solo en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
+ */
 export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as OneOfUsIsFakePublicState;
-  const player = room.gamePlayerState as OneOfUsIsFakePlayerState;
-  const config = room.selectedGameConfig as OneOfUsIsFakeConfig;
-  const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config.generations, includeForms: config.includeRegionalForms, enabled: player.role === 'PLAYER' && player.canSelect });
-  const serverOffset = useServerOffset(room.serverNow);
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundResult room={room} game={game} serverOffset={serverOffset} />;
-  const choosing = game.phase === 'ROUND_ACTIVE'; const revealing = game.phase === 'CHOICE_REVEAL'; const discussing = game.phase === 'DISCUSSION' || game.phase === 'REVOTE';
-  return <section className="mx-auto max-w-[90rem] overflow-x-clip px-3 py-4 sm:px-5"><header className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><div className="flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="font-display text-2xl sm:text-4xl">One of Us Is Fake</h1></div><ServerTimer deadline={game.roundEndsAt ?? game.nextTransitionAt} serverOffset={serverOffset} label={choosing ? 'Para elegir' : revealing ? 'Siguiente reveal' : discussing ? game.phase === 'REVOTE' ? 'Revotación' : 'Discusión' : 'Tiempo'} /></div><div className="mt-4"><StageRail phase={game.phase} /></div></header>
-    <main className="mt-4 space-y-4">{player.role === 'PLAYER' ? <CategoryCard player={player} /> : <section className="rounded-2xl border border-ink/10 bg-surface p-6 text-center shadow-card"><Eye className="mx-auto text-aqua" size={38} /><h2 className="mt-2 font-display text-2xl">Estás observando</h2><p className="font-bold text-ink/60">Puedes seguir elecciones, discusión y resultado, pero no participar.</p></section>}
-      {choosing && <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><section className="min-w-0 rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5"><div className="mb-3"><span className="label !mb-0">Tu decisión</span><h2 className="font-display text-2xl">Elige cualquier Pokémon</h2><p className="mt-1 font-bold text-ink/60">No hay respuesta correcta. Escoge uno que puedas justificar después.</p></div>{player.role === 'PLAYER' && player.ownChoice && <div className="mb-3 flex items-center gap-3 rounded-xl bg-leaf/[.07] p-3"><img src={player.ownChoice.sprite} alt="" className="h-16 w-16 object-contain" /><span className="min-w-0 flex-1"><small className="block font-black text-leaf">ELECCIÓN GUARDADA</small><strong className="block truncate font-display text-xl">{player.ownChoice.name}</strong></span><CheckCircle2 className="text-leaf" /></div>}{player.role === 'PLAYER' ? <PokemonSelector loading={poolLoading} loadError={poolError} onRetry={retryPool} key={game.roundNumber} pokemon={pokemon} locked={EMPTY_LOCKED} disabled={!player.canSelect} variant="embedded" autoFocus={false} inputLabel="Buscar Pokémon para tu categoría" onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId })} /> : null}</section><aside className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><h2 className="mb-3 font-display text-xl">Estado del grupo</h2><ChoiceGrid room={room} game={game} selectionMode /></aside></div>}
-      {revealing && <section className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-6"><div className="mb-5 text-center"><Sparkles className="mx-auto text-electric" size={36} /><span className="label mt-2 !mb-0">Reveal aleatorio</span><h2 className="font-display text-3xl">Estas son las elecciones</h2><p className="font-bold text-ink/60">Se muestran una a una. Las categorías siguen siendo secretas.</p></div><ChoiceGrid room={room} game={game} /></section>}
-      {discussing && <><section className="rounded-2xl border border-aqua/20 bg-surface p-4 shadow-card sm:p-6"><div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><span className="label !mb-0">Voz externa · conversación libre</span><h2 className="flex items-center gap-2 font-display text-2xl sm:text-3xl"><MessageCircle className="text-aqua" /> Defended vuestra elección</h2><p className="mt-1 font-bold text-ink/60">Explicad, mentid, acusad y escuchad. No hay turnos de palabra.</p></div><span className="chip"><UserRoundSearch size={16} /> {game.votedPlayerIds.length}/{game.playerIds.length} votos</span></div><ChoiceGrid room={room} game={game} /></section><VotePanel room={room} selfId={selfId} game={game} player={player} onAction={onAction} /></>}
-    </main></section>;
+  const player = room.gamePlayerState as OneOfUsIsFakePlayerState | null;
+  const config = room.selectedGameConfig as Partial<OneOfUsIsFakeConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const participating = player?.role === 'PLAYER';
+  const choosing = game.phase === 'ROUND_ACTIVE';
+  const revealing = game.phase === 'CHOICE_REVEAL';
+  const voting = game.phase === 'DISCUSSION' || game.phase === 'REVOTE';
+  const runoff = game.phase === 'REVOTE';
+  // La revelación (el fake, su categoría y los votos) solo en su fase: un `lastRound` sobrante nunca llega al DOM.
+  const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const { pokemon, error: loadError, loading: poolLoading, retry } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeRegionalForms ?? false, enabled: choosing && participating });
+  const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
+
+  const seats = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
+  const nameOf = (id: string) => seats.get(id)?.member.displayName ?? 'Entrenador';
+  const avatarOf = (id: string) => <Avatar name={nameOf(id)} avatar={seats.get(id)?.member.avatar} size="sm" />;
+  const ownVote = participating ? player.ownVotePlayerId : null;
+  const locked = voting && ownVote !== null;
+  const informedFake = participating && player.isFake === true && !result;
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(socialFocusKey(game.phase, game.roundNumber, game.voteRoundNumber, locked), titleRef);
+
+  const last = game.roundNumber >= game.totalRounds;
+  const timer = choosing
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Para elegir', totalMs: config?.selectionSeconds ? config.selectionSeconds * 1_000 : undefined }
+    : voting
+      ? { deadline: game.roundEndsAt, serverOffset: offset, label: runoff ? 'Para revotar' : 'Para debatir y votar', totalMs: config?.discussionSeconds ? config.discussionSeconds * 1_000 : undefined }
+      // La revelación de cada elección dura menos de un segundo: sin plazo en la placa (no parpadea a cero).
+      : { deadline: revealing ? null : game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
+
+  const announcement = fakeAnnouncement({
+    phase: game.phase, roundNumber: game.roundNumber, voteRound: game.voteRoundNumber, ownChoice: choosing && participating ? player.ownChoice?.name ?? null : null, locked,
+    tiedNames: runoff ? game.voteCandidates.map(nameOf) : [], result, nameOf,
+  });
+
+  // Las elecciones ajenas solo desde la revelación (al elegir, el servidor no las manda; aquí tampoco se leen).
+  const choices = new Map(revealing || voting ? game.revealedChoices.map((choice) => [choice.playerId, choice.pokemon]) : []);
+  const ownCategory = participating ? player.myCategory : null;
+  const picked = new Set(game.selectionCompletedIds);
+
+  let stage;
+  if (result) {
+    const tallyOptions: TallyOption[] = result.players.map((entry) => ({
+      id: entry.playerId, name: nameOf(entry.playerId), media: avatarOf(entry.playerId), color: playerColor(seats.get(entry.playerId)?.index ?? 0), self: entry.playerId === selfId,
+      detail: `${entry.isFake ? 'Fake · ' : ''}${entry.pokemon ? `eligió ${entry.pokemon.name}` : 'sin elección'}`,
+    }));
+    stage = <div className={s.resultStage}>
+      <FakeReveal result={result} seats={seats} />
+      <VoteTally idBase="fake-tally" title="Recuento de votos" options={tallyOptions} rounds={result.voteRounds} winnerIds={[result.selectedPlayerId]} voterName={nameOf}
+        winnerLabel={tallyOutcome([result.selectedPlayerId], result.voteRounds) === 'lot' ? 'Sale por sorteo' : 'Más votado'} winnerIcon={UserRoundX} verb="Sale" selfLabel="Tú" roundLabels={FAKE_ROUND_LABELS} summary={fakeTallySummary(result, nameOf)}
+        points={(id) => result.pointsAwarded[id] ?? 0} emptyText="Nadie jugó esta ronda." className={s.tally} />
+    </div>;
+  } else if (choosing) {
+    stage = participating
+      ? <SocialPrompt kicker={informedFake ? 'Tu categoría (diferente) · solo la ves tú' : 'Tu categoría · solo la ves tú'} text={player.myCategory}
+        help={informedFake ? 'Tienes una categoría diferente al resto y no conoces la principal. Elige algo que puedas defender.' : 'No hay respuesta correcta: elige un Pokémon que puedas justificar después. Uno del grupo tiene otra categoría.'} />
+      : <SocialPrompt kicker="Categorías secretas" text="Cada jugador elige un Pokémon para su categoría" help="Uno recibió una categoría diferente. Verás las elecciones al revelarse." />;
+  } else {
+    stage = <ChoiceBoard playerIds={game.playerIds} picked={picked} choices={choices} revealing={revealing} category={ownCategory} seats={seats} />;
+  }
+
+  const side = result
+    ? <ResponseProgress title="Puntos de la ronda" members={room.members} playerIds={game.playerIds} doneIds={[]} selfId={selfId} count={false}
+      status={(id) => {
+        const entry = result.players.find((candidate) => candidate.playerId === id);
+        if (!entry) return { tone: 'neutral', text: 'No jugó' };
+        if (entry.isFake) return { tone: result.winner === 'FAKE' ? 'ok' : 'bad', text: result.winner === 'FAKE' ? 'Fake · ganó' : 'Fake · descubierto', icon: ShieldAlert };
+        if (id === result.selectedPlayerId) return { tone: 'bad', text: 'Expulsado siendo normal', icon: UserRoundX };
+        return { tone: result.winner === 'NORMALS' ? 'ok' : 'neutral', text: result.winner === 'NORMALS' ? 'Normal · ganó' : 'Normal', ...(result.winner === 'NORMALS' ? { icon: Trophy } : {}) };
+      }}
+      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+    : revealing
+      ? <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={[...choices.keys()]} selfId={selfId} doneText="Revelada" pendingText="Por revelar"
+        status={(id) => (picked.has(id) ? null : { tone: 'bad', text: 'Sin elección', icon: X })} note="Las categorías siguen en secreto hasta el resultado." />
+      : <ResponseProgress members={room.members} playerIds={game.playerIds}
+        doneIds={voting ? game.votedPlayerIds : game.selectionCompletedIds} selfId={selfId} doneText={voting ? 'Votó' : 'Eligió'} pendingText={voting ? 'Votando…' : 'Eligiendo…'}
+        note={voting ? 'El destino de cada voto es secreto hasta el resultado.' : 'Las elecciones no se muestran hasta que todos eligen o se acaba el tiempo.'} />;
+
+  const ballotOptions: BallotOption[] = game.playerIds.map((id) => ({ id, name: nameOf(id), ariaLabel: nameOf(id), media: avatarOf(id), ...(choices.get(id) ? { detail: `eligió ${choices.get(id)!.name}` } : {}) }));
+
+  let bottom;
+  if (voting) {
+    bottom = <VoteBallot key={`${game.roundNumber}:${game.voteRoundNumber}`} kind="text" titleRef={titleRef} roundNumber={game.roundNumber} voteRound={game.voteRoundNumber}
+      options={ballotOptions} candidateIds={game.voteCandidates} runoff={runoff} ownId={participating ? selfId : null} ownVote={ownVote}
+      canVote={participating && player.canVote} participating={participating} ownLabel="Eres tú"
+      onVote={(playerId) => onAction({ type: 'VOTE_PLAYER', playerId })}
+      className={s.ballot} title="¿Quién es el fake?" runoffTitle="Vota entre los empatados"
+      help="Defended vuestra elección en voz alta: explicad, acusad y escuchad. No puedes votarte." runoffHelp="Hubo empate: solo se vota entre los empatados. Si vuelven a empatar, decide el sorteo."
+      watchingText="Puedes seguir el debate, pero no votas en esta ronda." />;
+  } else if (choosing && participating) {
+    const own = player.ownChoice;
+    const content: SocialPlateContent = own
+      ? { icon: CheckCircle2, tone: 'ok', kicker: 'Elección guardada', title: own.name, text: 'Puedes cambiar tu elección mientras siga abierta la fase.', aside: <span className={s.saved}><Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Guardada</Chip><img className={s.ownSprite} src={guessSprite(own.sprite)} alt="" /></span> }
+      : { icon: Search, tone: 'info', kicker: 'Tu elección secreta', title: 'Elige cualquier Pokémon', text: 'Puedes cambiar tu elección mientras siga abierta la fase.' };
+    bottom = <SocialPlate titleRef={titleRef} content={content} search>
+      <PokemonSelector key={game.roundNumber} pokemon={pokemon} loading={poolLoading} loadError={loadError} onRetry={retry} locked={EMPTY_LOCKED} disabled={!player.canSelect}
+        variant="embedded" autoFocus={false} inputLabel="Buscar Pokémon para tu categoría" onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} />
+    </SocialPlate>;
+  } else if (choosing) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Eye, tone: 'info', kicker: 'No juegas en esta ronda', title: 'Estás observando', text: 'Puedes seguir las elecciones, el debate y el resultado, pero no participar.' }} />;
+  } else if (revealing) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Sparkles, tone: 'info', kicker: 'Revelación en orden aleatorio', title: `Elecciones reveladas: ${choices.size} de ${picked.size}`, text: 'Se muestran una a una. Después se abre el debate y la votación.' }} />;
+  } else if (result) {
+    const verdict = fakeVerdict(result, selfId, participating);
+    const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
+      text: 'Si el grupo expulsa al fake, cada normal gana 2 puntos; si no, el fake gana 4.',
+      ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
+    }} />;
+  } else {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
+  }
+
+  const meta = informedFake ? <Chip tone="bad" icon={<Icon icon={ShieldAlert} size={18} />}>Eres el fake</Chip> : undefined;
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={fakeHeading(game.phase, game.voteRoundNumber, result)} {...(meta ? { meta } : {})} timer={timer}
+    announcement={announcement} phases={<PhaseRail steps={fakeSteps(game.phase, game.voteRoundNumber, result?.voteRounds.length ?? 0)} current={fakeCurrentStep(game.phase)} />}
+    stage={stage} side={side} bottom={bottom} />;
 }
+

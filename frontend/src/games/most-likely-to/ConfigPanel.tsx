@@ -38,7 +38,7 @@ export function MostLikelyToConfigPanel({ config, disabled, room, selfId, onChan
       <p className={s.help}>{source.detail}</p>
     </div>
     {registeredHost
-      ? <CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="¿Qué Pokémon sería más probable que montase una banda?" emptyText="Todavía no has creado preguntas personales." />
+      ? <CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="¿Qué Pokémon sería más probable que montase una banda?" emptyText="Todavía no has creado preguntas personales." newLabel="Nueva pregunta" editLabel="Editar pregunta" noun="pregunta" />
       : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar preguntas personales de forma permanente.' : `Las preguntas personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}
     <Toggle label="Incluir formas alternativas" hint="Las formas regionales y alternativas son respuestas independientes." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => void onChange({ ...value, includeForms })} />
   </fieldset>;

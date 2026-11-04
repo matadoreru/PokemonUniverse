@@ -43,11 +43,6 @@ async function configurar(page: Page, juego: string): Promise<void> {
   await expect(page.getByRole('heading', { name: `Ajustes de ${juego}` })).toBeVisible();
 }
 
-/** Acepta el `window.confirm` del siguiente borrado. */
-function aceptarConfirmacion(page: Page): void {
-  page.once('dialog', (dialog) => void dialog.accept());
-}
-
 // Antes de registrar cuentas: sin podman o sin el contenedor de PostgreSQL no se podrían promover ni borrar.
 test.beforeAll(() => {
   comprobarBdE2E();
@@ -151,9 +146,28 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await categorias.getByLabel('Editar categoría').fill(editada);
     await categorias.getByRole('button', { name: 'Guardar' }).click();
     await expect(categorias.getByText(editada, { exact: true })).toBeVisible();
-    aceptarConfirmacion(page);
+    // Al guardar, los botones de la edición desaparecen: el foco vuelve a «Editar» de esa fila, no al `body`.
+    await expect(categorias.getByRole('button', { name: `Editar ${editada}` })).toBeFocused();
+    // Eliminar pide confirmación en un diálogo del catálogo (ya no `window.confirm`); Cancelar no borra.
     await categorias.getByRole('button', { name: `Eliminar ${editada}` }).click();
+    const borrarCategoria = page.getByRole('dialog', { name: '¿Eliminar esta categoría?' });
+    await expect(borrarCategoria).toBeVisible();
+    await expect(borrarCategoria.getByRole('button', { name: 'Cancelar' })).toBeFocused();
+    await capturarDialogo(page, 'dialogo-eliminar-categoria', borrarCategoria);
+    await borrarCategoria.getByRole('button', { name: 'Cancelar' }).click();
+    await expect(borrarCategoria).toBeHidden();
+    await expect(categorias.getByText(editada, { exact: true })).toBeVisible();
+    for (const { w, h } of SIZES) {
+      await page.setViewportSize({ width: w, height: h });
+      await categorias.scrollIntoViewIfNeeded();
+      await capture(page, 'lobby-one-of-us-is-fake-categorias', { minFontPx: 13 });
+    }
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await categorias.getByRole('button', { name: `Eliminar ${editada}` }).click();
+    await borrarCategoria.getByRole('button', { name: 'Eliminar' }).click();
     await expect(categorias.getByText('Todavía no has creado categorías personales.')).toBeVisible();
+    // El botón borrado desaparece: el foco va al campo de alta, no al `body`.
+    await expect(categorias.getByLabel('Nueva categoría')).toBeFocused();
 
     // Dilema personal: crear, editar y borrar desde la configuración de Would You Rather.
     await configurar(page, 'Would You Rather Pokémon');

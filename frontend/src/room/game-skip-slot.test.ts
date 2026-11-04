@@ -119,6 +119,11 @@ describe('skipRowInLayout', () => {
     for (const phase of ['ROUND_ACTIVE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...wyr, phase } as never)).toBe(false);
     expect(skipRowInLayout({ ...wyr, phase: 'GAME_RESULTS' } as never)).toBe(true);
   });
+  it('One of Us Is Fake la lleva dentro de su pantalla en todas sus fases salvo en los resultados', () => {
+    const fake = { ...(base as object), selectedGameId: 'one-of-us-is-fake', game: { gameId: 'one-of-us-is-fake' } };
+    for (const phase of ['ROUND_ACTIVE', 'CHOICE_REVEAL', 'DISCUSSION', 'REVOTE', 'ROUND_RESULTS']) expect(skipRowInLayout({ ...fake, phase } as never)).toBe(false);
+    expect(skipRowInLayout({ ...fake, phase: 'GAME_RESULTS' } as never)).toBe(true);
+  });
   it('Pokédex Distance la lleva dentro de su pantalla salvo en los resultados', () => {
     const distance = { ...(base as object), selectedGameId: 'pokedex-distance', game: { gameId: 'pokedex-distance' } };
     expect(skipRowInLayout(distance as never)).toBe(false);
