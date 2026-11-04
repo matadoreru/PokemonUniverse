@@ -315,6 +315,11 @@ describe('Shiny Quiz UI', () => {
     expect(html).toContain('1 acierto · 33% de precisión');
     expect(html).toContain('Ganador');
     expect(html).toContain('Continuar sesión');
+    // Récords junto a la clasificación (pantalla ancha, llena en escritorio grande).
+    expect(html).toContain('Récords de la partida');
+    expect(html).toMatch(/Más aciertos.*shinies encontrados.*>3<\/strong>/);
+    expect(html).toMatch(/Mejor precisión.*de aciertos.*>100%<\/strong>/);
+    expect(html).toMatch(/class="[^"]*fillLarge/);
     const guest = renderToStaticMarkup(createElement(ShinyVoteResults, { room: room(finished, null), selfId: 'p2', onLobby: () => undefined, onEnd: () => undefined }));
     expect(guest).toContain('Esperando al host…');
     expect(guest).not.toContain('Continuar sesión');
