@@ -1,64 +1,147 @@
-import type { PokemonRedFlagPlayerState, PokemonRedFlagPublicState, PokemonRedFlagRoundResult, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
-import { Check, Crown, Eye, Flag, LockKeyhole, Send, Users, Vote } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import type { PokemonRedFlagConfig, PokemonRedFlagPlayerState, PokemonRedFlagPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { CheckCircle2, Clock3, Eye, Flag, Heart, PenLine, Trophy, X } from 'lucide-react';
+import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
-import { useRunoffVote } from '../hooks/useRunoffVote';
-import { useServerOffset } from '../hooks/useServerTime';
+import { flagLabel, redFlagAnnouncement, redFlagCurrentStep, redFlagHeading, redFlagQuestion, redFlagSteps, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
+import { RedFlagWriter } from '../games/pokemon-red-flag/RedFlagWriter';
+import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
+import { Card, Chip, cx, Icon } from '../ui';
+import { useFocusOnTransition } from './focus-transition';
+import { guessSprite, pointsWord } from './guess-kit';
+import { playerColor } from './player-color';
+import {
+  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
+  type BallotOption, type TallyOption,
+} from './social-kit';
+import s from '../games/pokemon-red-flag/PokemonRedFlag.module.css';
 
-function member(room: RoomView, playerId: string): RoomMemberView | undefined {
-  return room.members.find((candidate) => candidate.id === playerId);
-}
+const GAME_NAME = 'Pokémon Red Flag / Green Flag';
 
-function StageRail({ phase }: { phase: string }) {
-  const stages = ['Escribir', 'Votar', 'Resultado']; const active = phase === 'ROUND_ACTIVE' ? 0 : phase === 'VOTING' || phase === 'REVOTE' ? 1 : 2;
-  return <ol className="mt-4 grid grid-cols-3 gap-1.5" aria-label="Fases de la ronda">{stages.map((stage, index) => <li key={stage} aria-current={index === active ? 'step' : undefined} className={`rounded-lg px-2 py-2 text-center text-xs font-black ${index === active ? 'bg-berry text-night' : index < active ? 'bg-leaf/10 text-leaf' : 'bg-ink/[.05] text-ink/45'}`}>{index < active ? '✓ ' : ''}{stage}</li>)}</ol>;
-}
+/**
+ * Pokémon Red Flag / Green Flag con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda (con el modo en
+ * un chip), las fases y la consigna con la carta del Pokémon de la ronda (al revelar, el recuento con los autores). Abajo,
+ * la acción: el campo de escritura con su contador, la papeleta anónima (con segunda vuelta solo entre las empatadas) o
+ * el veredicto. Al lado, quién ha escrito o votado (en texto, nunca el qué) o, al revelar, los puntos de la ronda.
+ *
+ * Anónimo: durante la votación las respuestas son «Respuesta N» con su texto, sin autor en el DOM (ni en `aria-label` ni
+ * en `data-*`); los autores y los votos solo llegan en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
+ */
+export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+  const game = room.game as PokemonRedFlagPublicState;
+  const player = room.gamePlayerState as PokemonRedFlagPlayerState | null;
+  const config = room.selectedGameConfig as Partial<PokemonRedFlagConfig> | null;
+  const offset = useServerOffset(room.serverNow);
+  const participating = player?.role === 'PLAYER';
+  const writing = game.phase === 'ROUND_ACTIVE';
+  const voting = game.phase === 'VOTING' || game.phase === 'REVOTE';
+  const runoff = game.phase === 'REVOTE';
+  // La revelación (autores y votos) solo en su fase: un `lastRound` sobrante nunca llega al DOM.
+  const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const mode = result?.flagMode ?? game.flagMode;
+  const label = flagLabel(mode);
+  const green = mode === 'GREEN';
+  const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
-function PokemonPrompt({ game }: { game: PokemonRedFlagPublicState }) {
-  if (!game.pokemon) return null;
-  const green = game.flagMode === 'GREEN';
-  return <section className={`my-4 flex flex-col items-center gap-3 rounded-2xl border p-4 text-center sm:flex-row sm:text-left ${green ? 'border-leaf/25 bg-leaf/[.05]' : 'border-berry/25 bg-berry/[.05]'}`}><div className="grid h-28 w-28 shrink-0 place-items-center rounded-xl bg-surface-raised"><img src={game.pokemon.sprite} alt={game.pokemon.name} className="h-24 w-24 object-contain [image-rendering:pixelated]" /></div><div><span className={`label !mb-0 ${green ? 'text-leaf' : 'text-berry'}`}>{green ? 'Green Flag de esta ronda' : 'Red Flag de esta ronda'}</span><h2 className="font-display text-3xl sm:text-4xl">{game.pokemon.name}</h2><p className="mt-1 font-bold text-ink/65">{green ? '¿Qué detalle positivo te conquistaría?' : '¿Qué detalle negativo haría que salieras corriendo?'}</p></div></section>;
-}
+  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
+  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
+  const ownAnswer = participating ? player.ownAnswer : null;
+  const ownVote = participating ? player.ownVoteAnswerId : null;
+  const voteLocked = voting && ownVote !== null;
+  const canWrite = writing && participating && player.canSubmit && !ownAnswer;
 
-function PlayerProgress({ room, game, voting }: { room: RoomView; game: PokemonRedFlagPublicState; voting: boolean }) {
-  const completed = new Set(voting ? game.votedPlayerIds : game.submittedPlayerIds);
-  return <aside className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card" aria-labelledby="red-flag-progress"><div className="mb-3 flex items-center gap-2"><Users className="text-aqua" /><h2 id="red-flag-progress" className="font-display text-xl">Estado del grupo</h2></div><div className="space-y-2">{game.playerIds.map((playerId) => { const person = member(room, playerId); return <div key={playerId} className="flex min-h-12 items-center gap-2 rounded-xl bg-surface-raised p-2.5"><Avatar name={person?.displayName ?? playerId} avatar={person?.avatar} presence={person?.presence} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? playerId}</strong>{completed.has(playerId) ? <span className="inline-flex items-center gap-1 text-sm font-extrabold text-leaf"><Check size={16} /> Listo</span> : <span className="text-sm font-bold text-ink/55">{voting ? 'Votando…' : 'Escribiendo…'}</span>}</div>; })}</div><p className="mt-3 flex gap-2 text-sm font-bold text-ink/60"><LockKeyhole className="mt-0.5 shrink-0 text-electric" size={16} />{voting ? 'Los votos permanecen secretos hasta el resultado.' : 'Ningún texto ni autor se revela antes de la votación.'}</p></aside>;
-}
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const fieldRef = useRef<HTMLTextAreaElement>(null);
+  // Al empezar a escribir, el foco va al campo (como el `autoFocus` de antes); en el resto, al título de la placa.
+  useFocusOnTransition(socialFocusKey(game.phase, game.roundNumber, game.voteRoundNumber, writing ? Boolean(ownAnswer) : voteLocked), canWrite ? fieldRef : titleRef);
 
-function Writer({ game, player, serverOffset, onDraft, onSubmit }: { game: PokemonRedFlagPublicState; player: PokemonRedFlagPlayerState; serverOffset: number; onDraft(text: string): Promise<void>; onSubmit(text: string): Promise<void> }) {
-  const initialDraft = player.role === 'PLAYER' ? player.ownDraft : '';
-  const [text, setText] = useState(initialDraft); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
-  const textRef = useRef(text); const sentRef = useRef(false); const busyRef = useRef(false); textRef.current = text;
-  const send = async (value = textRef.current) => { const trimmed = value.trim(); if (!trimmed || busyRef.current || sentRef.current) return; sentRef.current = true; busyRef.current = true; setBusy(true); setError(''); try { await onSubmit(trimmed); } catch (caught) { sentRef.current = false; busyRef.current = false; setError(caught instanceof Error ? caught.message : 'No se pudo enviar la respuesta.'); setBusy(false); } };
-  const sendRef = useRef(send); sendRef.current = send;
-  useEffect(() => {
-    if (!player.canSubmit || !game.roundEndsAt) return undefined;
-    const delay = Math.max(0, game.roundEndsAt - (Date.now() + serverOffset) - 150);
-    const timer = window.setTimeout(() => { if (textRef.current.trim()) void sendRef.current(textRef.current); }, delay);
-    return () => window.clearTimeout(timer);
-  }, [game.roundEndsAt, player.canSubmit, serverOffset]);
-  if (player.role === 'SPECTATOR') return <div className="empty-state"><Eye className="mx-auto mb-2 text-aqua" />Estás observando esta ronda.</div>;
-  if (player.ownAnswer) return <div className="rounded-xl border border-leaf/30 bg-leaf/[.07] p-5 text-center"><Check className="mx-auto text-leaf" size={34} /><h2 className="mt-2 font-display text-2xl">Respuesta bloqueada</h2><p className="mx-auto mt-2 max-w-2xl font-bold text-ink/70">“{player.ownAnswer.text}”</p><small className="mt-2 block font-extrabold text-ink/50">Solo tú puedes verla hasta la votación.</small></div>;
-  const green = game.flagMode === 'GREEN';
-  return <section aria-labelledby="red-flag-write"><div className="mb-3"><span className="label !mb-0">Tu respuesta secreta</span><h2 id="red-flag-write" className="font-display text-2xl">{green ? 'Escribe su mejor green flag' : 'Escribe su mayor red flag'}</h2><p className="mt-1 font-bold text-ink/60">Se enviará automáticamente al terminar el tiempo si contiene texto. Máximo 100 caracteres.</p></div><label><span className="sr-only">{green ? 'Green flag positiva' : 'Red flag negativa'}</span><textarea className="field min-h-32 resize-y" maxLength={100} value={text} disabled={!player.canSubmit || busy} autoFocus onChange={(event) => { const value = event.target.value; setText(value); textRef.current = value; void onDraft(value).catch(() => undefined); }} /></label><div className="mt-2 flex items-center justify-between gap-3"><span className={`text-sm font-extrabold ${text.length > 90 ? 'text-berry' : 'text-ink/50'}`}>{text.length}/100</span><button type="button" className="btn-primary" disabled={!player.canSubmit || !text.trim() || busy} onClick={() => void send()}><Send size={18} /> {busy ? 'Enviando…' : 'Bloquear respuesta'}</button></div>{error && <p className="status-error mt-3" role="alert">{error}</p>}</section>;
-}
+  const last = game.roundNumber >= game.totalRounds;
+  const totalMs = config?.phaseSeconds ? config.phaseSeconds * 1_000 : undefined;
+  const timer = writing
+    ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Para escribir', totalMs }
+    : voting
+      ? { deadline: game.roundEndsAt, serverOffset: offset, label: runoff ? 'Para revotar' : 'Para votar', totalMs }
+      : { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente ronda' };
 
-function AnonymousVoting({ game, player, onVote }: { game: PokemonRedFlagPublicState; player: PokemonRedFlagPlayerState; onVote(answerId: string): Promise<void> }) {
-  const canVote = player.role === 'PLAYER' && player.canVote;
-  const { busyId, error, vote } = useRunoffVote(game.voteRoundNumber, onVote, 'No se pudo registrar el voto.');
-  const label = game.flagMode === 'GREEN' ? 'green flag' : 'red flag';
-  return <section aria-labelledby="red-flag-vote"><div className="mb-4"><span className="label !mb-0">Respuestas anónimas y aleatorizadas</span><h2 id="red-flag-vote" className="flex items-center gap-2 font-display text-2xl"><Vote className="text-berry" />{game.phase === 'REVOTE' ? 'Revota entre las empatadas' : `Vota la mejor ${label}`}</h2><p className="mt-1 font-bold text-ink/60">No puedes votar la tuya. Los autores se revelarán después.</p></div><div className="grid gap-3 md:grid-cols-2">{game.revealedAnswers.map((answer, index) => { const own = player.role === 'PLAYER' && answer.id === player.ownAnswerId; const candidate = game.voteCandidateIds.includes(answer.id); return <button type="button" key={answer.id} disabled={!canVote || own || !candidate || Boolean(busyId)} onClick={() => void vote(answer.id)} className={`min-h-32 rounded-xl border p-4 text-left transition-colors ${!candidate ? 'border-ink/5 bg-ink/[.025] opacity-45' : own ? 'border-ink/10 bg-surface-raised opacity-60' : canVote ? 'border-ink/10 bg-surface-raised hover:border-berry/55 hover:bg-berry/[.06]' : 'border-ink/10 bg-surface-raised'}`}><span className="mb-2 flex items-center justify-between gap-2"><strong className="font-display text-lg text-berry">Respuesta {index + 1}</strong>{own && <small className="font-black text-ink/45">TUYA</small>}{candidate && game.phase === 'REVOTE' && <small className="font-black text-electric">EMPATE</small>}</span><span className="block text-lg font-extrabold leading-snug">“{answer.text}”</span><small className={`mt-3 block font-extrabold ${own || !candidate ? 'text-ink/45' : 'text-berry'}`}>{!candidate ? 'Fuera de la revotación' : own ? 'No puedes votar tu respuesta' : busyId === answer.id ? 'Enviando…' : 'Votar esta respuesta'}</small></button>; })}</div>{player.role === 'PLAYER' && player.ownVoteAnswerId && <p className="mt-4 rounded-xl bg-leaf/[.07] p-3 font-extrabold text-leaf"><Check className="mr-2 inline" size={17} />Tu voto está bloqueado.</p>}{error && <p className="status-error mt-3" role="alert">{error}</p>}</section>;
-}
+  const authorOf = (answerId: string) => result?.answers.find((answer) => answer.id === answerId)?.authorId ?? null;
+  const announcement = redFlagAnnouncement({
+    phase: game.phase, roundNumber: game.roundNumber, answerLocked: writing && Boolean(ownAnswer), voteLocked, tiedCount: runoff ? game.voteCandidateIds.length : 0,
+    result, nameOf: (answerId) => { const author = authorOf(answerId); return author ? nameOf(author) : 'Una respuesta'; },
+  });
 
-function RoundReveal({ room, game, result, serverOffset }: { room: RoomView; game: PokemonRedFlagPublicState; result: PokemonRedFlagRoundResult; serverOffset: number }) {
-  const green = result.flagMode === 'GREEN'; const label = green ? 'green flag' : 'red flag';
-  return <section className="page-shell"><div className={`overflow-hidden rounded-2xl border bg-surface shadow-card reveal-pop ${green ? 'border-leaf/30' : 'border-berry/30'}`}><header className="flex flex-wrap items-start justify-between gap-3 border-b border-ink/10 p-4 sm:p-6"><div><span className="label !mb-0">Ronda {game.roundNumber} · Autores revelados</span><h1 className={`font-display text-3xl sm:text-4xl ${green ? 'text-leaf' : 'text-berry'}`}>{result.winnerIds.length === 0 ? `Sin ${label} ganadora` : result.winnerIds.length === 1 ? `La ${label} de la ronda` : 'Victoria compartida'}</h1></div><ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label="Siguiente ronda" /></header><div className="p-4 sm:p-6"><div className="grid gap-3 md:grid-cols-2">{result.answers.map((answer) => { const person = member(room, answer.authorId); return <article key={answer.id} className={`rounded-xl border p-4 ${answer.won ? green ? 'border-leaf/50 bg-leaf/[.08]' : 'border-berry/50 bg-berry/[.08]' : 'border-ink/10 bg-surface-raised/70'}`}><div className="flex items-center gap-2"><Avatar name={person?.displayName ?? answer.authorId} avatar={person?.avatar} size="sm" /><strong className="min-w-0 flex-1 truncate">{person?.displayName ?? answer.authorId}</strong>{answer.won && <Crown className="text-electric" size={19} />}</div><p className="mt-3 text-lg font-extrabold leading-snug">“{answer.text}”</p><div className="mt-3 flex items-center justify-between text-sm font-extrabold"><span className="text-ink/60">{answer.votesReceived} {answer.votesReceived === 1 ? 'voto decisivo' : 'votos decisivos'}</span><strong className={answer.won ? 'text-leaf' : 'text-ink/45'}>+{result.pointsAwarded[answer.authorId] ?? 0} pts</strong></div></article>; })}</div>{result.answers.length === 0 && <div className="empty-state">Nadie escribió una respuesta a tiempo.</div>}{result.voteRounds.length > 0 && <details className="mt-5 rounded-xl bg-ink/[.035] p-3"><summary className="cursor-pointer font-extrabold">Ver votos revelados</summary><div className="mt-3 space-y-3">{result.voteRounds.map((round) => <section key={round.number}><h2 className="mb-2 font-display text-lg">{round.number === 1 ? 'Votación inicial' : 'Revotación'}</h2><div className="flex flex-wrap gap-2">{Object.entries(round.votes).map(([voterId, answerId]) => { const target = result.answers.find((answer) => answer.id === answerId); return <span key={voterId} className="chip">{member(room, voterId)?.displayName ?? voterId} → {member(room, target?.authorId ?? '')?.displayName ?? 'Respuesta'}</span>; })}</div></section>)}</div></details>}</div></div></section>;
-}
+  const pokemon = result?.pokemon ?? game.pokemon;
+  const modeChip = <Chip tone={green ? 'ok' : 'bad'} icon={<Icon icon={green ? Heart : Flag} size={18} />}>{green ? 'Green Flag' : 'Red Flag'}</Chip>;
+  const prompt = <SocialPrompt kicker={green ? 'Green Flag de esta ronda' : 'Red Flag de esta ronda'} className={s.prompt}
+    text={pokemon ? redFlagQuestion(mode, pokemon.name) : 'Preparando el Pokémon de la ronda…'}
+    help={writing ? 'Escribe en secreto. Nadie verá quién escribió qué hasta el resultado.' : voting ? 'Las respuestas están barajadas y sin autor.' : undefined}
+    {...(pokemon ? { media: <span className={cx(s.pokemon, voting && s.pokemonVoting)}><Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="sm" eager /></span> } : {})} />;
 
-export function PokemonRedFlagGame({ room, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
-  const game = room.game as PokemonRedFlagPublicState; const player = room.gamePlayerState as PokemonRedFlagPlayerState; const serverOffset = useServerOffset(room.serverNow);
-  const writing = game.phase === 'ROUND_ACTIVE'; const voting = game.phase === 'VOTING' || game.phase === 'REVOTE';
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return <RoundReveal room={room} game={game} result={game.lastRound} serverOffset={serverOffset} />;
-  return <section className="page-shell"><header className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card"><div className="flex flex-wrap items-start justify-between gap-3"><div><span className="label !mb-0">Ronda {game.roundNumber} de {game.totalRounds}</span><h1 className="flex items-center gap-2 font-display text-2xl sm:text-3xl"><Flag className={game.flagMode === 'GREEN' ? 'text-leaf' : 'text-berry'} />Pokémon {game.flagMode === 'GREEN' ? 'Green Flag' : 'Red Flag'}</h1></div><ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} label={writing ? 'Para escribir' : game.phase === 'REVOTE' ? 'Para revotar' : 'Para votar'} /></div><StageRail phase={game.phase} /></header><PokemonPrompt game={game} /><div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]"><main className="rounded-2xl border border-ink/10 bg-surface p-4 shadow-card sm:p-5">{writing ? <Writer game={game} player={player} serverOffset={serverOffset} onDraft={(text) => onAction({ type: 'UPDATE_RED_FLAG_DRAFT', text })} onSubmit={(text) => onAction({ type: 'SUBMIT_RED_FLAG', text })} /> : voting ? <AnonymousVoting game={game} player={player} onVote={(answerId) => onAction({ type: 'VOTE_RED_FLAG', answerId })} /> : null}</main><PlayerProgress room={room} game={game} voting={voting} /></div></section>;
+  const tallyOptions: TallyOption[] = (result?.answers ?? []).map((answer) => ({
+    id: answer.id, name: nameOf(answer.authorId), text: <>“{answer.text}”</>, color: playerColor(members.get(answer.authorId)?.index ?? 0), self: answer.authorId === selfId,
+    media: <Avatar name={nameOf(answer.authorId)} avatar={members.get(answer.authorId)?.member.avatar} size="sm" />,
+  }));
+  const stage = result
+    ? <VoteTally idBase="red-flag-tally" title="Autores revelados" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winningAnswerIds} voterName={nameOf}
+      winnerLabel={green ? 'Green flag ganadora' : 'Red flag ganadora'} intro={pokemon ? redFlagQuestion(mode, pokemon.name) : undefined}
+      points={(answerId) => { const author = authorOf(answerId); return author ? result.pointsAwarded[author] ?? 0 : null; }}
+      emptyText="Nadie escribió una respuesta a tiempo." className={s.tally} />
+    : prompt;
+
+  const side = result
+    ? <ResponseProgress title="Puntos de la ronda" members={room.members} playerIds={game.playerIds} doneIds={[]} selfId={selfId} count={false}
+      status={(id) => {
+        const answer = result.answers.find((entry) => entry.authorId === id);
+        if (!answer) return { tone: 'bad', text: 'Sin respuesta', icon: X };
+        if (answer.won) return { tone: 'ok', text: result.winningAnswerIds.length > 1 ? 'Victoria compartida' : 'Ganó', icon: Trophy };
+        if (result.voteRounds.length > 1 && !result.voteRounds.at(-1)?.candidateIds.includes(answer.id)) return { tone: 'neutral', text: 'Fuera de la segunda vuelta' };
+        return { tone: 'neutral', text: votesText(answer.votesReceived) };
+      }}
+      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+    : <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={voting ? game.votedPlayerIds : game.submittedPlayerIds} selfId={selfId}
+      doneText="Listo" pendingText={voting ? 'Votando…' : 'Escribiendo…'}
+      note={voting ? 'Los votos permanecen secretos hasta el resultado.' : 'Ningún texto ni autor se revela antes de la votación.'} />;
+
+  // Anónimas: «Respuesta N» (por el orden barajado del servidor) con el texto; nada del autor.
+  const ballotOptions: BallotOption[] = game.revealedAnswers.map((answer, index) => ({
+    id: answer.id, name: `Respuesta ${index + 1}`, ariaLabel: `Respuesta ${index + 1}: ${answer.text}`, text: <>“{answer.text}”</>,
+  }));
+
+  let bottom;
+  if (voting) {
+    bottom = <VoteBallot key={`${game.roundNumber}:${game.voteRoundNumber}`} kind="text" titleRef={titleRef} roundNumber={game.roundNumber} voteRound={game.voteRoundNumber}
+      options={ballotOptions} candidateIds={game.voteCandidateIds} runoff={runoff} ownId={participating ? player.ownAnswerId : null} ownVote={ownVote}
+      canVote={participating && player.canVote} participating={participating} ownLabel="Tu respuesta"
+      onVote={(answerId) => onAction({ type: 'VOTE_RED_FLAG', answerId })}
+      className={s.ballot} title={`Vota la mejor ${label}`} runoffTitle="Vota entre las empatadas"
+      help="No puedes votar la tuya. Los autores se revelarán después." runoffHelp="Hubo empate: solo se vota entre las respuestas empatadas." />;
+  } else if (writing && participating && ownAnswer) {
+    bottom = <SocialPlate titleRef={titleRef} content={{
+      icon: CheckCircle2, tone: 'ok', kicker: 'Tu respuesta secreta', title: 'Respuesta bloqueada',
+      text: <><span className={s.ownText}>“{ownAnswer.text}”</span> Solo tú puedes verla hasta la votación.</>,
+      aside: <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Enviada</Chip>,
+    }} textClassName={s.lockedText} />;
+  } else if (writing && participating) {
+    bottom = <SocialPlate titleRef={titleRef} content={{
+      icon: PenLine, tone: 'info', kicker: 'Tu respuesta secreta', title: green ? 'Escribe su mejor green flag' : 'Escribe su mayor red flag',
+      text: 'Se enviará automáticamente al terminar el tiempo si contiene texto. Máximo 100 caracteres.',
+    }} textClassName={s.writeHelp}>
+      <RedFlagWriter key={game.roundNumber} label={green ? `Tu green flag para ${pokemon?.name ?? 'el Pokémon'}` : `Tu red flag para ${pokemon?.name ?? 'el Pokémon'}`}
+        initialDraft={player.ownDraft} canSubmit={player.canSubmit} roundEndsAt={game.roundEndsAt} serverOffset={offset} fieldRef={fieldRef}
+        onDraft={(text) => onAction({ type: 'UPDATE_RED_FLAG_DRAFT', text })} onSubmit={(text) => onAction({ type: 'SUBMIT_RED_FLAG', text })} />
+    </SocialPlate>;
+  } else if (writing) {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Eye, tone: 'info', kicker: 'No escribes en esta ronda', title: 'Estás observando', text: 'Verás las respuestas, sin autor, en la votación.' }} />;
+  } else if (result) {
+    const verdict = redFlagVerdict(result, selfId, participating);
+    const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
+    bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
+      icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
+      text: 'Cada victoria vale 3 puntos, también cuando el empate persiste tras la segunda vuelta.',
+      ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
+    }} />;
+  } else {
+    bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
+  }
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={redFlagHeading(game.phase, game.flagMode, result)} meta={modeChip} timer={timer}
+    announcement={announcement} phases={<PhaseRail steps={redFlagSteps(game.phase)} current={redFlagCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

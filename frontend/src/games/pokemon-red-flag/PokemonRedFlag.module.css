@@ -1,0 +1,163 @@
+/* Pokémon Red Flag / Green Flag: carta del Pokémon de la ronda, campo de escritura, recuento, puntos y resultados. */
+
+/* Carta del Pokémon junto a la consigna: crece en escritorio grande y encoge en el móvil (la papeleta cabe debajo). */
+.pokemon {
+  display: block;
+  width: 9rem;
+}
+.pokemon.pokemon [data-part='art'] {
+  width: 72px;
+  height: 72px;
+}
+.pokemon.pokemon [data-part='art'] img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .pokemon {
+    width: 13rem;
+  }
+  .pokemon.pokemon [data-part='art'] {
+    width: 128px;
+    height: 128px;
+  }
+}
+/* Escritorio bajo (720 px): la consigna tiene poco alto al votar; la carta va en fila y pequeña para no recortarse. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .pokemon {
+    width: auto;
+  }
+  .pokemon.pokemon > * {
+    flex-direction: row;
+    gap: var(--sp-2);
+    padding: var(--sp-1) var(--sp-3);
+  }
+  .pokemon.pokemon [data-part='art'] {
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (max-width: 1023px) {
+  /* Móvil y tableta: carta compacta en fila (sprite y nombre) para que la consigna y la acción se vean juntas. */
+  .pokemon {
+    width: auto;
+  }
+  .pokemon.pokemon > * {
+    flex-direction: row;
+    gap: var(--sp-2);
+    padding: var(--sp-1) var(--sp-3);
+  }
+  .pokemon.pokemon [data-part='art'] {
+    width: 48px;
+    height: 48px;
+  }
+}
+.prompt {
+  min-width: 0;
+}
+@media (max-width: 639px) {
+  /* Móvil votando: el Pokémon ya va nombrado en la consigna; su carta cede el alto a la papeleta. */
+  .pokemonVoting {
+    display: none;
+  }
+  /* Respuestas escritas (hasta 100 caracteres): la rejilla se desplaza por dentro con menos alto, así la consigna, el
+     plazo y «Confirmar voto» se ven juntos sin desplazar la página. */
+  .ballot.ballot [data-testid='ballot-options'] {
+    max-height: 18svh;
+  }
+}
+
+/* Campo de escritura: el área de texto con su contador y, al lado (debajo en el móvil), «Bloquear respuesta». */
+.writer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.writerField {
+  min-width: 0;
+}
+.writerField textarea {
+  min-height: 5.5rem;
+  resize: none;
+  font-size: var(--fs-18);
+}
+.writerSend {
+  /* Alineada con el área de texto (la etiqueta va encima). */
+  margin-top: calc(var(--fs-15) * 1.2 + var(--sp-2));
+}
+@media (max-width: 639px) {
+  .writer {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-2);
+  }
+  .writerField textarea {
+    min-height: 5.25rem;
+    font-size: var(--fs-15);
+  }
+  .writerSend {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .writerField textarea {
+    min-height: 7rem;
+    font-size: var(--fs-22);
+  }
+}
+/* La ayuda de la escritura («se envía sola») sobra donde falta alto: el contador y el plazo ya lo dicen. */
+@media (max-width: 639px), (min-width: 1024px) and (max-height: 800px) {
+  .writeHelp {
+    display: none;
+  }
+}
+
+/* Respuesta bloqueada: el texto propio entero, partido en líneas. */
+.lockedText {
+  overflow-wrap: anywhere;
+}
+.ownText {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.tally {
+  height: 100%;
+}
+.points {
+  display: inline-flex;
+  align-items: baseline;
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+@media (max-width: 639px) {
+  .points {
+    font-size: var(--fs-34);
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .points {
+    font-size: var(--fs-68);
+  }
+}
+/* La regla de los puntos en la placa de la revelación: fuera donde falta alto (también sale en los resultados). */
+@media (max-width: 639px), (min-width: 1024px) and (max-height: 800px) {
+  .plateHelp {
+    display: none;
+  }
+}
+
+/* Regla de puntos bajo la clasificación final. */
+.rule {
+  margin-top: var(--sp-3);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--sky-2);
+}

@@ -3587,8 +3587,12 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     // A 390×844 sin desplazar: la fase, la consigna, el plazo y la confirmación.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await b.page.evaluate(() => window.scrollTo(0, 0));
-    for (const arriba of [b.page.getByTestId('social-prompt'), b.page.getByRole('timer'), b.page.locator('[aria-current="step"]')]) await expect(arriba).toBeInViewport({ ratio: 1 });
-    await expect(opcion(b.page, a)).toBeInViewport();
+    const sinTapar = (locator: Locator) => locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
+    for (const arriba of [b.page.getByTestId('social-prompt'), b.page.getByRole('timer'), b.page.locator('[aria-current="step"]')]) {
+      await expect(arriba).toBeInViewport({ ratio: 1 });
+      expect(await sinTapar(arriba), 'a 390: fase, consigna y plazo a la vista y sin tapar').toBe(true);
+    }
+    await expect(papeleta(b.page).locator('[data-ballot-option]').first()).toBeInViewport({ ratio: 1 });
     await expect(confirmar(b.page)).toBeInViewport({ ratio: 1 });
     await b.page.setViewportSize({ width: 1280, height: 720 });
 

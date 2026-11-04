@@ -118,10 +118,12 @@ export interface TextAreaProps {
   className?: string;
   forced?: ForcedState;
   id?: string;
+  /** Referencia al `<textarea>` (para llevarle el foco). */
+  ref?: Ref<HTMLTextAreaElement>;
 }
 
 /** Área de texto con contador `n / máx` cuando hay límite. */
-export function TextArea({ label, value, onChange, maxLength, rows = 4, error, hint, hideLabel, disabled, placeholder, className, forced, id }: TextAreaProps) {
+export function TextArea({ label, value, onChange, maxLength, rows = 4, error, hint, hideLabel, disabled, placeholder, className, forced, id, ref }: TextAreaProps) {
   const auto = useId();
   const fid = id ?? auto;
   return (
@@ -141,6 +143,7 @@ export function TextArea({ label, value, onChange, maxLength, rows = 4, error, h
       }
     >
       <textarea
+        ref={ref}
         id={fid}
         className={cx(s.input, s.area, error && s.invalid, forced && s[forced])}
         value={value}
