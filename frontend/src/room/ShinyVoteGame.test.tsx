@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { shinyCardState } from '../games/shiny-vote/ShinyOptionCard';
 import { shinyRanking } from '../games/shiny-vote/ShinyGameSidebar';
-import { shinyStatusAnnouncement } from '../games/shiny-vote/ShinyVoteStatus';
+import { shinyStatusAnnouncement, shouldMoveShinyFocus } from '../games/shiny-vote/ShinyVoteStatus';
 import { ShinyVoteGame } from './ShinyVoteGame';
 import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
 
@@ -254,6 +254,20 @@ describe('Shiny Quiz UI', () => {
     }
     expect(states[1]).toContain('Voto registrado: opción B. Esperando al resto de entrenadores.');
     expect(states[2]).toContain('Revelación: la respuesta correcta es la B. Has acertado: +4 puntos.');
+  });
+
+  it('solo mueve el foco en un cambio real de estado y si el foco se ha perdido', () => {
+    const body = {} as Element;
+    const button = {} as Element;
+    // Al montarse (recarga con voto o en plena revelación) la clave anterior es la misma: no se mueve.
+    expect(shouldMoveShinyFocus('vote-B', 'vote-B', body, body)).toBe(false);
+    expect(shouldMoveShinyFocus('reveal-B', 'reveal-B', null, body)).toBe(false);
+    // Al votar o al revelar, con el foco perdido: sí.
+    expect(shouldMoveShinyFocus(null, 'vote-B', body, body)).toBe(true);
+    expect(shouldMoveShinyFocus('vote-B', 'reveal-B', null, body)).toBe(true);
+    // Con el foco en otro control, no se roba; y sin estado con foco, tampoco.
+    expect(shouldMoveShinyFocus(null, 'vote-B', button, body)).toBe(false);
+    expect(shouldMoveShinyFocus('vote-B', null, body, body)).toBe(false);
   });
 
   it('redacta el aviso de cada estado', () => {

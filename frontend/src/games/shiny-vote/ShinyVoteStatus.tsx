@@ -66,6 +66,15 @@ export function shinyStatusAnnouncement({ active, loading, reveal, participant, 
 }
 
 /**
+ * ¿Va el foco al título de la placa? Solo al pasar a otro estado con foco (voto bloqueado o revelación), nunca al
+ * montarse (el primer efecto ve la misma clave) y solo si el foco se ha perdido (en `body` o en ningún sitio).
+ */
+export function shouldMoveShinyFocus(previousKey: string | null, nextKey: string | null, active: Element | null, body: Element | null): boolean {
+  if (!nextKey || nextKey === previousKey) return false;
+  return !active || active === body;
+}
+
+/**
  * Pantalla inferior de Shiny Quiz: confirmar el voto (con los atajos), el voto ya bloqueado, el modo espectador y, al
  * revelar, el veredicto con los puntos. Los fallos del servidor los avisa la sala: aquí no se repiten.
  *
@@ -88,10 +97,13 @@ export function ShinyVoteStatus({ active, loading = false, reveal, participant, 
   const titleRef = useRef<HTMLHeadingElement>(null);
   const revealed = reveal && correctOptionId !== null;
   const focusKey = revealed ? `reveal-${correctOptionId}` : ownVote ? `vote-${ownVote.optionId}` : null;
+  // Al montarse (recarga, volver a la sala) no se mueve el foco: solo en un cambio real de estado.
+  const previousKey = useRef(focusKey);
   useEffect(() => {
-    if (!focusKey) return;
-    const current = document.activeElement;
-    if (!current || current === document.body) titleRef.current?.focus();
+    const previous = previousKey.current;
+    previousKey.current = focusKey;
+    if (!shouldMoveShinyFocus(previous, focusKey, document.activeElement, document.body)) return;
+    titleRef.current?.focus({ preventScroll: true });
   }, [focusKey]);
   const announcement = shinyStatusAnnouncement({ active, loading, reveal, participant, ownVote, correctOptionId, points });
   return <StatusPlate {...shinyPlate({ active, loading, revealed, participant, selectedOption, ownVote, correctOptionId, points, submitting, onConfirm })} announcement={announcement} titleRef={titleRef} />;
