@@ -25,7 +25,7 @@ public final class RoomCommandParsers {
       + "[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$";
   private static final Pattern UUID = Pattern.compile(UUID_PATTERN);
   private static final List<String> SESSION_TYPES = List.of("INFINITE", "GAME_COUNT", "POINT_TARGET");
-  private static final List<String> SELECTION_TYPES = List.of("FIXED", "RANDOM", "VOTE");
+  private static final List<String> SELECTION_TYPES = List.of("ORDER", "RANDOM", "VOTE");
   private static final List<String> ASSIGNABLE_ROLES = List.of("CO_HOST", "MEMBER");
 
   /** {@code { gameInstanceId, wantsToSkip }} validado. */
@@ -62,14 +62,22 @@ public final class RoomCommandParsers {
     };
   }
 
-  /** {@code gameSelectionModeSchema}. */
-  public static GameSelectionMode gameSelectionMode(@Nullable JsonNode raw) {
+  /**
+   * {@code gameSelectionModeSchema}. Un cliente antiguo aún puede mandar {@code { type: "FIXED" }} (el minijuego fijo,
+   * sin lista): se lee como {@code ORDER} con solo {@code currentGameId}, que es lo mismo.
+   */
+  public static GameSelectionMode gameSelectionMode(@Nullable JsonNode raw, String currentGameId) {
+    if (raw != null && raw.isObject() && raw.get("type") != null && raw.get("type").isString()
+        && "FIXED".equals(raw.get("type").getStringValue())) {
+      return new GameSelectionMode.Order(List.of(currentGameId));
+    }
     var issues = new ZodIssues();
     var type = discriminator(raw, SELECTION_TYPES, issues);
+    var gameIds = gameIds(raw, 1, "Selecciona al menos 1 minijuego.", issues);
     return switch (type) {
-      case "FIXED" -> new GameSelectionMode.Fixed();
-      case "RANDOM" -> new GameSelectionMode.Random(gameIds(raw, 2, "Selecciona al menos 2 minijuegos.", issues));
-      default -> new GameSelectionMode.Vote(gameIds(raw, 3, "Selecciona al menos 3 minijuegos.", issues));
+      case "ORDER" -> new GameSelectionMode.Order(gameIds);
+      case "RANDOM" -> new GameSelectionMode.Random(gameIds);
+      default -> new GameSelectionMode.Vote(gameIds);
     };
   }
 

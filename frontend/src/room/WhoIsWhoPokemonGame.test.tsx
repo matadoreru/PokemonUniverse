@@ -37,7 +37,7 @@ function room(player: WhoIsWhoPlayerState | null, state = game()): RoomView {
   return {
     code: 'ABC234', phase: state.phase, hostId: 'blue-1', maxPlayers: 8, members,
     availableGames: [], selectedGameId: 'who-is-who-pokemon', selectedGameConfig: { ...defaultWhoIsWhoPokemonConfig, boardSize: 24, turnSeconds: 30 },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0,
+    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['who-is-who-pokemon'] }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], game: state, gamePlayerState: player, serverNow: 2_000,
   };
 }

@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
-import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, layoutProblems, psql, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { anadirJuegos, animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, layoutProblems, psql, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -540,20 +540,19 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
   try {
     const { host, jugadores } = sala;
     const page = host.page;
-    await page.getByRole('tab', { name: 'Modo y sesión' }).click();
-    const aleatorio = page.getByRole('button', { name: /^Aleatorio/ });
-    await aleatorio.click();
-    await expect(aleatorio).toHaveAttribute('aria-pressed', 'true');
-    await page.getByLabel('Buscar en la rotación').fill('Impostor');
-    const fila = page.getByRole('region', { name: 'Juegos de la rotación' }).locator('article').filter({ has: page.locator('strong').getByText('Pokémon Impostor', { exact: true }) });
-    await fila.getByRole('button', { name: 'Ajustar' }).click();
-    // Dos impostores necesitan 5 jugadores: con 3, la rotación lo omite en vez de bloquear la sala.
+    // Pokédex Distance (el de por defecto) y Pokémon Impostor; en «Configuración», la lista de los dos.
+    await anadirJuegos(page, ['Pokémon Impostor']);
+    await page.getByRole('tab', { name: 'Configuración' }).click();
+    const fila = page.getByRole('region', { name: 'Minijuegos elegidos' }).getByRole('listitem').filter({ has: page.locator('strong').getByText('Pokémon Impostor', { exact: true }) });
+    await fila.getByRole('button', { name: 'Ajustar Pokémon Impostor' }).click();
+    await expect(page.getByRole('heading', { name: 'Ajustes de Pokémon Impostor' })).toBeVisible();
+    // Dos impostores necesitan 5 jugadores: con 3, la sesión lo omite en vez de bloquear la sala.
     const impostores = page.getByRole('slider', { name: 'Impostores' });
     await impostores.focus();
     await impostores.press('ArrowRight');
     await expect(page.getByText('2 impostores', { exact: true })).toBeVisible();
     await expect(fila.getByText('Se omitirá', { exact: true })).toBeVisible();
-    await expect(page.getByText('Se omitirá en la rotación mientras haya 3 jugadores.', { exact: false })).toBeVisible();
+    await expect(page.getByText('Se omitirá mientras haya 3 jugadores.', { exact: false })).toBeVisible();
     // Pulsar el deslizador desplaza la página y la cabecera fija taparía el contenido: se captura desde arriba.
     await impostores.blur();
     await page.evaluate(() => window.scrollTo(0, 0));
@@ -564,22 +563,23 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
   }
 });
 
-test('lobby: rotación', async ({ browser }) => {
+test('lobby: varios minijuegos y su orden', async ({ browser }) => {
   const sala = await crearSalaConJugadores(browser, 3);
   try {
     const { host, jugadores } = sala;
     const page = host.page;
+    // Elegir tres: cada carta lleva su número de orden; quitar uno renumera los siguientes.
+    await anadirJuegos(page, ['Higher or Lower', 'Shiny Quiz']);
+    const lista = page.getByRole('list', { name: 'Minijuegos' });
+    await expect(lista.getByRole('button', { pressed: true })).toHaveCount(3);
+    await expect(lista.getByRole('button', { name: /Shiny Quiz.*n\.º 3 de la sesión/ })).toBeVisible();
+    await page.getByRole('tab', { name: 'Configuración' }).click();
+    await expect(page.getByRole('region', { name: 'Minijuegos elegidos' }).getByRole('listitem')).toHaveCount(3);
     await page.getByRole('tab', { name: 'Modo y sesión' }).click();
     const aleatorio = page.getByRole('button', { name: /^Aleatorio/ });
     await aleatorio.click();
     await expect(aleatorio).toHaveAttribute('aria-pressed', 'true');
-    // Búsqueda sin resultados: estado vacío con acción para volver a la lista.
-    const buscar = page.getByLabel('Buscar en la rotación');
-    await buscar.fill('zzzz');
-    await expect(page.getByText('Ningún minijuego coincide con “zzzz”.')).toBeVisible();
-    await page.getByRole('button', { name: 'Borrar búsqueda' }).click();
-    await expect(buscar).toHaveValue('');
-    await expect(page.getByRole('region', { name: 'Juegos de la rotación' }).locator('article').first()).toBeVisible();
+    await expect(page.getByText('Cada partida sale al azar entre los 3 minijuegos, sin repetir el anterior.')).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 0));
     await capturarTamanos(page, 'lobby-rotacion', { completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);

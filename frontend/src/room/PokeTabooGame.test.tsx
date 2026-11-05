@@ -54,7 +54,7 @@ function room(player: PokeTabooPlayerState | null, game: PokeTabooPublicState = 
     ],
     availableGames: [{ id: 'poke-taboo', name: 'PokéTaboo', icon: '🎙️', description: 'Describe', minPlayers: 2, profileStats: { metrics: [] } }],
     selectedGameId: 'poke-taboo', selectedGameConfig: { generations: [1, 4], roundSeconds: 60, laps: 1, includeRegionalForms: true },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0,
+    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['poke-taboo'] }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, serverNow: 1_000,
   } as RoomView;
 }

@@ -4,10 +4,8 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -27,7 +25,8 @@ public final class LiveRoom {
   public String selectedGameId;
   public final Map<String, JsonNode> gameConfigs;
   public SessionMode sessionMode = new SessionMode.Infinite();
-  public GameSelectionMode gameSelectionMode = new GameSelectionMode.Fixed();
+  /** Empieza en el orden de un solo juego, el elegido al crear la sala. */
+  public GameSelectionMode gameSelectionMode;
   public @Nullable NextGameVote nextGameVote;
   public int gamesPlayed;
   public Map<String, SessionParticipant> sessionParticipants = new LinkedHashMap<>();
@@ -44,6 +43,7 @@ public final class LiveRoom {
     this.hostId = hostId;
     this.maxPlayers = maxPlayers;
     this.selectedGameId = selectedGameId;
+    this.gameSelectionMode = new GameSelectionMode.Order(List.of(selectedGameId));
     this.gameConfigs = new LinkedHashMap<>(gameConfigs);
     this.createdAt = createdAt;
     this.updatedAt = createdAt;

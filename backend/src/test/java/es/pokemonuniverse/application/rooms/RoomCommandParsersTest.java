@@ -96,7 +96,15 @@ class RoomCommandParsersTest {
   @Test
   void gameSelectionModes() {
     assertEquals(new GameSelectionMode.Random(List.of("a", "b")),
-        RoomCommandParsers.gameSelectionMode(json("{\"type\":\"RANDOM\",\"gameIds\":[\"a\",\"b\"]}")));
+        RoomCommandParsers.gameSelectionMode(json("{\"type\":\"RANDOM\",\"gameIds\":[\"a\",\"b\"]}"), "z"));
+    assertEquals(new GameSelectionMode.Order(List.of("b", "a")),
+        RoomCommandParsers.gameSelectionMode(json("{\"type\":\"ORDER\",\"gameIds\":[\"b\",\"a\"]}"), "z"));
+    // Un solo juego basta en cualquier modo (la votación con menos de dos juegos lanza el que hay).
+    assertEquals(new GameSelectionMode.Vote(List.of("a")),
+        RoomCommandParsers.gameSelectionMode(json("{\"type\":\"VOTE\",\"gameIds\":[\"a\"]}"), "z"));
+    // Cliente antiguo: el minijuego fijo es el orden con solo el juego elegido.
+    assertEquals(new GameSelectionMode.Order(List.of("z")),
+        RoomCommandParsers.gameSelectionMode(json("{\"type\":\"FIXED\"}"), "z"));
     assertEquals("""
         [
           {
@@ -106,20 +114,20 @@ class RoomCommandParsersTest {
             ],
             "message": "Los minijuegos no pueden repetirse."
           }
-        ]""", error(() -> RoomCommandParsers.gameSelectionMode(json("{\"type\":\"RANDOM\",\"gameIds\":[\"a\",\"a\"]}"))));
+        ]""", error(() -> RoomCommandParsers.gameSelectionMode(json("{\"type\":\"RANDOM\",\"gameIds\":[\"a\",\"a\"]}"), "z")));
     assertEquals("""
         [
           {
             "origin": "array",
             "code": "too_small",
-            "minimum": 3,
+            "minimum": 1,
             "inclusive": true,
             "path": [
               "gameIds"
             ],
-            "message": "Selecciona al menos 3 minijuegos."
+            "message": "Selecciona al menos 1 minijuego."
           }
-        ]""", error(() -> RoomCommandParsers.gameSelectionMode(json("{\"type\":\"VOTE\",\"gameIds\":[\"a\",\"b\"]}"))));
+        ]""", error(() -> RoomCommandParsers.gameSelectionMode(json("{\"type\":\"ORDER\",\"gameIds\":[]}"), "z")));
   }
 
   @Test

@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
+import { anadirJuegos, capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
 
 /** Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más. */
 async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Promise<void> {
@@ -30,8 +30,9 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     const [invitado] = invitados as [Jugador];
     const pages = jugadores.map((j) => j.page);
 
-    // Higher or Lower a una ronda y rotación por votación.
+    // Higher or Lower a una ronda, primero de tres minijuegos, y orden por votación.
     await seleccionarJuego(host.page, 'Higher or Lower');
+    await anadirJuegos(host.page, ['Shiny Quiz', 'Pokédex Distance']);
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     const rondas = host.page.getByRole('slider', { name: 'Número de rondas' });
     await rondas.focus();

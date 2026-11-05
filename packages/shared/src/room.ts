@@ -71,10 +71,20 @@ export function isSessionComplete(mode: SessionMode, gamesPlayed: number, sessio
   return false;
 }
 
+/**
+ * Minijuegos de la sesión (en el orden en que se eligieron) y cómo sale el siguiente: `ORDER` los juega en ese orden y
+ * vuelve al primero al acabar la lista; `RANDOM` sortea entre ellos; `VOTE` vota entre hasta 3 de ellos. Basta con un
+ * juego compatible en cualquier modo: con uno solo se repite y la votación necesita al menos dos (si no, sale el que hay).
+ */
 export type GameSelectionMode =
-  | { type: 'FIXED' }
+  | { type: 'ORDER'; gameIds: string[] }
   | { type: 'RANDOM'; gameIds: string[] }
   | { type: 'VOTE'; gameIds: string[] };
+
+export type GameSelectionType = GameSelectionMode['type'];
+
+/** Opciones como máximo de la votación del siguiente minijuego (con menos juegos, se vota entre los que haya). */
+export const NEXT_GAME_VOTE_OPTIONS = 3;
 
 export interface NextGameVoteView {
   options: MiniGameManifest[];
@@ -148,12 +158,13 @@ export const sessionModeSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('POINT_TARGET'), target: z.number().int().min(5).max(10000) }),
 ]);
 
-const randomGameIdsSchema = z.array(z.string().min(1)).min(2, 'Selecciona al menos 2 minijuegos.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
-const voteGameIdsSchema = z.array(z.string().min(1)).min(3, 'Selecciona al menos 3 minijuegos.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
+// La selección y el modo se editan en pestañas distintas: cambiar de modo conserva la lista y ningún modo exige más de un
+// juego (lo que depende de los jugadores conectados se comprueba al empezar).
+const selectionGameIdsSchema = z.array(z.string().min(1)).min(1, 'Selecciona al menos 1 minijuego.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
 export const gameSelectionModeSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('FIXED') }),
-  z.object({ type: z.literal('RANDOM'), gameIds: randomGameIdsSchema }),
-  z.object({ type: z.literal('VOTE'), gameIds: voteGameIdsSchema }),
+  z.object({ type: z.literal('ORDER'), gameIds: selectionGameIdsSchema }),
+  z.object({ type: z.literal('RANDOM'), gameIds: selectionGameIdsSchema }),
+  z.object({ type: z.literal('VOTE'), gameIds: selectionGameIdsSchema }),
 ]);
 
 export interface ClientToServerEvents {

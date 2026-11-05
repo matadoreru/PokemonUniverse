@@ -147,9 +147,9 @@ test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultad
     await capture(guest.page, 'lobby-invitado-configuracion');
   }
 
-  // Host: el modo de la sesión con el minijuego fijo (sin rotación).
+  // Host: el modo de la sesión con el orden de los minijuegos elegidos (por defecto, «Por orden»).
   await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
-  await expect(host.page.getByRole('button', { name: /^Mismo minijuego/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(host.page.getByRole('button', { name: /^Por orden/ })).toHaveAttribute('aria-pressed', 'true');
   await expect(host.page.getByRole('button', { name: /^Infinita/ })).toHaveAttribute('aria-pressed', 'true');
   for (const { w, h } of SIZES) {
     await host.page.setViewportSize({ width: w, height: h });

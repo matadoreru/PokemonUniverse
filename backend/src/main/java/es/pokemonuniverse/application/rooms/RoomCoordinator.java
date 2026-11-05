@@ -88,6 +88,8 @@ public class RoomCoordinator {
   /** Juego registrado cuyo motor aún no existe en Java (etapa 2). */
   public static final String NOT_PORTED = "Este minijuego todavía no está disponible en el servidor Java.";
   static final long NEXT_GAME_VOTE_MS = 15_000;
+  /** {@code NEXT_GAME_VOTE_OPTIONS} de {@code room.ts}: opciones como máximo de la votación del siguiente juego. */
+  static final int NEXT_GAME_VOTE_OPTIONS = 3;
   static final long NEXT_GAME_VOTE_RESULT_MS = 3_000;
   static final int MAX_SESSION_HISTORY = 100;
   /** {@code scheduleDeadline(..., toleranceMs = 5)}. */
@@ -461,9 +463,9 @@ public class RoomCoordinator {
       assertLobby(room);
       var module = registry.get(gameId).orElseThrow(() -> new RoomException("Unknown game"));
       room.selectedGameId = gameId;
-      if (!room.gameConfigs.containsKey(gameId)) {
-        room.gameConfigs.put(gameId, normalizedConfig(module, defaultConfigs.get(gameId)));
-      }
+      ensureGameConfig(room, module);
+      // Elegir un juego suelto deja la sesión con solo ese juego (el modo de orden se conserva).
+      room.gameSelectionMode = GameSelectionMode.withGameIds(room.gameSelectionMode, List.of(gameId));
       broadcast(room);
       return null;
     });
@@ -507,18 +509,19 @@ public class RoomCoordinator {
     inRequiredRoom(playerId, ignored -> {
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_SELECTION);
       assertLobby(room);
-      var parsed = RoomCommandParsers.gameSelectionMode(mode);
-      if (!(parsed instanceof GameSelectionMode.Fixed)) {
-        int playerCount = connectedPlayerCount(room);
-        for (var gameId : GameSelectionMode.gameIdsOf(parsed)) {
-          var game = registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido: " + gameId));
-          if (!ManifestView.supportsPlayerCount(game, playerCount)) {
-            throw new RoomException(game.name() + " no admite " + playerCount + " jugadores conectados.");
-          }
-          if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
-        }
+      var parsed = RoomCommandParsers.gameSelectionMode(mode, room.selectedGameId);
+      // Solo se comprueba que el juego exista y esté portado: los jugadores conectados se miran al empezar, así el
+      // host puede elegir juegos de 4 antes de que entren los demás.
+      var manifests = new ArrayList<GameManifest>();
+      for (var gameId : parsed.gameIds()) {
+        var game = registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido: " + gameId));
+        if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
+        manifests.add(game);
       }
+      for (var game : manifests) ensureGameConfig(room, game);
       room.gameSelectionMode = parsed;
+      // El primero de la lista es el minijuego elegido de la sala mientras está en el lobby.
+      room.selectedGameId = parsed.gameIds().getFirst();
       broadcast(room);
       return null;
     });
@@ -665,31 +668,59 @@ public class RoomCoordinator {
         playerCount);
   }
 
-  private void assertRotationReady(LiveRoom room, boolean continuing) {
-    var mode = room.gameSelectionMode;
-    if (mode instanceof GameSelectionMode.Fixed) return;
-    var gameIds = GameSelectionMode.gameIdsOf(mode);
+  private void ensureGameConfig(LiveRoom room, GameManifest module) {
+    if (!room.gameConfigs.containsKey(module.id())) {
+      room.gameConfigs.put(module.id(), normalizedConfig(module, defaultConfigs.get(module.id())));
+    }
+  }
+
+  /**
+   * Al empezar: todos los juegos elegidos existen, están portados y tienen una configuración válida, y al menos uno
+   * admite a los conectados. Con un solo juego elegido, {@link #launchGame} da el motivo exacto (mínimo o máximo).
+   */
+  private void assertRotationReady(LiveRoom room) {
+    var gameIds = room.gameSelectionMode.gameIds();
     for (var gameId : gameIds) {
       var module = registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido: " + gameId));
       if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
       var configReason = gameConfigReadinessReason(room, gameId);
       if (configReason.isPresent()) throw new RoomException(module.name() + ": " + configReason.get());
     }
-    int playableCount = playableGameIds(room, gameIds).size();
-    boolean vote = mode instanceof GameSelectionMode.Vote;
-    int minimum = vote ? 3 : continuing ? 1 : 2;
-    if (playableCount < minimum) {
-      throw new RoomException("La rotación " + (vote ? "por votación" : "aleatoria") + " necesita al menos " + minimum
-          + " minijuegos compatibles con el número actual de jugadores.");
+    if (gameIds.size() > 1 && playableGameIds(room, gameIds).isEmpty()) {
+      throw new RoomException("Ningún minijuego elegido admite el número actual de jugadores.");
     }
   }
 
-  private void selectRandomGame(LiveRoom room) {
-    if (!(room.gameSelectionMode instanceof GameSelectionMode.Random mode)) return;
+  /** Primer juego de la sesión: el primero jugable de la lista (en aleatorio, uno al azar). */
+  private String firstGameId(LiveRoom room) {
+    var mode = room.gameSelectionMode;
     var playable = playableGameIds(room, mode.gameIds());
-    if (playable.isEmpty()) throw new RoomException("Ningún minijuego aleatorio admite el número actual de jugadores.");
-    var alternatives = playable.stream().filter(gameId -> !gameId.equals(room.selectedGameId)).toList();
-    room.selectedGameId = randomItem(alternatives.isEmpty() ? playable : alternatives);
+    if (playable.isEmpty()) return mode.gameIds().getFirst();
+    return mode instanceof GameSelectionMode.Random ? randomItem(playable) : playable.getFirst();
+  }
+
+  /**
+   * Juegos que pueden seguir a {@code previousGameId}, el preferido primero: en orden, los siguientes de la lista
+   * (vuelve al principio y el propio juego va el último); en aleatorio, uno al azar distinto del anterior si lo hay y
+   * después el resto. Los demás son reserva por si el preferido no puede arrancar.
+   */
+  private List<String> nextGameIds(LiveRoom room, String previousGameId, List<String> candidates) {
+    if (room.gameSelectionMode instanceof GameSelectionMode.Random) {
+      var alternatives = candidates.stream().filter(gameId -> !gameId.equals(previousGameId)).toList();
+      var preferred = randomItem(alternatives.isEmpty() ? candidates : alternatives);
+      var ordered = new ArrayList<String>();
+      ordered.add(preferred);
+      for (var gameId : candidates) if (!gameId.equals(preferred)) ordered.add(gameId);
+      return ordered;
+    }
+    var gameIds = room.gameSelectionMode.gameIds();
+    int start = gameIds.indexOf(previousGameId) + 1;
+    var ordered = new ArrayList<String>();
+    for (int step = 0; step < gameIds.size(); step++) {
+      var gameId = gameIds.get((start + step) % gameIds.size());
+      if (candidates.contains(gameId)) ordered.add(gameId);
+    }
+    return ordered;
   }
 
   public void startGame(String playerId) {
@@ -703,8 +734,8 @@ public class RoomCoordinator {
       if (!pendingNames.isEmpty()) {
         throw new RoomException("Falta por confirmar: " + RoomTexts.formatPendingReadyNames(pendingNames) + ".");
       }
-      assertRotationReady(room, false);
-      selectRandomGame(room);
+      assertRotationReady(room);
+      room.selectedGameId = firstGameId(room);
       launchGame(room);
       return null;
     });
@@ -887,7 +918,7 @@ public class RoomCoordinator {
         .thenCompose(ignored -> audit.gameAbandoned(new GameAbandoned(game.resultId, "SKIPPED", endedAt)))
         .exceptionally(error -> logged("Failed to mark skipped game as abandoned", error)));
     try {
-      advanceSessionAfterGame(room);
+      advanceSessionAfterGame(room, game.gameId);
     } catch (RuntimeException error) {
       broadcast(room);
       LOG.error("Failed to continue after skipped game", error);
@@ -901,10 +932,15 @@ public class RoomCoordinator {
   }
 
   boolean beginNextGameVote(LiveRoom room) {
-    if (!(room.gameSelectionMode instanceof GameSelectionMode.Vote mode)) return false;
-    var options = shuffled(playableGameIds(room, mode.gameIds()));
-    var optionGameIds = options.subList(0, Math.min(3, options.size()));
-    if (optionGameIds.size() < 3) return false;
+    return beginNextGameVote(room, playableGameIds(room, room.gameSelectionMode.gameIds()));
+  }
+
+  /** Votación entre hasta {@code NEXT_GAME_VOTE_OPTIONS} de {@code candidates}; con menos de dos no hay votación. */
+  private boolean beginNextGameVote(LiveRoom room, List<String> candidates) {
+    if (!(room.gameSelectionMode instanceof GameSelectionMode.Vote)) return false;
+    var options = shuffled(candidates);
+    var optionGameIds = options.subList(0, Math.min(NEXT_GAME_VOTE_OPTIONS, options.size()));
+    if (optionGameIds.size() < 2) return false;
     room.nextGameVote = new NextGameVote(optionGameIds, clock.now() + NEXT_GAME_VOTE_MS);
     room.phase = RoomPhase.NEXT_GAME_VOTE;
     return true;
@@ -1128,6 +1164,8 @@ public class RoomCoordinator {
       if (resetSession) member.sessionPoints = 0;
     }
     if (resetSession) {
+      // Sesión nueva: el minijuego elegido vuelve a ser el primero de la lista.
+      room.selectedGameId = room.gameSelectionMode.gameIds().getFirst();
       room.gamesPlayed = 0;
       room.sessionHistory = new ArrayList<>();
       var participants = new LinkedHashMap<String, SessionParticipant>();
@@ -1160,7 +1198,7 @@ public class RoomCoordinator {
       var room = permissionRoom(playerId, RoomPermission.START_GAME);
       if (room.phase != RoomPhase.GAME_RESULTS) throw new RoomException("La partida todavía no ha terminado.");
       try {
-        advanceSessionAfterGame(room);
+        advanceSessionAfterGame(room, null);
         return null;
       } catch (RuntimeException error) {
         broadcast(room);
@@ -1169,27 +1207,67 @@ public class RoomCoordinator {
     });
   }
 
-  private void advanceSessionAfterGame(LiveRoom room) {
+  /**
+   * Tras una partida (o al saltarla, con {@code skippedGameId}): la sesión termina si se cumplió su final; si no, sale
+   * el siguiente juego según el modo. Un juego saltado nunca vuelve justo después: sin otro juego jugable, la sesión
+   * termina y se ve la clasificación final.
+   */
+  private void advanceSessionAfterGame(LiveRoom room, @Nullable String skippedGameId) {
     if (SessionMode.isComplete(room.sessionMode, room.gamesPlayed,
         room.sessionParticipants.values().stream().map(participant -> participant.sessionPoints).toList())) {
-      room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
-      cancelPresenceGraces(room);
-      room.game = null;
-      room.nextGameVote = null;
-      room.phase = RoomPhase.SESSION_RESULTS;
-      broadcast(room);
+      showSessionResults(room);
       return;
     }
+    var previousGameId = room.selectedGameId;
+    var candidates = playableGameIds(room, room.gameSelectionMode.gameIds()).stream()
+        .filter(gameId -> !gameId.equals(skippedGameId)).toList();
+    if (candidates.isEmpty()) {
+      if (skippedGameId != null) {
+        showSessionResults(room);
+        return;
+      }
+      resetToLobby(room, false);
+      throw new RoomException("Ningún minijuego elegido admite el número actual de jugadores.");
+    }
     resetToLobby(room, false);
-    if (room.gameSelectionMode instanceof GameSelectionMode.Vote) {
-      beginNextGameVote(room);
+    if (beginNextGameVote(room, candidates)) {
       broadcast(room);
       schedule(room);
       return;
     }
-    assertRotationReady(room, true);
-    selectRandomGame(room);
-    launchGame(room);
+    launchFirstStartable(room, nextGameIds(room, previousGameId, candidates), skippedGameId != null);
+  }
+
+  /**
+   * Arranca el primero de {@code gameIds} que pueda empezar. Si ninguno puede: tras un salto se pasa a la
+   * clasificación final (la sala no vuelve al lobby); si no, se propaga el último error.
+   */
+  private void launchFirstStartable(LiveRoom room, List<String> gameIds, boolean afterSkip) {
+    RuntimeException last = null;
+    for (var gameId : gameIds) {
+      room.selectedGameId = gameId;
+      try {
+        launchGame(room);
+        return;
+      } catch (RuntimeException error) {
+        LOG.warn("Game {} could not start; trying the next one", gameId, error);
+        last = error;
+      }
+    }
+    if (afterSkip) {
+      showSessionResults(room);
+      return;
+    }
+    if (last != null) throw last;
+  }
+
+  private void showSessionResults(LiveRoom room) {
+    room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    cancelPresenceGraces(room);
+    room.game = null;
+    room.nextGameVote = null;
+    room.phase = RoomPhase.SESSION_RESULTS;
+    broadcast(room);
   }
 
   public void endSession(String playerId) {

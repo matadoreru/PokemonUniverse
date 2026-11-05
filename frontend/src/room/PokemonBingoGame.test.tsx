@@ -45,7 +45,7 @@ function room(game: PokemonBingoPublicState, player: PokemonBingoPlayerState | n
     code: 'ABC234', phase: game.phase, hostId, maxPlayers: 8,
     availableGames: [{ id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Bingo', minPlayers: 1, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-bingo', selectedGameConfig: { ...defaultPokemonBingoConfig, width: 2, height: 2, generations: [1] },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0,
+    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-bingo'] }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: player,
     members: [
       { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },

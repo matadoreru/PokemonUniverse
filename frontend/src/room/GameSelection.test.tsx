@@ -2,7 +2,7 @@ import type { MiniGameManifest, RoomView } from '@pokemon-universe/shared';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { GameSelectionConfig } from './GameSelectionConfig';
+import { GameOrderChoice, gameOrderHint, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { NextGameVote } from './NextGameVote';
 
 const games: MiniGameManifest[] = [
@@ -50,8 +50,8 @@ describe('game selection UI', () => {
       ...room('NEXT_GAME_VOTE'), phase: 'LOBBY', nextGameVote: null, availableGames: rotation, selectedGameId: 'pokedex-distance',
       gameSelectionMode: { type: 'RANDOM', gameIds }, gameConfigs: { 'pokemon-impostor': { impostorCount: 2 } },
     };
-    const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
-      availableGames: rotation, mode: { type: 'RANDOM', gameIds }, playerCount: 3, disabled: false, room: lobby, onChange: () => undefined,
+    const markup = renderToStaticMarkup(createElement(SelectedGamesConfig, {
+      room: lobby, selfId: 'p1', playerCount: 3, disabled: false, onConfig: async () => undefined,
     }));
     expect(markup).toContain('Demasiados impostores: con 3 jugadores el máximo es 1.');
     expect(markup).toContain('Se omitirá');
@@ -60,24 +60,52 @@ describe('game selection UI', () => {
     expect(markup).not.toContain('bg-berry');
   });
 
-  it('shows the three rotation methods and the selected voting pool', () => {
-    const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
-      availableGames: games, mode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, playerCount: 3, disabled: false, onChange: () => undefined,
+  it('shows the three order modes, keeping the selected games when switching', () => {
+    const changes: unknown[] = [];
+    const markup = renderToStaticMarkup(createElement(GameOrderChoice, {
+      mode: { type: 'VOTE', gameIds: ['two', 'one'] }, compatibleCount: 2, disabled: false, onChange: (mode) => changes.push(mode),
     }));
-    expect(markup).toContain('Mismo minijuego');
+    expect(markup).toContain('Por orden');
     expect(markup).toContain('Aleatorio');
     expect(markup).toContain('Votación');
-    expect(markup).toContain('3 seleccionados');
-    expect(markup).toContain('aria-pressed="true"');
+    expect(markup).toContain('aria-label="Orden de los minijuegos"');
+    expect(markup.match(/aria-pressed="true"/g)).toHaveLength(1);
+    expect(markup).toContain('Tras cada partida se vota entre 2 de los 2 minijuegos.');
   });
 
-  it('disables games and rotation modes that do not support the current player count', () => {
-    const markup = renderToStaticMarkup(createElement(GameSelectionConfig, {
-      availableGames: games, mode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, playerCount: 9, disabled: false, onChange: () => undefined,
-    }));
+  it('explains how each order mode uses the compatible games', () => {
+    expect(gameOrderHint('ORDER', 3)).toBe('Se juegan los 3 minijuegos en el orden en que los elegiste y se vuelve a empezar.');
+    expect(gameOrderHint('RANDOM', 2)).toContain('al azar entre los 2');
+    expect(gameOrderHint('VOTE', 5)).toBe('Tras cada partida se vota entre 3 de los 5 minijuegos.');
+    expect(gameOrderHint('VOTE', 1)).toBe('Con un solo minijuego compatible, se juega siempre ese.');
+  });
+
+  it('toggles games keeping the selection order and never empties it', () => {
+    expect(toggleSelectedGame({ type: 'ORDER', gameIds: ['one'] }, 'two')).toEqual({ type: 'ORDER', gameIds: ['one', 'two'] });
+    expect(toggleSelectedGame({ type: 'VOTE', gameIds: ['one', 'two'] }, 'one')).toEqual({ type: 'VOTE', gameIds: ['two'] });
+    expect(toggleSelectedGame({ type: 'RANDOM', gameIds: ['one'] }, 'one')).toBeNull();
+  });
+
+  const realGames: MiniGameManifest[] = [
+    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', minPlayers: 1, maxPlayers: 8, profileStats: { metrics: [] } },
+    { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Mayor o menor.', minPlayers: 1, profileStats: { metrics: [] } },
+  ];
+  const lobbyWith = (gameIds: string[]): RoomView => ({ ...room('NEXT_GAME_VOTE'), phase: 'LOBBY', nextGameVote: null, availableGames: realGames, selectedGameId: gameIds[0]!, gameSelectionMode: { type: 'ORDER', gameIds } });
+
+  it('lists every selected game in order with its own settings editor', () => {
+    const markup = renderToStaticMarkup(createElement(SelectedGamesConfig, { room: lobbyWith(['higher-lower', 'shiny-vote']), selfId: 'p1', playerCount: 9, disabled: false, onConfig: async () => undefined }));
+    expect(markup).toContain('aria-label="Minijuegos elegidos"');
+    expect(markup.indexOf('Higher or Lower')).toBeLessThan(markup.indexOf('Shiny Quiz'));
+    expect(markup).toContain('Ajustes de Higher or Lower');
     expect(markup).toContain('Máximo 8 jugadores');
-    expect(markup).toContain('Un juego seleccionado ya no admite');
-    expect(markup).toContain('No hay 3 juegos compatibles para 9 jugadores.');
+    expect(markup).toContain('aria-label="Ajustar Shiny Quiz"');
+  });
+
+  it('shows only the editor when a single game is selected', () => {
+    const markup = renderToStaticMarkup(createElement(SelectedGamesConfig, { room: lobbyWith(['shiny-vote']), selfId: 'p1', playerCount: 3, disabled: true, onConfig: async () => undefined }));
+    expect(markup).toContain('Ajustes de Shiny Quiz');
+    expect(markup).not.toContain('Minijuegos elegidos');
+    expect(markup).toContain('Solo el host y los co-hosts pueden cambiar estos ajustes.');
   });
 
   it('renders a private active vote and the public winning reveal', () => {

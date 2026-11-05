@@ -229,27 +229,55 @@ export function sinTapar(locator: Locator): Promise<boolean> {
   return locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
 }
 
-/** En el lobby (host o co-host), elige el minijuego por su nombre del manifest. */
-export async function seleccionarJuego(page: Page, nombre: string): Promise<void> {
-  // La carta (el botón de su celda) de la lista «Minijuegos».
-  const celda = page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) });
-  await expect(celda).toHaveCount(1);
-  const opcion = celda.getByRole('button').first();
-  // La carta es un conmutador: un clic de más la quitaría. Solo pulsa si aún no está elegida y, tras pulsar, espera
-  // 8 s a que el servidor lo refleje antes de volver a mirar. Así un servidor lento (más de 2 s) no recibe dos
-  // conmutaciones, y un clic que se pierde de verdad (llegó antes de que el lobby tuviera el estado del `/ws`, pasó
-  // una vez) se repite una sola vez.
+/** Carta (el botón de su celda) de un minijuego en la lista «Minijuegos» del lobby. */
+function cartaDeJuego(page: Page, nombre: string): Locator {
+  return page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) }).getByRole('button').first();
+}
+
+/**
+ * Pone la carta en `elegida` (las cartas son conmutadores de una selección múltiple). Solo pulsa si hace falta y, tras
+ * pulsar, espera 8 s a que el servidor lo refleje antes de volver a mirar: un servidor lento (más de 2 s) no recibe dos
+ * conmutaciones, y un clic que se pierde de verdad (llegó antes de que el lobby tuviera el estado del `/ws`) se repite
+ * una sola vez.
+ */
+async function conmutarJuego(opcion: Locator, elegida: boolean): Promise<void> {
+  const valor = String(elegida);
   for (let intento = 0; intento < 2; intento += 1) {
-    if ((await opcion.getAttribute('aria-pressed')) === 'true') return;
+    if ((await opcion.getAttribute('aria-pressed')) === valor) return;
     await opcion.click();
     try {
-      await expect(opcion).toHaveAttribute('aria-pressed', 'true', { timeout: 8_000 });
+      await expect(opcion).toHaveAttribute('aria-pressed', valor, { timeout: 8_000 });
       return;
     } catch {
-      // Sigue sin elegir tras 8 s: el clic se perdió; se vuelve a mirar y, si hace falta, a pulsar.
+      // Sigue igual tras 8 s: el clic se perdió; se vuelve a mirar y, si hace falta, a pulsar.
     }
   }
-  await expect(opcion).toHaveAttribute('aria-pressed', 'true', { timeout: 8_000 });
+  await expect(opcion).toHaveAttribute('aria-pressed', valor, { timeout: 8_000 });
+}
+
+/**
+ * En el lobby (host o co-host), deja `nombre` (nombre del manifest) como único minijuego elegido de la sesión: lo elige
+ * primero y después quita los demás (la selección nunca queda vacía).
+ */
+export async function seleccionarJuego(page: Page, nombre: string): Promise<void> {
+  await page.getByRole('tab', { name: 'Minijuegos' }).click();
+  const opcion = cartaDeJuego(page, nombre);
+  await expect(opcion).toHaveCount(1);
+  await conmutarJuego(opcion, true);
+  const lista = page.getByRole('list', { name: 'Minijuegos' });
+  const otras = lista.getByRole('listitem').filter({ hasNot: page.getByText(nombre, { exact: true }) }).getByRole('button', { pressed: true });
+  // Se quitan de una en una por su nombre (la lista de elegidas cambia tras cada clic).
+  while ((await otras.count()) > 0) {
+    const otra = (await otras.first().locator('[data-part="name"]').innerText()).trim();
+    await conmutarJuego(cartaDeJuego(page, otra), false);
+  }
+  await expect(lista.getByRole('button', { pressed: true })).toHaveCount(1);
+}
+
+/** Añade minijuegos a la selección del lobby, en este orden, sin quitar los que ya hay. */
+export async function anadirJuegos(page: Page, nombres: readonly string[]): Promise<void> {
+  await page.getByRole('tab', { name: 'Minijuegos' }).click();
+  for (const nombre of nombres) await conmutarJuego(cartaDeJuego(page, nombre), true);
 }
 
 /**

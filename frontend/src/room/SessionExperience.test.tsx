@@ -36,7 +36,7 @@ describe('priority session experience', () => {
         { id: 'one', name: 'Juego uno', icon: '①', description: 'Uno', minPlayers: 1, profileStats: { metrics: [] } },
         { id: 'two', name: 'Juego dos', icon: '②', description: 'Dos', minPlayers: 1, profileStats: { metrics: [] } },
       ],
-      selectedGameId: 'two', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 2 }, gameSelectionMode: { type: 'FIXED' },
+      selectedGameId: 'two', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 2 }, gameSelectionMode: { type: 'ORDER', gameIds: ['two'] },
       nextGameVote: null, gamesPlayed: 2,
       sessionStandings: [
         { id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, sessionPoints: 8 },
@@ -69,7 +69,7 @@ describe('priority session experience', () => {
     const room: RoomView = {
       code: 'ABC234', phase: 'SESSION_RESULTS', hostId: 'host', maxPlayers: 8,
       members: [member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true })],
-      availableGames: [], selectedGameId: 'one', selectedGameConfig: {}, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' },
+      availableGames: [], selectedGameId: 'one', selectedGameConfig: {}, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['one'] },
       nextGameVote: null, gamesPlayed: 0, sessionStandings: [{ id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, sessionPoints: 0 }],
       sessionHistory: [], game: null, gamePlayerState: null, serverNow: 1_000,
     };

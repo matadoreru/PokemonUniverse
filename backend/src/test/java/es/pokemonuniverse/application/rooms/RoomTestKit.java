@@ -161,7 +161,10 @@ final class RoomTestKit {
     return json("{\"type\":\"ANSWER\",\"choice\":\"" + choice + "\"}");
   }
 
-  /** {@code activeSkipFixture(playerCount, rounds)}: higher-lower en marcha con {@code skip-pN}. */
+  /**
+   * {@code activeSkipFixture(playerCount, rounds)}: higher-lower en marcha con {@code skip-pN}, primero de la sesión en
+   * orden con Pokédex Distance detrás (saltar pasa al siguiente juego; con uno solo, la sesión terminaría).
+   */
   record SkipFixture(RoomTestKit kit, LiveRoom room, List<AuthUser> people, String instanceId) {
 
     void setVote(String playerId, boolean wantsToSkip) {
@@ -190,6 +193,8 @@ final class RoomTestKit {
     var config = new LinkedHashMap<String, Object>(asMap(room.gameConfigs.get("higher-lower")));
     config.put("rounds", rounds);
     kit.manager.updateConfig(people.get(0).id(), tree(config));
+    kit.manager.updateGameSelection(people.get(0).id(),
+        json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
     kit.startReady(room, people.get(0).id());
     return new SkipFixture(kit, room, List.copyOf(people), room.game.resultId);
   }

@@ -155,7 +155,7 @@ export class RoomManager {
         game.manifest.id,
         game.configSchema.parse(storedConfigs.get(game.manifest.id) ?? game.defaultConfig),
       ])),
-      sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
+      sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: [module.manifest.id] }, nextGameVote: null,
       gamesPlayed: 0, sessionParticipants: new Map(), sessionHistory: [], game: null, transitionTimer: null,
       createdAt: now, updatedAt: now,
     };
@@ -294,7 +294,7 @@ export class RoomManager {
   private updateGameSelection(playerId: string, mode: unknown): Record<string, never> {
     const room = this.permissionRoom(playerId, 'EDIT_GAME_SELECTION'); this.assertLobby(room);
     const parsed = gameSelectionModeSchema.parse(mode);
-    if (parsed.type !== 'FIXED') {
+    if (parsed.type !== 'ORDER') {
       const playerCount = this.connectedPlayerCount(room);
       for (const gameId of parsed.gameIds) {
         const game = gameRegistry.get(gameId); if (!game) throw new Error(`Minijuego desconocido: ${gameId}`);
@@ -386,7 +386,8 @@ export class RoomManager {
   }
 
   private assertRotationReady(room: LiveRoom, continuing = false): void {
-    const mode = room.gameSelectionMode; if (mode.type === 'FIXED') return;
+    // Oráculo: ORDER se trata como el antiguo minijuego fijo; la rotación ordenada solo existe en Java.
+    const mode = room.gameSelectionMode; if (mode.type === 'ORDER') return;
     for (const gameId of mode.gameIds) {
       const module = gameRegistry.get(gameId); if (!module) throw new Error(`Minijuego desconocido: ${gameId}`);
       const configReason = this.gameConfigReadinessReason(room, gameId);

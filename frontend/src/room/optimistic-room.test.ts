@@ -6,7 +6,7 @@ function room(overrides: Partial<RoomView> = {}): RoomView {
   return {
     code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8, members: [], availableGames: [],
     selectedGameId: 'shiny-vote', selectedGameConfig: { voteVisibility: 'LIVE' }, sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null,
+    gameSelectionMode: { type: 'ORDER', gameIds: ['shiny-vote'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null,
     gamePlayerState: null, serverNow: 1_000, ...overrides,
   };
 }
@@ -93,7 +93,7 @@ describe('optimistic lobby room projection', () => {
     const projection = new OptimisticRoomProjection(); projection.setAuthoritative(room());
     projection.begin({ kind: 'game-selection', mode: { type: 'RANDOM', gameIds: ['one', 'two'] } });
     expect(projection.view()?.gameSelectionMode).toEqual({ type: 'RANDOM', gameIds: ['one', 'two'] });
-    const active = room({ phase: 'ROUND_ACTIVE', gameSelectionMode: { type: 'FIXED' } });
+    const active = room({ phase: 'ROUND_ACTIVE', gameSelectionMode: { type: 'ORDER', gameIds: ['shiny-vote'] } });
     expect(projection.setAuthoritative(active)).toBe(active);
   });
 

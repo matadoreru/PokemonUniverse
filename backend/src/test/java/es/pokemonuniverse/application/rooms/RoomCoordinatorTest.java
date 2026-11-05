@@ -1052,13 +1052,10 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("cohost", "Ana"));
     kit.manager.setRoomRole("host", "cohost", JsonNode.createStringNode("CO_HOST"));
     assertTrue(rejects(() -> kit.manager.updateGameSelection("cohost",
-        json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\"]}"))).getMessage().contains("Selecciona al menos 2 minijuegos."));
+        json("{\"type\":\"RANDOM\",\"gameIds\":[]}"))).getMessage().contains("Selecciona al menos 1 minijuego."));
     assertTrue(rejects(() -> kit.manager.updateGameSelection("cohost",
         json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"higher-lower\"]}"))).getMessage()
         .contains("Los minijuegos no pueden repetirse."));
-    assertTrue(rejects(() -> kit.manager.updateGameSelection("cohost",
-        json("{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\",\"shiny-vote\"]}"))).getMessage()
-        .contains("Selecciona al menos 3 minijuegos."));
     assertMessage("Minijuego desconocido: missing", () -> kit.manager.updateGameSelection("cohost",
         json("{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\",\"shiny-vote\",\"missing\"]}")));
     kit.manager.updateGameSelection("cohost",
@@ -1067,19 +1064,27 @@ class RoomCoordinatorTest {
         room.gameSelectionMode);
     assertTrue(serialize(kit.manager.view(room, "host")).contains(
         "\"gameSelectionMode\":{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\",\"shiny-vote\",\"pokemon-bingo\"]}"));
+    // El primero de la lista es el minijuego elegido; los añadidos tienen su configuración.
+    assertEquals("higher-lower", room.selectedGameId);
+    assertTrue(room.gameConfigs.containsKey("pokemon-bingo"));
+    // Cliente antiguo: FIXED se guarda como el orden con solo el juego elegido.
+    kit.manager.updateGameSelection("cohost", json("{\"type\":\"FIXED\"}"));
+    assertEquals(new GameSelectionMode.Order(List.of("higher-lower")), room.gameSelectionMode);
   }
 
   @Test
-  @DisplayName("rejects rotation games that do not support the connected player count")
+  @DisplayName("accepts any selection in the lobby and rejects the start when no game fits the connected players")
   void rejectsRotationPlayerCount() {
-    var kit = new RoomTestKit();
+    var kit = new RoomTestKit("pokemon-bingo", "zoomed-pokemon");
     var people = new ArrayList<AuthUser>();
     people.add(guest("host", "Host"));
     for (int index = 1; index <= 8; index++) people.add(guest("guest-" + index, "Guest " + index));
     var room = kit.room(10, people.toArray(AuthUser[]::new));
-    assertMessage("Pokémon Bingo no admite 9 jugadores conectados.", () -> kit.manager.updateGameSelection("host",
-        json("{\"type\":\"RANDOM\",\"gameIds\":[\"pokemon-bingo\",\"zoomed-pokemon\"]}")));
-    assertEquals(new GameSelectionMode.Fixed(), room.gameSelectionMode);
+    kit.manager.updateGameSelection("host",
+        json("{\"type\":\"RANDOM\",\"gameIds\":[\"pokemon-bingo\",\"zoomed-pokemon\"]}"));
+    assertEquals(new GameSelectionMode.Random(List.of("pokemon-bingo", "zoomed-pokemon")), room.gameSelectionMode);
+    assertMessage("Ningún minijuego elegido admite el número actual de jugadores.", () -> kit.startReady(room, "host"));
+    assertEquals(RoomPhase.LOBBY, room.phase);
   }
 
   /** Kit con el motor real de Pokémon Impostor además de los dos motores reales de siempre. */
@@ -1126,16 +1131,16 @@ class RoomCoordinatorTest {
   }
 
   @Test
-  @DisplayName("selects a compatible random minigame at start and avoids an immediate repeat")
+  @DisplayName("selects a compatible random minigame at start")
   void selectsRandomAlternative() {
-    var kit = new RoomTestKit();
+    var kit = new RoomTestKit("pokemon-impostor");
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
-    kit.manager.selectGame("host", "higher-lower");
     kit.manager.updateGameSelection("host",
-        json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
+        json("{\"type\":\"RANDOM\",\"gameIds\":[\"pokemon-impostor\",\"higher-lower\",\"pokedex-distance\"]}"));
     kit.startReady(room, "host");
-    assertEquals("pokedex-distance", room.selectedGameId);
-    assertEquals("pokedex-distance", room.game.gameId);
+    // Impostor necesita 3 jugadores: el sorteo es entre los otros dos.
+    assertTrue(Set.of("higher-lower", "pokedex-distance").contains(room.game.gameId));
+    assertEquals(room.game.gameId, room.selectedGameId);
   }
 
   @Test
@@ -1153,6 +1158,50 @@ class RoomCoordinatorTest {
     assertEquals("pokedex-distance", room.selectedGameId);
     assertEquals("pokedex-distance", room.game.gameId);
     assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+  }
+
+  @Test
+  @DisplayName("starts the first selected game in order and continues with the next one")
+  void continuesOrderedSession() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameConfig("host", "higher-lower", json(RoomTestKit.HIGHER_LOWER_1_ROUND));
+    kit.manager.updateGameSelection("host",
+        json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
+    assertEquals("higher-lower", room.selectedGameId);
+    kit.startReady(room, "host");
+    assertEquals("higher-lower", room.game.gameId);
+    kit.manager.action("host", answer("HIGHER"));
+    kit.manager.action("guest", answer("LOWER"));
+    kit.passDeadline(room);
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
+    kit.manager.continueSession("host");
+    assertEquals("pokedex-distance", room.game.gameId);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+  }
+
+  @Test
+  @DisplayName("votes between two games and launches the only compatible one without a vote")
+  void voteDegradesWithFewGames() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote"));
+    assertTrue(kit.manager.beginNextGameVote(room));
+    assertEquals(Set.of("higher-lower", "shiny-vote"), Set.copyOf(room.nextGameVote.optionGameIds));
+
+    var single = new RoomTestKit();
+    var lone = single.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    single.selectHigherLower("host");
+    single.manager.updateGameSelection("host", json("{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\"]}"));
+    single.startReady(lone, "host");
+    single.manager.action("host", answer("HIGHER"));
+    single.manager.action("guest", answer("LOWER"));
+    single.passDeadline(lone);
+    single.manager.continueSession("host");
+    // Sin rival no hay votación: el único juego vuelve a empezar.
+    assertNull(lone.nextGameVote);
+    assertEquals("higher-lower", lone.game.gameId);
+    assertEquals(RoomPhase.ROUND_ACTIVE, lone.phase);
   }
 
   @Test
@@ -1300,7 +1349,7 @@ class RoomCoordinatorTest {
     kit.manager.selectGame("host", "higher-lower");
     room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "shiny-vote"));
     assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.startGame("host"));
-    room.gameSelectionMode = new GameSelectionMode.Fixed();
+    room.gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower"));
     assertEquals(RoomPhase.LOBBY, room.phase);
     assertEquals(List.of("higher-lower"), kit.manager.playableGameIds(room, List.of("higher-lower", "tcg-higher-lower")));
     assertEquals(Set.of(), Set.copyOf(kit.manager.view(room, "host").customizedGameIds()));
@@ -1385,7 +1434,7 @@ class RoomCoordinatorTest {
     assertTrue(serialized.contains("\"game\":null"));
     assertTrue(serialized.contains("\"gameSkipState\":null"));
     assertTrue(serialized.contains("\"sessionMode\":{\"type\":\"INFINITE\"}"));
-    assertTrue(serialized.contains("\"gameSelectionMode\":{\"type\":\"FIXED\"}"));
+    assertTrue(serialized.contains("\"gameSelectionMode\":{\"type\":\"ORDER\",\"gameIds\":[\"pokedex-distance\"]}"));
     assertTrue(serialized.contains("\"isHost\":true"));
     assertTrue(serialized.contains("\"avatar\":{\"type\":\"DEFAULT\"}"));
     assertEquals(Set.of("id", "displayName", "avatar", "connected", "presence", "roomRole", "role", "isHost", "ready",
@@ -1519,8 +1568,10 @@ class RoomCoordinatorTest {
     @Test
     @DisplayName("rejects stale gameplay and skip messages at the socket boundary")
     void rejectsStaleMessages() {
-      var f = activeSkipFixture(1, 10);
+      var f = activeSkipFixture(1, 10, "shiny-vote");
       var kit = f.kit();
+      // Con un jugador, el siguiente de la sesión es Shiny Quiz (motor falso).
+      f.room().gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "shiny-vote"));
       kit.manager.withConnection("skip-p1", "skip-socket-1", () -> {
         f.setVote("skip-p1", true);
         return null;
@@ -1528,12 +1579,12 @@ class RoomCoordinatorTest {
       var replacement = f.room().game;
       assertMessage("El minijuego ya ha cambiado.", () -> kit.manager.gameAction("skip-p1", json("{\"gameInstanceId\":\""
           + f.instanceId() + "\",\"actionEpoch\":\"stale\",\"action\":{\"type\":\"ANSWER\",\"choice\":\"HIGHER\"}}")));
-      assertEquals(0, kit.publicGame(f.room(), "skip-p1").get("answers").size());
+      assertEquals("shiny-vote", f.room().game.gameId);
       assertMessage("El minijuego ya ha cambiado.", () -> f.setVote("skip-p1", false));
       assertEquals(0, replacement.skipVoterIds.size());
       var epoch = replacement.engine.getLifecycle(replacement.state).actionEpoch();
       kit.manager.gameAction("skip-p1", json("{\"gameInstanceId\":\"" + replacement.resultId + "\",\"actionEpoch\":"
-          + JsonTree.quote(epoch) + ",\"action\":{\"type\":\"ANSWER\",\"choice\":\"HIGHER\"}}"));
+          + JsonTree.quote(epoch) + ",\"action\":{\"type\":\"SCORE\",\"points\":3}}"));
     }
 
     @Test
@@ -1580,7 +1631,7 @@ class RoomCoordinatorTest {
     }
 
     @Test
-    @DisplayName("uses the random fallback when only the current game remains compatible")
+    @DisplayName("ends the session instead of replaying when only the skipped game remains compatible")
     void randomFallbackToCurrentGame() {
       var f = activeSkipFixture(3, 10);
       var kit = f.kit();
@@ -1589,8 +1640,8 @@ class RoomCoordinatorTest {
       kit.manager.finalDisconnect(room, "skip-p3", true);
       kit.manager.finalDisconnect(room, "skip-p2", true);
       f.setVote("skip-p1", true);
-      assertEquals("higher-lower", room.game.gameId);
-      assertNotEquals(f.instanceId(), room.game.resultId);
+      assertEquals(RoomPhase.SESSION_RESULTS, room.phase);
+      assertNull(room.game);
     }
 
     @Test
@@ -1656,11 +1707,13 @@ class RoomCoordinatorTest {
     void skipsWithoutResults() {
       var f = activeSkipFixture(3, 10);
       var kit = f.kit();
+      f.room().gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "pokedex-distance"));
       var skipped = f.room().game;
       for (var person : f.people()) f.setVote(person.id(), true);
       assertEquals(GameFinishReason.SKIPPED, skipped.finishReason);
       assertFalse(skipped.resultsApplied);
       assertNotEquals(f.instanceId(), f.room().game.resultId);
+      assertEquals("pokedex-distance", f.room().game.gameId);
       assertEquals(RoomPhase.ROUND_ACTIVE, f.room().phase);
       assertEquals(0, f.room().gamesPlayed);
       assertTrue(f.room().sessionHistory.isEmpty());
@@ -1675,18 +1728,46 @@ class RoomCoordinatorTest {
     }
 
     @Test
-    @DisplayName("lets a one-player session skip with 1/1")
+    @DisplayName("lets a one-player session skip with 1/1 and ends it when the skipped game is the only one")
     void onePlayerSkip() {
       var f = activeSkipFixture(1, 10);
       f.setVote("skip-p1", true);
-      assertNotEquals(f.instanceId(), f.room().game.resultId);
+      // Un solo minijuego en la sesión: saltarlo no lo repite ni vuelve al lobby, enseña la clasificación final.
+      assertEquals(RoomPhase.SESSION_RESULTS, f.room().phase);
+      assertNull(f.room().game);
       assertEquals(0, f.room().gamesPlayed);
+    }
+
+    @Test
+    @DisplayName("ends the session when skipping leaves no other compatible game")
+    void skipWithoutCompatibleAlternativeEndsSession() {
+      var f = activeSkipFixture(1, 10);
+      // Pokédex Distance necesita 2 jugadores: con uno, no hay a dónde pasar.
+      f.room().gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "pokedex-distance"));
+      f.setVote("skip-p1", true);
+      assertEquals(RoomPhase.SESSION_RESULTS, f.room().phase);
+      assertNull(f.room().game);
+    }
+
+    @Test
+    @DisplayName("skips to the next game in order and loops back to the first")
+    void orderedProgressionLoops() {
+      var f = activeSkipFixture(2, 10);
+      f.room().gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "pokedex-distance"));
+      for (var person : f.people()) f.setVote(person.id(), true);
+      assertEquals("pokedex-distance", f.room().game.gameId);
+      var second = f.room().game.resultId;
+      for (var person : f.people()) f.setVote(person.id(), true, second);
+      assertEquals("higher-lower", f.room().game.gameId);
+      assertNotEquals(f.instanceId(), f.room().game.resultId);
+      assertEquals(RoomPhase.ROUND_ACTIVE, f.room().phase);
     }
 
     @Test
     @DisplayName("does not apply a delayed duplicate vote to the next game instance")
     void delayedDuplicateVote() {
-      var f = activeSkipFixture(1, 10);
+      var f = activeSkipFixture(1, 10, "shiny-vote");
+      f.room().gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "shiny-vote"));
       f.setVote("skip-p1", true);
       assertMessage("El minijuego ya ha cambiado.", () -> f.setVote("skip-p1", true, f.instanceId()));
       assertEquals(0, f.room().game.skipVoterIds.size());
@@ -1798,6 +1879,7 @@ class RoomCoordinatorTest {
     void ignoresStaleNormalFinish() {
       var f = activeSkipFixture(2, 1);
       var kit = f.kit();
+      f.room().gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "pokedex-distance"));
       var skipped = f.room().game;
       f.setVote("skip-p1", true);
       f.setVote("skip-p2", true);
@@ -1829,7 +1911,8 @@ class RoomCoordinatorTest {
       for (var person : f.people()) f.setVote(person.id(), true);
       assertEquals(RoomPhase.NEXT_GAME_VOTE, f.room().phase);
       assertNull(f.room().game);
-      assertEquals(3, f.room().nextGameVote.optionGameIds.size());
+      // El juego saltado no se vuelve a votar: quedan los otros dos.
+      assertEquals(Set.of("shiny-vote", "pokemon-bingo"), Set.copyOf(f.room().nextGameVote.optionGameIds));
       assertNull(f.kit().manager.view(f.room(), "skip-p1").gameSkipState());
       assertTrue(f.room().sessionHistory.isEmpty());
     }
