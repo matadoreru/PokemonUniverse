@@ -99,6 +99,8 @@ Edita `.env` y configura:
 
 No reutilices secretos, base de datos ni volumen de avatares de PRO.
 
+Correo saliente (recuperar la contraseña): en PRO configura `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` y `MAIL_FROM` (sin prefijo `PU_`; pasos de Resend en `DEPLOY.md`). Sin `SMTP_HOST` el backend no envía nada y escribe los enlaces de recuperación en sus logs. En PRE puedes dejarlo vacío.
+
 ## 5. Validar ambos Compose
 
 ```bash

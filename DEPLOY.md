@@ -149,10 +149,32 @@ PU_JWT_SECRET=SECRETO_HEXADECIMAL_ALEATORIO
 PU_PUBLIC_ORIGIN=https://pokemon.example.com
 PU_SECURE_COOKIE=true
 PU_WATCHTOWER_ENABLE=false
+SMTP_HOST=smtp.resend.com
+SMTP_PORT=465
+SMTP_USER=resend
+SMTP_PASSWORD=API_KEY_DE_RESEND
+MAIL_FROM="Pokémon Universe <no-responder@matadoreru.com>"
 ```
 
 Usa valores hexadecimales: no necesitan comillas ni escapes en `.env` ni en compose. No publiques `5432` ni `8080` en
 el router.
+
+Las variables de correo (`SMTP_*`, `MAIL_FROM`) no llevan el prefijo `PU_` del resto. **En producción `SMTP_HOST` es
+obligatorio**: sin él el backend usa `LoggingMailSender` y escribe en sus logs el correo entero, con un enlace de
+recuperación de contraseña que funciona, en lugar de enviarlo (avisa una vez al arrancar). Pon el `.env` con `chmod 600`
+y no reenvíes esos logs.
+
+### Correo de recuperación de contraseña (Resend)
+
+Pasos de una sola vez, antes de desplegar la versión con «¿Has olvidado la contraseña?»:
+
+1. Crea la cuenta en resend.com y añade el dominio `matadoreru.com`; acepta la configuración automática de los
+   registros DNS en Cloudflare (SPF, DKIM y MX del subdominio de envío) y espera a que figure como verificado.
+2. Crea una API key con permiso de envío.
+3. Pon en el `.env` de producción los valores del bloque anterior (`SMTP_PASSWORD` es la API key; el puerto 465 es TLS
+   implícito, con 587 se usa STARTTLS obligatorio).
+4. Despliega (Flyway aplica V6) y prueba el flujo completo con una cuenta propia: pide el enlace, comprueba que llega
+   el correo y que el enlace funciona una sola vez.
 
 ## 3. Primera instalación
 
