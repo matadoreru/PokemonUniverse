@@ -48,8 +48,8 @@ function useShinyCardsReady(roundKey: string, total: number) {
 /**
  * Shiny Quiz (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, la pregunta y el tiempo, y las cartas de
  * opción (`Card` llena: seleccionable, seleccionada, correcta que gira al revelar, incorrecta). Abajo se actúa: confirmar
- * el voto o, al revelar, el veredicto con los puntos. En la columna lateral, el antes y el después al revelar y el
- * marcador; en el móvil, entre las cartas y la pantalla inferior.
+ * el voto o, al revelar, el veredicto con los puntos. En la columna lateral, el marcador y, debajo, el antes y el
+ * después al revelar; en el móvil, entre las cartas y la pantalla inferior.
  */
 export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as ShinyVotePublicState;
@@ -154,8 +154,8 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   </div>;
 
   const side = <div className={s.side}>
-    {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} />}
     <ShinyGameSidebar game={game} members={members} colors={colors} selfId={selfId} className={cx(s.sidePanel)} />
+    {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} />}
     <GameSkipSlot className={s.skip} />
   </div>;
 

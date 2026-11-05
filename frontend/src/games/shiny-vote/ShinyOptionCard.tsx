@@ -1,9 +1,8 @@
 import { pokemonSpritePath, type RoomMemberView, type ShinyOption } from '@pokemon-universe/shared/public';
-import { Check, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Avatar } from '../../components/Avatar';
+import { AvatarStack, avatarStackLabel } from '../../components/AvatarStack';
 import { apiAsset } from '../../lib/api';
-import { Badge, Card, Chip, cx, Icon, Panel, ScorePop, type CardAttrs, type CardState } from '../../ui';
+import { Card, cx, Panel, ScorePop, type CardAttrs, type CardState } from '../../ui';
 import { SHINY_BEFORE_AFTER } from './reveal';
 import s from './ShinyVote.module.css';
 
@@ -52,15 +51,14 @@ function PokemonSprite({ option, loading, dimmed = false, onSettled }: { option:
   </span>;
 }
 
-/** Quién votó la opción: hasta tres avatares, «+N» y la insignia con el recuento. */
+/**
+ * Quién votó la opción: hasta tres avatares y «+N», encima del sprite (abajo a la derecha), sin ocupar alto. El recuento
+ * y los nombres, para lectores de pantalla.
+ */
 function VoterSummary({ optionId, voters }: { optionId: ShinyOption['id']; voters: RoomMemberView[] }) {
-  const visible = voters.slice(0, 3);
-  const hidden = voters.length - visible.length;
-  return <span className={s.voters} data-testid={`shiny-voters-${optionId}`}>
-    <span className={s.avatars} aria-hidden="true">{visible.map((member) => <Avatar key={member.id} name={member.displayName} avatar={member.avatar} size="sm" />)}</span>
-    {hidden > 0 && <span className={s.more} aria-hidden="true">+{hidden}</span>}
-    <Badge tone="navy">{voters.length} {voters.length === 1 ? 'voto' : 'votos'}</Badge>
-  </span>;
+  const count = `${voters.length} ${voters.length === 1 ? 'voto' : 'votos'}`;
+  return <AvatarStack testId={`shiny-voters-${optionId}`} members={voters.map((member) => ({ id: member.id, name: member.displayName, avatar: member.avatar }))}
+    label={avatarStackLabel(voters.map((member) => member.displayName), `${count}:`)} />;
 }
 
 /** Estado de la carta del catálogo y su chip, según la fase y el voto propio. */
@@ -90,9 +88,6 @@ export function ShinyOptionCard({ option, voters, selected, confirmed, interacti
   const own = selected && (reveal || confirmed);
   const state = shinyCardState({ reveal, selected, correct });
   const flip = reveal && correct;
-  const chip = reveal
-    ? own ? <Chip tone={correct ? 'ok' : 'bad'} icon={<Icon icon={correct ? Check : X} size={18} />}>Tu voto</Chip> : null
-    : selected ? <Chip tone={confirmed ? 'ok' : 'info'} icon={<Icon icon={Check} size={18} />}>{confirmed ? 'Tu voto' : 'Seleccionado'}</Chip> : null;
   const ariaState = reveal
     ? correct ? own ? ', shiny verdadero, tu voto acertado' : ', shiny verdadero' : own ? ', tu voto, incorrecta' : ', opción incorrecta'
     : selected ? confirmed ? ', voto confirmado' : ', seleccionada' : '';
@@ -101,25 +96,25 @@ export function ShinyOptionCard({ option, voters, selected, confirmed, interacti
   const attrs: CardAttrs = {
     'data-shiny-option': option.id,
     'data-correct': reveal && correct ? 'true' : undefined,
+    'data-own': own ? 'true' : undefined,
     ...(interactive ? { 'aria-label': label, 'aria-keyshortcuts': `${option.id} ${option.id.charCodeAt(0) - 64}` } : {}),
   };
+  // Las marcas (el tic de la elegida, el ✓/✗ al revelar) y los votantes van encima del sprite: su hueco mide siempre lo mismo.
   return <Card
     size="fill"
     name={option.pokemonName}
     state={state}
     flip={flip}
+    marks="corner"
     attrs={attrs}
     art={<PokemonSprite key={option.sprite} option={option} loading={loading} dimmed={reveal && !correct && !own} onSettled={onSettled ?? ignoreSettled} />}
+    {...(showVoters && voters.length > 0 ? { artOverlay: <VoterSummary optionId={option.id} voters={voters} /> } : {})}
     {...(interactive ? { onSelect, disabled: loading } : {})}
   >
     <span className={cx(s.letter, (selected || flip) && s.letterOn)} aria-hidden="true">{option.id}</span>
     {/* El «+N» solo suena (y sale) con puntos: un fallo ya tiene su sonido y su «+0» en la pantalla inferior. */}
     {reveal && own && feedback && feedback.points > 0 && <ScorePop key={`${option.id}|${feedback.label}`} points={feedback.points} color="var(--ok)" className={s.pop} self />}
     {!interactive && <span className="sr-only">{label}</span>}
-    {(chip || (showVoters && voters.length > 0)) && <span className={s.foot}>
-      {chip}
-      {showVoters && voters.length > 0 && <VoterSummary optionId={option.id} voters={voters} />}
-    </span>}
   </Card>;
 }
 
