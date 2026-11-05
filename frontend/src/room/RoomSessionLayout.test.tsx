@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { RoomPlate, roomPlateHeading } from './RoomPlate';
+import { RoomNotice } from './RoomNotice';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 
 const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn() }));
@@ -92,7 +93,7 @@ describe('room error toast', () => {
   it('shows the (already translated) room error once, as a catalogue toast with a 44 px close button', () => {
     context.error = 'Este ajuste solo se puede cambiar en el lobby.';
     try {
-      const markup = render('higher-lower', 'LOBBY', null);
+      const markup = renderToStaticMarkup(createElement(RoomNotice));
       expect(markup.match(/role="alert"/g)).toHaveLength(1);
       expect(markup).toContain('Este ajuste solo se puede cambiar en el lobby.');
       expect(markup).toContain('aria-label="Cerrar aviso"');
@@ -101,6 +102,11 @@ describe('room error toast', () => {
   });
 
   it('renders no alert without an error', () => {
-    expect(render('higher-lower', 'LOBBY', null)).not.toContain('role="alert"');
+    expect(renderToStaticMarkup(createElement(RoomNotice))).toBe('');
+  });
+
+  it('the room session no longer renders it: `Layout` owns it on every page (one owner)', () => {
+    context.error = 'Este ajuste solo se puede cambiar en el lobby.';
+    try { expect(render('higher-lower', 'LOBBY', null)).not.toContain('role="alert"'); } finally { context.error = null; }
   });
 });

@@ -2,9 +2,8 @@ import type { FriendInvite } from '@pokemon-universe/shared/public';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
-import { ActionToast, Dialog } from '../ui';
+import { ActionToast, ActionToastStack, Dialog } from '../ui';
 import { useFriends } from './FriendsContext';
-import s from './InviteToasts.module.css';
 
 /** Texto secundario del aviso: el minijuego elegido, si lo hay, y el código de la sala. */
 export function inviteText(invite: Pick<FriendInvite, 'roomCode' | 'gameName'>): string {
@@ -46,14 +45,15 @@ export function InviteToasts() {
   const visible = invites.filter((invite) => invite.roomCode !== ownCode);
   const quiet = Boolean(room && room.phase !== 'LOBBY' && room.game);
   return <>
-    {visible.length > 0 && <div className={s.stack} data-layer="invites">
+    {/* En la capa superior: sigue pulsable con el panel «Amigos» o un diálogo abiertos. */}
+    <ActionToastStack label="Invitaciones">
       {visible.map((invite) => (
         <ActionToast key={invite.inviteId} quiet={quiet} title={`${invite.from.username} te invita a su sala`} text={inviteText(invite)}
           expiresAt={Date.parse(invite.expiresAt)} onExpire={() => dismissInvite(invite.inviteId)}
           primary={{ label: 'Unirse', onClick: () => accept(invite) }}
           secondary={{ label: 'Ahora no', onClick: () => dismissInvite(invite.inviteId) }} />
       ))}
-    </div>}
+    </ActionToastStack>
     <Dialog open={confirm !== null} title="¿Cambiar de sala?" onClose={() => setConfirm(null)} width={420}
       actions={[
         { label: 'Quedarme', variant: 'blue', autoFocus: true, onClick: () => undefined },

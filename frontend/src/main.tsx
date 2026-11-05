@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import { ChangelogProvider } from './changelog/ChangelogContext';
-import { Layout } from './components/Layout';
+import { SessionRoot } from './components/SessionRoot';
 import { RequireAuth } from './components/RequireAuth';
 import { RequireAdmin } from './components/RequireAdmin';
 import { HomePage } from './screens/HomePage';
@@ -26,7 +26,7 @@ const Gallery = import.meta.env.DEV ? lazy(() => import('./ui/dev/Gallery').then
 const devRoutes = Gallery ? [{ path: '/dev/ui', element: <Suspense fallback={null}><Gallery /></Suspense> }] : [];
 
 const protectedPage = (page: ReactNode) => <RequireAuth>{page}</RequireAuth>;
-const router = createBrowserRouter([{ element: <Layout />, children: [
+const router = createBrowserRouter([{ element: <SessionRoot />, children: [
   { path: '/', element: <HomePage /> }, { path: '/auth', element: <AuthPage /> },
   { path: '/auth/recuperar', element: <ForgotPasswordPage /> }, { path: '/auth/nueva-contrasena', element: <ResetPasswordPage /> },
   { path: '/changelog', element: <ChangelogPage /> },

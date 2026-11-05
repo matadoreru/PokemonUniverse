@@ -1,5 +1,5 @@
 import { WifiOff } from 'lucide-react';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useRoomMusic } from '../audio/useRoomMusic';
@@ -7,14 +7,10 @@ import { useAuth } from '../auth/AuthContext';
 import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { useFeedbackTarget } from '../components/feedback-target';
-import { cx, Dialog, Icon, ToastStack, type ToastData } from '../ui';
+import { cx, Dialog, Icon } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import n from './ConnectionNotice.module.css';
-import { FriendsButtonPortal } from '../friends/FriendsButton';
-import { FriendsProvider } from '../friends/FriendsContext';
-import { FriendsDrawer } from '../friends/FriendsDrawer';
-import { InviteToasts } from '../friends/InviteToasts';
-import { RoomProvider, useRoom } from './RoomContext';
+import { useRoom } from './RoomContext';
 import { RoomPlatePortal } from './RoomPlate';
 import { skipRowInLayout } from './game-skip-slot';
 import { SkipGameControl } from './SkipGameControl';
@@ -59,19 +55,8 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
   return slot ? createPortal(region, slot) : region;
 }
 
-/**
- * El aviso global de la sala como pila del catálogo (un único aviso de error, que no se cierra solo). Cada error nuevo
- * lleva un id nuevo, aunque repita el texto: así se vuelve a anunciar y la pila sube por encima de un diálogo abierto.
- */
-function useRoomErrorToasts(error: string | null): ToastData[] {
-  const [shown, setShown] = useState<{ error: string | null; id: number }>({ error: null, id: 0 });
-  // Estado derivado del error (patrón de React para ajustar estado al cambiar una prop): nuevo error, nuevo id.
-  if (shown.error !== error) setShown({ error, id: shown.id + 1 });
-  return useMemo(() => (shown.error ? [{ id: shown.id, kind: 'error' as const, text: shown.error }] : []), [shown]);
-}
-
 function RoomSessionContent() {
-  const { connected, error, clearError, room, setGameSkipVote, leaveRoom } = useRoom();
+  const { connected, room, setGameSkipVote, leaveRoom } = useRoom();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -87,7 +72,6 @@ function RoomSessionContent() {
   // En el lobby se sale sin preguntar; en partida (o votación, resultados…) se confirma antes.
   const [confirmLeave, setConfirmLeave] = useState(false);
   const askLeave = () => { if (room?.phase === 'LOBBY') leave(); else setConfirmLeave(true); };
-  const toasts = useRoomErrorToasts(error);
   return <>
     {/* La placa de la sala (código y «Salir») va a la cabecera solo en `/room`: en `/play` la pantalla ya ofrece volver o salir. */}
     {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={askLeave} />}
@@ -104,16 +88,15 @@ function RoomSessionContent() {
     </div>}
     <Outlet />
     <ConnectionNotice connected={connected} />
-    {/* Solo con aviso: montada siempre, su región `status` de 1 px (absoluta, al final del documento) añadía scroll de
-        página. Un `alert` se anuncia al insertarse. */}
-    {/* Amigos (solo cuentas registradas): la placa de la cabecera, su panel y las invitaciones recibidas. */}
-    <FriendsButtonPortal />
-    <FriendsDrawer />
-    <InviteToasts />
-    {toasts.length > 0 && <ToastStack toasts={toasts} onClose={clearError} />}
+    {/* El aviso de errores de la sala (`RoomNotice`), la placa «Amigos», su panel y las invitaciones van en `Layout`:
+        existen en toda página. */}
   </>;
 }
 
+/**
+ * Sesión de sala de `/play` y `/room`. `RoomProvider` y `FriendsProvider` viven en la raíz (`SessionRoot`): el `/ws` de
+ * una cuenta registrada sigue abierto en toda página. El aviso de conexión es solo de estas rutas (habla de la sala).
+ */
 export function RoomSessionLayout() {
-  return <RoomProvider><FriendsProvider><RoomSessionContent /></FriendsProvider></RoomProvider>;
+  return <RoomSessionContent />;
 }

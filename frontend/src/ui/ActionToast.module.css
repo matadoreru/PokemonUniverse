@@ -50,3 +50,23 @@
     animation: none;
   }
 }
+/* Pila de `ActionToastStack`: popover manual sin el aspecto del agente de usuario, fijo abajo a la derecha. */
+.stack {
+  position: fixed;
+  inset: auto var(--gutter) calc(var(--sp-4) + env(safe-area-inset-bottom)) auto;
+  z-index: var(--z-toast);
+  width: min(380px, calc(100vw - 2 * var(--gutter)));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  /* Visible: un recorte se comería la sombra dura de cada aviso. */
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+/* El `display: flex` de arriba ganaría al oculto del agente de usuario; sin la API Popover esta regla se ignora. */
+.stack:not(:popover-open) {
+  display: none;
+}

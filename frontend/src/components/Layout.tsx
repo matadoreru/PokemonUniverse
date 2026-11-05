@@ -7,6 +7,10 @@ import { HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
 import { AudioButton } from './AudioButton';
+import { FriendsButton } from '../friends/FriendsButton';
+import { FriendsDrawer } from '../friends/FriendsDrawer';
+import { InviteToasts } from '../friends/InviteToasts';
+import { RoomNotice } from '../room/RoomNotice';
 import { RouteLoadingFallback } from './LoadingFallback';
 import s from './Layout.module.css';
 
@@ -22,12 +26,6 @@ export const HEADER_NOTICES_ID = 'app-header-notices';
  */
 export const HEADER_ROOM_ID = 'app-header-room';
 
-/**
- * Hueco de la placa «Amigos» dentro de la placa del HUD, solo con una cuenta registrada. La pinta la sesión de sala con un
- * portal (`FriendsButtonPortal`), porque el estado de amigos vive junto al `/ws` de `RoomProvider`. `display: contents`:
- * vacío no ocupa sitio y su píldora se alinea como las demás.
- */
-export const HEADER_FRIENDS_ID = 'app-header-friends';
 
 /**
  * Cabecera de HUD (spec §6, ajustada por el usuario el 2026-11-04): una sola placa a la derecha con el inicio (casa), el sonido,
@@ -52,7 +50,8 @@ export function AppHeader({ user, level = null, onLogout }: { user: AuthUser | n
         <HudPlate>
           <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
           <AudioButton />
-          {user?.kind === 'USER' && <span id={HEADER_FRIENDS_ID} className="contents" />}
+          {/* «Amigos»: solo con una cuenta registrada (lo decide `FriendsProvider`). */}
+          <FriendsButton />
           {user && <PillLink nav to={feedback} size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}
           {isAdmin && (
             <>
@@ -125,6 +124,11 @@ export function Layout() {
           </ScreenTransition>
         </main>
       </div>
+      {/* En toda página (dentro de `SessionRoot`): el panel «Amigos», las invitaciones recibidas y el único aviso de
+          errores de la sala, que también enseña un «Unirse» fallido desde Inicio o Perfil. */}
+      <FriendsDrawer />
+      <InviteToasts />
+      <RoomNotice />
     </FeedbackTargetProvider>
   );
 }

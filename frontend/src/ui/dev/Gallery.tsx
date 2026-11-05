@@ -47,7 +47,7 @@ import { StateBox } from '../StateBox';
 import { TabPanel, Tabs } from '../Tabs';
 import { Timer } from '../Timer';
 import { ToastStack, useToasts } from '../Toast';
-import { ActionToast } from '../ActionToast';
+import { ActionToast, ActionToastStack } from '../ActionToast';
 import { Drawer } from '../Drawer';
 import { Toggle } from '../Toggle';
 import { cx } from '../cx';
@@ -840,14 +840,23 @@ function DrawerSection() {
 }
 
 function ActionToastSection() {
+  const [stacked, setStacked] = useState(false);
   return (
     <Section name="action-toast" title="ActionToast">
       <Fig id="action-toast-normal" caption="Aviso con acciones (alert)">
         <ActionToast title="Ash te invita a su sala" text="Sala ABCD · Pokédex Distance" primary={{ label: 'Unirme', onClick: noop }} secondary={{ label: 'Ahora no', onClick: noop }} />
       </Fig>
-      <Fig id="action-toast-quiet" caption="Aviso discreto (status)">
+      <Fig id="action-toast-quiet" caption="Aviso discreto (sin región viva, para partidas)">
         <ActionToast quiet title="Misty se ha conectado" primary={{ label: 'Invitar', onClick: noop }} secondary={{ label: 'Cerrar', onClick: noop }} />
       </Fig>
+      <Fig id="action-toast-stack" caption="Pila fija abajo a la derecha, en la capa superior (encima de un diálogo o un drawer)">
+        <Pill variant="yellow" onClick={() => setStacked((v) => !v)}>
+          {stacked ? 'Ocultar pila' : 'Mostrar pila'}
+        </Pill>
+      </Fig>
+      <ActionToastStack label="Invitaciones">
+        {stacked && <ActionToast key="ash" title="Ash te invita a su sala" text="Sala ABC234" primary={{ label: 'Unirse', onClick: noop }} secondary={{ label: 'Ahora no', onClick: () => setStacked(false) }} />}
+      </ActionToastStack>
     </Section>
   );
 }

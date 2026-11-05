@@ -52,7 +52,11 @@ interface RoomContextValue {
 
 const RoomContext = createContext<RoomContextValue | null>(null);
 
-export function RoomProvider({ children }: PropsWithChildren) {
+/**
+ * `active`: abre el `/ws`. La raíz de la aplicación lo abre en toda página para una cuenta registrada (amigos e
+ * invitaciones, spec «esté en la pantalla que esté») y para un invitado solo en `/play` y `/room`. Sin sesión, nunca.
+ */
+export function RoomProvider({ children, active = true }: PropsWithChildren<{ active?: boolean }>) {
   const { user, syncLevel } = useAuth();
   const socketRef = useRef<RealtimeClient | null>(null);
   const projectionRef = useRef(new OptimisticRoomProjection());
@@ -64,7 +68,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const projection = projectionRef.current;
-    if (!user) { socketRef.current?.disconnect(); socketRef.current = null; setRoom(projection.setAuthoritative(null, true)); return; }
+    if (!user || !active) { socketRef.current?.disconnect(); socketRef.current = null; setConnected(false); setRoom(projection.setAuthoritative(null, true)); return; }
     const socket = createRealtime(); socketRef.current = socket;
     const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
     // `error` only comes with an authentication close of `/ws` (4401), never with a plain disconnect.
@@ -81,7 +85,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
       socket.on(event, ((payload: never) => { for (const listener of [...(friendListenersRef.current.get(event) ?? [])]) listener(payload); }) as ServerToClientEvents[typeof event]);
     }
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
-  }, [user?.id]);
+  }, [user?.id, active]);
 
   // El nivel propio llega en vivo en `room:state` (sube al terminar cada partida): la cabecera lo sigue.
   const selfLevel = room?.members.find((member) => member.id === user?.id)?.level;

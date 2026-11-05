@@ -54,7 +54,7 @@ export function toastHost(doc: Pick<Document, 'querySelectorAll'>): Element | nu
 }
 
 /** Sigue el anfitrión de la pila mientras hay avisos: se recalcula al abrirse, cerrarse o quitarse un diálogo. */
-function useToastHost(active: boolean): Element | null {
+export function useToastHost(active: boolean): Element | null {
   const [host, setHost] = useState<Element | null>(null);
   useEffect(() => {
     if (!active) return;
@@ -68,7 +68,7 @@ function useToastHost(active: boolean): Element | null {
 }
 
 /** El navegador tiene la API Popover (si no, la pila queda en `position: fixed` con `--z-toast`). */
-function hasPopover(el: HTMLElement): el is HTMLElement & { showPopover(): void; hidePopover(): void } {
+export function hasPopover(el: HTMLElement): el is HTMLElement & { showPopover(): void; hidePopover(): void } {
   return typeof (el as { showPopover?: unknown }).showPopover === 'function';
 }
 
