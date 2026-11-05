@@ -14,6 +14,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.transaction.TransactionOperations;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.time.Instant;
@@ -29,6 +30,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,12 +50,27 @@ class FriendServiceTest {
     }
   }
 
-  /** Presencia que fija cada test; quien no está en el mapa sale desconectado. */
+  /**
+   * Presencia que fija cada test; quien no está en el mapa sale desconectado. Anota cada consulta hecha con una
+   * transacción o una conexión abiertas: la presencia real puede esperar el lock de una sala y no debe hacerlo con una
+   * conexión del pool tomada.
+   */
   static final class FakeStatus implements FriendStatusSource {
     final Map<String, FriendStatus> statuses = new ConcurrentHashMap<>();
+    final List<String> calls = Collections.synchronizedList(new ArrayList<>());
+    final List<String> callsInTransaction = Collections.synchronizedList(new ArrayList<>());
+    private final TransactionOperations<Session> transactions;
+
+    FakeStatus(TransactionOperations<Session> transactions) {
+      this.transactions = transactions;
+    }
 
     @Override
     public FriendStatus statusOf(String userId) {
+      calls.add(userId);
+      if (transactions.findTransactionStatus().isPresent() || transactions.hasConnection()) {
+        callsInTransaction.add(userId);
+      }
       return statuses.getOrDefault(userId, FriendStatus.OFFLINE);
     }
   }
@@ -69,8 +86,8 @@ class FriendServiceTest {
 
     @Singleton
     @Replaces(FriendStatusSource.class)
-    FakeStatus status() {
-      return new FakeStatus();
+    FakeStatus status(TransactionOperations<Session> transactions) {
+      return new FakeStatus(transactions);
     }
   }
 
@@ -88,6 +105,8 @@ class FriendServiceTest {
   void reset() {
     events.pairs.clear();
     status.statuses.clear();
+    status.calls.clear();
+    status.callsInTransaction.clear();
   }
 
   @AfterEach
@@ -327,6 +346,28 @@ class FriendServiceTest {
     assertEquals(List.of(playing2.username(), playing.username(), room.username(), online.username(),
         offA.username(), offB.username()), friends.stream().map(FriendView::username).toList());
     assertEquals(FriendStatus.PLAYING, friends.getFirst().status());
+  }
+
+  @Test
+  void presenceIsNeverReadInsideATransaction() {
+    var me = user();
+    var friend = user();
+    row(friend.id(), me.id(), true);
+    var asker = user();
+    var askerRequest = requestId(service.sendRequest(asker.id(), me.username()));
+    var crossed = user();
+    requestId(service.sendRequest(crossed.id(), me.username()));
+    status.statuses.put(friend.id(), FriendStatus.PLAYING);
+    status.statuses.put(asker.id(), FriendStatus.IN_ROOM);
+    status.statuses.put(crossed.id(), FriendStatus.ONLINE);
+
+    assertEquals(FriendStatus.PLAYING, service.overview(me.id()).friends().getFirst().status());
+    assertEquals(FriendStatus.IN_ROOM, service.accept(me.id(), askerRequest).status());
+    var became = assertInstanceOf(SendResult.BecameFriends.class, service.sendRequest(me.id(), crossed.username()));
+    assertEquals(FriendStatus.ONLINE, became.friend().status());
+
+    assertEquals(Set.of(friend.id(), asker.id(), crossed.id()), Set.copyOf(status.calls));
+    assertEquals(List.of(), status.callsInTransaction, "statusOf con una transacción abierta");
   }
 
   @Test

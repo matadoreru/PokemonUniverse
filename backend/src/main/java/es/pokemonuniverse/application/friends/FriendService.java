@@ -73,9 +73,13 @@ public class FriendService {
     this.clock = clock;
   }
 
-  /** Amigos con su presencia y nivel, y solicitudes recibidas y enviadas (sin presencia: aún no son amigos). */
+  /**
+   * Amigos con su presencia y nivel, y solicitudes recibidas y enviadas (sin presencia: aún no son amigos). La presencia
+   * se lee al terminar la transacción: {@code statusOf} puede esperar el lock de una sala, y quien lo tiene puede estar
+   * esperando una conexión del pool para leer la BD; con la conexión tomada, las dos esperas se bloquearían.
+   */
   public FriendsOverview overview(String userId) {
-    return transactions.executeRead(status -> {
+    var read = transactions.executeRead(status -> {
       var friends = new ArrayList<FriendView>();
       var incoming = new ArrayList<FriendRequestView>();
       var outgoing = new ArrayList<FriendRequestView>();
@@ -91,11 +95,14 @@ public class FriendService {
           (row.getAddresseeId().equals(userId) ? incoming : outgoing).add(request);
         }
       }
-      friends.sort(LIST_ORDER);
       incoming.sort(Comparator.comparing(FriendRequestView::createdAt).reversed());
       outgoing.sort(Comparator.comparing(FriendRequestView::createdAt).reversed());
       return new FriendsOverview(List.copyOf(friends), List.copyOf(incoming), List.copyOf(outgoing));
     });
+    var friends = new ArrayList<FriendView>();
+    for (var friend : read.friends()) friends.add(withPresence(friend));
+    friends.sort(LIST_ORDER);
+    return new FriendsOverview(List.copyOf(friends), read.incoming(), read.outgoing());
   }
 
   /**
@@ -116,7 +123,9 @@ public class FriendService {
       result = attempt.get();
     }
     events.changed(userId, targetId);
-    return result;
+    // Presencia fuera de la transacción, como en overview.
+    return result instanceof SendResult.BecameFriends(var friend)
+        ? new SendResult.BecameFriends(withPresence(friend)) : result;
   }
 
   private SendResult send(String userId, String targetId) {
@@ -156,7 +165,7 @@ public class FriendService {
       return friendView(requester);
     });
     events.changed(userId, result.id());
-    return result;
+    return withPresence(result);
   }
 
   /** Borra una solicitud pendiente: la rechaza su destinatario o la cancela quien la envió. */
@@ -225,10 +234,20 @@ public class FriendService {
     return locked;
   }
 
+  /**
+   * Vista de amigo dentro de la transacción, todavía sin presencia ({@code OFFLINE}): quien llama la completa con
+   * {@link #withPresence} cuando ya no tiene conexión del pool.
+   */
   private FriendView friendView(UserEntity user) {
     var xp = experience.xpOf(user.getId());
     return new FriendView(user.getId(), user.getUsername(), avatarOf(user),
-        xp == null ? null : Experience.levelFor(xp), presence.statusOf(user.getId()));
+        xp == null ? null : Experience.levelFor(xp), FriendStatus.OFFLINE);
+  }
+
+  /** Nunca dentro de una transacción (ver {@link #overview}). */
+  private FriendView withPresence(FriendView friend) {
+    return new FriendView(friend.id(), friend.username(), friend.avatar(), friend.level(),
+        presence.statusOf(friend.id()));
   }
 
   /** En una solicitud no se muestra ni el nivel ni la presencia de quien aún no es amigo. */
