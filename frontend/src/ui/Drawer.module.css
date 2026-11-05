@@ -1,0 +1,93 @@
+/* Panel lateral (spec §2): `<dialog>` nativo pegado al borde derecho; a pantalla completa por debajo de `sm`. */
+.drawer {
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  max-height: none;
+  height: 100dvh;
+  width: min(420px, 100vw);
+  border: 0;
+  border-left: var(--ol-3) solid var(--navy);
+  background: var(--cream);
+  color: var(--ink);
+  color-scheme: light;
+  --caret: var(--blue-d);
+  --focus-ring: var(--navy);
+  --focus-ring-on-yellow: var(--navy);
+  box-shadow: var(--sh-dialog);
+  overflow: hidden;
+}
+.right {
+  inset: 0 0 0 auto;
+}
+.drawer[open] {
+  display: flex;
+  flex-direction: column;
+  animation: slide var(--t-screen) var(--ease) both;
+}
+.drawer::backdrop {
+  background: color-mix(in srgb, var(--band) 55%, transparent);
+  animation: fade var(--t-screen) var(--ease) both;
+}
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.box {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-4);
+  background: linear-gradient(180deg, var(--navy-3), var(--navy));
+  border-bottom: var(--ol-3) solid var(--navy-2);
+  color: var(--white);
+}
+.title {
+  margin: 0;
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+}
+.title:focus-visible {
+  outline: var(--ol-3) solid var(--white);
+  outline-offset: 2px;
+}
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--sp-4);
+  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
+}
+@media (max-width: 639px) {
+  .drawer {
+    width: 100vw;
+    border-left: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer[open],
+  .drawer::backdrop {
+    animation: none;
+  }
+}

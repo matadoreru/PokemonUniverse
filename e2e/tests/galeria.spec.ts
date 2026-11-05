@@ -117,3 +117,29 @@ test('con el diálogo abierto el aviso se monta dentro de él y se cierra con su
   await expect(dialogo).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+for (const { w, h } of SIZES) {
+  test(`el drawer abre con el foco en el título, se cierra con Esc y devuelve el foco a ${w}×${h}`, async ({ page }) => {
+    const errors = collectErrors(page);
+    await page.setViewportSize({ width: w, height: h });
+    await abrirGaleria(page);
+
+    const abrir = page.getByRole('button', { name: 'Abrir drawer' });
+    await abrir.scrollIntoViewIfNeeded();
+    await abrir.focus();
+    await abrir.click();
+    const drawer = page.getByRole('dialog', { name: 'Amigos' });
+    await expect(drawer).toBeVisible();
+    await expect(drawer.getByRole('heading', { name: 'Amigos' })).toBeFocused();
+    const caja = await drawer.boundingBox();
+    expect(caja).not.toBeNull();
+    // Por debajo de `sm` ocupa toda la pantalla.
+    if (w < 640) expect(Math.round(caja!.width)).toBe(w);
+    await page.screenshot({ path: `${DIR}/drawer-abierto-${w}x${h}.png`, animations: 'disabled' });
+
+    await page.keyboard.press('Escape');
+    await expect(drawer).toBeHidden();
+    await expect(abrir).toBeFocused();
+    expect(errors).toEqual([]);
+  });
+}

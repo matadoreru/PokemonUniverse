@@ -1,0 +1,52 @@
+/* Aviso con acciones: mismo lenguaje que `Toast` (crema, contorno de 3 px, sombra dura), con dos píldoras. */
+.toast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  max-width: min(520px, calc(100vw - 2 * var(--sp-4)));
+  padding: var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-dialog);
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: var(--sh-hard-4);
+  animation: enter var(--t-screen) var(--ease) both;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.copy {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+.title {
+  margin: 0;
+  font: 800 var(--fs-15) / var(--lh-text) var(--font-text);
+  overflow-wrap: anywhere;
+}
+.text {
+  margin: 0;
+  font: 700 var(--fs-13) / var(--lh-text) var(--font-text);
+  overflow-wrap: anywhere;
+}
+.actions {
+  display: flex;
+  flex: none;
+  gap: var(--sp-2);
+}
+.action {
+  min-height: 44px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}

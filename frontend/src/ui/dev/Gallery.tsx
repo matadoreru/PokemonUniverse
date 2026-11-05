@@ -47,6 +47,8 @@ import { StateBox } from '../StateBox';
 import { TabPanel, Tabs } from '../Tabs';
 import { Timer } from '../Timer';
 import { ToastStack, useToasts } from '../Toast';
+import { ActionToast } from '../ActionToast';
+import { Drawer } from '../Drawer';
 import { Toggle } from '../Toggle';
 import { cx } from '../cx';
 import s from './Gallery.module.css';
@@ -819,6 +821,37 @@ function ToastSection({ push }: { push: ReturnType<typeof useToasts>['push'] }) 
   );
 }
 
+function DrawerSection() {
+  const [open, setOpen] = useState(false);
+  return (
+    <Section name="drawer" title="Drawer">
+      <Fig id="drawer-open" caption="Abre el panel lateral con contenido largo">
+        <Pill variant="yellow" onClick={() => setOpen(true)}>
+          Abrir drawer
+        </Pill>
+      </Fig>
+      <Drawer open={open} title="Amigos" onClose={() => setOpen(false)}>
+        {Array.from({ length: 30 }, (_, i) => (
+          <p key={i}>Amigo {i + 1}: contenido largo que se desplaza dentro del panel.</p>
+        ))}
+      </Drawer>
+    </Section>
+  );
+}
+
+function ActionToastSection() {
+  return (
+    <Section name="action-toast" title="ActionToast">
+      <Fig id="action-toast-normal" caption="Aviso con acciones (alert)">
+        <ActionToast title="Ash te invita a su sala" text="Sala ABCD · Pokédex Distance" primary={{ label: 'Unirme', onClick: noop }} secondary={{ label: 'Ahora no', onClick: noop }} />
+      </Fig>
+      <Fig id="action-toast-quiet" caption="Aviso discreto (status)">
+        <ActionToast quiet title="Misty se ha conectado" primary={{ label: 'Invitar', onClick: noop }} secondary={{ label: 'Cerrar', onClick: noop }} />
+      </Fig>
+    </Section>
+  );
+}
+
 const CUTIN_TONES: { tone: CutinTone; label: string; title: string }[] = [
   { tone: 'yellow', label: 'Amarillo', title: '¡Ronda 1!' },
   { tone: 'red', label: 'Rojo', title: '¡Tiempo!' },
@@ -1051,6 +1084,8 @@ export function Gallery() {
       <HudSection />
       <DialogSection onToast={() => push('info', 'Aviso sobre el diálogo', 20_000)} />
       <ToastSection push={push} />
+      <DrawerSection />
+      <ActionToastSection />
       <CutinSection />
       <ScorePopSection />
       <ConfettiSection />
