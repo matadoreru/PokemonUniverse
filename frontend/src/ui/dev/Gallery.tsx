@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
 import { Avatar } from '../../components/Avatar';
+import { AvatarStack } from '../../components/AvatarStack';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ServerTimer } from '../../components/ServerTimer';
 import { ConfigRange } from '../../room/ConfigRange';
@@ -651,6 +652,15 @@ function CardSection() {
         <div className="grid h-56 w-full grid-cols-2 gap-3">
           <Card size="fill" name="Pikachu" art={<span className="text-34">⚡</span>} state="selected" onSelect={() => undefined} />
           <Card size="fill" name="Oricorio Estilo Apasionado" art={<span className="text-34">💃</span>} onSelect={() => undefined} />
+        </div>
+      </Fig>
+      <Fig id="card-corner-marks" caption="Marcas en la esquina (marks=corner): elegida, correcta e incorrecta, con quién la eligió encima del sprite · el hueco del sprite no cambia">
+        <div className="grid h-56 w-full grid-cols-3 gap-3">
+          <Card size="fill" marks="corner" name="Pikachu" art={<span className="text-34">⚡</span>} state="selected" onSelect={() => undefined} />
+          <Card size="fill" marks="corner" name="Mew" art={<span className="text-34">✨</span>} state="correct"
+            artOverlay={<AvatarStack members={[{ id: 'a', name: 'Aqua' }, { id: 'b', name: 'Berry' }]} label="2 votos: Aqua y Berry" />} />
+          <Card size="fill" marks="corner" name="Ditto" art={<span className="text-34">🫠</span>} state="wrong"
+            artOverlay={<AvatarStack members={[{ id: 'c', name: 'Cira' }, { id: 'd', name: 'Dan' }, { id: 'e', name: 'Eli' }, { id: 'f', name: 'Fer' }]} label="4 votos: Cira, Dan, Eli y Fer" />} />
         </div>
       </Fig>
       <Fig id="card-photo" caption="Carta con avatar de inicial">
