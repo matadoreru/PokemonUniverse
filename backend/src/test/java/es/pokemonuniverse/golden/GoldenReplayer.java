@@ -20,17 +20,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Reproduce una fixture dorada con la misma secuencia de llamadas que {@code runner.ts} y compara cada proyección
- * con lo que grabó TypeScript. El primer desajuste lanza {@link AssertionError} con la ruta JSON.
+ * Reproduce una fixture dorada con la misma secuencia de llamadas que {@link GoldenRecorder} y compara cada
+ * proyección con la grabada. El primer desajuste lanza {@link AssertionError} con la ruta JSON.
  *
- * <p>Regla de acciones (igual que producción, {@code rooms/manager.ts}): la acción cruda se valida antes de
+ * <p>Regla de acciones (igual que producción, {@code RoomCoordinator}): la acción cruda se valida antes de
  * {@code handleAction}. Si {@code parseAction} lanza {@link ConfigValidationException}, el paso esperado debe ser
- * {@code invalidAction: true} y el escenario se detiene; si TS grabó un snapshot, es un fallo ("la acción cruda no
- * valida en Java pero sí en TS"). Cualquier excepción durante el paso o al calcular su snapshot se compara con
- * {@code threw}; {@code stoppedAt} debe coincidir con el paso que detuvo el escenario.
+ * {@code invalidAction: true} y el escenario se detiene; si la fixture grabó un snapshot, es un fallo ("la acción
+ * cruda no valida pero la fixture la grabó como válida"). Cualquier excepción durante el paso o al calcular su
+ * snapshot se compara con {@code threw}; {@code stoppedAt} debe coincidir con el paso que detuvo el escenario.
  *
  * <p>Un paso {@code asset} llama a {@code resolveAsset} sin cambiar el estado y compara {@code resolution} (sin
- * snapshot). Todas las comparaciones usan {@link OrderedJsonCompare}: el orden de claves de TS forma parte del
+ * snapshot). Todas las comparaciones usan {@link OrderedJsonCompare}: el orden de claves grabado forma parte del
  * contrato (constraint 13 de la etapa 2B).
  */
 public final class GoldenReplayer {
@@ -53,6 +53,9 @@ public final class GoldenReplayer {
     var id = fixture.engineId() + "/" + fixture.scenario();
     var context = GoldenContexts.contextFor(fixture, catalog, new Mulberry32(fixture.seed()));
     var expected = fixture.expected();
+    if (expected == null) {
+      throw new AssertionError(id + ": la fixture no tiene expected; grábala con ./gradlew test -Dupdate=true --tests '*GoldenReplayTest*'");
+    }
 
     var config = engine.parseConfig(fixture.config());
     compare(id, "expected.configNormalized", expected.configNormalized(), tree(config));
@@ -82,7 +85,7 @@ public final class GoldenReplayer {
           action = engine.parseAction(step.action());
         } catch (ConfigValidationException e) {
           if (!invalid) {
-            throw new AssertionError(id + ": " + path + ": la acción cruda no valida en Java pero sí en TS: "
+            throw new AssertionError(id + ": " + path + ": la acción cruda no valida pero la fixture la grabó como válida: "
                 + e.getMessage(), e);
           }
           checkStoppedAt(id, fixture, i);
@@ -111,7 +114,7 @@ public final class GoldenReplayer {
           default -> state = engine.handlePresenceChange(state, context); // "presence"
         }
         if (!"asset".equals(step.kind())) got = snapshot(engine, state, context);
-      } catch (Exception thrown) { // runner.ts captura cualquier error; la SPI no declara excepciones comprobadas
+      } catch (Exception thrown) { // el grabador captura cualquier error; la SPI no declara excepciones comprobadas
         if (want.threw() == null) {
           throw new AssertionError(id + ": " + path + ": esperado un paso sin excepción, lanzó " + thrown, thrown);
         }
@@ -162,7 +165,7 @@ public final class GoldenReplayer {
     }
   }
 
-  /** {@code valid}: la normalización coincide con la de TS; si no, {@code parseConfig} lanza {@link ConfigValidationException}. */
+  /** {@code valid}: la normalización coincide con la grabada; si no, {@code parseConfig} lanza {@link ConfigValidationException}. */
   public static void checkConfigCase(GameEngine<?, ?, ?, ?> engine, String id, GoldenFixture.ConfigCase configCase) {
     if (configCase.valid()) {
       Object config;

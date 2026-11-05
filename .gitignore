@@ -6,7 +6,6 @@ coverage
 backups
 *.log
 *.tsbuildinfo
-apps/server/prisma/*.db
 .DS_Store
 .data/
 test-results/

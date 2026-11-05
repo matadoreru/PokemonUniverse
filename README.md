@@ -49,10 +49,9 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 ## Tecnología
 
 - **Monorepo** con npm workspaces y TypeScript estricto.
-- **`packages/shared`**: contratos Zod, tipos, puntuación y los motores deterministas de cada minijuego.
+- **`packages/shared`**: contratos Zod, tipos de las proyecciones, configuraciones por defecto y puntuación que usa el frontend. Los motores de los minijuegos solo están en el backend Java.
 - **`backend`**: el servidor, en Java 25 con Micronaut, Gradle y PostgreSQL. Es la autoridad de la partida: temporizadores, secretos y ganadores se deciden aquí (ver abajo).
 - **`frontend`**: React 19, Vite y Tailwind. Solo muestra lo que el servidor le envía a cada jugador.
-- **`apps/server`**: el antiguo servidor Node (Express, Socket.IO y Prisma). Desde el corte 2D ya no se despliega: queda como oráculo de pruebas (fixtures doradas y paridad de los motores y del catálogo).
 - **`e2e`**: pruebas end-to-end con Playwright.
 
 ### Backend Java
@@ -61,7 +60,7 @@ Desde el corte 2D el backend Java es el único servidor: atiende toda la API HTT
 
 Las salas las controla `pu.rooms.enabled` (`ROOMS_ENABLED`): encendido en `compose.yaml`, en el entorno `dev` que usan `npm run dev`/`npm run dev:backend` y en los tests; apagado (`/ws` cierra con 4403) solo en arranques sueltos sin esa configuración. Los 28 minijuegos están portados y verificados con fixtures doradas contra los motores TypeScript, y Java sirve también las imágenes y gritos de ronda (`/api/rooms/`), las categorías personalizadas, los dilemas de Would You Rather, los avatares, el catálogo TCG (`/api/tcg/`) y la administración (`/api/admin/`). **Higher or Lower: Cartas** (`tcg-higher-lower`) y **Adivina por la Paleta** (`pokemon-palette-guess`) necesitan cartas TCG y paletas en la BD, que trae el data-sync.
 
-El data-sync (`BACKEND_DATA_SYNC_ENABLED`) está encendido en `compose.yaml` y apagado en desarrollo salvo con `npm run db:seed`, para no sincronizar en cada arranque. Encendido, al arrancar sincroniza PokéAPI si faltan Pokémon o paletas (minutos, antes de abrir el puerto) y lanza en segundo plano la sincronización inicial de TCG si no hay cartas; después repite cada día a `DATA_SYNC_HOUR`:`DATA_SYNC_MINUTE`. Un ADMIN puede relanzarlas desde la pestaña «Datos» del panel. Nunca lo enciendas a la vez que el `DATA_SYNC_ENABLED` del oráculo Node contra la misma BD.
+El data-sync (`BACKEND_DATA_SYNC_ENABLED`) está encendido en `compose.yaml` y apagado en desarrollo salvo con `npm run db:seed`, para no sincronizar en cada arranque. Encendido, al arrancar sincroniza PokéAPI si faltan Pokémon o paletas (minutos, antes de abrir el puerto) y lanza en segundo plano la sincronización inicial de TCG si no hay cartas; después repite cada día a `DATA_SYNC_HOUR`:`DATA_SYNC_MINUTE`. Un ADMIN puede relanzarlas desde la pestaña «Datos» del panel.
 
 Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 
@@ -70,7 +69,7 @@ Los detalles de diseño están en [docs/architecture.md](docs/architecture.md).
 Requisitos: Node 22 o superior, Java 25 (Gradle llega con `./gradlew`) y podman (o Docker) para PostgreSQL.
 
 ```bash
-npm install                                   # dependencias y cliente Prisma
+npm install                                   # dependencias
 npm run db:up                                 # PostgreSQL local en el puerto 5432
 cp .env.example .env                          # luego deja solo el bloque «Desarrollo local sin Compose»
 npm run build -w @pokemon-universe/shared
@@ -81,7 +80,7 @@ npm run dev                                   # Java en :8080 y web en http://lo
 
 Deja `VITE_API_URL` sin definir (`.env.example` ya no la trae): la web usa el proxy de Vite, que manda `/api` y `/ws` a :8080 en el mismo origen, y la cookie de sesión llega también al WebSocket. El data-sync de Java queda apagado (`BACKEND_DATA_SYNC_ENABLED` sin definir) salvo en `npm run db:seed`.
 
-El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares se guardan en `apps/server/.data/avatars` (`pu.avatar-storage-dir` en `application-dev.yml`, `../apps/server/.data/avatars` relativo a `backend/`, el mismo directorio que usaba Node; `AVATAR_STORAGE_DIR` lo sustituye). Los artworks del modo Artwork los lee de `pu.artwork-dir` (`backend/assets/pokemon-artworks`, `assets/pokemon-artworks` relativo a `backend/` por defecto; la imagen los copia en `/app/pokemon-artworks`; `POKEMON_ARTWORK_DIR` lo sustituye).
+El backend Java (`npm run dev:backend`, recarga en caliente con `./gradlew run -t`) toma del entorno `JWT_SECRET`, `COOKIE_SECURE`, `WEB_ORIGIN` y `RATE_LIMIT_DISABLED`; la conexión a la BD local está fijada en `backend/src/main/resources/application-dev.yml` y el puerto se fuerza a 8080 aunque el `.env` traiga `PORT=3001`. Los avatares se guardan en `backend/.data/avatars` (`pu.avatar-storage-dir` en `application-dev.yml`, `.data/avatars` relativo a `backend/`; `AVATAR_STORAGE_DIR` lo sustituye). Los artworks del modo Artwork los lee de `pu.artwork-dir` (`backend/assets/pokemon-artworks`, `assets/pokemon-artworks` relativo a `backend/` por defecto; la imagen los copia en `/app/pokemon-artworks`; `POKEMON_ARTWORK_DIR` lo sustituye).
 
 Todo en contenedores con un solo comando:
 
@@ -89,7 +88,7 @@ Todo en contenedores con un solo comando:
 docker compose -f compose.yaml -f compose.dev.yaml up -d --build --wait
 ```
 
-El esquema es de Flyway: al arrancar, el backend Java aplica `backend/src/main/resources/db/migration/` (en una BD vacía, `V1__baseline.sql` crea el esquema completo). `npm run db:seed` es el mismo backend de desarrollo con `BACKEND_DATA_SYNC_ENABLED=true`: carga el catálogo antes de abrir el puerto, así que cuando responde en :8080 ya está sembrado; se puede parar con Ctrl+C o dejarlo como backend. Prisma (`apps/server/prisma/`) queda congelado como modelo del oráculo Node y ya no crea ni migra la BD.
+El esquema es de Flyway: al arrancar, el backend Java aplica `backend/src/main/resources/db/migration/` (en una BD vacía, `V1__baseline.sql` crea el esquema completo). `npm run db:seed` es el mismo backend de desarrollo con `BACKEND_DATA_SYNC_ENABLED=true`: carga el catálogo antes de abrir el puerto, así que cuando responde en :8080 ya está sembrado; se puede parar con Ctrl+C o dejarlo como backend.
 
 ## Comandos
 
@@ -98,9 +97,10 @@ El esquema es de Flyway: al arrancar, el backend Java aplica `backend/src/main/r
 | `npm run dev` | Backend Java y web en modo desarrollo (la web solo habla con Java). |
 | `npm run dev:backend` | Solo el backend Java en :8080, con recarga en caliente. |
 | `cd backend && ./gradlew check` | Pruebas, verificación de la especificación OpenAPI y demás comprobaciones del backend Java. |
-| `npm run build` | Compila shared, el oráculo Node (server) y web. |
+| `npm run build` | Compila shared y web. |
 | `npm test` | Pruebas unitarias con Vitest. |
 | `npm run test:e2e` | Pruebas end-to-end con Playwright contra el backend Java (salas por `/ws`). Ver [e2e/README.md](e2e/README.md). |
+| `npm run ui:check -- <spec>` | Verificación de UI en un comando: ejecuta esos specs, avisa de las capturas a las que les falta un tamaño y genera `e2e/test-results/revision.html` con todas juntas. |
 | `npm run lint` | ESLint sin advertencias permitidas. |
 | `npm run typecheck` | Comprobación de tipos de todo el monorepo. |
 | `npm run db:up` / `npm run db:down` | Arranca o para el PostgreSQL local. |

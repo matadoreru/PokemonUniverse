@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Formato de {@code packages/shared/golden/types.ts}; las partes opacas se quedan como {@link JsonNode}. Los datos de
+ * Formato de una fixture dorada; las partes opacas se quedan como {@link JsonNode}. {@code expected} solo falta en
+ * una fixture recién escrita a mano, antes de grabarla con {@code -Dupdate=true}. Los datos de
  * contexto ({@code hostCustomCategories} … {@code tcgCards}) y {@code catalogPatch} son nulos si el escenario no los trae; los mapas por id de
  * Pokémon se leen como {@link JsonNode} para conservar el orden de la fixture ({@link GoldenContexts}).
  */
@@ -31,7 +32,7 @@ public record GoldenFixture(
     @Nullable Long startNow,
     @Nullable String roomCode,
     List<Step> steps,
-    Expected expected,
+    @Nullable Expected expected,
     @Nullable Integer stoppedAt) {
 
   /**

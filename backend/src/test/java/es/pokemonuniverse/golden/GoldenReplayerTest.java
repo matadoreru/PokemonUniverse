@@ -216,7 +216,7 @@ class GoldenReplayerTest {
   void invalidActionMirrorsProductionParsing() throws IOException {
     assertDoesNotThrow(() -> replay(withStoppedAt(fixture(BAD, "{\"invalidAction\":true}", ok(0)), 0)));
     var vsSnapshot = failure(withStoppedAt(fixture(BAD, "{\"accepted\":true,\"snapshot\":" + ok(0) + "}", ok(0)), 0));
-    assertTrue(vsSnapshot.getMessage().contains("la acción cruda no valida en Java pero sí en TS"), vsSnapshot.getMessage());
+    assertTrue(vsSnapshot.getMessage().contains("la acción cruda no valida pero la fixture la grabó como válida"), vsSnapshot.getMessage());
     var validInJava = failure(fixture(INC, "{\"invalidAction\":true}", ok(0)));
     assertTrue(validInJava.getMessage().contains("invalidAction: esperado true"), validInJava.getMessage());
   }

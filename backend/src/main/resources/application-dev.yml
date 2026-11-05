@@ -9,10 +9,8 @@ test-resources:
 pu:
   auth:
     secret: ${JWT_SECRET:dev-secret-dev-secret-dev-secret-0000000}
-  # Node (npm run dev -w @pokemon-universe/server) se ejecuta desde apps/server y guarda en .data/avatars;
-  # dev:backend se ejecuta desde backend/, así que hay que apuntar al mismo directorio para servir los avatares
-  # de invitado que sube Node.
-  avatar-storage-dir: ${AVATAR_STORAGE_DIR:../apps/server/.data/avatars}
+  # dev:backend se ejecuta desde backend/: los avatares de desarrollo quedan en backend/.data/avatars (ignorado por git).
+  avatar-storage-dir: ${AVATAR_STORAGE_DIR:.data/avatars}
   # Salas Java en /ws activas (en producción las enciende compose.yaml).
   rooms:
     enabled: true

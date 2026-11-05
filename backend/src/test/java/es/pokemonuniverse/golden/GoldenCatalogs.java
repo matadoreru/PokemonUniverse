@@ -85,7 +85,7 @@ public final class GoldenCatalogs {
   private static JsonNode root(String fixtureId) {
     var resource = "golden/catalog/" + fixtureId + ".json";
     try (var in = GoldenCatalogs.class.getClassLoader().getResourceAsStream(resource)) {
-      if (in == null) throw new IllegalStateException("Falta la fixture " + resource + ". Ejecuta npm run golden:catalog");
+      if (in == null) throw new IllegalStateException("Falta la fixture " + resource);
       return ObjectMapper.getDefault().readValue(in, JsonNode.class);
     } catch (IOException e) {
       throw new UncheckedIOException("No se pudo leer " + resource, e);

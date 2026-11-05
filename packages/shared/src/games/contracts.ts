@@ -1,4 +1,3 @@
-import type { z } from 'zod';
 import type { PokemonCatalog } from '../pokemon/types.js';
 import type { TcgCardCatalog } from '../tcg/types.js';
 
@@ -200,27 +199,6 @@ export interface GameAssetResolution {
   zoom?: number;
   /** Used only by PALETTE_RECOLOR. It is retained in opaque server state. */
   recolor?: GameAssetRecolor;
-}
-
-export interface MiniGameModule<TConfig, TState, TAction, TPublicState> {
-  getCursorChannel?(state: TState, playerId: string): { playerIds: readonly string[]; targetIds: readonly string[] } | null;
-  getLifecycle(state: TState): import('./infrastructure/lifecycle.js').GameLifecycle;
-  readonly manifest: MiniGameManifest;
-  checkAvailability?(config: TConfig, context: GameContext): string | null;
-  readonly configSchema: z.ZodType<TConfig, unknown>;
-  readonly actionSchema: z.ZodType<TAction>;
-  readonly defaultConfig: TConfig;
-  createInitialState(config: TConfig, context: GameContext): TState;
-  start(state: TState, context: GameContext): TState;
-  handleAction(state: TState, playerId: string, action: TAction, context: GameContext): GameActionResult<TState>;
-  handleTimeout(state: TState, context: GameContext): TState;
-  /** Lets a game advance immediately when the room's presence set changes. */
-  handlePresenceChange?(state: TState, context: GameContext): TState;
-  getPublicState(state: TState, context: GameContext): TPublicState;
-  getPlayerState(state: TState, playerId: string, context: GameContext): unknown;
-  resolveAsset?(state: TState, request: GameAssetRequest, context: GameContext): string | GameAssetResolution | null;
-  isFinished(state: TState): boolean;
-  getResults(state: TState): GameResults;
 }
 
 export interface GameStanding {

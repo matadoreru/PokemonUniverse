@@ -41,8 +41,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Crea el bean {@link GameRegistry} a partir de {@code games/registry.json} ({@code npm run registry:export}) y
- * registra los motores portados a Java, construidos con su manifiesto.
+ * Crea el bean {@link GameRegistry} a partir de {@code games/registry.json} (la fuente de los manifiestos y las
+ * configuraciones por defecto; se edita a mano) y registra los motores, construidos con su manifiesto.
  */
 @Factory
 public class ClasspathGameRegistryLoader {
@@ -58,7 +58,7 @@ public class ClasspathGameRegistryLoader {
   public static GameRegistry loadFromClasspath(ObjectMapper mapper) {
     try (InputStream in = ClasspathGameRegistryLoader.class.getClassLoader().getResourceAsStream(RESOURCE)) {
       if (in == null) {
-        throw new IllegalStateException("Falta el recurso " + RESOURCE + ". Ejecuta npm run registry:export");
+        throw new IllegalStateException("Falta el recurso " + RESOURCE);
       }
       var manifests = load(mapper, in);
       return manifests.withEngines(portedEngines(manifests));

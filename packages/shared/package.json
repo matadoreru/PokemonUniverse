@@ -13,17 +13,13 @@
     "./public": {
       "types": "./dist/public.d.ts",
       "default": "./dist/public.js"
-    },
-    "./server": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "lint": "eslint src golden --max-warnings=0"
+    "lint": "eslint src --max-warnings=0"
   },
   "dependencies": {
     "zod": "^4.6.7"

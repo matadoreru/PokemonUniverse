@@ -11,7 +11,7 @@ import { expect, test, type BrowserContext, type Locator, type Page } from '@pla
 import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego, SIZES } from '../src/helpers.js';
 
 /** Almacén de avatares de desarrollo del backend Java (`application-dev.yml`). */
-const AVATAR_DIR = fileURLToPath(new URL('../../apps/server/.data/avatars/', import.meta.url));
+const AVATAR_DIR = fileURLToPath(new URL('../../backend/.data/avatars/', import.meta.url));
 
 /** PNG válido de `lado`×`lado` (RGB, degradado) con CRC y zlib reales: sharp no acepta un PNG roto. */
 function png(lado: number): Buffer {

@@ -81,7 +81,7 @@ export default tseslint.config(
     ignores: ['**/*.test.ts', '**/*.test.tsx'],
     rules: { 'no-restricted-imports': ['error', {
       paths: [{ name: '@pokemon-universe/shared', message: 'Use @pokemon-universe/shared/public in browser code.' }],
-      patterns: [{ group: ['@pokemon-universe/shared/server', '**/shared/src/**', '**/server/src/**'], message: 'Authoritative server modules cannot be imported by the browser.' }],
+      patterns: [{ group: ['**/shared/src/**'], message: 'Import the built contracts from @pokemon-universe/shared/public.' }],
     }] },
   },
   {

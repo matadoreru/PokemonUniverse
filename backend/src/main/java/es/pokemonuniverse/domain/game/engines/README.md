@@ -1,7 +1,14 @@
-# Cómo portar un motor
+# Motores de minijuego
 
-Cada motor Java es una traducción literal del motor TypeScript congelado (`packages/shared/src/games/<id>/`). Las
-fixtures doradas lo verifican. La referencia es `higherlower/`.
+Los motores solo existen en Java. Nacieron como traducción literal de los motores TypeScript del antiguo servidor Node,
+que se borraron cuando Java quedó como única implementación (están en el historial de git, antes del commit
+«Quitar el servidor Node y los motores TS»). Por eso las convenciones de abajo hablan de equivalencias con TS: siguen
+explicando por qué el código es como es, y el frontend sigue leyendo las proyecciones con los tipos de
+`packages/shared`. La referencia es `higherlower/`.
+
+Las fixtures doradas (`src/test/resources/golden/<id>/`) son ahora fotos del comportamiento de cada motor: fijan cada
+proyección, el orden de claves del cable y los mensajes de error. Un cambio de motor que no las regraba falla en
+`GoldenReplayTest`.
 
 ## Ficheros (`engines/<idsinguiones>/`)
 
@@ -74,10 +81,9 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   los acentos cambian el orden). Sobre cualquier otro texto (nombres de movimientos, de Pokémon o de jugadores) se usa
   `Collations.names()` (ICU4J con la raíz CLDR y fuerza terciaria, la misma ICU que Node; también lo usa
   `PokemonCatalogService`) y la fixture dorada arbitra. `java.text.Collator` no vale: ignora espacios y guiones en el
-  nivel primario y pone `"Thunderbolt"` antes que `"Thunder Shock"`, al revés que `localeCompare`. Hoy ICU 78.3 en
-  los dos lados (`process.versions.icu` y `com.ibm.icu:icu4j` en `backend/build.gradle.kts`): subir la ICU de Node
-  obliga a subir `icu4j` y a reexportar las fixtures. Las fixtures se exportan con `LANG=en_US.UTF-8` (ICU `en-US`): si
-  CI difiere en una comparación de textos, la causa es la configuración regional del exportador, no el motor.
+  nivel primario y pone `"Thunderbolt"` antes que `"Thunder Shock"`, al revés que `localeCompare`. Las fixtures
+  se grabaron con ICU 78.3 (`com.ibm.icu:icu4j` en `backend/build.gradle.kts`): subir `icu4j` puede cambiar algún
+  orden de nombres, y entonces hay que regrabarlas y revisar el diff.
 - **`.int()` de Zod**: en Zod 4 es `Number.isSafeInteger` (`|n| <= 2^53 - 1`), no solo "sin decimales": se traduce
   con `JsNumbers.isSafeInteger` (`domain/json`). `1e20` y `2^53` no validan; `2^53 - 1` sí. Con `.min().max()`, el
   primer issue de Zod para `1e20` es `too_big`, no `invalid_type`: `ConfigReader.integer` lo rechaza con «debe estar
@@ -89,39 +95,38 @@ fixtures doradas lo verifican. La referencia es `higherlower/`.
   `UCharacter.hasBinaryProperty(codePoint, UProperty.DIACRITIC)` de ICU4J (ver `poketaboo/PokeTabooRules`). El `\p{M}`
   de Java no es equivalente: deja fuera `^`, `` ` `` o `¨` e incluye marcas que no son diacríticos.
 
-## Escenarios dorados y verificación
+## Fixtures doradas: cambiar un motor o añadir uno
 
-1. Escribe `packages/shared/golden/scenarios/<id>.ts` y regístralo en `scenarios/index.ts`. Cada escenario necesita
-   como mínimo 3 rondas, un `seed` distinto y un `now` realista. Elige seeds que roten categorías o contenido entre
-   rondas. Cubre cada literal de error, la presencia (desconexión que resuelve), la visibilidad y una acción inválida
-   que detenga el escenario. Los `configCases` deben incluir entradas válidas con normalización e inválidas en cada
-   límite.
+Cada fixture guarda una entrada (jugadores, `seed`, `now`, configuración, contexto y pasos) y lo que el motor devolvió
+(`expected`, y `stoppedAt` si un paso se detuvo). `config-cases.json` guarda configuraciones de entrada y si validan.
+
+1. **Cambiar un motor a propósito.** Cambia el Java y regraba:
+   `cd backend && ./gradlew test -Dupdate=true --tests '*GoldenReplayTest*'`. Revisa el diff de
+   `src/test/resources/golden/`: es el cambio de comportamiento, y tiene que ser solo el que buscabas. Sin `-Dupdate`,
+   `GoldenReplayTest` compara y falla en el primer desajuste con su ruta JSON. Un desajuste que no esperabas es un
+   fallo del motor, no de la fixture.
+2. **Añadir un escenario.** Escribe a mano `golden/<id>/<escenario>.json` con `engineId`, `scenario`, `seed`,
+   `catalog` (`gen1-2`), `players`, `config` y `steps` (copia uno existente del mismo motor), sin `expected`, y
+   grábalo con el comando del paso 1. Cada escenario necesita como mínimo 3 rondas, un `seed` distinto y un `now`
+   realista. Cubre cada literal de error, la presencia (desconexión que resuelve), la visibilidad y una acción
+   inválida que detenga el escenario. En `config-cases.json` añade entradas `{ "input": …, "valid": false }`
+   válidas con normalización e inválidas en cada límite; el grabador corrige `valid` y añade `normalized`.
+   - **Pasos**: `{ kind: 'action', playerId, action, now }`, `{ kind: 'timeout', now }`,
+     `{ kind: 'presence', players, now }` y `{ kind: 'asset', assetToken, roundNumber, assetId, now }`. Un paso
+     `asset` llama a `resolveAsset` sin cambiar el estado y graba `{ resolution }` sin snapshot; copia el token y la
+     ronda de la proyección grabada y cubre también un token o una ronda distintos.
    - **Contexto**: un escenario puede traer `hostCustomCategories`, `hostWouldYouRatherPrompts`, `pokemonVisuals`
-     (`Record<id, PokemonVisualAsset>`), `pokemonAudio` (`Record<id, { latest?, legacy? }>`) y `tcgCards`
-     (`TcgComparableCard[]`). Solo los que trae llegan al `GameContext` (ausente ≠ vacío); `preloadImage` es siempre
-     un no-op. `golden/context.ts` y `GoldenContexts.java` montan los mismos catálogos en memoria, en el orden de la
-     fixture; `tcgCards.cardsFor` filtra por sets, rarezas y precio decimal, no por generación.
+     (`Record<id, PokemonVisualAsset>`), `pokemonAudio` (`Record<id, { latest?, legacy? }>`) y `tcgCards`. Solo los
+     que trae llegan al `GameContext` (ausente ≠ vacío). `GoldenContexts` monta los catálogos en memoria, en el orden
+     de la fixture; `tcgCards.cardsFor` filtra por sets, rarezas y precio decimal, no por generación.
    - **Parche de catálogo**: `catalogPatch` (`Record<id, { palette: string[]; paletteWeights: number[] }>`) superpone
-     la paleta a esas filas del catálogo antes de construirlo, tal cual y sin la validación del cargador de Node:
-     `applyCatalogPatch` (`golden/catalog-patch.ts`) y `GoldenCatalogs.load(catalog, catalogPatch)` hacen lo mismo y
-     fallan si un id no está en la fixture. Existe porque el exportador de catálogo borra las paletas (las calcula el
-     data-sync) y `pokemon-palette-guess` las necesita; sus escenarios traen paletas literales de 8 colores. Úsalo
-     solo para datos que la base local no tiene.
-   - **Paso `asset`**: `{ kind: 'asset', assetToken, roundNumber, assetId, now }` llama a `resolveAsset` sin cambiar el
-     estado y graba `{ resolution }` sin snapshot. Un `string` del motor TS se normaliza a
-     `{ source, transform: 'ORIGINAL' }` (como `game-image-cache.ts`) y `null` o un motor sin `resolveAsset` graba
-     `resolution: null`, que en Java es `Optional.empty()`. Copia el token y la ronda de la proyección grabada y cubre
-     también un token o una ronda distintos. `AssetResolution` serializa `source, transform, focusSeed, zoom, recolor`
-     sin los nulos (inclusión `NON_NULL`), así que los literales TS `{ source, transform }`,
-     `{ source, transform, focusSeed, zoom }` y `{ source, transform, recolor }` coinciden con la comparación ordenada.
-2. Ejecuta `npm run build -w @pokemon-universe/shared && npm run golden:export` y commitea los escenarios y las fixtures.
-   Revisa una fixture a ojo.
-3. Ejecuta `cd backend && ./gradlew test --tests '*GoldenReplayTest*'`. Debe fallar con `Motor no portado: <id>`.
-4. Porta el motor y regístralo en un único sitio: `portedEngines` de
+     la paleta a esas filas del catálogo dorado (`golden/catalog/gen1-2.json`, que no trae paletas) antes de
+     construirlo; `GoldenCatalogs.load` falla si un id no está en la fixture.
+3. **Añadir un motor.** Créalo con los ficheros de arriba y regístralo en un único sitio: `portedEngines` de
    `adapters/out/resources/ClasspathGameRegistryLoader.java`, con
-   `engines.put(<Juego>Engine.ID, new <Juego>Engine(manifest(manifests, <Juego>Engine.ID)))`. El arnés dorado
-   (`GoldenEngines`) lee ese mismo registro, así que `GoldenReplayTest` lo recoge solo, y
-   `GoldenRegistryConsistencyTest` exige que todo motor registrado tenga fixtures y viceversa. El manifiesto ya está en
-   `registry.json`: `npm run registry:export` solo hace falta cuando cambia un manifiesto.
-5. Vuelve a ejecutar el paso 3 hasta que pase. Ante un desajuste, corrige el Java: nunca las fixtures ni el TS. Termina
-   con `./gradlew check` y, en la raíz, con `npm run lint && npm test`, que incluye `check:golden`.
+   `engines.put(<Juego>Engine.ID, new <Juego>Engine(manifest(manifests, <Juego>Engine.ID)))`. Su manifiesto y su
+   configuración por defecto se escriben a mano en `src/main/resources/games/registry.json`, la fuente de los dos;
+   la `default<Juego>Config` de `packages/shared` tiene que coincidir (lo comprueba `registry-defaults.test.ts`).
+   Escribe sus escenarios como en el paso 2 y grábalos. `GoldenReplayTest` los recoge solo y
+   `GoldenRegistryConsistencyTest` exige que todo motor registrado tenga fixtures y viceversa. Todo en el mismo commit.
+4. Termina con `./gradlew check` y, en la raíz, con `npm run lint && npm test`.

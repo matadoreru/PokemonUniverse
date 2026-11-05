@@ -25,8 +25,7 @@ Micronaut, así que un avatar de más de 5 MiB recibe el 413 JSON del backend y 
 `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy` (sin CSP).
 
 La imagen web sale del `Dockerfile` raíz (contexto la raíz del repositorio, única etapa final `web`): compila
-`packages/shared` y `frontend` en la plataforma del runner y copia `frontend/dist` a nginx. Node (`apps/server`) se
-queda en el repositorio como oráculo de pruebas: ni se compila en imagen ni se publica ni se despliega.
+`packages/shared` y `frontend` en la plataforma del runner y copia `frontend/dist` a nginx.
 
 Desde el corte 2D, `compose.yaml` ya no tiene el servicio `server` (Node): el `backend` (Java, Micronaut) es el único
 servidor. Solo depende de `postgres`: Flyway crea el esquema en una BD vacía o reconoce el de Prisma (baseline 1). Usa
@@ -60,14 +59,13 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 
 | Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
 | --- | --- | --- | --- |
-| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `apps/server/`, `scripts/export-golden-*.mjs`, `backend/src/test/resources/golden/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries` y `check:registry`); job `oracle`: oráculo Node (migraciones Prisma sobre una BD de prueba, typecheck, lint, tests, build) y `check:golden`; build Vite | `pokemon-universe-web` (target `web`) |
+| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries`); build Vite | `pokemon-universe-web` (target `web`) |
 | `.github/workflows/backend.yml` | `backend/`, `compose.yaml` | `./gradlew check` (tests con Testcontainers, `ComposeStartupTest` y `verifyOpenApi`); `webp-arm64`: codificador WebP en la imagen `linux/arm64` | `pokemon-universe-backend` (JVM); `:<sha>-native` experimental solo a mano con `backend-native.yml` |
 
 `.github/workflows/deploy-scripts.yml` (en PR y push a `main` cuando cambian `scripts/**` o `compose.yaml`) pasa
 shellcheck a los scripts y `scripts/test-deploy-rollback.sh`; no construye imágenes ni forma parte de `main.yml`.
 
-Desde el corte 2D no hay workflow ni imagen de Node: `node-server.yml` desapareció y los tests del oráculo pasaron al
-job `oracle` de `frontend.yml`, que bloquea la imagen web como antes bloqueaban la de Node.
+No hay workflow ni imagen de Node: el servidor Node y su job `oracle` se quitaron junto con los motores TS.
 
 En cada push a `main`, `.github/workflows/main.yml` detecta qué zonas cambiaron desde el último Main verde en `main`
 (no desde el push anterior; sin ninguno, construye todo), llama solo a los workflows afectados
@@ -110,7 +108,7 @@ ejecución real de `main.yml`.
 
 | Fase | Antes (medido) | Después (estimado) |
 | --- | --- | --- |
-| Validación Node | validate 2:43 (npm ci 47 s, typecheck 24 s, lint 11 s, test 30 s, build 25 s) | frontend ≈ 2:00 (install 45 s, lint/typecheck/test en paralelo ≈ 30 s, build 25 s); oráculo Node (job `oracle`) ≈ 2:30 en paralelo |
+| Validación Node | validate 2:43 (npm ci 47 s, typecheck 24 s, lint 11 s, test 30 s, build 25 s) | frontend ≈ 2:00 (install 45 s, lint/typecheck/test en paralelo ≈ 30 s, build 25 s) |
 | Imágenes | publish 4:13 (web + server multi-arch bajo QEMU, siempre) | web ≈ 1:00; backend JVM ≈ 2:00 tras check ≈ 2:30 (Gradle cacheado, Testcontainers ≈ 40 s) y `webp-arm64` bajo QEMU; solo las que cambian |
 | Nativo backend | — | ≈ 10–15 min, job aparte en `main.yml`, no bloqueante y fuera de la cadena de `deploy-pre` |
 | Retag de imágenes no afectadas | — | ≈ 0:20 |

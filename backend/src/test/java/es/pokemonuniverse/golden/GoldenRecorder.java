@@ -21,8 +21,8 @@ import java.util.Optional;
  * Regenera las fixtures doradas desde los motores Java ({@code ./gradlew test -Dupdate=true --tests '*GoldenReplayTest*'}).
  * Conserva la entrada de cada fixture (jugadores, configuración, pasos y contexto) y vuelve a grabar {@code expected}
  * y {@code stoppedAt} con la misma secuencia de llamadas que {@link GoldenReplayer}. El fichero sale con el formato de
- * {@code JSON.stringify(valor, null, 2)} más salto de línea final, el mismo que escribía el antiguo exportador TS, así
- * que regrabar sin cambiar ningún motor no deja diff.
+ * {@code JSON.stringify(valor, null, 2)} más salto de línea final (el del antiguo exportador TS), así que regrabar sin
+ * cambiar ningún motor no deja diff. Una fixture nueva se escribe a mano sin {@code expected} y se graba igual.
  */
 public final class GoldenRecorder {
 
@@ -99,7 +99,7 @@ public final class GoldenRecorder {
             result.put("snapshot", snapshot(engine, state, context));
           }
         }
-      } catch (Exception thrown) { // como runner.ts: cualquier error del paso se graba y detiene el escenario
+      } catch (Exception thrown) { // cualquier error del paso se graba y detiene el escenario
         stoppedAt = threw(afterSteps, thrown, i);
         break;
       }

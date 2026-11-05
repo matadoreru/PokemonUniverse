@@ -27,13 +27,14 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
  * Flyway es el único dueño del esquema. Contenedor propio (no el de Test Resources) porque hacen falta varias BD y
  * {@code pg_dump}, que no está en el host: se ejecuta dentro del contenedor.
  *
- * <p>La BD «de Prisma» se crea ejecutando, en orden, los {@code migration.sql} de {@code apps/server/prisma/migrations}:
- * es exactamente el SQL que {@code prisma migrate deploy} aplicó en producción (Prisma solo añade la contabilidad de
+ * <p>La BD «de Prisma» se crea ejecutando, en orden, los {@code migration.sql} de
+ * {@code src/test/resources/db/prisma-migrations} (copia congelada de las migraciones del antiguo servidor Node): es
+ * exactamente el SQL que {@code prisma migrate deploy} aplicó en producción (Prisma solo añade la contabilidad de
  * {@code _prisma_migrations}, que aquí se reproduce). No se usa {@code npx prisma}: el CI del backend solo instala Java.
  */
 class FlywayMigrationsTest {
 
-  private static final Path PRISMA_MIGRATIONS = Path.of("..", "apps", "server", "prisma", "migrations");
+  private static final Path PRISMA_MIGRATIONS = Path.of("src", "test", "resources", "db", "prisma-migrations");
   private static final AtomicInteger SEQ = new AtomicInteger();
   private static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:17-alpine");
 

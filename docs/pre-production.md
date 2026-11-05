@@ -163,7 +163,7 @@ Con la infraestructura ya fusionada inicialmente con `PRE_DEPLOY_ENABLED=false`,
 A partir de entonces, cada push a `main` ejecuta **Main** (`main.yml`), que:
 
 1. detecta qué zonas cambiaron (frontend, servidor Node, backend Java) desde el último Main verde;
-2. ejecuta solo los workflows afectados (`frontend.yml`, `backend.yml`): typecheck, lint, tests, el oráculo Node con sus migraciones sobre PostgreSQL de prueba y `check:golden` (job `oracle`) y `./gradlew check`, y a la vez construye las imágenes `linux/amd64` reconstruidas y las publica como `:<SHA>` (la prueba de humo WebP en `linux/arm64` corre en los PRs del backend y en los tags `v*`; las imágenes arm64 solo se publican con los tags `v*` y las ejecuciones manuales);
+2. ejecuta solo los workflows afectados (`frontend.yml`, `backend.yml`): typecheck, lint, tests y `./gradlew check`, y a la vez construye las imágenes `linux/amd64` reconstruidas y las publica como `:<SHA>` (la prueba de humo WebP en `linux/arm64` corre en los PRs del backend y en los tags `v*`; las imágenes arm64 solo se publican con los tags `v*` y las ejecuciones manuales);
 3. si todo ha pasado, mueve `:pre` a las imágenes reconstruidas y reetiqueta las no afectadas de `:pre` a `:<SHA>`, de modo que las dos imágenes (`web` y `backend`) existen para cada SHA;
 4. se conecta por SSH y despliega `:<SHA>` en PRE (solo en `main`; los tags `v*` añaden el tag de versión a las dos imágenes y no despliegan).
 
