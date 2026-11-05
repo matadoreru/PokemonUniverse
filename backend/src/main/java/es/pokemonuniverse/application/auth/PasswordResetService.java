@@ -117,19 +117,24 @@ public class PasswordResetService {
   }
 
   /**
-   * Gasta el token y pone la contraseña nueva en la misma transacción. La fila del token se bloquea al leerla, así que
-   * de dos envíos a la vez con el mismo token el segundo espera y ya lo ve usado.
+   * Gasta el token y pone la contraseña nueva en la misma transacción. Siempre se bloquea primero la fila del usuario y
+   * después la del token (el mismo orden que {@link #issue}, así no hay interbloqueo entre ambos). Con dos envíos a la
+   * vez con el mismo token el segundo espera en el usuario y, al entrar, ya lo ve usado.
    */
   @Transactional
   public AuthUser reset(String token, String password) {
     if (token == null) throw new InvalidResetLinkException();
     var trimmed = token.trim();
     if (!TOKEN_FORMAT.matcher(trimmed).matches()) throw new InvalidResetLinkException();
+    var hash = sha256Hex(trimmed);
+    var userId = tokens.findUserIdByTokenHash(hash).orElseThrow(InvalidResetLinkException::new);
+    var user = entityManager.find(UserEntity.class, userId, LockModeType.PESSIMISTIC_WRITE);
+    if (user == null) throw new InvalidResetLinkException();
     var now = now();
-    var row = tokens.findByTokenHashForUpdate(sha256Hex(trimmed))
+    // Con el usuario ya bloqueado se vuelve a leer el token (bloqueado) y se comprueba que sigue vigente.
+    var row = tokens.findByTokenHashForUpdate(hash)
         .filter(t -> t.getUsedAt() == null && t.getExpiresAt().isAfter(now))
         .orElseThrow(InvalidResetLinkException::new);
-    var user = users.findById(row.getUserId()).orElseThrow(InvalidResetLinkException::new);
     row.markUsed(now);
     user.changePassword(hasher.hash(password), now);
     tokens.update(row);
