@@ -68,7 +68,9 @@ describe('PokemonBingoGame', () => {
     expect(html.match(/aria-pressed="false"/g)).toHaveLength(3);
     expect(html).toContain('aria-label="Casilla 1: Tipo Fuego. Charmander, completa"');
     expect(html).toContain('aria-label="Casilla 2: Generación 1 + Doble tipo. Vacía"');
-    expect(html).toContain('Completa');
+    // Completa: el tic de la esquina y el texto para lectores, sin chip que robe alto al sprite.
+    expect(html).toContain('<span class="sr-only">Completa</span>');
+    expect(html).not.toMatch(/_chip_[^"]*"[^>]*>(<svg[\s\S]*?<\/svg>)?Completa</);
     expect(html).toContain('Vacía');
     expect(html).toContain('--cols:2');
     // La casilla elegida (la primera) con el buscador y «Quitar Pokémon».

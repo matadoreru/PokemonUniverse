@@ -363,10 +363,6 @@
   .assigned {
     font-size: var(--fs-13);
   }
-  /* El chip «Completa» sin icono: cabe en una casilla de un tercio de la pantalla. */
-  .filled svg {
-    display: none;
-  }
 }
 /*
  * Casilla compacta en escritorio: la condición a todo el ancho y, debajo, el sprite pequeño a la izquierda del estado.
@@ -464,4 +460,43 @@
   .gridFill:not(.dense) .assigned {
     font-size: clamp(var(--fs-18), calc(4cqw / var(--cols, 3) * 3), var(--fs-22));
   }
+}
+
+/*
+ * Casilla con Pokémon: el sprite ocupa casi toda la casilla (detrás de la condición y del nombre, que llevan fondo crema
+ * para leerse), a cualquier tamaño y también en las casillas compactas. Selector reforzado para ganar a las compactas.
+ */
+.grid.grid > [data-bingo-cell][data-filled='true'] > span[data-part='art'] {
+  position: absolute;
+  inset: var(--sp-1);
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+.grid > [data-filled='true'] > span[data-part='name'],
+.grid > [data-filled='true'] > .filled {
+  position: relative;
+  z-index: var(--z-content);
+}
+.grid > [data-filled='true'] > span[data-part='name'],
+.grid > [data-filled='true'] .assigned {
+  max-width: 100%;
+  padding: 0 var(--sp-1);
+  border-radius: var(--r-badge);
+  background: var(--cream);
+}
+/* Tic de «Completa» en la esquina de la casilla. */
+.done {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  z-index: var(--z-content);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  background: var(--ok);
+  color: var(--navy);
 }
