@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
-import { gameIcon } from '../games/game-icons';
+import { GameArt } from '../games/GameArt';
 import { GameSelectionConfig } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
@@ -176,7 +176,7 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
             return (
               <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
                 {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
-                <Card size="sm" art={<Icon icon={gameIcon(game.id)} size={32} />} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
+                <Card size="sm" art={<GameArt gameId={game.id} size={32} />} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
                   <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
                   {/* Elegida: solo un tick en la esquina superior izquierda, para que la carta no cambie de tamaño
                       (el estado ya lo dicen el amarillo y `aria-pressed`). */}
@@ -203,7 +203,7 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   const configPanel = (
     <Panel variant="cream" as="div">
       <div className={s.configHead}>
-        <span className={s.gameTile} aria-hidden="true"><Icon icon={gameIcon(selectedManifest.id)} size={32} /></span>
+        <span className={s.gameTile} aria-hidden="true"><GameArt gameId={selectedManifest.id} size={32} /></span>
         <div className={s.headText}>
           <h2 className={s.title}>Ajustes de {selectedManifest.name}</h2>
           <p className={s.configLead}>

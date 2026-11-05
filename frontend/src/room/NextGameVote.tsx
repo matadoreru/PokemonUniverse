@@ -5,7 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Badge, Card, Chip, Cutin, cx, Icon, Panel, Pill, Row, ScreenSplit } from '../ui';
-import { gameIcon } from '../games/game-icons';
+import { GameArt } from '../games/GameArt';
 import { gameAvailabilityReason } from './GameSelectionConfig';
 import { summarizeGameConfig } from './game-config-summary';
 import { voteActionStatus, votesLabel } from './next-game-vote';
@@ -61,7 +61,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
         // Votando: la carta es el conmutador; votado o revelado, carta sin botón (el ganador se resalta en amarillo).
         const choice = canVote ? { onSelect: () => setDraft(game.id), disabled: submitting || Boolean(unavailableReason) } : {};
         return <li key={game.id} className={cx(s.cell, !active && !winner && s.lost)}>
-          <Card art={<Icon icon={gameIcon(game.id)} size={32} />} name={game.name} state={(active ? selected : winner) ? 'selected' : 'idle'} {...choice}>
+          <Card art={<GameArt gameId={game.id} size={32} />} name={game.name} state={(active ? selected : winner) ? 'selected' : 'idle'} {...choice}>
             {(winner || selected || game.recommended || game.experimental) && <span className={s.badges}>
               {winner && <Badge tone="navy"><Icon icon={Trophy} size={18} />Ganador</Badge>}
               {selected && <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Tu voto</Chip>}

@@ -131,6 +131,10 @@
   image-rendering: auto;
 }
 .glyph {
+  /* Flex centrado: un icono o una imagen (objeto de un minijuego) queda en el centro de la loseta, no en la línea base. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: var(--fs-34);
   line-height: 1;
 }
