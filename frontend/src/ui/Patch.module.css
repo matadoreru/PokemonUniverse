@@ -1,0 +1,336 @@
+/* Notas de parche (Novedades). El acento de categoría llega en `--accent` (un token, desde Patch.tsx). */
+
+/* ---------- portada de versión ---------- */
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sp-5);
+  align-items: center;
+  padding: var(--sp-5);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-panel);
+  background: var(--navy-3);
+  color: var(--white);
+  box-shadow: var(--sh-hard-5);
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--stripes-blue);
+  pointer-events: none;
+}
+/* Cuña a la derecha, con filo amarillo en diagonal: el borde del «escenario» del parche. Degradado y no `skew`, para
+   no desbordar la portada; desde 640 px la portada le reserva su hueco para que el texto nunca la pise. */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--wedge);
+  background: linear-gradient(105deg, transparent 0 40%, var(--yellow) 40% 47%, var(--blue-d) 47%);
+  pointer-events: none;
+  display: none;
+}
+.hero > * {
+  position: relative;
+  z-index: var(--z-content);
+}
+@media (min-width: 640px) {
+  .hero {
+    --wedge: 96px;
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: var(--sp-5) calc(var(--wedge) + var(--sp-2)) var(--sp-5) var(--sp-6);
+  }
+  .hero::after {
+    display: block;
+  }
+}
+@media (min-width: 1536px) {
+  .hero {
+    --wedge: 140px;
+  }
+}
+
+.ticket {
+  position: relative;
+  justify-self: start;
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  color: var(--navy);
+  animation: stamp var(--t-reveal) var(--ease-bounce) both;
+}
+/* El fondo del ticket va inclinado como un sello; el texto queda recto para leerse bien. */
+.ticket::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--yellow);
+  box-shadow: var(--sh-hard-4);
+  transform: rotate(-4deg);
+}
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.35);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ticketLabel,
+.ticketVersion {
+  /* Posicionados: se pintan encima del fondo inclinado (`::before`), que va antes en el orden. */
+  position: relative;
+}
+.ticketLabel {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+.ticketVersion {
+  /* Interlineado algo mayor que el display: los glifos de Baloo sobresalen de una caja de 1 y pisarían «Parche». */
+  font: 800 var(--fs-44) / 1.15 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (min-width: 1536px) {
+  .ticketVersion {
+    font-size: var(--fs-68);
+  }
+}
+
+.copy {
+  display: grid;
+  justify-items: start;
+  gap: var(--sp-2);
+  min-width: 0;
+  max-width: 62ch;
+}
+.latest {
+  padding: var(--sp-1) var(--sp-2);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-badge);
+  background: var(--cream);
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.title {
+  font: 800 var(--fs-26) / var(--lh-display) var(--font-display);
+  overflow-wrap: anywhere;
+}
+@media (min-width: 1024px) {
+  .title {
+    font-size: var(--fs-34);
+  }
+}
+.summary {
+  color: var(--sky-2);
+  font: 700 var(--fs-18) / var(--lh-text) var(--font-text);
+}
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+.facts > * {
+  padding: 6px var(--sp-2);
+  border: var(--ol-2) solid var(--navy-2);
+  border-radius: var(--r-pill);
+  background: var(--navy);
+  color: var(--sky-2);
+}
+.factCount {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- tarjeta destacada ---------- */
+.highlight {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--sp-3);
+  row-gap: var(--sp-1);
+  align-content: start;
+  padding: calc(var(--sp-4) + 6px) var(--sp-4) var(--sp-4);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--sh-hard-4);
+  overflow: hidden;
+}
+/* Franja superior del color de la categoría, con filo azul noche para que se vea también si es clara. */
+.highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: var(--accent);
+  border-bottom: var(--ol-2) solid var(--navy);
+}
+.disc {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--navy);
+}
+.kind {
+  color: var(--ink-2);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+}
+.highlightText {
+  font: 800 var(--fs-18) / var(--lh-text) var(--font-text);
+}
+.compact {
+  padding: calc(var(--sp-3) + 6px) var(--sp-3) var(--sp-3);
+  box-shadow: var(--sh-hard-3);
+}
+.compact .disc {
+  width: 34px;
+  height: 34px;
+}
+.compact .highlightText {
+  font-size: var(--fs-15);
+}
+
+/* ---------- título de sección ---------- */
+.rule {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  color: var(--ink);
+}
+.ruleIcon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-badge);
+  background: var(--accent);
+  color: var(--navy);
+}
+.ruleLabel {
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+  white-space: nowrap;
+}
+.ruleCount {
+  min-width: 26px;
+  padding: 4px var(--sp-2);
+  border-radius: var(--r-pill);
+  background: var(--navy);
+  color: var(--white);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.ruleLine {
+  flex: 1 1 auto;
+  min-width: var(--sp-4);
+  height: 0;
+  border-top: var(--ol-2) solid var(--cream-2);
+}
+
+/* ---------- línea de tiempo ---------- */
+.timeline {
+  position: relative;
+  display: grid;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) 0;
+}
+/* Raíl: une los puntos desde el primero hasta el último. */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: 13px;
+  width: 6px;
+  border-radius: var(--r-pill);
+  background: var(--navy-2);
+}
+.stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-2);
+}
+.dot {
+  justify-self: center;
+  width: 18px;
+  height: 18px;
+  border: var(--ol-3) solid var(--navy-2);
+  border-radius: var(--r-pill);
+  background: var(--cream);
+}
+.current .dot {
+  width: 26px;
+  height: 26px;
+  background: var(--yellow);
+  box-shadow: 0 0 0 var(--ol-2) var(--yellow-l);
+}
+.plate {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-franja);
+  background: var(--cream);
+  color: var(--navy);
+  text-decoration: none;
+  box-shadow: var(--sh-hard-3);
+  transition: transform var(--t-press) var(--ease);
+}
+.plate:hover {
+  transform: translateY(-1px);
+}
+.plate:not([aria-current]):hover {
+  background: var(--cream-2);
+}
+.plate:active {
+  transform: translateY(2px);
+}
+.current .plate {
+  background: var(--yellow);
+  --focus-ring: var(--focus-ring-on-yellow);
+}
+.plateText {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 2px;
+}
+.plateVersion {
+  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.plateTitle {
+  font: 800 var(--fs-15) / var(--lh-text) var(--font-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plateDate {
+  color: var(--ink-2);
+  font: 700 var(--fs-13) / var(--lh-text) var(--font-text);
+}

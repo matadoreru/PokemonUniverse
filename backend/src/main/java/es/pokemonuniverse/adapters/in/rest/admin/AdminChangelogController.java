@@ -105,9 +105,12 @@ public class AdminChangelogController {
   public record CreateChangelogBody(
       @Schema(requiredMode = Schema.RequiredMode.REQUIRED, pattern = "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$") String version,
       @Schema(requiredMode = Schema.RequiredMode.REQUIRED, minLength = 3, maxLength = 120) String title,
+      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 200,
+          description = "Recortado; vacío = sin resumen.") String summary,
       @Schema(requiredMode = Schema.RequiredMode.REQUIRED, format = "date-time") String date,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false") Boolean published,
-      @Schema(requiredMode = Schema.RequiredMode.REQUIRED) List<ChangelogChange> content) {}
+      @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Como máximo 3 con `highlight: true`.")
+      List<ChangelogChange> content) {}
 
   /**
    * Solo documenta el cuerpo: todos los campos opcionales, pero {@code published} conserva su valor por defecto
@@ -119,7 +122,10 @@ public class AdminChangelogController {
   public record UpdateChangelogBody(
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED) String version,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, minLength = 3, maxLength = 120) String title,
+      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 200,
+          description = "Recortado; vacío borra el resumen.") String summary,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, format = "date-time") String date,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false") Boolean published,
-      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED) List<ChangelogChange> content) {}
+      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Como máximo 3 con `highlight: true`.")
+      List<ChangelogChange> content) {}
 }

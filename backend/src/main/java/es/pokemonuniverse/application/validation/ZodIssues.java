@@ -157,6 +157,18 @@ public final class ZodIssues {
     issues.add(issue);
   }
 
+  /**
+   * {@code ctx.addIssue({code: 'custom', message})} de un {@code superRefine} sin {@code path}: Zod añade la ruta al
+   * final, así que el orden es {@code code}, {@code message}, {@code path} (no el de {@link #custom}).
+   */
+  public void refinement(List<Object> path, String message) {
+    var issue = new LinkedHashMap<String, Object>();
+    issue.put("code", "custom");
+    issue.put("message", message);
+    issue.put("path", path);
+    issues.add(issue);
+  }
+
   public void unrecognizedKeys(List<String> keys) {
     unrecognizedKeys(keys, List.of());
   }

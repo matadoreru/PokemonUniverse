@@ -46,5 +46,7 @@ export { ScreenSplit } from './ScreenSplit';
 export type { ScreenSplitProps } from './ScreenSplit';
 export { ScreenTransition } from './ScreenTransition';
 export type { ScreenTransitionProps } from './ScreenTransition';
+export { HighlightCard, PatchHero, SectionRule, Timeline, TimelineLink } from './Patch';
+export type { HighlightCardProps, PatchHeroProps, PatchTone, SectionRuleProps, TimelineLinkProps, TimelineProps } from './Patch';
 export { Confetti, confettiPieces } from './Confetti';
 export type { ConfettiPiece } from './Confetti';

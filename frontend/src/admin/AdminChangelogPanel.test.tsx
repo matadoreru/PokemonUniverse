@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { AdminChangelogPanel, ChangelogVersionList, emptyChanges, formFromEntry, newChangelogForm } from './AdminChangelogPanel';
+import { AdminChangelogPanel, ChangelogVersionList, emptyChanges, formFromEntry, highlightCount, newChangelogForm, normalizedChange } from './AdminChangelogPanel';
 import { entry, LEGACY } from './fixtures';
 
 const noop = () => undefined;
@@ -8,12 +8,19 @@ const noop = () => undefined;
 describe('formulario del changelog', () => {
   it('una versión nueva empieza en borrador, con la fecha local y un cambio vacío', () => {
     const form = newChangelogForm(new Date(2026, 10, 4, 23, 30));
-    expect(form).toMatchObject({ id: null, date: '2026-11-04', published: false, content: [{ type: 'NEW', text: '' }] });
+    expect(form).toMatchObject({ id: null, summary: '', date: '2026-11-04', published: false, content: [{ type: 'NEW', text: '' }] });
   });
   it('copia una versión sin compartir sus cambios', () => {
     const form = formFromEntry(entry);
     expect(form).toMatchObject({ id: 'c1', version: '0.9.0', date: '2026-11-03', published: true });
     expect(form.content[0]).not.toBe(entry.content[0]);
+    expect(form.summary).toBe('La portada estrena pantalla de título.');
+    expect(formFromEntry({ ...entry, summary: undefined as never }).summary).toBe('');
+  });
+  it('guarda highlight solo cuando es true, para que el formulario no parezca cambiado', () => {
+    expect(normalizedChange({ type: 'NEW', text: 'A', highlight: false })).toEqual({ type: 'NEW', text: 'A' });
+    expect(normalizedChange({ type: 'NEW', text: 'A', highlight: true })).toEqual({ type: 'NEW', text: 'A', highlight: true });
+    expect(highlightCount(formFromEntry(entry).content)).toBe(1);
   });
   it('marca los cambios sin texto', () => {
     expect(emptyChanges([{ type: 'NEW', text: 'Algo' }, { type: 'BUGS', text: '  ' }, { type: 'NEW', text: '' }])).toEqual([1, 2]);

@@ -27,8 +27,8 @@ export const feedback: FeedbackItem = {
 };
 
 export const entry: ChangelogEntry = {
-  id: 'c1', version: '0.9.0', title: 'Pantalla de título', date: '2026-11-03T12:00:00.000Z', published: true,
-  content: [{ type: 'NEW', text: 'Portada nueva' }], createdAt: '2026-11-03T12:00:00.000Z', updatedAt: '2026-11-03T12:00:00.000Z',
+  id: 'c1', version: '0.9.0', title: 'Pantalla de título', summary: 'La portada estrena pantalla de título.', date: '2026-11-03T12:00:00.000Z', published: true,
+  content: [{ type: 'NEW', text: 'Portada nueva', highlight: true }, { type: 'BUGS', text: 'Avisos por encima de los diálogos' }], createdAt: '2026-11-03T12:00:00.000Z', updatedAt: '2026-11-03T12:00:00.000Z',
 };
 
 /** Clases de los estilos antiguos que ya no deben salir en la administración. */

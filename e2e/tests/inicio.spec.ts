@@ -24,11 +24,12 @@ const NOVEDAD = {
   id: 'e2e-novedad',
   version: '0.9.0',
   title: 'Pantalla de título Arcade DS',
+  summary: 'La portada se convierte en una pantalla de título y las páginas largas ganan paneles con su propio scroll.',
   date: '2026-11-03T00:00:00.000Z',
   published: true,
   content: [
-    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.' },
-    { type: 'NEW', text: 'Cabecera de placas con el sonido, las novedades y el perfil siempre a mano.' },
+    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.', highlight: true },
+    { type: 'NEW', text: 'Cabecera de placas con el sonido, las novedades y el perfil siempre a mano.', highlight: true },
     { type: 'INTERFACE', text: 'Las pantallas entran con una transición corta que respeta la reducción de movimiento.' },
     { type: 'BUGS', text: 'Los avisos se ven por encima de los diálogos abiertos.' },
     { type: 'BUGS', text: 'El perfil del administrador vuelve a estar accesible en el móvil.' },
@@ -50,6 +51,8 @@ for (const { w, h } of SIZES) {
     await page.goto('/');
     const panel = page.getByRole('region', { name: 'Lo último en el universo' });
     await expect(panel.getByText('Pantalla de título Arcade DS')).toBeVisible();
+    // Los destacados van primero, en tarjetas.
+    await expect(panel.getByRole('article').filter({ hasText: 'Cabecera de placas' }).last()).toBeVisible();
     await expect(panel.getByRole('link', { name: 'Ver todas' })).toHaveAttribute('href', '/changelog');
     await capture(page, 'portada-novedades');
 
@@ -63,6 +66,8 @@ for (const { w, h } of SIZES) {
     falla = false;
     await alerta.getByRole('button', { name: 'Reintentar' }).click();
     await expect(panel.getByText('Pantalla de título Arcade DS')).toBeVisible();
+    // Los destacados van primero, en tarjetas.
+    await expect(panel.getByRole('article').filter({ hasText: 'Cabecera de placas' }).last()).toBeVisible();
 
     // La consola registra el 503 simulado; no es un error de la página.
     expect(errors.filter((e) => !/503|Service Unavailable/.test(e))).toEqual([]);

@@ -5,6 +5,7 @@ import es.pokemonuniverse.adapters.out.persistence.ChangelogRepository;
 import es.pokemonuniverse.application.errors.ConflictException;
 import es.pokemonuniverse.application.errors.NotFoundException;
 import es.pokemonuniverse.application.time.Clock;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import jakarta.inject.Singleton;
 import java.time.Instant;
@@ -33,7 +34,9 @@ public class ChangelogService {
     this.clock = clock;
   }
 
-  public record Entry(String id, String version, String title, Instant date, boolean published,
+  /** {@code summary} es {@code null} si la versión no tiene resumen. */
+  public record Entry(String id, String version, String title, @Nullable String summary, Instant date,
+      boolean published,
       List<ChangelogChange> content, Instant createdAt, Instant updatedAt) {}
 
   public List<Entry> listPublished() {
@@ -48,7 +51,8 @@ public class ChangelogService {
     var input = ChangelogInput.parseCreate(body);
     if (repository.findByVersion(input.version()).isPresent()) throw new ConflictException(DUPLICATE_VERSION);
     var now = Instant.ofEpochMilli(clock.now());
-    var entity = ChangelogEntity.create(UUID.randomUUID().toString(), input.version(), input.title(), input.date(),
+    var entity = ChangelogEntity.create(UUID.randomUUID().toString(), input.version(), input.title(),
+        input.summary() == null || input.summary().isEmpty() ? null : input.summary(), input.date(),
         input.published(), stored(input.content()), now);
     try {
       return view(writer.insert(entity));
@@ -64,7 +68,7 @@ public class ChangelogService {
       if (duplicate.isPresent() && !duplicate.get().getId().equals(id)) throw new ConflictException(DUPLICATE_VERSION);
     }
     var entity = repository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND));
-    entity.update(input.version(), input.title(), input.date(), input.published(),
+    entity.update(input.version(), input.title(), input.summary(), input.date(), input.published(),
         input.content() == null ? null : stored(input.content()), Instant.ofEpochMilli(clock.now()));
     try {
       return view(writer.update(entity));
@@ -78,16 +82,21 @@ public class ChangelogService {
   }
 
   private static Entry view(ChangelogEntity e) {
-    return new Entry(e.getId(), e.getVersion(), e.getTitle(), e.getDate(), e.isPublished(),
+    return new Entry(e.getId(), e.getVersion(), e.getTitle(), e.getSummary(), e.getDate(),
+        e.isPublished(),
         ChangelogContent.parse(e.getContent()), e.getCreatedAt(), e.getUpdatedAt());
   }
 
-  /** {@code content} como lo guarda Prisma: objetos {@code {type, text}} con el texto ya recortado. */
+  /**
+   * {@code content} como lo guarda Prisma: objetos {@code {type, text}} con el texto ya recortado, más
+   * {@code highlight: true} solo en los destacados (un {@code false} no se guarda).
+   */
   private static List<Object> stored(List<ChangelogChange> content) {
     return content.stream().<Object>map(change -> {
       var item = new LinkedHashMap<String, Object>();
       item.put("type", change.type());
       item.put("text", change.text());
+      if (Boolean.TRUE.equals(change.highlight())) item.put("highlight", true);
       return item;
     }).toList();
   }

@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.rest.admin;
 import static es.pokemonuniverse.adapters.in.rest.admin.AdminTestSupport.body;
 import static es.pokemonuniverse.adapters.in.rest.admin.AdminTestSupport.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.adapters.out.persistence.ChangelogEntity;
@@ -91,6 +92,45 @@ class AdminChangelogControllerTest {
     // Desplazamientos que Zod admite y java.time no (hasta ±23:59).
     var far = create(entry(version(), "2026-11-02T10:00:00-23:59", false));
     assertTrue(support.get("/api/admin/changelog", admin.cookie()).contains("{\"id\":\"" + far + "\","));
+  }
+
+  @Test
+  void storesSummaryAndOnlyTrueHighlights() throws Exception {
+    var v = version();
+    var res = support.send(json(HttpRequest.POST("/api/admin/changelog", "{\"version\":\"" + v + "\",\"title\":"
+        + "\"Gran cambio\",\"summary\":\"  Lo más nuevo  \",\"date\":\"2026-11-02T10:00:00Z\",\"content\":["
+        + "{\"type\":\"NEW\",\"text\":\"Algo nuevo\",\"highlight\":true},{\"highlight\":false,\"type\":\"BUGS\","
+        + "\"text\":\"Arreglos\"}]}")), admin.cookie());
+    assertEquals(HttpStatus.CREATED, res.getStatus());
+    assertTrue(res.body().matches("\\{\"entry\":\\{\"id\":\"[^\"]+\",\"version\":\"" + v.replace(".", "\\.")
+        + "\",\"title\":\"Gran cambio\",\"summary\":\"Lo más nuevo\",\"date\":\"2026-11-02T10:00:00\\.000Z\","
+        + "\"published\":false,\"content\":\\[\\{\"type\":\"NEW\",\"text\":\"Algo nuevo\",\"highlight\":true},"
+        + "\\{\"type\":\"BUGS\",\"text\":\"Arreglos\"}],\"createdAt\":\"" + ISO + "\",\"updatedAt\":\"" + ISO
+        + "\"}}"), res.body());
+    @SuppressWarnings("unchecked")
+    var id = (String) ((Map<String, Object>) mapper.readValue(res.body(), Map.class).get("entry")).get("id");
+    // En la BD solo se guarda highlight: true; un false no deja la clave.
+    var stored = repository.findById(id).orElseThrow();
+    assertEquals("Lo más nuevo", stored.getSummary());
+    assertEquals(List.of(Map.of("type", "NEW", "text", "Algo nuevo", "highlight", true),
+        Map.of("type", "BUGS", "text", "Arreglos")), stored.getContent());
+
+    // Sin summary en la edición, se conserva; la cadena vacía (tras recortar) lo borra.
+    var kept = support.send(json(HttpRequest.PATCH("/api/admin/changelog/" + id, "{\"published\":true}")),
+        admin.cookie());
+    assertTrue(kept.body().contains("\"summary\":\"Lo más nuevo\","), kept.body());
+    var cleared = support.send(json(HttpRequest.PATCH("/api/admin/changelog/" + id, "{\"summary\":\"   \"}")),
+        admin.cookie());
+    assertEquals(HttpStatus.OK, cleared.getStatus());
+    assertTrue(cleared.body().contains("\"title\":\"Gran cambio\",\"date\":"), cleared.body());
+    assertNull(repository.findById(id).orElseThrow().getSummary());
+
+    // Un resumen vacío al crear es lo mismo que no enviarlo.
+    var blank = support.send(json(HttpRequest.POST("/api/admin/changelog", "{\"version\":\"" + version()
+        + "\",\"title\":\"Sin resumen\",\"summary\":\"\",\"date\":\"2026-11-02T10:00:00Z\",\"content\":["
+        + "{\"type\":\"NEW\",\"text\":\"Algo nuevo\"}]}")), admin.cookie());
+    assertEquals(HttpStatus.CREATED, blank.getStatus());
+    assertTrue(blank.body().contains("\"title\":\"Sin resumen\",\"date\":"), blank.body());
   }
 
   @Test
@@ -187,6 +227,56 @@ class AdminChangelogControllerTest {
         + "\"path\":[\"content\"],\"message\":\"Añade al menos un cambio.\"}]}"), body(sizes));
     assertTrue(body(sizes).contains("\"maximum\":120,"), body(sizes));
 
+    var summaryAndHighlight = support.fails(json(HttpRequest.POST("/api/admin/changelog", "{\"version\":\"1.0.0\","
+        + "\"title\":\"Título\",\"summary\":\"" + "s".repeat(201) + "\",\"date\":\"2026-11-02T10:00:00Z\","
+        + "\"content\":[{\"zz\":1,\"highlight\":\"sí\",\"text\":\"ab\",\"type\":\"X\"}]}")), admin.cookie());
+    assertEquals("{\"error\":\"Too big: expected string to have <=200 characters\",\"issues\":["
+        + "{\"origin\":\"string\",\"code\":\"too_big\",\"maximum\":200,\"inclusive\":true,\"path\":[\"summary\"],"
+        + "\"message\":\"Too big: expected string to have <=200 characters\"},"
+        + "{\"code\":\"invalid_value\",\"values\":[\"NEW\",\"MINIGAMES\",\"BALANCE\",\"INTERFACE\",\"IMPROVEMENTS\","
+        + "\"BUGS\",\"TECHNICAL\"],\"path\":[\"content\",0,\"type\"],\"message\":\"Invalid option: expected one of "
+        + "\\\"NEW\\\"|\\\"MINIGAMES\\\"|\\\"BALANCE\\\"|\\\"INTERFACE\\\"|\\\"IMPROVEMENTS\\\"|\\\"BUGS\\\"|\\\"TECHNICAL\\\"\"},"
+        + "{\"origin\":\"string\",\"code\":\"too_small\",\"minimum\":3,\"inclusive\":true,\"path\":[\"content\",0,"
+        + "\"text\"],\"message\":\"Describe el cambio con al menos 3 caracteres.\"},"
+        + "{\"expected\":\"boolean\",\"code\":\"invalid_type\",\"path\":[\"content\",0,\"highlight\"],\"message\":"
+        + "\"Invalid input: expected boolean, received string\"},"
+        + "{\"code\":\"unrecognized_keys\",\"keys\":[\"zz\"],\"path\":[\"content\",0],\"message\":\"Unrecognized key: "
+        + "\\\"zz\\\"\"}]}", body(summaryAndHighlight));
+
+    // superRefine de los destacados: corre aunque haya errores de longitud o claves desconocidas (no abortan), antes
+    // de las claves desconocidas de la raíz; no corre si un elemento aborta (tipo o enum inválidos).
+    var highlighted = "{\"type\":\"NEW\",\"text\":\"Destacado\",\"highlight\":true}";
+    var four = String.join(",", highlighted, highlighted, highlighted, highlighted);
+    var tooMany = support.fails(json(HttpRequest.POST("/api/admin/changelog", "{\"version\":\"1.0.0\","
+        + "\"title\":\"ab\",\"summary\":1,\"date\":\"2026-11-02T10:00:00Z\",\"content\":[" + four
+        + ",{\"type\":\"NEW\",\"text\":\"ab\",\"more\":1}],\"zz\":1}")), admin.cookie());
+    assertEquals("{\"error\":\"Too small: expected string to have >=3 characters\",\"issues\":["
+        + "{\"origin\":\"string\",\"code\":\"too_small\",\"minimum\":3,\"inclusive\":true,\"path\":[\"title\"],"
+        + "\"message\":\"Too small: expected string to have >=3 characters\"},"
+        + "{\"expected\":\"string\",\"code\":\"invalid_type\",\"path\":[\"summary\"],\"message\":\"Invalid input: "
+        + "expected string, received number\"},"
+        + "{\"origin\":\"string\",\"code\":\"too_small\",\"minimum\":3,\"inclusive\":true,\"path\":[\"content\",4,"
+        + "\"text\"],\"message\":\"Describe el cambio con al menos 3 caracteres.\"},"
+        + "{\"code\":\"unrecognized_keys\",\"keys\":[\"more\"],\"path\":[\"content\",4],\"message\":\"Unrecognized "
+        + "key: \\\"more\\\"\"},"
+        + "{\"code\":\"custom\",\"message\":\"Marca como destacados 3 cambios como máximo.\",\"path\":[\"content\"]},"
+        + "{\"code\":\"unrecognized_keys\",\"keys\":[\"zz\"],\"path\":[],\"message\":\"Unrecognized key: "
+        + "\\\"zz\\\"\"}]}", body(tooMany));
+    var onlyTooMany = support.fails(json(HttpRequest.PATCH("/api/admin/changelog/x", "{\"content\":[" + four + "]}")),
+        admin.cookie());
+    assertEquals("{\"error\":\"Marca como destacados 3 cambios como máximo.\",\"issues\":[{\"code\":\"custom\","
+        + "\"message\":\"Marca como destacados 3 cambios como máximo.\",\"path\":[\"content\"]}]}", body(onlyTooMany));
+    var aborted = support.fails(json(HttpRequest.PATCH("/api/admin/changelog/x", "{\"content\":[" + four
+        + ",{\"type\":\"X\",\"text\":\"abc\"},{\"type\":\"NEW\",\"text\":\"abc\",\"highlight\":null}]}")),
+        admin.cookie());
+    assertEquals("{\"error\":\"Invalid option: expected one of \\\"NEW\\\"|\\\"MINIGAMES\\\"|\\\"BALANCE\\\"|"
+        + "\\\"INTERFACE\\\"|\\\"IMPROVEMENTS\\\"|\\\"BUGS\\\"|\\\"TECHNICAL\\\"\",\"issues\":["
+        + "{\"code\":\"invalid_value\",\"values\":[\"NEW\",\"MINIGAMES\",\"BALANCE\",\"INTERFACE\",\"IMPROVEMENTS\","
+        + "\"BUGS\",\"TECHNICAL\"],\"path\":[\"content\",4,\"type\"],\"message\":\"Invalid option: expected one of "
+        + "\\\"NEW\\\"|\\\"MINIGAMES\\\"|\\\"BALANCE\\\"|\\\"INTERFACE\\\"|\\\"IMPROVEMENTS\\\"|\\\"BUGS\\\"|\\\"TECHNICAL\\\"\"},"
+        + "{\"expected\":\"boolean\",\"code\":\"invalid_type\",\"path\":[\"content\",5,\"highlight\"],\"message\":"
+        + "\"Invalid input: expected boolean, received null\"}]}", body(aborted));
+
     var array = support.fails(json(HttpRequest.PATCH("/api/admin/changelog/x", "[]")), admin.cookie());
     assertEquals("{\"error\":\"Invalid input: expected object, received array\",\"issues\":[{\"expected\":\"object\","
         + "\"code\":\"invalid_type\",\"path\":[],\"message\":\"Invalid input: expected object, received array\"}]}",
@@ -206,9 +296,9 @@ class AdminChangelogControllerTest {
   void aUniqueViolationOnSaveIsAConflict() throws Exception {
     var v = version();
     var now = java.time.Instant.now();
-    repository.save(ChangelogEntity.create("race-a-" + v, v, "Primera", now, false, List.of(Map.of("type", "NEW",
+    repository.save(ChangelogEntity.create("race-a-" + v, v, "Primera", null, now, false, List.of(Map.of("type", "NEW",
         "text", "abc")), now));
     org.junit.jupiter.api.Assertions.assertThrows(ChangelogWriter.DuplicateVersionException.class, () -> writer.insert(
-        ChangelogEntity.create("race-b-" + v, v, "Segunda", now, false, List.of(), now)));
+        ChangelogEntity.create("race-b-" + v, v, "Segunda", null, now, false, List.of(), now)));
   }
 }

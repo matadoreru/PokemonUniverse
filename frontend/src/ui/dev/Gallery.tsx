@@ -4,7 +4,7 @@
  * `<figure data-gallery="<componente>-<estado>">` que el E2E captura uno a uno. Con `?static` en la URL se añade la
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
-import { Bell, Heart, LogOut, Newspaper, Settings, ShieldCheck, Star, Trophy, Volume2, Zap } from 'lucide-react';
+import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -34,6 +34,8 @@ import { Field, SelectField, TextArea } from '../Field';
 import { HudPlate } from '../HudPlate';
 import { Icon } from '../Icon';
 import { Panel } from '../Panel';
+import { HighlightCard, PatchHero, SectionRule, Timeline, TimelineLink } from '../Patch';
+import type { PatchTone } from '../Patch';
 import { Pill, PillLink } from '../Pill';
 import { Row, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
@@ -601,6 +603,50 @@ function RowSection() {
   );
 }
 
+const PATCH_TONES: { tone: PatchTone; label: string; icon: typeof Sparkles }[] = [
+  { tone: 'ok', label: 'Nuevo', icon: Sparkles },
+  { tone: 'yellow', label: 'Minijuegos', icon: Gamepad2 },
+  { tone: 'orange', label: 'Balance', icon: Scale },
+  { tone: 'info', label: 'Interfaz', icon: Palette },
+  { tone: 'blue', label: 'Mejoras', icon: Wrench },
+  { tone: 'red', label: 'Correcciones', icon: Bug },
+  { tone: 'neutral', label: 'Técnico', icon: Code2 },
+];
+
+/** Notas de parche (Novedades): portada de versión, tarjetas destacadas, títulos de sección y línea de tiempo. */
+function PatchSection() {
+  return (
+    <Section name="patch" title="Notas de parche">
+      <Fig id="patch-hero" caption="Portada de versión · última, con resumen" wide>
+        <PatchHero version="0.9.0" title="Pantalla de título Arcade DS" date="3 de noviembre de 2026" dateTime="2026-11-03" changes="7 cambios" summary="La portada se convierte en una pantalla de título y todas las páginas largas ganan paneles con su propio scroll." latest />
+      </Fig>
+      <Fig id="patch-hero-plain" caption="Portada de versión · sin resumen" wide>
+        <PatchHero version="0.7.0" title="Primeros minijuegos" date="2 de julio de 2026" dateTime="2026-07-02" changes="1 cambio" />
+      </Fig>
+      {PATCH_TONES.map(({ tone, label, icon }) => (
+        <Fig key={tone} id={`patch-highlight-${tone}`} caption={`Destacada · ${label}`} cream>
+          <HighlightCard tone={tone} icon={icon} kind={label}>La portada es ahora una pantalla de título con el logotipo grande.</HighlightCard>
+        </Fig>
+      ))}
+      <Fig id="patch-highlight-compact" caption="Destacada compacta (portada de Inicio)">
+        <HighlightCard tone="ok" icon={Sparkles} kind="Nuevo" compact>Cabecera de placas con el sonido siempre a mano.</HighlightCard>
+      </Fig>
+      {PATCH_TONES.map(({ tone, label, icon }) => (
+        <Fig key={`rule-${tone}`} id={`patch-rule-${tone}`} caption={`Sección · ${label}`} cream>
+          <SectionRule tone={tone} icon={icon} label={label} count={2} />
+        </Fig>
+      ))}
+      <Fig id="patch-timeline" caption="Línea de tiempo · abierta, nueva y normales" wide>
+        <Timeline label="Versiones de ejemplo">
+          <TimelineLink to="/dev/ui" version="0.9.0" title="Pantalla de título Arcade DS" date="3 de noviembre de 2026" dateTime="2026-11-03"><Badge tone="navy">Nueva</Badge></TimelineLink>
+          <TimelineLink to="/dev/ui" version="0.8.0" title="Una sala más completa" date="11 de septiembre de 2026" dateTime="2026-09-11" current />
+          <TimelineLink to="/dev/ui" version="0.7.0" title="Primeros minijuegos con un título larguísimo que se recorta" date="2 de julio de 2026" dateTime="2026-07-02" />
+        </Timeline>
+      </Fig>
+    </Section>
+  );
+}
+
 const CARD_STATES: { state: CardState; label: string }[] = [
   { state: 'idle', label: 'Reposo' },
   { state: 'selected', label: 'Seleccionada' },
@@ -1000,6 +1046,7 @@ export function Gallery() {
       <BarSection />
       <TimerSection />
       <RowSection />
+      <PatchSection />
       <CardSection />
       <HudSection />
       <DialogSection onToast={() => push('info', 'Aviso sobre el diálogo', 20_000)} />

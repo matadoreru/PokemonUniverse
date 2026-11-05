@@ -1,6 +1,8 @@
 import {
   CHANGELOG_CATEGORIES,
   CHANGELOG_CATEGORY_LABELS,
+  CHANGELOG_SUMMARY_MAX,
+  MAX_CHANGELOG_HIGHLIGHTS,
   type ChangelogCategory,
   type ChangelogChange,
   type ChangelogEntry,
@@ -18,18 +20,31 @@ export interface ChangelogForm {
   id: string | null;
   version: string;
   title: string;
+  /** Resumen de la portada del parche; vacío = sin resumen. */
+  summary: string;
   date: string;
   published: boolean;
+  /** Sin claves `highlight: false`: la comparación de «cambios sin guardar» es por JSON. */
   content: ChangelogChange[];
+}
+
+/** Cambio normalizado: `highlight` solo aparece si es `true`. */
+export function normalizedChange({ type, text, highlight }: ChangelogChange): ChangelogChange {
+  return highlight === true ? { type, text, highlight: true } : { type, text };
+}
+
+/** Número de cambios destacados del formulario. */
+export function highlightCount(content: readonly ChangelogChange[]): number {
+  return content.filter((change) => change.highlight === true).length;
 }
 
 export function newChangelogForm(now = new Date()): ChangelogForm {
   const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
-  return { id: null, version: '', title: '', date: localDate, published: false, content: [{ type: 'NEW', text: '' }] };
+  return { id: null, version: '', title: '', summary: '', date: localDate, published: false, content: [{ type: 'NEW', text: '' }] };
 }
 
 export function formFromEntry(entry: ChangelogEntry): ChangelogForm {
-  return { id: entry.id, version: entry.version, title: entry.title, date: entry.date.slice(0, 10), published: entry.published, content: entry.content.map((change) => ({ ...change })) };
+  return { id: entry.id, version: entry.version, title: entry.title, summary: entry.summary ?? '', date: entry.date.slice(0, 10), published: entry.published, content: entry.content.map(normalizedChange) };
 }
 
 function sortEntries(entries: ChangelogEntry[]): ChangelogEntry[] {
@@ -79,6 +94,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
   const { toasts, push, close } = useToasts();
   const detail = useListDetail('changelog');
   const dirty = useMemo(() => JSON.stringify(form) !== JSON.stringify(savedForm), [form, savedForm]);
+  const highlights = highlightCount(form.content);
 
   useEffect(() => { onDirtyChange?.(dirty); }, [dirty, onDirtyChange]);
   useEffect(() => {
@@ -109,7 +125,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
   useEffect(() => { void load(); }, [load]);
 
   function updateChange(index: number, patch: Partial<ChangelogChange>) {
-    setForm((current) => ({ ...current, content: current.content.map((change, changeIndex) => changeIndex === index ? { ...change, ...patch } : change) }));
+    setForm((current) => ({ ...current, content: current.content.map((change, changeIndex) => changeIndex === index ? normalizedChange({ ...change, ...patch }) : change) }));
     if (patch.text !== undefined) setInvalid((current) => current.filter((i) => i !== index));
   }
 
@@ -123,6 +139,8 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
       const body = JSON.stringify({
         version: form.version,
         title: form.title,
+        // Vacío borra el resumen guardado.
+        summary: form.summary,
         date: `${form.date}T12:00:00.000Z`,
         published: form.published,
         content: form.content,
@@ -178,15 +196,17 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
                 <Field label="Título" value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder="Pokémon Bingo Update" required />
                 <Field label="Fecha" type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required />
                 <Toggle label="Publicar esta versión" checked={form.published} onChange={(published) => setForm((current) => ({ ...current, published }))} className="self-end" />
+                <TextArea label="Resumen (opcional)" className="sm:col-span-2" rows={2} maxLength={CHANGELOG_SUMMARY_MAX} value={form.summary} onChange={(summary) => setForm((current) => ({ ...current, summary }))} placeholder="Una o dos frases sobre lo más importante del parche" hint="Sale en la portada del parche, bajo el título." />
               </div>
               <fieldset className="flex flex-col gap-3">
                 <legend className="font-display text-22 font-extrabold">Cambios</legend>
-                <p className={cx('text-15 font-bold', tone.textInk2)}>Agrupa cada nota por su tipo para que el historial sea fácil de recorrer.</p>
+                <p className={cx('text-15 font-bold', tone.textInk2)}>Agrupa cada nota por su tipo. Marca como destacados hasta {MAX_CHANGELOG_HIGHLIGHTS} cambios: salen arriba, en «Lo destacado».</p>
                 {form.content.map((change, index) => (
                   <div className={cx('grid gap-2 rounded-[var(--r-franja)] border-[2.5px] p-3 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-start', tone.borderNavy, tone.bgCream2)} key={index}>
                     <SelectField label={`Tipo del cambio ${index + 1}`} hideLabel value={change.type} onChange={(value) => updateChange(index, { type: value as ChangelogCategory })} options={CATEGORY_OPTIONS} />
                     <TextArea label={`Texto del cambio ${index + 1}`} hideLabel rows={3} value={change.text} onChange={(text) => updateChange(index, { text })} placeholder="Describe el cambio para los jugadores" error={invalid.includes(index) ? 'Describe el cambio antes de guardar.' : null} />
                     <Pill size="round" variant="danger" icon={Trash2} disabled={form.content.length === 1} aria-label={`Eliminar cambio ${index + 1}`} title="Eliminar cambio" onClick={() => { setForm((current) => ({ ...current, content: current.content.filter((_, changeIndex) => changeIndex !== index) })); setInvalid([]); }} />
+                    <Toggle label={`Destacar el cambio ${index + 1}`} className="sm:col-start-2" checked={change.highlight === true} disabled={change.highlight !== true && highlights >= MAX_CHANGELOG_HIGHLIGHTS} {...(change.highlight !== true && highlights >= MAX_CHANGELOG_HIGHLIGHTS ? { hint: `Ya hay ${MAX_CHANGELOG_HIGHLIGHTS} destacados, el máximo` } : {})} onChange={(highlight) => updateChange(index, { highlight })} />
                   </div>
                 ))}
                 <Pill icon={Plus} className="self-start" onClick={() => setForm((current) => ({ ...current, content: [...current.content, { type: 'NEW', text: '' }] }))}>Añadir cambio</Pill>

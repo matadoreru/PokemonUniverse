@@ -22,12 +22,15 @@ import java.util.regex.Pattern;
  * <p>{@code updateChangelogSchema = createChangelogSchema.partial().refine(...)}: {@code .partial()} conserva el
  * {@code .default(false)} de {@code published}, así que una edición que no lo envía despublica la entrada y el
  * {@code refine} («Incluye al menos un campo para actualizar.») nunca falla. Se reproduce tal cual (paridad con Node).
+ *
+ * <p>{@code summary} es opcional también al crear y llega recortado; la cadena vacía se conserva (en la edición borra
+ * el resumen) y {@code null} significa que no se envió.
  */
-public record ChangelogInput(@Nullable String version, @Nullable String title, @Nullable Instant date,
-    boolean published, @Nullable List<ChangelogChange> content) {
+public record ChangelogInput(@Nullable String version, @Nullable String title, @Nullable String summary,
+    @Nullable Instant date, boolean published, @Nullable List<ChangelogChange> content) {
 
-  private static final Set<String> KEYS = Set.of("version", "title", "date", "published", "content");
-  private static final Set<String> CHANGE_KEYS = Set.of("type", "text");
+  private static final Set<String> KEYS = Set.of("version", "title", "summary", "date", "published", "content");
+  private static final Set<String> CHANGE_KEYS = Set.of("type", "text", "highlight");
   private static final List<String> CATEGORIES =
       List.of("NEW", "MINIGAMES", "BALANCE", "INTERFACE", "IMPROVEMENTS", "BUGS", "TECHNICAL");
   private static final String VERSION_SOURCE = "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$";
@@ -42,6 +45,9 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
   private static final Pattern PARTS = Pattern.compile(
       "(\\d{4})-(\\d\\d)-(\\d\\d)T(\\d\\d):(\\d\\d):(\\d\\d)(?:\\.(\\d+))?(?:Z|([+-])(\\d\\d):(\\d\\d))");
   private static final int MAX_CHANGES = 100;
+  private static final int SUMMARY_MAX = 200;
+  private static final int MAX_HIGHLIGHTS = 3;
+  static final String TOO_MANY_HIGHLIGHTS = "Marca como destacados " + MAX_HIGHLIGHTS + " cambios como máximo.";
 
   public static ChangelogInput parseCreate(JsonNode raw) {
     return parse(raw, false);
@@ -63,6 +69,9 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
     }
     var title = string(raw.get("title"), "title", partial, issues);
     if (title != null) length(title, 3, 120, List.of("title"), null, issues);
+    // z.string().trim().max(200).optional(): opcional en las dos variantes.
+    var summary = string(raw.get("summary"), "summary", true, issues);
+    if (summary != null) length(summary, 0, SUMMARY_MAX, List.of("summary"), null, issues);
     Instant date = null;
     var rawDate = raw.get("date");
     if (rawDate != null || !partial) {
@@ -85,7 +94,7 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
     if (rawContent != null || !partial) content = content(rawContent, issues);
     unrecognizedKeys(raw, KEYS, List.of(), issues);
     if (!issues.isEmpty()) throw new InvalidInputException(issues);
-    return new ChangelogInput(version, title, date, published, content);
+    return new ChangelogInput(version, title, summary, date, published, content);
   }
 
   /** {@code z.string().trim()} obligatorio (u opcional en la edición); devuelve el texto recortado. */
@@ -115,6 +124,10 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
   /**
    * {@code changelogContentSchema}. Con más de 100 elementos Zod solo informa del tamaño (comprobado con Zod 4: los
    * errores de los elementos no aparecen); un array vacío, solo del mínimo.
+   *
+   * <p>El {@code superRefine} de los destacados (más de 3 es una incidencia {@code custom} en {@code content}) solo
+   * corre si ningún elemento abortó: los tipos inválidos y el enum abortan; la longitud del texto y las claves
+   * desconocidas no (comprobado con Zod 4). Cuenta los {@code highlight: true} de todos los elementos objeto.
    */
   private static @Nullable List<ChangelogChange> content(@Nullable JsonNode raw, ZodIssues issues) {
     var path = List.<Object>of("content");
@@ -127,12 +140,15 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
       return null;
     }
     int before = issues.size();
+    boolean aborted = false;
+    int highlights = 0;
     var changes = new ArrayList<ChangelogChange>();
     for (int i = 0; i < raw.size(); i++) {
       var item = raw.get(i);
       List<Object> itemPath = List.of("content", i);
       if (item == null || !item.isObject()) {
         issues.invalidType("object", item, itemPath);
+        aborted = true;
         continue;
       }
       var type = item.get("type");
@@ -140,21 +156,32 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
       if (type == null || !type.isString() || !CATEGORIES.contains(type.getStringValue())) {
         issues.invalidValue(CATEGORIES, List.of("content", i, "type"));
         valid = false;
+        aborted = true;
       }
       var text = item.get("text");
       String trimmed = null;
       if (text == null || !text.isString()) {
         issues.invalidType("string", text, List.of("content", i, "text"));
         valid = false;
+        aborted = true;
       } else {
         trimmed = JsStrings.trim(text.getStringValue());
         valid &= length(trimmed, 3, 500, List.of("content", i, "text"),
             "Describe el cambio con al menos 3 caracteres.", issues);
       }
+      var highlight = item.get("highlight");
+      if (highlight != null && !highlight.isBoolean()) {
+        issues.invalidType("boolean", highlight, List.of("content", i, "highlight"));
+        valid = false;
+        aborted = true;
+      }
+      boolean highlighted = highlight != null && highlight.isBoolean() && highlight.getBooleanValue();
+      if (highlighted) highlights++;
       unrecognizedKeys(item, CHANGE_KEYS, itemPath, issues);
-      if (valid && type != null) changes.add(new ChangelogChange(type.getStringValue(), trimmed));
+      if (valid && type != null) changes.add(new ChangelogChange(type.getStringValue(), trimmed, highlighted));
     }
     if (raw.size() < 1) issues.tooSmall("array", 1, path, "Añade al menos un cambio.");
+    if (!aborted && highlights > MAX_HIGHLIGHTS) issues.refinement(path, TOO_MANY_HIGHLIGHTS);
     return issues.size() == before ? List.copyOf(changes) : null;
   }
 

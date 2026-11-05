@@ -7,25 +7,26 @@ import { expect, test, type Page } from '@playwright/test';
 import { capture, collectErrors, loginAsGuest, SIZES, uniqueName } from '../src/helpers.js';
 
 const fecha = '2026-11-03T00:00:00.000Z';
-const entrada = (version: string, title: string, content: { type: string; text: string }[], date = fecha) => ({
-  id: `e2e-${version}`, version, title, date, published: true, content, createdAt: date, updatedAt: date,
+type Cambio = { type: string; text: string; highlight?: true };
+const entrada = (version: string, title: string, content: Cambio[], date = fecha, summary?: string) => ({
+  id: `e2e-${version}`, version, title, ...(summary ? { summary } : {}), date, published: true, content, createdAt: date, updatedAt: date,
 });
 
-/** Tres versiones; la última sin leer (el navegador había leído la 0.8.0). */
+/** Tres versiones; la última sin leer (el navegador había leído la 0.8.0). La 0.7.0 no tiene resumen ni destacados. */
 const ENTRADAS = [
   entrada('0.9.0', 'Pantalla de título Arcade DS', [
-    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.' },
-    { type: 'NEW', text: 'Cabecera de placas con el sonido, las novedades y el perfil siempre a mano.' },
+    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.', highlight: true },
+    { type: 'NEW', text: 'Cabecera de placas con el sonido, las novedades y el perfil siempre a mano.', highlight: true },
     { type: 'INTERFACE', text: 'Las pantallas entran con una transición corta que respeta la reducción de movimiento.' },
-    { type: 'INTERFACE', text: 'Novedades, Perfil y Feedback usan paneles con su propio scroll.' },
+    { type: 'INTERFACE', text: 'Novedades, Perfil y Feedback usan paneles con su propio scroll.', highlight: true },
     { type: 'IMPROVEMENTS', text: 'Los errores del servidor se enseñan siempre en español.' },
     { type: 'BUGS', text: 'Los avisos se ven por encima de los diálogos abiertos.' },
     { type: 'BUGS', text: 'El perfil del administrador vuelve a estar accesible en el móvil.' },
-  ]),
+  ], fecha, 'La portada se convierte en una pantalla de título y las páginas largas ganan paneles con su propio scroll.'),
   entrada('0.8.0', 'Una sala más completa', [
-    { type: 'MINIGAMES', text: 'Nuevo selector de minijuegos con la rotación de la sesión.' },
+    { type: 'MINIGAMES', text: 'Nuevo selector de minijuegos con la rotación de la sesión.', highlight: true },
     { type: 'BUGS', text: 'Corregida la reconexión de la sala.' },
-  ], '2026-09-11T00:00:00.000Z'),
+  ], '2026-09-11T00:00:00.000Z', 'Elige los minijuegos de la sesión y vuelve a la sala sin perder tu sitio.'),
   entrada('0.7.0', 'Primeros minijuegos', [
     { type: 'NEW', text: 'Llegan los primeros cinco minijuegos.' },
   ], '2026-07-02T00:00:00.000Z'),
@@ -55,13 +56,26 @@ for (const { w, h } of SIZES) {
     await expect.poll(() => page.evaluate(() => localStorage.getItem('pokemon-universe:last-read-changelog'))).toBe('0.9.0');
     const detalle = page.getByRole('heading', { name: 'Pantalla de título Arcade DS' });
     if (movil) await expect(detalle).toBeHidden();
-    else await expect(detalle).toBeVisible();
+    else {
+      await expect(detalle).toBeVisible();
+      // Portada de la versión (ticket con el número y resumen) y «Lo destacado» con sus tres tarjetas.
+      const notas = page.getByRole('article', { name: 'Pantalla de título Arcade DS' });
+      await expect(notas.getByText('0.9.0', { exact: true })).toBeVisible();
+      await expect(notas.getByText('Última versión')).toBeVisible();
+      await expect(notas.getByText(/La portada se convierte en una pantalla de título/)).toBeVisible();
+      const destacado = notas.getByRole('region', { name: 'Lo destacado' });
+      await expect(destacado.getByRole('article')).toHaveCount(3);
+      // Un destacado no se repite en su categoría.
+      await expect(notas.getByText('Cabecera de placas con el sonido, las novedades y el perfil siempre a mano.')).toHaveCount(1);
+      await expect(lista.getByRole('link', { name: /v0\.9\.0/ })).toHaveAttribute('aria-current', 'true');
+    }
     await capture(page, 'novedades');
 
     // Abrir otra versión: va en la URL y el detalle cambia; en móvil la lista se oculta y aparece «Volver».
     await lista.getByRole('link', { name: /v0\.8\.0/ }).click();
     await expect(page).toHaveURL(/\/changelog\?v=0\.8\.0$/);
     await expect(page.getByRole('heading', { name: 'Una sala más completa' })).toBeVisible();
+    await expect(page.getByText('Elige los minijuegos de la sesión y vuelve a la sala sin perder tu sitio.')).toBeVisible();
     // En móvil la lista queda oculta tras abrir una versión; en escritorio marca la abierta.
     if (!movil) await expect(lista.getByRole('link', { name: /v0\.8\.0/ })).toHaveAttribute('aria-current', 'true');
     const volver = page.getByRole('link', { name: 'Volver', exact: true });
@@ -80,6 +94,11 @@ for (const { w, h } of SIZES) {
       await expect(lista).toBeVisible();
     } else {
       await expect(volver).toBeHidden();
+      // Una versión sin destacados ni resumen no enseña esa sección.
+      await lista.getByRole('link', { name: /v0\.7\.0/ }).click();
+      await expect(page.getByRole('heading', { name: 'Primeros minijuegos' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Lo destacado' })).toHaveCount(0);
+      await capture(page, 'novedades-sin-destacados');
     }
 
     // Error del servidor: texto fijo en español con «Reintentar».

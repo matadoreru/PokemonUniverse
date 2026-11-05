@@ -1620,6 +1620,10 @@ components:
           maxLength: 120
           minLength: 3
           type: string
+        summary:
+          maxLength: 200
+          type: string
+          description: Recortado; vacío = sin resumen.
         date:
           type: string
           format: date-time
@@ -1628,6 +1632,7 @@ components:
           default: false
         content:
           type: array
+          description: "Como máximo 3 con `highlight: true`."
           items:
             $ref: "#/components/schemas/ChangelogChange"
       description: "Estricto: una clave desconocida es un 400 `unrecognized_keys`."
@@ -1888,6 +1893,10 @@ components:
           maxLength: 120
           minLength: 3
           type: string
+        summary:
+          maxLength: 200
+          type: string
+          description: Recortado; vacío borra el resumen.
         date:
           type: string
           format: date-time
@@ -1896,6 +1905,7 @@ components:
           default: false
         content:
           type: array
+          description: "Como máximo 3 con `highlight: true`."
           items:
             $ref: "#/components/schemas/ChangelogChange"
       description: "Estricto. Si se omite `published`, la entrada queda despublicada\
@@ -2052,8 +2062,12 @@ components:
           type: string
         text:
           type: string
-      description: Un cambio de una entrada del changelog (changelogChangeSchema en
-        shared).
+        highlight:
+          type: boolean
+          nullable: true
+      description: "Un cambio de una entrada del changelog (changelogChangeSchema\
+        \ en shared). `highlight` solo vale `true` o `null`: un `false` se normaliza\
+        \ a `null` y la clave no sale en el JSON."
     ChangelogController.ChangelogResponse:
       required:
       - entries
@@ -2081,6 +2095,9 @@ components:
           type: string
         title:
           type: string
+        summary:
+          type: string
+          nullable: true
         date:
           type: string
         published:
@@ -2093,6 +2110,8 @@ components:
           type: string
         updatedAt:
           type: string
+      description: "`summary` no sale si la versión no tiene resumen (`summary?: string`\
+        \ en shared)."
     CreateCustomCategoryRequest:
       required:
       - text

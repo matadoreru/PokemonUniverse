@@ -24,6 +24,10 @@ public class ChangelogEntity {
   @Column(name = "title")
   private String title;
 
+  /** Resumen opcional de la versión (V4); {@code null} si no tiene. */
+  @Column(name = "summary")
+  private String summary;
+
   @Column(name = "date")
   private Instant date;
 
@@ -42,12 +46,13 @@ public class ChangelogEntity {
 
   protected ChangelogEntity() {}
 
-  public static ChangelogEntity create(String id, String version, String title, Instant date,
+  public static ChangelogEntity create(String id, String version, String title, String summary, Instant date,
       boolean published, List<Object> content, Instant now) {
     var e = new ChangelogEntity();
     e.id = id;
     e.version = version;
     e.title = title;
+    e.summary = summary;
     e.date = date;
     e.published = published;
     e.content = content;
@@ -66,6 +71,10 @@ public class ChangelogEntity {
 
   public String getTitle() {
     return title;
+  }
+
+  public String getSummary() {
+    return summary;
   }
 
   public Instant getDate() {
@@ -88,11 +97,15 @@ public class ChangelogEntity {
     return updatedAt;
   }
 
-  /** Cambios de una edición; {@code null} deja el campo como estaba. */
-  public void update(String version, String title, Instant date, Boolean published, List<Object> content,
-      Instant now) {
+  /**
+   * Cambios de una edición; {@code null} deja el campo como estaba. En {@code summary}, la cadena vacía lo borra
+   * (columna a NULL).
+   */
+  public void update(String version, String title, String summary, Instant date, Boolean published,
+      List<Object> content, Instant now) {
     if (version != null) this.version = version;
     if (title != null) this.title = title;
+    if (summary != null) this.summary = summary.isEmpty() ? null : summary;
     if (date != null) this.date = date;
     if (published != null) this.published = published;
     if (content != null) this.content = content;

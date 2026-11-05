@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** Validacion estricta de {@code content} (changelogContentSchema.parse en Node). */
+/**
+ * Validacion estricta de {@code content} (changelogContentSchema.parse en Node). Cada elemento es {@code {type, text}}
+ * o {@code {type, text, highlight}} con {@code highlight} booleano.
+ */
 public final class ChangelogContent {
 
   private static final Set<String> TYPES =
@@ -20,15 +23,20 @@ public final class ChangelogContent {
     }
     var out = new ArrayList<ChangelogChange>(items.size());
     for (var item : items) {
-      if (!(item instanceof Map<?, ?> m) || m.size() != 2
-          || !(m.get("type") instanceof String type) || !(m.get("text") instanceof String text)) {
+      if (!(item instanceof Map<?, ?> m) || !(m.get("type") instanceof String type)
+          || !(m.get("text") instanceof String text)) {
         throw invalid("elemento con forma invalida");
+      }
+      boolean hasHighlight = m.containsKey("highlight");
+      var highlight = m.get("highlight");
+      if (m.size() != (hasHighlight ? 3 : 2) || (hasHighlight && !(highlight instanceof Boolean))) {
+        throw invalid("elemento con claves invalidas");
       }
       var trimmed = text.trim();
       if (!TYPES.contains(type) || trimmed.length() < 3 || trimmed.length() > 500) {
         throw invalid("tipo o texto fuera de rango");
       }
-      out.add(new ChangelogChange(type, trimmed));
+      out.add(new ChangelogChange(type, trimmed, (Boolean) highlight));
     }
     return List.copyOf(out);
   }

@@ -1,7 +1,7 @@
 import type { ChangelogEntry } from '@pokemon-universe/shared/public';
 import { Play, UserRound } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
-import { ChangelogEntryView } from '../changelog/ChangelogEntryView';
+import { PatchPreview } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
 import { LegalLine } from '../components/LegalLine';
 import { cx, Panel, PillLink, Screen, type StateBoxProps } from '../ui';
@@ -40,7 +40,7 @@ export function HomeNews({ entries, loading, error, onRetry, className }: HomeNe
       scroll
       {...(className ? { className } : {})}
     >
-      {latest && <ChangelogEntryView entry={{ ...latest, content: latest.content.slice(0, PREVIEW_CHANGES) }} compact />}
+      {latest && <PatchPreview entry={latest} limit={PREVIEW_CHANGES} />}
     </Panel>
   );
 }

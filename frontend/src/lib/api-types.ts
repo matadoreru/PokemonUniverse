@@ -690,10 +690,13 @@ export interface components {
         AdminCreateChangelogRequest: {
             version: string;
             title: string;
+            /** @description Recortado; vacío = sin resumen. */
+            summary?: string;
             /** Format: date-time */
             date: string;
             /** @default false */
             published: boolean;
+            /** @description Como máximo 3 con `highlight: true`. */
             content: components["schemas"]["ChangelogChange"][];
         };
         "AdminDataSyncController.OverviewResponse": {
@@ -806,10 +809,13 @@ export interface components {
         AdminUpdateChangelogRequest: {
             version?: string;
             title?: string;
+            /** @description Recortado; vacío borra el resumen. */
+            summary?: string;
             /** Format: date-time */
             date?: string;
             /** @default false */
             published: boolean;
+            /** @description Como máximo 3 con `highlight: true`. */
             content?: components["schemas"]["ChangelogChange"][];
         };
         /** @description `AdminUserItem` de `shared/admin.ts`. */
@@ -878,18 +884,21 @@ export interface components {
              */
             type: "DEFAULT";
         };
-        /** @description Un cambio de una entrada del changelog (changelogChangeSchema en shared). */
+        /** @description Un cambio de una entrada del changelog (changelogChangeSchema en shared). `highlight` solo vale `true` o `null`: un `false` se normaliza a `null` y la clave no sale en el JSON. */
         ChangelogChange: {
             type: string;
             text: string;
+            highlight?: boolean | null;
         };
         "ChangelogController.ChangelogResponse": {
             entries: components["schemas"]["ChangelogEntryResponse"][];
         };
+        /** @description `summary` no sale si la versión no tiene resumen (`summary?: string` en shared). */
         ChangelogEntryResponse: {
             id: string;
             version: string;
             title: string;
+            summary?: string | null;
             date: string;
             published: boolean;
             content: components["schemas"]["ChangelogChange"][];

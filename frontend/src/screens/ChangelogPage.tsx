@@ -2,10 +2,10 @@ import type { ChangelogEntry } from '@pokemon-universe/shared/public';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ChangelogEntryView, formatChangelogDate } from '../changelog/ChangelogEntryView';
+import { formatChangelogDate, PatchNotes } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
 import { selectedChangelogEntry, unreadVersions } from '../changelog/changelog-state';
-import { Badge, cx, Panel, PillLink, RowLink, Screen, ScreenHeader, type StateBoxProps } from '../ui';
+import { Badge, cx, Panel, PillLink, Screen, ScreenHeader, Timeline, TimelineLink, type StateBoxProps } from '../ui';
 
 const NONE: ReadonlySet<string> = new Set();
 
@@ -45,28 +45,24 @@ export function ChangelogPage() {
   return (
     // Con versiones llena el alto (dos paneles con scroll propio); sin ellas, el aviso va centrado.
     <Screen width={status || !shown ? 'medium' : 'wide'} fill={!status && Boolean(shown)}>
-      <ScreenHeader title="Novedades" subtitle="Qué ha cambiado en cada versión: minijuegos nuevos, ajustes, mejoras y correcciones." />
+      <ScreenHeader title="Novedades" subtitle="Las notas de cada parche: lo nuevo, los ajustes y las correcciones." />
       {status || !shown ? (
         <Panel title="Versiones publicadas" status={status} className="w-full" />
       ) : (
         <div className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-6 2xl:grid-cols-[minmax(22rem,30rem)_minmax(0,1fr)] 2xl:gap-8">
           <Panel title="Versiones" right={`${entries.length} ${entries.length === 1 ? 'versión' : 'versiones'}`} scroll className={cx(selected && 'max-lg:hidden')}>
-            <nav aria-label="Versiones publicadas">
-              <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1">
-                {entries.map((entry) => (
-                  <li key={entry.id}>
-                    <RowLink to={`/changelog?v=${encodeURIComponent(entry.version)}`} current={entry.id === shown.id} name={`v${entry.version} · ${entry.title}`} meta={formatChangelogDate(entry.date)}>
-                      {unread.has(entry.version) && <Badge tone="yellow">Nueva</Badge>}
-                    </RowLink>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <Timeline label="Versiones publicadas">
+              {entries.map((entry) => (
+                <TimelineLink key={entry.id} to={`/changelog?v=${encodeURIComponent(entry.version)}`} current={entry.id === shown.id} version={entry.version} title={entry.title} date={formatChangelogDate(entry.date)} dateTime={entry.date}>
+                  {unread.has(entry.version) && <Badge tone="navy">Nueva</Badge>}
+                </TimelineLink>
+              ))}
+            </Timeline>
           </Panel>
           <div className={cx('flex min-h-0 flex-col gap-3', !selected && 'max-lg:hidden')}>
             <PillLink to="/changelog" variant="cream" icon={ArrowLeft} className="self-start lg:hidden">Volver</PillLink>
-            <Panel variant="cream" title={`Versión ${shown.version}`} scroll className="lg:min-h-0 lg:flex-1" bodyClassName="lg:px-6 lg:py-5">
-              <ChangelogEntryView entry={shown} latest={shown.id === entries[0]?.id} />
+            <Panel variant="cream" title="Notas del parche" scroll className="lg:min-h-0 lg:flex-1" bodyClassName="p-4 lg:px-6 lg:py-6">
+              <PatchNotes entry={shown} latest={shown.id === entries[0]?.id} />
             </Panel>
           </div>
         </div>

@@ -56,8 +56,9 @@ const feedback = Array.from({ length: 20 }, (_, i) => ({
 const changelog = Array.from({ length: 9 }, (_, i) => ({
   id: `version-${i}`, version: `0.${9 - i}.0`, title: ['Pantalla de título Arcade DS', 'Una sala más completa', 'Primeros minijuegos'][i % 3], date: hace(60 * 24 * 20 * i),
   published: i !== 0, createdAt: hace(60 * 24 * 20 * i), updatedAt: hace(60 * 24 * 20 * i),
+  summary: 'La portada se convierte en una pantalla de título.',
   content: [
-    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.' },
+    { type: 'NEW', text: 'La portada es ahora una pantalla de título con el logotipo grande y las píldoras de inicio.', highlight: true },
     { type: 'INTERFACE', text: 'Las pantallas entran con una transición corta que respeta la reducción de movimiento.' },
     { type: 'BUGS', text: 'Los errores del servidor se enseñan siempre en español.' },
   ],
@@ -164,6 +165,8 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     await page.getByRole('tab', { name: 'Changelog' }).click();
     await page.getByRole('button', { name: 'Editar v0.8.0' }).click();
     await expect(page.getByRole('heading', { name: 'Editar v0.8.0' })).toBeVisible();
+    await expect(page.getByLabel('Resumen (opcional)')).toHaveValue('La portada se convierte en una pantalla de título.');
+    await expect(page.getByRole('switch', { name: 'Destacar el cambio 1' })).toHaveAttribute('aria-checked', 'true');
     await capturarPagina(page, 'admin-changelog');
     await page.getByLabel('Título').fill('Una sala más completa (editada)');
     await page.getByRole('tab', { name: 'Datos' }).click();
