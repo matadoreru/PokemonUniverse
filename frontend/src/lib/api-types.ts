@@ -484,6 +484,91 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/friends": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Amigos y solicitudes pendientes */
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/friends/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enviar una solicitud de amistad por nombre de usuario */
+        post: operations["send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/friends/requests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Rechazar una solicitud recibida o cancelar una enviada */
+        delete: operations["decline"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/friends/requests/{id}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Aceptar una solicitud recibida */
+        post: operations["accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/friends/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Quitar a un amigo */
+        delete: operations["remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/games": {
         parameters: {
             query?: never;
@@ -1018,6 +1103,45 @@ export interface components {
         ForgotPasswordRequest: {
             identifier: string;
         };
+        /** @description Solicitud pendiente: `from` en las recibidas y `to` en las enviadas; la otra clave no se escribe. */
+        FriendRequestResponse: {
+            id: string;
+            from?: components["schemas"]["FriendRequestResponse.Party"] | null;
+            to?: components["schemas"]["FriendRequestResponse.Party"] | null;
+            createdAt: string;
+        };
+        /** @description La otra cuenta de la solicitud. */
+        "FriendRequestResponse.Party": {
+            id: string;
+            username: string;
+            avatar: components["schemas"]["AvatarRef"];
+        };
+        /** @description Un amigo: `level` es `null` si aún no tiene experiencia registrada. */
+        FriendResponse: {
+            id: string;
+            username: string;
+            avatar: components["schemas"]["AvatarRef"];
+            /** Format: int32 */
+            level: number | null;
+            status: components["schemas"]["FriendStatus"];
+        };
+        /**
+         * @description Presencia de un amigo en este momento.
+         * @enum {string}
+         */
+        FriendStatus: "OFFLINE" | "ONLINE" | "IN_ROOM" | "PLAYING";
+        "FriendsController.FriendBody": {
+            friend: components["schemas"]["FriendResponse"];
+        };
+        "FriendsController.RequestBody": {
+            request: components["schemas"]["FriendRequestResponse"];
+        };
+        /** @description Amigos, solicitudes recibidas (`from`) y enviadas (`to`). */
+        FriendsResponse: {
+            friends: components["schemas"]["FriendResponse"][];
+            incoming: components["schemas"]["FriendRequestResponse"][];
+            outgoing: components["schemas"]["FriendRequestResponse"][];
+        };
         /** @description Manifiesto de un minijuego mas su configuracion por defecto, tal como lo exporta el registro TypeScript. */
         GameManifest: {
             id: string;
@@ -1182,6 +1306,10 @@ export interface components {
             id: string;
             name: string;
             sprite: string;
+        };
+        /** @description Cuerpo de `POST /api/friends/requests`: el nombre de usuario de la cuenta a la que se pide la amistad. */
+        SendFriendRequest: {
+            username: string;
         };
         /** @description Estado de un origen para la administración (`SyncOverviewItem` / `AdminDataSyncItem`). Las fechas son cadenas `toISOString()` y los nulos se serializan (la configuración global omite los nulos). */
         SyncOverviewItem: {
@@ -2741,6 +2869,202 @@ export interface operations {
             };
             /** @description Sesión requerida */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendsResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    send: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendFriendRequest"];
+            };
+        };
+        responses: {
+            /** @description Había una solicitud cruzada: ya sois amigos */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendsController.FriendBody"];
+                };
+            };
+            /** @description Solicitud creada */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendsController.RequestBody"];
+                };
+            };
+            /** @description Datos inválidos o solicitud imposible */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    decline: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sin contenido */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description La solicitud no existe o no es tuya */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    accept: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FriendsController.FriendBody"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description La solicitud no existe o no es tuya */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sin contenido */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No sois amigos */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

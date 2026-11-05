@@ -1139,6 +1139,147 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /api/friends:
+    get:
+      tags:
+      - friends
+      summary: Amigos y solicitudes pendientes
+      operationId: list
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendsResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/friends/requests:
+    post:
+      tags:
+      - friends
+      summary: Enviar una solicitud de amistad por nombre de usuario
+      operationId: send
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendFriendRequest"
+        required: true
+      responses:
+        "200":
+          description: "Había una solicitud cruzada: ya sois amigos"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendsController.FriendBody"
+        "201":
+          description: Solicitud creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendsController.RequestBody"
+        "400":
+          description: Datos inválidos o solicitud imposible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/friends/requests/{id}:
+    delete:
+      tags:
+      - friends
+      summary: Rechazar una solicitud recibida o cancelar una enviada
+      operationId: decline
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Sin contenido
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: La solicitud no existe o no es tuya
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/friends/requests/{id}/accept:
+    post:
+      tags:
+      - friends
+      summary: Aceptar una solicitud recibida
+      operationId: accept
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FriendsController.FriendBody"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: La solicitud no existe o no es tuya
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/friends/{userId}:
+    delete:
+      tags:
+      - friends
+      summary: Quitar a un amigo
+      operationId: remove
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Sin contenido
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No sois amigos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/games:
     get:
       tags:
@@ -2375,6 +2516,104 @@ components:
           x-size-message: El email o el usuario no puede superar los 254 caracteres
       description: "`identifier` es el email o el nombre de usuario, igual que en\
         \ el inicio de sesión."
+    FriendRequestResponse:
+      required:
+      - createdAt
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+        from:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/FriendRequestResponse.Party"
+        to:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/FriendRequestResponse.Party"
+        createdAt:
+          type: string
+      description: "Solicitud pendiente: `from` en las recibidas y `to` en las enviadas;\
+        \ la otra clave no se escribe."
+    FriendRequestResponse.Party:
+      required:
+      - avatar
+      - id
+      - username
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        avatar:
+          $ref: "#/components/schemas/AvatarRef"
+      description: La otra cuenta de la solicitud.
+    FriendResponse:
+      required:
+      - avatar
+      - id
+      - level
+      - status
+      - username
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        avatar:
+          $ref: "#/components/schemas/AvatarRef"
+        level:
+          type: integer
+          format: int32
+          nullable: true
+        status:
+          $ref: "#/components/schemas/FriendStatus"
+      description: "Un amigo: `level` es `null` si aún no tiene experiencia registrada."
+    FriendStatus:
+      type: string
+      description: Presencia de un amigo en este momento.
+      enum:
+      - OFFLINE
+      - ONLINE
+      - IN_ROOM
+      - PLAYING
+    FriendsController.FriendBody:
+      required:
+      - friend
+      type: object
+      properties:
+        friend:
+          $ref: "#/components/schemas/FriendResponse"
+    FriendsController.RequestBody:
+      required:
+      - request
+      type: object
+      properties:
+        request:
+          $ref: "#/components/schemas/FriendRequestResponse"
+    FriendsResponse:
+      required:
+      - friends
+      - incoming
+      - outgoing
+      type: object
+      properties:
+        friends:
+          type: array
+          items:
+            $ref: "#/components/schemas/FriendResponse"
+        incoming:
+          type: array
+          items:
+            $ref: "#/components/schemas/FriendRequestResponse"
+        outgoing:
+          type: array
+          items:
+            $ref: "#/components/schemas/FriendRequestResponse"
+      description: "Amigos, solicitudes recibidas (`from`) y enviadas (`to`)."
     GameManifest:
       required:
       - defaultConfig
@@ -2823,6 +3062,18 @@ components:
       description: "Entrada del buscador de Pokémon: solo id, nombre y una URL de\
         \ sprite opaca servida por Java. Sin número de Pokédex, generación, tipos,\
         \ estadísticas ni sprite shiny, que darían la respuesta en varios minijuegos."
+    SendFriendRequest:
+      required:
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 24
+          minLength: 1
+          type: string
+          x-size-message: El nombre de usuario no puede superar los 24 caracteres
+      description: "Cuerpo de `POST /api/friends/requests`: el nombre de usuario de\
+        \ la cuenta a la que se pide la amistad."
     SyncOverviewItem:
       required:
       - durationMs

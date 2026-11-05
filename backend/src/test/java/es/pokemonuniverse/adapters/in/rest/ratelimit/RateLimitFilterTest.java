@@ -84,6 +84,20 @@ class RateLimitFilterTest {
   }
 
   @Test
+  void friendRequestsRateLimitIs20PerIp() {
+    HttpResponse<String> last = null;
+    for (int i = 0; i < 21; i++) {
+      last = call(HttpRequest.POST("/api/friends/requests", Map.of("username", "nadie"))
+          .header("X-Forwarded-For", "203.0.113.30"));
+      if (i < 20) {
+        assertNotEquals(HttpStatus.TOO_MANY_REQUESTS, last.status());
+      }
+    }
+    assertEquals(HttpStatus.TOO_MANY_REQUESTS, last.status());
+    assertEquals("20", last.header("RateLimit-Limit"));
+  }
+
+  @Test
   void feedbackLimitIs10() {
     HttpResponse<String> last = null;
     for (int i = 0; i < 11; i++) {
