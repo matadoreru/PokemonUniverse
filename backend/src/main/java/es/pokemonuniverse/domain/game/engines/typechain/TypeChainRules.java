@@ -5,14 +5,13 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
-import es.pokemonuniverse.domain.game.engines.typechain.TypeChainTypes.TypeChainFinishReason;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainTypes.TypeChainPlayerStats;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainTypes.TypeChainState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import io.micronaut.core.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /** Traducción literal de {@code type-chain/rules.ts}. */
@@ -23,21 +22,30 @@ public final class TypeChainRules {
   /** Posición en la clasificación ({@code { playerId, position }}). */
   public record RankedPlayer(String playerId, int position) {}
 
-  /** Tipos de {@code previous} (sin duplicados, en su orden) que también tiene {@code candidate}. */
-  public static List<String> sharedPokemonTypes(Pokemon previous, Pokemon candidate) {
-    var candidateTypes = new LinkedHashSet<>(candidate.types());
-    return new LinkedHashSet<>(previous.types()).stream().filter(candidateTypes::contains).toList();
+  /** {@code TYPE_CHAIN_MIN_TYPE_POKEMON}: Pokémon del pool que debe tener un tipo para poder ser el de una cadena. */
+  public static final int MIN_TYPE_POKEMON = 10;
+
+  /** {@code POKEMON_TYPES} de {@code pokemon/types.ts}, en su orden. */
+  static final List<String> POKEMON_TYPES = List.of("normal", "fire", "water", "electric", "grass", "ice", "fighting",
+      "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy");
+
+  /** ¿Vale el Pokémon en una cadena de este tipo? Basta con que sea uno de sus tipos. */
+  public static boolean hasTypeChainType(Pokemon candidate, String chainType) {
+    return candidate.types().contains(chainType);
   }
 
-  public static boolean isValidTypeChainTransition(Pokemon previous, Pokemon candidate) {
-    return sharedPokemonTypes(previous, candidate).size() == 1;
+  /** Tipos que pueden ser el de una cadena, en el orden de {@code POKEMON_TYPES}. */
+  public static List<String> typeChainEligibleTypes(List<Pokemon> allowed) {
+    return POKEMON_TYPES.stream()
+        .filter(type -> allowed.stream().filter(pokemon -> hasTypeChainType(pokemon, type)).count() >= MIN_TYPE_POKEMON)
+        .toList();
   }
 
-  public static List<Pokemon> getValidTypeChainCandidates(Pokemon previousPokemon, List<Pokemon> allowedPokemon,
+  /** Lo que aún se puede nombrar en la cadena: del pool, con el tipo de la cadena y sin usar. */
+  public static List<Pokemon> getValidTypeChainCandidates(String chainType, List<Pokemon> allowedPokemon,
       Collection<String> usedPokemonIds) {
     return allowedPokemon.stream()
-        .filter(candidate -> !usedPokemonIds.contains(candidate.id())
-            && isValidTypeChainTransition(previousPokemon, candidate))
+        .filter(candidate -> !usedPokemonIds.contains(candidate.id()) && hasTypeChainType(candidate, chainType))
         .toList();
   }
 
@@ -46,50 +54,57 @@ public final class TypeChainRules {
     return stats == null ? TypeChainPlayerStats.ZERO : stats;
   }
 
+  /** Cuánto aguantó: los que siguen en pie, por encima de todos; entre los eliminados, el que cayó más tarde. */
+  private static int survival(TypeChainState state, String playerId) {
+    for (var entry : state.eliminations()) {
+      if (entry.playerId().equals(playerId)) return entry.eliminationOrder();
+    }
+    return state.eliminations().size() + 1;
+  }
+
   /**
-   * {@code b.validSubmissions - a.validSubmissions || a.invalidAttempts - b.invalidAttempts || left.localeCompare(right)}.
-   * El desempate de TS es {@code localeCompare} sobre ids de jugador; aquí {@link String#compareTo}, equivalente para
-   * los ids del servidor (cuid y {@code guest_<uuid>}; ver el README de motores).
+   * Más Pokémon nombrados, luego quien aguantó más, luego menos intentos que no valieron y por último el id. El
+   * {@code localeCompare} de TS sobre ids de jugador es aquí {@link String#compareTo}, equivalente para los ids del
+   * servidor (cuid y {@code guest_<uuid>}; ver el README de motores).
    */
-  static int failsafeCompare(TypeChainState state, String left, String right) {
+  static int rankingCompare(TypeChainState state, String left, String right) {
     var a = statsOf(state, left);
     var b = statsOf(state, right);
     int bySubmissions = Integer.compare(b.validSubmissions(), a.validSubmissions());
     if (bySubmissions != 0) return bySubmissions;
+    int bySurvival = Integer.compare(survival(state, right), survival(state, left));
+    if (bySurvival != 0) return bySurvival;
     int byInvalid = Integer.compare(a.invalidAttempts(), b.invalidAttempts());
     return byInvalid != 0 ? byInvalid : left.compareTo(right);
   }
 
-  private static boolean tiedFailsafe(TypeChainState state, String left, String right) {
+  private static boolean tied(TypeChainState state, String left, String right) {
     var a = statsOf(state, left);
     var b = statsOf(state, right);
-    return a.validSubmissions() == b.validSubmissions() && a.invalidAttempts() == b.invalidAttempts();
+    return a.validSubmissions() == b.validSubmissions() && survival(state, left) == survival(state, right)
+        && a.invalidAttempts() == b.invalidAttempts();
   }
 
   public static List<RankedPlayer> typeChainRanking(TypeChainState state) {
-    var eliminatedReversed = new ArrayList<>(state.eliminations()).reversed();
-    if (state.finishReason() == TypeChainFinishReason.SURVIVOR) {
-      var ordered = new ArrayList<>(state.activePlayerIds());
-      for (var entry : eliminatedReversed) ordered.add(entry.playerId());
-      var ranking = new ArrayList<RankedPlayer>();
-      for (int index = 0; index < ordered.size(); index++) ranking.add(new RankedPlayer(ordered.get(index), index + 1));
-      return ranking;
-    }
-    var alive = new ArrayList<>(state.activePlayerIds());
-    alive.sort((a, b) -> failsafeCompare(state, a, b));
+    var ordered = new ArrayList<>(state.playerIds());
+    ordered.sort((a, b) -> rankingCompare(state, a, b));
     String prior = null;
     int position = 0;
     var ranking = new ArrayList<RankedPlayer>();
-    for (int index = 0; index < alive.size(); index++) {
-      var playerId = alive.get(index);
-      if (prior == null || !tiedFailsafe(state, prior, playerId)) position = index + 1;
+    for (int index = 0; index < ordered.size(); index++) {
+      var playerId = ordered.get(index);
+      if (prior == null || !tied(state, prior, playerId)) position = index + 1;
       prior = playerId;
       ranking.add(new RankedPlayer(playerId, position));
     }
-    for (int index = 0; index < eliminatedReversed.size(); index++) {
-      ranking.add(new RankedPlayer(eliminatedReversed.get(index).playerId(), alive.size() + index + 1));
-    }
     return ranking;
+  }
+
+  /** Ganador: el primero de la clasificación si no comparte el puesto. */
+  public static @Nullable String typeChainWinner(TypeChainState state) {
+    var ranking = typeChainRanking(state);
+    if (ranking.isEmpty()) return null;
+    return ranking.size() > 1 && ranking.get(1).position() == 1 ? null : ranking.getFirst().playerId();
   }
 
   public static GameResults buildTypeChainResults(TypeChainState state) {

@@ -37,7 +37,7 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 | 🎙️ PokéTaboo | 2+ | Describe un Pokémon sin decir su nombre. |
 | 🃏 Quién es Quién — Pokémon | 2+ | Dos equipos intentan descubrir el Pokémon secreto rival. |
 | 🎨 Sketchmon | 2+ | Dibuja un Pokémon en tiempo real para que lo adivinen. |
-| ⛓️ Type Chain | 2+ | Encadena Pokémon que compartan exactamente un tipo. |
+| ⛓️ Type Chain | 2+ | Cada cadena tiene un tipo: nombra por turnos Pokémon de ese tipo sin repetir; gana quien más nombre. |
 | ⚔️ Type Duel | 2+ | Corre contra otro entrenador para encontrar una combinación de tipos. |
 | 👉 Most Likely To | 3+ | Elige qué Pokémon encaja mejor con una situación. |
 | 🕵️ One of Us Is Fake | 3+ | Descubrid quién recibió una categoría secreta diferente. |

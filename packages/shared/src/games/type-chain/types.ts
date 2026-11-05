@@ -4,14 +4,14 @@ import type { GamePhase, GameResults } from '../contracts.js';
 import type { TypeChainConfig } from './config.js';
 
 export interface TypeChainPokemonView { id: string; name: string; sprite: string; types: PokemonType[] }
+/** Un Pokémon nombrado en la cadena: todos son del tipo de la cadena (`chainType`). */
 export interface TypeChainNode {
   pokemon: TypeChainPokemonView;
-  playedBy: string | null;
-  sharedType: PokemonType | null;
+  playedBy: string;
   turnNumber: number;
 }
 
-export type TypeChainInvalidReason = 'ALREADY_USED' | 'NO_SHARED_TYPE' | 'MULTIPLE_SHARED_TYPES' | 'OUT_OF_POOL';
+export type TypeChainInvalidReason = 'ALREADY_USED' | 'WRONG_TYPE' | 'OUT_OF_POOL';
 export interface TypeChainInvalidAttempt {
   playerId: string;
   pokemon: TypeChainPokemonView;
@@ -28,9 +28,10 @@ export interface TypeChainElimination {
 }
 
 export type TypeChainEvent =
-  | { kind: 'SUCCESS'; playerId: string; from: TypeChainPokemonView; to: TypeChainPokemonView; sharedType: PokemonType; at: number }
+  | { kind: 'SUCCESS'; playerId: string; pokemon: TypeChainPokemonView; chainType: PokemonType; at: number }
   | { kind: 'ELIMINATION'; playerId: string; reason: TypeChainElimination['reason']; at: number }
-  | { kind: 'CHAIN_RESET'; previousLength: number; starter: TypeChainPokemonView; at: number };
+  // Se acabaron los Pokémon sin usar del tipo de la cadena: empieza otra con otro tipo.
+  | { kind: 'CHAIN_RESET'; previousLength: number; previousType: PokemonType; chainType: PokemonType; at: number };
 
 export interface TypeChainPlayerStats {
   validSubmissions: number;
@@ -48,6 +49,10 @@ export interface TypeChainState {
   spectatorIds: string[];
   poolIds: string[];
   chainNumber: number;
+  /** Tipo de la cadena actual: cada Pokémon nombrado debe tenerlo (`null` antes de empezar). */
+  chainType: PokemonType | null;
+  /** Tipos de las cadenas de la partida, en orden: la siguiente cadena evita repetirlos mientras pueda. */
+  usedChainTypes: PokemonType[];
   chain: TypeChainNode[];
   usedPokemonIds: string[];
   longestChain: number;
@@ -77,9 +82,12 @@ export interface TypeChainPublicState {
   nextPlayerId: string | null;
   turnNumber: number;
   chainNumber: number;
+  chainType: PokemonType | null;
   chain: TypeChainNode[];
   usedPokemonIds: string[];
   longestChain: number;
+  /** Pokémon nombrados por cada jugador en toda la partida (lo que decide la clasificación), en el orden de `playerIds`. */
+  namedCounts: Record<string, number>;
   turnStartedAt: number | null;
   roundEndsAt: number | null;
   invalidAttempts: TypeChainInvalidAttempt[];

@@ -3,30 +3,31 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { TypeChainConfigPanel } from '../games/type-chain/ConfigPanel';
-import { typeChainAnnouncement, typeChainEventView, typeChainFocusKey, typeChainMemberStatus, typeChainPlateKind, typeChoiceText } from '../games/type-chain/presentation';
+import { chainTypeText, typeChainAnnouncement, typeChainEventView, typeChainFocusKey, typeChainMemberStatus, typeChainNamed, typeChainPlateKind, typeChainSearchAutoFocus } from '../games/type-chain/presentation';
 import { TypeChainGame } from './TypeChainGame';
 import { TypeChainResults } from './TypeChainResults';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-// El buscador de verdad necesita el pool: aquí se pinta un sustituto que enseña su etiqueta y los bloqueados.
+// El buscador de verdad necesita el pool: aquí se pinta un sustituto que enseña su etiqueta, los bloqueados y si se enfoca solo.
 vi.mock('./PokemonSelector', () => ({
-  PokemonSelector: ({ inputLabel, locked }: { inputLabel: string; locked: ReadonlySet<string> }) => createElement('input', { 'aria-label': inputLabel, 'data-locked': [...locked].join(',') }),
+  PokemonSelector: ({ inputLabel, locked, autoFocus }: { inputLabel: string; locked: ReadonlySet<string>; autoFocus?: boolean }) => createElement('input', { 'aria-label': inputLabel, 'data-locked': [...locked].join(','), 'data-autofocus': String(Boolean(autoFocus)) }),
 }));
 
 const charizard = { id: 'charizard', name: 'Charizard', sprite: '/charizard.png', types: ['fire', 'flying'] as ['fire', 'flying'] };
 const staraptor = { id: 'staraptor', name: 'Staraptor', sprite: '/staraptor.png', types: ['normal', 'flying'] as ['normal', 'flying'] };
+const blastoise = { id: 'blastoise', name: 'Blastoise', sprite: '/blastoise.png', types: ['water'] as ['water'] };
 
 function publicGame(phase: 'TURN_ACTIVE' | 'GAME_RESULTS' = 'TURN_ACTIVE'): TypeChainPublicState {
   return {
     gameId: 'type-chain', phase, turnOrder: ['p1', 'p2', 'p3'], activePlayerIds: phase === 'TURN_ACTIVE' ? ['p1', 'p2'] : ['p1'], eliminatedPlayerIds: phase === 'TURN_ACTIVE' ? ['p3'] : ['p3', 'p2'], currentPlayerId: phase === 'TURN_ACTIVE' ? 'p1' : null, nextPlayerId: phase === 'TURN_ACTIVE' ? 'p2' : null,
-    turnNumber: 4, chainNumber: 1, chain: [
-      { pokemon: { ...charizard, types: [...charizard.types] }, playedBy: null, sharedType: null, turnNumber: 0 },
-      { pokemon: { ...staraptor, types: [...staraptor.types] }, playedBy: 'p2', sharedType: 'flying', turnNumber: 3 },
-    ], usedPokemonIds: ['charizard', 'staraptor'], longestChain: 7, turnStartedAt: 1_000, roundEndsAt: phase === 'TURN_ACTIVE' ? Date.now() + 15_000 : null,
-    invalidAttempts: [{ playerId: 'p2', pokemon: { id: 'talonflame', name: 'Talonflame', sprite: '/talonflame.png', types: ['fire', 'flying'] }, reason: 'MULTIPLE_SHARED_TYPES', attemptedAt: 900 }],
+    turnNumber: 4, chainNumber: 1, chainType: 'flying', chain: [
+      { pokemon: { ...charizard, types: [...charizard.types] }, playedBy: 'p1', turnNumber: 1 },
+      { pokemon: { ...staraptor, types: [...staraptor.types] }, playedBy: 'p2', turnNumber: 3 },
+    ], usedPokemonIds: ['charizard', 'staraptor'], longestChain: 7, namedCounts: { p1: 3, p2: 2, p3: 0 }, turnStartedAt: 1_000, roundEndsAt: phase === 'TURN_ACTIVE' ? Date.now() + 15_000 : null,
+    invalidAttempts: [{ playerId: 'p2', pokemon: { ...blastoise, types: [...blastoise.types] }, reason: 'WRONG_TYPE', attemptedAt: 900 }],
     eliminations: [{ playerId: 'p3', reason: 'TIMEOUT', turnNumber: 2, eliminatedAt: 800, eliminationOrder: 1 }, ...(phase === 'GAME_RESULTS' ? [{ playerId: 'p2', reason: 'DISCONNECTED' as const, turnNumber: 5, eliminatedAt: 1_200, eliminationOrder: 2 }] : [])],
-    events: [{ kind: 'SUCCESS', playerId: 'p2', from: { ...charizard, types: [...charizard.types] }, to: { ...staraptor, types: [...staraptor.types] }, sharedType: 'flying', at: 950 }],
+    events: [{ kind: 'SUCCESS', playerId: 'p2', pokemon: { ...staraptor, types: [...staraptor.types] }, chainType: 'flying', at: 950 }],
     results: phase === 'GAME_RESULTS' ? { winnerId: 'p1', standings: [
       { playerId: 'p1', position: 1, points: 8, won: true, stats: { validSubmissions: 3, invalidAttempts: 1, turnsSurvived: 3, timeoutEliminations: 0, longestChain: 7 } },
       { playerId: 'p2', position: 2, points: 5, won: false, stats: { validSubmissions: 2, invalidAttempts: 2, turnsSurvived: 2, timeoutEliminations: 0, longestChain: 7 } },
@@ -57,17 +58,25 @@ describe('Type Chain: presentación', () => {
     expect(typeChainPlateKind({ game, player: null, spectator: true })).toBe('spectator');
     expect(typeChainPlateKind({ game, player: null, spectator: false })).toBe('spectator');
     expect(typeChainPlateKind({ game: { ...game, phase: 'GAME_STARTING' }, player: turn, spectator: false })).toBe('starting');
+    expect(typeChainPlateKind({ game: { ...game, chainType: null }, player: turn, spectator: false })).toBe('starting');
+    // Una cadena recién empezada (sin Pokémon aún) ya es un turno: el tipo basta.
+    expect(typeChainPlateKind({ game: { phase: 'TURN_ACTIVE', chainType: 'water' }, player: turn, spectator: false })).toBe('turn');
     expect(typeChainFocusKey('turn', 4)).toBe('turn-4');
     expect(typeChainFocusKey('starting', 4)).toBeNull();
   });
 
-  it('dice en texto los tipos que valen, el último movimiento y el estado de cada jugador', () => {
-    expect(typeChoiceText(['normal', 'flying'])).toBe('Normal o Volador');
-    expect(typeChoiceText(['fire'])).toBe('Fuego');
+  it('solo enfoca el buscador en tu turno (también el primero: se monta de nuevo en cada turno propio)', () => {
+    expect(typeChainSearchAutoFocus('turn')).toBe(true);
+    for (const kind of ['waiting', 'eliminated', 'spectator', 'starting'] as const) expect(typeChainSearchAutoFocus(kind)).toBe(false);
+  });
+
+  it('dice en texto el tipo de la cadena, el último movimiento y el estado de cada jugador', () => {
+    expect(chainTypeText('psychic')).toBe('Psíquico'); expect(chainTypeText(null)).toBe('la cadena');
     const names = (id: string) => ({ p1: 'Eru', p2: 'Ana' })[id] ?? id;
-    expect(typeChainEventView(publicGame().events[0], names)).toEqual({ tone: 'ok', title: 'Ana continúa la cadena', text: 'Charizard → Staraptor · comparten Volador' });
+    expect(typeChainEventView(publicGame().events[0], names)).toEqual({ tone: 'ok', title: 'Ana nombra a Staraptor', text: 'Es de tipo Volador: suma un Pokémon a la cadena' });
     expect(typeChainEventView({ kind: 'ELIMINATION', playerId: 'p1', reason: 'TIMEOUT', at: 1 }, names)?.title).toBe('Eru queda eliminado');
-    expect(typeChainEventView({ kind: 'CHAIN_RESET', previousLength: 9, starter: charizard, at: 1 }, names)?.text).toContain('llegó a 9 Pokémon');
+    expect(typeChainEventView({ kind: 'CHAIN_RESET', previousLength: 9, previousType: 'fire', chainType: 'water', at: 1 }, names)).toEqual({ tone: 'warn', title: 'No quedan Pokémon de tipo Fuego · nueva cadena', text: 'La anterior llegó a 9 Pokémon. Nadie queda eliminado; ahora el tipo es Agua.' });
+    expect(typeChainNamed(publicGame(), 'p1')).toBe(3); expect(typeChainNamed(publicGame(), 's1')).toBe(0);
     const game = publicGame();
     expect(typeChainMemberStatus(game, 'p1')).toEqual({ kind: 'current' });
     expect(typeChainMemberStatus(game, 'p2')).toEqual({ kind: 'next' });
@@ -77,32 +86,41 @@ describe('Type Chain: presentación', () => {
   it('anuncia el movimiento, el turno y, en tu turno, por qué no valió tu intento', () => {
     const game = publicGame();
     const nameOf = (id: string) => ({ p1: 'Eru', p2: 'Ana' })[id] ?? id;
-    expect(typeChainAnnouncement({ game, player: turn, kind: 'turn', nameOf })).toBe('Ana continúa la cadena. Charizard → Staraptor · comparten Volador. Tu turno: continúa desde Staraptor.');
-    const failed = typeChainAnnouncement({ game, player: { ...turn, lastAttempt: { reason: 'NO_SHARED_TYPE', pokemonName: 'Pikachu', attemptedAt: 1_500 } }, kind: 'turn', nameOf });
-    expect(failed).toMatch(/^Incorrecto: Pikachu\. No comparte ningún tipo\. Nuevo intento en 1 segundo\./);
+    expect(typeChainAnnouncement({ game, player: turn, kind: 'turn', nameOf })).toBe('Ana nombra a Staraptor. Es de tipo Volador: suma un Pokémon a la cadena. Tu turno: nombra un Pokémon de tipo Volador.');
+    const failed = typeChainAnnouncement({ game, player: { ...turn, lastAttempt: { reason: 'WRONG_TYPE', pokemonName: 'Pikachu', attemptedAt: 1_500 } }, kind: 'turn', nameOf });
+    expect(failed).toMatch(/^Incorrecto: Pikachu\. No es del tipo de la cadena\. Nuevo intento en 1 segundo\./);
     // Un fallo de un turno anterior ya no se anuncia.
-    expect(typeChainAnnouncement({ game, player: { ...turn, lastAttempt: { reason: 'NO_SHARED_TYPE', pokemonName: 'Pikachu', attemptedAt: 500 } }, kind: 'turn', nameOf })).not.toContain('Pikachu');
+    expect(typeChainAnnouncement({ game, player: { ...turn, lastAttempt: { reason: 'WRONG_TYPE', pokemonName: 'Pikachu', attemptedAt: 500 } }, kind: 'turn', nameOf })).not.toContain('Pikachu');
     expect(typeChainAnnouncement({ game, player: waitingState, kind: 'waiting', nameOf })).toContain('Turno 4: le toca a Eru.');
     expect(typeChainAnnouncement({ game, player: null, kind: 'starting', nameOf })).toBe('');
   });
 });
 
 describe('Type Chain: pantalla', () => {
-  it('pinta el Pokémon actual con sus tipos, la regla, la cadena, los fallos y el buscador con los usados bloqueados', () => {
+  it('pinta el tipo de la cadena en grande, la regla, la cadena, los fallos y el buscador con los usados bloqueados y enfocado', () => {
     const markup = render(publicGame(), turn);
-    expect(markup).toContain('Pokémon actual'); expect(markup).toContain('Staraptor'); expect(markup).toContain('exactamente un tipo');
-    expect(markup).toContain('data-type="normal"'); expect(markup).toContain('data-type="flying"');
-    expect(markup).toContain('Enlaza por <strong>Volador</strong>'); expect(markup).toContain('Inicio de la cadena');
-    expect(markup).toContain('Talonflame'); expect(markup).toContain('Comparte los dos tipos');
-    expect(markup).toContain('aria-label="Buscar Pokémon para continuar desde Staraptor"');
+    expect(markup).toContain('aria-label="Tipo de la cadena"'); expect(markup).toMatch(/data-testid="type-chain-type".*?data-type="flying"[^>]*>Volador</);
+    expect(markup).toContain('2 Pokémon nombrados'); expect(markup).toContain('Nombra un Pokémon de tipo <strong>Volador</strong>, solo o con otro tipo.');
+    expect(markup).not.toContain('exactamente un tipo');
+    expect(markup).toContain('Lo nombró <strong>Ana</strong>'); expect(markup).toContain('Lo nombró <strong>Eru</strong>');
+    expect(markup).toContain('Blastoise'); expect(markup).toContain('Otro tipo');
+    expect(markup).toContain('aria-label="Buscar Pokémon de tipo Volador"'); expect(markup).toContain('data-autofocus="true"');
     expect(markup).toContain('data-locked="charizard,staraptor"');
-    expect(markup).toContain('¡Tu turno!'); expect(markup).toContain('Continúa desde Staraptor');
+    expect(markup).toContain('¡Tu turno!'); expect(markup).toContain('Nombra un Pokémon de tipo Volador');
+    expect(markup).toContain('Cadena 1 · Volador · 2 Pokémon');
     expect(markup).toContain('Siguiente'); expect(markup).toContain('Marta'); expect(markup).toContain('Eliminado</span><span'); expect(markup).toContain('Se le acabó el tiempo');
-    expect(markup).toContain('Ana continúa la cadena'); expect(markup).toContain('role="timer"');
+    expect(markup).toMatch(/3<small> nombrados<\/small>/);
+    expect(markup).toContain('Ana nombra a Staraptor'); expect(markup).toContain('role="timer"');
+  });
+
+  it('una cadena nueva sin Pokémon dice que aún no hay ninguno', () => {
+    const markup = render({ ...publicGame(), chainNumber: 2, chainType: 'water', chain: [], usedPokemonIds: [] }, turn);
+    expect(markup).toContain('Aún sin Pokémon'); expect(markup).toContain('Nadie ha nombrado aún un Pokémon en esta cadena.');
+    expect(markup).toContain('aria-label="Buscar Pokémon de tipo Agua"'); expect(markup).toContain('data-autofocus="true"');
   });
 
   it('tiene una sola región viva y ningún error propio', () => {
-    const markup = render(publicGame(), { ...turn, lastAttempt: { reason: 'NO_SHARED_TYPE', pokemonName: 'Pikachu', attemptedAt: 1_500 }, cooldownUntil: Date.now() + 800 });
+    const markup = render(publicGame(), { ...turn, lastAttempt: { reason: 'WRONG_TYPE', pokemonName: 'Pikachu', attemptedAt: 1_500 }, cooldownUntil: Date.now() + 800 });
     expect(markup.match(/aria-live/g)).toHaveLength(1);
     expect(markup.match(/role="status"/g)).toHaveLength(1);
     expect(markup).not.toContain('role="alert"');
@@ -112,25 +130,25 @@ describe('Type Chain: pantalla', () => {
 
   it('fuera de tu turno espera, eliminado observa y el espectador sin estado de jugador no rompe', () => {
     const waiting = render(publicGame(), waitingState, 'p2');
-    expect(waiting).toContain('Esperando a Eru…'); expect(waiting).toContain('Turno de Eru'); expect(waiting).not.toContain('Buscar Pokémon para continuar');
+    expect(waiting).toContain('Esperando a Eru…'); expect(waiting).toContain('Turno de Eru'); expect(waiting).not.toContain('Buscar Pokémon de tipo');
     const observing = render(publicGame(), { ...waitingState, eliminated: true }, 'p3');
-    expect(observing).toContain('Observas la cadena'); expect(observing).toContain('Eliminado: se le acabó el tiempo'); expect(observing).not.toContain('Buscar Pokémon para continuar');
+    expect(observing).toContain('Observas la cadena'); expect(observing).toContain('Eliminado: se le acabó el tiempo'); expect(observing).not.toContain('Buscar Pokémon de tipo');
     const spectator = render(publicGame(), null, 's1');
-    expect(spectator).toContain('Espectador'); expect(spectator).toContain('Observas la cadena'); expect(spectator).not.toContain('Buscar Pokémon para continuar');
+    expect(spectator).toContain('Espectador'); expect(spectator).toContain('Observas la cadena'); expect(spectator).not.toContain('Buscar Pokémon de tipo');
   });
 
   it('ajustes con el catálogo: tiempo por turno en un Segmented', () => {
     const config = renderToStaticMarkup(createElement(TypeChainConfigPanel, { config: defaultTypeChainConfig, disabled: false, onChange: async () => undefined }));
     expect(config).toContain('Tiempo por turno'); expect(config).toContain('role="radiogroup"'); expect(config).toMatch(/aria-checked="true"[^>]*>15s</);
-    expect(config).toContain('Exactamente un tipo compartido'); expect(config).not.toContain('type="range"');
+    expect(config).toContain('Un tipo por cadena'); expect(config).toContain('al menos 10 Pokémon'); expect(config).not.toContain('type="range"');
   });
 
   it('resultados: clasificación con estadísticas, cómo cayó cada uno, récords y continuar sesión', () => {
     const markup = renderToStaticMarkup(createElement(TypeChainResults, { room: room(publicGame('GAME_RESULTS'), null), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
-    expect(markup).toContain('Clasificación final'); expect(markup).toContain('cadena más larga: 7 Pokémon');
-    expect(markup).toContain('3 válidos'); expect(markup).toContain('1 eliminación por tiempo');
+    expect(markup).toContain('Clasificación final'); expect(markup).toContain('gana quien más Pokémon nombra · cadena más larga: 7 Pokémon');
+    expect(markup).toContain('3 Pokémon nombrados'); expect(markup).toContain('1 fallo');
     expect(markup).toContain('Sigue en pie'); expect(markup).toContain('Eliminado 1.º'); expect(markup).toContain('Cayó: se le acabó el tiempo'); expect(markup).toContain('Eliminado 2.º'); expect(markup).toContain('Cayó: se desconectó en su turno');
-    expect(markup).toContain('Más eslabones'); expect(markup).toContain('Menos fallos');
+    expect(markup).toContain('Más Pokémon nombrados'); expect(markup).not.toContain('turnos superados'); expect(markup).toContain('Menos fallos');
     expect(markup).toContain('Continuar sesión'); expect(markup).toContain('Avatar de Eru');
     expect(markup).not.toMatch(/🥇|🥈|🥉/);
   });

@@ -48,11 +48,10 @@ class TypeChainEngineTest {
     return engine.start(engine.createInitialState(new TypeChainConfig(List.of(1), 15), context), context);
   }
 
-  /** Un envío válido desde el último Pokémon de la cadena. */
+  /** Un envío válido: un Pokémon sin usar del tipo de la cadena. */
   private static String validContinuation(TypeChainState state, GameContext context) {
-    var last = context.pokemon().byId(state.chain().getLast().pokemon().id()).orElseThrow();
     var pool = state.poolIds().stream().map(id -> context.pokemon().byId(id).orElseThrow()).toList();
-    return TypeChainRules.getValidTypeChainCandidates(last, pool, state.usedPokemonIds()).getFirst().id();
+    return TypeChainRules.getValidTypeChainCandidates(state.chainType(), pool, state.usedPokemonIds()).getFirst().id();
   }
 
   @Test
@@ -91,19 +90,24 @@ class TypeChainEngineTest {
     assertEquals("No hay suficientes Pokémon para crear una cadena con esta configuración.", error.getMessage());
   }
 
+  /** La primera cadena empieza vacía, con un tipo que tiene Pokémon suficientes y sin precargar nada. */
   @Test
-  void startsOnlyOnceAndPreloadsTheStarter() {
+  void startsOnlyOnceWithAnEmptyChainOfAnEligibleType() {
     var preloaded = new ArrayList<String>();
     var context = context(2).toBuilder().preloadImage(preloaded::add).build();
     var state = started(context);
-    assertEquals(List.of(state.chain().getFirst().pokemon().sprite()), preloaded);
+    assertEquals(List.of(), preloaded);
+    assertEquals(List.of(), state.chain());
+    assertEquals(List.of(state.chainType()), state.usedChainTypes());
+    var pool = state.poolIds().stream().map(id -> context.pokemon().byId(id).orElseThrow()).toList();
+    assertTrue(TypeChainRules.typeChainEligibleTypes(pool).contains(state.chainType()));
     var error = assertThrows(EngineException.class, () -> engine.start(state, context));
     assertEquals("La partida ya ha comenzado.", error.getMessage());
     error = assertThrows(EngineException.class, () -> engine.getResults(state));
     assertEquals("Results are unavailable before the game finishes", error.getMessage());
   }
 
-  /** Estados que el flujo público no produce: el jugador actual desconectado sin aviso de presencia o sin cadena. */
+  /** Estados que el flujo público no produce: el jugador actual desconectado sin aviso de presencia o sin tipo. */
   @Test
   void returnsTheServerLiteralsForUnreachableStates() {
     var context = context(3);
@@ -115,19 +119,22 @@ class TypeChainEngineTest {
         .toList());
     var result = engine.handleAction(state, current, new TypeChainAction("pikachu"), offline);
     assertEquals("Ya no participas en esta cadena.", result.error());
-    var withoutChain = state.toBuilder().chain(List.of()).usedPokemonIds(List.of()).build();
-    result = engine.handleAction(withoutChain, current, new TypeChainAction("pikachu"), context.withNow(2000));
-    assertEquals("La cadena no tiene referencia.", result.error());
+    var withoutType = state.toBuilder().chainType(null).build();
+    result = engine.handleAction(withoutType, current, new TypeChainAction("pikachu"), context.withNow(2000));
+    assertEquals("La cadena no tiene tipo.", result.error());
     var error = assertThrows(EngineException.class,
-        () -> engine.handleTimeout(withoutChain, context.withNow(state.roundEndsAt())));
-    assertEquals("La cadena no tiene un Pokémon de referencia.", error.getMessage());
-    var emptyPool = state.toBuilder().poolIds(List.of("pikachu")).build();
+        () -> engine.handleTimeout(withoutType, context.withNow(state.roundEndsAt())));
+    assertEquals("La cadena no tiene tipo.", error.getMessage());
+    var emptyPool = state.toBuilder().poolIds(List.of()).build();
     error = assertThrows(EngineException.class,
         () -> engine.handleTimeout(emptyPool, context.withNow(state.roundEndsAt())));
     assertEquals("No hay Pokémon suficientes para crear una cadena con esta configuración.", error.getMessage());
   }
 
-  /** El turno 500 termina la partida por {@code MAX_TURNS}: gana el líder del desempate o nadie si empatan. */
+  /**
+   * El turno 500 termina la partida por {@code MAX_TURNS}: con todos en pie, gana quien más nombró (y, a igualdad, quien
+   * menos falló) o nadie si empatan en todo.
+   */
   @Test
   void finishesByMaxTurnsWithTheFailsafeRanking() {
     var context = context(3).withNow(2000);
@@ -143,7 +150,7 @@ class TypeChainEngineTest {
         context).state();
     assertEquals(GamePhase.GAME_RESULTS, finished.phase());
     assertEquals(TypeChainFinishReason.MAX_TURNS, finished.finishReason());
-    // current y others[1] tienen 1 envío válido y 0 inválidos: empate en cabeza, sin ganador.
+    // current y others[1] tienen 1 Pokémon nombrado y 0 inválidos: empate en cabeza, sin ganador.
     assertNull(finished.winnerId());
     var standings = engine.getResults(finished).standings();
     var tiedFirst = standings.stream().filter(standing -> standing.position() == 1).map(GameStanding::playerId)
@@ -161,7 +168,7 @@ class TypeChainEngineTest {
   }
 
   @Test
-  void failsafeWinnerWithASingleSurvivorAndRankingOfEliminated() {
+  void winnerWithASingleSurvivorAndRankingOfEliminated() {
     var context = context(2).withNow(2000);
     var state = started(context);
     var current = state.currentPlayerId();

@@ -7,8 +7,8 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { GameSkipSlot } from '../../room/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../room/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
-import { typeChainCooldownText, typeChainEliminationLabels, typeChainEventView, typeChainLinks, typeChainMemberStatus, typeChainReasonShort, typeChoiceText, typeLabel } from './presentation';
+import { Badge, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
+import { typeChainCooldownText, typeChainEliminationLabels, typeChainEventView, typeChainMemberStatus, typeChainNamed, typeChainReasonShort, typeLabel } from './presentation';
 import s from './TypeChain.module.css';
 
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -35,7 +35,7 @@ export function TypeChainHud({ game, members, colors, selfId, timer }: {
       <div className={s.hudMeta}>
         <Badge>Turno {game.turnNumber}</Badge>
         <span className={s.gameName}>Type Chain</span>
-        <Chip tone="neutral" icon={<Icon icon={Link2} size={18} />}>Cadena {game.chainNumber} · {game.chain.length} Pokémon</Chip>
+        <Chip tone="neutral" icon={<Icon icon={Link2} size={18} />}>{`Cadena ${game.chainNumber}${game.chainType ? ` · ${typeLabel(game.chainType)}` : ''} · ${game.chain.length} Pokémon`}</Chip>
         <Chip tone="neutral">Récord {game.longestChain}</Chip>
       </div>
       <h1 className={cx(s.heading, 'ol')} title={heading}>
@@ -51,61 +51,62 @@ export function TypeChainHud({ game, members, colors, selfId, timer }: {
 }
 
 /**
- * El Pokémon actual (la pista): `Card` con su sprite, el nombre y sus tipos en `TypeBadge`; al lado, la regla con los
- * tipos que valen y la franja del último movimiento (continuó, eliminado o cadena nueva) en texto.
+ * El tipo de la cadena (la pista): una `TypeBadge` grande en el hueco protagonista, con cuántos se llevan nombrados;
+ * al lado, la regla en texto y la franja del último movimiento (nombró, eliminado o cadena nueva).
  */
 export function TypeChainStage({ game, members }: { game: TypeChainPublicState; members: ReadonlyMap<string, RoomMemberView> }) {
-  const current = game.chain.at(-1);
   const event = typeChainEventView(game.events.at(-1), (id) => nameOf(members, id));
-  return <Panel variant="cream" as="section" aria-label="Pokémon actual" className={cx(s.stagePanel)} bodyClassName={cx(s.stage)}>
-    {current
+  const named = game.chain.length;
+  return <Panel variant="cream" as="section" aria-label="Tipo de la cadena" className={cx(s.stagePanel)} bodyClassName={cx(s.stage)}>
+    {game.chainType
       ? <>
-        <div className={s.currentCard} data-testid="type-chain-current">
-          <Card size="fill" sprite={guessSprite(current.pokemon.sprite)} name={current.pokemon.name} decorativeSprite eager attrs={{ 'data-tc-card': 'current' }}>
-            <span className={s.currentTypes}>{current.pokemon.types.map((type) => <TypeBadge key={type} type={type} label={typeLabel(type)} size="lg" />)}</span>
-          </Card>
+        <div className={s.emblemSlot}>
+          <div className={s.emblem} data-testid="type-chain-type">
+            <span className={s.emblemKicker}>Cadena {game.chainNumber} · tipo</span>
+            <TypeBadge type={game.chainType} label={typeLabel(game.chainType)} size="lg" />
+            <span className={s.emblemCount}>{named === 0 ? 'Aún sin Pokémon' : `${named} ${named === 1 ? 'Pokémon nombrado' : 'Pokémon nombrados'}`}</span>
+          </div>
         </div>
         <div className={s.stageText}>
-          <span className={s.kicker}>Pokémon actual</span>
-          <p className={s.rule}>Busca uno que comparta <strong>exactamente un tipo</strong>: {typeChoiceText(current.pokemon.types)}.</p>
-          <p className={s.ruleHelp}>Los Pokémon ya usados quedan bloqueados en toda la partida.</p>
+          <span className={s.kicker}>La regla</span>
+          <p className={s.rule}>Nombra un Pokémon de tipo <strong>{typeLabel(game.chainType)}</strong>, solo o con otro tipo.</p>
+          <p className={s.ruleHelp}>Los ya nombrados quedan bloqueados en esta cadena. Gana quien más Pokémon nombre.</p>
         </div>
         {event && <div key={game.events.at(-1)!.at} className={cx(s.event, s[`event_${event.tone}`], 'motion-enter-up')} data-testid="type-chain-event">
           <Icon icon={event.tone === 'ok' ? CheckCircle2 : event.tone === 'bad' ? Skull : AlertTriangle} size={24} />
           <span className={s.eventText}><strong>{event.title}</strong><span>{event.text}</span></span>
         </div>}
       </>
-      : <p className={s.rule}>El servidor está eligiendo el primer Pokémon…</p>}
+      : <p className={s.rule}>El servidor está eligiendo el tipo de la cadena…</p>}
   </Panel>;
 }
 
-/** Un eslabón de la cadena: sprite, nombre, tipos y, en texto, con qué tipo enlaza y quién lo puso. */
+/** Un Pokémon de la cadena: sprite, nombre, tipos y, en texto, quién lo nombró. */
 function ChainRow({ node, index, latest, members, colors }: { node: TypeChainNode; index: number; latest: boolean; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number> }) {
-  const by = node.playedBy ? nameOf(members, node.playedBy) : null;
   return <li data-testid="type-chain-link" className={cx(latest && 'motion-enter-up')}>
-    <Row rank={index + 1} name={node.pokemon.name} highlight={latest}
-      {...(node.playedBy ? { color: playerColor(colors.get(node.playedBy) ?? 0) } : {})}
+    <Row rank={index + 1} name={node.pokemon.name} highlight={latest} color={playerColor(colors.get(node.playedBy) ?? 0)}
       avatar={<img src={guessSprite(node.pokemon.sprite)} alt="" className={s.chainSprite} loading="lazy" />}
       meta={<span className={s.chainMeta}>
         <span className={s.chainTypes}>{node.pokemon.types.map((type) => <TypeBadge key={type} type={type} label={typeLabel(type)} size="sm" />)}</span>
-        <span className={s.chainBy}>{node.sharedType ? <>Enlaza por <strong>{typeLabel(node.sharedType)}</strong> · {by ?? 'Inicio'}</> : 'Inicio de la cadena'}</span>
+        <span className={s.chainBy}>Lo nombró <strong>{nameOf(members, node.playedBy)}</strong></span>
         {latest && <Chip tone="info">Último</Chip>}
       </span>} />
   </li>;
 }
 
-/** La cadena entera (`Row`s, la última arriba) con desplazamiento interior. */
+/** La cadena entera (`Row`s, el último arriba) con desplazamiento interior. */
 export function TypeChainChain({ game, members, colors, className }: { game: TypeChainPublicState; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; className?: string | undefined }) {
   const nodes = game.chain.map((node, index) => ({ node, index })).reverse();
   return <Panel title={`Cadena ${game.chainNumber}`} variant="dark" scroll scrollLabel="Cadena de Pokémon, el último arriba" {...(className ? { className } : {})}
     right={<Badge tone="cream">{`${game.chain.length} · récord ${game.longestChain}`}</Badge>}>
-    <ol className={s.rows} aria-label="Eslabones de la cadena">{nodes.map(({ node, index }) => <ChainRow key={`${node.pokemon.id}-${node.turnNumber}`} node={node} index={index} latest={index === game.chain.length - 1 && index > 0} members={members} colors={colors} />)}</ol>
+    {nodes.length === 0 && <p className={s.empty}>Nadie ha nombrado aún un Pokémon en esta cadena.</p>}
+    <ol className={s.rows} aria-label="Pokémon de la cadena">{nodes.map(({ node, index }) => <ChainRow key={`${node.pokemon.id}-${node.turnNumber}`} node={node} index={index} latest={index === game.chain.length - 1} members={members} colors={colors} />)}</ol>
   </Panel>;
 }
 
 const STATUS_ICON: Record<'current' | 'next' | 'alive', LucideIcon> = { current: Gamepad2, next: CircleDashed, alive: CircleDashed };
 
-/** Jugadores en su orden de turno: el color, el estado en texto (su turno, siguiente, eliminado y por qué) y sus eslabones. */
+/** Jugadores en su orden de turno: el color, el estado en texto (su turno, siguiente, eliminado y por qué) y los Pokémon que llevan nombrados en la partida. */
 export function TypeChainPlayers({ game, members, colors, selfId, className }: { game: TypeChainPublicState; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; selfId: string; className?: string | undefined }) {
   return <Panel title="Jugadores" variant="dark" scroll scrollLabel="Jugadores en orden de turno" {...(className ? { className } : {})}
     right={<Badge tone="cream">{`${game.activePlayerIds.length} en juego`}</Badge>}>
@@ -113,7 +114,7 @@ export function TypeChainPlayers({ game, members, colors, selfId, className }: {
       const member = members.get(id);
       const name = nameOf(members, id);
       const status = typeChainMemberStatus(game, id);
-      const links = typeChainLinks(game, id);
+      const named = typeChainNamed(game, id);
       const chip: ReactNode = status.kind === 'eliminated'
         ? <><Chip tone="bad" icon={<Icon icon={status.reason === 'TIMEOUT' ? TimerOff : Unplug} size={18} />}>Eliminado</Chip><span className={s.reason}>{capitalize(typeChainEliminationLabels[status.reason])}</span></>
         : status.kind === 'current'
@@ -126,7 +127,7 @@ export function TypeChainPlayers({ game, members, colors, selfId, className }: {
           disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
           avatar={<span className={cx(status.kind === 'eliminated' && s.out)}><Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" /></span>}
           meta={<span className={s.rowMeta}>{chip}</span>}
-          value={<span className={s.links}>{links}<small> {links === 1 ? 'eslabón' : 'eslabones'}</small></span>} />
+          value={<span className={s.links}>{named}<small> {named === 1 ? 'nombrado' : 'nombrados'}</small></span>} />
       </li>;
     })}</ol>
   </Panel>;

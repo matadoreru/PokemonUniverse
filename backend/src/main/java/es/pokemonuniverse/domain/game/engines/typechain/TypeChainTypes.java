@@ -24,7 +24,7 @@ public final class TypeChainTypes {
 
   private TypeChainTypes() {}
 
-  public enum TypeChainInvalidReason { ALREADY_USED, NO_SHARED_TYPE, MULTIPLE_SHARED_TYPES, OUT_OF_POOL }
+  public enum TypeChainInvalidReason { ALREADY_USED, WRONG_TYPE, OUT_OF_POOL }
 
   /** {@code TypeChainElimination['reason']}. */
   public enum TypeChainEliminationReason { TIMEOUT, DISCONNECTED }
@@ -41,10 +41,10 @@ public final class TypeChainTypes {
     }
   }
 
+  /** Un Pokémon nombrado en la cadena: todos son del tipo de la cadena ({@code chainType}). */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record TypeChainNode(TypeChainPokemonView pokemon, @Nullable String playedBy, @Nullable String sharedType,
-      int turnNumber) {}
+  public record TypeChainNode(TypeChainPokemonView pokemon, String playedBy, int turnNumber) {}
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -71,10 +71,10 @@ public final class TypeChainTypes {
 
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Success(String kind, String playerId, TypeChainPokemonView from, TypeChainPokemonView to, String sharedType,
-        long at) implements TypeChainEvent {
-      Success(String playerId, TypeChainPokemonView from, TypeChainPokemonView to, String sharedType, long at) {
-        this("SUCCESS", playerId, from, to, sharedType, at);
+    record Success(String kind, String playerId, TypeChainPokemonView pokemon, String chainType, long at)
+        implements TypeChainEvent {
+      Success(String playerId, TypeChainPokemonView pokemon, String chainType, long at) {
+        this("SUCCESS", playerId, pokemon, chainType, at);
       }
     }
 
@@ -87,11 +87,13 @@ public final class TypeChainTypes {
       }
     }
 
+    /** Se acabaron los Pokémon sin usar del tipo de la cadena: empieza otra con otro tipo. */
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record ChainReset(String kind, int previousLength, TypeChainPokemonView starter, long at) implements TypeChainEvent {
-      ChainReset(int previousLength, TypeChainPokemonView starter, long at) {
-        this("CHAIN_RESET", previousLength, starter, at);
+    record ChainReset(String kind, int previousLength, String previousType, String chainType, long at)
+        implements TypeChainEvent {
+      ChainReset(int previousLength, String previousType, String chainType, long at) {
+        this("CHAIN_RESET", previousLength, previousType, chainType, at);
       }
     }
   }
@@ -134,6 +136,8 @@ public final class TypeChainTypes {
       List<String> spectatorIds,
       List<String> poolIds,
       int chainNumber,
+      @Nullable String chainType,
+      List<String> usedChainTypes,
       List<TypeChainNode> chain,
       List<String> usedPokemonIds,
       int longestChain,
@@ -158,6 +162,7 @@ public final class TypeChainTypes {
       activePlayerIds = frozenList(activePlayerIds);
       spectatorIds = frozenList(spectatorIds);
       poolIds = frozenList(poolIds);
+      usedChainTypes = frozenList(usedChainTypes);
       chain = frozenList(chain);
       usedPokemonIds = frozenList(usedPokemonIds);
       cooldownUntil = frozenMap(cooldownUntil);
@@ -175,7 +180,7 @@ public final class TypeChainTypes {
     public Builder toBuilder() {
       return new Builder().phase(phase).config(config).playerIds(playerIds).turnOrder(turnOrder)
           .activePlayerIds(activePlayerIds).spectatorIds(spectatorIds).poolIds(poolIds).chainNumber(chainNumber)
-          .chain(chain).usedPokemonIds(usedPokemonIds).longestChain(longestChain).turnNumber(turnNumber)
+          .chainType(chainType).usedChainTypes(usedChainTypes).chain(chain).usedPokemonIds(usedPokemonIds).longestChain(longestChain).turnNumber(turnNumber)
           .completedTurns(completedTurns).currentPlayerId(currentPlayerId).turnStartedAt(turnStartedAt)
           .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).cooldownUntil(cooldownUntil)
           .invalidAttempts(invalidAttempts).lastAttempt(lastAttempt).eliminations(eliminations).events(events)
@@ -192,6 +197,8 @@ public final class TypeChainTypes {
       private List<String> spectatorIds = List.of();
       private List<String> poolIds = List.of();
       private int chainNumber;
+      private String chainType;
+      private List<String> usedChainTypes = List.of();
       private List<TypeChainNode> chain = List.of();
       private List<String> usedPokemonIds = List.of();
       private int longestChain;
@@ -227,6 +234,10 @@ public final class TypeChainTypes {
       public Builder poolIds(List<String> value) { poolIds = value; return this; }
 
       public Builder chainNumber(int value) { chainNumber = value; return this; }
+
+      public Builder chainType(@Nullable String value) { chainType = value; return this; }
+
+      public Builder usedChainTypes(List<String> value) { usedChainTypes = value; return this; }
 
       public Builder chain(List<TypeChainNode> value) { chain = value; return this; }
 
@@ -264,7 +275,7 @@ public final class TypeChainTypes {
 
       public TypeChainState build() {
         return new TypeChainState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
-            playerIds, turnOrder, activePlayerIds, spectatorIds, poolIds, chainNumber, chain, usedPokemonIds,
+            playerIds, turnOrder, activePlayerIds, spectatorIds, poolIds, chainNumber, chainType, usedChainTypes, chain, usedPokemonIds,
             longestChain, turnNumber, completedTurns, currentPlayerId, turnStartedAt, roundEndsAt, nextTransitionAt,
             cooldownUntil, invalidAttempts, lastAttempt, eliminations, events, playerStats, winnerId, finishReason);
       }
@@ -307,9 +318,11 @@ public final class TypeChainTypes {
       @Nullable String nextPlayerId,
       int turnNumber,
       int chainNumber,
+      @Nullable String chainType,
       List<TypeChainNode> chain,
       List<String> usedPokemonIds,
       int longestChain,
+      Map<String, Integer> namedCounts,
       @Nullable Long turnStartedAt,
       @Nullable Long roundEndsAt,
       List<TypeChainInvalidAttempt> invalidAttempts,

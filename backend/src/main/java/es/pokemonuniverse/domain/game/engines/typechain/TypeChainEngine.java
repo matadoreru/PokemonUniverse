@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.Immutables;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -34,6 +35,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -78,21 +80,12 @@ public final class TypeChainEngine
     return TypeChainConfig.defaults();
   }
 
-  /** Candidato a inicial con su número de continuaciones. */
-  public record StarterCandidate(Pokemon pokemon, int continuationCount) {}
-
   private static TypeChainPokemonView pokemonView(Pokemon pokemon) {
     return new TypeChainPokemonView(pokemon.id(), pokemon.name(), pokemon.sprite(), pokemon.types());
   }
 
   private static List<Pokemon> pool(TypeChainState state, GameContext context) {
     return state.poolIds().stream().map(id -> context.pokemon().byId(id)).flatMap(Optional::stream).toList();
-  }
-
-  /** {@code context.pokemon.byId(state.chain.at(-1)?.pokemon.id ?? '') ?? null}. */
-  private static @Nullable Pokemon currentPokemon(TypeChainState state, GameContext context) {
-    var id = state.chain().isEmpty() ? "" : state.chain().getLast().pokemon().id();
-    return context.pokemon().byId(id).orElse(null);
   }
 
   /** {@code [...events, event].slice(-TYPE_CHAIN_MAX_RECENT_EVENTS)}. */
@@ -106,23 +99,18 @@ public final class TypeChainEngine
     return items.size() <= count ? items : new ArrayList<>(items.subList(items.size() - count, items.size()));
   }
 
-  public static List<StarterCandidate> typeChainStarterCandidates(List<Pokemon> allowed) {
-    var candidates = new ArrayList<StarterCandidate>();
-    for (var pokemon : allowed) {
-      int continuationCount = TypeChainRules.getValidTypeChainCandidates(pokemon, allowed, List.of(pokemon.id())).size();
-      if (continuationCount != 0) candidates.add(new StarterCandidate(pokemon, continuationCount));
-    }
-    return candidates;
-  }
-
-  /** Consume {@code random} una vez si hay candidatos. */
-  public static @Nullable Pokemon selectTypeChainStarter(List<Pokemon> allowed, DoubleSupplier random) {
-    var candidates = typeChainStarterCandidates(allowed);
-    if (candidates.isEmpty()) return null;
-    int maximum = candidates.stream().mapToInt(StarterCandidate::continuationCount).max().orElseThrow();
-    int preferredMinimum = Math.min(3, maximum);
-    var preferred = candidates.stream().filter(entry -> entry.continuationCount() >= preferredMinimum).toList();
-    return Randoms.randomItem(preferred, random).pokemon();
+  /**
+   * Tipo de una cadena nueva, al azar (una extracción si hay opciones) entre los que tienen Pokémon suficientes en el
+   * pool: primero los que aún no han tenido cadena en la partida; si ya salieron todos, cualquiera menos el actual.
+   */
+  public static @Nullable String selectTypeChainType(List<Pokemon> allowed, List<String> usedChainTypes,
+      @Nullable String currentType, DoubleSupplier random) {
+    var eligible = TypeChainRules.typeChainEligibleTypes(allowed);
+    var fresh = eligible.stream().filter(type -> !usedChainTypes.contains(type)).toList();
+    var other = eligible.stream().filter(type -> !type.equals(currentType)).toList();
+    var options = !fresh.isEmpty() ? fresh : !other.isEmpty() ? other : eligible;
+    if (options.isEmpty()) return null;
+    return Randoms.randomItem(options, random);
   }
 
   private static @Nullable String nextActivePlayer(TypeChainState state, String afterPlayerId) {
@@ -135,18 +123,6 @@ public final class TypeChainEngine
     return null;
   }
 
-  /** Desempate con {@code localeCompare} sobre ids de jugador → {@link String#compareTo} (ver el README). */
-  private static @Nullable String failsafeWinner(TypeChainState state) {
-    var ordered = new ArrayList<>(state.activePlayerIds());
-    ordered.sort((left, right) -> TypeChainRules.failsafeCompare(state, left, right));
-    if (ordered.isEmpty()) return null;
-    if (ordered.size() < 2) return ordered.getFirst();
-    var first = Objects.requireNonNull(state.playerStats().get(ordered.get(0)), "playerStats");
-    var second = Objects.requireNonNull(state.playerStats().get(ordered.get(1)), "playerStats");
-    return first.validSubmissions() == second.validSubmissions()
-        && first.invalidAttempts() == second.invalidAttempts() ? null : ordered.getFirst();
-  }
-
   private static TypeChainState finish(TypeChainState state, TypeChainFinishReason reason) {
     int longestChain = Math.max(state.longestChain(), state.chain().size());
     return state.toBuilder()
@@ -157,28 +133,30 @@ public final class TypeChainEngine
         .roundEndsAt(null)
         .nextTransitionAt(null)
         .finishReason(reason)
-        .winnerId(reason == TypeChainFinishReason.SURVIVOR
-            ? (state.activePlayerIds().isEmpty() ? null : state.activePlayerIds().getFirst())
-            : failsafeWinner(state))
+        .winnerId(TypeChainRules.typeChainWinner(state))
         .build();
   }
 
-  /** Consume {@code random} una vez (Pokémon inicial). */
-  private static TypeChainState newChain(TypeChainState state, GameContext context, boolean recordReset) {
-    var starter = selectTypeChainStarter(pool(state, context), context.random());
-    if (starter == null) {
+  /** Cadena nueva, vacía y con otro tipo; los usados vuelven a valer. Consume {@code random} una vez (el tipo). */
+  private static TypeChainState newChain(TypeChainState state, GameContext context) {
+    var chainType = selectTypeChainType(pool(state, context), state.usedChainTypes(), state.chainType(),
+        context.random());
+    if (chainType == null) {
       throw new EngineException("No hay Pokémon suficientes para crear una cadena con esta configuración.");
     }
-    if (context.preloadImage() != null) context.preloadImage().accept(starter.sprite());
-    var starterView = pokemonView(starter);
     int previousLength = state.chain().size();
+    var usedChainTypes = new ArrayList<>(state.usedChainTypes());
+    usedChainTypes.add(chainType);
     return state.toBuilder()
         .chainNumber(state.chainNumber() + 1)
-        .chain(List.of(new TypeChainNode(starterView, null, null, state.turnNumber())))
-        .usedPokemonIds(List.of(starter.id()))
+        .chainType(chainType)
+        .usedChainTypes(usedChainTypes)
+        .chain(List.of())
+        .usedPokemonIds(List.of())
         .longestChain(Math.max(state.longestChain(), previousLength))
-        .events(recordReset
-            ? appendEvent(state.events(), new TypeChainEvent.ChainReset(previousLength, starterView, context.now()))
+        .events(state.chainType() != null
+            ? appendEvent(state.events(),
+                new TypeChainEvent.ChainReset(previousLength, state.chainType(), chainType, context.now()))
             : state.events())
         .build();
   }
@@ -215,11 +193,11 @@ public final class TypeChainEngine
       playerId = nextActivePlayer(next, removed);
     }
     if (playerId == null || next.activePlayerIds().size() <= 1) return finish(next, TypeChainFinishReason.SURVIVOR);
-    var reference = currentPokemon(next, context);
-    if (reference == null) throw new EngineException("La cadena no tiene un Pokémon de referencia.");
-    var continuations = TypeChainRules.getValidTypeChainCandidates(reference, pool(next, context),
+    if (next.chainType() == null) throw new EngineException("La cadena no tiene tipo.");
+    // Si ya no queda ningún Pokémon sin usar de ese tipo, nadie queda eliminado: empieza otra cadena con otro tipo.
+    var remaining = TypeChainRules.getValidTypeChainCandidates(next.chainType(), pool(next, context),
         new HashSet<>(next.usedPokemonIds()));
-    if (continuations.isEmpty()) next = newChain(next, context, true);
+    if (remaining.isEmpty()) next = newChain(next, context);
     var lastAttempt = new LinkedHashMap<>(next.lastAttempt());
     lastAttempt.remove(playerId);
     var cooldownUntil = new LinkedHashMap<>(next.cooldownUntil());
@@ -262,7 +240,7 @@ public final class TypeChainEngine
     var allowed = context.pokemon().forGenerations(config.generations(), true).stream()
         .filter(pokemon -> !pokemon.types().isEmpty())
         .toList();
-    if (allowed.size() < 2 || typeChainStarterCandidates(allowed).isEmpty()) {
+    if (TypeChainRules.typeChainEligibleTypes(allowed).isEmpty()) {
       throw new EngineException("No hay suficientes Pokémon para crear una cadena con esta configuración.");
     }
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
@@ -283,8 +261,8 @@ public final class TypeChainEngine
   @Override
   public TypeChainState start(TypeChainState state, GameContext context) {
     if (state.phase() != GamePhase.GAME_STARTING) throw new EngineException("La partida ya ha comenzado.");
-    var withStarter = newChain(state, context, false);
-    return activateTurn(withStarter, withStarter.turnOrder().getFirst(), context);
+    var withType = newChain(state, context);
+    return activateTurn(withType, withType.turnOrder().getFirst(), context);
   }
 
   @Override
@@ -312,19 +290,17 @@ public final class TypeChainEngine
       return GameActionResult.accept(
           invalidAttempt(state, playerId, candidate, TypeChainInvalidReason.ALREADY_USED, context));
     }
-    var previous = currentPokemon(state, context);
-    if (previous == null) return GameActionResult.reject(state, "La cadena no tiene referencia.");
-    var shared = TypeChainRules.sharedPokemonTypes(previous, candidate);
-    if (shared.size() != 1) {
-      return GameActionResult.accept(invalidAttempt(state, playerId, candidate, shared.isEmpty()
-          ? TypeChainInvalidReason.NO_SHARED_TYPE : TypeChainInvalidReason.MULTIPLE_SHARED_TYPES, context));
+    var chainType = state.chainType();
+    if (chainType == null) return GameActionResult.reject(state, "La cadena no tiene tipo.");
+    if (!TypeChainRules.hasTypeChainType(candidate, chainType)) {
+      return GameActionResult.accept(
+          invalidAttempt(state, playerId, candidate, TypeChainInvalidReason.WRONG_TYPE, context));
     }
     var stats = TypeChainRules.statsOf(state, playerId);
-    var from = pokemonView(previous);
-    var to = pokemonView(candidate);
+    var named = pokemonView(candidate);
     int completedTurns = state.completedTurns() + 1;
     var chain = new ArrayList<>(state.chain());
-    chain.add(new TypeChainNode(to, playerId, shared.getFirst(), state.turnNumber()));
+    chain.add(new TypeChainNode(named, playerId, state.turnNumber()));
     var usedPokemonIds = new ArrayList<>(state.usedPokemonIds());
     usedPokemonIds.add(candidate.id());
     var cooldownUntil = new LinkedHashMap<>(state.cooldownUntil());
@@ -338,7 +314,7 @@ public final class TypeChainEngine
         .completedTurns(completedTurns)
         .cooldownUntil(cooldownUntil)
         .events(appendEvent(state.events(),
-            new TypeChainEvent.Success(playerId, from, to, shared.getFirst(), context.now())))
+            new TypeChainEvent.Success(playerId, named, chainType, context.now())))
         .playerStats(playerStats)
         .build();
     if (completedTurns >= MAX_TURNS) return GameActionResult.accept(finish(successful, TypeChainFinishReason.MAX_TURNS));
@@ -376,10 +352,18 @@ public final class TypeChainEngine
         state.eliminations().stream().map(TypeChainElimination::playerId).toList(),
         state.currentPlayerId(),
         state.currentPlayerId() != null ? nextActivePlayer(state, state.currentPlayerId()) : null,
-        state.turnNumber(), state.chainNumber(), state.chain(), state.usedPokemonIds(),
-        Math.max(state.longestChain(), state.chain().size()), state.turnStartedAt(), state.roundEndsAt(),
+        state.turnNumber(), state.chainNumber(), state.chainType(), state.chain(), state.usedPokemonIds(),
+        Math.max(state.longestChain(), state.chain().size()), namedCounts(state), state.turnStartedAt(),
+        state.roundEndsAt(),
         state.invalidAttempts(), state.eliminations(), state.events(),
         state.phase() == GamePhase.GAME_RESULTS ? TypeChainRules.buildTypeChainResults(state) : null);
+  }
+
+  /** {@code Object.fromEntries(playerIds.map(id => [id, playerStats[id]?.validSubmissions ?? 0]))}, en ese orden. */
+  private static Map<String, Integer> namedCounts(TypeChainState state) {
+    var counts = new LinkedHashMap<String, Integer>();
+    for (var id : state.playerIds()) counts.put(id, TypeChainRules.statsOf(state, id).validSubmissions());
+    return Immutables.frozenMap(counts);
   }
 
   @Override

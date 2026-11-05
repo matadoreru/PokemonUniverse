@@ -1,6 +1,6 @@
 /*
  * Type Chain (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio. Arriba la
- * placa del turno, el Pokémon actual (crece con el hueco) y, al lado en escritorio, la cadena con su propio scroll;
+ * placa del turno, el tipo de la cadena (crece con el hueco) y, al lado en escritorio, la cadena con su propio scroll;
  * abajo el buscador o la espera; en la columna lateral, los jugadores y los intentos fallidos.
  */
 .screen {
@@ -102,7 +102,7 @@
   flex: none;
 }
 
-/* Tablero: el Pokémon actual y, en escritorio, la cadena a su derecha. */
+/* Tablero: el tipo de la cadena y, en escritorio, la cadena a su derecha. */
 .board {
   display: flex;
   flex-direction: column;
@@ -128,31 +128,47 @@
   display: grid;
   grid-template-columns: minmax(13rem, 1fr) minmax(0, 1fr);
   grid-template-rows: 1fr auto auto 1fr;
-  grid-template-areas: 'card .' 'card text' 'card event' 'card .';
+  grid-template-areas: 'emblem .' 'emblem text' 'emblem event' 'emblem .';
   align-items: center;
   column-gap: var(--sp-4);
   row-gap: var(--sp-3);
   height: 100%;
   min-height: 0;
 }
-.currentCard {
-  grid-area: card;
+.emblemSlot {
+  grid-area: emblem;
   align-self: center;
   display: flex;
   height: min(100cqh, 26rem);
   min-height: 0;
   min-width: 0;
 }
-/* El nombre del Pokémon actual (segundo `span` de la carta), más grande que en una rejilla. */
-.currentCard [data-tc-card] > span:nth-of-type(2) {
-  font-size: var(--fs-22);
-}
-.currentTypes {
+/* El tipo de la cadena: placa oscura con la insignia grande en el centro (el tipo va en texto en la insignia). */
+.emblem {
+  flex: 1 1 auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: var(--sp-2);
-  --type-badge-fs: var(--fs-18);
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-3);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--navy);
+  color: var(--white);
+  text-align: center;
+  box-shadow: var(--sh-hard-3);
+  --type-badge-fs: var(--fs-34);
+}
+.emblemKicker {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+}
+.emblemCount {
+  font: 800 var(--fs-15) / 1.25 var(--font-text);
 }
 .stageText {
   grid-area: text;
@@ -288,28 +304,24 @@
 }
 
 @media (max-width: 1023px) {
-  /* Móvil y tableta: el Pokémon actual es una franja baja (carta a la izquierda) y la cadena va debajo, con tope. */
+  /* Móvil y tableta: el tipo es una franja baja (placa a la izquierda) y la cadena va debajo, con tope. */
   .stage {
     container-type: normal;
     grid-template-columns: 10rem minmax(0, 1fr);
     grid-template-rows: auto;
-    grid-template-areas: 'card text' 'event event';
+    grid-template-areas: 'emblem text' 'event event';
     gap: var(--sp-3);
   }
-  .currentCard {
-    height: 12.5rem;
+  .emblemSlot {
+    height: auto;
   }
-  /* Las insignias de tipo, en línea y más bajas: la carta deja sitio al sprite y al nombre. */
-  .currentTypes {
-    flex-wrap: nowrap;
-    gap: var(--sp-1);
-    --type-badge-fs: var(--fs-13);
+  .emblem {
+    gap: var(--sp-2);
+    padding: var(--sp-2);
+    --type-badge-fs: var(--fs-22);
   }
-  .currentTypes > span {
-    min-height: 28px;
-    padding: 0 var(--sp-2);
-    border-width: var(--ol-2);
-    box-shadow: none;
+  .emblemCount {
+    font-size: var(--fs-13);
   }
   .chainPanel {
     max-height: 18rem;
@@ -361,11 +373,8 @@
     grid-template-columns: 9.5rem minmax(0, 1fr);
     gap: var(--sp-2);
   }
-  .currentCard {
-    height: 11.5rem;
-  }
-  .currentCard [data-tc-card] > span:nth-of-type(2) {
-    font-size: var(--fs-15);
+  .emblem {
+    --type-badge-fs: var(--fs-18);
   }
   .rule {
     font-size: var(--fs-15);
@@ -400,14 +409,15 @@
   .gameName {
     font-size: var(--fs-15);
   }
-  .currentCard {
+  .emblemSlot {
     height: min(100cqh, 40rem);
   }
-  .currentCard [data-tc-card] > span:nth-of-type(2) {
-    font-size: var(--fs-34);
+  .emblem {
+    --type-badge-fs: var(--fs-44);
   }
-  .currentTypes {
-    --type-badge-fs: var(--fs-22);
+  .emblemKicker,
+  .emblemCount {
+    font-size: var(--fs-18);
   }
   .rule {
     font-size: clamp(var(--fs-26), 4.2cqw, var(--fs-34));
