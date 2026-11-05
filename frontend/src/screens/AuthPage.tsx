@@ -1,10 +1,10 @@
-import { LogIn, User, UserPlus } from 'lucide-react';
+import { ChartColumn, ImagePlus, ListPlus, LogIn, SlidersHorizontal, TrendingUp, User, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { authError, type AuthError, type AuthField } from '../auth/authErrors';
 import { LegalLine } from '../components/LegalLine';
-import { cx, Field, Panel, Pill, PillLink, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
+import { cx, Field, Icon, Panel, Pill, PillLink, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import tone from '../styles/tones.module.css';
 
 type Mode = 'login' | 'register' | 'guest';
@@ -22,6 +22,33 @@ const SUBTITLE: Record<Mode, string> = {
 };
 const SUBMIT: Record<Mode, string> = { login: 'Iniciar sesión', register: 'Crear cuenta', guest: 'Continuar como invitado' };
 const FAILED: Record<Mode, string> = { login: 'No se pudo iniciar sesión', register: 'No se pudo crear la cuenta', guest: 'No se pudo entrar como invitado' };
+
+/** Lo que gana el invitado si se crea una cuenta: todo es exclusivo de las cuentas registradas. */
+export const ACCOUNT_BENEFITS: { icon: LucideIcon; text: string }[] = [
+  { icon: ImagePlus, text: 'Tu propia imagen como avatar' },
+  { icon: TrendingUp, text: 'Nivel y experiencia que suben al jugar' },
+  { icon: SlidersHorizontal, text: 'Tus ajustes de cada minijuego, guardados' },
+  { icon: ChartColumn, text: 'Tus estadísticas en el perfil' },
+  { icon: ListPlus, text: 'Tus categorías y preguntas propias' },
+  { icon: Users, text: 'Amigos a los que invitar a tu sala' },
+];
+
+export function AccountBenefits({ onRegister }: { onRegister(): void }) {
+  return (
+    <section aria-labelledby={`${ID}-ventajas`} className={cx('flex flex-col gap-2 rounded-[var(--r-card)] border-2 border-dashed px-4 py-3', tone.borderNavy)}>
+      <h2 id={`${ID}-ventajas`} className={cx('font-display text-15 font-extrabold', tone.textNavy)}>Con una cuenta gratis, además:</h2>
+      <ul className="grid gap-1 sm:grid-cols-2 sm:gap-x-4">
+        {ACCOUNT_BENEFITS.map(({ icon, text }) => (
+          <li key={text} className={cx('flex items-center gap-2 text-13 font-bold', tone.textInk2)}>
+            <Icon icon={icon} size={18} className={cx('shrink-0', tone.textBlueD)} />
+            {text}
+          </li>
+        ))}
+      </ul>
+      <Pill type="button" variant="cream" size="small" icon={UserPlus} onClick={onRegister} className="self-start">Crear cuenta</Pill>
+    </section>
+  );
+}
 
 function initialMode(value: string | null): Mode {
   return value === 'guest' || value === 'register' ? value : 'login';
@@ -82,6 +109,7 @@ export function AuthPage() {
               {mode === 'register' && <Field label="Email" name="email" type="email" required autoComplete="email" error={fieldError('email')} />}
               {mode !== 'guest' && <Field label="Contraseña" name="password" type="password" minLength={mode === 'register' ? 10 : 1} required autoComplete={mode === 'register' ? 'new-password' : 'current-password'} error={fieldError('password')} {...(mode === 'register' ? { hint: 'Mínimo 10 caracteres.' } : {})} />}
               {mode === 'guest' && <Field label="Tu nombre temporal" name="displayName" minLength={2} maxLength={24} required placeholder="Entrenador/a" error={fieldError('displayName')} />}
+              {mode === 'guest' && <AccountBenefits onRegister={() => changeMode('register')} />}
               {mode === 'login' && <PillLink to="/auth/recuperar" variant="cream" size="small" className="self-start">¿Has olvidado la contraseña?</PillLink>}
               {/* Aviso compacto (sin icono en pantallas bajas): con el enlace de recuperar, el panel de 1280×720 no cabe con el aviso grande. */}
               {error && !error.field && (

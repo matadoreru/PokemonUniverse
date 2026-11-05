@@ -35,7 +35,14 @@ for (const { w, h } of SIZES) {
 
     // El invitado solo pone un nombre: no elige ni sube avatar (usa la inicial de su nombre).
     await expect(page.getByRole('button', { name: /mi imagen/ })).toHaveCount(0);
+    // Ventajas de crear una cuenta, con el atajo a la pestaña Registro.
+    const ventajas = page.getByRole('region', { name: 'Con una cuenta gratis, además:' });
+    await expect(ventajas.getByRole('listitem')).toHaveCount(6);
+    await expect(ventajas).toContainText('Tu propia imagen como avatar');
     await capture(page, 'acceso-invitado');
+    await ventajas.getByRole('button', { name: 'Crear cuenta' }).click();
+    await expect(page.getByRole('tab', { name: 'Registro' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByLabel('Nombre de usuario')).toBeVisible();
 
     // «Entrar como invitado» de la portada abre la pestaña Invitado.
     await page.goto('/auth?mode=guest');
