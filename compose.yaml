@@ -63,6 +63,12 @@ services:
       DATA_SYNC_HOUR: "${PU_DATA_SYNC_HOUR:-6}"
       DATA_SYNC_MINUTE: "${PU_DATA_SYNC_MINUTE:-0}"
       DATA_SYNC_TIMEZONE: "${PU_DATA_SYNC_TIMEZONE:-Europe/Madrid}"
+      # Correo saliente (recuperar contraseña). Sin SMTP_HOST el backend solo registra los correos en el log.
+      SMTP_HOST: "${SMTP_HOST:-}"
+      SMTP_PORT: "${SMTP_PORT:-465}"
+      SMTP_USER: "${SMTP_USER:-}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD:-}"
+      MAIL_FROM: "${MAIL_FROM:-Pokémon Universe <no-responder@matadoreru.com>}"
     volumes:
       - pokemon_universe_avatar_data:/data/avatars
     # Flyway crea o reconoce el esquema al arrancar: solo hace falta PostgreSQL.

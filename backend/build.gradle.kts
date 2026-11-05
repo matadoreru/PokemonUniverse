@@ -46,6 +46,7 @@ dependencies {
   implementation("io.micronaut.sql:micronaut-jdbc-hikari")
   implementation("com.nimbusds:nimbus-jose-jwt:10.10")
   implementation("at.favre.lib:bcrypt:0.10.2")
+  implementation("org.eclipse.angus:angus-mail:2.0.3")
   // Misma ICU que Node (process.versions.icu): Collations replica localeCompare, espacios y guiones incluidos.
   implementation("com.ibm.icu:icu4j:78.3")
   // Avatares: lectura en Java puro (JPEG robusto con CMYK/ICC y WebP; PNG con el lector del JDK) y escritura WebP

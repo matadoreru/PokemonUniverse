@@ -73,6 +73,13 @@ pu:
   commit-sha: ${PU_COMMIT_SHA:}
   room-max-players: ${ROOM_MAX_PLAYERS:8}
   reconnect-grace-ms: ${RECONNECT_GRACE_MS:30000}
+  # Correo saliente (recuperar contraseña). Sin SMTP_HOST el correo solo se registra en el log.
+  mail:
+    host: ${SMTP_HOST:}
+    port: ${SMTP_PORT:465}
+    user: ${SMTP_USER:}
+    password: ${SMTP_PASSWORD:}
+    from: ${MAIL_FROM:Pokémon Universe <no-responder@matadoreru.com>}
   # Los tres interruptores de producción (INTERRUPT_STALE_ROOMS, ROOMS_ENABLED y BACKEND_DATA_SYNC_ENABLED) valen
   # false por defecto y compose.yaml los fija a true: un arranque suelto (pruebas, ./gradlew run, un jar en otra BD)
   # no interrumpe salas ajenas, no abre /ws ni sincroniza PokéAPI sin pedirlo. dev y test encienden las salas.
