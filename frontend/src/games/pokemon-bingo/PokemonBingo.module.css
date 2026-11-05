@@ -467,6 +467,12 @@
  * para leerse), a cualquier tamaño y también en las casillas compactas. Selector reforzado para ganar a las compactas.
  */
 .grid.grid > [data-bingo-cell][data-filled='true'] > span[data-part='art'] {
+  /* Fuera de la rejilla: con su área («art») el bloque contenedor sería esa celda, y en las casillas compactas su
+     columna es `auto` y mide 0 si el sprite va absoluto. Sin área, se coloca sobre toda la casilla. */
+  grid-area: auto;
+  /* La compacta lo centra (`align-self: center`), y un absoluto centrado en una rejilla se encoge a su contenido. */
+  align-self: stretch;
+  justify-self: stretch;
   position: absolute;
   inset: var(--sp-1);
   width: auto;
