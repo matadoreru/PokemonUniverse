@@ -194,11 +194,8 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     </>
   );
 
-  const configPanel = (
-    <Panel variant="cream" as="div">
-      <SelectedGamesConfig room={room} selfId={selfId} playerCount={connectedPlayers} disabled={!canEditGame} onConfig={onGameConfig} />
-    </Panel>
-  );
+  // Sin panel propio: el editor de cada juego ya es un panel crema (dos anidados no caben a 390 px).
+  const configPanel = <SelectedGamesConfig room={room} selfId={selfId} playerCount={connectedPlayers} disabled={!canEditGame} onConfig={onGameConfig} />;
 
   const sessionTarget = room.sessionMode.type === 'GAME_COUNT' || room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : null;
   const sessionPanel = (

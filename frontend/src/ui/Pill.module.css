@@ -55,6 +55,15 @@
 .pill.hover {
   transform: translateY(-1px);
 }
+/* Al subir 1 px, el puntero en el borde inferior dejaría de estar encima y el botón temblaría sin parar entre
+   subido y no: el área pulsable baja ese píxel mientras dura el hover. La pequeña ya amplía su área con su propio
+   ::after, y la de navegación lo usa para la marca amarilla. */
+.pill:hover:not(:disabled):not(.small):not(.current)::after {
+  content: '';
+  position: absolute;
+  /* Relativo a la caja de relleno: se le suma el borde. */
+  inset: calc(-1 * var(--ol-3)) calc(-1 * var(--ol-3)) calc(-1 * var(--ol-3) - 2px);
+}
 .pill:focus-visible,
 .pill.focus {
   outline: var(--ol-3) solid var(--focus-ring);

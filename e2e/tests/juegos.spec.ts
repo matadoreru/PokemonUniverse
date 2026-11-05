@@ -2527,7 +2527,9 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
     // Privacidad: ningún Pokémon secreto salió antes de la clasificación (salvo el que el host probó él mismo).
     const secretos = Object.values((estado as unknown as PokeddleVisible).boards).map((b) => b.revealedPokemon?.name).filter((n): n is string => Boolean(n));
     expect(secretos).toHaveLength(3);
-    for (const nombre of secretos.filter((n) => !probados.includes(n) && !relleno.includes(n))) for (const texto of textos) expect(texto).not.toContain(nombre);
+    // Palabra completa: el secreto «Pidgeot» no debe chocar con un intento «Pidgeotto».
+    const palabra = (nombre: string) => new RegExp(`(^|[^\\p{L}])${nombre.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'u');
+    for (const nombre of secretos.filter((n) => !probados.includes(n) && !relleno.includes(n))) for (const texto of textos) expect(texto).not.toMatch(palabra(nombre));
     for (const nombre of secretos) await expect(host.page.locator('main')).toContainText(nombre);
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-pokeddle-race-clasificacion');
@@ -2659,7 +2661,7 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 40_000 });
     await expect(host.page.getByText('Sigue en pie')).toHaveCount(1);
     await expect(host.page.getByText(/^Eliminado [12]\.º$/)).toHaveCount(2);
-    await expect(host.page.getByText(/^Cayó: se le acabó el tiempo/)).toHaveCount(2);
+    await expect(host.page.getByText(/Cayó: se le acabó el tiempo/)).toHaveCount(2);
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-type-chain-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
