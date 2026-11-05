@@ -41,6 +41,8 @@ export interface RoomMemberView {
   /** Lobby acknowledgement. The host controls starting and does not need to mark ready. */
   ready: boolean;
   sessionPoints: number;
+  /** Nivel de la cuenta registrada; `null` para invitados y ausente en el oráculo Node. */
+  level?: number | null;
 }
 
 export interface SessionStandingView {

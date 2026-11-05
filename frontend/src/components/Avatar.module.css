@@ -88,3 +88,35 @@
     opacity: 0.35;
   }
 }
+/*
+ * Insignia de nivel: píldora amarilla con contorno navy en la esquina superior izquierda (la presencia va abajo a la
+ * derecha). Sale 4 px del círculo, dentro del margen que dejan las placas y las filas; la cifra nunca baja de 13 px.
+ */
+.level {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  border: var(--ol-1-5) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--yellow);
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* En los avatares grandes (perfil, podio) la insignia crece y entra en el círculo para no quedar en la esquina vacía. */
+.xl .level,
+.xxl .level {
+  top: 2px;
+  left: 2px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 6px;
+  border-width: var(--ol-2);
+  font-size: var(--fs-18);
+}

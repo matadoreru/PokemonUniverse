@@ -105,6 +105,37 @@ class JpaGameResultsPersisterTest {
   }
 
   @Test
+  void awardsExperienceOncePerFinishedGameToRegisteredUsers() {
+    var first = registeredUser();
+    var second = registeredUser();
+    var guest = guest();
+    var room = room(first, second, guest);
+    createRoomHistory(room);
+    var resultId = UUID.randomUUID().toString();
+    var results = new GameResults(guest.id(), List.of(standing(guest.id(), 1, 9, Map.of()),
+        standing(first.id(), 2, 5, Map.of()), standing(second.id(), 3, 1, Map.of())));
+
+    persister.persistNow(room, results, resultId, 1_000, "higher-lower", CONFIG);
+    persister.persistNow(room, results, resultId, 1_000, "higher-lower", CONFIG);
+    // 20 por jugar + 20 por quedar segundo / + 10 por tercero; repetir el resultId no suma otra vez.
+    assertEquals(40, userStats.findById(first.id()).orElseThrow().getXp());
+    assertEquals(30, userStats.findById(second.id()).orElseThrow().getXp());
+    assertTrue(userStats.findById(guest.id()).isEmpty());
+
+    // Una partida saltada o abandonada no da experiencia.
+    var skipped = UUID.randomUUID().toString();
+    writer.gameStarted(skipped, room.historyId(), room.code(), "higher-lower", 3, Map.of(), Instant.now());
+    writer.gameAbandoned(skipped, Instant.now());
+    assertEquals(40, userStats.findById(first.id()).orElseThrow().getXp());
+
+    var solo = room(first);
+    createRoomHistory(solo);
+    persister.persistNow(solo, new GameResults(first.id(), List.of(standing(first.id(), 1, 2, Map.of()))),
+        UUID.randomUUID().toString(), 2_000, "higher-lower", CONFIG);
+    assertEquals(60, userStats.findById(first.id()).orElseThrow().getXp()); // en solitario solo la base
+  }
+
+  @Test
   void mergesMetricsWithSumMaxAndMinAcrossGames() {
     var user = registeredUser();
     var room = room(user);

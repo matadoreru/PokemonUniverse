@@ -9,7 +9,7 @@ import tone from '../styles/tones.module.css';
 
 const MAX_CLIENT_BYTES = 5 * 1024 * 1024;
 
-export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: AvatarRef; onSaved(user: AuthUser): void }) {
+export function AvatarEditor({ name, avatar, level, onSaved }: { name: string; avatar: AvatarRef; level?: number | null | undefined; onSaved(user: AuthUser): void }) {
   const [open, setOpen] = useState(false); const [source, setSource] = useState<string | null>(null); const [zoom, setZoom] = useState(1); const [offsetX, setOffsetX] = useState(0); const [offsetY, setOffsetY] = useState(0); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const imageRef = useRef<HTMLImageElement>(null); const fileInput = useRef<HTMLInputElement>(null);
   useEffect(() => () => { if (source) URL.revokeObjectURL(source); }, [source]);
 
@@ -50,7 +50,7 @@ export function AvatarEditor({ name, avatar, onSaved }: { name: string; avatar: 
 
   return <>
     <span className="relative inline-flex shrink-0">
-      <Avatar name={name} avatar={avatar} size="xxl" className={cx('border-[3px]', tone.borderNavy)} />
+      <Avatar name={name} avatar={avatar} level={level} size="xxl" className={cx('border-[3px]', tone.borderNavy)} />
       <span className="absolute -bottom-1 -right-1" data-layer>
         <Pill size="round" variant="yellow" icon={Camera} aria-label="Cambiar avatar" title="Cambiar avatar" onClick={() => setOpen(true)} />
       </span>

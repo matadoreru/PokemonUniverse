@@ -27,7 +27,7 @@ function personRow(people: ImpostorPeople, id: string) {
     color: playerColor(people.colors.get(id) ?? 0),
     self: id === people.selfId,
     disconnected: member?.presence !== undefined && member.presence !== 'CONNECTED',
-    avatar: <span className={s.rowAvatar}><Avatar name={name} avatar={member?.avatar} size="sm" /></span>,
+    avatar: <span className={s.rowAvatar}><Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" /></span>,
   };
 }
 

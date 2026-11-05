@@ -1,4 +1,4 @@
-import type { AuthUser, ChangelogEntry, FeedbackItem } from '@pokemon-universe/shared/public';
+import type { AuthUser, ChangelogEntry, FeedbackItem, LevelProgress } from '@pokemon-universe/shared/public';
 import type { paths } from './api-types';
 
 /** Cuerpo JSON de una respuesta del contrato OpenAPI del backend (tipos generados en api-types.ts). */
@@ -22,6 +22,7 @@ export type GuestResponse = { user: Bridge<JsonBody<'/api/auth/guest', 'post', 2
  * y `boolean` no nulo donde el contrato generado tiene arrays mutables y `boolean | null`.
  */
 export type ProfileResponse = JsonBody<'/api/auth/profile', 'get', 200>;
+export type ProgressResponse = { progress: Bridge<JsonBody<'/api/auth/progress', 'get', 200>['progress'], LevelProgress> };
 export type ChangelogResponse = { entries: Bridge<JsonBody<'/api/changelog', 'get', 200>['entries'][number], ChangelogEntry>[] };
 export type FeedbackCreateResponse = { feedback: Bridge<JsonBody<'/api/feedback', 'post', 201>['feedback'], FeedbackItem> };
 export type GamesResponse = JsonBody<'/api/games', 'get', 200>;

@@ -161,6 +161,40 @@ class FlywayMigrationsTest {
     assertEquals("23514", rejected.getSQLState(), "viola el CHECK de avatarType");
   }
 
+  /**
+   * V3 añade la experiencia y la calcula con el historial: solo partidas COMPLETED, 20 por jugar y 30/20/10 por quedar
+   * entre los tres primeros con al menos dos jugadores (la misma tabla que {@code Experience.xpForGame}).
+   */
+  @Test
+  void v3BackfillsExperienceFromCompletedGames() throws Exception {
+    var db = createDatabase();
+    FlywayMigrations.configure(dataSource(db)).target("2").load().migrate();
+    execute(dataSource(db), "insert into \"User\" (id, username, email, \"passwordHash\", \"updatedAt\") values"
+        + " ('u1', 'ana', 'a@b.c', 'x', now()), ('u2', 'eva', 'e@b.c', 'x', now()), ('u3', 'leo', 'l@b.c', 'x', now())");
+    execute(dataSource(db), "insert into \"UserStats\" (\"userId\") values ('u1'), ('u2'), ('u3')");
+    execute(dataSource(db), "insert into \"GameHistory\" (id, \"roomCode\", \"gameId\", \"playerCount\", config,"
+        + " \"startedAt\", \"resultId\", status) values"
+        + " ('g1', 'ABCDEF', 'higher-lower', 9, '{}', now(), 'r1', 'COMPLETED'),"
+        + " ('g2', 'ABCDEF', 'higher-lower', 1, '{}', now(), 'r2', 'COMPLETED'),"
+        + " ('g3', 'ABCDEF', 'higher-lower', 2, '{}', now(), 'r3', 'ABANDONED')");
+    execute(dataSource(db), "insert into \"PlayerGameResult\" (id, \"historyId\", \"userId\", \"displayName\","
+        + " \"position\", points, metrics) values"
+        + " ('p1', 'g1', 'u1', 'ana', 1, 5, '{}'), ('p2', 'g1', 'u2', 'eva', 2, 3, '{}'),"
+        + " ('p3', 'g1', null, 'Invitado', 3, 1, '{}'), ('p4', 'g1', 'u3', 'leo', 4, 0, '{}'),"
+        + " ('p5', 'g2', 'u1', 'ana', 1, 2, '{}'),"
+        + " ('p6', 'g3', 'u2', 'eva', 1, 9, '{}'), ('p7', 'g3', 'u3', 'leo', 2, 0, '{}')");
+
+    FlywayMigrations.migrate(dataSource(db));
+
+    var rows = new ArrayList<String>();
+    try (var c = dataSource(db).getConnection(); var st = c.createStatement();
+        var rs = st.executeQuery("select \"userId\", xp from \"UserStats\" order by \"userId\"")) {
+      while (rs.next()) rows.add(rs.getString(1) + "|" + rs.getInt(2));
+    }
+    // u1: 50 (1.º de 4) + 20 (en solitario); u2: 40 (2.º); u3: 20 (4.º). La partida abandonada no cuenta.
+    assertEquals(List.of("u1|70", "u2|40", "u3|20"), rows);
+  }
+
   /** Los ajustes de producción detenidos en V1:las comprobaciones de V1 no dependen de las {@code V2__…} futuras. */
   private static void migrateToV1(DataSource ds) {
     FlywayMigrations.configure(ds).target("1").load().migrate();

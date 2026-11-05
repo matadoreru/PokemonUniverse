@@ -123,7 +123,7 @@ export function TypeDuelSidebar({ game, members, colors, selfId, className }: { 
       const duelist = game.participants.includes(id);
       return <li key={id} aria-current={id === selfId ? 'true' : undefined} data-duelist={duelist || undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>
             {duelist && <span className={s.duelTag}><Icon icon={Swords} size={18} />Duelista</span>}
             <MemberChip game={game} id={id} />

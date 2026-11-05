@@ -130,6 +130,17 @@ public class AuthController {
     return profiles.profileOf(user.id()).map(ProfileResponse::from).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
   }
 
+  @Operation(summary = "Nivel y experiencia de la cuenta registrada")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ProgressResponse.class)))
+  @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @Get("/progress")
+  public ProgressResponse progress(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
+    var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
+        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    return profiles.progressOf(user.id()).map(p -> new ProgressResponse(ProfileResponse.Progress.from(p)))
+        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+  }
+
   /** Valida el cuerpo ya normalizado; el manejador global da formato al fallo con la ruta del campo. */
   private <T> T valid(T normalized) {
     Set<jakarta.validation.ConstraintViolation<T>> violations = validator.validate(normalized);

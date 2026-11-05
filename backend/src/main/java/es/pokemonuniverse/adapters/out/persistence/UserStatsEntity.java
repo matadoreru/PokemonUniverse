@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
+import es.pokemonuniverse.domain.progression.Experience;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +24,10 @@ public class UserStatsEntity {
   @Column(name = "totalPoints")
   private int totalPoints;
 
+  /** Experiencia total (V3); el nivel se deriva con {@link Experience}. */
+  @Column(name = "xp")
+  private int xp;
+
   protected UserStatsEntity() {}
 
   public UserStatsEntity(String userId) {
@@ -43,6 +48,15 @@ public class UserStatsEntity {
 
   public int getTotalPoints() {
     return totalPoints;
+  }
+
+  public int getXp() {
+    return xp;
+  }
+
+  /** Suma la experiencia de una partida terminada sin desbordar la columna. */
+  public void addXp(int gained) {
+    xp = Experience.add(xp, gained);
   }
 
   /** Suma una partida ({@code increment} de Prisma). */

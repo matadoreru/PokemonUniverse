@@ -5,6 +5,7 @@ import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.json.JsonTree;
+import es.pokemonuniverse.domain.progression.Experience;
 import es.pokemonuniverse.domain.room.GameSkip;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.PresenceStatus;
@@ -61,7 +62,7 @@ final class RoomViews {
         .members(room.members.values().stream().map(member -> new RoomView.MemberView(member.identity.id(),
             member.identity.displayName(), member.identity.avatar(), member.connected, member.presence,
             member.roomRole, member.role, member.identity.id().equals(room.hostId), member.ready,
-            member.sessionPoints)).toList())
+            member.sessionPoints, member.xp == null ? null : Experience.levelFor(member.xp))).toList())
         .availableGames(registry.manifests().stream().map(ManifestView::of).toList())
         .selectedGameId(room.selectedGameId)
         .selectedGameConfig(room.gameConfigs.get(room.selectedGameId))

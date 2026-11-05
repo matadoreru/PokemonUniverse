@@ -17,7 +17,7 @@ export function GuessPlayersPanel({ lines, selfId, title = 'Marcador', className
   return <Panel title={title} variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})} right={<Badge tone="cream">{`${lines.length} ${lines.length === 1 ? 'jugador' : 'jugadores'}`}</Badge>}>
     <ol className={s.rows} aria-label="Marcador">{lines.map(({ member, points, position, colorIndex, solveOrder, tied }) => <li key={member.id} data-testid="guess-score-row" aria-current={member.id === selfId ? 'true' : undefined}>
       <Row rank={position} name={member.displayName} color={playerColor(colorIndex)} self={member.id === selfId} disconnected={offline(member)}
-        avatar={<Avatar name={member.displayName} avatar={member.avatar} size="sm" />}
+        avatar={<Avatar name={member.displayName} avatar={member.avatar} level={member.level} size="sm" />}
         meta={<span className={s.rowMeta}>
           {solveOrder ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solveOrder)}</Chip> : <Chip tone="neutral" icon={<Icon icon={Search} size={18} />}>Buscando…</Chip>}
           {tied && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
@@ -68,7 +68,7 @@ export function GuessRevealBoard<S extends GuessRevealSolveLike>({ lines, selfId
       const extra = detail?.(line);
       return <li key={member.id} data-testid="guess-reveal-row">
         <Row {...(solve ? { rank: solve.solveOrder } : {})} name={member.displayName} color={playerColor(colorIndex)} self={member.id === selfId} disconnected={offline(member)}
-          avatar={<Avatar name={member.displayName} avatar={member.avatar} size="sm" />}
+          avatar={<Avatar name={member.displayName} avatar={member.avatar} level={member.level} size="sm" />}
           meta={<span className={s.rowMeta}>{solve
             ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.stat} title={`${guessSeconds(solve.elapsedMs)} · ${attemptsText(attempts)}`}>{guessSeconds(solve.elapsedMs)} · {attemptsText(attempts)}</span></>
             : <><Chip tone="bad" icon={<Icon icon={X} size={18} />}>No acertó</Chip><span className={s.stat}>{attemptsText(attempts)}</span></>}

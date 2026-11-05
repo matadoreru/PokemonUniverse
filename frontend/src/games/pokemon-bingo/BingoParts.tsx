@@ -107,7 +107,7 @@ export function BingoPlayers({ game, members, colors, selfId, onOpen, className 
       const self = id === selfId;
       const winner = id === game.winnerId;
       const row = <Row rank={index + 1} name={self ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={self} highlight={winner} disconnected={offline(member)}
-        avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+        avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
         meta={<span className={s.rowMeta}>
           {winner ? <Chip tone="ok" icon={<Icon icon={Trophy} size={18} />}>¡Bingo!</Chip> : <span className={s.rowProgress}>{bingoProgressText(board)}</span>}
         </span>}

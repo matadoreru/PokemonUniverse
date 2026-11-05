@@ -98,7 +98,7 @@ export function TcgSidebar({ game, lastRound, members, colors, selfId, className
           : <Chip tone="neutral" icon={<Icon icon={CircleDashed} size={18} />}>Pendiente</Chip>;
       return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={hl.rowMeta}>
             {chip}
             {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}

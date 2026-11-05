@@ -230,7 +230,7 @@ export function WhoTeamsPanel({ game, ownTeam, members, colors, selfId, classNam
         <ul className={s.rows} aria-label={`Jugadores del ${TEAM_NAME[team]}`}>{ids.map((id) => {
           const member = members.get(id);
           const name = member?.displayName ?? 'Entrenador';
-          return <li key={id}><Row name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />} /></li>;
+          return <li key={id}><Row name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />} /></li>;
         })}</ul>
       </section>;
     })}</div>

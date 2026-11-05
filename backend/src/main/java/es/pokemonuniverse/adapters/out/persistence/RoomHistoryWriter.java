@@ -4,6 +4,7 @@ import es.pokemonuniverse.domain.game.GameManifest.MetricDefinition;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.identity.AuthUser;
+import es.pokemonuniverse.domain.progression.Experience;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
@@ -115,13 +116,16 @@ public class RoomHistoryWriter {
           row.identity().displayName(), standing.position(), standing.points(), new LinkedHashMap<>(standing.stats())));
       if (userId == null) continue;
       boolean won = standing.won() != null ? standing.won() : standing.playerId().equals(results.winnerId());
+      int xp = Experience.xpForGame(standing.position(), standings.size());
       var userStats = entityManager.find(UserStatsEntity.class, userId);
       if (userStats == null) {
         userStats = new UserStatsEntity(userId);
         userStats.addGame(won, standing.points());
+        userStats.addXp(xp);
         entityManager.persist(userStats);
       } else {
         userStats.addGame(won, standing.points());
+        userStats.addXp(xp);
       }
       var gameStats = entityManager.createQuery("select s from UserGameStatsEntity s where s.userId = :userId "
               + "and s.gameId = :gameId", UserGameStatsEntity.class)

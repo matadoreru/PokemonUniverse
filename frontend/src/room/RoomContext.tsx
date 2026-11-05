@@ -42,7 +42,7 @@ interface RoomContextValue {
 const RoomContext = createContext<RoomContextValue | null>(null);
 
 export function RoomProvider({ children }: PropsWithChildren) {
-  const { user } = useAuth();
+  const { user, syncLevel } = useAuth();
   const socketRef = useRef<RealtimeClient | null>(null);
   const projectionRef = useRef(new OptimisticRoomProjection());
   const continuationRef = useRef<Promise<void> | null>(null);
@@ -67,6 +67,10 @@ export function RoomProvider({ children }: PropsWithChildren) {
     socket.on('error:message', setError);
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
+
+  // El nivel propio llega en vivo en `room:state` (sube al terminar cada partida): la cabecera lo sigue.
+  const selfLevel = room?.members.find((member) => member.id === user?.id)?.level;
+  useEffect(() => { if (typeof selfLevel === 'number') syncLevel(selfLevel); }, [selfLevel, syncLevel]);
 
   /**
    * Regla de los errores de la sala: el fallo de una orden al servidor sale solo en el aviso global, ya en español

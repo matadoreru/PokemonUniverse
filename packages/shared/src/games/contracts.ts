@@ -167,9 +167,19 @@ export interface ProfileGameStats {
   metrics: Record<string, number>;
 }
 
+/** Nivel de una cuenta registrada: `levelXp` y `nextLevelXp` son la experiencia total donde empiezan este nivel y el siguiente. */
+export interface LevelProgress {
+  level: number;
+  xp: number;
+  levelXp: number;
+  nextLevelXp: number;
+}
+
 export interface UserProfileResponse {
   user: { id: string; username: string; email: string; avatar: import('../avatar.js').AvatarRef; createdAt: string };
   globalStats: { gamesPlayed: number; gamesWon: number; totalPoints: number };
+  /** Ausente en el oráculo Node, que no tiene experiencia. */
+  progress?: LevelProgress;
   games: Array<MiniGameManifest & { stats: ProfileGameStats }>;
 }
 
