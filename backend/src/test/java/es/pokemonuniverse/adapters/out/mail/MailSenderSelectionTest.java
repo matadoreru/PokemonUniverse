@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.out.mail;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import es.pokemonuniverse.application.mail.MailSender;
@@ -31,6 +32,19 @@ class MailSenderSelectionTest {
   void withHostUsesSmtp() {
     try (var ctx = ApplicationContext.builder().properties(props("localhost")).build().start()) {
       assertInstanceOf(SmtpMailSender.class, ctx.getBean(MailSender.class));
+    }
+  }
+
+  @Test
+  void warnsOnceAtStartupWithoutHostAndNeverWithHost() {
+    MailStartupCheck.WARNINGS.set(0);
+    // Sin ningún getBean: el aviso debe salir solo por arrancar el contexto.
+    try (var ctx = ApplicationContext.builder().properties(props("")).build().start()) {
+      assertEquals(1, MailStartupCheck.WARNINGS.get());
+    }
+    MailStartupCheck.WARNINGS.set(0);
+    try (var ctx = ApplicationContext.builder().properties(props("localhost")).build().start()) {
+      assertEquals(0, MailStartupCheck.WARNINGS.get());
     }
   }
 }

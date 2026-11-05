@@ -3,7 +3,6 @@ package es.pokemonuniverse.adapters.out.mail;
 import es.pokemonuniverse.application.mail.MailMessage;
 import es.pokemonuniverse.application.mail.MailSender;
 import io.micronaut.context.annotation.Secondary;
-import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +14,6 @@ import org.slf4j.LoggerFactory;
 public class LoggingMailSender implements MailSender {
 
   private static final Logger LOG = LoggerFactory.getLogger(LoggingMailSender.class);
-
-  @PostConstruct
-  void avisar() {
-    LOG.warn("Correo no configurado (SMTP_HOST vacío): los correos solo se registran en el log.");
-  }
 
   @Override
   public void send(MailMessage message) {
