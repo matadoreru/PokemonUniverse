@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { capture, collectErrors, loginAsGuest, SIZES, uniqueName } from '../src/helpers.js';
+import { borrarCuentas, capture, collectErrors, comprobarBdE2E, loginAsGuest, nuevaCuenta, registrarPorApi, SIZES, uniqueName } from '../src/helpers.js';
 
 for (const { w, h } of SIZES) {
   test(`acceso a ${w}×${h}`, async ({ page }) => {
@@ -11,15 +11,15 @@ for (const { w, h } of SIZES) {
     await capture(page, 'acceso-entrar');
 
     // Foco inicial en el primer campo.
-    await expect(page.getByLabel('Email')).toBeFocused();
+    await expect(page.getByLabel('Email o usuario')).toBeFocused();
 
     // Login inválido: el aviso, en español, recibe el foco.
-    await page.getByLabel('Email').fill('nadie@example.com');
+    await page.getByLabel('Email o usuario').fill('nadie@example.com');
     await page.getByLabel('Contraseña').fill('x');
     await page.getByRole('button', { name: 'Iniciar sesión' }).click();
     const alerta = page.getByRole('alert');
     await expect(alerta).toBeVisible();
-    await expect(alerta).toContainText('El email o la contraseña no son correctos.');
+    await expect(alerta).toContainText('El usuario, el email o la contraseña no son correctos.');
     await expect(alerta).not.toContainText('Invalid');
     await expect(page.locator('[tabindex="-1"]:focus')).toContainText('No se pudo iniciar sesión');
     await capture(page, 'acceso-error');
@@ -57,3 +57,27 @@ for (const { w, h } of SIZES) {
     expect(errors).toEqual([]);
   });
 }
+
+// Entrar escribiendo el nombre de usuario (en otras mayúsculas) en vez del email. Necesita PostgreSQL para borrar la
+// cuenta al acabar.
+test('entrar con el nombre de usuario', async ({ browser }) => {
+  comprobarBdE2E();
+  const cuenta = nuevaCuenta('e2e_login');
+  const registro = await browser.newContext();
+  try {
+    await registrarPorApi(await registro.newPage(), cuenta);
+    const page = await browser.newPage();
+    const errors = collectErrors(page);
+    await page.goto('/auth');
+    await page.getByLabel('Email o usuario').fill(cuenta.username.toUpperCase());
+    await page.getByLabel('Contraseña').fill(cuenta.password);
+    await page.getByRole('button', { name: 'Iniciar sesión' }).click();
+    await expect(page).toHaveURL(/\/play$/);
+    await expect(page.getByRole('link', { name: `Abrir perfil de ${cuenta.username}` }).first()).toBeAttached();
+    expect(errors).toEqual([]);
+    await page.close();
+  } finally {
+    await registro.close();
+    borrarCuentas([cuenta.email], () => undefined);
+  }
+});

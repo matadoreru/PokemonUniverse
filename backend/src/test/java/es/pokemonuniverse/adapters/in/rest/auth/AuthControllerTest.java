@@ -117,14 +117,14 @@ class AuthControllerTest {
   void loginWrongPasswordIs401() {
     var u = unique();
     register("ana_" + u, "ana" + u + "@mail.com");
-    var e = postFails("/api/auth/login", Map.of("email", "ana" + u + "@mail.com", "password", "incorrecta"));
+    var e = postFails("/api/auth/login", Map.of("identifier", "ana" + u + "@mail.com", "password", "incorrecta"));
     assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
     assertEquals(Map.of("error", "Invalid email or password"), e.getResponse().getBody(Map.class).orElseThrow());
   }
 
   @Test
   void loginUnknownEmailIs401WithSameMessage() {
-    var e = postFails("/api/auth/login", Map.of("email", "nadie" + unique() + "@mail.com", "password", "x"));
+    var e = postFails("/api/auth/login", Map.of("identifier", "nadie" + unique() + "@mail.com", "password", "x"));
     assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
     assertEquals("Invalid email or password", e.getResponse().getBody(Map.class).orElseThrow().get("error"));
   }
@@ -133,9 +133,63 @@ class AuthControllerTest {
   void loginNormalizesEmail() {
     var u = unique();
     register("ana_" + u, "ana" + u + "@mail.com");
-    var res = post("/api/auth/login", Map.of("email", " ANA" + u + "@mail.com ", "password", "0123456789"));
+    var res = post("/api/auth/login", Map.of("identifier", " ANA" + u + "@mail.com ", "password", "0123456789"));
     assertEquals(HttpStatus.OK, res.getStatus());
     assertEquals("ana_" + u, user(res).get("displayName"));
+  }
+
+  @Test
+  void loginWithUsername() {
+    var u = unique();
+    register("Ana_" + u, "ana" + u + "@mail.com");
+    var res = post("/api/auth/login", Map.of("identifier", " Ana_" + u + " ", "password", "0123456789"));
+    assertEquals(HttpStatus.OK, res.getStatus());
+    assertEquals("Ana_" + u, user(res).get("displayName"));
+  }
+
+  @Test
+  void loginWithUsernameIgnoresCase() {
+    var u = unique();
+    register("Ana_" + u, "ana" + u + "@mail.com");
+    var res = post("/api/auth/login", Map.of("identifier", "ANA_" + u, "password", "0123456789"));
+    assertEquals(HttpStatus.OK, res.getStatus());
+    assertEquals("Ana_" + u, user(res).get("displayName"));
+  }
+
+  @Test
+  void loginWithUsernameNeedsExactCaseWhenTwoAccountsDifferOnlyInCase() {
+    var u = unique();
+    register("Ana_" + u, "ana" + u + "@mail.com");
+    register("ANA_" + u, "otra" + u + "@mail.com");
+    var exact = post("/api/auth/login", Map.of("identifier", "ANA_" + u, "password", "0123456789"));
+    assertEquals("ANA_" + u, user(exact).get("displayName"));
+    var e = postFails("/api/auth/login", Map.of("identifier", "ana_" + u, "password", "0123456789"));
+    assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
+  }
+
+  @Test
+  void loginUsernameDoesNotTreatUnderscoreAsWildcard() {
+    var u = unique();
+    register("anaX" + u, "ana" + u + "@mail.com");
+    var e = postFails("/api/auth/login", Map.of("identifier", "ana_" + u, "password", "0123456789"));
+    assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
+  }
+
+  @Test
+  void loginUnknownUsernameIs401WithSameMessage() {
+    var e = postFails("/api/auth/login", Map.of("identifier", "nadie_" + unique(), "password", "x"));
+    assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
+    assertEquals("Invalid email or password", e.getResponse().getBody(Map.class).orElseThrow().get("error"));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void loginWithoutIdentifierIs400InSpanish() {
+    var e = postFails("/api/auth/login", Map.of("password", "x"));
+    assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+    var issue = ((List<Map<String, Object>>) e.getResponse().getBody(Map.class).orElseThrow().get("issues")).get(0);
+    assertEquals("identifier", issue.get("path"));
+    assertEquals("Escribe tu email o tu nombre de usuario", issue.get("message"));
   }
 
   @Test
@@ -198,7 +252,7 @@ class AuthControllerTest {
     var password = "p".repeat(100);
     var res = post("/api/auth/register", Map.of("username", "ana_" + u, "email", "ana" + u + "@mail.com", "password", password));
     assertEquals(HttpStatus.CREATED, res.getStatus());
-    var login = post("/api/auth/login", Map.of("email", "ana" + u + "@mail.com", "password", password));
+    var login = post("/api/auth/login", Map.of("identifier", "ana" + u + "@mail.com", "password", password));
     assertEquals(HttpStatus.OK, login.getStatus());
   }
 }

@@ -384,7 +384,7 @@ export async function registrarPorApi(page: Page, cuenta: CuentaE2E): Promise<vo
  */
 export async function promoverAAdmin(page: Page, cuenta: CuentaE2E): Promise<void> {
   psql(`UPDATE "User" SET role = 'ADMIN' WHERE email = :'email';`, { email: cuenta.email });
-  const response = await page.request.post('/api/auth/login', { data: { email: cuenta.email, password: cuenta.password } });
+  const response = await page.request.post('/api/auth/login', { data: { identifier: cuenta.email, password: cuenta.password } });
   expect(response.status(), `login de ${cuenta.username} como ADMIN`).toBe(200);
 }
 

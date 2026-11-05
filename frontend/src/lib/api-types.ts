@@ -1039,9 +1039,9 @@ export interface components {
             version: number;
             prompts: components["schemas"]["CreateWouldYouRatherPromptRequest"][];
         };
+        /** @description `identifier` es el email o el nombre de usuario: con `@` es un email (los usuarios no lo admiten). */
         LoginRequest: {
-            /** Format: email */
-            email: string;
+            identifier: string;
             password: string;
         };
         "PokemonController.PokemonSelectorResponse": {

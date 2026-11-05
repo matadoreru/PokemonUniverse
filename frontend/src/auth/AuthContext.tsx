@@ -6,7 +6,7 @@ import type { MeResponse, LoginResponse, RegisterResponse, GuestResponse, Progre
 interface AuthContextValue {
   user: AuthUser | null;
   loading: boolean;
-  login(email: string, password: string): Promise<void>;
+  login(identifier: string, password: string): Promise<void>;
   register(username: string, email: string, password: string): Promise<void>;
   guest(displayName: string, avatar?: Blob): Promise<void>;
   updateUser(user: AuthUser): void;
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
   const value = useMemo<AuthContextValue>(() => ({
     user, loading, level, syncLevel: setLevel,
-    async login(email, password) { const body = await api<LoginResponse>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }); setUser(body.user); },
+    async login(identifier, password) { const body = await api<LoginResponse>('/auth/login', { method: 'POST', body: JSON.stringify({ identifier, password }) }); setUser(body.user); },
     async register(username, email, password) { const body = await api<RegisterResponse>('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) }); setUser(body.user); },
     async guest(displayName, avatar) {
       const body = avatar instanceof Blob

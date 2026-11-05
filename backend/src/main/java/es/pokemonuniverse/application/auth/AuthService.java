@@ -15,6 +15,7 @@ import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Singleton
@@ -64,11 +65,24 @@ public class AuthService {
     return false;
   }
 
+  /**
+   * Con {@code @} busca por email; si no, por nombre de usuario: primero exacto y, si no hay, sin distinguir
+   * mayúsculas siempre que solo coincida una cuenta (el índice único sí las distingue). El error es el mismo si la
+   * cuenta no existe o la contraseña falla, para no revelar qué cuentas hay.
+   */
   public AuthUser login(LoginCommand cmd) {
-    return users.findByEmail(cmd.email())
+    return account(cmd.identifier())
         .filter(user -> hasher.matches(cmd.password(), user.getPasswordHash()))
         .map(UserIdentityMapper::identityFromUser)
         .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
+  }
+
+  private Optional<UserEntity> account(String identifier) {
+    if (identifier.contains("@")) return users.findByEmail(identifier);
+    var exact = users.findByUsername(identifier);
+    if (exact.isPresent()) return exact;
+    var matches = users.findAllByUsernameIgnoringCase(identifier);
+    return matches.size() == 1 ? Optional.of(matches.getFirst()) : Optional.empty();
   }
 
   public AuthUser guest(GuestCommand cmd) {

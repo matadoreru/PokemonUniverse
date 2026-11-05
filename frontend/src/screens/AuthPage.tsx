@@ -54,7 +54,7 @@ export function AuthPage() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError(null); const data = new FormData(event.currentTarget);
     try {
-      if (mode === 'login') await auth.login(String(data.get('email')), String(data.get('password')));
+      if (mode === 'login') await auth.login(String(data.get('identifier')), String(data.get('password')));
       if (mode === 'register') await auth.register(String(data.get('username')), String(data.get('email')), String(data.get('password')));
       if (mode === 'guest') await auth.guest(String(data.get('displayName')));
       navigate('/play');
@@ -78,7 +78,8 @@ export function AuthPage() {
           <TabPanel idBase={ID} tabKey={mode}>
             <form key={mode} ref={form} className="flex flex-col gap-4" onSubmit={submit} onInput={() => error?.field && setError(null)}>
               {mode === 'register' && <Field label="Nombre de usuario" name="username" minLength={3} maxLength={24} required autoComplete="username" error={fieldError('username')} />}
-              {mode !== 'guest' && <Field label="Email" name="email" type="email" required autoComplete="email" error={fieldError('email')} />}
+              {mode === 'login' && <Field label="Email o usuario" name="identifier" required autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={254} error={fieldError('identifier')} />}
+              {mode === 'register' && <Field label="Email" name="email" type="email" required autoComplete="email" error={fieldError('email')} />}
               {mode !== 'guest' && <Field label="Contraseña" name="password" type="password" minLength={mode === 'register' ? 10 : 1} required autoComplete={mode === 'register' ? 'new-password' : 'current-password'} error={fieldError('password')} {...(mode === 'register' ? { hint: 'Mínimo 10 caracteres.' } : {})} />}
               {mode === 'guest' && <Field label="Tu nombre temporal" name="displayName" minLength={2} maxLength={24} required placeholder="Entrenador/a" error={fieldError('displayName')} />}
               {error && !error.field && (

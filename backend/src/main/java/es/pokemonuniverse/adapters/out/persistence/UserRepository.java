@@ -5,12 +5,19 @@ import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.Repository;
 import io.micronaut.data.repository.CrudRepository;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, String> {
 
   Optional<UserEntity> findByEmail(String email);
+
+  Optional<UserEntity> findByUsername(String username);
+
+  /** Cuentas cuyo usuario coincide sin distinguir mayúsculas (sin comodines, a diferencia de {@code ILIKE}). */
+  @Query("SELECT u FROM UserEntity u WHERE LOWER(u.username) = LOWER(:username)")
+  List<UserEntity> findAllByUsernameIgnoringCase(String username);
 
   boolean existsByEmailOrUsername(String email, String username);
 

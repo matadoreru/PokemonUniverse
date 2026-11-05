@@ -2481,23 +2481,23 @@ components:
         \ de 1 a 100 dilemas, todos o ninguno."
     LoginRequest:
       required:
-      - email
+      - identifier
       - password
       type: object
       properties:
-        email:
+        identifier:
           maxLength: 254
           minLength: 1
           type: string
-          format: email
-          x-pattern-message: El email no es válido
-          x-size-message: El email no puede superar los 254 caracteres
+          x-size-message: El email o el usuario no puede superar los 254 caracteres
         password:
           maxLength: 128
           minLength: 1
           type: string
           x-size-message: La contraseña debe tener entre 1 y 128 caracteres
           x-not-null-message: La contraseña es obligatoria
+      description: "`identifier` es el email o el nombre de usuario: con `@` es un\
+        \ email (los usuarios no lo admiten)."
     PokemonController.PokemonSelectorResponse:
       required:
       - pokemon

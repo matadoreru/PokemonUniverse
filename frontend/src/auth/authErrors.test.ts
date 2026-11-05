@@ -3,7 +3,7 @@ import { authError, authErrorMessage } from './authErrors';
 
 describe('authErrorMessage', () => {
   it('traduce las credenciales incorrectas', () => {
-    expect(authErrorMessage('Invalid email or password')).toBe('El email o la contraseña no son correctos.');
+    expect(authErrorMessage('Invalid email or password')).toBe('El usuario, el email o la contraseña no son correctos.');
   });
 
   it('traduce el correo o el nombre ya ocupados', () => {
@@ -54,7 +54,7 @@ describe('authError', () => {
   });
 
   it('deja sin campo los errores generales', () => {
-    expect(authError('Invalid email or password')).toEqual({ field: null, message: 'El email o la contraseña no son correctos.' });
+    expect(authError('Invalid email or password')).toEqual({ field: null, message: 'El usuario, el email o la contraseña no son correctos.' });
     expect(authError(new Error('El avatar no es válido'))).toEqual({ field: null, message: 'El avatar no es válido' });
   });
 });

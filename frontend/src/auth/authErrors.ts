@@ -3,7 +3,7 @@
  * (AuthService, los manejadores de errores de Micronaut y el limitador) o el del navegador cuando falla la red.
  */
 
-export type AuthField = 'username' | 'email' | 'password' | 'displayName';
+export type AuthField = 'username' | 'email' | 'identifier' | 'password' | 'displayName';
 
 export interface AuthError {
   /** Campo al que pertenece el error, o `null` si es del formulario entero. */
@@ -17,7 +17,7 @@ const GENERIC = 'No se pudo continuar. Inténtalo de nuevo en unos segundos.';
 
 /** Mensajes en inglés del backend y del navegador. */
 const TRANSLATED: Record<string, string> = {
-  'Invalid email or password': 'El email o la contraseña no son correctos.',
+  'Invalid email or password': 'El usuario, el email o la contraseña no son correctos.',
   'Email or username already in use': 'Ese email o ese nombre de usuario ya tienen cuenta.',
   'Too many requests': 'Demasiados intentos seguidos. Espera un minuto y vuelve a probar.',
   'request entity too large': 'La imagen supera el límite de 5 MB.',
@@ -40,6 +40,8 @@ const SPANISH: Record<string, AuthField | null> = {
   'El email es obligatorio': 'email',
   'El email no puede superar los 254 caracteres': 'email',
   'El email no es válido': 'email',
+  'Escribe tu email o tu nombre de usuario': 'identifier',
+  'El email o el usuario no puede superar los 254 caracteres': 'identifier',
   'La contraseña es obligatoria': 'password',
   'La contraseña debe tener entre 10 y 128 caracteres': 'password',
   'La contraseña debe tener entre 1 y 128 caracteres': 'password',
