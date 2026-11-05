@@ -106,4 +106,10 @@ public class UserEntity {
   public Instant getCreatedAt() {
     return createdAt;
   }
+
+  /** Cambia el hash de la contraseña (recuperación de cuenta). */
+  public void changePassword(String passwordHash, Instant now) {
+    this.passwordHash = passwordHash;
+    this.updatedAt = now;
+  }
 }
