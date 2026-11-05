@@ -29,16 +29,6 @@ export function triviaComparedValue(type: PokemonTriviaQuestionType | null, deta
   }
 }
 
-/** La ficha entera de una opción en la revelación, en una línea («Gen 1 · PS 35 · Atq 55 · …»). */
-export function triviaDetailsLine(details: PokemonTriviaOptionDetails): string {
-  return [
-    `Gen ${details.generation}`, `PS ${details.hp}`, `Atq ${details.attack}`, `Def ${details.defense}`, `At. Esp. ${details.specialAttack}`, `Def. Esp. ${details.specialDefense}`,
-    `Vel. ${details.speed}`, `BST ${details.baseStatTotal}`,
-    ...(details.heightDecimeters !== undefined ? [`${decimal(details.heightDecimeters)} m`] : []),
-    ...(details.weightHectograms !== undefined ? [`${decimal(details.weightHectograms)} kg`] : []),
-  ].join(' · ');
-}
-
 /** Atajo de teclado (1–4) de cada opción, por su orden. */
 export const triviaShortcut = (index: number) => String(index + 1);
 
@@ -46,6 +36,19 @@ export const triviaShortcut = (index: number) => String(index + 1);
 export function triviaOptionFromKey(key: string, options: readonly Pick<PokemonTriviaOption, 'id'>[]): PokemonTriviaOptionId | null {
   if (!/^[1-4]$/.test(key)) return null;
   return options[Number(key) - 1]?.id ?? null;
+}
+
+/**
+ * Elegir y confirmar (como Shiny Quiz): pulsar una carta o su tecla solo la marca en local; la respuesta se envía al
+ * confirmar (botón o Enter). Sin poder responder, o mientras se envía, la elección no cambia.
+ */
+export function triviaDraftAfterSelect(current: PokemonTriviaOptionId | null, requested: PokemonTriviaOptionId, canAnswer: boolean, submitting: boolean): PokemonTriviaOptionId | null {
+  return canAnswer && !submitting ? requested : current;
+}
+
+/** Orden que envía «Confirmar respuesta»: solo con una opción elegida, pudiendo responder y sin otra en camino. */
+export function triviaConfirmAction(draft: PokemonTriviaOptionId | null, canAnswer: boolean, submitting: boolean): { type: 'ANSWER'; optionId: PokemonTriviaOptionId } | null {
+  return draft && canAnswer && !submitting ? { type: 'ANSWER', optionId: draft } : null;
 }
 
 /** «2 · Charmander»: el número de la opción (su atajo) y el Pokémon. */
@@ -87,7 +90,7 @@ export function triviaVerdict(result: PokemonTriviaRoundResult, options: readonl
 export function triviaAnnouncement({ kind, game, player, verdict }: { kind: TriviaPlateKind; game: Pick<PokemonTriviaPublicState, 'roundNumber' | 'totalRounds' | 'prompt' | 'options' | 'lastRound' | 'phase'>; player: PokemonTriviaPlayerState | null; verdict: TriviaVerdict | null }): string {
   const round = `Pregunta ${game.roundNumber} de ${game.totalRounds}`;
   switch (kind) {
-    case 'answer': return `${round}: ${game.prompt ?? ''} Elige con las teclas 1 a ${game.options.length}.`;
+    case 'answer': return `${round}: ${game.prompt ?? ''} Elige con las teclas 1 a ${game.options.length} y confirma con Enter.`;
     case 'locked': return `Respuesta ${triviaOptionLabel(game.options, player!.answer!.optionId)} bloqueada. Esperando al resto.`;
     case 'watching': case 'out': return `${round}: ${game.prompt ?? ''}`;
     case 'reveal': {

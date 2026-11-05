@@ -2722,12 +2722,18 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       // El host responde con el atajo 1: su respuesta queda bloqueada (en texto) y el foco va al título de la placa.
       // El atajo no depende de dónde esté el foco (salvo en un campo): se quita del control que lo tenga.
       await host.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+      // Como en Shiny Quiz: el atajo solo elige; Enter confirma.
       await host.page.keyboard.press('1');
+      await expect(host.page.getByText('Has seleccionado')).toBeVisible();
+      await expect(host.page.locator('[data-trivia-card]').first()).toHaveAttribute('aria-pressed', 'true');
+      await host.page.keyboard.press('Enter');
       await expect(host.page.getByRole('heading', { name: /^1 · .+ bloqueada$/ })).toBeVisible({ timeout: 5_000 });
       await expect(host.page.locator('#guess-plate-title')).toBeFocused();
       await expect(primero.page.getByTestId('trivia-score-row').filter({ hasText: 'Respondió' })).toHaveCount(1, { timeout: 5_000 });
       await opcion(primero.page, 2).click();
+      await primero.page.getByRole('button', { name: 'Confirmar respuesta' }).click();
       await opcion(segundo.page, 3).click();
+      await segundo.page.getByRole('button', { name: 'Confirmar respuesta' }).click();
 
       // Revelación: la correcta y las incorrectas con texto, el dato y quién eligió qué.
       await expect(titulo).toHaveText(/^Correcta: .+$/, { timeout: 10_000 });
@@ -2737,11 +2743,12 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       await expect(host.page.getByTestId('trivia-fact')).toBeVisible();
       await expect(host.page.getByTestId('trivia-answer-row')).toHaveCount(3);
       await expect(host.page.getByTestId('trivia-answer-row').filter({ hasText: primero.name })).toContainText(/(Acertó|Falló)\s*Eligió 2 · /);
-      await expect(host.page.getByTestId('trivia-pickers').filter({ hasText: 'Tú' })).toHaveCount(1);
+      // Quién eligió cada una, con avatares sobre el sprite (el propio, marcado).
+      await expect(host.page.locator('[data-testid="trivia-pickers"][data-self="true"]')).toHaveCount(1);
       test.info().annotations.push({ type: 'trivia', description: `ronda ${ronda}: ${await titulo.innerText()}` });
       // La revelación dura 4 s: un tamaño por pregunta.
       if (ronda === 3) {
-        // A 390×844 sin desplazar: las cuatro cartas compactas con su marca y la correcta sin tapar por la placa.
+        // A 390×844 sin desplazar: las cuatro cartas con su marca y la correcta sin tapar por la placa.
         await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
         await host.page.evaluate(() => window.scrollTo(0, 0));
         const correcta = cartas.filter({ hasText: /Correcta/ });

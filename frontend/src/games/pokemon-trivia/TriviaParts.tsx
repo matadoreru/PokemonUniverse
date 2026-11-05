@@ -1,36 +1,38 @@
 import type { PokemonTriviaOptionId, PokemonTriviaPublicState, PokemonTriviaRoundResult, RoomMemberView } from '@pokemon-universe/shared/public';
 import { Brain, Check, CheckCircle2, CircleDashed, Equal, Lightbulb, MinusCircle, XCircle } from 'lucide-react';
-import type { CSSProperties } from 'react';
 import { Avatar } from '../../components/Avatar';
+import { AvatarStack, avatarStackLabel } from '../../components/AvatarStack';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, type CardState } from '../../ui';
-import { triviaComparedValue, triviaDetailsLine, triviaOptionLabel, triviaRanking, triviaShortcut } from './presentation';
+import { triviaComparedValue, triviaOptionLabel, triviaRanking, triviaShortcut } from './presentation';
 import s from './PokemonTrivia.module.css';
 
 const nameOf = (members: ReadonlyMap<string, RoomMemberView>, id: string) => members.get(id)?.displayName ?? 'Entrenador';
 
 /**
  * La pregunta (`Panel` azul noche, en grande) y las opciones: `Card`s llenas con el sprite, el nombre y el atajo (1–4)
- * en una insignia. Durante la ronda son botones (con `aria-pressed` la elegida); en la revelación, la correcta y las
- * incorrectas llevan icono y texto («Correcta» / «Incorrecta»), el dato que compara la pregunta, la ficha y quién eligió
- * cada una. La respuesta correcta solo se lee de `result`, que quien llama pasa únicamente en `ROUND_RESULTS`.
+ * en una insignia. Durante la ronda son botones (con `aria-pressed` la elegida, aún sin confirmar); en la revelación,
+ * la correcta y las incorrectas llevan su marca en la esquina del sprite (icono, y el texto para lectores), solo el dato
+ * que compara la pregunta y, encima del sprite, los avatares de quién eligió cada una. El hueco del sprite no cambia de
+ * tamaño: el dato tiene su línea reservada desde el principio y las marcas y los avatares van encima. La respuesta
+ * correcta solo se lee de `result`, que quien llama pasa únicamente en `ROUND_RESULTS`.
  */
-export function TriviaBoard({ game, result, selected, pending, canAnswer, members, colors, selfId, onAnswer }: {
+export function TriviaBoard({ game, result, selected, pending, canAnswer, members, selfId, onSelect }: {
   game: PokemonTriviaPublicState;
   /** Solo en la revelación (`triviaVisibleRound`). */
   result: PokemonTriviaRoundResult | null;
-  /** La respuesta propia (bloqueada o enviándose). */
+  /** La elección propia: sin confirmar (local), enviándose o ya bloqueada. */
   selected: PokemonTriviaOptionId | null;
-  pending: PokemonTriviaOptionId | null;
+  /** Hay una respuesta en camino: las cartas no cambian. */
+  pending: boolean;
   canAnswer: boolean;
   members: ReadonlyMap<string, RoomMemberView>;
-  colors: ReadonlyMap<string, number>;
   selfId: string;
-  onAnswer(id: PokemonTriviaOptionId): void;
+  onSelect(id: PokemonTriviaOptionId): void;
 }) {
   const pickers = (id: PokemonTriviaOptionId) => result ? Object.entries(result.answers).filter(([, answer]) => answer.optionId === id).map(([playerId]) => playerId) : [];
-  return <div className={cx(s.board, result && s.boardReveal)}>
+  return <div className={cx(s.board)}>
     <Panel variant="dark" as="section" aria-label="Pregunta" bodyClassName={cx(s.question)}>
       <span className={s.questionIcon}><Icon icon={Brain} size={32} /></span>
       <div className={s.questionText}>
@@ -43,31 +45,29 @@ export function TriviaBoard({ game, result, selected, pending, canAnswer, member
       const mine = selected === option.id;
       const state: CardState = result ? (option.id === result.correctOptionId ? 'correct' : 'wrong') : mine ? 'selected' : 'idle';
       const details = result?.optionDetails[option.id];
+      const compared = details ? triviaComparedValue(game.questionType, details) : null;
       const chosenBy = pickers(option.id);
-      const badge = <span className={s.shortcut} aria-hidden="true">{shortcut}</span>;
+      // Quién la eligió, encima del sprite (abajo a la derecha): avatares, con los nombres para lectores de pantalla.
+      const overlay = result && chosenBy.length > 0
+        ? <span data-testid="trivia-pickers" data-self={chosenBy.includes(selfId) ? 'true' : undefined}>
+          <AvatarStack members={chosenBy.map((id) => ({ id, name: nameOf(members, id), avatar: members.get(id)?.avatar }))}
+            label={avatarStackLabel(chosenBy.map((id) => (id === selfId ? 'ti' : nameOf(members, id))), 'Elegida por')} />
+        </span>
+        : null;
       const body = <>
-        {badge}
-        {mine && !result && <span className={s.mine}><Chip tone="info" icon={<Icon icon={Check} size={18} />}>{pending ? 'Enviando…' : 'Tu respuesta'}</Chip></span>}
-        {result && <span className={s.reveal}>
-          {details && <strong className={s.compared}>{triviaComparedValue(game.questionType, details)}</strong>}
-          {details && <span className={s.detailsLine}>{triviaDetailsLine(details)}</span>}
-          <span className={s.pickers} data-testid="trivia-pickers">{chosenBy.length
-            ? chosenBy.map((id) => <span key={id} className={cx(s.picker, id === selfId && s.pickerSelf)} style={{ '--player': playerColor(colors.get(id) ?? 0) } as CSSProperties}>{id === selfId ? 'Tú' : nameOf(members, id)}</span>)
-            : <span className={s.nobody}>Nadie la eligió</span>}</span>
-        </span>}
+        <span className={s.shortcut} aria-hidden="true">{shortcut}</span>
+        {/* Línea reservada desde el principio para el dato comparado: al revelar, el sprite no encoge. */}
+        <strong className={s.compared} aria-hidden={compared ? undefined : 'true'}>{compared ?? '\u00a0'}</strong>
+        {result && chosenBy.length === 0 && <span className="sr-only">Nadie la eligió</span>}
       </>;
+      const common = { size: 'fill' as const, marks: 'corner' as const, sprite: guessSprite(option.pokemon.sprite), name: option.pokemon.name, decorativeSprite: true, state, ...(overlay ? { artOverlay: overlay } : {}) };
       return <li key={option.id} className={s.option} data-option={option.id}>
         {result || !canAnswer
-          ? <Card size="fill" sprite={guessSprite(option.pokemon.sprite)} name={option.pokemon.name} decorativeSprite state={state} attrs={{ 'data-trivia-card': option.id }}>{body}</Card>
-          : <Card size="fill" sprite={guessSprite(option.pokemon.sprite)} name={option.pokemon.name} decorativeSprite state={state} disabled={pending !== null && !mine}
-            attrs={{ 'aria-label': `${shortcut}. ${option.pokemon.name}`, 'aria-keyshortcuts': shortcut, 'data-trivia-card': option.id }} onSelect={() => onAnswer(option.id)}>{body}</Card>}
+          ? <Card {...common} attrs={{ 'data-trivia-card': option.id }}>{body}</Card>
+          : <Card {...common} disabled={pending && !mine}
+            attrs={{ 'aria-label': `${shortcut}. ${option.pokemon.name}`, 'aria-keyshortcuts': shortcut, 'data-trivia-card': option.id }} onSelect={() => onSelect(option.id)}>{body}</Card>}
       </li>;
     })}</ol>
-    {/* Móvil: las cartas de la revelación van compactas (todas a la vista); la ficha de cada opción, aquí debajo. */}
-    {result && <ul className={s.mobileDetails} aria-label="Ficha de cada opción">{game.options.map((option, index) => {
-      const details = result.optionDetails[option.id];
-      return details ? <li key={option.id}><strong>{triviaShortcut(index)} · {option.pokemon.name}</strong> {triviaDetailsLine(details)}</li> : null;
-    })}</ul>}
   </div>;
 }
 
