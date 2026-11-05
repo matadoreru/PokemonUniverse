@@ -108,6 +108,8 @@
   font: 800 var(--fs-13) / 1 var(--font-text);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  /* Cifra navy sobre amarillo: no hereda el contorno `.ol` de la etiqueta de las píldoras (la emborronaba). */
+  text-shadow: none;
 }
 /* En los avatares grandes (perfil, podio) la insignia crece y entra en el círculo para no quedar en la esquina vacía. */
 .xl .level,
