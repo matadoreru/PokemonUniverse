@@ -55,7 +55,7 @@ Tabla `Friendship`, una fila por par de cuentas:
 4. **Quitar amigo**: cualquiera de los dos.
 5. Toda operación sobre otra fila, o sobre una que ya no existe, responde `404` con `"Friend request not found"`.
 
-### Rutas REST (`/api/friends`, solo `USER`; un invitado recibe `403` como las demás rutas de cuenta)
+### Rutas REST (`/api/friends`, solo `USER`; un invitado recibe `401 "Registered account required"` como las demás rutas de cuenta)
 
 | Ruta | Respuesta |
 |---|---|
@@ -150,7 +150,7 @@ Textos de estado: «Jugando», «En una sala», «Conectado», «Desconectado».
 - **Java (Testcontainers):**
   - todas las reglas de `FriendService`: solicitud cruzada, mismo error para los casos que no deben distinguirse,
     límites, permisos de aceptar, rechazar y cancelar, quitar, y borrado en cascada al borrar una cuenta;
-  - las rutas y el `403` de un invitado;
+  - las rutas y el `401` de un invitado;
   - el cálculo de presencia;
   - `room:invite`, con cada error, los límites y el evento recibido en todas las conexiones del invitado;
   - los avisos `friends:presence` al conectar y desconectar, entrar en una sala y empezar una partida;
