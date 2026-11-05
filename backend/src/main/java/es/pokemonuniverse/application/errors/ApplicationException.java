@@ -5,7 +5,8 @@ package es.pokemonuniverse.application.errors;
  * ({@code ApplicationExceptionHandler}). El mensaje es el que verá el cliente.
  */
 public abstract sealed class ApplicationException extends RuntimeException
-    permits BadRequestException, ConflictException, NotFoundException, UnauthorizedException {
+    permits BadRequestException, ConflictException, InvalidResetLinkException, NotFoundException,
+        UnauthorizedException {
 
   protected ApplicationException(String message) {
     super(message);

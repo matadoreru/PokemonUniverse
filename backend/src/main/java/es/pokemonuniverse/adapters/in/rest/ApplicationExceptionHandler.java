@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.rest;
 import es.pokemonuniverse.application.errors.ApplicationException;
 import es.pokemonuniverse.application.errors.BadRequestException;
 import es.pokemonuniverse.application.errors.ConflictException;
+import es.pokemonuniverse.application.errors.InvalidResetLinkException;
 import es.pokemonuniverse.application.errors.NotFoundException;
 import es.pokemonuniverse.application.errors.UnauthorizedException;
 import io.micronaut.http.HttpRequest;
@@ -22,6 +23,7 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
     HttpStatus status = switch (exception) {
       case BadRequestException e -> HttpStatus.BAD_REQUEST;
       case ConflictException e -> HttpStatus.CONFLICT;
+      case InvalidResetLinkException e -> HttpStatus.BAD_REQUEST;
       case NotFoundException e -> HttpStatus.NOT_FOUND;
       case UnauthorizedException e -> HttpStatus.UNAUTHORIZED;
     };
