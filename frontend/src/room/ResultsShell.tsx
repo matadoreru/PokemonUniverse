@@ -24,6 +24,8 @@ export interface ResultsStanding {
   color?: string | undefined;
   /** Línea secundaria: estadísticas del juego. */
   meta?: ReactNode;
+  /** Sprite propio de la franja (p. ej. el Pokémon secreto de cada uno), a la derecha de los puntos; decorativo. */
+  sprite?: string | undefined;
 }
 
 const defaultPoints = (points: number) => `${points} pts`;
@@ -44,7 +46,10 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
         self={standing.id === selfId}
         {...(standing.color ? { color: standing.color } : {})}
         {...(winner || standing.meta ? { meta: <span className={s.meta}>{winner && <Badge><Icon icon={Crown} size={18} />Ganador</Badge>}{standing.meta}</span> } : {})}
-        value={<span className={s.points}>{winner && standing.points > 0 && <ScorePop points={standing.points} color={standing.color} className={s.pop} />}{pointsLabel(standing.points)}</span>}
+        value={<span className={s.value}>
+          <span className={s.points}>{winner && standing.points > 0 && <ScorePop points={standing.points} color={standing.color} className={s.pop} />}{pointsLabel(standing.points)}</span>
+          {standing.sprite && <span className={s.sprite} data-testid="results-sprite"><img src={standing.sprite} alt="" /></span>}
+        </span>}
       />
     </li>;
   })}</ol>;

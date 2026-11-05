@@ -1,7 +1,7 @@
 import type { PokeddleRacePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { Flag, ListChecks, Timer, X, Check } from 'lucide-react';
 import { Chip, Icon } from '../ui';
-import { guessSeconds, guessTop } from './guess-kit';
+import { guessSeconds, guessSprite, guessTop } from './guess-kit';
 import { playerColor } from './player-color';
 import { pokeddleAttemptsText, pokeddleVisibleSecret } from './pokeddle-presentation';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
@@ -41,6 +41,8 @@ export function PokeddleRaceResults({ room, selfId, onLobby, onEnd }: { room: Ro
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
+      // El Pokémon que tenía cada uno, con su sprite (encontrado o no: en la clasificación ya es público).
+      sprite: secret ? guessSprite(secret.sprite) : undefined,
       meta: <>
         {solved
           ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Encontrado</Chip><span>{secret?.name ?? 'Su Pokémon'} · ronda {board?.solvedRound}</span></>
