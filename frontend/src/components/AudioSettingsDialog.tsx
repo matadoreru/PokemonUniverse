@@ -41,7 +41,6 @@ export function AudioSettingsPanel({ settings, onPatch }: AudioSettingsPanelProp
           onChange={(v) => onPatch(audioPatchFor(g.key, v))}
         />
       ))}
-      <p className="m-0 text-13 font-bold">Atajo: M</p>
     </div>
   );
 }

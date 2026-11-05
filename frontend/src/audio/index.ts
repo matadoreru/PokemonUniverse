@@ -1,7 +1,7 @@
 /**
  * Audio de la aplicación (spec §8): el singleton `audio` con las dependencias del navegador, el
- * hook `useAudioSettings()` y los enganches globales (desbloqueo con el primer gesto, pausa con la
- * pestaña oculta y tecla `M`). Al importarse en los tests (sin `window`) no toca el DOM ni crea
+ * hook `useAudioSettings()` y los enganches globales (desbloqueo con el primer gesto y pausa con la
+ * pestaña oculta). Al importarse en los tests (sin `window`) no toca el DOM ni crea
  * ningún `AudioContext`.
  */
 import { useSyncExternalStore } from 'react';
@@ -53,13 +53,6 @@ function browserDeps(): AudioDeps {
 
 export const audio: Audio = createAudio(browserDeps());
 
-/** ¿El foco está en un campo de texto? Ahí la `M` se escribe, no silencia. */
-function isTextField(target: EventTarget | null): boolean {
-  if (typeof HTMLElement === 'undefined' || !(target instanceof HTMLElement)) return false;
-  const tag = target.tagName;
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
-}
-
 /** Eventos de puntero que desbloquean el audio (además de `keydown`). */
 export const UNLOCK_POINTER_EVENTS = ['pointerdown', 'pointerup', 'click'] as const;
 
@@ -68,23 +61,15 @@ export function installAudio(a: Audio, doc: Document, win: Window): () => void {
   // Se escucha siempre: el primer gesto crea el contexto (si hay sonido) y los siguientes lo reanudan si quedó suspendido.
   const unlock = (): void => a.unlock();
   const onVisibility = (): void => a.setHidden(doc.hidden);
-  const onKey = (e: KeyboardEvent): void => {
-    if (e.repeat || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
-    // `key` puede faltar en un `keydown` sintético (autocompletado de Chrome).
-    if (typeof e.key !== 'string' || e.key.toLowerCase() !== 'm' || isTextField(e.target)) return;
-    a.toggleMute();
-  };
   // Un `pointerdown` táctil no da activación de usuario (solo `pointerup`/`click`): se escuchan todos y `unlock` es idempotente.
   for (const type of UNLOCK_POINTER_EVENTS) doc.addEventListener(type, unlock, { capture: true, passive: true });
   doc.addEventListener('keydown', unlock, { capture: true });
   doc.addEventListener('visibilitychange', onVisibility);
-  win.addEventListener('keydown', onKey);
   if (import.meta.env.DEV) win.__puAudio = { state: () => a.state() };
   return () => {
     for (const type of UNLOCK_POINTER_EVENTS) doc.removeEventListener(type, unlock, { capture: true });
     doc.removeEventListener('keydown', unlock, { capture: true });
     doc.removeEventListener('visibilitychange', onVisibility);
-    win.removeEventListener('keydown', onKey);
     if (win.__puAudio) delete win.__puAudio;
   };
 }

@@ -212,7 +212,7 @@ export function createAudio(deps: AudioDeps, cfg: SfxFile = loadSfx()): Audio {
       if (CHANNELS.every((c) => next[c] === settings[c]) && next.master === settings.master && next.muted === settings.muted) return;
       settings = next;
       saveSettings(deps.storage, settings);
-      // Activar el sonido ocurre dentro de un gesto (clic o tecla M): si ya hubo uno, se crea el contexto.
+      // Activar el sonido ocurre dentro de un gesto (un clic): si ya hubo uno, se crea el contexto.
       ensureContext();
       applyGains();
       notify();
