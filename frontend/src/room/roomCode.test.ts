@@ -49,7 +49,7 @@ describe('roomErrorMessage', () => {
   it('deja pasar los mensajes del cliente que ya están en español', () => {
     expect(roomErrorMessage(new Error(OFFLINE_MESSAGE))).toBe(OFFLINE_MESSAGE);
     expect(roomErrorMessage(new Error(TIMEOUT_MESSAGE))).toBe(TIMEOUT_MESSAGE);
-    expect(roomErrorMessage('Esta conexión ha sido reemplazada por una sesión más reciente.')).toBe('Esta conexión ha sido reemplazada por una sesión más reciente.');
+    expect(roomErrorMessage('Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.')).toBe('Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.');
   });
   it('lo desconocido da un texto genérico en español', () => {
     expect(roomErrorMessage(new Error('Internal Server Error'))).toBe('No se pudo completar. Inténtalo de nuevo en unos segundos.');

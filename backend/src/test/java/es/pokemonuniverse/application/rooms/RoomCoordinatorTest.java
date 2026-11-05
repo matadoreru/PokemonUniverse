@@ -146,7 +146,7 @@ class RoomCoordinatorTest {
     assertEquals("host-current", room.members.get(host.id()).connectionId);
     assertEquals(1, kit.events.named("session:restored").size());
 
-    assertMessage("Esta conexión ha sido reemplazada por una sesión más reciente.",
+    assertMessage("Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.",
         () -> kit.manager.withConnection(host.id(), "host-old", () -> {
           kit.manager.leave(host.id());
           return null;

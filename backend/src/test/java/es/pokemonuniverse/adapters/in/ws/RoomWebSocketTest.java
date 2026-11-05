@@ -137,7 +137,7 @@ class RoomWebSocketTest {
     var restored = newerHost.awaitPush("session:restored", view -> true);
     assertEquals(code, text(restored, "code"));
     var stale = host.command("room:set-ready", "{\"ready\":true}");
-    assertError("Esta conexión ha sido reemplazada por una sesión más reciente.", stale);
+    assertError("Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.", stale);
     assertFalse(host.closed.isDone());
 
     WsTestClients.closeQuietly(guest);

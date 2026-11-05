@@ -60,11 +60,11 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
 };
 
 /**
- * Textos en español del servidor que pasan tal cual: «Esta conexión ha sido reemplazada…»
+ * Textos en español del servidor que pasan tal cual: «Estás jugando en dos pestañas…»
  * (`RoomCoordinator.assertActiveSocket`) y «El servidor se está cerrando» (`RoomCoordinator.assertAcceptingCommands`).
  * Junto a los del cliente (`lib/realtime.ts`), forman los mensajes que no se traducen.
  */
-export const SERVER_SPANISH_MESSAGES = ['Esta conexión ha sido reemplazada por una sesión más reciente.', 'El servidor se está cerrando'] as const;
+export const SERVER_SPANISH_MESSAGES = ['Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.', 'El servidor se está cerrando'] as const;
 
 const SPANISH = new Set<string>([OFFLINE_MESSAGE, TIMEOUT_MESSAGE, ...SERVER_SPANISH_MESSAGES]);
 

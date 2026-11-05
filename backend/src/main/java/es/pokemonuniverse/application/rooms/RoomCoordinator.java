@@ -255,7 +255,7 @@ public class RoomCoordinator {
   private void assertActiveSocket(LiveRoom room, String playerId, String connectionId) {
     var member = room.members.get(playerId);
     if (member != null && !Objects.equals(member.connectionId, connectionId)) {
-      throw new RoomException("Esta conexión ha sido reemplazada por una sesión más reciente.");
+      throw new RoomException("Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.");
     }
   }
 
