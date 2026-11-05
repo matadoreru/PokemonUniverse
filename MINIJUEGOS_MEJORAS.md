@@ -1,5 +1,7 @@
 # Mejoras para los 6 primeros minijuegos de Pokémon Universe
 
+> **Nota (2026-11-05):** el servidor Node y los motores TS se quitaron en `e40b70c` («Quitar el servidor Node y los motores TS»). Las referencias `fichero:línea` a `packages/shared/src/games/<id>/server.ts` y `apps/server/` apuntan al historial de git, y donde este documento dice «TS y Java en el mismo commit», `golden:export` o `registry:export`, el flujo actual es solo Java: ver `backend/src/main/java/es/pokemonuniverse/domain/game/engines/README.md`.
+
 > Análisis hecho sobre el código real a fecha 2026-11-02, en la rama `etapa-2c-datos-administracion`. Revisado el 2026-11-03 sobre `90c2e07`. No se ha modificado código.
 >
 > Entre las dos versiones, los commits no tocan los motores TS, las pantallas ni el servidor Node (`git diff 8657ad6 90c2e07` está vacío en `packages/shared`, `apps/web/src/room`, `apps/web/src/games` y `apps/server/src`). Los bugs y las referencias `fichero:línea` de TS siguen vigentes.

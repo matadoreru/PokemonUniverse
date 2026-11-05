@@ -59,7 +59,7 @@ Sube el proyecto a GitHub con rama principal `main`. La integración continua es
 
 | Workflow | Se dispara en PR cuando cambia | Valida | Imagen |
 | --- | --- | --- | --- |
-| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries`); build Vite | `pokemon-universe-web` (target `web`) |
+| `.github/workflows/frontend.yml` | `frontend/`, `packages/shared/`, `e2e/`, `backend/src/main/resources/games/registry.json`, `backend/src/test/resources/golden/`, `package*.json`, `tsconfig.base.json`, `eslint.config.mjs`, `Dockerfile`, `.dockerignore`, `infra/nginx.conf`, `backend/openapi/` | lint, typecheck y tests en paralelo (incluye `check:boundaries`); build Vite | `pokemon-universe-web` (target `web`) |
 | `.github/workflows/backend.yml` | `backend/`, `compose.yaml` | `./gradlew check` (tests con Testcontainers, `ComposeStartupTest` y `verifyOpenApi`); `webp-arm64`: codificador WebP en la imagen `linux/arm64` | `pokemon-universe-backend` (JVM); `:<sha>-native` experimental solo a mano con `backend-native.yml` |
 
 `.github/workflows/deploy-scripts.yml` (en PR y push a `main` cuando cambian `scripts/**` o `compose.yaml`) pasa

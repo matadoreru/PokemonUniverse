@@ -88,6 +88,8 @@ jobs:
               - 'package.json'
               - 'package-lock.json'
                       - 'scripts/check-public-boundary.mjs'
+              - 'backend/src/main/resources/games/registry.json'
+              - 'backend/src/test/resources/golden/**'
                                       - 'Dockerfile'
               - 'infra/nginx.conf'
               - 'backend/openapi/**'

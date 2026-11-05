@@ -104,7 +104,9 @@ Cada fixture guarda una entrada (jugadores, `seed`, `now`, configuración, conte
    `cd backend && ./gradlew test -Dupdate=true --tests '*GoldenReplayTest*'`. Revisa el diff de
    `src/test/resources/golden/`: es el cambio de comportamiento, y tiene que ser solo el que buscabas. Sin `-Dupdate`,
    `GoldenReplayTest` compara y falla en el primer desajuste con su ruta JSON. Un desajuste que no esperabas es un
-   fallo del motor, no de la fixture.
+   fallo del motor, no de la fixture. Si cambia la configuración, cambia también su esquema Zod en
+   `packages/shared/src/games/<id>/config.ts`: el frontend valida con él, y `config-cases.test.ts` exige que acepte y
+   normalice lo mismo que graba `config-cases.json`.
 2. **Añadir un escenario.** Escribe a mano `golden/<id>/<escenario>.json` con `engineId`, `scenario`, `seed`,
    `catalog` (`gen1-2`), `players`, `config` y `steps` (copia uno existente del mismo motor), sin `expected`, y
    grábalo con el comando del paso 1. Cada escenario necesita como mínimo 3 rondas, un `seed` distinto y un `now`
