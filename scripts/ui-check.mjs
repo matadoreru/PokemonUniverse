@@ -3,7 +3,7 @@
 //   npm run ui:check -- perfil
 //   npm run ui:check -- juegos -g "type-chain"
 //
-// 1. Carga el .env de la raíz y levanta el Postgres local (npm run db:up) si su contenedor no está en marcha.
+// 1. Carga el .env de la raíz y levanta Postgres y Mailpit locales (npm run db:up) si su contenedor no está en marcha.
 // 2. Ejecuta Playwright con esos argumentos. Arranca el backend Java y Vite si no están levantados, y cada capture()
 //    guarda e2e/screenshots/<nombre>-<w>x<h>.png y comprueba encaje y legibilidad.
 // 3. Lista las capturas que ha escrito esta ejecución, avisa de las que no tienen los tres tamaños (1280×720,
@@ -20,6 +20,8 @@ const screenshots = join(e2e, 'screenshots');
 const SIZES = ['1280x720', '1920x1080', '390x844'];
 const PG_CONTAINER = process.env.PU_E2E_PG_CONTAINER ?? 'pokemonuniverse_postgres_1';
 
+const MAILPIT_CONTAINER = process.env.PU_E2E_MAILPIT_CONTAINER ?? 'pokemonuniverse_mailpit_1';
+
 const args = process.argv.slice(2);
 if (args.length === 0) {
   console.error('Uso: npm run ui:check -- <spec o filtro> [argumentos de playwright test]');
@@ -32,16 +34,17 @@ try {
   console.warn('Aviso: no hay .env en la raíz; se usa el entorno del shell.');
 }
 
-function postgresRunning() {
+function containerRunning(name) {
   try {
-    return execFileSync('podman', ['ps', '--format', '{{.Names}}'], { encoding: 'utf8' }).split('\n').includes(PG_CONTAINER);
+    return execFileSync('podman', ['ps', '--format', '{{.Names}}'], { encoding: 'utf8' }).split('\n').includes(name);
   } catch {
     return false;
   }
 }
 
-if (!postgresRunning()) {
-  console.log(`Postgres (${PG_CONTAINER}) parado: npm run db:up`);
+// Mailpit (correo de recuperar contraseña) sale del mismo compose.local.yaml que Postgres.
+if (!containerRunning(PG_CONTAINER) || !containerRunning(MAILPIT_CONTAINER)) {
+  console.log(`Postgres (${PG_CONTAINER}) o Mailpit (${MAILPIT_CONTAINER}) parados: npm run db:up`);
   const up = spawnSync('npm', ['run', 'db:up'], { cwd: root, stdio: 'inherit' });
   if (up.status !== 0) process.exit(up.status ?? 1);
 }

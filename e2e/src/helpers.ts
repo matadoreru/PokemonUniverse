@@ -407,3 +407,29 @@ export function borrarCuentas(emails: readonly string[], quitarAvatar: (fichero:
   }
   if (fallos.length > 0) throw new Error(`No se pudieron borrar ${fallos.length} cuentas de prueba:\n${fallos.join('\n')}`);
 }
+
+const MAILPIT = 'http://127.0.0.1:8025';
+
+/**
+ * Último correo recibido por `email` en Mailpit (`npm run db:up`). Reintenta hasta 10 s porque el backend
+ * lo envía de forma asíncrona.
+ */
+export async function ultimoCorreoDe(email: string): Promise<{ subject: string; text: string }> {
+  const limite = Date.now() + 10_000;
+  let ultimoError = 'sin correo';
+  while (Date.now() < limite) {
+    try {
+      const busqueda = await fetch(`${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`);
+      const { messages } = (await busqueda.json()) as { messages?: { ID: string }[] };
+      const id = messages?.[0]?.ID;
+      if (id) {
+        const mensaje = (await (await fetch(`${MAILPIT}/api/v1/message/${id}`)).json()) as { Subject: string; Text: string };
+        return { subject: mensaje.Subject, text: mensaje.Text };
+      }
+    } catch (error) {
+      ultimoError = error instanceof Error ? error.message : String(error);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error(`No llegó ningún correo a ${email} en 10 s (${ultimoError}). ¿Mailpit en :8025 y SMTP_HOST en el backend?`);
+}

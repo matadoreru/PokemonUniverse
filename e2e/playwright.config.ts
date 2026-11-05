@@ -45,13 +45,14 @@ export default defineConfig({
       // Backend Java: toda la API y las salas (ver proxyFor de vite.config.ts). Su data-sync queda apagado salvo
       // que el shell exporte BACKEND_DATA_SYNC_ENABLED=true. PORT fijo porque el .env puede traer PORT=3001 (el del
       // antiguo servidor Node); JWT_SECRET llega del .env cargado. ROOM_MAX_PLAYERS fijo: sala.spec.ts espera el contador
-      // "2 / 8" y no debe depender del .env.
+      // "2 / 8" y no debe depender del .env. SMTP_* apunta al Mailpit de compose.local.yaml (recuperar-contrasena.spec.ts
+      // lee los correos de su API en :8025).
       command: 'npm run dev:backend',
       url: 'http://localhost:8080/health',
       cwd: '..',
       reuseExistingServer: !process.env.CI,
       timeout: 240_000,
-      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8' },
+      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8', SMTP_HOST: 'localhost', SMTP_PORT: '1025' },
     },
     {
       command: 'npm run dev -w @pokemon-universe/web',

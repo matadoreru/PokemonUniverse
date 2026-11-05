@@ -32,7 +32,7 @@ Requisitos: Node 22+, `podman` y `podman-compose`, y red (el seed descarga de Po
 
    ```sh
    npm install
-   npm run db:up                                  # Postgres local con podman (compose.local.yaml)
+   npm run db:up                                  # Postgres y Mailpit locales con podman (compose.local.yaml)
    npm run build -w @pokemon-universe/shared
    set -a; . ./.env; set +a                       # carga .env en el shell para el backend
    npm run db:seed                                # backend con sincronización: esquema (Flyway) y catálogo de
@@ -40,7 +40,13 @@ Requisitos: Node 22+, `podman` y `podman-compose`, y red (el seed descarga de Po
    npx playwright install chromium                # en Fedora sin --with-deps (asume apt)
    ```
 
-Después basta con `npm run db:up` (si el contenedor está parado) y `npm run test:e2e`.
+Después basta con `npm run db:up` (si los contenedores están parados) y `npm run test:e2e`.
+
+**Mailpit** (SMTP en :1025, API en http://127.0.0.1:8025) recoge los correos de `recuperar-contrasena.spec.ts`.
+Playwright arranca el backend con `SMTP_HOST=localhost` y `SMTP_PORT=1025`; si ya hay un backend en :8080 sin
+esas variables, se reutiliza y los correos no llegan a Mailpit (páralo antes). `ultimoCorreoDe(email)` en
+`src/helpers.ts` lee el último correo de una cuenta. Cada cuenta admite un solo correo de recuperación por minuto,
+así que el spec usa una cuenta nueva por tamaño.
 
 ## Ejecutar
 
