@@ -24,8 +24,9 @@ describe('búsqueda de minijuegos', () => {
 
 describe('playerRangeLabel', () => {
   it('con y sin máximo', () => {
-    expect(playerRangeLabel({ minPlayers: 2, maxPlayers: 8 })).toBe('2–8 jugadores');
-    expect(playerRangeLabel({ minPlayers: 3 })).toBe('3+ jugadores');
+    // Nunca se enseña el máximo: solo el mínimo con «+».
+    expect(playerRangeLabel({ minPlayers: 2, maxPlayers: 8 })).toBe('+2 jugadores');
+    expect(playerRangeLabel({ minPlayers: 1 })).toBe('+1 jugadores');
   });
 });
 

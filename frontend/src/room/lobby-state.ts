@@ -11,9 +11,9 @@ export function filterGames<T extends Pick<MiniGameManifest, 'name' | 'descripti
   return normalized ? games.filter((game) => normalizeSearch(`${game.name} ${game.description}`).includes(normalized)) : [...games];
 }
 
-/** «2–8 jugadores» o «3+ jugadores». */
+/** «+2 jugadores»: solo el mínimo (el máximo, 8, es el de la sala y no se repite en cada carta). */
 export function playerRangeLabel(game: Pick<MiniGameManifest, 'minPlayers' | 'maxPlayers'>): string {
-  return game.maxPlayers === undefined ? `${game.minPlayers}+ jugadores` : `${game.minPlayers}–${game.maxPlayers} jugadores`;
+  return `+${game.minPlayers} jugadores`;
 }
 
 /** Jugadores conectados (el contador de la placa de jugadores y las comprobaciones de inicio usan el mismo). */

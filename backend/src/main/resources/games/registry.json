@@ -5,6 +5,7 @@
     "icon": "🎯",
     "description": "Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.",
     "minPlayers": 2,
+    "maxPlayers": 8,
     "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
@@ -53,6 +54,7 @@
     "icon": "✨",
     "description": "Encuentra el shiny verdadero entre varios candidatos.",
     "minPlayers": 1,
+    "maxPlayers": 8,
     "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
@@ -116,6 +118,7 @@
     "icon": "🕵️",
     "description": "Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.",
     "minPlayers": 3,
+    "maxPlayers": 8,
     "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
@@ -194,6 +197,7 @@
     "icon": "📈",
     "description": "Acierta si la stat de dos Pokémon es mayor, menor o igual.",
     "minPlayers": 1,
+    "maxPlayers": 8,
     "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
@@ -267,6 +271,7 @@
     "icon": "⚔️",
     "description": "Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.",
     "minPlayers": 2,
+    "maxPlayers": 8,
     "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
@@ -342,6 +347,7 @@
     "icon": "📚",
     "description": "Descubre el Pokémon mientras se revela progresivamente su learnset por nivel.",
     "minPlayers": 2,
+    "maxPlayers": 8,
     "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
@@ -1155,6 +1161,7 @@
     "icon": "🎙️",
     "description": "Describe un Pokémon sin decir su nombre y ayuda al grupo a descubrirlo.",
     "minPlayers": 2,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1239,6 +1246,7 @@
     "icon": "🕵️",
     "description": "Elegid Pokémon para categorías secretas y descubrid quién recibió una diferente.",
     "minPlayers": 3,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1314,6 +1322,7 @@
     "icon": "🔨",
     "description": "Puja cuántos Pokémon puedes nombrar y demuestra tu apuesta ante el grupo.",
     "minPlayers": 2,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1399,6 +1408,7 @@
     "description": "Dibuja un Pokémon en tiempo real para que el resto lo descubra.",
     "experimental": false,
     "minPlayers": 2,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1486,6 +1496,7 @@
     "description": "Encuentra en privado los grupos de Pokémon que comparten una conexión.",
     "experimental": false,
     "minPlayers": 1,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1580,6 +1591,7 @@
     "description": "Construye tu equipo pujando por Pokémon en una subasta visible.",
     "experimental": false,
     "minPlayers": 2,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1643,6 +1655,7 @@
     "description": "Ordena cinco Pokémon en secreto e intenta pensar como el resto del grupo.",
     "experimental": false,
     "minPlayers": 3,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1727,6 +1740,7 @@
     "description": "Elige qué Pokémon encaja mejor con una situación y convence al grupo.",
     "experimental": false,
     "minPlayers": 3,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1813,6 +1827,7 @@
     "description": "Elige entre dos situaciones absurdas y predice qué preferirá la mayoría.",
     "experimental": false,
     "minPlayers": 3,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1877,6 +1892,7 @@
     "description": "Escribe la red o green flag más divertida de un Pokémon y gana la votación anónima.",
     "experimental": false,
     "minPlayers": 3,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -1962,6 +1978,7 @@
     "recommended": true,
     "description": "Compara el precio actual de dos cartas Pokémon TCG.",
     "minPlayers": 1,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -2031,7 +2048,7 @@
     "recommended": true,
     "description": "Escucha el grito oficial y descubre qué Pokémon lo está haciendo.",
     "minPlayers": 1,
-    "maxPlayers": 12,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -2124,7 +2141,7 @@
     "recommended": true,
     "description": "Responde preguntas objetivas sobre tipos, generaciones, estadísticas y medidas.",
     "minPlayers": 1,
-    "maxPlayers": 12,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -2346,7 +2363,7 @@
     "recommended": true,
     "description": "Reconoce al Pokémon usando únicamente los colores dominantes de su sprite.",
     "minPlayers": 1,
-    "maxPlayers": 12,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
@@ -2443,6 +2460,7 @@
     "icon": "🃏",
     "description": "Dos equipos se enfrentan para descubrir el Pokémon secreto rival.",
     "minPlayers": 2,
+    "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {

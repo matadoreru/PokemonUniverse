@@ -678,7 +678,7 @@ function CardSection() {
       </Fig>
       <Fig id="card-game" caption="Minijuego (arte en lugar del sprite) · seleccionable">
         <Card size="sm" art="⚔️" name="Type Duel" state={gameSelected ? 'selected' : 'idle'} onSelect={() => setGameSelected((v) => !v)}>
-          <span className="text-13 font-bold">2–8 jugadores</span>
+          <span className="text-13 font-bold">+2 jugadores</span>
           <span className="flex flex-wrap justify-center gap-1">
             {gameSelected && <Badge tone="navy">Seleccionado</Badge>}
             <Badge>TOP</Badge>
@@ -687,7 +687,7 @@ function CardSection() {
       </Fig>
       <Fig id="card-game-readonly" caption="Minijuego · solo lectura (sin botón), elegida">
         <Card size="sm" art="🕵️" name="Pokémon Impostor" state="selected">
-          <span className="text-13 font-bold">3+ jugadores</span>
+          <span className="text-13 font-bold">+3 jugadores</span>
           <span className="flex flex-wrap justify-center gap-1">
             <Badge tone="navy">Seleccionado</Badge>
             <Badge tone="red">BETA</Badge>
