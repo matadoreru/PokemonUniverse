@@ -105,7 +105,7 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await expect(invitado.page.getByRole('button', { name: 'Terminar sesión' })).toHaveCount(0);
     await host.page.getByRole('button', { name: 'Terminar sesión' }).click();
 
-    // Clasificación final: podio en franjas, la evolución por partida y «Otra partida» solo para el host.
+    // Clasificación final: podio en franjas, la evolución por partida y «Volver al lobby» solo para el host.
     // Si nadie sumó puntos (los dos fallan la única ronda) no hay campeón ni insignia «Ganador»: «Sesión sin ganador».
     const final = /^(Campe(ón|ones) de la sesión|Sesión sin ganador)$/;
     for (const page of pages) await expect(page.getByRole('heading', { name: final, level: 1 })).toBeVisible({ timeout: 15_000 });
@@ -116,9 +116,9 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     else await expect(clasificacion.getByRole('listitem').first()).toContainText('Ganador');
     await expect(host.page.getByRole('region', { name: 'Evolución de puntos' }).getByRole('columnheader', { name: 'P1' })).toBeVisible();
     await expect(host.page.getByText('1 partida disputada')).toBeVisible();
-    await expect(invitado.page.getByRole('button', { name: 'Otra partida' })).toHaveCount(0);
+    await expect(invitado.page.getByRole('button', { name: 'Volver al lobby' })).toHaveCount(0);
     await expect(invitado.page.getByRole('button', { name: 'Terminar', exact: true })).toBeVisible();
-    const otra = host.page.getByRole('button', { name: 'Otra partida' });
+    const otra = host.page.getByRole('button', { name: 'Volver al lobby' });
     await capturarPantalla(host.page, 'sesion-resultados', otra);
     await capturarPantalla(invitado.page, 'sesion-resultados-invitado', invitado.page.getByRole('button', { name: 'Terminar', exact: true }));
 
@@ -126,7 +126,7 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await invitado.page.getByRole('button', { name: 'Terminar', exact: true }).click();
     await expect(invitado.page).toHaveURL(/\/play$/, { timeout: 15_000 });
     await expect(invitado.page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
-    // «Otra partida»: el host vuelve al lobby con la clasificación a cero.
+    // «Volver al lobby»: el host vuelve al lobby con la clasificación a cero.
     await otra.click();
     await expect(host.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);

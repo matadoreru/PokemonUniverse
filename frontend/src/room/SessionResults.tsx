@@ -9,7 +9,7 @@ import s from './SessionResults.module.css';
 
 /**
  * Clasificación final de la sesión (`SESSION_RESULTS`): podio y resto en franjas, la evolución de puntos por partida
- * y, abajo, «Otra partida» (el host vuelve al lobby con la clasificación a cero) y «Terminar» (salir de la sala).
+ * y, abajo, «Volver al lobby» (el host vuelve al lobby con la clasificación a cero) y «Terminar» (salir de la sala).
  */
 export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomView; selfId: string; onLobby(): void; /** «Terminar»: salir de la sala. */ onLeave?: () => void }) {
   const podium = sessionPodium(room, selfId);
@@ -67,11 +67,11 @@ export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomV
   const action = <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
     <div className={s.status}>
       <span className={s.kicker}>Fin de la sesión</span>
-      <p className={s.actionTitle}>{host ? '¿Otra partida?' : `Esperando a ${hostName ?? 'el host'}…`}</p>
+      <p className={s.actionTitle}>{host ? '¿Volver al lobby?' : `Esperando a ${hostName ?? 'el host'}…`}</p>
       <p className={s.help}>{host ? 'Volvéis al lobby con la misma sala y la clasificación a cero.' : `${hostName ?? 'El host'} decide si jugáis otra sesión.`}</p>
     </div>
     <div className={s.buttons}>
-      {host && <Pill variant="yellow" size="main" icon={RotateCcw} onClick={onLobby}>Otra partida</Pill>}
+      {host && <Pill variant="yellow" size="main" icon={RotateCcw} onClick={onLobby}>Volver al lobby</Pill>}
       {onLeave && <Pill variant="danger" icon={LogOut} className={s.end} title="Terminar: salir de la sala" onClick={onLeave}><span className={s.endLabel}>Terminar</span></Pill>}
     </div>
   </Panel>;

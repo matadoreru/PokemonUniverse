@@ -53,7 +53,7 @@ describe('priority session experience', () => {
     expect(markup).toContain('Campeones de la sesión');
     expect(markup).toContain('Ana y Eru');
     expect(markup).toContain('Evolución de puntos');
-    expect(markup).toContain('Otra partida');
+    expect(markup).toContain('Volver al lobby');
     expect(markup).not.toContain('Terminar');
     // Empate: los dos comparten el primer puesto y la insignia de ganador.
     expect(markup.match(/Ganador/g)).toHaveLength(2);
@@ -61,7 +61,7 @@ describe('priority session experience', () => {
     expect(markup).not.toMatch(/btn-|text-xs/);
 
     const guest = renderToStaticMarkup(createElement(SessionResults, { room: { ...room, hostId: 'departed' }, selfId: 'host', onLobby: () => undefined, onLeave: () => undefined }));
-    expect(guest).not.toContain('Otra partida');
+    expect(guest).not.toContain('Volver al lobby');
     expect(guest).toContain('Terminar');
   });
 
