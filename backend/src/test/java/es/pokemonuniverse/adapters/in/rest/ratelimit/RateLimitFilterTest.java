@@ -70,6 +70,20 @@ class RateLimitFilterTest {
   }
 
   @Test
+  void passwordResetForgotAllowsFivePerIpThenReturns429() {
+    HttpResponse<String> last = null;
+    for (int i = 0; i < 6; i++) {
+      last = call(HttpRequest.POST("/api/auth/password/forgot", Map.of("identifier", "nadie@mail.com"))
+          .header("X-Forwarded-For", "203.0.113.20"));
+      if (i < 5) {
+        assertNotEquals(HttpStatus.TOO_MANY_REQUESTS, last.status());
+      }
+    }
+    assertEquals(HttpStatus.TOO_MANY_REQUESTS, last.status());
+    assertEquals("5", last.header("RateLimit-Limit"));
+  }
+
+  @Test
   void feedbackLimitIs10() {
     HttpResponse<String> last = null;
     for (int i = 0; i < 11; i++) {

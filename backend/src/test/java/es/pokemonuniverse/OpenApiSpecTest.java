@@ -37,7 +37,7 @@ class OpenApiSpecTest {
           "/api/admin/users", "/api/admin/data-sync", "/api/admin/data-sync/{source}", "/api/admin/changelog",
           "/api/admin/changelog/{id}", "/api/admin/feedback", "/api/admin/feedback/{id}/status", "/api/auth/register", "/api/auth/login", "/api/auth/guest", "/api/auth/logout",
           "/api/auth/me", "/api/auth/profile", "/api/auth/progress", "/api/auth/avatars/{filename}", "/api/auth/guest/custom-avatar",
-          "/api/auth/profile/avatar", "/api/auth/profile/avatar/custom", "/api/categories",
+          "/api/auth/profile/avatar", "/api/auth/profile/avatar/custom", "/api/auth/password/forgot", "/api/auth/password/reset", "/api/categories",
           "/api/categories/{id}", "/api/changelog", "/api/feedback",
           "/api/games", "/api/health", "/api/pokemon/selector", "/api/pokemon/{id}/sprite",
           "/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/sprite",

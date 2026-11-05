@@ -763,6 +763,52 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
+  /api/auth/password/forgot:
+    post:
+      tags:
+      - auth
+      summary: Pedir el enlace para recuperar la contraseña
+      operationId: forgotPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+        required: true
+      responses:
+        "204":
+          description: Sin contenido; igual exista o no la cuenta
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/auth/password/reset:
+    post:
+      tags:
+      - auth
+      summary: Poner la contraseña nueva con el enlace recibido
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: Datos inválidos o enlace caducado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/profile:
     get:
       tags:
@@ -2317,6 +2363,18 @@ components:
       enum:
       - BUG
       - SUGGESTION
+    ForgotPasswordRequest:
+      required:
+      - identifier
+      type: object
+      properties:
+        identifier:
+          maxLength: 254
+          minLength: 1
+          type: string
+          x-size-message: El email o el usuario no puede superar los 254 caracteres
+      description: "`identifier` es el email o el nombre de usuario, igual que en\
+        \ el inicio de sesión."
     GameManifest:
       required:
       - defaultConfig
@@ -2691,6 +2749,23 @@ components:
           format: email
           x-pattern-message: El email no es válido
           x-size-message: El email no puede superar los 254 caracteres
+        password:
+          maxLength: 128
+          minLength: 10
+          type: string
+          x-size-message: La contraseña debe tener entre 10 y 128 caracteres
+          x-not-null-message: La contraseña es obligatoria
+    ResetPasswordRequest:
+      required:
+      - password
+      - token
+      type: object
+      properties:
+        token:
+          maxLength: 128
+          minLength: 1
+          type: string
+          x-size-message: El enlace no es válido
         password:
           maxLength: 128
           minLength: 10

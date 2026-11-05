@@ -7,6 +7,7 @@ import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
 import es.pokemonuniverse.application.auth.AuthService;
 import es.pokemonuniverse.application.auth.GuestAvatarCleanup;
 import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.application.auth.PasswordResetService;
 import es.pokemonuniverse.application.ports.AvatarStorage;
 import es.pokemonuniverse.application.profile.ProfileService;
 import es.pokemonuniverse.domain.identity.AuthUser;
@@ -47,9 +48,11 @@ public class AuthController {
   private final GuestAvatarCleanup guestAvatars;
   private final AvatarStorage avatars;
   private final ProfileService profiles;
+  private final PasswordResetService passwordReset;
 
   public AuthController(AuthService auth, IdentityTokens tokens, SessionCookies cookies, Validator validator,
-      GuestAvatarCleanup guestAvatars, AvatarStorage avatars, ProfileService profiles) {
+      GuestAvatarCleanup guestAvatars, AvatarStorage avatars, ProfileService profiles,
+      PasswordResetService passwordReset) {
     this.auth = auth;
     this.tokens = tokens;
     this.cookies = cookies;
@@ -57,6 +60,7 @@ public class AuthController {
     this.guestAvatars = guestAvatars;
     this.avatars = avatars;
     this.profiles = profiles;
+    this.passwordReset = passwordReset;
   }
 
   @Operation(summary = "Registrar usuario")
@@ -77,6 +81,24 @@ public class AuthController {
   public HttpResponse<UserResponse> login(@Body LoginRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var request = valid(body.normalized());
     return session(HttpResponse.ok(new UserResponse(auth.login(request.toCommand()))));
+  }
+
+  @Operation(summary = "Pedir el enlace para recuperar la contraseña")
+  @ApiResponse(responseCode = "204", description = "Sin contenido; igual exista o no la cuenta")
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @Post("/password/forgot")
+  public HttpResponse<Void> forgotPassword(@Body ForgotPasswordRequest body) {
+    passwordReset.requestReset(valid(body.normalized()).identifier());
+    return HttpResponse.noContent();
+  }
+
+  @Operation(summary = "Poner la contraseña nueva con el enlace recibido")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = UserResponse.class)))
+  @ApiResponse(responseCode = "400", description = "Datos inválidos o enlace caducado", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @Post("/password/reset")
+  public HttpResponse<UserResponse> resetPassword(@Body ResetPasswordRequest body) {
+    var request = valid(body.normalized());
+    return session(HttpResponse.ok(new UserResponse(passwordReset.reset(request.token(), request.password()))));
   }
 
   @Operation(summary = "Entrar como invitado")

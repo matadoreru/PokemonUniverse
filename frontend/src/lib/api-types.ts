@@ -295,6 +295,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/password/forgot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pedir el enlace para recuperar la contraseña */
+        post: operations["forgotPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/password/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Poner la contraseña nueva con el enlace recibido */
+        post: operations["resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/profile": {
         parameters: {
             query?: never;
@@ -980,6 +1014,10 @@ export interface components {
         FeedbackStatus: "NEW" | "REVIEWING" | "RESOLVED";
         /** @enum {string} */
         FeedbackType: "BUG" | "SUGGESTION";
+        /** @description `identifier` es el email o el nombre de usuario, igual que en el inicio de sesión. */
+        ForgotPasswordRequest: {
+            identifier: string;
+        };
         /** @description Manifiesto de un minijuego mas su configuracion por defecto, tal como lo exporta el registro TypeScript. */
         GameManifest: {
             id: string;
@@ -1123,6 +1161,10 @@ export interface components {
             username: string;
             /** Format: email */
             email: string;
+            password: string;
+        };
+        ResetPasswordRequest: {
+            token: string;
             password: string;
         };
         /**
@@ -2180,6 +2222,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+        };
+    };
+    forgotPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ForgotPasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description Sin contenido; igual exista o no la cuenta */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    resetPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetPasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description Datos inválidos o enlace caducado */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };
