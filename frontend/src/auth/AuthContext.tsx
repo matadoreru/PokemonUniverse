@@ -1,7 +1,7 @@
 import type { AuthUser } from '@pokemon-universe/shared/public';
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { api } from '../lib/api';
-import type { MeResponse, LoginResponse, RegisterResponse, GuestResponse, ProgressResponse } from '../lib/api-contract';
+import type { MeResponse, LoginResponse, RegisterResponse, GuestResponse, ResetPasswordResponse, ProgressResponse } from '../lib/api-contract';
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -9,6 +9,10 @@ interface AuthContextValue {
   login(identifier: string, password: string): Promise<void>;
   register(username: string, email: string, password: string): Promise<void>;
   guest(displayName: string, avatar?: Blob): Promise<void>;
+  /** Pide el enlace para recuperar la contraseña; el servidor responde igual exista o no la cuenta. */
+  requestPasswordReset(identifier: string): Promise<void>;
+  /** Pone la contraseña nueva con el token del enlace y deja la sesión iniciada. */
+  resetPassword(token: string, password: string): Promise<void>;
   updateUser(user: AuthUser): void;
   /** Nivel de la cuenta registrada (insignia del avatar de la cabecera); `null` para invitados o mientras carga. */
   level: number | null;
@@ -52,6 +56,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         : await api<GuestResponse>('/auth/guest', { method: 'POST', body: JSON.stringify({ displayName }) });
       setUser(body.user);
     },
+    async requestPasswordReset(identifier) { await api('/auth/password/forgot', { method: 'POST', body: JSON.stringify({ identifier }) }); },
+    async resetPassword(token, password) { const body = await api<ResetPasswordResponse>('/auth/password/reset', { method: 'POST', body: JSON.stringify({ token, password }) }); setUser(body.user); },
     updateUser(nextUser) { setUser(nextUser); },
     async logout() { await api('/auth/logout', { method: 'POST' }); setUser(null); },
   }), [level, loading, user]);

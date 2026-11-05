@@ -16,6 +16,7 @@ type Bridge<Wire, Public extends Wire> = Public;
 export type MeResponse = { user: Bridge<NonNullable<JsonBody<'/api/auth/me', 'get', 200>['user']>, AuthUser> | null };
 export type LoginResponse = { user: Bridge<JsonBody<'/api/auth/login', 'post', 200>['user'] & {}, AuthUser> };
 export type RegisterResponse = { user: Bridge<JsonBody<'/api/auth/register', 'post', 201>['user'] & {}, AuthUser> };
+export type ResetPasswordResponse = { user: Bridge<JsonBody<'/api/auth/password/reset', 'post', 200>['user'] & {}, AuthUser> };
 export type GuestResponse = { user: Bridge<JsonBody<'/api/auth/guest', 'post', 201>['user'] & {}, AuthUser> };
 /**
  * Sin puente (los call sites de perfil y juegos siguen con los tipos de shared): shared usa arrays `readonly`

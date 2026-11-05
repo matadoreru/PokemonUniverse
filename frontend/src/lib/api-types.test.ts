@@ -9,7 +9,7 @@ const ROUTES = [
   '/api/admin/rooms', '/api/admin/summary', '/api/admin/users',
   '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/guest/custom-avatar', '/api/auth/login',
   '/api/auth/logout', '/api/auth/me', '/api/auth/profile', '/api/auth/profile/avatar', '/api/auth/profile/avatar/custom',
-  '/api/auth/progress',
+  '/api/auth/password/forgot', '/api/auth/password/reset', '/api/auth/progress',
   '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog',
   '/api/feedback', '/api/games', '/api/health', '/api/pokemon/selector', '/api/pokemon/{id}/sprite',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio',
@@ -19,9 +19,9 @@ const ROUTES = [
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 37 rutas del backend Java', () => {
+  it('expone exactamente las 39 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(37);
+    expect(ROUTES).toHaveLength(39);
   });
   it('las opciones TCG coinciden con las de shared y la elegibilidad valida con incidencias de Zod', () => {
     expectTypeOf<paths['/api/tcg/options']['get']['responses'][200]['content']['application/json']>().toEqualTypeOf<TcgFilterOptions>();

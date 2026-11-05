@@ -3,7 +3,7 @@
  * (AuthService, los manejadores de errores de Micronaut y el limitador) o el del navegador cuando falla la red.
  */
 
-export type AuthField = 'username' | 'email' | 'identifier' | 'password' | 'displayName';
+export type AuthField = 'username' | 'email' | 'identifier' | 'password' | 'passwordRepeat' | 'displayName';
 
 export interface AuthError {
   /** Campo al que pertenece el error, o `null` si es del formulario entero. */
@@ -13,6 +13,7 @@ export interface AuthError {
 
 const NETWORK = 'No hay conexión con el servidor. Comprueba tu red y vuelve a probar.';
 const INVALID = 'Revisa los datos del formulario.';
+const INVALID_LINK = 'Este enlace no es válido o ha caducado.';
 const GENERIC = 'No se pudo continuar. Inténtalo de nuevo en unos segundos.';
 
 /** Mensajes en inglés del backend y del navegador. */
@@ -21,6 +22,7 @@ const TRANSLATED: Record<string, string> = {
   'Email or username already in use': 'Ese email o ese nombre de usuario ya tienen cuenta.',
   'Too many requests': 'Demasiados intentos seguidos. Espera un minuto y vuelve a probar.',
   'request entity too large': 'La imagen supera el límite de 5 MB.',
+  'Invalid or expired reset link': INVALID_LINK,
   'Invalid request body': INVALID,
   'Invalid request': INVALID,
   // Fallos de red: Chromium, Firefox y Safari.
@@ -48,6 +50,7 @@ const SPANISH: Record<string, AuthField | null> = {
   'El nombre es obligatorio': 'displayName',
   'El nombre debe tener entre 2 y 24 caracteres': 'displayName',
   'El nombre contiene caracteres no permitidos': 'displayName',
+  'El enlace no es válido': null,
   'El avatar no es válido': null,
   'La imagen supera el límite de 5 MB.': null,
   'El archivo no es una imagen JPEG, PNG o WEBP válida.': null,
@@ -71,4 +74,18 @@ export function authError(error: unknown): AuthError {
 /** Texto en español para un error de acceso (mensaje del servidor, del navegador o un `Error`). */
 export function authErrorMessage(error: unknown): string {
   return authError(error).message;
+}
+
+/** Mensaje del enlace de recuperación caducado, usado o malformado (el backend lo da en inglés o como validación). */
+export const INVALID_LINK_MESSAGE = INVALID_LINK;
+
+/** `true` si el error es el del enlace de recuperación (la pantalla enseña entonces el estado de enlace no válido). */
+export function isInvalidResetLink(error: unknown): boolean {
+  const raw = rawMessage(error).trim();
+  return raw === 'Invalid or expired reset link' || raw === 'El enlace no es válido';
+}
+
+/** Comprueba que las dos contraseñas escritas coinciden. */
+export function passwordsMatch(password: string, repeat: string): AuthError | null {
+  return password === repeat ? null : { field: 'passwordRepeat', message: 'Las contraseñas no coinciden.' };
 }

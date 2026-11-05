@@ -17,6 +17,8 @@ const RoomPage = lazy(() => import('./screens/RoomPage').then((module) => ({ def
 const RoomSessionLayout = lazy(() => import('./room/RoomSessionLayout').then((module) => ({ default: module.RoomSessionLayout })));
 const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ default: module.AdminPage })));
 const ChangelogPage = lazy(() => import('./screens/ChangelogPage').then((module) => ({ default: module.ChangelogPage })));
+const ForgotPasswordPage = lazy(() => import('./screens/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
+const ResetPasswordPage = lazy(() => import('./screens/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
 const FeedbackPage = lazy(() => import('./screens/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 
 // Galería del catálogo (solo desarrollo): el `import()` va dentro de la rama DEV para que no entre en el bundle.
@@ -26,6 +28,7 @@ const devRoutes = Gallery ? [{ path: '/dev/ui', element: <Suspense fallback={nul
 const protectedPage = (page: ReactNode) => <RequireAuth>{page}</RequireAuth>;
 const router = createBrowserRouter([{ element: <Layout />, children: [
   { path: '/', element: <HomePage /> }, { path: '/auth', element: <AuthPage /> },
+  { path: '/auth/recuperar', element: <ForgotPasswordPage /> }, { path: '/auth/nueva-contrasena', element: <ResetPasswordPage /> },
   { path: '/changelog', element: <ChangelogPage /> },
   { path: '/rotation-preview', element: <RotationPreview /> },
   { path: '/profile', element: protectedPage(<ProfilePage />) },

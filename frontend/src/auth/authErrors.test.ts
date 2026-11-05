@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { authError, authErrorMessage } from './authErrors';
+import { authError, authErrorMessage, isInvalidResetLink, passwordsMatch } from './authErrors';
 
 describe('authErrorMessage', () => {
   it('traduce las credenciales incorrectas', () => {
@@ -56,5 +56,19 @@ describe('authError', () => {
   it('deja sin campo los errores generales', () => {
     expect(authError('Invalid email or password')).toEqual({ field: null, message: 'El usuario, el email o la contraseña no son correctos.' });
     expect(authError(new Error('El avatar no es válido'))).toEqual({ field: null, message: 'El avatar no es válido' });
+  });
+});
+
+describe('recuperar contraseña', () => {
+  it('traduce el enlace caducado y lo reconoce', () => {
+    expect(authErrorMessage('Invalid or expired reset link')).toBe('Este enlace no es válido o ha caducado.');
+    expect(isInvalidResetLink(new Error('Invalid or expired reset link'))).toBe(true);
+    expect(isInvalidResetLink('El enlace no es válido')).toBe(true);
+    expect(isInvalidResetLink('Too many requests')).toBe(false);
+  });
+
+  it('compara las dos contraseñas', () => {
+    expect(passwordsMatch('a', 'b')).toEqual({ field: 'passwordRepeat', message: 'Las contraseñas no coinciden.' });
+    expect(passwordsMatch('a', 'a')).toBeNull();
   });
 });

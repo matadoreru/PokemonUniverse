@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { authError, type AuthError, type AuthField } from '../auth/authErrors';
 import { LegalLine } from '../components/LegalLine';
-import { cx, Field, Panel, Pill, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
+import { cx, Field, Panel, Pill, PillLink, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import tone from '../styles/tones.module.css';
 
 type Mode = 'login' | 'register' | 'guest';
@@ -82,6 +82,7 @@ export function AuthPage() {
               {mode === 'register' && <Field label="Email" name="email" type="email" required autoComplete="email" error={fieldError('email')} />}
               {mode !== 'guest' && <Field label="Contraseña" name="password" type="password" minLength={mode === 'register' ? 10 : 1} required autoComplete={mode === 'register' ? 'new-password' : 'current-password'} error={fieldError('password')} {...(mode === 'register' ? { hint: 'Mínimo 10 caracteres.' } : {})} />}
               {mode === 'guest' && <Field label="Tu nombre temporal" name="displayName" minLength={2} maxLength={24} required placeholder="Entrenador/a" error={fieldError('displayName')} />}
+              {mode === 'login' && <PillLink to="/auth/recuperar" variant="cream" size="small" className="self-start">¿Has olvidado la contraseña?</PillLink>}
               {error && !error.field && (
                 <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
                   <StateBox kind="error" title={FAILED[mode]} text={error.message} onCream />
