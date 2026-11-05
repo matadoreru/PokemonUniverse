@@ -25,6 +25,7 @@ import { Bar } from '../Bar';
 import { Card } from '../Card';
 import { TextCard } from '../TextCard';
 import type { CardState } from '../Card';
+import { Confetti } from '../Confetti';
 import { Cutin } from '../Cutin';
 import type { CutinTone } from '../Cutin';
 import type { ForcedState } from '../cx';
@@ -811,6 +812,24 @@ function ScorePopSection() {
   );
 }
 
+function ConfettiSection() {
+  const [n, setN] = useState(0);
+  return (
+    <Section name="confetti" title="Confetti">
+      <Fig id="confetti-burst" caption="Lluvia de confeti (acierto exacto) · contenida aquí; en un juego cubre la pantalla · sin movimiento no se pinta" wide>
+        <span className={s.iconRow}>
+          <Pill size="small" onClick={() => setN((v) => v + 1)}>
+            Celebrar
+          </Pill>
+        </span>
+        <div className="relative h-40 w-full">
+          <Confetti key={n} contained seed={n + 1} count={40} />
+        </div>
+      </Fig>
+    </Section>
+  );
+}
+
 function ScreenTransitionSection() {
   const [n, setN] = useState(0);
   return (
@@ -980,6 +999,7 @@ export function Gallery() {
       <ToastSection push={push} />
       <CutinSection />
       <ScorePopSection />
+      <ConfettiSection />
       <ScreenTransitionSection />
       <ScreenSplitSection />
       <GamePiecesSection />

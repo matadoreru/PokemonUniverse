@@ -2,7 +2,7 @@ import type { PokedexDistancePublicState } from '@pokemon-universe/shared/public
 import { describe, expect, it } from 'vitest';
 import {
   DISTANCE_HIDDEN_PICKED_LABEL, DISTANCE_SELECTION_VISIBILITY_LABEL, distanceMemberStatus, distanceSelectionVisibilityLabels,
-  DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint,
+  DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint,
 } from './pokedex-distance-selection';
 
 function game(overrides: Partial<PokedexDistancePublicState>): PokedexDistancePublicState {
@@ -134,5 +134,18 @@ describe('foco y avisos', () => {
     expect(forced).toBe('Ronda 2 revelada: ⚔️ Empate tras 3 desempates. Sin más desempates: cae quien eligió más tarde.');
     expect(forced).not.toContain(distanceRoundOutcome({ ...lastRound, reason: 'FARTHEST', tiedIds: ['a', 'b'] }).note!);
     expect(distanceAnnouncement({ ...reveal, selfId: 'c', lastRound: { ...lastRound, reason: 'TIE', eliminatedIds: [], tiedIds: ['a', 'b'] } })).toBe('Ronda 2 revelada: ⚔️ Empate en la peor distancia. Los empatados juegan un desempate.');
+  });
+});
+
+describe('distanceExactAtReveal', () => {
+  const round = (distance: number) => ({ selections: { p1: { distance } } }) as unknown as NonNullable<PokedexDistancePublicState['lastRound']>;
+  it('confeti al revelar un acierto exacto propio', () => {
+    expect(distanceExactAtReveal(game({ phase: 'ROUND_RESULTS', lastRound: round(0) }), 'p1')).toBe(true);
+  });
+  it('sin confeti si no es exacto, es de otro o la ronda aún no se ha revelado', () => {
+    expect(distanceExactAtReveal(game({ phase: 'ROUND_RESULTS', lastRound: round(3) }), 'p1')).toBe(false);
+    expect(distanceExactAtReveal(game({ phase: 'ROUND_RESULTS', lastRound: round(0) }), 'p2')).toBe(false);
+    expect(distanceExactAtReveal(game({ phase: 'ROUND_ACTIVE', lastRound: round(0) }), 'p1')).toBe(false);
+    expect(distanceExactAtReveal(game({ phase: 'ROUND_RESULTS', lastRound: null }), 'p1')).toBe(false);
   });
 });

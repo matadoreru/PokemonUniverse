@@ -9,7 +9,7 @@ import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, ScreenSplit } from '../ui';
+import { Badge, Card, Chip, Confetti, cx, Icon, Panel, Row, ScreenSplit } from '../ui';
 import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
@@ -18,7 +18,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { PlayerList } from './PlayerList';
 import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
-import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
+import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
 import s from './PokedexDistanceGame.module.css';
 
 /** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
@@ -150,6 +150,8 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} />}
+    {/* Clavo: la elección propia era exactamente el objetivo; al revelar, confeti (decorativo, sin movimiento no sale). */}
+    {distanceExactAtReveal(game, selfId) && <Confetti key={`confeti-${roundKey}`} seed={game.roundNumber + game.tiebreakDepth * 31} />}
   </div>;
 }
 

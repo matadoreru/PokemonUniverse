@@ -46,3 +46,5 @@ export { ScreenSplit } from './ScreenSplit';
 export type { ScreenSplitProps } from './ScreenSplit';
 export { ScreenTransition } from './ScreenTransition';
 export type { ScreenTransitionProps } from './ScreenTransition';
+export { Confetti, confettiPieces } from './Confetti';
+export type { ConfettiPiece } from './Confetti';
