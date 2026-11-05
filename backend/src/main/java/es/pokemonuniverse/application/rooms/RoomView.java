@@ -40,7 +40,6 @@ public record RoomView(
     GameSelectionMode gameSelectionMode,
     @Nullable NextGameVoteView nextGameVote,
     @Nullable StateView gameSkipState,
-    @Nullable GameIntroView gameIntro,
     int gamesPlayed,
     List<SessionStandingView> sessionStandings,
     List<SessionGameSummary> sessionHistory,
@@ -76,10 +75,6 @@ public record RoomView(
     }
   }
 
-  /** {@code GameIntroView}: solo mientras la sala muestra la intro de la partida. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record GameIntroView(String gameInstanceId, long endsAt, List<String> skippedIds) {}
 
   /** {@code { ...shared, gameSkipState, nextGameVote, gamePlayerState }}: la vista privada de un miembro. */
   public RoomView forMember(@Nullable StateView skipState, @Nullable NextGameVoteView vote,
@@ -96,7 +91,7 @@ public record RoomView(
         .code(code).phase(phase).hostId(hostId).maxPlayers(maxPlayers).members(members).availableGames(availableGames)
         .selectedGameId(selectedGameId).selectedGameConfig(selectedGameConfig).sessionMode(sessionMode)
         .gameConfigs(gameConfigs).customizedGameIds(customizedGameIds).gameSelectionMode(gameSelectionMode)
-        .nextGameVote(nextGameVote).gameSkipState(gameSkipState).gameIntro(gameIntro).gamesPlayed(gamesPlayed)
+        .nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
         .sessionStandings(sessionStandings).sessionHistory(sessionHistory).gameActionEpoch(gameActionEpoch).game(game)
         .gamePlayerState(gamePlayerState).serverNow(serverNow).hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount);
@@ -120,7 +115,6 @@ public record RoomView(
     private GameSelectionMode gameSelectionMode;
     private NextGameVoteView nextGameVote;
     private StateView gameSkipState;
-    private GameIntroView gameIntro;
     private int gamesPlayed;
     private List<SessionStandingView> sessionStandings = List.of();
     private List<SessionGameSummary> sessionHistory = List.of();
@@ -167,7 +161,6 @@ public record RoomView(
 
     public Builder gameSkipState(@Nullable StateView v) { gameSkipState = v; return this; }
 
-    public Builder gameIntro(@Nullable GameIntroView v) { gameIntro = v; return this; }
 
     public Builder gamesPlayed(int v) { gamesPlayed = v; return this; }
 
@@ -190,7 +183,7 @@ public record RoomView(
     public RoomView build() {
       return new RoomView(roomInstanceId, revision, gameCatalogVersion, code, phase, hostId, maxPlayers, members,
           availableGames, selectedGameId, selectedGameConfig, sessionMode, gameConfigs, customizedGameIds,
-          gameSelectionMode, nextGameVote, gameSkipState, gameIntro, gamesPlayed, sessionStandings, sessionHistory,
+          gameSelectionMode, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
           gameActionEpoch, game, gamePlayerState, serverNow, hostCustomCategoryCount, hostWouldYouRatherPromptCount);
     }
   }

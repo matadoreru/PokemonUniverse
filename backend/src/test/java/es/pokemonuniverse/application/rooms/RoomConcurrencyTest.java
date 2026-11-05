@@ -157,6 +157,8 @@ class RoomConcurrencyTest {
     manager.join(guest("p2", "Ana"), "s2", room.code);
     manager.selectGame("p1", "higher-lower");
     manager.updateConfig("p1", json(RoomTestKit.HIGHER_LOWER_1_ROUND));
+    // Dos juegos en orden: el salto pasa a Pokédex Distance (con uno solo terminaría la sesión).
+    manager.updateGameSelection("p1", json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
     manager.setReady("p2", true);
     manager.startGame("p1");
     var staleTimer = schedulers.tasks.getLast();

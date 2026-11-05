@@ -1,5 +1,5 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
-import { GameSelectionConfig } from '../room/GameSelectionConfig';
+import { GameOrderChoice, SelectedGamesConfig } from '../room/GameSelectionConfig';
 import { Panel, Screen } from '../ui';
 
 const games = [
@@ -22,14 +22,18 @@ const room: RoomView = {
 };
 
 /**
- * Vista previa de la rotación (desarrollo y revisión): el editor de la rotación con datos ficticios, en una pantalla del
- * catálogo y sobre el `Panel` crema de la pestaña «Modo y sesión» del lobby. El `main` lo pone el armazón.
+ * Vista previa de la selección (desarrollo y revisión): con datos ficticios, el orden de los minijuegos (pestaña «Modo y
+ * sesión») y los ajustes de los elegidos (pestaña «Configuración»), sobre el `Panel` crema del lobby. El `main` lo pone
+ * el armazón.
  */
 export function RotationPreview() {
   return (
     <Screen>
       <Panel variant="cream" as="div">
-        <GameSelectionConfig availableGames={games} mode={room.gameSelectionMode} playerCount={3} disabled={false} room={room} selfId="host" onChange={() => undefined} onConfig={async () => undefined} />
+        <GameOrderChoice mode={room.gameSelectionMode} compatibleCount={3} disabled={false} onChange={() => undefined} />
+      </Panel>
+      <Panel variant="cream" as="div">
+        <SelectedGamesConfig room={room} selfId="host" playerCount={3} disabled={false} onConfig={async () => undefined} />
       </Panel>
     </Screen>
   );

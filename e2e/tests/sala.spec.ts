@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, collectErrors, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, saltarIntro, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, collectErrors, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, SIZES, uniqueName } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -63,8 +63,8 @@ test('dos jugadores crean una sala, se unen y empiezan la partida', async ({ cre
   await expect(host.page.locator('#start-help')).toHaveText('La sala está lista.');
   await capture(host.page, 'lobby-host-lista');
   await host.page.getByRole('button', { name: 'Empezar partida' }).click();
-  // Pokédex Distance (el juego por defecto) empieza con su intro: los dos la saltan.
-  await saltarIntro([host.page, guest.page]);
+  // Pokédex Distance (el juego por defecto) empieza al momento.
+  await esperarPartida([host.page, guest.page]);
   await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible({ timeout: 20_000 });
   await expect(guest.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible({ timeout: 20_000 });
   await capture(host.page, 'juego-pokedex-distance');
@@ -147,9 +147,9 @@ test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultad
     await capture(guest.page, 'lobby-invitado-configuracion');
   }
 
-  // Host: el modo de la sesión con el minijuego fijo (sin rotación).
+  // Host: el modo de la sesión con el orden de los minijuegos elegidos (por defecto, «Por orden»).
   await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
-  await expect(host.page.getByRole('button', { name: /^Mismo minijuego/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(host.page.getByRole('button', { name: /^Por orden/ })).toHaveAttribute('aria-pressed', 'true');
   await expect(host.page.getByRole('button', { name: /^Infinita/ })).toHaveAttribute('aria-pressed', 'true');
   for (const { w, h } of SIZES) {
     await host.page.setViewportSize({ width: w, height: h });

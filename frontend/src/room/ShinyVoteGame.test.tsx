@@ -73,7 +73,7 @@ function room(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | nu
     selectedGameId: 'shiny-vote',
     selectedGameConfig: { generations: [1], rounds: 10, roundSeconds: 20, optionCount: game.options.length, candidateMode, voteVisibility: game.voteVisibility, revealSeconds: 4 },
     sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'FIXED' },
+    gameSelectionMode: { type: 'ORDER', gameIds: ['shiny-vote'] },
     nextGameVote: null,
     gamesPlayed: 0,
     sessionStandings: [],

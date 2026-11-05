@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
-import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, introDePartida, layoutProblems, psql, saltarIntro, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { anadirJuegos, animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, layoutProblems, psql, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -52,8 +52,6 @@ async function avisos(page: Page): Promise<string> {
 /** Espera a que la pantalla de juego esté pintada: sin lobby, sin esqueleto de carga y con contenido. */
 async function esperarPantallaDeJuego(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeHidden({ timeout: 15_000 });
-  // Intro de partida de los 6 primeros juegos: «Empezar ya» y, si nadie más la salta, el plazo de 10 s.
-  if (await introDePartida(page).isVisible()) await saltarIntro([page]);
   await expect(page.getByText('Cargando minijuego…')).toHaveCount(0, { timeout: 15_000 });
   await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 15_000 });
 }
@@ -110,7 +108,7 @@ for (const manifest of registry) {
       // Si el servidor rechaza el arranque, que el fallo diga por qué.
       const lobby = host.page.getByRole('heading', { name: 'Lobby de la sala' });
       await expect.poll(async () => (await lobby.isVisible()) ? `lobby; avisos: ${await avisos(host.page)}` : 'fuera del lobby', { timeout: 15_000 }).toBe('fuera del lobby');
-      await saltarIntro(jugadores.map((j) => j.page));
+      await esperarPartida(jugadores.map((j) => j.page));
 
       for (const jugador of jugadores) await esperarPantallaDeJuego(jugador.page);
       // La sala va por el `/ws` de Java y nadie abre Socket.IO.
@@ -224,7 +222,7 @@ test('type-duel: elección secreta, VS, búsqueda con un fallo, victoria y clasi
     }
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     for (const { page } of jugadores) await expect(page.getByRole('heading', { name: 'Elegid un tipo en secreto' })).toBeVisible({ timeout: 20_000 });
 
     // Los dos duelistas son las páginas con los 18 tipos (conmutadores sin pulsar); el tercero observa.
@@ -354,7 +352,7 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
     await seleccionarJuego(host.page, 'Pokémon Impostor');
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await ajustar();
-    await saltarIntro(pages);
+    await esperarPartida(pages);
 
     // Reparto de roles: cada uno ve el suyo; el impostor, sin el Pokémon.
     for (const page of pages) await expect(page.getByRole('heading', { name: 'Descubre tu rol' })).toBeVisible({ timeout: 15_000 });
@@ -433,7 +431,7 @@ test.describe('pokemon-impostor: eliminación', () => {
       const pages = jugadores.map((j) => j.page);
       await seleccionarJuego(host.page, 'Pokémon Impostor');
       await iniciarPartida(host.page, invitados.map((j) => j.page));
-      await saltarIntro(pages);
+      await esperarPartida(pages);
 
       const campo = (page: Page) => page.getByPlaceholder('Escribe algo relacionado…');
       for (let turno = 0; turno < jugadores.length; turno++) {
@@ -542,20 +540,19 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
   try {
     const { host, jugadores } = sala;
     const page = host.page;
-    await page.getByRole('tab', { name: 'Modo y sesión' }).click();
-    const aleatorio = page.getByRole('button', { name: /^Aleatorio/ });
-    await aleatorio.click();
-    await expect(aleatorio).toHaveAttribute('aria-pressed', 'true');
-    await page.getByLabel('Buscar en la rotación').fill('Impostor');
-    const fila = page.getByRole('region', { name: 'Juegos de la rotación' }).locator('article').filter({ has: page.locator('strong').getByText('Pokémon Impostor', { exact: true }) });
-    await fila.getByRole('button', { name: 'Ajustar' }).click();
-    // Dos impostores necesitan 5 jugadores: con 3, la rotación lo omite en vez de bloquear la sala.
+    // Pokédex Distance (el de por defecto) y Pokémon Impostor; en «Configuración», la lista de los dos.
+    await anadirJuegos(page, ['Pokémon Impostor']);
+    await page.getByRole('tab', { name: 'Configuración' }).click();
+    const fila = page.getByRole('region', { name: 'Minijuegos elegidos' }).getByRole('listitem').filter({ has: page.locator('strong').getByText('Pokémon Impostor', { exact: true }) });
+    await fila.getByRole('button', { name: 'Ajustar Pokémon Impostor' }).click();
+    await expect(page.getByRole('heading', { name: 'Ajustes de Pokémon Impostor' })).toBeVisible();
+    // Dos impostores necesitan 5 jugadores: con 3, la sesión lo omite en vez de bloquear la sala.
     const impostores = page.getByRole('slider', { name: 'Impostores' });
     await impostores.focus();
     await impostores.press('ArrowRight');
     await expect(page.getByText('2 impostores', { exact: true })).toBeVisible();
     await expect(fila.getByText('Se omitirá', { exact: true })).toBeVisible();
-    await expect(page.getByText('Se omitirá en la rotación mientras haya 3 jugadores.', { exact: false })).toBeVisible();
+    await expect(page.getByText('Se omitirá mientras haya 3 jugadores.', { exact: false })).toBeVisible();
     // Pulsar el deslizador desplaza la página y la cabecera fija taparía el contenido: se captura desde arriba.
     await impostores.blur();
     await page.evaluate(() => window.scrollTo(0, 0));
@@ -566,22 +563,23 @@ test('lobby: rotación con Impostor omitido por paridad', async ({ browser }) =>
   }
 });
 
-test('lobby: rotación', async ({ browser }) => {
+test('lobby: varios minijuegos y su orden', async ({ browser }) => {
   const sala = await crearSalaConJugadores(browser, 3);
   try {
     const { host, jugadores } = sala;
     const page = host.page;
+    // Elegir tres: cada carta lleva su número de orden; quitar uno renumera los siguientes.
+    await anadirJuegos(page, ['Higher or Lower', 'Shiny Quiz']);
+    const lista = page.getByRole('list', { name: 'Minijuegos' });
+    await expect(lista.getByRole('button', { pressed: true })).toHaveCount(3);
+    await expect(lista.getByRole('button', { name: /Shiny Quiz.*n\.º 3 de la sesión/ })).toBeVisible();
+    await page.getByRole('tab', { name: 'Configuración' }).click();
+    await expect(page.getByRole('region', { name: 'Minijuegos elegidos' }).getByRole('listitem')).toHaveCount(3);
     await page.getByRole('tab', { name: 'Modo y sesión' }).click();
     const aleatorio = page.getByRole('button', { name: /^Aleatorio/ });
     await aleatorio.click();
     await expect(aleatorio).toHaveAttribute('aria-pressed', 'true');
-    // Búsqueda sin resultados: estado vacío con acción para volver a la lista.
-    const buscar = page.getByLabel('Buscar en la rotación');
-    await buscar.fill('zzzz');
-    await expect(page.getByText('Ningún minijuego coincide con “zzzz”.')).toBeVisible();
-    await page.getByRole('button', { name: 'Borrar búsqueda' }).click();
-    await expect(buscar).toHaveValue('');
-    await expect(page.getByRole('region', { name: 'Juegos de la rotación' }).locator('article').first()).toBeVisible();
+    await expect(page.getByText('Cada partida sale al azar entre los 3 minijuegos, sin repetir el anterior.')).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 0));
     await capturarTamanos(page, 'lobby-rotacion', { completa: true });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
@@ -609,7 +607,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     const imagenes: string[] = [];
     for (const { page } of jugadores) page.on('request', (r) => { if (r.resourceType() === 'image') imagenes.push(r.url()); });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const proxy = /^\/api\/pokemon\/[a-z][a-z0-9-]*\/sprite$/;
     const sprites = host.page.locator('[data-hl-card] img');
     await expect(sprites).toHaveCount(2, { timeout: 20_000 });
@@ -735,7 +733,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     await expect(aviso).toHaveCount(0);
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     // Un invitado elige: él ve su confirmación (estado privado) y el host solo ve que ya ha elegido, nunca el Pokémon.
     const [eligeAntes] = invitados;
@@ -802,7 +800,7 @@ test('pokedex-distance: recarga a mitad de ronda', async ({ browser }) => {
     for (const { page } of jugadores) page.on('request', (r) => { if (new URL(r.url()).pathname === '/api/pokemon') antiguas.push(r.url()); });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<Record<string, unknown>> };
     expect(catalogo.length, 'entradas del catálogo').toBeGreaterThan(0);
     for (const entrada of catalogo) {
@@ -884,7 +882,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     // Reloj controlado en el host: la banda dura 1,6 s y se detiene el tiempo mientras se captura.
     await host.page.clock.install();
     await iniciarPartida(host.page, [invitado.page]);
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     // El objetivo es público («Objetivo #N»): el host elige el Pokémon de ese número (forma por defecto, de la BD local).
     const objetivo = host.page.getByRole('heading', { name: /^Objetivo/ });
@@ -938,7 +936,7 @@ test('pokedex-distance: buscador sin coincidencias', async ({ browser }) => {
       else await route.fallback();
     });
     await iniciarPartida(host.page, [invitado.page]);
-    await saltarIntro([host.page, invitado.page]);
+    await esperarPartida([host.page, invitado.page]);
 
     const buscador = host.page.getByRole('textbox', { name: 'Buscar Pokémon' });
     await expect(buscador).toBeVisible({ timeout: 20_000 });
@@ -1019,7 +1017,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     const [invitado] = invitados as [Jugador];
     await seleccionarJuego(host.page, 'Pokédex Distance');
     await iniciarPartida(host.page, [invitado.page]);
-    await saltarIntro([host.page, invitado.page]);
+    await esperarPartida([host.page, invitado.page]);
     // Con las elecciones ocultas no hay bloqueo: los dos eligen el mismo Pokémon, siempre a la misma distancia.
     // Ronda inicial y tres desempates; en el tercero cae quien eligió el último (el invitado).
     const titulo = (texto: string) => host.page.getByRole('heading', { name: texto });
@@ -1091,7 +1089,7 @@ test('shiny-vote: votos al revelar', async ({ browser }) => {
     await capturarTamanos(host.page, 'lobby-config-shiny-vote', { completa: true });
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, [invitado.page]);
-    await saltarIntro([host.page, invitado.page]);
+    await esperarPartida([host.page, invitado.page]);
     const normales: string[] = [];
     for (const { page } of jugadores) page.on('request', (r) => { if (/^\/api\/pokemon\/[^/]+\/sprite$/.test(new URL(r.url()).pathname)) normales.push(r.url()); });
     const opcionA = (page: Page) => page.locator('[data-shiny-option="A"]');
@@ -1298,7 +1296,7 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = learnsetEnTrama(payload) ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, [invitado.page]);
-    await saltarIntro([host.page, invitado.page]);
+    await esperarPartida([host.page, invitado.page]);
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
 
@@ -1340,7 +1338,7 @@ test('learnset-guess: marcador en vivo', async ({ browser }) => {
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = learnsetEnTrama(payload) ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     await expect(host.page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 20_000 });
@@ -1484,7 +1482,7 @@ test('whos-that-pokemon: una ronda corta con un fallo, la revelación por tiempo
 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const silueta = host.page.getByRole('img', { name: 'Silueta de un Pokémon misterioso' });
     await expect(silueta).toBeVisible({ timeout: 20_000 });
@@ -1680,7 +1678,7 @@ test('zoomed-pokemon: una ronda con un fallo, el acierto, la revelación y la cl
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = juegoEnTrama<ZoomedVisible>(payload, 'zoomed-pokemon') ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const recorte = host.page.getByRole('img', { name: 'Detalle ampliado del Pokémon misterioso' });
@@ -1832,7 +1830,7 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = juegoEnTrama<PaletteVisible>(payload, 'pokemon-palette-guess') ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const barra = host.page.getByRole('img', { name: /^Paleta de \d colores con peso aproximado/ });
@@ -1963,7 +1961,7 @@ test('pokemon-cry-quiz: una ronda corta con un fallo, el grito, la revelación p
 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const grito = host.page.getByRole('region', { name: 'Grito del Pokémon misterioso' });
     const reproducir = host.page.getByTestId('cry-play');
@@ -2086,7 +2084,7 @@ test('pokedex-entry-guess: una ronda con un fallo, el acierto, la revelación y 
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = juegoEnTrama<EntryVisible>(payload, 'pokedex-entry-guess') ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const entrada = host.page.getByTestId('pokedex-entry');
@@ -2236,7 +2234,7 @@ test('guess-from-stats: una ronda con un fallo, el acierto, la revelación y la 
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = juegoEnTrama<StatsVisible>(payload, 'guess-from-stats') ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const filasStats = host.page.getByTestId('stat-row');
@@ -2412,7 +2410,7 @@ test('pokeddle-race: tres rondas con intentos, las pistas de cada ronda y la cla
     for (const ws of host.sockets.filter((s) => JAVA_WS.test(s.url()))) ws.on('framereceived', ({ payload }) => { estado = juegoEnTrama<PokeddleVisible>(payload, 'pokeddle-race') ?? estado; });
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const nombres = new Map(catalogo.map((p) => [p.id, p.name]));
     const fichas = fichasPokeddle(catalogo.map((p) => p.id));
@@ -2581,7 +2579,7 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(pages);
+    await esperarPartida(pages);
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     const tipos = tiposEnBd(catalogo.map((p) => p.id));
     expect(tipos.size, 'Pokémon de la Gen 1 con tipos').toBeGreaterThan(50);
@@ -2694,7 +2692,7 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
     }
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const opcion = (page: Page, n: number) => page.getByRole('button', { name: new RegExp(`^${n}\\. `) });
     const titulo = host.page.getByRole('heading', { level: 1 });
@@ -2796,7 +2794,7 @@ test('tcg-higher-lower: el duelo de precios, el revelado con lo que eligió cada
       host.page.getByRole('alert').filter({ hasText: UNAVAILABLE['tcg-higher-lower']! }).first().waitFor({ timeout: 15_000 }).then(() => 'unavailable' as const),
     ]);
     test.skip(outcome === 'unavailable', 'Sin cartas TCG en la BD local');
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const pildora = (page: Page, nombre: 'Más' | 'Igual' | 'Menos') => page.getByRole('button', { name: nombre, exact: true });
     const movil = invitados[1]!.page;
@@ -2911,7 +2909,7 @@ test('pokemon-connections: tablero con teclado, errores, la revelación de los g
     }
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const cartas = (page: Page) => page.locator('[data-connection-card]');
     const comprobar = (page: Page) => page.getByRole('button', { name: /^Comprobar \d\/4$/ });
@@ -3118,7 +3116,7 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
     const selectorPrimero = primero.page.waitForResponse(esSelector, { timeout: 30_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
     await selectorPrimero;
     for (const { page } of jugadores) await expect(tableroBingo(page).locator('[data-bingo-cell]')).toHaveCount(6, { timeout: 20_000 });
@@ -3270,7 +3268,7 @@ test('pokemon-bingo: un tablero 5×5 cabe sin scroll de página', async ({ brows
     await seleccionarJuego(host.page, 'Pokémon Bingo');
     await configurarBingo(host.page, { anchura: 5, altura: 5, soloTipo: false, teclasTiempo: ['End'] });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
     await expect(tableroBingo(host.page).locator('[data-bingo-cell]')).toHaveCount(25, { timeout: 20_000 });
     await capturarTamanos(host.page, 'juego-pokemon-bingo-5x5');
     for (const { w, h } of SIZES) {
@@ -3281,62 +3279,6 @@ test('pokemon-bingo: un tablero 5×5 cabe sin scroll de página', async ({ brows
       await expect(host.page.getByRole('textbox', { name: 'Buscar Pokémon para la casilla 1' }), `${w}×${h}: buscador a la vista`).toBeInViewport({ ratio: 1 });
     }
     await host.page.setViewportSize({ width: 1280, height: 720 });
-    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
-  } finally {
-    await sala.cerrar();
-  }
-});
-
-test('intro: los pasos antes de la primera ronda', async ({ browser }) => {
-  test.setTimeout(120_000);
-  const sala = await crearSalaConJugadores(browser, 3);
-  try {
-    const { host, invitados, jugadores } = sala;
-    const [primero, segundo] = invitados as [Jugador, Jugador];
-    const pages = jugadores.map((j) => j.page);
-    await seleccionarJuego(host.page, 'Learnset Guess');
-    await iniciarPartida(host.page, invitados.map((j) => j.page));
-
-    // La sala espera en GAME_STARTING con los 3 pasos del juego, la cuenta atrás y nadie listo.
-    for (const page of pages) await expect(introDePartida(page)).toBeVisible({ timeout: 15_000 });
-    const intro = introDePartida(host.page);
-    await expect(intro.getByRole('heading', { name: 'Cómo se juega a Learnset Guess' })).toBeVisible();
-    await expect(intro.getByText('Paso 1 de 3', { exact: true })).toBeVisible();
-    await expect(intro.getByRole('timer')).toBeVisible();
-    await expect(intro.getByText('0 de 3 listos')).toBeVisible();
-    // Sin hacer scroll, «Empezar ya» y la navegación de pasos se ven a la vez a 1280×720 y 390×844.
-    const empezar = (page: Page) => introDePartida(page).getByRole('button', { name: 'Empezar ya', exact: true });
-    for (const { w, h } of [SIZES[0], SIZES[2]]) {
-      await host.page.setViewportSize({ width: w, height: h });
-      await host.page.evaluate(() => window.scrollTo(0, 0));
-      for (const objetivo of [empezar(host.page), intro.getByRole('button', { name: 'Siguiente paso' }), intro.getByRole('button', { name: 'Ver paso 3' })]) {
-        await expect(objetivo, `${w}×${h}`).toBeInViewport({ ratio: 1 });
-      }
-    }
-    // La captura de revisión enseña la intro sin el cut-in de entrada (1,6 s).
-    await expect(intro.getByText('¡Empieza la partida!')).toHaveCount(0, { timeout: 5_000 });
-    await capturarTamanos(host.page, 'juego-intro', { sigue: intro });
-    // En escritorio la intro cabe entera: sin scroll de página ni de `main`, y texto de 13 px o más.
-    for (const { w, h } of SIZES) {
-      await host.page.setViewportSize({ width: w, height: h });
-      const { id, problems } = await layoutProblems(host.page, 'juego-intro', false, false);
-      expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
-    }
-    await host.page.setViewportSize({ width: 1280, height: 720 });
-
-    // Uno pulsa «Empezar ya»: él espera al resto y los demás ven el recuento.
-    const saltar = empezar;
-    await saltar(primero.page).click();
-    await expect(introDePartida(primero.page).getByRole('button', { name: 'Esperando al resto' })).toBeDisabled();
-    await expect(intro.getByText('1 de 3 listos')).toBeVisible();
-
-    // Saltan los otros dos y empieza la primera ronda sin esperar al plazo.
-    await saltar(host.page).click();
-    await saltar(segundo.page).click();
-    for (const page of pages) {
-      await expect(introDePartida(page)).toBeHidden({ timeout: 5_000 });
-      await expect(page.getByRole('textbox', { name: 'Buscar Pokémon' })).toBeVisible({ timeout: 15_000 });
-    }
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
@@ -3366,7 +3308,7 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     }
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const titulo = (page: Page) => page.getByRole('heading', { level: 1 });
     const papeleta = (page: Page) => page.getByTestId('ballot-options');
@@ -3498,7 +3440,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await expect(host.page.getByRole('radio', { name: 'Red Flag' })).toHaveAttribute('aria-checked', 'true');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     // Una respuesta de 100 caracteres con una palabra muy larga: se parte sin romper la carta ni la franja.
     const textos = new Map<Jugador, string>([
@@ -3648,7 +3590,7 @@ test('would-you-rather: atajos, papeleta secreta, revelación y clasificación',
     await expect(rondas).toHaveValue('1');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const titulo = (page: Page) => page.getByRole('heading', { level: 1 });
     const opcion = (page: Page, letra: 'A' | 'B') => page.getByTestId('choice-options').locator(`[data-choice-option="${letra}"]`).getByRole('button');
@@ -3794,7 +3736,7 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const titulo = (page: Page) => page.getByRole('heading', { level: 1 });
     const papeleta = (page: Page) => page.getByTestId('ballot-options');
@@ -3961,7 +3903,7 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
     await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const titulo = (page: Page) => page.getByRole('heading', { level: 1 });
     const lista = (page: Page) => page.getByTestId('ranking-list');
@@ -4123,7 +4065,7 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const paginas = jugadores.map((j) => j.page);
     const nombreDe = (page: Page) => jugadores.find((j) => j.page === page)!.name;
@@ -4293,7 +4235,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const paginas = jugadores.map((j) => j.page);
     const nombreDe = (page: Page) => jugadores.find((j) => j.page === page)!.name;
@@ -4499,7 +4441,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
       await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     }
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const paginas = jugadores.map((j) => j.page);
     const nombreDe = (page: Page) => jugadores.find((j) => j.page === page)!.name;
@@ -4681,7 +4623,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const paginas = jugadores.map((j) => j.page);
     const nombreDe = (page: Page) => jugadores.find((j) => j.page === page)!.name;
@@ -4919,7 +4861,7 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
       await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
     }
     await iniciarPartida(host.page, invitados.map((j) => j.page));
-    await saltarIntro(jugadores.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
 
     const paginas = jugadores.map((j) => j.page);
     const nombreDe = (page: Page) => jugadores.find((j) => j.page === page)!.name;

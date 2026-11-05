@@ -70,11 +70,8 @@ consola y que a 1280×720 no hay scroll horizontal ni de página (`measureLayout
 `zoomed-pokemon`, `shiny-vote` y `pokemon-cry-quiz` exige además que la primera respuesta a
 `/api/rooms/*/games/*/rounds/*/options/*/(sprite|audio)` sea 200 con `image/png` o `audio/*`.
 
-- **Intro de partida**: los 6 primeros minijuegos (los que llevan `introMs` en el manifiesto) empiezan con
-  10 s de pasos en `GAME_STARTING`, solo la primera vez en la sesión. Todo spec que arranque uno de ellos
-  llama a `saltarIntro(páginas)` (`src/helpers.ts`) justo después de «Empezar partida»: pulsa «Empezar ya» en cada
-  página que muestre la intro y espera a que todas la dejen atrás (15 s como máximo). El test
-  `intro: los pasos antes de la primera ronda` la recorre con Learnset Guess y captura `juego-intro`.
+- **Sin intro**: los minijuegos empiezan al momento al pulsar «Empezar partida». Los specs llaman a
+  `esperarPartida(páginas)` (`src/helpers.ts`), que espera a que cada página salga del lobby (15 s como máximo).
 - **Saltos**: `tcg-higher-lower` (sin cartas TCG) y `pokemon-palette-guess` (sin `metadata.palette` en
   la BD) se saltan **solo** si el lobby muestra el literal de no disponibilidad del servidor; el motivo
   queda en el skip. Con los datos cargados se prueban como los demás: tras una sincronización con el backend Java

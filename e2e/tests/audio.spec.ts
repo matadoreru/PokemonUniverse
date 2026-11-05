@@ -74,15 +74,15 @@ test('activar el sonido en los ajustes desbloquea y registra los efectos', async
   expect(errors).toEqual([]);
 });
 
-test('la tecla M silencia y activa fuera de un campo de texto', async ({ page }) => {
+test('la tecla M no cambia el sonido (sin atajo de teclado)', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/');
   await expect(page.getByRole('link', { name: 'Empezar a jugar' })).toBeVisible();
   await expect.poll(() => estado(page).then((e) => e.muted)).toBe(true);
   await page.keyboard.press('m');
-  await expect.poll(() => estado(page).then((e) => e.muted)).toBe(false);
-  await page.keyboard.press('m');
-  await expect.poll(() => estado(page).then((e) => e.muted)).toBe(true);
+  // Sin atajo: la pulsación solo desbloquea el audio, no lo activa.
+  await page.waitForTimeout(300);
+  expect((await estado(page)).muted).toBe(true);
   expect(errors).toEqual([]);
 });
 

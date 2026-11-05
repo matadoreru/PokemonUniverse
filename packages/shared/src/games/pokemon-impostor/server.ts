@@ -1,6 +1,6 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
-import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
+import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokemonImpostorConfig, pokemonImpostorConfigSchema, type PokemonImpostorConfig } from './config.js';
 import {
@@ -35,7 +35,6 @@ const manifest = {
   description: 'Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.',
   minPlayers: 3,
   presenceGraceMs: PRESENCE_GRACE_MS,
-  introMs: GAME_INTRO_MS,
   profileStats: {
     metrics: [
       { key: 'playedAsInnocent', label: 'Como inocente', aggregation: 'SUM' },

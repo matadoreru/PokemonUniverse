@@ -73,10 +73,20 @@ export function isSessionComplete(mode: SessionMode, gamesPlayed: number, sessio
   return false;
 }
 
+/**
+ * Minijuegos de la sesión (en el orden en que se eligieron) y cómo sale el siguiente: `ORDER` los juega en ese orden y
+ * vuelve al primero al acabar la lista; `RANDOM` sortea entre ellos; `VOTE` vota entre hasta 3 de ellos. Basta con un
+ * juego compatible en cualquier modo: con uno solo se repite y la votación necesita al menos dos (si no, sale el que hay).
+ */
 export type GameSelectionMode =
-  | { type: 'FIXED' }
+  | { type: 'ORDER'; gameIds: string[] }
   | { type: 'RANDOM'; gameIds: string[] }
   | { type: 'VOTE'; gameIds: string[] };
+
+export type GameSelectionType = GameSelectionMode['type'];
+
+/** Opciones como máximo de la votación del siguiente minijuego (con menos juegos, se vota entre los que haya). */
+export const NEXT_GAME_VOTE_OPTIONS = 3;
 
 export interface NextGameVoteView {
   options: MiniGameManifest[];
@@ -92,10 +102,6 @@ export interface NextGameVoteView {
 export const setGameSkipVoteRequestSchema = z.object({ gameInstanceId: z.string().uuid(), wantsToSkip: z.boolean() }).strict();
 export type SetGameSkipVoteRequest = z.infer<typeof setGameSkipVoteRequestSchema>;
 
-/** «Saltar» la intro de partida; la instancia evita que un clic tardío cuente para otra partida. */
-export const skipGameIntroRequestSchema = z.object({ gameInstanceId: z.string().uuid() }).strict();
-export type SkipGameIntroRequest = z.infer<typeof skipGameIntroRequestSchema>;
-
 /** Transport envelope prevents late actions from affecting a replacement runtime. */
 export const gameActionRequestSchema = z.object({ gameInstanceId: z.string().uuid(), actionEpoch: z.string().min(1).max(512), action: z.unknown() }).strict();
 export type GameActionRequest = z.infer<typeof gameActionRequestSchema>;
@@ -110,13 +116,6 @@ export interface GameSkipStateView {
   requiredVotes: number;
   currentUserVoted: boolean;
   canVote: boolean;
-}
-
-/** Intro de la partida en `GAME_STARTING`: termina en `endsAt` o cuando todos los jugadores conectados han saltado. */
-export interface GameIntroView {
-  gameInstanceId: string;
-  endsAt: number;
-  skippedIds: string[];
 }
 
 export interface RoomView {
@@ -137,8 +136,6 @@ export interface RoomView {
   nextGameVote: NextGameVoteView | null;
   /** Absent on legacy snapshots; clients wait for a current instance before sending game actions. */
   gameSkipState?: GameSkipStateView | null;
-  /** Solo mientras la sala muestra la intro de la partida; ausente en Node. */
-  gameIntro?: GameIntroView | null;
   gamesPlayed: number;
   sessionStandings: SessionStandingView[];
   sessionHistory: SessionGameSummaryView[];
@@ -163,12 +160,13 @@ export const sessionModeSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('POINT_TARGET'), target: z.number().int().min(5).max(10000) }),
 ]);
 
-const randomGameIdsSchema = z.array(z.string().min(1)).min(2, 'Selecciona al menos 2 minijuegos.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
-const voteGameIdsSchema = z.array(z.string().min(1)).min(3, 'Selecciona al menos 3 minijuegos.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
+// La selección y el modo se editan en pestañas distintas: cambiar de modo conserva la lista y ningún modo exige más de un
+// juego (lo que depende de los jugadores conectados se comprueba al empezar).
+const selectionGameIdsSchema = z.array(z.string().min(1)).min(1, 'Selecciona al menos 1 minijuego.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
 export const gameSelectionModeSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('FIXED') }),
-  z.object({ type: z.literal('RANDOM'), gameIds: randomGameIdsSchema }),
-  z.object({ type: z.literal('VOTE'), gameIds: voteGameIdsSchema }),
+  z.object({ type: z.literal('ORDER'), gameIds: selectionGameIdsSchema }),
+  z.object({ type: z.literal('RANDOM'), gameIds: selectionGameIdsSchema }),
+  z.object({ type: z.literal('VOTE'), gameIds: selectionGameIdsSchema }),
 ]);
 
 export interface ClientToServerEvents {
@@ -190,7 +188,6 @@ export interface ClientToServerEvents {
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;
   'room:end-session': (_: unknown, ack: SocketAck) => void;
   'game:skip-vote:set': (payload: SetGameSkipVoteRequest, ack: SocketAck) => void;
-  'game:intro:skip': (payload: SkipGameIntroRequest, ack: SocketAck) => void;
   'game:action': (payload: GameActionRequest, ack: SocketAck) => void;
   'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
   'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;

@@ -15,7 +15,7 @@ const room: RoomView = {
     { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', experimental: true, minPlayers: 1, profileStats: { metrics: [] } },
   ],
   selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20 },
-  sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null,
+  sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null,
   gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, serverNow: 1_000,
 };
 
@@ -25,7 +25,7 @@ describe('lobby information hierarchy', () => {
   it('shows game cards without descriptions and separates the lobby into accessible tabs', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
-      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     /></MemoryRouter>);
 
@@ -61,7 +61,7 @@ describe('lobby information hierarchy', () => {
   it('gives the host the red start pill and game cards as toggle buttons, without the ready pill', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
-      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     /></MemoryRouter>);
     expect(markup).toContain('¡Empezar partida!');
@@ -69,30 +69,33 @@ describe('lobby information hierarchy', () => {
     expect(markup).not.toContain('Marcarme listo');
     expect(markup).toContain('aria-label="Minijuegos"');
     expect(markup).toMatch(/<button[^>]*aria-pressed="true"[^>]*>(?:(?!<\/button>).)*Pokédex Distance/);
-    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true"/);
+    // La elegida lleva su número de orden en la sesión.
+    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true">1</);
+    expect(markup).toContain('n.º 1 de la sesión');
+    expect(markup).toContain('1 elegido');
     expect(markup).not.toContain('Solo lectura');
   });
 });
 
 describe('lobby how to play', () => {
-  it('no game card offers «Cómo se juega» (the rules are in the game intro) and badges sit in the corner', () => {
+  it('no game card offers «Cómo se juega» and badges sit in the corner', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
-      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     /></MemoryRouter>);
     expect(markup).not.toContain('Cómo se juega');
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>TOP<\/span>/);
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*><span aria-hidden="true">Exp<\/span><span class="sr-only">Experimental<\/span>/);
-    // La elegida solo lleva el tick en su esquina: sin insignia «Seleccionado» que agrande la carta.
+    // La elegida solo lleva su número en la esquina: sin insignia «Seleccionado» que agrande la carta.
     expect(markup).not.toContain('Seleccionado');
-    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true"><svg/);
+    expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true">1</);
   });
 
   it('shows a guest read-only cards, their own ready pill and no start pill', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={{ ...room, members: room.members.map((member) => member.id === 'guest' ? { ...member, ready: false } : member) }} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
-      onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
     /></MemoryRouter>);
     expect(markup).not.toContain('Empezar partida');
@@ -114,15 +117,15 @@ describe('lobby impostor parity', () => {
   const parityRoom: RoomView = {
     ...room, members, availableGames: [...room.availableGames, impostorManifest],
     selectedGameId: 'pokemon-impostor', selectedGameConfig: { impostorCount: 2 },
-    gameConfigs: { 'pokemon-impostor': { impostorCount: 2 } },
+    gameConfigs: { 'pokemon-impostor': { impostorCount: 2 } }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] },
   };
   const render = (value: RoomView) => renderToStaticMarkup(<MemoryRouter><Lobby
     room={value} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
-    onSelectGame={noOp} onConfig={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+    onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
     onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
   /></MemoryRouter>);
 
-  it('blocks a fixed start with the parity literal', () => {
+  it('blocks a single-game start with the parity literal', () => {
     expect(render(parityRoom)).toContain('Demasiados impostores: con 4 jugadores el máximo es 1.');
     expect(render(parityRoom)).toContain('>Falta algo<');
     expect(render(parityRoom)).not.toContain('>Todo listo<');
@@ -138,12 +141,22 @@ describe('lobby impostor parity', () => {
     expect(markup).not.toContain('>Falta algo<');
   });
 
-  it('does not count the excluded game towards the rotation minimum', () => {
+  it('blocks the start when no selected game fits the connected players', () => {
     const markup = render({
-      ...parityRoom, selectedGameId: 'pokedex-distance', selectedGameConfig: room.selectedGameConfig,
-      gameSelectionMode: { type: 'RANDOM', gameIds: ['pokemon-impostor', 'pokedex-distance'] },
+      ...parityRoom, selectedGameId: 'pokemon-impostor',
+      gameSelectionMode: { type: 'VOTE', gameIds: ['pokemon-impostor', 'shiny-vote'] },
+      members: parityRoom.members.slice(0, 1).concat(parityRoom.members.slice(1).map((member) => ({ ...member, presence: 'LEFT' as const, connected: false }))),
+      availableGames: parityRoom.availableGames.map((game) => game.id === 'shiny-vote' ? { ...game, maxPlayers: 0 } : game),
     });
-    expect(markup).toContain('La rotación aleatoria necesita al menos 2 minijuegos compatibles.');
+    expect(markup).toContain('Ningún minijuego elegido admite el número actual de jugadores.');
+  });
+
+  it('starts a rotation with one compatible game, the excluded one is skipped', () => {
+    const markup = render({
+      ...parityRoom, selectedGameId: 'pokemon-impostor',
+      gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor', 'pokedex-distance'] },
+    });
+    expect(markup).toContain('La sala está lista.');
   });
 });
 

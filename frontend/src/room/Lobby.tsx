@@ -1,11 +1,10 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
-import { Suspense, useEffect, useState } from 'react';
-import { GameLoadingFallback } from '../components/LoadingFallback';
+import { useEffect, useState } from 'react';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import { GameArt } from '../games/GameArt';
-import { GameSelectionConfig } from './GameSelectionConfig';
+import { GameOrderChoice, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
@@ -18,8 +17,6 @@ interface Props {
   onLeave(): void;
   onReady(ready: boolean): Promise<void>;
   onStart(): Promise<void>;
-  onSelectGame(gameId: string): Promise<void>;
-  onConfig(config: unknown): Promise<void>;
   onGameConfig(gameId: string, config: unknown): Promise<void>;
   onSession(mode: SessionMode): Promise<void>;
   onGameSelection(mode: GameSelectionMode): Promise<void>;
@@ -38,17 +35,15 @@ const TABS: TabItem<LobbyTab>[] = [
   { key: 'session', label: <>Modo<span className="max-sm:sr-only"> y sesión</span></>, icon: Shuffle },
 ];
 
-export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, onGameConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
+export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession, onGameSelection, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
   const canEditGame = hasRoomPermission(roomRole, 'EDIT_GAME_CONFIG');
-  const canChangeGame = hasRoomPermission(roomRole, 'CHANGE_GAME');
   const canEditSession = hasRoomPermission(roomRole, 'EDIT_SESSION');
   const canEditGameSelection = hasRoomPermission(roomRole, 'EDIT_GAME_SELECTION');
   const canStart = hasRoomPermission(roomRole, 'START_GAME');
   const canManageRoles = hasRoomPermission(roomRole, 'MANAGE_ROLES');
   const gameClient = clientGameRegistry.get(room.selectedGameId);
-  const selectedManifest = room.availableGames.find((game) => game.id === room.selectedGameId)!;
   const connectedPlayers = connectedCount(room.members);
   const pendingReady = room.members.filter((member) => member.presence === 'CONNECTED' && member.id !== room.hostId && !member.ready);
   const hostMember = room.members.find((member) => member.id === room.hostId);
@@ -77,47 +72,44 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
   };
   const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(ignoreFailure); };
   const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(ignoreFailure); };
-  const selectGame = (gameId: string) => {
-    if (!canChangeGame || gameId === room.selectedGameId) return;
-    void onSelectGame(gameId).catch(ignoreFailure);
+  // Las cartas eligen varios juegos: pulsar pone o quita uno (el último elegido va al final; siempre queda uno).
+  const toggleGame = (gameId: string) => {
+    const next = toggleSelectedGame(room.gameSelectionMode, gameId);
+    if (next) gameSelection(next);
   };
   // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
   const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(ignoreFailure); };
   const kick = (playerId: string) => { void onKick(playerId).catch(ignoreFailure); };
 
   const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
-  // En una rotación, un requisito de jugadores (rango del manifest o paridad de impostores) excluye el juego, como en el servidor.
+  // Con varios juegos, un requisito de jugadores (rango del manifest o paridad de impostores) excluye el juego, como en el servidor.
   const rotationPlayable = (gameId: string): boolean => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
     return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers)
       && playerCountReadinessReason(gameId, rotationConfig(gameId), connectedPlayers) === null);
   };
-  const rotationPlayableCount = room.gameSelectionMode.type !== 'FIXED' ? room.gameSelectionMode.gameIds.filter(rotationPlayable).length : 0;
-  const rotationConfigReason = room.gameSelectionMode.type === 'FIXED' ? null : room.gameSelectionMode.gameIds.map((gameId) => {
+  const selectedGameIds = room.gameSelectionMode.gameIds;
+  const compatibleGameIds = selectedGameIds.filter(rotationPlayable);
+  const configReason = (selectedGameIds.length === 1 ? selectedGameIds : compatibleGameIds).map((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
-    if (!manifest || !rotationPlayable(gameId)) return null;
-    const candidate = clientGameRegistry.get(gameId);
-    const reason = candidate.validateConfig?.(rotationConfig(gameId), room) ?? null;
-    return reason ? `${manifest.name}: ${reason}` : null;
+    if (!manifest) return null;
+    const reason = clientGameRegistry.get(gameId).validateConfig?.(rotationConfig(gameId), room) ?? null;
+    return reason ? (selectedGameIds.length === 1 ? reason : `${manifest.name}: ${reason}`) : null;
   }).find((reason) => reason !== null) ?? null;
-  const selectedGameReason = connectedPlayers < selectedManifest.minPlayers
-    ? `Se necesitan al menos ${selectedManifest.minPlayers} jugadores conectados.`
-    : selectedManifest.maxPlayers !== undefined && connectedPlayers > selectedManifest.maxPlayers
-      ? `Este juego admite un máximo de ${selectedManifest.maxPlayers} jugadores.`
-      : null;
+  // Un solo juego: el motivo exacto (mínimo o máximo de jugadores), como el servidor.
+  const onlyManifest = selectedGameIds.length === 1 ? room.availableGames.find((game) => game.id === selectedGameIds[0]) : undefined;
+  const playerCountReason = onlyManifest
+    ? connectedPlayers < onlyManifest.minPlayers
+      ? `Se necesitan al menos ${onlyManifest.minPlayers} jugadores conectados.`
+      : onlyManifest.maxPlayers !== undefined && connectedPlayers > onlyManifest.maxPlayers
+        ? `Este juego admite un máximo de ${onlyManifest.maxPlayers} jugadores.`
+        : null
+    : compatibleGameIds.length === 0 ? 'Ningún minijuego elegido admite el número actual de jugadores.' : null;
   const startReason = !canStart
     ? 'Solo el host puede iniciar la partida.'
     : pendingReady.length > 0
       ? `Falta por confirmar: ${formatPendingReadyNames(pendingReady.map((member) => member.displayName))}.`
-      : room.gameSelectionMode.type === 'RANDOM' && rotationPlayableCount < 2
-        ? 'La rotación aleatoria necesita al menos 2 minijuegos compatibles.'
-        : room.gameSelectionMode.type === 'VOTE' && rotationPlayableCount < 3
-          ? 'La votación necesita al menos 3 minijuegos compatibles.'
-          : rotationConfigReason
-            ? rotationConfigReason
-            : room.gameSelectionMode.type !== 'RANDOM' && selectedGameReason
-              ? selectedGameReason
-              : room.gameSelectionMode.type === 'RANDOM' ? null : gameClient.validateConfig?.(room.selectedGameConfig, room) ?? null;
+      : playerCountReason ?? configReason;
   const status = lobbyActionStatus({ canStart, ready: Boolean(self?.ready), startReason, hostName: hostMember?.displayName });
   const visibleGames = filterGames(room.availableGames, gameQuery);
   const readOnlyChip = <Chip icon={<Icon icon={LockKeyhole} size={18} />}>Solo lectura</Chip>;
@@ -161,26 +153,28 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
     <>
       <div className={s.head}>
         <div className={s.headText}>
-          <h2 className={s.title}>Elige un minijuego</h2>
+          <h2 className={s.title}>Elige los minijuegos</h2>
+          <p className={s.lead}>{selectedGameIds.length === 1 ? '1 elegido' : `${selectedGameIds.length} elegidos`} · el número de cada carta es su orden en la sesión.</p>
         </div>
         <div className={s.tools}>
-          {!canChangeGame && readOnlyChip}
+          {!canEditGameSelection && readOnlyChip}
           <Field className={cx(s.search)} label="Buscar minijuego" hideLabel icon={Search} type="search" value={gameQuery} onChange={(event) => setGameQuery(event.target.value)} placeholder={`Buscar entre ${room.availableGames.length} juegos`} />
         </div>
       </div>
       {visibleGames.length > 0 ? (
-        <ul className={s.grid} aria-label="Minijuegos" aria-describedby={canChangeGame ? undefined : 'game-permission-help'}>
+        <ul className={s.grid} aria-label="Minijuegos" aria-describedby={canEditGameSelection ? undefined : 'game-permission-help'}>
           {visibleGames.map((game) => {
-            const selected = game.id === room.selectedGameId;
+            const position = selectedGameIds.indexOf(game.id) + 1;
+            const selected = position > 0;
             const preloadConfig = () => { void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined); };
             return (
               <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
                 {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
-                <Card size="sm" art={<GameArt gameId={game.id} size={32} />} name={game.name} state={selected ? 'selected' : 'idle'} {...(canChangeGame ? { onSelect: () => selectGame(game.id) } : {})}>
+                <Card size="sm" art={<GameArt gameId={game.id} size={32} />} name={game.name} state={selected ? 'selected' : 'idle'} {...(canEditGameSelection ? { onSelect: () => toggleGame(game.id) } : {})}>
                   <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
-                  {/* Elegida: solo un tick en la esquina superior izquierda, para que la carta no cambie de tamaño
+                  {/* Elegida: su número de orden en la esquina superior izquierda, para que la carta no cambie de tamaño
                       (el estado ya lo dicen el amarillo y `aria-pressed`). */}
-                  {selected && <span className={s.tick} aria-hidden="true"><Icon icon={Check} size={18} /></span>}
+                  {selected && <><span className={s.tick} aria-hidden="true">{position}</span><span className="sr-only">{`, n.º ${position} de la sesión`}</span></>}
                   {/* TOP y Exp(erimental) en la esquina superior derecha de la carta. */}
                   {(game.recommended || game.experimental) && (
                     <span className={s.corner}>
@@ -196,29 +190,13 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
       ) : (
         <StateBox kind="empty" onCream title={`No hay minijuegos que coincidan con “${gameQuery.trim()}”.`} text="Busca por nombre o por lo que se hace en el juego, como «tipo» o «shiny»." action={{ label: 'Borrar búsqueda', onClick: () => setGameQuery('') }} />
       )}
-      {!canChangeGame && <p id="game-permission-help" className={s.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar el minijuego.</p>}
+      {!canEditGameSelection && <p id="game-permission-help" className={s.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden elegir los minijuegos.</p>}
     </>
   );
 
   const configPanel = (
     <Panel variant="cream" as="div">
-      <div className={s.configHead}>
-        <span className={s.gameTile} aria-hidden="true"><GameArt gameId={selectedManifest.id} size={32} /></span>
-        <div className={s.headText}>
-          <h2 className={s.title}>Ajustes de {selectedManifest.name}</h2>
-          <p className={s.configLead}>
-            <span>{selectedManifest.description} · {playerRangeLabel(selectedManifest)}.</span>
-            {selectedManifest.recommended && <Badge>TOP</Badge>}
-            {selectedManifest.experimental && <Badge tone="cream">Experimental</Badge>}
-          </p>
-        </div>
-      </div>
-      {!canEditGame && <p className={s.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar estos ajustes.</p>}
-      <div className={s.configBody}>
-        <Suspense fallback={<GameLoadingFallback compact />}>
-          <gameClient.ConfigPanel config={room.selectedGameConfig} disabled={!canEditGame} room={room} selfId={selfId} onChange={onConfig} />
-        </Suspense>
-      </div>
+      <SelectedGamesConfig room={room} selfId={selfId} playerCount={connectedPlayers} disabled={!canEditGame} onConfig={onGameConfig} />
     </Panel>
   );
 
@@ -228,24 +206,24 @@ export function Lobby({ room, selfId, onReady, onStart, onSelectGame, onConfig, 
       <div className={s.head}>
         <div className={s.headText}>
           <h2 className={s.title}>Modo y sesión</h2>
-          <p className={s.lead}>Define cómo se eligen los juegos y cuándo termina la clasificación.</p>
+          <p className={s.lead}>Define en qué orden salen los minijuegos elegidos y cuándo se decide el ganador.</p>
         </div>
       </div>
       <section className={s.section} aria-labelledby="rotation-heading">
         <div className={s.head}>
           <div className={s.headText}>
-            <h3 id="rotation-heading" className={s.subtitle}>Rotación de minijuegos</h3>
-            <p className={s.lead}>Decide qué ocurre al terminar cada partida.</p>
+            <h3 id="rotation-heading" className={s.subtitle}>Orden de los minijuegos</h3>
+            <p className={s.lead}>Decide qué minijuego sale en cada partida.</p>
           </div>
           {!canEditGameSelection && readOnlyChip}
         </div>
-        <GameSelectionConfig availableGames={room.availableGames} mode={room.gameSelectionMode} playerCount={connectedPlayers} disabled={!canEditGameSelection} configDisabled={!canEditGame} room={room} selfId={selfId} onChange={gameSelection} onConfig={onGameConfig} />
+        <GameOrderChoice mode={room.gameSelectionMode} compatibleCount={compatibleGameIds.length} disabled={!canEditGameSelection} onChange={gameSelection} />
       </section>
       <section className={s.section} aria-labelledby="format-heading">
         <div className={s.head}>
           <div className={s.headText}>
             <h3 id="format-heading" className={s.subtitle}>Final de la sesión</h3>
-            <p className={s.lead}>Elige cuándo se decide la clasificación final.</p>
+            <p className={s.lead}>Elige cómo se decide el ganador de la sesión.</p>
           </div>
           {!canEditSession && readOnlyChip}
         </div>

@@ -90,7 +90,7 @@ function room(game: PokemonImpostorPublicState, playerState: PokemonImpostorPlay
     selectedGameId: 'pokemon-impostor',
     selectedGameConfig: { generations: [1], impostorCount: 1, clueSeconds: 15, voteSeconds: 20 },
     sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'FIXED' },
+    gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] },
     nextGameVote: null,
     gamesPlayed: 0,
     sessionStandings: [],

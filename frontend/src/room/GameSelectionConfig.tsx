@@ -1,31 +1,13 @@
-import { playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
-import { AlertCircle, Check, LockKeyhole, Repeat2, Search, Settings2, Shuffle, Vote } from 'lucide-react';
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { NEXT_GAME_VOTE_OPTIONS, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type GameSelectionType, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
+import { AlertCircle, Check, ListOrdered, LockKeyhole, Settings2, Shuffle, Vote } from 'lucide-react';
+import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
-import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { summarizeGameConfig } from './game-config-summary';
 import g from './GameSelectionConfig.module.css';
-import { filterGames } from './lobby-state';
-
-interface Props {
-  availableGames: MiniGameManifest[];
-  mode: GameSelectionMode;
-  playerCount: number;
-  disabled: boolean;
-  room?: RoomView;
-  selfId?: string;
-  configDisabled?: boolean;
-  onChange(mode: GameSelectionMode): void;
-  onConfig?(gameId: string, config: unknown): Promise<void>;
-}
-
-const choices = [
-  { type: 'FIXED' as const, icon: Repeat2, title: 'Mismo minijuego', requiredGames: 0 },
-  { type: 'RANDOM' as const, icon: Shuffle, title: 'Aleatorio', requiredGames: 2 },
-  { type: 'VOTE' as const, icon: Vote, title: 'Votación', requiredGames: 3 },
-];
+import { playerRangeLabel } from './lobby-state';
 
 export function gameAvailabilityReason(game: MiniGameManifest, playerCount: number): string | null {
   if (playerCount < game.minPlayers) return `Necesita al menos ${game.minPlayers} jugadores`;
@@ -49,147 +31,151 @@ export function rotationGameSkipReason(room: RoomView | undefined, game: MiniGam
   return room ? playerCountReadinessReason(game.id, rotationGameConfig(room, game.id), playerCount) : null;
 }
 
-export function GameSelectionConfig({ availableGames, mode, playerCount, disabled, room, selfId = '', configDisabled = disabled, onChange, onConfig }: Props) {
-  const compatibleGames = availableGames.filter((game) => supportsPlayerCount(game, playerCount));
-  const configuredIds = mode.type === 'FIXED' ? [] : mode.gameIds;
-  const selectedIds = configuredIds.filter((gameId) => compatibleGames.some((game) => game.id === gameId));
-  const selected = new Set(selectedIds);
-  const minimum = mode.type === 'VOTE' ? 3 : 2;
-  const excludedCount = configuredIds.length - selectedIds.length;
-  const [query, setQuery] = useState('');
-  const [editingGameId, setEditingGameId] = useState<string | null>(null);
+/** El mismo modo con otra lista de minijuegos (la lista no cambia al cambiar de modo, ni el modo al cambiar la lista). */
+export function withGameIds(mode: GameSelectionMode, gameIds: string[]): GameSelectionMode {
+  return { type: mode.type, gameIds };
+}
 
+/** Pone o quita un juego de la selección; el último elegido va al final. Nunca deja la lista vacía (`null`). */
+export function toggleSelectedGame(mode: GameSelectionMode, gameId: string): GameSelectionMode | null {
+  const selected = mode.gameIds.includes(gameId);
+  if (selected && mode.gameIds.length <= 1) return null;
+  return withGameIds(mode, selected ? mode.gameIds.filter((id) => id !== gameId) : [...mode.gameIds, gameId]);
+}
+
+const ORDER_CHOICES: { type: GameSelectionType; icon: typeof Shuffle; title: string }[] = [
+  { type: 'ORDER', icon: ListOrdered, title: 'Por orden' },
+  { type: 'RANDOM', icon: Shuffle, title: 'Aleatorio' },
+  { type: 'VOTE', icon: Vote, title: 'Votación' },
+];
+
+/** Qué hará el modo elegido con los juegos compatibles de la selección. */
+export function gameOrderHint(type: GameSelectionType, compatibleCount: number): string {
+  if (compatibleCount <= 1) return 'Con un solo minijuego compatible, se juega siempre ese.';
+  if (type === 'ORDER') return `Se juegan los ${compatibleCount} minijuegos en el orden en que los elegiste y se vuelve a empezar.`;
+  if (type === 'RANDOM') return `Cada partida sale al azar entre los ${compatibleCount} minijuegos, sin repetir el anterior.`;
+  return `Tras cada partida se vota entre ${Math.min(NEXT_GAME_VOTE_OPTIONS, compatibleCount)} de los ${compatibleCount} minijuegos.`;
+}
+
+interface OrderProps {
+  mode: GameSelectionMode;
+  compatibleCount: number;
+  disabled: boolean;
+  onChange(mode: GameSelectionMode): void;
+}
+
+/** Pestaña «Modo y sesión»: en qué orden salen los minijuegos elegidos (por orden, al azar o por votación). */
+export function GameOrderChoice({ mode, compatibleCount, disabled, onChange }: OrderProps) {
+  return <div>
+    <div className={g.choices} role="group" aria-label="Orden de los minijuegos">
+      {ORDER_CHOICES.map((choice) => (
+        // Solo lectura: carta sin botón, sin atenuar (el modo elegido se sigue viendo amarillo).
+        <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={mode.type === choice.type ? 'selected' : 'idle'} {...(disabled ? {} : { onSelect: () => { if (choice.type !== mode.type) onChange({ type: choice.type, gameIds: mode.gameIds }); } })} />
+      ))}
+    </div>
+    <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount)}</p>
+  </div>;
+}
+
+interface ConfigProps {
+  room: RoomView;
+  selfId: string;
+  playerCount: number;
+  disabled: boolean;
+  onConfig(gameId: string, config: unknown): Promise<void>;
+}
+
+/**
+ * Pestaña «Configuración»: los ajustes de cada minijuego elegido. Con varios, una lista en el orden de la selección
+ * (estado y resumen de cada uno) y el editor del que se ajusta; con uno, solo su editor.
+ */
+export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onConfig }: ConfigProps) {
+  const games = room.gameSelectionMode.gameIds
+    .map((gameId) => room.availableGames.find((game) => game.id === gameId))
+    .filter((game): game is MiniGameManifest => Boolean(game));
+  const [editingGameId, setEditingGameId] = useState<string | null>(games[0]?.id ?? null);
+  const gameKey = games.map((game) => game.id).join('|');
   useEffect(() => {
-    if (mode.type === 'FIXED') { setEditingGameId(null); return; }
-    if (!editingGameId || !mode.gameIds.includes(editingGameId)) setEditingGameId(mode.gameIds[0] ?? null);
-  }, [editingGameId, mode]);
+    if (!editingGameId || !games.some((game) => game.id === editingGameId)) setEditingGameId(games[0]?.id ?? null);
+  }, [editingGameId, gameKey]);
 
-  const selectedKey = selectedIds.join('|');
-  const visibleGames = useMemo(() => {
-    return filterGames(availableGames, query).sort((left, right) =>
-      Number(Boolean(right.recommended)) - Number(Boolean(left.recommended))
-      || Number(selected.has(right.id)) - Number(selected.has(left.id))
-      || left.name.localeCompare(right.name, 'es'),
-    );
-  }, [availableGames, query, selectedKey]);
-
-  const readiness = useMemo(() => selectedIds.map((gameId) => {
-    const game = availableGames.find((candidate) => candidate.id === gameId)!;
-    return { game, reason: room ? rotationGameReadinessReason(room, game, playerCount) : null };
-  }), [availableGames, playerCount, room, selectedKey]);
-  const readyCount = readiness.filter(({ game, reason }) => !reason || rotationGameSkipReason(room, game, playerCount)).length;
-  const editingGame = editingGameId ? availableGames.find((game) => game.id === editingGameId) ?? null : null;
-  const editingClient = editingGame ? clientGameRegistry.get(editingGame.id) : null;
-  const editingConfig = editingGame ? rotationGameConfig(room, editingGame.id) : {};
-  const editingReason = editingGame && room ? rotationGameReadinessReason(room, editingGame, playerCount) : null;
-  const editingSkipReason = editingGame ? rotationGameSkipReason(room, editingGame, playerCount) : null;
-
-  const selectMode = (type: GameSelectionMode['type']) => {
-    if (disabled || type === mode.type) return;
-    const gameIds = compatibleGames.map((game) => game.id);
-    const requiredGames = type === 'VOTE' ? 3 : 2;
-    if (type !== 'FIXED' && gameIds.length < requiredGames) return;
-    onChange(type === 'FIXED' ? { type } : { type, gameIds });
+  const editingGame = games.find((game) => game.id === editingGameId) ?? games[0] ?? null;
+  const status = (game: MiniGameManifest) => {
+    const skipReason = rotationGameSkipReason(room, game, playerCount);
+    const reason = rotationGameReadinessReason(room, game, playerCount);
+    return { skipReason, reason, needsReview: Boolean(reason) && !skipReason };
   };
-
-  const toggleGame = (gameId: string) => {
-    if (disabled || mode.type === 'FIXED' || !compatibleGames.some((game) => game.id === gameId)) return;
-    const removing = selected.has(gameId);
-    let gameIds = removing ? selectedIds.filter((id) => id !== gameId) : [...selectedIds, gameId];
-    if (removing && gameIds.length < minimum) return;
-    for (const game of compatibleGames) {
-      if (gameIds.length >= minimum) break;
-      if (!gameIds.includes(game.id)) gameIds.push(game.id);
-    }
-    if (gameIds.length < minimum) return;
-    gameIds = [...new Set(gameIds)];
-    onChange({ ...mode, gameIds });
-  };
-
-  const openEditor = (game: MiniGameManifest) => {
-    if (mode.type === 'FIXED' || !selected.has(game.id)) return;
+  const readyCount = games.filter((game) => !status(game).needsReview).length;
+  const open = (game: MiniGameManifest) => {
     setEditingGameId(game.id);
     void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined);
   };
 
-  return <div>
-    <div className={g.choices} role="group" aria-label="Método de selección de minijuegos">
-      {choices.map((choice) => {
-        const active = mode.type === choice.type;
-        const unavailable = compatibleGames.length < choice.requiredGames;
-        // Solo lectura: carta sin botón, sin atenuar (el método elegido se sigue viendo amarillo).
-        return <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={active ? 'selected' : 'idle'} disabled={unavailable} {...(disabled ? {} : { onSelect: () => selectMode(choice.type) })}>
-          {/* Sin descripción: solo se explica cuando el modo no está disponible. */}
-          {unavailable && <span className={g.choiceText}>{`No hay ${choice.requiredGames} juegos compatibles para ${playerCount} jugadores.`}</span>}
-        </Card>;
-      })}
+  const editor = editingGame ? (() => {
+    const client = clientGameRegistry.get(editingGame.id);
+    const { skipReason, reason } = status(editingGame);
+    return <Panel key={editingGame.id} variant="cream" as="div">
+      <div className={g.editorHead}>
+        <h3 className={g.title}><GameArt gameId={editingGame.id} size={22} /> Ajustes de {editingGame.name}</h3>
+        <Chip tone={skipReason ? 'neutral' : reason ? 'bad' : 'ok'} icon={skipReason ? undefined : <Icon icon={reason ? AlertCircle : Check} size={18} />}>{skipReason ? 'Se omitirá' : reason ? 'Revisar' : 'Listo'}</Chip>
+      </div>
+      <p className={g.editorLead}>
+        {editingGame.description} · {playerRangeLabel(editingGame)}.
+        {editingGame.recommended && <> <Badge>TOP</Badge></>}
+        {editingGame.experimental && <> <Badge tone="cream">Experimental</Badge></>}
+      </p>
+      {skipReason
+        ? <p className={g.editorNote} role="status">{skipReason} Se omitirá mientras haya {playerCount} jugadores.</p>
+        : reason && <p className={cx(g.editorNote, g.editorNoteBad)} role="status">{reason}</p>}
+      <div className={g.editorBody}>
+        {disabled && <p className={g.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar estos ajustes.</p>}
+        <Suspense fallback={<GameLoadingFallback compact />}><client.ConfigPanel config={rotationGameConfig(room, editingGame.id)} disabled={disabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
+      </div>
+    </Panel>;
+  })() : null;
+
+  if (games.length <= 1) return <section className={g.editor} aria-label="Ajustes del minijuego">{editor}</section>;
+
+  return <div className={g.rotation}>
+    <div className={g.head}>
+      <div><h2 className={g.title}>Ajustes de los minijuegos</h2><p className={g.lead}>Revisa los ajustes de cada minijuego elegido.</p></div>
+      <Chip tone={readyCount < games.length ? 'bad' : 'ok'}>{readyCount}/{games.length} listos</Chip>
     </div>
-
-    {mode.type !== 'FIXED' && <fieldset className={g.rotation}>
-      <legend className="sr-only">Minijuegos de la rotación</legend>
-      <div className={g.head}>
-        <div><h3 className={g.title}>Configura la rotación</h3><p className={g.lead}>Elige los juegos y revisa sus ajustes uno a uno.</p></div>
-        <Chip tone={readyCount < selected.size ? 'bad' : 'ok'}>{readyCount}/{selected.size} listos</Chip>
-      </div>
-      {excludedCount > 0 && <p className={g.warn} role="status"><Icon icon={AlertCircle} size={18} />{excludedCount === 1 ? 'Un juego seleccionado ya no admite' : `${excludedCount} juegos seleccionados ya no admiten`} el número actual de jugadores. Sustitúyelo antes de iniciar.</p>}
-
-      <div className={g.split}>
-        <section className={g.list} aria-label="Juegos de la rotación">
-          <div className={g.listTools}>
-            <Field className={cx(g.search)} label="Buscar en la rotación" hideLabel icon={Search} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar minijuego" />
-            <Badge tone="navy">{selected.size} seleccionados</Badge>
-          </div>
-          {visibleGames.length > 0 ? <div className={g.items}>
-            {visibleGames.map((game) => {
-              const active = selected.has(game.id); const locked = active && selected.size <= minimum;
-              const unavailableReason = gameAvailabilityReason(game, playerCount);
-              const config = rotationGameConfig(room, game.id);
-              const configReason = active && room ? rotationGameReadinessReason(room, game, playerCount) : null;
-              const skipReason = active ? rotationGameSkipReason(room, game, playerCount) : null;
-              const needsReview = Boolean(configReason) && !skipReason;
-              const customized = room?.customizedGameIds?.includes(game.id) ?? false;
-              const editing = editingGameId === game.id;
-              const preload = () => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined);
-              return <article key={game.id} className={cx(g.item, active && g.on, editing && g.editing, !active && g.off)}>
-                <div className={g.itemMain}>
-                  <button type="button" className={g.toggle} disabled={disabled || locked || Boolean(unavailableReason)} aria-pressed={active} aria-label={`${active ? 'Quitar' : 'Añadir'} ${game.name} ${active ? 'de' : 'a'} la rotación`} title={unavailableReason ?? (locked ? `Debes mantener al menos ${minimum} juegos` : undefined)} onClick={() => toggleGame(game.id)}>
-                    <span className={g.box}>{active && <Icon icon={Check} size={18} />}</span>
-                  </button>
-                  <div className={g.itemText}>
-                    <div className={g.itemName}><GameArt gameId={game.id} size={22} /><strong className={g.name} title={game.name}>{game.name}</strong>{game.recommended && <Badge>TOP</Badge>}{game.experimental && <Badge tone="cream">Experimental</Badge>}</div>
-                    <p className={cx(g.summary, (unavailableReason || needsReview) && g.summaryBad)}>{unavailableReason ?? configReason ?? summarizeGameConfig(config)}</p>
-                  </div>
+    <div className={g.split}>
+      <section className={g.list} aria-label="Minijuegos elegidos">
+        <ol className={g.items}>
+          {games.map((game, index) => {
+            const { skipReason, reason, needsReview } = status(game);
+            const customized = room.customizedGameIds?.includes(game.id) ?? false;
+            const editing = editingGame?.id === game.id;
+            const preload = () => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined);
+            return <li key={game.id} className={cx(g.item, g.on, editing && g.editing)}>
+              <div className={g.itemMain}>
+                <span className={g.order} aria-hidden="true">{index + 1}</span>
+                <div className={g.itemText}>
+                  <div className={g.itemName}><GameArt gameId={game.id} size={22} /><strong className={g.name} title={game.name}>{game.name}</strong></div>
+                  <p className={cx(g.summary, needsReview && g.summaryBad)}>{reason ?? summarizeGameConfig(rotationGameConfig(room, game.id))}</p>
                 </div>
-                {active && <div className={g.itemFoot}>
-                  <Chip tone={skipReason ? 'neutral' : needsReview ? 'bad' : customized ? 'info' : 'neutral'}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</Chip>
-                  <span onPointerEnter={preload} onFocus={preload}>
-                    <Pill variant="ghost" size="small" icon={Settings2} aria-pressed={editing} onClick={() => openEditor(game)}>Ajustar</Pill>
-                  </span>
-                </div>}
-              </article>;
-            })}
-          </div> : <StateBox kind="empty" onCream title={`Ningún minijuego coincide con “${query.trim()}”.`} text="La rotación no cambia: solo filtra la lista." action={{ label: 'Borrar búsqueda', onClick: () => setQuery('') }} />}
-        </section>
-
-        <section className={g.editor} aria-live="polite">
-          {editingGame && editingClient && room && onConfig
-            ? <Panel key={editingGame.id} variant="cream" as="div">
-              <div className={g.editorHead}>
-                <h4 className={g.title}><GameArt gameId={editingGame.id} size={22} /> {editingGame.name}</h4>
-                <Chip tone={editingSkipReason ? 'neutral' : editingReason ? 'bad' : 'ok'} icon={editingSkipReason ? undefined : <Icon icon={editingReason ? AlertCircle : Check} size={18} />}>{editingSkipReason ? 'Se omitirá' : editingReason ? 'Revisar' : 'Listo'}</Chip>
               </div>
-              <p className={g.editorLead}>{editingGame.description}</p>
-              {editingSkipReason
-                ? <p className={g.editorNote} role="status">{editingSkipReason} Se omitirá en la rotación mientras haya {playerCount} jugadores.</p>
-                : editingReason && <p className={cx(g.editorNote, g.editorNoteBad)} role="status">{editingReason}</p>}
-              <div className={g.editorBody}>
-                {configDisabled && <p className={g.readonly}><Icon icon={LockKeyhole} size={18} />No tienes permiso para editar estos ajustes.</p>}
-                <Suspense fallback={<GameLoadingFallback compact />}><editingClient.ConfigPanel config={editingConfig} disabled={configDisabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
+              <div className={g.itemFoot}>
+                <Chip tone={skipReason ? 'neutral' : needsReview ? 'bad' : customized ? 'info' : 'neutral'}>{skipReason ? 'Se omitirá' : needsReview ? 'Revisar' : customized ? 'Configurado' : 'Predeterminado'}</Chip>
+                <span onPointerEnter={preload} onFocus={preload}>
+                  <Pill variant="ghost" size="small" icon={Settings2} aria-pressed={editing} aria-label={`Ajustar ${game.name}`} onClick={() => open(game)}>Ajustar</Pill>
+                </span>
               </div>
-            </Panel>
-            : <Panel variant="cream" as="div" status={{ kind: 'empty', title: 'Elige un minijuego', text: 'Pulsa «Ajustar» para editar su configuración sin salir del modo de rotación.' }} />}
-        </section>
-      </div>
-    </fieldset>}
+            </li>;
+          })}
+        </ol>
+      </section>
+      <section className={g.editor} aria-live="polite" aria-label="Ajustes del minijuego">{editor}</section>
+    </div>
   </div>;
+}
+
+/** Juegos de la selección que admiten a los conectados (los que puede sacar el modo). */
+export function compatibleSelectedCount(room: RoomView, playerCount: number): number {
+  return room.gameSelectionMode.gameIds.filter((gameId) => {
+    const game = room.availableGames.find((candidate) => candidate.id === gameId);
+    return Boolean(game && supportsPlayerCount(game, playerCount) && playerCountReadinessReason(gameId, rotationGameConfig(room, gameId), playerCount) === null);
+  }).length;
 }

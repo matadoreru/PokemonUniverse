@@ -1,6 +1,6 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import { GENERATION_LEARNSET_SOURCES, isLearnsetPokemonCatalog, type Generation, type LearnsetPokemonCatalog, type Pokemon, type ResolvedLevelUpMove } from '../../pokemon/types.js';
-import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
+import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS } from '../contracts.js';
 import { advanceTimedRound, cooldownMessage, cooldownRemainingMs, resolveWhenRequiredPlayersComplete, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultLearnsetGuessConfig, learnsetGuessConfigSchema, type LearnsetGuessConfig } from './config.js';
 import { buildLearnsetResults, emptyLearnsetStats, LEARNSET_LAST_WARNING_MS, learnsetPoints } from './rules.js';
@@ -15,7 +15,6 @@ const manifest = {
   id: 'learnset-guess', name: 'Learnset Guess', icon: '📚',
   description: 'Descubre el Pokémon mientras se revela progresivamente su learnset por nivel.', minPlayers: 2,
   presenceGraceMs: PRESENCE_GRACE_MS,
-  introMs: GAME_INTRO_MS,
   profileStats: {
     metrics: [
       { key: 'correct', label: 'Pokémon acertados', aggregation: 'SUM' },

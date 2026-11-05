@@ -1,5 +1,5 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
-import { type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
+import { type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema, type PokedexDistanceConfig } from './config.js';
 import { buildResults, distanceBetween, elimination, emptyPlayerStats, farthestPlayerIds, lastToSelectIds, MAX_TIEBREAK_DEPTH, roundRecord } from './rules.js';
@@ -12,7 +12,6 @@ const manifest = {
   description: 'Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.',
   minPlayers: 2,
   presenceGraceMs: PRESENCE_GRACE_MS,
-  introMs: GAME_INTRO_MS,
   profileStats: {
     metrics: [
       { key: 'exactHits', label: 'Exact Hits', aggregation: 'SUM' },

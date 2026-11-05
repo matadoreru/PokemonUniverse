@@ -18,7 +18,7 @@ describe('AudioSettingsPanel', () => {
     expect(out.match(/type="range"/g)).toHaveLength(4);
     expect(out.match(/step="5"/g)).toHaveLength(4);
     for (const value of ['75 %', '50 %', '35 %', '100 %']) expect(out).toContain(value);
-    expect(out).toContain('Atajo: M');
+    expect(out).not.toContain('Atajo');
     expect(out).not.toContain('Probar sonido');
   });
 

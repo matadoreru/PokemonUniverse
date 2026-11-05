@@ -20,7 +20,11 @@ function applyUpdate(room: RoomView, update: OptimisticLobbyUpdate): RoomView {
       : { ...room, gameConfigs, customizedGameIds };
   }
   if (update.kind === 'session') return { ...room, sessionMode: update.mode };
-  return { ...room, gameSelectionMode: update.mode };
+  // Como el servidor: el primero de la lista pasa a ser el minijuego elegido de la sala.
+  const selectedGameId = update.mode.gameIds[0] ?? room.selectedGameId;
+  return selectedGameId === room.selectedGameId
+    ? { ...room, gameSelectionMode: update.mode }
+    : { ...room, gameSelectionMode: update.mode, selectedGameId, selectedGameConfig: room.gameConfigs?.[selectedGameId] ?? room.selectedGameConfig };
 }
 
 /** Keeps pending lobby edits visible while the server validates and broadcasts them. */

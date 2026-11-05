@@ -23,12 +23,13 @@ describe('room permissions', () => {
 });
 
 describe('game selection mode', () => {
-  it('enforces unique pools with the required minimum size', () => {
-    expect(gameSelectionModeSchema.parse({ type: 'FIXED' })).toEqual({ type: 'FIXED' });
-    expect(gameSelectionModeSchema.safeParse({ type: 'RANDOM', gameIds: ['one'] }).success).toBe(false);
-    expect(gameSelectionModeSchema.safeParse({ type: 'VOTE', gameIds: ['one', 'two'] }).success).toBe(false);
+  it('keeps the ordered list of at least one unique game in every mode', () => {
+    expect(gameSelectionModeSchema.parse({ type: 'ORDER', gameIds: ['two', 'one'] })).toEqual({ type: 'ORDER', gameIds: ['two', 'one'] });
+    expect(gameSelectionModeSchema.parse({ type: 'RANDOM', gameIds: ['one'] })).toEqual({ type: 'RANDOM', gameIds: ['one'] });
+    expect(gameSelectionModeSchema.parse({ type: 'VOTE', gameIds: ['one', 'two'] })).toEqual({ type: 'VOTE', gameIds: ['one', 'two'] });
+    expect(gameSelectionModeSchema.safeParse({ type: 'ORDER', gameIds: [] }).success).toBe(false);
     expect(gameSelectionModeSchema.safeParse({ type: 'VOTE', gameIds: ['one', 'two', 'two'] }).success).toBe(false);
-    expect(gameSelectionModeSchema.parse({ type: 'RANDOM', gameIds: ['one', 'two'] })).toEqual({ type: 'RANDOM', gameIds: ['one', 'two'] });
+    expect(gameSelectionModeSchema.safeParse({ type: 'FIXED' }).success).toBe(false);
   });
 });
 

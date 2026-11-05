@@ -173,6 +173,8 @@
   font-variant-numeric: tabular-nums;
 }
 .tick {
+  font: 800 var(--fs-13) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
   position: absolute;
   top: var(--sp-2);
   left: var(--sp-2);

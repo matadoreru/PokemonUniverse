@@ -47,7 +47,7 @@ function room(game: PokemonConnectionsPublicState, player: PokemonConnectionsPla
     code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8,
     availableGames: [{ id: 'pokemon-connections', name: 'Pokémon Connections', icon: '🧩', description: 'Conexiones', minPlayers: 1, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-connections', selectedGameConfig: { ...defaultPokemonConnectionsConfig, generations: [1] },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'FIXED' }, nextGameVote: null, gamesPlayed: 0,
+    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-connections'] }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: player,
     members: [
       { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },

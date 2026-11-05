@@ -2334,10 +2334,6 @@ components:
           type: integer
           format: int32
           nullable: true
-        introMs:
-          type: integer
-          format: int64
-          nullable: true
         profileStats:
           $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
         defaultConfig:

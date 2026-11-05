@@ -1,6 +1,6 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
 import type { Pokemon } from '../../pokemon/types.js';
-import { isPlayerRequired, type GameActionResult, type GameAssetResolution, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
+import { isPlayerRequired, type GameActionResult, type GameAssetResolution, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS } from '../contracts.js';
 import { resolveWhenRequiredPlayersComplete } from '../infrastructure/timing.js';
 import { defaultShinyVoteConfig, shinyVoteConfigSchema, type ShinyVoteConfig } from './config.js';
 import { shuffled } from '../infrastructure/random.js';
@@ -25,7 +25,6 @@ const manifest = {
   description: 'Encuentra el shiny verdadero entre varios candidatos.',
   minPlayers: 1,
   presenceGraceMs: PRESENCE_GRACE_MS,
-  introMs: GAME_INTRO_MS,
   profileStats: {
     metrics: [
       { key: 'correctVotes', label: 'Aciertos', aggregation: 'SUM' },

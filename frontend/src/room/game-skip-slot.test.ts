@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { skipRowInLayout } from './game-skip-slot';
 
 const skip = { gameInstanceId: 'g1', votes: 0, requiredVotes: 2, currentUserVoted: false, canVote: true } as never;
-const base = { phase: 'ROUND_ACTIVE', gameIntro: null, gameSkipState: skip, selectedGameId: 'future-minigame', game: { gameId: 'future-minigame' } } as never;
+const base = { phase: 'ROUND_ACTIVE', gameSkipState: skip, selectedGameId: 'future-minigame', game: { gameId: 'future-minigame' } } as never;
 
 describe('skipRowInLayout', () => {
   it('pone la fila encima de los juegos sin rediseñar', () => {
@@ -10,9 +10,6 @@ describe('skipRowInLayout', () => {
   });
   it('sin votación no hay fila', () => {
     expect(skipRowInLayout({ ...(base as object), gameSkipState: null } as never)).toBe(false);
-  });
-  it('en la intro va dentro de su pantalla', () => {
-    expect(skipRowInLayout({ ...(base as object), phase: 'GAME_STARTING', gameIntro: { gameInstanceId: 'g1' } } as never)).toBe(false);
   });
   it('Shiny Quiz también la lleva dentro salvo en los resultados', () => {
     const shiny = { ...(base as object), selectedGameId: 'shiny-vote', game: { gameId: 'shiny-vote' } };

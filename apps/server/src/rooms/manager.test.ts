@@ -944,7 +944,7 @@ describe('room multi-game lifecycle', () => {
     (manager as any).join(socket('cohost-socket'), cohost, room.code);
     (manager as any).setRoomRole(host.id, cohost.id, 'CO_HOST');
 
-    expect(() => (manager as any).updateGameSelection(cohost.id, { type: 'RANDOM', gameIds: ['higher-lower'] })).toThrow(/2 minijuegos/);
+    expect(() => (manager as any).updateGameSelection(cohost.id, { type: 'RANDOM', gameIds: [] })).toThrow(/1 minijuego/);
     expect(() => (manager as any).updateGameSelection(cohost.id, { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'missing'] })).toThrow(/desconocido/);
     (manager as any).updateGameSelection(cohost.id, { type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] });
     expect(room.gameSelectionMode).toEqual({ type: 'VOTE', gameIds: ['higher-lower', 'shiny-vote', 'pokemon-bingo'] });
@@ -959,7 +959,7 @@ describe('room multi-game lifecycle', () => {
     }
 
     expect(() => (manager as any).updateGameSelection(host.id, { type: 'RANDOM', gameIds: ['pokemon-bingo', 'zoomed-pokemon'] })).toThrow(/Pokémon Bingo no admite 9 jugadores/);
-    expect(room.gameSelectionMode).toEqual({ type: 'FIXED' });
+    expect(room.gameSelectionMode.type).toBe('ORDER');
   });
 
   it('selects a compatible random minigame at start and avoids an immediate repeat', () => {
