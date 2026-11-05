@@ -35,5 +35,6 @@ describe('client minigame registry', () => {
 
   it('can preload every dynamically registered component export', async () => {
     await Promise.all(clientGameRegistry.list().flatMap((module) => [module.preloadConfig(), module.preloadGameplay()]));
-  });
+    // Importa y transforma todas las pantallas de los minijuegos: con la suite en paralelo supera los 5 s por defecto.
+  }, 60_000);
 });

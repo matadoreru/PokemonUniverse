@@ -125,7 +125,8 @@ describe('clases globales de los .tsx', () => {
       .filter((name) => !tailwind.has(name) && !globals.has(name) && !SIN_CSS.has(name))
       .map((name) => `${name} (${[...uses.get(name)!].join(', ')})`);
     expect(unknown).toEqual([]);
-  }, 60_000);
+    // Analiza todos los .tsx y genera Tailwind entero; con la suite en paralelo puede pasar de un minuto.
+  }, 180_000);
 
   it('detecta una clase inexistente', () => {
     expect(classSelectors('.content-row { x: 1 } .sm\\:grid-cols-\\[1fr_auto\\]:hover { y: 2 }')).toEqual(new Set(['content-row', 'sm:grid-cols-[1fr_auto]']));

@@ -7,7 +7,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ESLint } from 'eslint';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const eslint = new ESLint({ cwd: root });
@@ -16,6 +16,12 @@ async function arcade(code: string, file = 'frontend/src/screens/Prueba.tsx'): P
   const [result] = await eslint.lintText(code, { filePath: path.join(root, file) });
   return (result?.messages ?? []).map((m) => m.ruleId ?? '').filter((id) => id.startsWith('arcade/'));
 }
+
+// La primera llamada carga la configuración y los plugins de ESLint, que tarda varios segundos cuando la suite corre
+// en paralelo. Se hace aquí, con margen, para que cada caso solo mida su propio lint.
+beforeAll(async () => {
+  await arcade('export {};\n');
+}, 60_000);
 
 const conClase = (className: string): string => `export const A = () => <div className="${className}" />;\n`;
 
