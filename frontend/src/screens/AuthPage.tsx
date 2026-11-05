@@ -76,26 +76,20 @@ export function AuthPage() {
           </div>
           <Tabs items={TABS} active={mode} onChange={changeMode} label="Método de acceso" idBase={ID} className="max-sm:!gap-1.5 max-sm:!px-1 max-sm:[&_svg]:hidden" />
           <TabPanel idBase={ID} tabKey={mode}>
-            <form key={mode} ref={form} className="flex flex-col gap-4" onSubmit={submit} onInput={() => error?.field && setError(null)}>
+            <form key={mode} ref={form} className="flex flex-col gap-3" onSubmit={submit} onInput={() => error?.field && setError(null)}>
               {mode === 'register' && <Field label="Nombre de usuario" name="username" minLength={3} maxLength={24} required autoComplete="username" error={fieldError('username')} />}
               {mode === 'login' && <Field label="Email o usuario" name="identifier" required autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={254} error={fieldError('identifier')} />}
               {mode === 'register' && <Field label="Email" name="email" type="email" required autoComplete="email" error={fieldError('email')} />}
               {mode !== 'guest' && <Field label="Contraseña" name="password" type="password" minLength={mode === 'register' ? 10 : 1} required autoComplete={mode === 'register' ? 'new-password' : 'current-password'} error={fieldError('password')} {...(mode === 'register' ? { hint: 'Mínimo 10 caracteres.' } : {})} />}
               {mode === 'guest' && <Field label="Tu nombre temporal" name="displayName" minLength={2} maxLength={24} required placeholder="Entrenador/a" error={fieldError('displayName')} />}
+              {mode === 'login' && <PillLink to="/auth/recuperar" variant="cream" size="small" className="self-start">¿Has olvidado la contraseña?</PillLink>}
+              {/* Aviso compacto (sin icono en pantallas bajas): con el enlace de recuperar, el panel de 1280×720 no cabe con el aviso grande. */}
               {error && !error.field && (
-                <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+                <div ref={errorBox} tabIndex={-1} className={cx('[&>div]:min-h-0 [&>div]:py-0 [@media(max-height:800px)]:[&_svg]:hidden rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
                   <StateBox kind="error" title={FAILED[mode]} text={error.message} onCream />
                 </div>
               )}
-              {mode === 'login' ? (
-                // El enlace comparte fila con «Iniciar sesión» (se apilan si no caben): una fila más alta desborda el panel a 720 px de alto con el aviso de error.
-                <div className="flex flex-wrap items-center gap-3">
-                  <PillLink to="/auth/recuperar" variant="cream" size="small">¿Has olvidado la contraseña?</PillLink>
-                  <Pill type="submit" variant="yellow" loading={busy} className="min-w-40 flex-1">{SUBMIT[mode]}</Pill>
-                </div>
-              ) : (
-                <Pill type="submit" variant="yellow" block loading={busy}>{SUBMIT[mode]}</Pill>
-              )}
+              <Pill type="submit" variant="yellow" block loading={busy}>{SUBMIT[mode]}</Pill>
             </form>
           </TabPanel>
         </div>
