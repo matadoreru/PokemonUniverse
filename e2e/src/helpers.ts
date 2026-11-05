@@ -433,3 +433,29 @@ export async function ultimoCorreoDe(email: string): Promise<{ subject: string; 
   }
   throw new Error(`No llegó ningún correo a ${email} en 10 s (${ultimoError}). ¿Mailpit en :8025 y SMTP_HOST en el backend?`);
 }
+
+/** Abre el panel «Amigos» desde la placa de la cabecera y devuelve su diálogo. */
+export async function abrirAmigos(page: Page): Promise<Locator> {
+  await page.getByRole('button', { name: /^Amigos/ }).click();
+  const panel = page.getByRole('dialog', { name: 'Amigos' });
+  await expect(panel).toBeVisible();
+  return panel;
+}
+
+/** Cierra el panel «Amigos» con su botón «Cerrar». */
+export async function cerrarAmigos(page: Page): Promise<void> {
+  const panel = page.getByRole('dialog', { name: 'Amigos' });
+  await panel.getByRole('button', { name: 'Cerrar', exact: true }).click();
+  await expect(panel).toBeHidden();
+}
+
+/** Hace amigas a dos cuentas por la API: `pedida` recibe la solicitud de `quien` y la acepta (cada página, su sesión). */
+export async function hacerAmigosPorApi(quien: { page: Page; cuenta: CuentaE2E }, pedida: { page: Page; cuenta: CuentaE2E }): Promise<void> {
+  const envio = await quien.page.request.post('/api/friends/requests', { data: { username: pedida.cuenta.username } });
+  expect(envio.status(), `solicitud de ${quien.cuenta.username}`).toBeLessThan(300);
+  const resumen = (await (await pedida.page.request.get('/api/friends')).json()) as { incoming?: { id: string }[] };
+  const id = resumen.incoming?.[0]?.id;
+  if (!id) throw new Error(`no hay solicitud recibida por ${pedida.cuenta.username}: ${JSON.stringify(resumen)}`);
+  const acepta = await pedida.page.request.post(`/api/friends/requests/${id}/accept`);
+  expect(acepta.status(), `aceptar de ${pedida.cuenta.username}`).toBeLessThan(300);
+}

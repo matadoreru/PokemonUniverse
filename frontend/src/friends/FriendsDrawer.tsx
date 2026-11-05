@@ -91,8 +91,8 @@ export function FriendsDrawer() {
                   <li key={request.id}>
                     <Row name={from.username} avatar={<Avatar name={from.username} avatar={from.avatar} size="sm" />} meta="Quiere ser tu amigo">
                       <span className={s.actions}>
-                        <Pill size="small" variant="yellow" icon={Check} loading={busy === `accept:${request.id}`} disabled={busy !== null} aria-label={`Aceptar a ${from.username}`} onClick={() => run(`accept:${request.id}`, () => friends.accept(request.id))}>Aceptar</Pill>
-                        <Pill size="small" variant="ghost" icon={X} loading={busy === `decline:${request.id}`} disabled={busy !== null} aria-label={`Rechazar a ${from.username}`} onClick={() => run(`decline:${request.id}`, () => friends.decline(request.id))}>Rechazar</Pill>
+                        <Pill size="round" variant="yellow" icon={Check} title="Aceptar" loading={busy === `accept:${request.id}`} disabled={busy !== null} aria-label={`Aceptar a ${from.username}`} onClick={() => run(`accept:${request.id}`, () => friends.accept(request.id))}/>
+                        <Pill size="round" variant="ghost" icon={X} title="Rechazar" loading={busy === `decline:${request.id}`} disabled={busy !== null} aria-label={`Rechazar a ${from.username}`} onClick={() => run(`decline:${request.id}`, () => friends.decline(request.id))}/>
                       </span>
                     </Row>
                   </li>
