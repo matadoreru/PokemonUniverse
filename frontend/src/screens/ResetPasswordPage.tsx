@@ -26,11 +26,15 @@ export function ResetPasswordPage() {
   const [error, setError] = useState<AuthError | null>(null);
   const form = useRef<HTMLFormElement>(null);
   const errorBox = useRef<HTMLDivElement>(null);
+  const invalidBox = useRef<HTMLDivElement>(null);
   const auth = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => { removeTokenFromUrl(window); }, []);
-  useEffect(() => { form.current?.querySelector('input')?.focus(); }, [linkInvalid]);
+  // Al cambiar de contenido el foco se recoloca: al campo, o al aviso si el enlace ya no vale.
+  useEffect(() => {
+    if (linkInvalid) invalidBox.current?.focus(); else form.current?.querySelector('input')?.focus();
+  }, [linkInvalid]);
 
   // Foco al error: el campo concreto o el aviso general.
   useEffect(() => {
@@ -62,7 +66,7 @@ export function ResetPasswordPage() {
             <p className={cx('mt-1 text-15 font-bold 2xl:mt-2 2xl:text-18', tone.textInk2)}>Al guardarla entrarás directamente.</p>
           </div>
           {linkInvalid ? (
-            <div className="flex flex-col gap-4">
+            <div ref={invalidBox} tabIndex={-1} data-testid="enlace-no-valido" className={cx('flex flex-col gap-4 rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
               <StateBox kind="error" title="Enlace no válido" text={INVALID_LINK_MESSAGE} onCream />
               <PillLink to="/auth/recuperar" variant="yellow" block>Pedir otro enlace</PillLink>
             </div>

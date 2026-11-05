@@ -13,9 +13,13 @@ export function ForgotPasswordPage() {
   const [error, setError] = useState<AuthError | null>(null);
   const form = useRef<HTMLFormElement>(null);
   const errorBox = useRef<HTMLDivElement>(null);
+  const sentBox = useRef<HTMLDivElement>(null);
   const auth = useAuth();
 
   useEffect(() => { form.current?.querySelector('input')?.focus(); }, []);
+
+  // Al cambiar el formulario por la confirmación el botón desaparece: el foco pasa a la confirmación.
+  useEffect(() => { if (sent) sentBox.current?.focus(); }, [sent]);
 
   // Foco al error: el campo concreto o el aviso general.
   useEffect(() => {
@@ -39,7 +43,7 @@ export function ForgotPasswordPage() {
             <p className={cx('mt-1 text-15 font-bold 2xl:mt-2 2xl:text-18', tone.textInk2)}>Te enviamos un enlace para elegir una nueva.</p>
           </div>
           {sent ? (
-            <div className="flex flex-col gap-4">
+            <div ref={sentBox} tabIndex={-1} data-testid="recuperar-enviado" className={cx('flex flex-col gap-4 rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
               <StateBox kind="empty" title="Revisa tu correo" text="Si existe una cuenta, te hemos enviado un enlace a su email. Caduca en 30 minutos." onCream />
               <PillLink to="/auth" variant="yellow" block>Entrar</PillLink>
             </div>

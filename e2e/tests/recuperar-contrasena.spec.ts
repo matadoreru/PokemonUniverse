@@ -44,6 +44,8 @@ for (const { w, h } of SIZES) {
     await page.getByLabel('Email o usuario').fill(cuenta.username);
     await page.getByRole('button', { name: /enlace/i }).click();
     await expect(page.getByText('Si existe una cuenta, te hemos enviado un enlace a su email. Caduca en 30 minutos.')).toBeVisible();
+    // El botón desaparece al enviar: el foco pasa a la confirmación (WCAG 2.4.3).
+    await expect(page.getByTestId('recuperar-enviado')).toBeFocused();
     await capture(page, 'recuperar-enviado');
 
     const correo = await ultimoCorreoDe(cuenta.email);
@@ -81,6 +83,7 @@ for (const { w, h } of SIZES) {
     await page.getByRole('button', { name: 'Guardar contraseña' }).click();
     await expect(page.getByText('Este enlace no es válido o ha caducado.')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Pedir otro enlace' })).toBeVisible();
+    await expect(page.getByTestId('enlace-no-valido')).toBeFocused();
     await capture(page, 'nueva-contrasena-caducado');
 
     // El enlace reutilizado provoca (a propósito) un 400 que Chromium registra como error de consola sin URL.
