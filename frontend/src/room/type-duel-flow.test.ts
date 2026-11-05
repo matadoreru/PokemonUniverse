@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { typeDuelIsLastResult, typeDuelWillRetry } from './type-duel-flow';
+import { typeDuelIsLastResult, typeDuelPhaseCue, typeDuelWillRetry } from './type-duel-flow';
 
 describe('typeDuelWillRetry', () => {
   it('retries while there are impossible tries left and the cap is not reached', () => {
@@ -23,5 +23,18 @@ describe('typeDuelIsLastResult', () => {
   });
   it('is not the last result otherwise', () => {
     expect(typeDuelIsLastResult({ completedRounds: 1, totalRounds: 3, finalSelectionCycle: false })).toBe(false);
+  });
+});
+
+describe('typeDuelPhaseCue', () => {
+  it('suena a revelación (no a error) cuando la combinación existe', () => {
+    expect(typeDuelPhaseCue({ phase: 'TYPE_REVEAL', roundNumber: 2, invalidCombinations: 0 })).toEqual({ cue: 'reveal', key: 'reveal:2:0' });
+  });
+  it('reserva el choque para la combinación imposible, con clave por reintento', () => {
+    expect(typeDuelPhaseCue({ phase: 'INVALID_COMBINATION', roundNumber: 2, invalidCombinations: 1 })).toEqual({ cue: 'clang', key: 'invalid:2:1' });
+    expect(typeDuelPhaseCue({ phase: 'TYPE_REVEAL', roundNumber: 2, invalidCombinations: 1 })?.key).not.toBe('reveal:2:0');
+  });
+  it('no suena en el resto de fases', () => {
+    for (const phase of ['SELECTING_TYPES', 'POKEMON_SEARCH', 'ROUND_RESULTS']) expect(typeDuelPhaseCue({ phase, roundNumber: 1, invalidCombinations: 0 })).toBeNull();
   });
 });
