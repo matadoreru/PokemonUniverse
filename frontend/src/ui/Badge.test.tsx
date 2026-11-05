@@ -1,12 +1,23 @@
+import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { typeColors } from '../styles/tokens';
 import type { PokemonType } from '../styles/tokens';
-import { TypeBadge, TypeOption } from './Badge';
+import { Badge, TypeBadge, TypeOption } from './Badge';
 import type { TypeOptionProps } from './Badge';
 
 const classes = (html: string) => (/class="([^"]*)"/.exec(html)?.[1] ?? '').split(' ').map((c) => c.replace(/^_/, '').replace(/_[0-9a-f]+$/, ''));
+
+describe('Badge', () => {
+  it('el tono rojo lleva su clase (BETA)', () => {
+    const html = renderToStaticMarkup(createElement(Badge, { tone: 'red', children: 'BETA' }));
+    expect(classes(html)).toContain('red');
+    expect(html).toContain('>BETA<');
+    // El proxy de CSS Modules de Vitest acepta cualquier clase: se comprueba que el tono existe en la hoja.
+    expect(readFileSync(new URL('./Badge.module.css', import.meta.url), 'utf8')).toMatch(/^\.red\s*\{[^}]*var\(--red-d\)[^}]*var\(--white\)/m);
+  });
+});
 
 describe('TypeBadge', () => {
   it.each(Object.keys(typeColors) as PokemonType[])('%s usa su token y su tinta', (t) => {

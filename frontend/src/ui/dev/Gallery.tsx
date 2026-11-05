@@ -452,9 +452,9 @@ function ToggleSection() {
 function BadgeSection() {
   return (
     <Section name="badge" title="Badge">
-      {(['yellow', 'navy', 'cream'] as const).map((tone) => (
+      {(['yellow', 'navy', 'cream', 'red'] as const).map((tone) => (
         <Fig key={tone} id={`badge-${tone}`} caption={`Tono ${tone}`}>
-          <Badge tone={tone}>12</Badge>
+          <Badge tone={tone}>{tone === 'red' ? 'BETA' : '12'}</Badge>
         </Fig>
       ))}
     </Section>
@@ -690,7 +690,7 @@ function CardSection() {
           <span className="text-13 font-bold">3+ jugadores</span>
           <span className="flex flex-wrap justify-center gap-1">
             <Badge tone="navy">Seleccionado</Badge>
-            <Badge tone="cream">Experimental</Badge>
+            <Badge tone="red">BETA</Badge>
           </span>
         </Card>
       </Fig>

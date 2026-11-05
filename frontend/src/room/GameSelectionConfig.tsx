@@ -121,7 +121,7 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
       <p className={g.editorLead}>
         {editingGame.description} · {playerRangeLabel(editingGame)}.
         {editingGame.recommended && <> <Badge>TOP</Badge></>}
-        {editingGame.experimental && <> <Badge tone="cream">Experimental</Badge></>}
+        {editingGame.experimental && <> <Badge tone="red">BETA</Badge></>}
       </p>
       {skipReason
         ? <p className={g.editorNote} role="status">{skipReason} Se omitirá mientras haya {playerCount} jugadores.</p>

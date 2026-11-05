@@ -174,11 +174,11 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
                   {/* Elegida: su número de orden en la esquina superior izquierda, para que la carta no cambie de tamaño
                       (el estado ya lo dicen el amarillo y `aria-pressed`). */}
                   {selected && <><span className={s.tick} aria-hidden="true">{position}</span><span className="sr-only">{`, n.º ${position} de la sesión`}</span></>}
-                  {/* TOP y Exp(erimental) en la esquina superior derecha de la carta. */}
+                  {/* TOP y BETA en la esquina superior derecha de la carta. */}
                   {(game.recommended || game.experimental) && (
                     <span className={s.corner}>
                       {game.recommended && <Badge>TOP</Badge>}
-                      {game.experimental && <Badge tone="cream"><span aria-hidden="true">Exp</span><span className="sr-only">Experimental</span></Badge>}
+                      {game.experimental && <Badge tone="red">BETA</Badge>}
                     </span>
                   )}
                 </Card>

@@ -26,6 +26,11 @@
   background: var(--cream);
   color: var(--navy);
 }
+/* Rojo oscuro con texto blanco (contraste AA): la marca BETA. */
+.red {
+  background: var(--red-d);
+  color: var(--white);
+}
 
 .type {
   min-height: 26px;

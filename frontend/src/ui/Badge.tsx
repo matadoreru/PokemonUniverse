@@ -10,7 +10,7 @@ import s from './Badge.module.css';
 
 export interface BadgeProps {
   children: ReactNode;
-  tone?: 'yellow' | 'navy' | 'cream';
+  tone?: 'yellow' | 'navy' | 'cream' | 'red';
 }
 
 /** Insignia numérica o de estado. */

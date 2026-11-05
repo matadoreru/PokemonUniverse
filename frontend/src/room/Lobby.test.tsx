@@ -42,7 +42,7 @@ describe('lobby information hierarchy', () => {
     expect(markup).not.toContain('✨');
     expect(markup).toContain('items/poke-radar.png');
     expect(markup).toContain('items/shiny-charm.png');
-    expect(markup).toContain('Experimental');
+    expect(markup).toContain('>BETA<');
     expect(markup).toContain('>TOP<');
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');
     expect(markup).toContain('Hablando es mejor');
@@ -86,7 +86,7 @@ describe('lobby how to play', () => {
     /></MemoryRouter>);
     expect(markup).not.toContain('Cómo se juega');
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>TOP<\/span>/);
-    expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*><span aria-hidden="true">Exp<\/span><span class="sr-only">Experimental<\/span>/);
+    expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>BETA<\/span>/);
     // La elegida solo lleva su número en la esquina: sin insignia «Seleccionado» que agrande la carta.
     expect(markup).not.toContain('Seleccionado');
     expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true">1</);

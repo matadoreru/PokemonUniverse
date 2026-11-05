@@ -66,7 +66,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
               {winner && <Badge tone="navy"><Icon icon={Trophy} size={18} />Ganador</Badge>}
               {selected && <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Tu voto</Chip>}
               {game.recommended && <Badge>TOP</Badge>}
-              {game.experimental && <Badge tone="cream">Experimental</Badge>}
+              {game.experimental && <Badge tone="red">BETA</Badge>}
             </span>}
             <span className={cx(s.desc, unavailableReason && s.bad)}>{unavailableReason ?? game.description}</span>
             {!unavailableReason && <span className={s.config}>{summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
