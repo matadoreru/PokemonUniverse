@@ -12,7 +12,7 @@ import { GameSkipSlot } from './GameSkipSlot';
 import { useFocusOnTransition } from './focus-transition';
 import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
-import { typeDuelIsLastResult, typeDuelWillRetry } from './type-duel-flow';
+import { typeDuelIsLastResult, typeDuelPhaseCue, typeDuelWillRetry } from './type-duel-flow';
 import { typeDuelHeading, typeDuelResultText } from './type-duel-result';
 import { TypeDuelVersus } from './TypeDuelVersus';
 import s from '../games/type-duel/TypeDuel.module.css';
@@ -60,8 +60,9 @@ export function TypeDuelGame({ room, selfId, onAction }: { room: RoomView; selfI
   const wonPoints = lastRound?.winnerId === selfId ? WIN_POINTS : 0;
   const last = typeDuelIsLastResult(game);
 
-  // El choque suena al revelarse los tipos (también tras reintentar una combinación imposible: entre medias la clave es null).
-  useSfxCue('clang', game.phase === 'TYPE_REVEAL' ? game.roundNumber : null);
+  // Tipos revelados con combinación válida: sonido de revelación; el choque disonante, solo sin ningún Pokémon válido.
+  const phaseCue = typeDuelPhaseCue(game);
+  useSfxCue(phaseCue?.cue ?? null, phaseCue?.key ?? null);
   useSfxCue('win', game.phase === 'ROUND_RESULTS' && game.lastRound?.winnerId === selfId ? game.roundNumber : null);
 
   const titleRef = useRef<HTMLHeadingElement>(null);

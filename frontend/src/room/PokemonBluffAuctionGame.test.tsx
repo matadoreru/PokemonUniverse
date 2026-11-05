@@ -142,7 +142,8 @@ describe('Pokémon Bluff Auction: demostración', () => {
     expect(html).toContain('Ronda 2 de 10 · Demostración');
     expect(html).toContain('>Demuestra tu apuesta</h1>');
     expect(html).toContain('Nombra Pokémon');
-    expect(html).toContain('Acierto: +5 segundos · Fallo: −3 segundos.');
+    // Junto al buscador la placa no lleva descripción (solo el kicker y el título).
+    expect(html).not.toContain('Acierto: +5 segundos · Fallo: −3 segundos.');
     expect(html).toContain('Buscar Pokémon para demostrar la apuesta');
     // En el móvil el buscador no va pegado al fondo (con la bandeja abierta taparía las métricas).
     expect(html).toMatch(/data-testid="auction-screen"/);

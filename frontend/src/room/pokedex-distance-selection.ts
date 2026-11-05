@@ -9,6 +9,14 @@ export const distanceSelectionVisibilityLabels: Record<PokedexDistanceSelectionV
 /** Cut-in y tarjeta de quien acierta el número exacto del objetivo. */
 export const DISTANCE_EXACT_HIT_TITLE = '¡Acierto exacto!';
 
+/**
+ * ¿Toca confeti? Al revelar la ronda, si la elección propia es exactamente el objetivo (distancia 0). Solo con la
+ * ronda ya resuelta (`ROUND_RESULTS` y su `lastRound`).
+ */
+export function distanceExactAtReveal(game: Pick<PokedexDistancePublicState, 'phase' | 'lastRound'>, selfId: string): boolean {
+  return game.phase === 'ROUND_RESULTS' && game.lastRound?.selections[selfId]?.distance === 0;
+}
+
 /** Estado de un jugador que ya ha elegido cuando las elecciones de los rivales están ocultas. */
 export const DISTANCE_HIDDEN_PICKED_LABEL = '✓ Ya ha elegido';
 

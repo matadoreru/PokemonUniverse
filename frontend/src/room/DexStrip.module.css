@@ -1,4 +1,4 @@
-/* Tira de la Pokédex nacional (pista de Pokédex Distance): bandas por generación y la chincheta del objetivo. */
+/* Tira de la Pokédex (pista de Pokédex Distance): las generaciones en juego, por bandas, y la chincheta del objetivo. */
 .strip {
   min-width: 0;
   padding: var(--sp-3) var(--sp-4);
@@ -36,6 +36,10 @@
 .on {
   background: var(--blue);
   opacity: 1;
+}
+/* Corte entre generaciones no contiguas (las de en medio no se juegan): una raya amarilla discontinua. */
+.cut {
+  border-left: var(--ol-3) dashed var(--yellow);
 }
 .range {
   letter-spacing: 0;

@@ -286,6 +286,8 @@ describe('Pokédle Race: resultados y ajustes', () => {
     expect(html).toContain('Lucario · ronda 3');
     expect(html).toContain('No resuelto');
     expect(html).toContain('Era Garchomp');
+    // El sprite del Pokémon de cada uno, en su franja.
+    expect(html.match(/data-testid="results-sprite"/g)).toHaveLength(2);
     expect(html).toContain('2 intentos · 1 sin responder · resuelto a los 42.0s');
     expect(html).toContain('En menos rondas');
     expect(html).toContain('Resolución más rápida');

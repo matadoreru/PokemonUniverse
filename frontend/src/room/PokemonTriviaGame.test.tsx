@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { PokemonTriviaConfigPanel } from '../games/pokemon-trivia/ConfigPanel';
 import {
-  triviaAnnouncement, triviaCategoryScores, triviaComparedValue, triviaFocusKey, triviaOptionFromKey, triviaPlateKind, triviaRanking, triviaVerdict, triviaVisibleRound,
+  triviaAnnouncement, triviaCategoryScores, triviaComparedValue, triviaConfirmAction, triviaDraftAfterSelect, triviaFocusKey, triviaOptionFromKey, triviaPlateKind, triviaRanking, triviaVerdict, triviaVisibleRound,
 } from '../games/pokemon-trivia/presentation';
 import { PokemonTriviaGame } from './PokemonTriviaGame';
 import { PokemonTriviaResults } from './PokemonTriviaResults';
@@ -47,6 +47,18 @@ describe('Pokémon Trivia: presentación', () => {
     expect(triviaOptionFromKey('0', options)).toBeNull();
   });
 
+  it('elegir y confirmar como en Shiny Quiz: elegir solo marca en local; confirmar envía la elegida', () => {
+    expect(triviaDraftAfterSelect(null, 'B', true, false)).toBe('B');
+    expect(triviaDraftAfterSelect('B', 'C', true, false)).toBe('C');
+    // Sin poder responder o con la respuesta en camino, la elección no cambia.
+    expect(triviaDraftAfterSelect('B', 'C', false, false)).toBe('B');
+    expect(triviaDraftAfterSelect('B', 'C', true, true)).toBe('B');
+    expect(triviaConfirmAction('C', true, false)).toEqual({ type: 'ANSWER', optionId: 'C' });
+    expect(triviaConfirmAction(null, true, false)).toBeNull();
+    expect(triviaConfirmAction('C', false, false)).toBeNull();
+    expect(triviaConfirmAction('C', true, true)).toBeNull();
+  });
+
   it('elige la placa y solo deja ver la ronda en ROUND_RESULTS', () => {
     expect(triviaPlateKind({ game: active, player: answering })).toBe('answer');
     expect(triviaPlateKind({ game: active, player: { ...answering, canAnswer: false, answer: { optionId: 'A', answeredAt: 1 } } })).toBe('locked');
@@ -83,21 +95,30 @@ describe('Pokémon Trivia: pantalla', () => {
     expect(markup).toContain('aria-keyshortcuts="1"'); expect(markup).toContain('aria-keyshortcuts="3"'); expect(markup).toContain('aria-label="2. Charmander"');
     expect(markup).toContain('Pikachu'); expect(markup).toContain('Charmander');
     for (const leak of ['Correcta', 'Incorrecta', 'Charmander tiene el Ataque', 'Ataque 52', 'Gen 1 · PS', 'correctOptionId', 'Nadie la eligió']) expect(markup).not.toContain(leak);
+    // Sin elegir: «Confirmar respuesta» deshabilitado y los atajos con Enter.
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>[\s\S]*?Confirmar respuesta/);
+    expect(markup).toContain('Enter confirma');
+    expect(markup).not.toContain('data-mark');
     expect(markup.match(/aria-live/g)).toHaveLength(1);
     expect(markup).not.toContain('role="alert"');
   });
 
   it('respuesta bloqueada: la propia marcada en texto y el marcador dice quién ha respondido', () => {
     const markup = render({ ...active, answeredPlayerIds: ['p1'] }, { role: 'PLAYER', canAnswer: false, answer: { optionId: 'A', answeredAt: 2_000 } });
-    expect(markup).toContain('1 · Pikachu bloqueada'); expect(markup).toContain('Tu respuesta');
+    expect(markup).toContain('1 · Pikachu bloqueada'); expect(markup).toContain('data-mark="selected"');
     expect(markup).toContain('Respondió'); expect(markup).toContain('Pensando…'); expect(markup).toContain('1 / 2 respuestas');
     expect(markup).not.toContain('aria-keyshortcuts');
   });
 
-  it('revelación: correcta e incorrectas con icono y texto, la ficha, el dato y quién eligió qué', () => {
+  it('revelación: marcas en la esquina, solo el dato comparado y los avatares de quién eligió qué', () => {
     const markup = render(revealed, { role: 'PLAYER', canAnswer: false, answer: { optionId: 'B', answeredAt: 2_000 } });
     expect(markup).toContain('Correcta: Charmander'); expect(markup.match(/>Correcta</g)).toHaveLength(1); expect(markup.match(/>Incorrecta</g)).toHaveLength(2);
-    expect(markup).toContain('Charmander tiene el Ataque más alto'); expect(markup).toContain('Ataque 52'); expect(markup).toContain('Gen 1 · PS 35'); expect(markup).toContain('aria-label="Ficha de cada opción"');
+    expect(markup.match(/data-mark="correct"/g)).toHaveLength(1); expect(markup.match(/data-mark="wrong"/g)).toHaveLength(2);
+    expect(markup).toContain('Charmander tiene el Ataque más alto'); expect(markup).toContain('Ataque 52');
+    // Solo lo que compara la pregunta: ni la ficha entera ni los nombres en chips bajo la carta.
+    expect(markup).not.toContain('Gen 1 · PS 35'); expect(markup).not.toContain('Ficha de cada opción');
+    expect(markup).toMatch(/data-testid="trivia-pickers" data-self="true"[\s\S]*?Elegida por ti</);
+    expect(markup).toContain('Elegida por Ana');
     expect(markup).toContain('Acertó</span><span'); expect(markup).toContain('Eligió 2 · Charmander'); expect(markup).toContain('Falló</span><span'); expect(markup).toContain('Eligió 1 · Pikachu'); expect(markup).toContain('Nadie la eligió');
     expect(markup).toContain('¡Correcta! Elegiste 2 · Charmander'); expect(markup).toContain('+180');
     expect(markup.match(/aria-live/g)).toHaveLength(1);

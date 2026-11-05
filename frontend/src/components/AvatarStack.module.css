@@ -1,0 +1,23 @@
+/* Pila de avatares sobre el sprite de una carta: pastilla crema con contorno, los avatares solapados y el «+N». */
+.stack {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  max-width: 100%;
+  padding: 2px;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--cream);
+  box-shadow: var(--sh-hard-3);
+}
+.avatars {
+  display: inline-flex;
+}
+.avatars > * + * {
+  margin-left: -10px;
+}
+.more {
+  padding-right: var(--sp-1);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  color: var(--navy);
+}

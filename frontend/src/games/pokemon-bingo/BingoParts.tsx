@@ -12,7 +12,7 @@ const offline = (member: RoomMemberView | undefined) => member?.presence !== und
 
 /**
  * Tablero de Bingo: una rejilla de `width` columnas con una `Card` por casilla. Cada carta dice su condición en texto y,
- * debajo, el Pokémon colocado (sprite, nombre y «Completa») o «Vacía». Con `onSelect`, las cartas son conmutadores
+ * el Pokémon colocado (su sprite ocupa casi toda la casilla, con el nombre y el tic de «Completa») o «Vacía». Con `onSelect`, las cartas son conmutadores
  * (`aria-pressed`) para elegir la casilla; sin él (rivales, resultados), cartas quietas. `fill` reparte el alto libre
  * entre las filas (el tablero propio en escritorio); si no caben, el `Panel` que lo contiene se desplaza por dentro.
  * `showSolutions` solo en los resultados: el servidor manda `possibleSolutions` al terminar la partida.
@@ -42,10 +42,14 @@ export function BingoBoard({ board, width, height, selectedCellId = null, onSele
         }}
         {...(onSelect ? { onSelect: () => onSelect(cell.id) } : {})}>
         {assigned
-          ? <span className={s.filled}>
-            <strong className={s.assigned} title={assigned.name}>{assigned.name}</strong>
-            <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Completa</Chip>
-          </span>
+          ? <>
+            <span className={s.filled}>
+              <strong className={s.assigned} title={assigned.name}>{assigned.name}</strong>
+              <span className="sr-only">Completa</span>
+            </span>
+            {/* «Completa» a la vista: el tic de la esquina (el sprite ocupa la casilla; el texto, para lectores). */}
+            <span className={s.done} aria-hidden="true"><Icon icon={CheckCircle2} size={18} /></span>
+          </>
           : <span className={s.empty}>Vacía</span>}
         {solutions.length > 0 && <span className={s.solutions}>
           <span className={s.solutionsTitle}>Podías usar</span>

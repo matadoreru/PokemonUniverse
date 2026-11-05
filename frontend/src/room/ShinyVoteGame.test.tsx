@@ -173,7 +173,9 @@ describe('Shiny Quiz UI', () => {
     const vote = { optionId: 'B' as const, votedAt: 2_000 };
     const html = render(publicGame({ votes: { p1: vote }, votedPlayerIds: ['p1'], pendingPlayerIds: ['p2', 'p3', 'p4', 'p5'] }), player({ canVote: false, vote }));
     expect(html).toContain('Voto confirmado:');
-    expect(html).toContain('Tu voto');
+    // El voto propio se marca con el tic de la esquina del sprite, no con un chip que encogería la carta.
+    expect(html).toMatch(/data-shiny-option="B"[^>]*data-own="true"[\s\S]*?data-mark="selected"/);
+    expect(html).not.toContain('Tu voto</span>');
     expect(html).toContain('Opción B: Simisear, voto confirmado');
     expect(html).not.toContain('Confirmar voto');
     expect(html).not.toMatch(/<button[^>]*data-shiny-option/);
@@ -193,7 +195,7 @@ describe('Shiny Quiz UI', () => {
   it('revela un acierto sin modal: la correcta gira, «+N», antes y después y el veredicto', () => {
     const html = render(revealGame(), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 }, roundResult: { correct: true, points: 4 } }));
     expect(html).toContain('Opción B: Simisear, shiny verdadero, tu voto acertado, +4 puntos');
-    expect(html).toMatch(/<div data-shiny-option="B" data-correct="true" class="[^"]*_flip_/);
+    expect(html).toMatch(/<div data-shiny-option="B" data-correct="true"[^>]* class="[^"]*_flip_/);
     expect(html).toContain('Correcta');
     expect(html).toMatch(/aria-hidden="true">\+4<\/span>/);
     expect(html).not.toContain('aria-busy');

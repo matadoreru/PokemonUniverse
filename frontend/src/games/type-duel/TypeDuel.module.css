@@ -334,7 +334,8 @@
   background: var(--warn);
 }
 .resultText {
-  flex: 1 1 14rem;
+  /* Mide lo que pide: la carta ganadora queda justo a la derecha del título, no en la esquina. */
+  flex: 0 1 auto;
   min-width: 0;
 }
 .kicker {

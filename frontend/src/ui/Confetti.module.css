@@ -1,0 +1,41 @@
+/* Capa del confeti: fija, sobre la pantalla, sin clics y recortada (no crea desplazamiento). */
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cutin);
+  overflow: hidden;
+  pointer-events: none;
+}
+/* En su contenedor (galería): la caída se recorta en él. */
+.contained {
+  position: absolute;
+}
+/* Cada papelito sale por encima del borde superior y cae girando y desvaneciéndose (solo transform y opacity). */
+.piece {
+  position: absolute;
+  top: -24px;
+  border: 1px solid var(--navy);
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: fall;
+  animation-timing-function: cubic-bezier(0.25, 0.6, 0.5, 1);
+  animation-fill-mode: both;
+}
+@keyframes fall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .layer {
+    display: none;
+  }
+}

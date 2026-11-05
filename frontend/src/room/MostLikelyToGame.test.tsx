@@ -73,7 +73,8 @@ describe('Most Likely To: pantalla', () => {
     expect(html).toContain('Respuesta guardada');
     expect(html).toContain('Guardada<');
     expect(html).toContain('Snorlax');
-    expect(html).toContain('Puedes cambiar tu elección mientras siga abierta la fase.');
+    // Junto al buscador la placa no lleva descripción: solo el kicker y el título.
+    expect(html).not.toContain('Puedes cambiar tu elección mientras siga abierta la fase.');
     expect(html).toContain('Buscar Pokémon para responder');
     expect(html).toContain('Las respuestas no se muestran hasta que termina la selección.');
     expect(html).toContain('Respondió');

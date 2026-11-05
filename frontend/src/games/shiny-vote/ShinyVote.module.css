@@ -123,8 +123,9 @@
 @media (min-width: 1024px) {
   .stage {
     /* Lo menor entre el ancho de la carta (cqw) y el alto de su fila en la rejilla (cqh) menos lo fijo de la carta:
-       relleno, contorno, nombre, veredicto y la fila de chips y votantes. */
-    height: max(4rem, min(100cqw, (100cqh - (var(--rows) - 1) * var(--sp-3)) / var(--rows) - 7.5rem));
+       relleno, contorno y nombre. Las marcas y los votantes van encima del sprite: el hueco no cambia al elegir ni al
+       revelar. */
+    height: max(4rem, min(100cqw, (100cqh - (var(--rows) - 1) * var(--sp-3)) / var(--rows) - 4.5rem));
   }
 }
 .sprite {
@@ -194,33 +195,10 @@
 .pop {
   position: absolute;
   top: var(--sp-2);
-  right: var(--sp-3);
+  /* A la izquierda de la marca de la esquina del sprite (32 px). */
+  right: calc(var(--sp-3) + 40px);
 }
-.foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-1) var(--sp-2);
-  max-width: 100%;
-}
-.voters {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-}
-.avatars {
-  display: inline-flex;
-}
-.avatars > * + * {
-  margin-left: -10px;
-}
-.more {
-  font: 800 var(--fs-13) / 1 var(--font-text);
-  color: var(--ink-2);
-}
-
-/* Columna lateral: el antes y el después, el marcador y «Saltar minijuego». */
+/* Columna lateral: el marcador, el antes y el después y «Saltar minijuego». */
 .side {
   display: flex;
   flex-direction: column;

@@ -45,7 +45,7 @@ export interface GuessPanelProps {
   titleRef: Ref<HTMLHeadingElement>;
   /** Pregunta de la placa al adivinar («¿Quién es ese Pokémon?»). */
   question: string;
-  /** Ayuda bajo la pregunta al adivinar (p. ej. cómo se puntúa); en el móvil no ocupa alto. */
+  /** Ayuda bajo la pregunta al adivinar (p. ej. cómo se puntúa). No se pinta junto al buscador (solo kicker y título). */
   guessText?: ReactNode;
   /** Adivinar: el buscador. */
   selector?: GuessSelectorProps | undefined;
@@ -85,13 +85,15 @@ type PlateContent = GuessPlateContent;
 export function GuessPanel(props: GuessPanelProps) {
   const { kind, titleRef, selector, cooldownMs = 0 } = props;
   const content = props.content ?? plateContent(props);
+  // Con el buscador a la vista, la placa solo lleva el kicker y el título: la descripción sobra junto al campo.
+  const searching = kind === 'guess' && Boolean(selector);
   return <Panel variant="cream" as="section" bodyClassName={cx(s.plate, kind === 'guess' && s.plateSearch)} aria-labelledby="guess-plate-title">
     <div className={s.plateRow}>
       <span className={cx(s.plateIcon, s[`tone_${content.tone}`])}><Icon icon={content.icon} size={32} /></span>
       <div className={s.plateText}>
         <span className={s.kicker}>{content.kicker}</span>
         <h2 id="guess-plate-title" ref={titleRef} tabIndex={-1} className={s.plateTitle}>{content.title}</h2>
-        {content.text && <p className={s.help}>{content.text}</p>}
+        {content.text && !searching && <p className={s.help}>{content.text}</p>}
       </div>
       {content.aside && <div className={s.plateAside}>{content.aside}</div>}
     </div>
