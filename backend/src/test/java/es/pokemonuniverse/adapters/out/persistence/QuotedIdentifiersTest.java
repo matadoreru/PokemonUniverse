@@ -12,14 +12,15 @@ class QuotedIdentifiersTest {
 
   @Inject EntityManager entityManager;
 
+  /** Cuenta las notas de parche 0.x que siembra V5: la consulta solo funciona si Hibernate cita las mayúsculas. */
   @Test
   void hibernateQueriesPascalCaseTableAndColumns() {
     var count =
         entityManager
             .createQuery(
-                "select count(c) from ChangelogEntity c where c.published = true and c.version is not null",
+                "select count(c) from ChangelogEntity c where c.published = true and c.version like '0.%'",
                 Long.class)
             .getSingleResult();
-    assertEquals(0L, count);
+    assertEquals(5L, count);
   }
 }

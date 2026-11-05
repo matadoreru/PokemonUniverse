@@ -98,8 +98,30 @@ class ChangelogControllerTest {
 
   @Test
   void emptyIsEmptyArray() {
-    // Sin filas publicadas en la BD de test (el resto de clases limpia lo suyo).
-    assertEquals("{\"entries\":[]}", body());
+    // La BD de test solo tiene publicadas las notas sembradas por V5 (el resto de clases limpia lo suyo): se ocultan
+    // mientras dura la prueba y se vuelven a publicar al acabar.
+    var seeded = repo.findByPublishedTrueOrderByDateDescAndCreatedAtDesc();
+    try {
+      seeded.forEach(entry -> setPublished(entry, false));
+      assertEquals("{\"entries\":[]}", body());
+    } finally {
+      seeded.forEach(entry -> setPublished(entry, true));
+    }
+  }
+
+  private void setPublished(ChangelogEntity entry, boolean published) {
+    entry.update(null, null, null, null, published, null, entry.getUpdatedAt());
+    repo.update(entry);
+  }
+
+  @Test
+  void migrationSeedsPublishedPatchNotesUpToV050() {
+    var seeded = repo.findByPublishedTrueOrderByDateDescAndCreatedAtDesc().stream()
+        .map(ChangelogEntity::getVersion).filter(v -> v.matches("0\\.[1-5]\\.0")).toList();
+    assertEquals(List.of("0.5.0", "0.4.0", "0.3.0", "0.2.0", "0.1.0"), seeded);
+    var latest = repo.findByVersion("0.5.0").orElseThrow();
+    assertEquals("Nueva imagen Arcade", latest.getTitle());
+    assertEquals(3, latest.getContent().stream().filter(c -> ((Map<?, ?>) c).containsKey("highlight")).count());
   }
 
   @Test
