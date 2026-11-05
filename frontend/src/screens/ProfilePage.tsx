@@ -31,7 +31,8 @@ export function LevelMeter({ progress }: { progress: LevelProgress }) {
   const span = Math.max(1, progress.nextLevelXp - progress.levelXp);
   const missing = Math.max(0, progress.nextLevelXp - progress.xp);
   return (
-    <div className="flex min-w-0 flex-col gap-2" data-testid="level-meter">
+    // A todo el ancho de la placa, en su propia fila: en una columna estrecha la barra casi no se veía.
+    <div className="flex min-w-0 basis-full flex-col gap-2" data-testid="level-meter">
       <p className="flex flex-wrap items-baseline justify-between gap-x-3">
         <strong className={cx('ol font-display text-22 font-extrabold', tone.textYellow)}>Nivel {progress.level}</strong>
         <span className={cx('text-13 font-extrabold tabular-nums', tone.textSky2)}>{progress.xp} XP en total</span>
@@ -111,14 +112,14 @@ export function ProfilePage() {
       <div className="grid gap-5 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 2xl:gap-12">
       {/* La placa y el resumen, centrados en el alto junto a la lista, que lo llena con su scroll. */}
       <div className="flex min-w-0 flex-col gap-5 lg:min-h-0 lg:justify-center 2xl:gap-6">
-        <HudPlate className="w-full !gap-5 !p-5 lg:!p-6">
+        <HudPlate className="w-full flex-wrap !gap-5 !p-5 lg:!p-6">
           <AvatarEditor
             name={profile.user.username}
             avatar={profile.user.avatar}
             level={profile.progress?.level}
             onSaved={(nextUser) => { updateUser(nextUser); setProfile((current) => current ? { ...current, user: { ...current.user, avatar: nextUser.avatar } } : current); }}
           />
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className={cx('text-13 font-extrabold uppercase tracking-[.08em]', tone.textSky2)}>Perfil de entrenador</p>
             <h1 className={cx('ol2 font-display text-26 font-extrabold [overflow-wrap:anywhere] sm:text-34 2xl:text-44', tone.textWhite)}>{profile.user.username}</h1>
             <p className={cx('mt-1 text-15 font-bold', tone.textSky2)}>Miembro desde el {memberSince.format(new Date(profile.user.createdAt))}</p>
