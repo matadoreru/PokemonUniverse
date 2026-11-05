@@ -139,10 +139,13 @@
   color: var(--ink-2);
 }
 
-/* Rejilla de cartas: dos columnas en el móvil; la píldora «Cómo se juega» monta sobre el borde inferior de su carta. */
+/* Rejilla de cartas: dos columnas en el móvil; la píldora «Cómo se juega» monta sobre el borde inferior de su carta.
+   Todas las filas miden como la más alta (`1fr`): un nombre a dos líneas no agranda solo su fila. La rejilla no tiene
+   alto propio (su panel es el que se desplaza), así que las filas no se estiran para llenar el hueco. */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 9rem), 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--sp-4) var(--sp-3);
   margin: 0;
   padding: 0 0 var(--sp-3);

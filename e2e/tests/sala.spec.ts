@@ -36,6 +36,11 @@ const test = base.extend<{ crearJugador: (prefijo: string, w?: number, h?: numbe
   },
 });
 
+/** Alto de cada carta (su `li`) de la lista «Minijuegos» del lobby. */
+async function cartasDelLobby(page: Page): Promise<number[]> {
+  return page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').evaluateAll((items) => items.map((item) => item.getBoundingClientRect().height));
+}
+
 /** En la página del host, el invitado aparece en la lista y el contador marca 2 / 8. */
 async function esperarInvitado(host: Page, nombre: string): Promise<void> {
   await expect(host.getByText(nombre, { exact: true }).first()).toBeVisible();
@@ -124,6 +129,17 @@ for (const { w, h } of SIZES) {
     // Escritorio: sin scroll de página ni del `main`, y «¡Empezar partida!» a la vista sin desplazar.
     await capture(host.page, 'lobby');
     await expect(host.page.getByRole('button', { name: '¡Empezar partida!' })).toBeInViewport({ ratio: 1 });
+    // Todas las cartas de la rejilla miden lo mismo, también las de filas con un nombre a dos líneas.
+    const altos = await cartasDelLobby(host.page);
+    expect(altos.length).toBeGreaterThan(1);
+    for (const alto of altos) expect(Math.abs(alto - altos[0]!), `alto de carta a ${w}×${h}: ${altos.join(', ')}`).toBeLessThanOrEqual(1);
+    // Con pocas cartas, las filas no se estiran para llenar el panel: miden lo que pide su carta, nunca más.
+    await host.page.getByLabel('Buscar minijuego').fill('Shiny');
+    await expect(host.page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').first()).toBeVisible();
+    const pocas = await cartasDelLobby(host.page);
+    expect(pocas.length).toBeLessThan(altos.length);
+    for (const alto of pocas) expect(alto, `alto con pocas cartas: ${pocas.join(', ')}`).toBeLessThanOrEqual(altos[0]! + 1);
+    await host.page.getByLabel('Buscar minijuego').fill('');
     await expect(guest.page.getByRole('button', { name: 'Marcarme listo' })).toBeInViewport({ ratio: 1 });
 
     expect(host.errors).toEqual([]);
