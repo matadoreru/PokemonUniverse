@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { capture, crearSalaConJugadores, iniciarPartida, layoutProblems, saltarIntro, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
+import { capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
 
 /** Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más. */
 async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Promise<void> {
@@ -44,7 +44,7 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await expect(votacion).toHaveAttribute('aria-pressed', 'true');
 
     await iniciarPartida(host.page, [invitado.page]);
-    await saltarIntro(pages);
+    await esperarPartida(pages);
     for (const page of pages) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
     await host.page.getByRole('button', { name: 'Continuar sesión' }).click({ timeout: 20_000 });
 
@@ -97,8 +97,8 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
     await invitado.page.setViewportSize({ width: 1280, height: 720 });
 
-    // Empieza el juego votado: se salta entre todos y la votación vuelve; desde ella el host termina la sesión.
-    await saltarIntro(pages);
+    // Empieza el juego votado: lo saltan entre todos y la votación vuelve; desde ella el host termina la sesión.
+    await esperarPartida(pages);
     for (const page of pages) await page.getByRole('button', { name: 'Votar para saltar el minijuego' }).click({ timeout: 20_000 });
     await expect(titulo(host.page)).toBeVisible({ timeout: 15_000 });
     await expect(invitado.page.getByRole('button', { name: 'Terminar sesión' })).toHaveCount(0);

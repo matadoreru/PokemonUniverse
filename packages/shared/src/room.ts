@@ -90,10 +90,6 @@ export interface NextGameVoteView {
 export const setGameSkipVoteRequestSchema = z.object({ gameInstanceId: z.string().uuid(), wantsToSkip: z.boolean() }).strict();
 export type SetGameSkipVoteRequest = z.infer<typeof setGameSkipVoteRequestSchema>;
 
-/** «Saltar» la intro de partida; la instancia evita que un clic tardío cuente para otra partida. */
-export const skipGameIntroRequestSchema = z.object({ gameInstanceId: z.string().uuid() }).strict();
-export type SkipGameIntroRequest = z.infer<typeof skipGameIntroRequestSchema>;
-
 /** Transport envelope prevents late actions from affecting a replacement runtime. */
 export const gameActionRequestSchema = z.object({ gameInstanceId: z.string().uuid(), actionEpoch: z.string().min(1).max(512), action: z.unknown() }).strict();
 export type GameActionRequest = z.infer<typeof gameActionRequestSchema>;
@@ -108,13 +104,6 @@ export interface GameSkipStateView {
   requiredVotes: number;
   currentUserVoted: boolean;
   canVote: boolean;
-}
-
-/** Intro de la partida en `GAME_STARTING`: termina en `endsAt` o cuando todos los jugadores conectados han saltado. */
-export interface GameIntroView {
-  gameInstanceId: string;
-  endsAt: number;
-  skippedIds: string[];
 }
 
 export interface RoomView {
@@ -135,8 +124,6 @@ export interface RoomView {
   nextGameVote: NextGameVoteView | null;
   /** Absent on legacy snapshots; clients wait for a current instance before sending game actions. */
   gameSkipState?: GameSkipStateView | null;
-  /** Solo mientras la sala muestra la intro de la partida; ausente en Node. */
-  gameIntro?: GameIntroView | null;
   gamesPlayed: number;
   sessionStandings: SessionStandingView[];
   sessionHistory: SessionGameSummaryView[];
@@ -188,7 +175,6 @@ export interface ClientToServerEvents {
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;
   'room:end-session': (_: unknown, ack: SocketAck) => void;
   'game:skip-vote:set': (payload: SetGameSkipVoteRequest, ack: SocketAck) => void;
-  'game:intro:skip': (payload: SkipGameIntroRequest, ack: SocketAck) => void;
   'game:action': (payload: GameActionRequest, ack: SocketAck) => void;
   'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
   'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;

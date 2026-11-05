@@ -72,8 +72,6 @@ final class RoomViews {
         .gameSelectionMode(room.gameSelectionMode)
         .nextGameVote(nextGameVote)
         .gameSkipState(null)
-        .gameIntro(room.intro == null ? null : new RoomView.GameIntroView(room.intro.gameInstanceId,
-            room.intro.endsAt, List.copyOf(room.intro.skippedIds)))
         .gamesPlayed(room.gamesPlayed)
         .sessionStandings(room.sessionParticipants.values().stream().map(participant ->
             new RoomView.SessionStandingView(participant.identity.id(), participant.identity.displayName(),

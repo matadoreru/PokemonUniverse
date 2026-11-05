@@ -1,4 +1,4 @@
-import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest, SkipGameIntroRequest } from '@pokemon-universe/shared/public';
+import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
@@ -34,7 +34,6 @@ interface RoomContextValue {
   returnLobby(): Promise<void>;
   endSession(): Promise<void>;
   setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
-  skipIntro(request: SkipGameIntroRequest): Promise<void>;
   /** Con aviso global salvo `{ report: false }` (los borradores de Red Flag: teclear no borra el error de un envío). */
   gameAction(action: unknown, options?: GameActionOptions): Promise<void>;
 }
@@ -116,7 +115,6 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async returnLobby() { await emit('room:return-lobby', {}); },
     async endSession() { await emit('room:end-session', {}); },
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
-    async skipIntro(request) { await emit('game:intro:skip', request); },
     // Las guardas (sin minijuego activo, sin época) van dentro de la petición: su fallo también sale en el aviso global.
     async gameAction(action, options) { await emit('game:action', () => gameActionPayload(room, action), options?.report ?? true); },
   }), [connected, emit, error, optimisticEmit, room]);

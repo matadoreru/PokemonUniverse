@@ -31,9 +31,6 @@ public final class RoomCommandParsers {
   /** {@code { gameInstanceId, wantsToSkip }} validado. */
   public record SetGameSkipVoteRequest(String gameInstanceId, boolean wantsToSkip) {}
 
-  /** {@code { gameInstanceId }} validado: el «Empezar ya» de la intro de partida. */
-  public record SkipGameIntroRequest(String gameInstanceId) {}
-
   /** {@code { gameInstanceId, actionEpoch, action }} validado; {@code action} sigue siendo JSON crudo. */
   public record GameActionRequest(String gameInstanceId, String actionEpoch, JsonNode action) {}
 
@@ -99,19 +96,6 @@ public final class RoomCommandParsers {
     strict(raw, Set.of("gameInstanceId", "wantsToSkip"), issues);
     if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return new SetGameSkipVoteRequest(id, wants.getBooleanValue());
-  }
-
-  /** {@code skipGameIntroRequestSchema} (estricto). */
-  public static SkipGameIntroRequest skipGameIntroRequest(@Nullable JsonNode raw) {
-    var issues = new ZodIssues();
-    if (raw == null || !raw.isObject()) {
-      issues.rootNotObject(raw);
-      throw new RoomException(issues.stringify());
-    }
-    var id = uuid(raw.get("gameInstanceId"), "gameInstanceId", issues);
-    strict(raw, Set.of("gameInstanceId"), issues);
-    if (!issues.isEmpty()) throw new RoomException(issues.stringify());
-    return new SkipGameIntroRequest(id);
   }
 
   /** {@code gameActionRequestSchema} (estricto; {@code action} obligatoria, aunque sea {@code null}). */

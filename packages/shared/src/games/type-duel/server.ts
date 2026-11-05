@@ -1,5 +1,5 @@
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
-import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS, GAME_INTRO_MS } from '../contracts.js';
+import { connectedRequiredPlayerIds, isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule, PRESENCE_GRACE_MS } from '../contracts.js';
 import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultTypeDuelConfig, typeDuelConfigSchema, type TypeDuelConfig } from './config.js';
 import { buildTypeDuelResults, chooseBalancedPair, isValidPokemonForTypes, requiredTypeCombination, TYPE_DUEL_ATTEMPT_COOLDOWN_MS, TYPE_DUEL_MAX_INVALID_COMBINATIONS, TYPE_DUEL_MAX_SOLUTIONS, TYPE_DUEL_WIN_POINTS } from './rules.js';
@@ -9,7 +9,6 @@ const manifest = {
   id: 'type-duel', name: 'Type Duel', recommended: true, icon: '⚔️',
   description: 'Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.', minPlayers: 2,
   presenceGraceMs: PRESENCE_GRACE_MS,
-  introMs: GAME_INTRO_MS,
   profileStats: {
     metrics: [
       { key: 'duelsPlayed', label: 'Duelos jugados', aggregation: 'SUM' },
