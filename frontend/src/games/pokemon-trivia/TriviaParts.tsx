@@ -87,7 +87,7 @@ export function TriviaScoreboard({ game, players, members, colors, selfId, class
       const done = game.answeredPlayerIds.includes(id);
       return <li key={id} data-testid="trivia-score-row" aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>
             {done ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Respondió</Chip> : <Chip tone="neutral" icon={<Icon icon={CircleDashed} size={18} />}>Pensando…</Chip>}
             {tied(position) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
@@ -112,7 +112,7 @@ export function TriviaAnswersBoard({ game, result, players, members, colors, sel
       const points = result.points[id] ?? 0;
       return <li key={id} data-testid="trivia-answer-row">
         <Row name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>{answer
             ? <><Chip tone={hit ? 'ok' : 'bad'} icon={<Icon icon={hit ? CheckCircle2 : XCircle} size={18} />}>{hit ? 'Acertó' : 'Falló'}</Chip><span className={s.choice}>Eligió {triviaOptionLabel(game.options, answer.optionId)}</span></>
             : <Chip tone="neutral" icon={<Icon icon={MinusCircle} size={18} />}>Sin respuesta</Chip>}</span>}

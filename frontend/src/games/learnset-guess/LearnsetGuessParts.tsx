@@ -86,7 +86,7 @@ export function LearnsetScoreboard({ lines, selfId, className }: { lines: readon
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})} right={<Badge tone="cream">{`${lines.length} jugadores`}</Badge>}>
     <ol className={s.rows} aria-label="Marcador">{lines.map(({ member, points, position, colorIndex, solveOrder, tied }) => <li key={member.id} data-testid="learnset-score-row" aria-current={member.id === selfId ? 'true' : undefined}>
       <Row rank={position} name={member.displayName} color={playerColor(colorIndex)} self={member.id === selfId} disconnected={member.presence !== undefined && member.presence !== 'CONNECTED'}
-        avatar={<Avatar name={member.displayName} avatar={member.avatar} size="sm" />}
+        avatar={<Avatar name={member.displayName} avatar={member.avatar} level={member.level} size="sm" />}
         meta={<span className={s.rowMeta}>
           {solveOrder ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solveOrder)}</Chip> : <Chip tone="neutral" icon={<Icon icon={Search} size={18} />}>Buscando…</Chip>}
           {tied && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
@@ -152,7 +152,7 @@ export function LearnsetRevealBoard({ result, members, colors, selfId, className
       const status = learnsetRevealStatus(Boolean(solve), !result.absentIds.includes(member.id));
       return <li key={member.id} data-testid="learnset-reveal-row">
         <Row {...(solve ? { rank: solve.solveOrder } : {})} name={member.displayName} color={playerColor(colors.get(member.id) ?? 0)} self={member.id === selfId}
-          avatar={<Avatar name={member.displayName} avatar={member.avatar} size="sm" />}
+          avatar={<Avatar name={member.displayName} avatar={member.avatar} level={member.level} size="sm" />}
           meta={<span className={s.rowMeta}>{solve
             ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.attemptBy}>{learnsetStageText(solve.revealStage)}</span></>
             : status === 'offline' ? <Chip tone="neutral" icon={<Icon icon={WifiOff} size={18} />}>Sin conexión</Chip> : <Chip tone="bad">✗ No acertó</Chip>}</span>}

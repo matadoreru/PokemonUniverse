@@ -114,7 +114,7 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
       const line = status.kind === 'outcome' && status.outcome?.correct ? higherLowerOutcomeLine(status.outcome) : null;
       return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>
             {chip}
             {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}

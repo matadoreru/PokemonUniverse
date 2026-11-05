@@ -2,11 +2,12 @@ package es.pokemonuniverse.application.profile;
 
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.domain.progression.Experience;
 import java.util.List;
 import java.util.Map;
 
 /** Perfil de un usuario registrado tal como lo compone la aplicación; el adaptador REST lo serializa. */
-public record UserProfile(User user, GlobalStats globalStats, List<Game> games) {
+public record UserProfile(User user, GlobalStats globalStats, Experience.Progress progress, List<Game> games) {
 
   public record User(String id, String username, String email, AvatarRef avatar, String createdAt) {}
 

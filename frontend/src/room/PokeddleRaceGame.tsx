@@ -47,7 +47,7 @@ function RacePanel({ game, members, colors, selfId, onOpen }: { game: PokeddleRa
       const justSolved = board.solved && board.solvedRound === game.roundNumber && game.phase === 'ROUND_RESULTS';
       const self = id === selfId;
       const row = <Row name={self ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={self} highlight={justSolved} disconnected={offline(member)}
-        avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+        avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
         meta={<span className={s.rowMeta}>
           <Chip tone={chip.tone} icon={<Icon icon={chip.icon} size={18} />}>{status.label}</Chip>
           <span className={s.detail}>{status.detail}</span>

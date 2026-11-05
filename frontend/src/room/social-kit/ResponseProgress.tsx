@@ -57,7 +57,7 @@ export function ResponseProgress({ members, playerIds, doneIds, selfId, title = 
       const right = value?.(playerId);
       return <li key={playerId} data-testid="social-progress-row" aria-current={playerId === selfId ? 'true' : undefined}>
         <Row name={name} color={playerColor(entry?.index ?? 0)} self={playerId === selfId} disconnected={offline(entry?.member)}
-          avatar={<Avatar name={name} avatar={entry?.member.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={entry?.member.avatar} level={entry?.member.level} size="sm" />}
           meta={<span className={s.rowMeta}><Chip tone={own.tone} {...(own.icon ? { icon: <Icon icon={own.icon} size={18} /> } : {})}>{own.text}</Chip></span>}
           {...(right != null ? { value: <span className={s.value}>{right}</span> } : {})} />
       </li>;

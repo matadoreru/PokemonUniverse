@@ -15,6 +15,8 @@ public final class RoomMember {
   public MemberRole role;
   public boolean ready;
   public int sessionPoints;
+  /** Experiencia total de una cuenta registrada (nivel del avatar); {@code null} para invitados o si no se sabe. */
+  public @Nullable Integer xp;
   public final long joinedAt;
   public @Nullable RoomTimer disconnectTimer;
   /** Instante de la última desconexión temporal; abre la gracia de presencia del juego en curso. */

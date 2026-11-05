@@ -919,6 +919,13 @@ function GamePiecesSection() {
         <Avatar name="Brock" size="lg" presence="TEMPORARILY_DISCONNECTED" />
         <Avatar name="Gary" size="lg" presence="LEFT" />
       </Fig>
+      <Fig id="avatar-level" caption="Avatar · nivel de la cuenta (los invitados no tienen)">
+        <Avatar name="Aqua" size="sm" level={3} />
+        <Avatar name="Brock" size="md" level={12} presence="CONNECTED" />
+        <Avatar name="Misty" size="lg" level={99} presence="TEMPORARILY_DISCONNECTED" />
+        <Avatar name="Gary" size="xl" level={7} />
+        <Avatar name="Invitado" size="md" presence="CONNECTED" />
+      </Fig>
       <Fig id="results-shell" caption="Resultados de partida (ResultsShell con clasificación; Ash eres tú)" wide>
         <ResultsShell title="Resultado de la partida" subtitle="Pokédex Distance · Partida 2" standings={RESULTS} selfId="ash">
           <p>Aquí cada juego añade lo suyo (mejor acierto, tablas) y las acciones del anfitrión.</p>

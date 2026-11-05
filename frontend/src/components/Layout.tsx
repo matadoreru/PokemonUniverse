@@ -28,9 +28,9 @@ export const HEADER_ROOM_ID = 'app-header-room';
  * están en Inicio). Todo son píldoras redondas de 44 px, así que cabe a 390 px sin menú; el perfil muestra el nombre
  * desde 1024 px y Administración su texto desde 1280 px.
  */
-export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(): void }) {
+export function AppHeader({ user, level = null, onLogout }: { user: AuthUser | null; level?: number | null; onLogout(): void }) {
   const isAdmin = user?.kind === 'USER' && user.role === 'ADMIN';
-  const profileLabel = user ? `Abrir perfil de ${user.displayName}` : '';
+  const profileLabel = user ? `Abrir perfil de ${user.displayName}${level ? ` (nivel ${level})` : ''}` : '';
   // Dentro de una sala lleva su contexto (`?game=&room=`), que pone la sesión de sala.
   const feedback = useFeedbackHref();
   return (
@@ -62,12 +62,12 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
             <>
               <span className="contents lg:hidden">
                 <PillLink nav to="/profile" size="round" aria-label={profileLabel} title={user.displayName}>
-                  <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
+                  <Avatar name={user.displayName} avatar={user.avatar} level={level} size="sm" className="!text-13" />
                 </PillLink>
               </span>
               <span className="hidden lg:contents">
                 <PillLink nav to="/profile" aria-label={profileLabel} className={s.profile}>
-                  <Avatar name={user.displayName} avatar={user.avatar} size="sm" className="!text-13" />
+                  <Avatar name={user.displayName} avatar={user.avatar} level={level} size="sm" className="!text-13" />
                   <span className={s.name} title={user.displayName}>
                     {user.displayName}
                   </span>
@@ -100,13 +100,13 @@ export function AppHeader({ user, onLogout }: { user: AuthUser | null; onLogout(
  * `main` y alargan el documento (401 px en la rotación del lobby a 390 px).
  */
 export function Layout() {
-  const { user, logout } = useAuth();
+  const { user, level, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   return (
     <FeedbackTargetProvider>
       <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
-        <AppHeader user={user} onLogout={() => void logout().then(() => navigate('/'))} />
+        <AppHeader user={user} level={level} onLogout={() => void logout().then(() => navigate('/'))} />
         <main className="relative min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
           {/* Hueco de avisos flotantes (conexión de la sala): capa de alto cero pegada arriba, bajo la cabecera. */}
           <div id={HEADER_NOTICES_ID} className="sticky top-0 z-toast h-0" />

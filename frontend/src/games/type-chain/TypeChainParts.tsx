@@ -124,7 +124,7 @@ export function TypeChainPlayers({ game, members, colors, selfId, className }: {
       return <li key={id} data-testid="type-chain-player" data-status={status.kind} aria-current={status.kind === 'current' ? 'step' : undefined}>
         <Row name={id === selfId ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} highlight={status.kind === 'current'}
           disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<span className={cx(status.kind === 'eliminated' && s.out)}><Avatar name={name} avatar={member?.avatar} size="sm" /></span>}
+          avatar={<span className={cx(status.kind === 'eliminated' && s.out)}><Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" /></span>}
           meta={<span className={s.rowMeta}>{chip}</span>}
           value={<span className={s.links}>{links}<small> {links === 1 ? 'eslabón' : 'eslabones'}</small></span>} />
       </li>;

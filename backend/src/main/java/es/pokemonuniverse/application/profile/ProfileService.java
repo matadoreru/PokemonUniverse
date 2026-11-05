@@ -10,6 +10,7 @@ import es.pokemonuniverse.application.profile.UserProfile.GameStats;
 import es.pokemonuniverse.application.profile.UserProfile.GlobalStats;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
+import es.pokemonuniverse.domain.progression.Experience;
 import es.pokemonuniverse.domain.time.IsoTimestamps;
 import jakarta.inject.Singleton;
 import java.util.LinkedHashMap;
@@ -36,17 +37,24 @@ public class ProfileService {
   /** Vacio si la cuenta ya no existe (el token puede sobrevivir al borrado de la fila). */
   public Optional<UserProfile> profileOf(String userId) {
     return users.findById(userId).map(user -> {
-      var totals = globalStats.findById(userId)
-          .map(s -> new GlobalStats(s.getGamesPlayed(), s.getGamesWon(), s.getTotalPoints()))
+      var statsRow = globalStats.findById(userId);
+      var totals = statsRow.map(s -> new GlobalStats(s.getGamesPlayed(), s.getGamesWon(), s.getTotalPoints()))
           .orElse(new GlobalStats(0, 0, 0));
+      var progress = Experience.progress(statsRow.map(s -> s.getXp()).orElse(0));
       Map<String, UserGameStatsEntity> byGame = new LinkedHashMap<>();
       gameStats.findByUserId(userId).forEach(row -> byGame.put(row.getGameId(), row));
       var games = registry.manifests().stream().map(m -> game(m, byGame.get(m.id()))).toList();
       var avatar = UserIdentityMapper.avatarFromUser(user.getAvatarType(), user.getAvatarValue(), user.getAvatarVersion());
       var publicUser = new UserProfile.User(user.getId(), user.getUsername(), user.getEmail(), avatar,
           IsoTimestamps.millis(user.getCreatedAt()));
-      return new UserProfile(publicUser, totals, games);
+      return new UserProfile(publicUser, totals, progress, games);
     });
+  }
+
+  /** Nivel y experiencia de la cuenta; vacío si ya no existe. */
+  public Optional<Experience.Progress> progressOf(String userId) {
+    if (!users.existsById(userId)) return Optional.empty();
+    return Optional.of(Experience.progress(globalStats.findById(userId).map(s -> s.getXp()).orElse(0)));
   }
 
   private static Game game(GameManifest m, UserGameStatsEntity row) {

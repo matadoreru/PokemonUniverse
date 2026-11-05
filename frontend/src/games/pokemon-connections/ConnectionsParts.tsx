@@ -117,7 +117,7 @@ export function ConnectionsProgress({ game, members, colors, selfId, className }
       const name = nameOf(id);
       return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>
             <Chip tone={connectionsStatusTone(progress.status)}>{connectionsStatusLabels[progress.status]}</Chip>
             <span key={progress.foundGroups} className={cx(s.groups, progress.foundGroups > 0 && 'motion-bump')} data-found={id}>{progress.foundGroups}/{game.groupCount} grupos</span>
@@ -147,7 +147,7 @@ export function ConnectionsRoundBoard({ result, groupCount, members, colors, sel
       const name = member?.displayName ?? id;
       return <li key={id} aria-current={id === selfId ? 'true' : undefined} data-testid="connections-round-row">
         <Row {...(player.completionRank ? { rank: player.completionRank } : {})} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId}
-          disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>
             <Chip tone={connectionsStatusTone(player.status)}>{player.status === 'SOLVED' && player.completionRank ? `Completó · ${player.completionRank}.º` : connectionsStatusLabels[player.status]}</Chip>
             <span className={s.roundLine}>{connectionsRoundLine(player, groupCount)}</span>

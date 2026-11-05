@@ -865,6 +865,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /api/auth/progress:
+    get:
+      tags:
+      - auth
+      summary: Nivel y experiencia de la cuenta registrada
+      operationId: progress
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/register:
     post:
       tags:
@@ -2533,6 +2552,7 @@ components:
       required:
       - games
       - globalStats
+      - progress
       - user
       type: object
       properties:
@@ -2540,6 +2560,8 @@ components:
           $ref: "#/components/schemas/ProfileResponse.ProfileUser"
         globalStats:
           $ref: "#/components/schemas/ProfileResponse.GlobalStats"
+        progress:
+          $ref: "#/components/schemas/ProfileResponse.Progress"
         games:
           type: array
           items:
@@ -2601,6 +2623,37 @@ components:
           $ref: "#/components/schemas/AvatarRef"
         createdAt:
           type: string
+    ProfileResponse.Progress:
+      required:
+      - level
+      - levelXp
+      - nextLevelXp
+      - xp
+      type: object
+      properties:
+        level:
+          type: integer
+          format: int32
+        xp:
+          type: integer
+          format: int32
+        levelXp:
+          type: integer
+          format: int32
+        nextLevelXp:
+          type: integer
+          format: int32
+      description: "Nivel y experiencia: `levelXp` y `nextLevelXp` son la experiencia\
+        \ total donde empiezan este nivel y el siguiente."
+    ProgressResponse:
+      required:
+      - progress
+      type: object
+      properties:
+        progress:
+          $ref: "#/components/schemas/ProfileResponse.Progress"
+      description: "Respuesta `{\"progress\": ...}` de `GET /api/auth/progress` (ProgressResponse\
+        \ en shared)."
     RegisterRequest:
       required:
       - email

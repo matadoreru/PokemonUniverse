@@ -94,6 +94,47 @@ class ProfileControllerTest {
   }
 
   @Test
+  void profileAndProgressExposeLevelAndExperience() {
+    var s = register();
+    var zero = Map.of("level", 1, "xp", 0, "levelXp", 0, "nextLevelXp", 100);
+    assertEquals(zero, profile(s).get("progress"));
+    assertEquals(zero, progress(s));
+    tx.executeWrite(status -> {
+      try (var st = status.getConnection().prepareStatement("UPDATE \"UserStats\" SET xp = 260 WHERE \"userId\" = ?")) {
+        st.setString(1, s.id());
+        assertEquals(1, st.executeUpdate());
+        return null;
+      } catch (java.sql.SQLException e) {
+        throw new IllegalStateException(e);
+      }
+    });
+    var level3 = Map.of("level", 3, "xp", 260, "levelXp", 250, "nextLevelXp", 450);
+    assertEquals(level3, profile(s).get("progress"));
+    assertEquals(level3, progress(s));
+  }
+
+  @Test
+  void progressRequiresUser() {
+    var anon = assertThrows(HttpClientResponseException.class,
+        () -> client.toBlocking().exchange(HttpRequest.GET("/api/auth/progress"), Map.class));
+    assertEquals(HttpStatus.UNAUTHORIZED, anon.getStatus());
+    var guest = client.toBlocking().exchange(
+        HttpRequest.POST("/api/auth/guest", Map.of("displayName", "Invitado")), Map.class);
+    var cookie = guest.getHeaders().getAll("Set-Cookie").stream()
+        .filter(c -> c.startsWith("pu_session=")).findFirst().orElseThrow().split(";")[0];
+    var e = assertThrows(HttpClientResponseException.class,
+        () -> client.toBlocking().exchange(HttpRequest.GET("/api/auth/progress").header("Cookie", cookie), Map.class));
+    assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
+    assertEquals(Map.of("error", "Registered account required"), e.getResponse().getBody(Map.class).orElseThrow());
+  }
+
+  @SuppressWarnings("unchecked")
+  private Map<String, Object> progress(Session s) {
+    var res = client.toBlocking().exchange(HttpRequest.GET("/api/auth/progress").header("Cookie", s.cookie()), Map.class);
+    return (Map<String, Object>) res.body().get("progress");
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   void profileMergesStoredStats() {
     var s = register();

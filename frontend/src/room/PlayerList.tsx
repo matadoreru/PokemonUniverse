@@ -103,7 +103,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
             <li key={member.id}>
               <Row
                 name={member.displayName}
-                avatar={<Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} size="md" />}
+                avatar={<Avatar name={member.displayName} avatar={member.avatar} presence={member.presence} level={member.level} size="md" />}
                 meta={<span className={s.meta}>{meta}</span>}
                 value={!game && member.role === 'PLAYER' ? <span className={s.points}>{member.sessionPoints}<small> pts</small></span> : undefined}
                 color={playerColor(index)}

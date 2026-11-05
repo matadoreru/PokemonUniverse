@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.application.profile.UserProfile;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.domain.progression.Experience;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.List;
@@ -25,11 +26,20 @@ public record ProfileResponse(Profile profile) {
     return new ProfileResponse(new Profile(
         new ProfileUser(u.id(), u.username(), u.email(), u.avatar(), u.createdAt()),
         new GlobalStats(g.gamesPlayed(), g.gamesWon(), g.totalPoints()),
+        Progress.from(p.progress()),
         games));
   }
 
   @Serdeable
-  public record Profile(ProfileUser user, GlobalStats globalStats, List<ProfileGame> games) {}
+  public record Profile(ProfileUser user, GlobalStats globalStats, Progress progress, List<ProfileGame> games) {}
+
+  /** Nivel y experiencia: {@code levelXp} y {@code nextLevelXp} son la experiencia total donde empiezan este nivel y el siguiente. */
+  @Serdeable
+  public record Progress(int level, int xp, int levelXp, int nextLevelXp) {
+    public static Progress from(Experience.Progress p) {
+      return new Progress(p.level(), p.xp(), p.levelXp(), p.nextLevelXp());
+    }
+  }
 
   @Serdeable
   public record ProfileUser(String id, String username, String email, AvatarRef avatar, String createdAt) {}

@@ -24,6 +24,7 @@ import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.domain.progression.Experience;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
 import es.pokemonuniverse.domain.room.GameFinishReason;
@@ -120,6 +121,8 @@ public class RoomCoordinator {
   private final Map<String, JsonNode> defaultConfigs = new LinkedHashMap<>();
   /** Motores portados con los tipos borrados, uno por juego. */
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
+  /** Experiencia de las cuentas al entrar (nivel del avatar); sin BD, ninguna. */
+  private UserExperienceReader experience = UserExperienceReader.NONE;
 
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
@@ -158,6 +161,23 @@ public class RoomCoordinator {
     for (var manifest : registry.list()) {
       defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
       registry.engine(manifest.id()).ifPresent(engine -> engines.put(manifest.id(), new ErasedEngine(engine)));
+    }
+  }
+
+  /** Inyección por método: no cambia los constructores que usan las pruebas. */
+  @Inject
+  void useExperience(UserExperienceReader reader) {
+    this.experience = reader;
+  }
+
+  /** Se lee fuera del lock de la sala; un fallo solo deja al miembro sin nivel. */
+  private @Nullable Integer experienceOf(AuthUser identity) {
+    if (identity.kind() != AuthUser.Kind.USER) return null;
+    try {
+      return experience.xpOf(identity.id());
+    } catch (RuntimeException error) {
+      LOG.warn("Failed to read experience", error);
+      return null;
     }
   }
 
@@ -258,6 +278,7 @@ public class RoomCoordinator {
   public RoomView create(AuthUser identity, String connectionId, @Nullable JsonNode requestedMax) {
     return engineErrors(() -> {
       if (store.roomForPlayer(identity.id()) != null) throw new RoomException("Already in a room");
+      var xp = experienceOf(identity);
       while (true) {
         var code = roomCode();
         while (store.get(code) != null) code = roomCode();
@@ -280,6 +301,7 @@ public class RoomCoordinator {
         room.lock.lock();
         try {
           room.members.put(identity.id(), member(identity, connectionId, MemberRole.PLAYER, RoomRole.HOST));
+          room.members.get(identity.id()).xp = xp;
           room.sessionParticipants.put(identity.id(), new SessionParticipant(identity, 0));
           if (!store.saveIfAbsent(room)) continue; // otra sala ocupó el código entre la comprobación y el guardado
           if (!store.attachUnlessInOtherRoom(identity.id(), code)) {
@@ -300,6 +322,7 @@ public class RoomCoordinator {
   /** {@code room:join}; {@code rawCode} es el {@code code} crudo del payload. */
   public RoomView join(AuthUser identity, String connectionId, @Nullable JsonNode rawCode) {
     var code = RoomCommandParsers.roomCode(rawCode);
+    var xp = experienceOf(identity);
     return engineErrors(() -> {
       while (true) {
         var existing = store.roomForPlayer(identity.id());
@@ -318,9 +341,11 @@ public class RoomCoordinator {
             boolean expiredDuringGame = current.presence == PresenceStatus.LEFT && room.game != null;
             Presence.restoreMember(current, identity, connectionId);
             if (expiredDuringGame) current.role = MemberRole.SPECTATOR;
+            if (current.xp == null) current.xp = xp;
           } else {
             room.members.put(identity.id(), member(identity, connectionId,
                 room.phase == RoomPhase.LOBBY ? MemberRole.PLAYER : MemberRole.SPECTATOR, RoomRole.MEMBER));
+            room.members.get(identity.id()).xp = xp;
           }
           var participant = room.sessionParticipants.get(identity.id());
           if (participant != null) participant.identity = identity;
@@ -1155,6 +1180,11 @@ public class RoomCoordinator {
       var member = room.members.get(standing.playerId());
       int points = sessionPoints.getOrDefault(standing.playerId(), 0);
       if (member != null) member.sessionPoints += points;
+      // Misma cuenta que RoomHistoryWriter: el nivel sube ya en GAME_RESULTS, sin esperar a la persistencia.
+      if (member != null && member.xp != null) {
+        member.xp = Experience.add(member.xp,
+            Experience.xpForGame(standing.position(), gameResults.standings().size()));
+      }
       var participant = room.sessionParticipants.get(standing.playerId());
       if (participant == null && member != null) {
         participant = new SessionParticipant(member.identity, 0);

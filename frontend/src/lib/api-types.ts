@@ -346,6 +346,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Nivel y experiencia de la cuenta registrada */
+        get: operations["progress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/register": {
         parameters: {
             query?: never;
@@ -1055,6 +1072,7 @@ export interface components {
         "ProfileResponse.Profile": {
             user: components["schemas"]["ProfileResponse.ProfileUser"];
             globalStats: components["schemas"]["ProfileResponse.GlobalStats"];
+            progress: components["schemas"]["ProfileResponse.Progress"];
             games: components["schemas"]["ProfileResponse.ProfileGame"][];
         };
         /** @description Manifiesto sin `defaultConfig`, con las estadisticas del usuario en ese minijuego. */
@@ -1078,6 +1096,21 @@ export interface components {
             email: string;
             avatar: components["schemas"]["AvatarRef"];
             createdAt: string;
+        };
+        /** @description Nivel y experiencia: `levelXp` y `nextLevelXp` son la experiencia total donde empiezan este nivel y el siguiente. */
+        "ProfileResponse.Progress": {
+            /** Format: int32 */
+            level: number;
+            /** Format: int32 */
+            xp: number;
+            /** Format: int32 */
+            levelXp: number;
+            /** Format: int32 */
+            nextLevelXp: number;
+        };
+        /** @description Respuesta `{"progress": ...}` de `GET /api/auth/progress` (ProgressResponse en shared). */
+        ProgressResponse: {
+            progress: components["schemas"]["ProfileResponse.Progress"];
         };
         RegisterRequest: {
             username: string;
@@ -2273,6 +2306,35 @@ export interface operations {
             };
             /** @description Demasiadas peticiones */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    progress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

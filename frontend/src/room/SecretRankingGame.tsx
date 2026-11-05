@@ -90,7 +90,7 @@ function RankingReveal({ result, room, selfId }: { result: SecretRankingRoundRes
         const name = entry?.member.displayName ?? 'Entrenador';
         const ranking = result.players[playerId]?.ranking ?? null;
         return <li key={playerId} data-testid="ranking-player">
-          <Row name={name} color={playerColor(entry?.index ?? 0)} self={playerId === selfId} avatar={<Avatar name={name} avatar={entry?.member.avatar} size="sm" />}
+          <Row name={name} color={playerColor(entry?.index ?? 0)} self={playerId === selfId} avatar={<Avatar name={name} avatar={entry?.member.avatar} level={entry?.member.level} size="sm" />}
             meta={ranking
               ? <ol className={s.strip} aria-label={`Orden de ${name}`}>{ranking.map((pokemon, index) => <li key={pokemon.id} className={s.stripItem} title={`${index + 1}. ${pokemon.name}`}>
                 <span className={s.stripRank} aria-hidden="true">{index + 1}</span>
@@ -115,7 +115,7 @@ function ClosenessPanel({ result, room, selfId }: { result: SecretRankingRoundRe
       const status = rankingPlayerStatus(result, playerId);
       return <li key={playerId} data-testid="ranking-closeness">
         <Row name={name} {...(player.position !== null ? { rank: player.position } : {})} color={playerColor(entry?.index ?? 0)} self={playerId === selfId}
-          disconnected={entry?.member.presence !== undefined && entry.member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={entry?.member.avatar} size="sm" />}
+          disconnected={entry?.member.presence !== undefined && entry.member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={entry?.member.avatar} level={entry?.member.level} size="sm" />}
           meta={<span className={s.closeMeta}>
             <Chip tone={status.tone} {...(status.tone === 'ok' ? { icon: <Icon icon={Trophy} size={18} /> } : status.tone === 'bad' ? { icon: <Icon icon={X} size={18} /> } : {})}>{status.text}</Chip>
             {player.distance !== null && <span className={s.distance}>

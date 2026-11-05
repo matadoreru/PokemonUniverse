@@ -113,7 +113,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
             color={colorOf(row.playerId)}
             self={row.playerId === selfId}
             disconnected={rowMember?.presence !== undefined && rowMember.presence !== 'CONNECTED'}
-            avatar={selection ? <img className={s.rowSprite} src={selection.sprite} alt="" /> : <Avatar name={name} avatar={rowMember?.avatar} size="sm" />}
+            avatar={selection ? <img className={s.rowSprite} src={selection.sprite} alt="" /> : <Avatar name={name} avatar={rowMember?.avatar} level={rowMember?.level} size="sm" />}
             meta={<span className={s.rowMeta}>
               {selection ? <span className={s.clip}>{selection.pokemonName} · {formatDexNumber(selection.dexNumber)}</span> : <span className={s.strong}>Sin respuesta</span>}
               {row.eliminated && <Chip tone="bad" icon={<Icon icon={UserX} size={18} />}>Eliminado</Chip>}

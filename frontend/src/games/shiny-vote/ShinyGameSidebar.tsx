@@ -48,7 +48,7 @@ export function ShinyGameSidebar({ game, members, colors, selfId, className }: {
             : <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Votó</Chip>;
       return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
-          avatar={<Avatar name={name} avatar={member?.avatar} size="sm" />}
+          avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>{status}</span>}
           value={<span className={cx(s.score)}>{game.scores[id] ?? 0}<small> pts</small></span>} />
       </li>;

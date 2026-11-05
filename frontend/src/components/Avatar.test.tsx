@@ -29,6 +29,19 @@ describe('Avatar', () => {
       expect(html).not.toContain('animate-pulse');
     }
   });
+  it('nivel: insignia con la cifra, título y nivel en la etiqueta accesible', () => {
+    const html = renderToStaticMarkup(createElement(Avatar, { name: 'Ana', level: 7, presence: 'CONNECTED' }));
+    expect(html).toContain('aria-label="Avatar de Ana, nivel 7"');
+    expect(html).toMatch(/<span class="[^"]+" title="Nivel 7" aria-hidden="true" data-level="7">7<\/span>/);
+    expect(html).toContain('title="Conectado"');
+  });
+  it('sin nivel (invitado, null o valor inválido): sin insignia', () => {
+    for (const level of [undefined, null, 0, -2, 1.5, Number.NaN]) {
+      const html = renderToStaticMarkup(createElement(Avatar, { name: 'Ana', level }));
+      expect(html).toContain('aria-label="Avatar de Ana"');
+      expect(html).not.toContain('data-level');
+    }
+  });
   it('avatar subido: imagen versionada', () => {
     const html = renderToStaticMarkup(createElement(Avatar, { name: 'Ana', avatar: { type: 'CUSTOM', value: '0123456789abcdef0123456789abcdef0123.webp', version: 3 } }));
     expect(html).toContain('<img');
