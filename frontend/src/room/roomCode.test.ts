@@ -65,6 +65,7 @@ describe('errores de room:invite', () => {
     ['Already in this room', 'Ya está en tu sala.'],
     ['Room is full', 'La sala está llena.'],
     ['Invitation already sent', 'Ya le has invitado; espera unos segundos.'],
+    ['Too many invitations', 'Has enviado demasiadas invitaciones; espera un minuto.'],
   ])('«%s» se traduce', (message, spanish) => {
     expect(roomErrorMessage(new Error(message))).toBe(spanish);
     expect(roomActionErrorMessage(new Error(message))).toBe(spanish);

@@ -44,7 +44,7 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * - De partida y resultados: «You cannot act in the current game» y «Game has not finished».
  * - De empezar (`RoomCoordinator.startGame`): «Choose at least one game», con la selección de minijuegos vacía.
  * - De `room:invite` (`RoomInvitations.invite`): «You are not in a room», «Not a friend», «Friend is offline»,
- *   «Already in this room», «Room is full» (el mismo texto que `join`) e «Invitation already sent».
+ *   «Already in this room», «Room is full» (el mismo texto que `join`), «Invitation already sent» y «Too many invitations» (límite por anfitrión).
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
@@ -68,6 +68,7 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Friend is offline': 'Tu amigo no está conectado.',
   'Already in this room': 'Ya está en tu sala.',
   'Invitation already sent': 'Ya le has invitado; espera unos segundos.',
+  'Too many invitations': 'Has enviado demasiadas invitaciones; espera un minuto.',
 };
 
 /**

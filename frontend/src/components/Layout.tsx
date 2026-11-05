@@ -23,6 +23,13 @@ export const HEADER_NOTICES_ID = 'app-header-notices';
 export const HEADER_ROOM_ID = 'app-header-room';
 
 /**
+ * Hueco de la placa «Amigos» dentro de la placa del HUD, solo con una cuenta registrada. La pinta la sesión de sala con un
+ * portal (`FriendsButtonPortal`), porque el estado de amigos vive junto al `/ws` de `RoomProvider`. `display: contents`:
+ * vacío no ocupa sitio y su píldora se alinea como las demás.
+ */
+export const HEADER_FRIENDS_ID = 'app-header-friends';
+
+/**
  * Cabecera de HUD (spec §6, ajustada por el usuario el 2026-11-04): una sola placa a la derecha con el inicio (casa), el sonido,
  * «Enviar feedback», Administración (solo ADMIN), el perfil y «Cerrar sesión». Sin logotipo ni Novedades (las novedades
  * están en Inicio). Todo son píldoras redondas de 44 px, así que cabe a 390 px sin menú; el perfil muestra el nombre
@@ -45,6 +52,7 @@ export function AppHeader({ user, level = null, onLogout }: { user: AuthUser | n
         <HudPlate>
           <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
           <AudioButton />
+          {user?.kind === 'USER' && <span id={HEADER_FRIENDS_ID} className="contents" />}
           {user && <PillLink nav to={feedback} size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}
           {isAdmin && (
             <>

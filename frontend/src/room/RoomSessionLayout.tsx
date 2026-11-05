@@ -10,6 +10,10 @@ import { useFeedbackTarget } from '../components/feedback-target';
 import { cx, Dialog, Icon, ToastStack, type ToastData } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import n from './ConnectionNotice.module.css';
+import { FriendsButtonPortal } from '../friends/FriendsButton';
+import { FriendsProvider } from '../friends/FriendsContext';
+import { FriendsDrawer } from '../friends/FriendsDrawer';
+import { InviteToasts } from '../friends/InviteToasts';
 import { RoomProvider, useRoom } from './RoomContext';
 import { RoomPlatePortal } from './RoomPlate';
 import { skipRowInLayout } from './game-skip-slot';
@@ -102,10 +106,14 @@ function RoomSessionContent() {
     <ConnectionNotice connected={connected} />
     {/* Solo con aviso: montada siempre, su región `status` de 1 px (absoluta, al final del documento) añadía scroll de
         página. Un `alert` se anuncia al insertarse. */}
+    {/* Amigos (solo cuentas registradas): la placa de la cabecera, su panel y las invitaciones recibidas. */}
+    <FriendsButtonPortal />
+    <FriendsDrawer />
+    <InviteToasts />
     {toasts.length > 0 && <ToastStack toasts={toasts} onClose={clearError} />}
   </>;
 }
 
 export function RoomSessionLayout() {
-  return <RoomProvider><RoomSessionContent /></RoomProvider>;
+  return <RoomProvider><FriendsProvider><RoomSessionContent /></FriendsProvider></RoomProvider>;
 }

@@ -1,4 +1,4 @@
-import type { GameSelectionMode, RoomView, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
+import type { GameSelectionMode, RoomView, ServerToClientEvents, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
@@ -8,6 +8,11 @@ import { roomActionErrorMessage } from './roomCode';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
+/** Avisos del `/ws` que no son de la sala: los escucha `FriendsProvider` con `subscribe`. */
+export type FriendSocketEvent = 'friends:presence' | 'friends:changed' | 'friends:invite';
+const FRIEND_SOCKET_EVENTS: readonly FriendSocketEvent[] = ['friends:presence', 'friends:changed', 'friends:invite'];
+type FriendListener = (payload: never) => void;
+
 interface RoomContextValue {
   room: RoomView | null;
   connected: boolean;
@@ -15,8 +20,8 @@ interface RoomContextValue {
   clearError(): void;
   /** Sin aviso global: su único uso (Jugar) enseña el error en su pantalla. */
   createRoom(): Promise<RoomView>;
-  /** Sin aviso global: su único uso (Jugar) enseña el error en el campo del código. */
-  joinRoom(code: string): Promise<RoomView>;
+  /** Sin aviso global salvo `{ reportError: true }` (Jugar enseña el error en el campo del código; «Unirse» de una invitación, en el aviso). */
+  joinRoom(code: string, options?: { reportError?: boolean }): Promise<RoomView>;
   /** Con aviso global salvo `{ reportError: false }` (Jugar, que enseña el error en su panel). */
   leaveRoom(options?: { reportError?: boolean }): Promise<void>;
   selectGame(gameId: string): Promise<void>;
@@ -34,6 +39,13 @@ interface RoomContextValue {
   returnLobby(): Promise<void>;
   endSession(): Promise<void>;
   setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
+  /** `room:invite`, con aviso global: el lobby solo captura para soltar su botón. */
+  inviteFriend(userId: string): Promise<void>;
+  /**
+   * Escucha un aviso de amigos del `/ws`. Sobrevive a que se recree el socket (cambio de cuenta): la suscripción es del
+   * proveedor, que reenvía desde el socket actual. Devuelve la función para dejar de escuchar.
+   */
+  subscribe<E extends FriendSocketEvent>(event: E, listener: ServerToClientEvents[E]): () => void;
   /** Con aviso global salvo `{ report: false }` (los borradores de Red Flag: teclear no borra el error de un envío). */
   gameAction(action: unknown, options?: GameActionOptions): Promise<void>;
 }
@@ -48,6 +60,7 @@ export function RoomProvider({ children }: PropsWithChildren) {
   const [room, setRoom] = useState<RoomView | null>(null);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const friendListenersRef = useRef(new Map<FriendSocketEvent, Set<FriendListener>>());
 
   useEffect(() => {
     const projection = projectionRef.current;
@@ -64,6 +77,9 @@ export function RoomProvider({ children }: PropsWithChildren) {
     socket.on('session:restored', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom, true)));
     socket.on('room:kicked', (message) => { setRoom(projection.setAuthoritative(null, true)); setError(message); });
     socket.on('error:message', setError);
+    for (const event of FRIEND_SOCKET_EVENTS) {
+      socket.on(event, ((payload: never) => { for (const listener of [...(friendListenersRef.current.get(event) ?? [])]) listener(payload); }) as ServerToClientEvents[typeof event]);
+    }
     return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id]);
 
@@ -87,10 +103,19 @@ export function RoomProvider({ children }: PropsWithChildren) {
     runOptimisticLobbyMutation(projectionRef.current, setRoom, update, () => emit(event, payload))
   ), [emit]);
 
+  const subscribe = useCallback(<E extends FriendSocketEvent,>(event: E, listener: ServerToClientEvents[E]) => {
+    const listeners = friendListenersRef.current;
+    const set = listeners.get(event) ?? new Set<FriendListener>();
+    listeners.set(event, set);
+    const entry = listener as unknown as FriendListener;
+    set.add(entry);
+    return () => { set.delete(entry); };
+  }, []);
+
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
     async createRoom() { const response = await emit('room:create', {}, false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
-    async joinRoom(code) { const response = await emit('room:join', { code }, false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
+    async joinRoom(code, options) { const response = await emit('room:join', { code }, options?.reportError ?? false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); setRoom(projectionRef.current.setAuthoritative(null, true)); },
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) {
@@ -119,9 +144,11 @@ export function RoomProvider({ children }: PropsWithChildren) {
     async returnLobby() { await emit('room:return-lobby', {}); },
     async endSession() { await emit('room:end-session', {}); },
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
+    async inviteFriend(userId) { await emit('room:invite', { userId }); },
+    subscribe,
     // Las guardas (sin minijuego activo, sin época) van dentro de la petición: su fallo también sale en el aviso global.
     async gameAction(action, options) { await emit('game:action', () => gameActionPayload(room, action), options?.report ?? true); },
-  }), [connected, emit, error, optimisticEmit, room]);
+  }), [connected, emit, error, optimisticEmit, room, subscribe]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }
 

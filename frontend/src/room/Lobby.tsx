@@ -1,6 +1,8 @@
 import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
+import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useOptionalFriends } from '../friends/FriendsContext';
+import { canInviteFriend } from '../friends/FriendsDrawer';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import { GameArt } from '../games/GameArt';
@@ -137,6 +139,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
 
   const side = (
     <div className={s.side}>
+      <LobbyInviteButton room={room} />
       <RoomPlayersPanel className="lg:flex-1" bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} />
       <aside className={s.tip} aria-label="Recomendación para jugar">
         <Icon icon={Headphones} size={22} className={s.tipIcon} />
@@ -267,5 +270,21 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     <>
       <SessionScreen side={side} action={action} main={main} />
     </>
+  );
+}
+
+/**
+ * «Invitar amigos» del lobby (solo cuentas registradas, dentro de `FriendsProvider`): abre el panel «Amigos», donde cada
+ * amigo conectado que no está en la sala muestra «Invitar». La insignia cuenta los que se pueden invitar ahora.
+ */
+function LobbyInviteButton({ room }: { room: RoomView }) {
+  const friends = useOptionalFriends();
+  if (!friends?.enabled) return null;
+  const invitable = (friends.overview?.friends ?? []).filter((friend) => canInviteFriend(room, friend)).length;
+  return (
+    <Pill variant="blue" icon={UserPlus} block aria-haspopup="dialog" {...(invitable > 0 ? { badge: String(Math.min(invitable, 99)) } : {})}
+      aria-label={invitable === 0 ? 'Invitar amigos' : `Invitar amigos, ${invitable} ${invitable === 1 ? 'conectado' : 'conectados'}`} onClick={friends.openDrawer}>
+      Invitar amigos
+    </Pill>
   );
 }
