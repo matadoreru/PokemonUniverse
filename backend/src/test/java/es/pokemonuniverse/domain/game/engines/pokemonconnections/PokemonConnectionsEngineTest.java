@@ -198,11 +198,13 @@ class PokemonConnectionsEngineTest {
     var random = new Mulberry32(9);
     var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random),
         options(16, List.of("classic-connections-eevee-family-fossils-dogs-food"), List.of()));
-    assertEquals("DYNAMIC dynamic-food:alcremie,appletun,slurpuff,vanillite|single-stage:espeon,houndour,jolteon,"
-        + "kabuto|single-type:aerodactyl,flareon,lileep,lillipup|type-water:electrike,growlithe,omanyte,vaporeon | "
-        + "group-1:omanyte,growlithe,vaporeon,electrike group-2:vanillite,slurpuff,appletun,alcremie "
-        + "group-3:jolteon,espeon,kabuto,houndour group-4:flareon,aerodactyl,lillipup,lileep", describe(puzzle));
-    assertEquals(0.0026529785245656967, random.getAsDouble());
+    // Sin ambigüedad: single-stage, single-type o type-water cubren a Pokémon de otras categorías y se descartan.
+    assertEquals("DYNAMIC dynamic-dogs:electrike,growlithe,houndour,lillipup|eevee-family:espeon,flareon,jolteon,"
+        + "vaporeon|food:alcremie,appletun,slurpuff,vanillite|fossils:aerodactyl,kabuto,lileep,omanyte | "
+        + "group-1:flareon,jolteon,vaporeon,espeon group-2:omanyte,lileep,aerodactyl,kabuto "
+        + "group-3:slurpuff,appletun,alcremie,vanillite group-4:lillipup,electrike,houndour,growlithe",
+        describe(puzzle));
+    assertEquals(0.8281138679012656, random.getAsDouble());
   }
 
   @Test

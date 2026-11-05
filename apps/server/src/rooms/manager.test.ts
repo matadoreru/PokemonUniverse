@@ -705,7 +705,18 @@ describe('room multi-game lifecycle', () => {
   });
 
   it('plays Pokémon Connections with private progress, reconnect and synchronized reveal', () => {
-    const manager = new RoomManager(io() as any, catalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
+    // Connections no admite tableros ambiguos: con 16 Pokémon casi iguales no hay cuatro categorías disjuntas, así que
+    // aquí cada cuarteto tiene un tipo distinto.
+    const connectionsTypes = ['fire', 'water', 'grass', 'electric'] as const;
+    const connectionsPokemon = pokemon.map((entry, index) => ({ ...entry, types: [connectionsTypes[index % 4]!] }));
+    const connectionsCatalog: typeof catalog = {
+      ...catalog,
+      all: () => connectionsPokemon,
+      byId: (id) => connectionsPokemon.find((entry) => entry.id === id),
+      byDexNumber: (number) => connectionsPokemon.find((entry) => entry.nationalDexNumber === number),
+      forGenerations: (generations) => connectionsPokemon.filter((entry) => generations.includes(entry.generation)),
+    };
+    const manager = new RoomManager(io() as any, connectionsCatalog); const host = identity('host', 'Host'); const guest = identity('guest', 'Guest');
     const hostSocket = socket('host-socket'); const created = (manager as any).create(hostSocket, host, 8); const room = manager.store.get(created.room.code)!;
     (manager as any).join(socket('guest-socket'), guest, room.code); const originalIds = [...room.members.keys()];
     (manager as any).selectGame(host.id, 'pokemon-connections');

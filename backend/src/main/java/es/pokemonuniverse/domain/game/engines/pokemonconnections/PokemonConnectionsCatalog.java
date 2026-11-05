@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 
 /**
  * Traducción literal de {@code pokemon-connections/catalog.ts}: las categorías curadas
- * ({@code connectionCategoryCatalog}) y las plantillas ({@code curatedTemplates}) en el mismo orden que el TS, las
+ * ({@code connectionCategoryCatalog}) y las plantillas ({@code connectionCuratedTemplates}) en el mismo orden que el TS, las
  * categorías dinámicas y la generación del puzle. El orden importa: alimenta {@code shuffled} y las rotaciones.
  */
 public final class PokemonConnectionsCatalog {
@@ -143,12 +143,12 @@ public final class PokemonConnectionsCatalog {
           .explanation("Su diseño o concepto está relacionado con alimentos o bebidas.")
           .pokemonIds("vanillite", "vanillish", "vanilluxe", "swirlix", "slurpuff", "applin", "flapple", "appletun",
               "sinistea", "polteageist", "milcery", "alcremie", "smoliv", "dolliv", "arboliva", "fidough", "dachsbun",
-              "tatsugiri"),
+              "tatsugiri-curly"),
       category("cats")
           .label("Pokémon con aspecto felino")
           .explanation("Su diseño está inspirado en gatos o felinos.")
           .pokemonIds("meowth", "persian", "skitty", "delcatty", "glameow", "purugly", "purrloin", "liepard", "litleo",
-              "pyroar", "espurr", "meowstic-male", "litten", "torracat", "incineroar", "sprigatito", "floragato",
+              "pyroar-male", "espurr", "meowstic-male", "litten", "torracat", "incineroar", "sprigatito", "floragato",
               "meowscarada"),
       category("bears")
           .label("Pokémon con aspecto de oso")
@@ -169,7 +169,7 @@ public final class PokemonConnectionsCatalog {
           .label("Roedores eléctricos")
           .explanation("Forman el grupo informal de roedores eléctricos de cada generación.")
           .pokemonIds("pikachu", "raichu", "pichu", "plusle", "minun", "pachirisu", "emolga", "dedenne", "togedemaru",
-              "morpeko", "pawmi", "pawmo", "pawmot"),
+              "morpeko-full-belly", "pawmi", "pawmo", "pawmot"),
       category("artificial-objects")
           .label("Objetos animados")
           .explanation("Su diseño convierte un objeto cotidiano en Pokémon.")
@@ -197,20 +197,29 @@ public final class PokemonConnectionsCatalog {
               "corviknight", "kilowattrel"),
       category("trade-evolution")
           .label("Evolucionan al intercambiarlos")
-          .explanation("Su método evolutivo clásico requiere un intercambio.")
-          .pokemonIds("kadabra", "machoke", "graveler", "haunter", "boldore", "gurdurr", "phantump", "pumpkaboo"),
+          .explanation("Su método de evolución exige un intercambio, a veces con un objeto equipado o por otro Pokémon "
+              + "concreto.")
+          .pokemonIds("kadabra", "machoke", "graveler", "haunter", "poliwhirl", "slowpoke", "onix", "scyther", "seadra",
+              "porygon", "rhydon", "electabuzz", "magmar", "porygon2", "feebas", "dusclops", "clamperl", "boldore",
+              "gurdurr", "karrablast", "shelmet", "spritzee", "swirlix", "phantump", "pumpkaboo-average"),
       category("branch-evolution")
           .label("Tienen una evolución ramificada")
           .explanation("Pueden evolucionar en especies diferentes según las condiciones.")
-          .pokemonIds("gloom", "poliwhirl", "slowpoke", "tyrogue", "wurmple", "snorunt", "clamperl", "kirlia"),
+          .pokemonIds("eevee", "gloom", "poliwhirl", "slowpoke", "scyther", "tyrogue", "wurmple", "nincada", "kirlia",
+              "snorunt", "clamperl", "burmy", "cosmoem", "applin", "charcadet"),
       category("friendship-evolution")
           .label("Evolucionan con amistad")
           .explanation("Una amistad alta forma parte de su método de evolución.")
-          .pokemonIds("golbat", "chansey", "togetic", "azurill", "budew", "buneary", "riolu", "snom"),
+          .pokemonIds("golbat", "chansey", "pichu", "cleffa", "igglybuff", "togepi", "eevee", "azurill", "budew",
+              "chingling", "buneary", "riolu", "munchlax", "woobat", "swadloon", "type-null", "snom"),
       category("stone-evolution")
           .label("Evolucionan con una piedra")
           .explanation("Necesitan una piedra evolutiva para alcanzar su siguiente fase.")
-          .pokemonIds("vulpix", "growlithe", "staryu", "gloom", "sunkern", "minccino", "helioptile", "charjabug"),
+          .pokemonIds("pikachu", "nidorina", "nidorino", "clefairy", "vulpix", "jigglypuff", "gloom", "growlithe",
+              "poliwhirl", "weepinbell", "shellder", "exeggcute", "staryu", "eevee", "togetic", "murkrow", "misdreavus",
+              "sunkern", "lombre", "nuzleaf", "skitty", "kirlia", "roselia", "snorunt", "pansage", "pansear", "panpour",
+              "munna", "cottonee", "petilil", "minccino", "eelektrik", "lampent", "floette", "doublade", "helioptile",
+              "charjabug", "crabrawler", "capsakid", "tadbulb", "cetoddle"),
       category("turtles")
           .label("Pokémon con aspecto de tortuga")
           .explanation("Su diseño está inspirado en tortugas terrestres o marinas.")
@@ -321,7 +330,8 @@ public final class PokemonConnectionsCatalog {
           .explanation("Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.")
           .pokemonIds("rattata", "raticate", "pikachu", "raichu", "sandshrew", "sandslash", "sentret", "furret",
               "marill", "plusle", "minun", "bidoof", "bibarel", "pachirisu", "emolga", "dedenne", "togedemaru",
-              "skwovet", "greedent", "morpeko", "pawmi", "pawmo", "pawmot", "tandemaus", "maushold-family-of-four"),
+              "skwovet", "greedent", "morpeko-full-belly", "pawmi", "pawmo", "pawmot", "tandemaus",
+              "maushold-family-of-four"),
       category("spiders")
           .label("Pokémon con aspecto de araña")
           .explanation("Su diseño está inspirado en arañas u otros arácnidos similares.")
@@ -333,9 +343,10 @@ public final class PokemonConnectionsCatalog {
       category("fish")
           .label("Pokémon con aspecto de pez")
           .explanation("Su diseño está inspirado principalmente en peces.")
-          .pokemonIds("magikarp", "goldeen", "seaking", "remoraid", "carvanha", "feebas", "relicanth", "luvdisc",
-              "finneon", "lumineon", "basculin-red-striped", "wishiwashi-solo", "bruxish", "arrokuda", "barraskewda",
-              "veluza"),
+          .pokemonIds("magikarp", "goldeen", "seaking", "chinchou", "lanturn", "qwilfish", "remoraid", "carvanha",
+              "sharpedo", "barboach", "whiscash", "feebas", "relicanth", "luvdisc", "finneon", "lumineon",
+              "basculin-red-striped", "alomomola", "tynamo", "eelektrik", "eelektross", "stunfisk", "wishiwashi-solo",
+              "bruxish", "arrokuda", "barraskewda", "basculegion-male", "overqwil", "veluza", "dondozo"),
       category("sheep-goats")
           .label("Ovejas y cabras")
           .explanation("Su diseño está inspirado en ovejas, carneros o cabras.")
@@ -387,9 +398,223 @@ public final class PokemonConnectionsCatalog {
       category("mythical-balanced-stats")
           .label("Singulares con 100 en cada estadística")
           .explanation("Sus seis estadísticas base tienen exactamente 100 puntos.")
-          .pokemonIds("mew", "celebi", "jirachi", "manaphy", "shaymin-land"));
+          .pokemonIds("mew", "celebi", "jirachi", "manaphy", "shaymin-land"),
+      category("movie-stars")
+          .label("Protagonistas de películas")
+          .explanation("Cada uno es el Pokémon invitado central de alguna película de Pokémon.")
+          .pokemonIds("mewtwo", "mew", "lugia", "entei", "celebi", "ho-oh", "latias", "latios", "jirachi",
+              "deoxys-normal", "rayquaza", "lucario", "manaphy", "darkrai", "dialga", "palkia", "giratina-altered",
+              "shaymin-land", "arceus", "zoroark", "victini", "reshiram", "zekrom", "kyurem", "keldeo-ordinary",
+              "genesect", "xerneas", "yveltal", "diancie", "hoopa", "volcanion", "magearna", "marshadow", "zeraora",
+              "zarude"),
+      category("ash-team")
+          .label("Pokémon de Ash")
+          .explanation("Formaron parte del equipo de Ash en el anime, en la fase en que los tuvo.")
+          .pokemonIds("pikachu", "bulbasaur", "charizard", "squirtle", "butterfree", "pidgeot", "primeape", "kingler",
+              "muk", "tauros", "snorlax", "lapras", "gengar", "dragonite", "heracross", "bayleef", "quilava",
+              "totodile", "noctowl", "donphan", "sceptile", "corphish", "torkoal", "swellow", "glalie", "staraptor",
+              "torterra", "infernape", "buizel", "gible", "gliscor", "lucario", "unfezant", "pignite", "oshawott",
+              "snivy", "scraggy", "leavanny", "palpitoad", "krookodile", "boldore", "greninja", "talonflame",
+              "hawlucha", "goodra", "noivern", "rowlet", "torracat", "melmetal", "sirfetchd", "dracovish"),
+      category("misty-team")
+          .label("Pokémon de Misty")
+          .explanation("Formaron parte del equipo de Misty en el anime.")
+          .pokemonIds("staryu", "starmie", "goldeen", "horsea", "psyduck", "togetic", "politoed", "gyarados", "corsola",
+              "azurill", "luvdisc"),
+      category("brock-team")
+          .label("Pokémon de Brock")
+          .explanation("Formaron parte del equipo de Brock en el anime.")
+          .pokemonIds("geodude", "steelix", "vulpix", "crobat", "forretress", "ludicolo", "marshtomp", "sudowoodo",
+              "croagunk"),
+      category("team-rocket")
+          .label("Pokémon de Jessie y James")
+          .explanation("Los usaron Jessie, James o Meowth, del Team Rocket, en el anime.")
+          .pokemonIds("meowth", "arbok", "weezing", "victreebel", "lickitung", "wobbuffet", "cacnea", "seviper",
+              "dustox", "chimecho", "yanmega", "mime-jr", "carnivine", "woobat", "yamask", "amoonguss", "frillish-male",
+              "inkay", "mimikyu-disguised", "mareanie"),
+      category("champion-aces")
+          .label("Ases de los Campeones")
+          .explanation("Son el Pokémon estrella de un Campeón de la Liga en los juegos principales.")
+          .pokemonIds("dragonite", "metagross", "milotic", "garchomp", "volcarona", "haxorus", "gardevoir", "charizard",
+              "glimmora", "pawmot"),
+      category("box-art")
+          .label("Mascotas de portada")
+          .explanation("Aparecen en la portada de algún juego principal de la saga.")
+          .pokemonIds("venusaur", "charizard", "blastoise", "pikachu", "eevee", "ho-oh", "lugia", "suicune", "groudon",
+              "kyogre", "rayquaza", "dialga", "palkia", "giratina-altered", "arceus", "reshiram", "zekrom", "kyurem",
+              "xerneas", "yveltal", "solgaleo", "lunala", "necrozma", "zacian", "zamazenta", "koraidon", "miraidon"),
+      category("final-starters")
+          .label("Evoluciones finales de iniciales")
+          .explanation("Son la última fase de un Pokémon inicial de los juegos principales.")
+          .pokemonIds("venusaur", "charizard", "blastoise", "meganium", "typhlosion", "feraligatr", "sceptile",
+              "blaziken", "swampert", "torterra", "infernape", "empoleon", "serperior", "emboar", "samurott",
+              "chesnaught", "delphox", "greninja", "decidueye", "incineroar", "primarina", "rillaboom", "cinderace",
+              "inteleon", "meowscarada", "skeledirge", "quaquaval"),
+      category("regional-forms")
+          .label("Tienen forma regional")
+          .explanation("Tienen una variante regional de Alola, Galar, Hisui o Paldea.")
+          .pokemonIds("rattata", "raticate", "raichu", "sandshrew", "sandslash", "vulpix", "ninetales", "diglett",
+              "dugtrio", "meowth", "persian", "growlithe", "arcanine", "geodude", "graveler", "golem", "ponyta",
+              "rapidash", "slowpoke", "slowbro", "farfetchd", "grimer", "muk", "voltorb", "electrode", "exeggutor",
+              "marowak", "weezing", "mr-mime", "tauros", "articuno", "zapdos", "moltres", "typhlosion", "wooper",
+              "slowking", "qwilfish", "sneasel", "corsola", "zigzagoon", "linoone", "samurott", "lilligant", "darumaka",
+              "darmanitan-standard", "yamask", "zorua", "zoroark", "stunfisk", "braviary", "sliggoo", "goodra",
+              "avalugg", "decidueye"),
+      category("kalos-hoenn-megas")
+          .label("Megaevolucionaron en X/Y o Rubí Omega/Zafiro Alfa")
+          .explanation("Recibieron una megaevolución en Pokémon X e Y o en Rubí Omega y Zafiro Alfa.")
+          .pokemonIds("venusaur", "charizard", "blastoise", "beedrill", "pidgeot", "alakazam", "slowbro", "gengar",
+              "kangaskhan", "pinsir", "gyarados", "aerodactyl", "mewtwo", "ampharos", "steelix", "scizor", "heracross",
+              "houndoom", "tyranitar", "sceptile", "blaziken", "swampert", "gardevoir", "sableye", "mawile", "aggron",
+              "medicham", "manectric", "sharpedo", "camerupt", "altaria", "banette", "absol", "glalie", "salamence",
+              "metagross", "latias", "latios", "rayquaza", "lopunny", "garchomp", "lucario", "abomasnow", "gallade",
+              "audino", "diancie"),
+      category("gigantamax")
+          .label("Tienen forma Gigamax")
+          .explanation("Pueden gigamaxizarse en Pokémon Espada y Escudo.")
+          .pokemonIds("venusaur", "charizard", "blastoise", "butterfree", "pikachu", "meowth", "machamp", "gengar",
+              "kingler", "lapras", "eevee", "snorlax", "garbodor", "melmetal", "rillaboom", "cinderace", "inteleon",
+              "corviknight", "orbeetle", "drednaw", "coalossal", "flapple", "appletun", "sandaconda",
+              "toxtricity-amped", "centiskorch", "hatterene", "grimmsnarl", "alcremie", "copperajah", "duraludon",
+              "urshifu-single-strike"),
+      category("fusions")
+          .label("Pueden fusionarse")
+          .explanation("Pueden fusionarse con otro Pokémon concreto mediante un objeto.")
+          .pokemonIds("reshiram", "zekrom", "kyurem", "solgaleo", "lunala", "necrozma", "glastrier", "spectrier",
+              "calyrex"),
+      category("ability-forms")
+          .label("Cambian de forma en combate por su habilidad")
+          .explanation("Su habilidad les hace cambiar de forma durante el combate.")
+          .pokemonIds("castform", "cherrim", "darmanitan-standard", "aegislash-shield", "zygarde-50", "wishiwashi-solo",
+              "minior-red-meteor", "mimikyu-disguised", "cramorant", "eiscue-ice", "morpeko-full-belly", "palafin-zero",
+              "terapagos"),
+      category("move-evolution")
+          .label("Evolucionan conociendo un movimiento")
+          .explanation("Evolucionan al subir de nivel si conocen un movimiento concreto.")
+          .pokemonIds("lickitung", "tangela", "aipom", "yanma", "piloswine", "mime-jr", "bonsly", "steenee", "poipole",
+              "clobbopus", "girafarig", "dunsparce"),
+      category("cocoons")
+          .label("Fases de capullo o crisálida")
+          .explanation("Son la fase intermedia de capullo, crisálida o pupa de su familia.")
+          .pokemonIds("metapod", "kakuna", "pupitar", "silcoon", "cascoon", "swadloon", "spewpa", "cosmoem", "dottler"),
+      category("human-made")
+          .label("Creados por el ser humano")
+          .explanation("Según su historia oficial, los creó o modificó el ser humano.")
+          .pokemonIds("porygon", "porygon2", "porygon-z", "mewtwo", "golett", "golurk", "genesect", "type-null",
+              "silvally", "magearna"),
+      category("space")
+          .label("Relacionados con el espacio")
+          .explanation("Su diseño o su historia está ligado a estrellas, la Luna, el Sol o el espacio exterior.")
+          .pokemonIds("clefairy", "clefable", "cleffa", "staryu", "starmie", "lunatone", "solrock", "jirachi",
+              "deoxys-normal", "elgyem", "beheeyem", "minior-red-meteor", "cosmog", "cosmoem", "solgaleo", "lunala",
+              "necrozma"),
+      category("japanese-folklore")
+          .label("Inspirados en el folclore japonés")
+          .explanation("Su diseño se basa en criaturas o leyendas del folclore japonés.")
+          .pokemonIds("ninetales", "drowzee", "hypno", "lombre", "shiftry", "froslass", "tornadus-incarnate",
+              "thundurus-incarnate", "ogerpon", "okidogi", "munkidori", "fezandipiti"),
+      category("object-ghosts")
+          .label("Fantasmas con forma de objeto")
+          .explanation("Son de tipo Fantasma y su diseño es un objeto inanimado.")
+          .pokemonIds("shuppet", "banette", "drifloon", "drifblim", "rotom", "cofagrigus", "litwick", "lampent",
+              "chandelure", "honedge", "doublade", "aegislash-shield", "pumpkaboo-average", "gourgeist-average",
+              "sandygast", "palossand", "dhelmise", "sinistea", "polteageist", "gimmighoul", "gholdengo",
+              "poltchageist", "sinistcha"),
+      category("dinosaurs")
+          .label("Inspirados en dinosaurios")
+          .explanation("Su diseño está inspirado en dinosaurios.")
+          .pokemonIds("tropius", "cranidos", "rampardos", "shieldon", "bastiodon", "archen", "archeops", "tyrunt",
+              "tyrantrum", "amaura", "aurorus", "dracozolt", "arctozolt"),
+      category("lizards")
+          .label("Pokémon con aspecto de lagarto")
+          .explanation("Su diseño está inspirado en lagartos, lagartijas o camaleones.")
+          .pokemonIds("charmander", "charmeleon", "treecko", "grovyle", "sceptile", "kecleon", "helioptile",
+              "heliolisk", "salandit", "salazzle", "sobble", "drizzile", "inteleon", "cyclizar"),
+      category("crocodiles")
+          .label("Pokémon con aspecto de cocodrilo")
+          .explanation("Su diseño está inspirado en cocodrilos o caimanes.")
+          .pokemonIds("totodile", "croconaw", "feraligatr", "sandile", "krokorok", "krookodile"),
+      category("beetles")
+          .label("Pokémon con aspecto de escarabajo")
+          .explanation("Su diseño está inspirado en escarabajos, mariquitas incluidas.")
+          .pokemonIds("pinsir", "ledyba", "ledian", "heracross", "grubbin", "charjabug", "vikavolt", "blipbug",
+              "dottler", "orbeetle", "rellor", "rabsca"),
+      category("bees")
+          .label("Abejas y avispas")
+          .explanation("Su diseño está inspirado en abejas o avispas.")
+          .pokemonIds("beedrill", "combee", "vespiquen", "cutiefly", "ribombee"),
+      category("snails-slugs")
+          .label("Caracoles y babosas")
+          .explanation("Su diseño está inspirado en caracoles o babosas.")
+          .pokemonIds("slugma", "magcargo", "shellos", "gastrodon", "shelmet", "accelgor", "goomy", "sliggoo",
+              "goodra"),
+      category("deer")
+          .label("Pokémon con aspecto de ciervo")
+          .explanation("Su diseño está inspirado en ciervos o renos.")
+          .pokemonIds("stantler", "deerling", "sawsbuck", "xerneas", "wyrdeer"),
+      category("fruits-vegetables")
+          .label("Frutas y hortalizas")
+          .explanation("Su diseño incluye frutas, verduras u hortalizas.")
+          .pokemonIds("tropius", "cherubi", "cherrim", "pumpkaboo-average", "gourgeist-average", "bounsweet", "steenee",
+              "tsareena", "applin", "flapple", "appletun", "smoliv", "dolliv", "arboliva", "capsakid", "scovillain",
+              "dipplin", "hydrapple"),
+      category("royalty")
+          .label("Realeza")
+          .explanation("Su nombre o su diseño alude a un rey, una reina o un emperador.")
+          .pokemonIds("nidoqueen", "nidoking", "kingler", "seaking", "slowking", "kingdra", "vespiquen", "empoleon",
+              "tsareena", "calyrex", "kingambit"),
+      category("female-only")
+          .label("Solo existen hembras")
+          .explanation("Su especie no tiene ejemplares macho ni sin sexo.")
+          .pokemonIds("nidoran-f", "nidorina", "nidoqueen", "chansey", "kangaskhan", "jynx", "smoochum", "miltank",
+              "blissey", "illumise", "latias", "wormadam-plant", "vespiquen", "happiny", "froslass", "cresselia",
+              "petilil", "lilligant", "vullaby", "mandibuzz", "flabebe", "floette", "florges", "salazzle", "bounsweet",
+              "steenee", "tsareena", "hatenna", "hattrem", "hatterene", "milcery", "alcremie", "enamorus-incarnate",
+              "tinkatink", "tinkatuff", "tinkaton", "ogerpon"),
+      category("male-only")
+          .label("Solo existen machos")
+          .explanation("Su especie no tiene ejemplares hembra ni sin sexo.")
+          .pokemonIds("nidoran-m", "nidorino", "nidoking", "hitmonlee", "hitmonchan", "tauros", "tyrogue", "hitmontop",
+              "volbeat", "latios", "mothim", "gallade", "throh", "sawk", "rufflet", "braviary", "tornadus-incarnate",
+              "thundurus-incarnate", "landorus-incarnate", "impidimp", "morgrem", "grimmsnarl", "oinkologne-male",
+              "okidogi", "munkidori", "fezandipiti"),
+      category("shape-head-only")
+          .label("Solo tienen cabeza")
+          .explanation("La Pokédex clasifica oficialmente su forma corporal como solo cabeza.")
+          .pokemonIds("shellder", "cloyster", "gastly", "voltorb", "electrode", "koffing", "ditto", "sunkern",
+              "misdreavus", "unown", "pineco", "forretress", "silcoon", "cascoon", "lunatone", "solrock", "castform",
+              "shuppet", "glalie", "clamperl", "mismagius", "bronzor", "rotom", "whirlipede", "cottonee", "solosis",
+              "duosion", "ferroseed", "cryogonal", "shelmet", "carbink", "klefki", "pumpkaboo-average", "comfey",
+              "minior-red-meteor", "cosmog", "cosmoem", "meltan", "rolycoly", "sinistea", "polteageist", "milcery",
+              "nacli", "tadbulb", "bramblin", "brambleghast", "glimmet", "glimmora", "poltchageist", "sinistcha",
+              "pecharunt"),
+      category("shape-multiple-bodies")
+          .label("Formados por varios cuerpos")
+          .explanation("La Pokédex clasifica oficialmente su forma corporal como varios cuerpos.")
+          .pokemonIds("dugtrio", "magneton", "exeggcute", "weezing", "metagross", "combee", "cherubi", "probopass",
+              "vanilluxe", "klink", "klang", "klinklang", "doublade", "binacle", "barbaracle", "falinks", "tandemaus",
+              "maushold-family-of-four", "dipplin", "hydrapple"),
+      category("shape-tentacles")
+          .label("Forma corporal con tentáculos")
+          .explanation("La Pokédex clasifica oficialmente su forma corporal como tentáculos.")
+          .pokemonIds("tentacool", "tentacruel", "omanyte", "omastar", "octillery", "carnivine", "giratina-altered",
+              "boldore", "gigalith", "frillish-male", "jellicent-male", "ferrothorn", "inkay", "trevenant", "toxapex",
+              "wimpod", "nihilego", "buzzwole", "sizzlipede", "centiskorch", "clobbopus", "grapploct", "pincurchin",
+              "toedscruel"),
+      category("heavyweights")
+          .label("Pesan 200 kg o más")
+          .explanation("Su peso oficial alcanza al menos 200 kg.")
+          .matches(pokemon -> pokemon.weightHectograms() >= 2_000),
+      category("featherweights")
+          .label("Pesan menos de 1 kg")
+          .explanation("Su peso oficial no llega a 1 kg.")
+          .matches(pokemon -> pokemon.weightHectograms() > 0 && pokemon.weightHectograms() < 10),
+      category("giants")
+          .label("Miden 3 metros o más")
+          .explanation("Su altura oficial alcanza al menos 3 metros.")
+          .matches(pokemon -> pokemon.heightDecimeters() >= 30));
 
-  /** {@code curatedTemplates}. */
+  /** {@code connectionCuratedTemplates}. */
   static final List<CuratedTemplate> CURATED_TEMPLATES = List.of(
       template("classic-connections",
           group("eevee-family", "vaporeon", "jolteon", "flareon", "espeon"),
@@ -408,7 +633,7 @@ public final class PokemonConnectionsCatalog {
           group("regional-birds", "pidgeot", "noctowl", "swellow", "staraptor")),
       template("evolution-methods-connections",
           group("trade-evolution", "kadabra", "machoke", "graveler", "haunter"),
-          group("branch-evolution", "poliwhirl", "slowpoke", "snorunt", "kirlia"),
+          group("branch-evolution", "tyrogue", "wurmple", "nincada", "burmy"),
           group("friendship-evolution", "golbat", "chansey", "buneary", "riolu"),
           group("stone-evolution", "vulpix", "growlithe", "staryu", "sunkern")),
       template("animal-shapes-connections",
@@ -571,11 +796,25 @@ public final class PokemonConnectionsCatalog {
     return result;
   }
 
-  private record Candidate(CategoryDefinition definition, List<Pokemon> members) {}
+  /** Una categoría candidata con sus miembros barajados y el conjunto de sus ids, para la regla de ambigüedad. */
+  private record Candidate(CategoryDefinition definition, List<Pokemon> members, Set<String> memberIds) {
+
+    Candidate(CategoryDefinition definition, List<Pokemon> members) {
+      this(definition, members, memberIdsOf(members));
+    }
+
+    private static Set<String> memberIdsOf(List<Pokemon> members) {
+      var ids = new HashSet<String>();
+      for (var pokemon : members) ids.add(pokemon.id());
+      return Collections.unmodifiableSet(ids);
+    }
+  }
 
   /**
    * {@code dynamicPuzzle}: baraja los miembros de cada categoría (también los de las que luego no llegan a
    * {@code groupSize}), después las candidatas no excluidas y las excluidas, y prueba rotaciones sin consumir azar.
+   * Cada Pokémon del tablero encaja en una sola de las categorías elegidas: se salta la categoría en la que ya encaja
+   * un Pokémon del tablero, y no se eligen Pokémon de una categoría ya elegida.
    */
   private static @Nullable GeneratedConnectionsPuzzle dynamicPuzzle(List<Pokemon> pool, int groupSize, int groupCount,
       DoubleSupplier random, Set<String> excludedCategoryIds, Set<String> usedPuzzleKeys) {
@@ -590,14 +829,17 @@ public final class PokemonConnectionsCatalog {
         .filter(candidate -> excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
     for (int attempt = 0; attempt < Math.max(1, randomized.size() * 4); attempt += 1) {
       var used = new HashSet<String>();
+      var chosen = new ArrayList<Set<String>>();
       var groups = new ArrayList<ConnectionAnswerGroup>();
       for (var candidate : rotate(randomized, attempt)) {
+        if (used.stream().anyMatch(candidate.memberIds()::contains)) continue;
         var available = rotate(candidate.members(), attempt + groups.size()).stream()
-            .filter(pokemon -> !used.contains(pokemon.id()))
+            .filter(pokemon -> chosen.stream().noneMatch(memberIds -> memberIds.contains(pokemon.id())))
             .toList();
         if (available.size() < groupSize) continue;
         var selected = available.subList(0, groupSize);
         selected.forEach(pokemon -> used.add(pokemon.id()));
+        chosen.add(candidate.memberIds());
         groups.add(answerGroup(candidate.definition(), selected, groups.size()));
         if (groups.size() == groupCount) {
           // .sort() de JS sin comparador: orden de unidades UTF-16, el de String.compareTo.

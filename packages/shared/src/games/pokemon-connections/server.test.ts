@@ -65,7 +65,9 @@ describe('Pokémon Connections puzzle construction and config', () => {
     expect(fixture.state.answerGroups).toHaveLength(4);
     expect(new Set(fixture.state.board.map((pokemon) => pokemon.id))).toHaveLength(16);
 
-    const entries = Array.from({ length: 12 }, (_, index) => mon(`synthetic-${index}`, index));
+    // Tres tipos disjuntos: un tablero no puede mezclar categorías en las que encajen los mismos Pokémon.
+    const syntheticTypes = ['fire', 'water', 'grass'] as const;
+    const entries = Array.from({ length: 12 }, (_, index) => mon(`synthetic-${index}`, index, { types: [syntheticTypes[index % 3]!] }));
     const context: GameContext = { ...fixture.context, pokemon: catalog(entries) };
     const generated = generateConnectionsPuzzle(context, { generations: [1], groupSize: 3, pokemonCount: 9 });
     expect(generated.source).toBe('DYNAMIC');

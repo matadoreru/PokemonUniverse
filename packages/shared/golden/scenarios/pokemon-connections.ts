@@ -36,19 +36,19 @@ function solve(playerId: string, groups: string[][], start: number, gap = 500): 
   return groups.map((group, index) => submit(playerId, group, start + index * gap));
 }
 
-// Ronda 1 de race-and-errors: Volador, marrón, Hielo y Hada.
+// Ronda 1 de race-and-errors: forma regional, mascotas de portada, solo machos y 200 kg o más.
 const raceRound1 = [
-  ['farfetchd', 'charizard', 'pidgeotto', 'aerodactyl'],
-  ['golem', 'spearow', 'kabutops', 'cubone'],
-  ['articuno', 'jynx', 'dewgong', 'lapras'],
-  ['clefable', 'wigglytuff', 'clefairy', 'jigglypuff'],
+  ['vulpix', 'arcanine', 'persian', 'grimer'],
+  ['venusaur', 'pikachu', 'charizard', 'eevee'],
+  ['nidoking', 'hitmonlee', 'hitmonchan', 'nidorino'],
+  ['dragonite', 'gyarados', 'onix', 'snorlax'],
 ];
-// Ronda 3: Velocidad 100+, Planta, Bicho y defensas idénticas.
+// Ronda 3: legendarios, Bicho, rosa y Pokémon de Ash.
 const raceRound3 = [
-  ['aerodactyl', 'electrode', 'dodrio', 'starmie'],
-  ['oddish', 'vileplume', 'bellsprout', 'exeggutor'],
-  ['kakuna', 'venonat', 'metapod', 'butterfree'],
-  ['ditto', 'lickitung', 'arcanine', 'scyther'],
+  ['moltres', 'articuno', 'zapdos', 'mewtwo'],
+  ['weedle', 'kakuna', 'beedrill', 'pinsir'],
+  ['wigglytuff', 'porygon', 'mew', 'clefairy'],
+  ['pidgeot', 'dragonite', 'squirtle', 'charizard'],
 ];
 
 const raceAndErrors: GoldenScenario = {
@@ -61,39 +61,39 @@ const raceAndErrors: GoldenScenario = {
     // Ronda 1: rechazos de fase, de jugador ajeno, de tamaño (3, repetido, 5), de tablero y de grupo ya encontrado.
     advance('p1', 2_000),
     submit('p9', raceRound1[0]!, 2_500),
-    submit('p1', ['farfetchd', 'charizard', 'pidgeotto'], 3_000),
-    submit('p1', ['farfetchd', 'farfetchd', 'charizard', 'pidgeotto'], 3_500),
-    submit('p1', ['farfetchd', 'charizard', 'pidgeotto', 'aerodactyl', 'golem'], 4_000),
-    submit('p1', ['farfetchd', 'charizard', 'pidgeotto', 'pikachu'], 4_500),
+    submit('p1', ['vulpix', 'arcanine', 'persian'], 3_000),
+    submit('p1', ['vulpix', 'vulpix', 'arcanine', 'persian'], 3_500),
+    submit('p1', ['vulpix', 'arcanine', 'persian', 'grimer', 'venusaur'], 4_000),
+    submit('p1', ['vulpix', 'arcanine', 'persian', 'mewtwo'], 4_500),
     // Un acierto en otro orden (attemptedPokemonIds conserva el del jugador) y un Pokémon ya resuelto.
-    submit('p1', ['aerodactyl', 'farfetchd', 'charizard', 'pidgeotto'], 5_000),
-    submit('p1', ['aerodactyl', 'golem', 'spearow', 'kabutops'], 5_500),
-    // Fallo a una (3 de marrón) y fallo lejano (2 y 2).
-    submit('p1', ['golem', 'spearow', 'kabutops', 'articuno'], 6_000),
-    submit('p1', ['golem', 'spearow', 'articuno', 'jynx'], 6_500),
+    submit('p1', ['grimer', 'vulpix', 'arcanine', 'persian'], 5_000),
+    submit('p1', ['grimer', 'venusaur', 'pikachu', 'charizard'], 5_500),
+    // Fallo a una (3 de portada) y fallo lejano (2 y 2).
+    submit('p1', ['venusaur', 'pikachu', 'charizard', 'nidoking'], 6_000),
+    submit('p1', ['venusaur', 'pikachu', 'nidoking', 'hitmonlee'], 6_500),
     // Ana completa la primera (+3), Bruno segundo (+2), Carla tercera (+1) y Diego cuarto (sin bonificación).
     ...solve('p1', raceRound1.slice(1), 7_000),
     submit('p1', raceRound1[0]!, 8_500),
     ...solve('p2', [...raceRound1].reverse(), 9_000),
     ...solve('p3', raceRound1, 11_000),
-    submit('p4', ['farfetchd', 'golem', 'articuno', 'clefable'], 13_000),
+    submit('p4', ['vulpix', 'venusaur', 'nidoking', 'dragonite'], 13_000),
     ...solve('p4', raceRound1, 13_500),
     // Resultados: no se envían grupos, solo el Host avanza y el timeout antes de tiempo no hace nada.
     submit('p2', raceRound1[0]!, 16_000),
     advance('p2', 16_500),
     timeout(17_000),
     advance('p1', 18_000),
-    // Ronda 2 (morado, Veneno, primera fase, varias cabezas): Carla queda eliminada con 4 errores.
-    submit('p1', ['rattata', 'nidoran-m', 'gengar', 'zubat'], 19_000),
-    submit('p2', ['weezing', 'venonat', 'nidorina', 'oddish'], 20_000),
-    submit('p2', ['magneton', 'exeggutor', 'doduo', 'dodrio'], 21_000),
-    submit('p3', ['caterpie', 'farfetchd', 'onix', 'rattata'], 22_000),
-    submit('p3', ['caterpie', 'farfetchd', 'weezing', 'rattata'], 23_000),
-    submit('p3', ['magneton', 'exeggutor', 'doduo', 'onix'], 24_000),
-    submit('p3', ['gengar', 'zubat', 'oddish', 'sandshrew'], 25_000),
-    submit('p3', ['caterpie', 'farfetchd', 'onix', 'sandshrew'], 26_000),
+    // Ronda 2 (Pokémon de Misty, verde, varias cabezas, Fuego): Carla queda eliminada con 4 errores.
+    submit('p1', ['staryu', 'scyther', 'exeggcute', 'charmeleon'], 19_000),
+    submit('p2', ['starmie', 'ivysaur', 'dugtrio', 'growlithe'], 20_000),
+    submit('p2', ['magneton', 'exeggutor', 'dugtrio', 'exeggcute'], 21_000),
+    submit('p3', ['staryu', 'starmie', 'scyther', 'ivysaur'], 22_000),
+    submit('p3', ['staryu', 'starmie', 'scyther', 'exeggcute'], 23_000),
+    submit('p3', ['staryu', 'starmie', 'goldeen', 'vulpix'], 24_000),
+    submit('p3', ['charmeleon', 'growlithe', 'ponyta', 'venusaur'], 25_000),
+    submit('p3', ['staryu', 'starmie', 'goldeen', 'gyarados'], 26_000),
     // En el plazo exacto la acción se rechaza; el timeout cierra la ronda con Ana, Bruno y Diego sin terminar.
-    submit('p1', ['caterpie', 'farfetchd', 'onix', 'sandshrew'], 138_000),
+    submit('p1', ['staryu', 'starmie', 'goldeen', 'gyarados'], 138_000),
     timeout(138_000),
     timeout(168_000),
     // Ronda 3: Bruno la completa más rápido que en la ronda 1 (mejor tiempo nuevo); Ana, más lenta.
@@ -114,32 +114,34 @@ const presenceAndElimination: GoldenScenario = {
   players: [ana, bruno, carla],
   config: { generations: [2, 1, 2], groupSize: 3, pokemonCount: 9, mistakesAllowed: 1, roundSeconds: 60, rounds: 3 },
   steps: [
-    // Ronda 1 (conejos, Dragón, Volador): con un único error permitido, Ana queda eliminada al fallar a una.
-    submit('p1', ['azumarill', 'nidoran-m', 'dratini'], 2_000),
-    submit('p1', ['azumarill', 'nidoran-m', 'nidoran-f'], 2_500),
-    submit('p2', ['azumarill', 'nidoran-m', 'nidoran-f'], 3_000),
+    // Ronda 1 (iniciales finales, rojo, sin evoluciones): con un único error permitido, Ana queda eliminada al
+    // fallar a una.
+    submit('p1', ['meganium', 'typhlosion', 'kingler'], 2_000),
+    submit('p1', ['meganium', 'typhlosion', 'blastoise'], 2_500),
+    submit('p2', ['meganium', 'typhlosion', 'blastoise'], 3_000),
     // Carla se desconecta y no puede jugar; Diego entra como espectador.
     presenceAt(4_000, ana, bruno, offline(carla)),
-    submit('p3', ['dragonite', 'dragonair', 'dratini'], 4_500),
+    submit('p3', ['articuno', 'zapdos', 'mewtwo'], 4_500),
     presenceAt(5_000, ana, bruno, offline(carla), diego),
-    submit('p4', ['dragonite', 'dragonair', 'dratini'], 5_500),
+    submit('p4', ['articuno', 'zapdos', 'mewtwo'], 5_500),
     // Bruno se desconecta: solo queda Ana conectada y ya eliminada, así que la ronda se cierra.
     presenceAt(6_000, ana, offline(bruno), offline(carla), diego),
     presenceAt(7_000, ana, bruno, carla, diego),
     timeout(36_000),
-    // Ronda 2 (gris, aves legendarias, Normal): Ana la completa y todos se desconectan; nadie queda pendiente.
-    submit('p1', ['machamp', 'skarmory', 'steelix'], 37_000),
-    submit('p1', ['articuno', 'zapdos', 'moltres'], 38_000),
-    submit('p1', ['girafarig', 'jigglypuff', 'spearow'], 39_000),
+    // Ronda 2 (objetos animados, Jessie y James, negro): Ana la completa y todos se desconectan; nadie queda
+    // pendiente.
+    submit('p1', ['magnemite', 'electrode', 'voltorb'], 37_000),
+    submit('p1', ['victreebel', 'meowth', 'arbok'], 38_000),
+    submit('p1', ['houndoom', 'sneasel', 'umbreon'], 39_000),
     presenceAt(40_000, offline(ana), offline(bruno), offline(carla), diego),
     presenceAt(41_000, ana, bruno, carla),
     timeout(70_000),
-    // Ronda 3 (varias cabezas, Fantasma, bestias): Carla abandona; Bruno termina y Ana, eliminada, cierra la ronda.
+    // Ronda 3 (portada, solo cabeza, Acero): Carla abandona; Bruno termina y Ana, eliminada, cierra la ronda.
     presenceAt(71_000, ana, bruno, left(carla)),
-    submit('p2', ['exeggutor', 'dugtrio', 'doduo'], 72_000),
-    submit('p2', ['gastly', 'misdreavus', 'gengar'], 73_000),
-    submit('p2', ['suicune', 'entei', 'raikou'], 74_000),
-    submit('p1', ['exeggutor', 'gastly', 'suicune'], 75_000),
+    submit('p2', ['lugia', 'ho-oh', 'eevee'], 72_000),
+    submit('p2', ['pineco', 'shellder', 'sunkern'], 73_000),
+    submit('p2', ['scizor', 'magnemite', 'magneton'], 74_000),
+    submit('p1', ['lugia', 'pineco', 'scizor'], 75_000),
     timeout(105_000),
     advance('p1', 106_000),
   ],
@@ -152,28 +154,28 @@ const largeBoard: GoldenScenario = {
   players: [ana, bruno],
   config: { generations: [2], groupSize: 5, pokemonCount: 25, mistakesAllowed: 10, roundSeconds: 300, rounds: 3 },
   steps: [
-    // Ronda 1 (gris, verde, Tierra, Fuego, Roca): un acierto de cada uno y un fallo a una.
-    submit('p1', ['pineco', 'steelix', 'remoraid', 'qwilfish', 'donphan'], 2_000),
-    submit('p1', ['spinarak', 'meganium', 'xatu', 'skiploom', 'swinub'], 3_000),
-    submit('p2', ['typhlosion', 'houndoom', 'ho-oh', 'magby'], 4_000),
-    submit('p2', ['typhlosion', 'houndoom', 'ho-oh', 'magby', 'entei'], 5_000),
+    // Ronda 1 (Ash, solo cabeza, rojo, blanco, Agua): un acierto de cada uno y un fallo a una.
+    submit('p1', ['pineco', 'misdreavus', 'forretress', 'unown', 'sunkern'], 2_000),
+    submit('p1', ['ledian', 'delibird', 'ariados', 'scizor', 'smeargle'], 3_000),
+    submit('p2', ['feraligatr', 'croconaw', 'quagsire', 'politoed'], 4_000),
+    submit('p2', ['feraligatr', 'croconaw', 'quagsire', 'politoed', 'azumarill'], 5_000),
     timeout(300_999),
     timeout(301_000),
     timeout(331_000),
     // Ronda 2: Bruno completa los cinco grupos y Ana se queda sin tiempo.
     ...solve('p2', [
-      ['pichu', 'cleffa', 'igglybuff', 'tyrogue', 'smoochum'],
-      ['unown', 'celebi', 'miltank', 'raikou', 'delibird'],
-      ['murkrow', 'houndoom', 'umbreon', 'tyranitar', 'houndour'],
-      ['octillery', 'ho-oh', 'ariados', 'porygon2', 'scizor'],
-      ['corsola', 'lanturn', 'wooper', 'mantine', 'azumarill'],
+      ['chikorita', 'celebi', 'jumpluff', 'meganium', 'sunkern'],
+      ['sneasel', 'swinub', 'piloswine', 'smoochum', 'delibird'],
+      ['ariados', 'scizor', 'yanma', 'spinarak', 'ledyba'],
+      ['granbull', 'cleffa', 'snubbull', 'togepi', 'azumarill'],
+      ['raikou', 'elekid', 'mareep', 'pichu', 'lanturn'],
     ], 332_000, 1_000),
     timeout(631_000),
     advance('p2', 661_000),
     advance('p1', 661_500),
-    // Ronda 3: Diego entra como espectador; Ana acierta Hielo y la ronda acaba por tiempo.
+    // Ronda 3: Diego entra como espectador; Ana acierta Tierra y la ronda acaba por tiempo.
     presenceAt(662_000, ana, bruno, diego),
-    submit('p1', ['swinub', 'piloswine', 'sneasel', 'smoochum', 'delibird'], 663_000),
+    submit('p1', ['quagsire', 'pupitar', 'steelix', 'larvitar', 'piloswine'], 663_000),
     timeout(961_500),
     timeout(991_500),
   ],
@@ -188,14 +190,14 @@ const soloBoard12: GoldenScenario = {
   steps: [
     // Tablero de 12 (rama curada con 3 grupos, sin candidatas en gen1-2): Ana sola cierra la ronda al resolverla.
     ...solve('p1', [
-      ['magnemite', 'skarmory', 'pupitar', 'onix'],
-      ['starmie', 'smoochum', 'celebi', 'slowpoke'],
-      ['ninetales', 'espeon', 'eevee', 'umbreon'],
+      ['magmar', 'electabuzz', 'machoke', 'poliwhirl'],
+      ['horsea', 'corsola', 'politoed', 'psyduck'],
+      ['sudowoodo', 'geodude', 'forretress', 'vulpix'],
     ], 2_000, 1_000),
     timeout(34_000),
     // Ronda 2: dos errores la eliminan y cierran la ronda.
-    submit('p1', ['azumarill', 'igglybuff', 'clefable', 'zapdos'], 35_000),
-    submit('p1', ['zapdos', 'mewtwo', 'voltorb', 'magnemite'], 36_000),
+    submit('p1', ['arcanine', 'houndour', 'dragonair', 'gengar'], 35_000),
+    submit('p1', ['dragonite', 'kingdra', 'gastly', 'growlithe'], 36_000),
     timeout(66_000),
     timeout(96_000),
     timeout(126_000),
