@@ -642,12 +642,13 @@ describe('room multi-game lifecycle', () => {
     expect(room.phase).toBe('TURN_ACTIVE'); expect(room.game?.gameId).toBe('type-chain');
     expect([...inspectState(room.game!).turnOrder].sort()).toEqual([...originalIds].sort());
     const firstPlayerId = inspectState(room.game!).currentPlayerId as string;
-    const starter = catalog.byId(inspectState(room.game!).chain.at(-1).pokemon.id)!;
-    const candidates = getValidTypeChainCandidates({ previousPokemon: starter, allowedPokemon: pokemon, usedPokemonIds: new Set(inspectState(room.game!).usedPokemonIds) });
+    const chainType = inspectState(room.game!).chainType;
+    const candidates = getValidTypeChainCandidates({ chainType, allowedPokemon: pokemon.filter((entry) => entry.generation === 1), usedPokemonIds: new Set(inspectState(room.game!).usedPokemonIds) });
     expect(candidates.length).toBeGreaterThan(0);
+    const wrong = pokemon.find((entry) => entry.generation === 1 && !entry.types.includes(chainType))!;
 
-    (manager as any).action(firstPlayerId, { type: 'SUBMIT_POKEMON', pokemonId: starter.id });
-    expect((manager as any).view(room, host.id).game.invalidAttempts.at(-1)).toMatchObject({ playerId: firstPlayerId, reason: 'ALREADY_USED' });
+    (manager as any).action(firstPlayerId, { type: 'SUBMIT_POKEMON', pokemonId: wrong.id });
+    expect((manager as any).view(room, host.id).game.invalidAttempts.at(-1)).toMatchObject({ playerId: firstPlayerId, reason: 'WRONG_TYPE' });
     inspectState(room.game!).cooldownUntil[firstPlayerId] = 0;
     (manager as any).action(firstPlayerId, { type: 'SUBMIT_POKEMON', pokemonId: candidates[0]!.id });
     expect(inspectState(room.game!).chain.at(-1).pokemon.id).toBe(candidates[0]!.id);

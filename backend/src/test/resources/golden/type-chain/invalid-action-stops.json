@@ -25,7 +25,7 @@
       "playerId": "p2",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "pikachu"
+        "pokemonId": "bulbasaur"
       },
       "now": 2000
     },
@@ -34,7 +34,7 @@
       "playerId": "p1",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "pikachu",
+        "pokemonId": "ivysaur",
         "extra": true
       },
       "now": 3000
@@ -44,7 +44,7 @@
       "playerId": "p1",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "pikachu"
+        "pokemonId": "ivysaur"
       },
       "now": 4000
     }
@@ -79,9 +79,14 @@
         "nextPlayerId": null,
         "turnNumber": 0,
         "chainNumber": 0,
+        "chainType": null,
         "chain": [],
         "usedPokemonIds": [],
         "longestChain": 0,
+        "namedCounts": {
+          "p1": 0,
+          "p2": 0
+        },
         "turnStartedAt": null,
         "roundEndsAt": null,
         "invalidAttempts": [],
@@ -130,25 +135,14 @@
         "nextPlayerId": "p1",
         "turnNumber": 1,
         "chainNumber": 1,
-        "chain": [
-          {
-            "pokemon": {
-              "id": "mankey",
-              "name": "Mankey",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
-              "types": [
-                "fighting"
-              ]
-            },
-            "playedBy": null,
-            "sharedType": null,
-            "turnNumber": 0
-          }
-        ],
-        "usedPokemonIds": [
-          "mankey"
-        ],
-        "longestChain": 1,
+        "chainType": "grass",
+        "chain": [],
+        "usedPokemonIds": [],
+        "longestChain": 0,
+        "namedCounts": {
+          "p1": 0,
+          "p2": 0
+        },
         "turnStartedAt": 1000,
         "roundEndsAt": 16000,
         "invalidAttempts": [],
@@ -180,8 +174,8 @@
         "snapshot": {
           "lifecycle": {
             "phase": "TURN_ACTIVE",
-            "nextDeadline": 16000,
-            "actionEpoch": "[\"TURN_ACTIVE\",null,null,1,null,null,null,null]",
+            "nextDeadline": 17000,
+            "actionEpoch": "[\"TURN_ACTIVE\",null,null,2,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
@@ -196,68 +190,71 @@
               "p1"
             ],
             "eliminatedPlayerIds": [],
-            "currentPlayerId": "p2",
-            "nextPlayerId": "p1",
-            "turnNumber": 1,
+            "currentPlayerId": "p1",
+            "nextPlayerId": "p2",
+            "turnNumber": 2,
             "chainNumber": 1,
+            "chainType": "grass",
             "chain": [
               {
                 "pokemon": {
-                  "id": "mankey",
-                  "name": "Mankey",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
                   "types": [
-                    "fighting"
+                    "grass",
+                    "poison"
                   ]
                 },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
+                "playedBy": "p2",
+                "turnNumber": 1
               }
             ],
             "usedPokemonIds": [
-              "mankey"
+              "bulbasaur"
             ],
             "longestChain": 1,
-            "turnStartedAt": 1000,
-            "roundEndsAt": 16000,
-            "invalidAttempts": [
+            "namedCounts": {
+              "p1": 0,
+              "p2": 1
+            },
+            "turnStartedAt": 2000,
+            "roundEndsAt": 17000,
+            "invalidAttempts": [],
+            "eliminations": [],
+            "events": [
               {
+                "kind": "SUCCESS",
                 "playerId": "p2",
                 "pokemon": {
-                  "id": "pikachu",
-                  "name": "Pikachu",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                  "id": "bulbasaur",
+                  "name": "Bulbasaur",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
                   "types": [
-                    "electric"
+                    "grass",
+                    "poison"
                   ]
                 },
-                "reason": "NO_SHARED_TYPE",
-                "attemptedAt": 2000
+                "chainType": "grass",
+                "at": 2000
               }
             ],
-            "eliminations": [],
-            "events": [],
             "results": null
           },
           "playerStates": {
             "p1": {
-              "canSubmit": false,
-              "isCurrentPlayer": false,
-              "eliminated": false,
-              "cooldownUntil": null,
-              "lastAttempt": null
-            },
-            "p2": {
               "canSubmit": true,
               "isCurrentPlayer": true,
               "eliminated": false,
-              "cooldownUntil": 3000,
-              "lastAttempt": {
-                "reason": "NO_SHARED_TYPE",
-                "pokemonName": "Pikachu",
-                "attemptedAt": 2000
-              }
+              "cooldownUntil": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "canSubmit": false,
+              "isCurrentPlayer": false,
+              "eliminated": false,
+              "cooldownUntil": 0,
+              "lastAttempt": null
             }
           },
           "finished": false

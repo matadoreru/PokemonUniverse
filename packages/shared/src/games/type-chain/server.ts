@@ -1,10 +1,10 @@
 import { shuffled as shuffle } from '../infrastructure/random.js';
 import { timedGameLifecycle } from '../infrastructure/lifecycle.js';
-import type { Pokemon } from '../../pokemon/types.js';
+import type { Pokemon, PokemonType } from '../../pokemon/types.js';
 import { isPlayerRequired, type GameActionResult, type GameContext, type MiniGameModule } from '../contracts.js';
 import { cooldownMessage, cooldownRemainingMs, setPlayerCooldown } from '../infrastructure/timing.js';
 import { defaultTypeChainConfig, typeChainConfigSchema, type TypeChainConfig } from './config.js';
-import { buildTypeChainResults, emptyTypeChainStats, getValidTypeChainCandidates, sharedPokemonTypes } from './rules.js';
+import { buildTypeChainResults, emptyTypeChainStats, getValidTypeChainCandidates, hasTypeChainType, typeChainEligibleTypes, typeChainWinner } from './rules.js';
 import { typeChainActionSchema, type TypeChainAction, type TypeChainEvent, type TypeChainInvalidReason, type TypeChainPlayerState, type TypeChainPokemonView, type TypeChainPublicState, type TypeChainState } from './types.js';
 
 export const TYPE_CHAIN_INVALID_COOLDOWN_MS = 1_000;
@@ -13,10 +13,10 @@ export const TYPE_CHAIN_MAX_RECENT_ATTEMPTS = 40;
 export const TYPE_CHAIN_MAX_RECENT_EVENTS = 30;
 
 const manifest = {
-  id: 'type-chain', name: 'Type Chain', icon: '⛓️', description: 'Encadena Pokémon compartiendo exactamente un tipo antes de que termine tu turno.', minPlayers: 2, maxPlayers: 8,
+  id: 'type-chain', name: 'Type Chain', icon: '⛓️', description: 'Cada cadena tiene un tipo: por turnos, nombra un Pokémon de ese tipo sin repetir. Gana quien más nombre.', minPlayers: 2, maxPlayers: 8,
   profileStats: {
     metrics: [
-      { key: 'validSubmissions', label: 'Pokémon válidos enviados', aggregation: 'SUM' as const },
+      { key: 'validSubmissions', label: 'Pokémon nombrados', aggregation: 'SUM' as const },
       { key: 'invalidAttempts', label: 'Intentos inválidos', aggregation: 'SUM' as const },
       { key: 'turnsSurvived', label: 'Turnos sobrevividos', aggregation: 'SUM' as const },
       { key: 'timeoutEliminations', label: 'Eliminaciones por timeout', aggregation: 'SUM' as const },
@@ -30,23 +30,17 @@ const manifest = {
 
 const pokemonView = (pokemon: Pokemon): TypeChainPokemonView => ({ id: pokemon.id, name: pokemon.name, sprite: pokemon.sprite, types: [...pokemon.types] });
 function pool(state: TypeChainState, context: GameContext): Pokemon[] { return state.poolIds.map((id) => context.pokemon.byId(id)).filter((pokemon): pokemon is Pokemon => Boolean(pokemon)); }
-function currentPokemon(state: TypeChainState, context: GameContext): Pokemon | null { return context.pokemon.byId(state.chain.at(-1)?.pokemon.id ?? '') ?? null; }
 function appendEvent(events: TypeChainEvent[], event: TypeChainEvent): TypeChainEvent[] { return [...events, event].slice(-TYPE_CHAIN_MAX_RECENT_EVENTS); }
 
-
-
-export function typeChainStarterCandidates(allowed: readonly Pokemon[]): Array<{ pokemon: Pokemon; continuationCount: number }> {
-  return allowed.flatMap((pokemon) => {
-    const continuationCount = getValidTypeChainCandidates({ previousPokemon: pokemon, allowedPokemon: allowed, usedPokemonIds: new Set([pokemon.id]) }).length;
-    return continuationCount ? [{ pokemon, continuationCount }] : [];
-  });
-}
-
-export function selectTypeChainStarter(allowed: readonly Pokemon[], random: () => number): Pokemon | null {
-  const candidates = typeChainStarterCandidates(allowed); if (!candidates.length) return null;
-  const maximum = Math.max(...candidates.map((entry) => entry.continuationCount)); const preferredMinimum = Math.min(3, maximum);
-  const preferred = candidates.filter((entry) => entry.continuationCount >= preferredMinimum);
-  return preferred[Math.min(Math.floor(random() * preferred.length), preferred.length - 1)]?.pokemon ?? null;
+/**
+ * Tipo de una cadena nueva, al azar (una extracción) entre los que tienen Pokémon suficientes en el pool: primero los
+ * que aún no han tenido cadena en la partida; si ya salieron todos, cualquiera menos el de la cadena que acaba.
+ */
+export function selectTypeChainType(allowed: readonly Pokemon[], usedChainTypes: readonly PokemonType[], currentType: PokemonType | null, random: () => number): PokemonType | null {
+  const eligible = typeChainEligibleTypes(allowed);
+  const fresh = eligible.filter((type) => !usedChainTypes.includes(type)); const other = eligible.filter((type) => type !== currentType);
+  const options = fresh.length ? fresh : other.length ? other : eligible; if (!options.length) return null;
+  return options[Math.min(Math.floor(random() * options.length), options.length - 1)] ?? null;
 }
 
 function nextActivePlayer(state: TypeChainState, afterPlayerId: string): string | null {
@@ -58,27 +52,18 @@ function nextActivePlayer(state: TypeChainState, afterPlayerId: string): string 
   return null;
 }
 
-function failsafeWinner(state: TypeChainState): string | null {
-  const ordered = [...state.activePlayerIds].sort((left, right) => {
-    const a = state.playerStats[left] ?? emptyTypeChainStats(); const b = state.playerStats[right] ?? emptyTypeChainStats();
-    return b.validSubmissions - a.validSubmissions || a.invalidAttempts - b.invalidAttempts || left.localeCompare(right);
-  });
-  if (!ordered[0]) return null; if (!ordered[1]) return ordered[0];
-  const first = state.playerStats[ordered[0]]!; const second = state.playerStats[ordered[1]]!;
-  return first.validSubmissions === second.validSubmissions && first.invalidAttempts === second.invalidAttempts ? null : ordered[0];
-}
-
 function finish(state: TypeChainState, reason: 'SURVIVOR' | 'MAX_TURNS'): TypeChainState {
   const longestChain = Math.max(state.longestChain, state.chain.length);
-  return { ...state, phase: 'GAME_RESULTS', longestChain, currentPlayerId: null, turnStartedAt: null, roundEndsAt: null, nextTransitionAt: null, finishReason: reason, winnerId: reason === 'SURVIVOR' ? state.activePlayerIds[0] ?? null : failsafeWinner(state) };
+  return { ...state, phase: 'GAME_RESULTS', longestChain, currentPlayerId: null, turnStartedAt: null, roundEndsAt: null, nextTransitionAt: null, finishReason: reason, winnerId: typeChainWinner(state) };
 }
 
-function newChain(state: TypeChainState, context: GameContext, recordReset: boolean): TypeChainState {
-  const starter = selectTypeChainStarter(pool(state, context), context.random); if (!starter) throw new Error('No hay Pokémon suficientes para crear una cadena con esta configuración.');
-  context.preloadImage?.(starter.sprite); const starterView = pokemonView(starter); const previousLength = state.chain.length;
+/** Cadena nueva, vacía y con otro tipo; los usados vuelven a valer (el bloqueo es por cadena). */
+function newChain(state: TypeChainState, context: GameContext): TypeChainState {
+  const chainType = selectTypeChainType(pool(state, context), state.usedChainTypes, state.chainType, context.random); if (!chainType) throw new Error('No hay Pokémon suficientes para crear una cadena con esta configuración.');
+  const previousLength = state.chain.length;
   return {
-    ...state, chainNumber: state.chainNumber + 1, chain: [{ pokemon: starterView, playedBy: null, sharedType: null, turnNumber: state.turnNumber }], usedPokemonIds: [starter.id],
-    longestChain: Math.max(state.longestChain, previousLength), events: recordReset ? appendEvent(state.events, { kind: 'CHAIN_RESET', previousLength, starter: starterView, at: context.now }) : state.events,
+    ...state, chainNumber: state.chainNumber + 1, chainType, usedChainTypes: [...state.usedChainTypes, chainType], chain: [], usedPokemonIds: [],
+    longestChain: Math.max(state.longestChain, previousLength), events: state.chainType ? appendEvent(state.events, { kind: 'CHAIN_RESET', previousLength, previousType: state.chainType, chainType, at: context.now }) : state.events,
   };
 }
 
@@ -101,9 +86,10 @@ function activateTurn(state: TypeChainState, requestedPlayerId: string, context:
     playerId = nextActivePlayer(next, removed);
   }
   if (!playerId || next.activePlayerIds.length <= 1) return finish(next, 'SURVIVOR');
-  const reference = currentPokemon(next, context); if (!reference) throw new Error('La cadena no tiene un Pokémon de referencia.');
-  const continuations = getValidTypeChainCandidates({ previousPokemon: reference, allowedPokemon: pool(next, context), usedPokemonIds: new Set(next.usedPokemonIds) });
-  if (!continuations.length) next = newChain(next, context, true);
+  if (!next.chainType) throw new Error('La cadena no tiene tipo.');
+  // Si ya no queda ningún Pokémon sin usar de ese tipo, nadie queda eliminado: empieza otra cadena con otro tipo.
+  const remaining = getValidTypeChainCandidates({ chainType: next.chainType, allowedPokemon: pool(next, context), usedPokemonIds: new Set(next.usedPokemonIds) });
+  if (!remaining.length) next = newChain(next, context);
   const lastAttempt = { ...next.lastAttempt }; delete lastAttempt[playerId];
   return { ...next, phase: 'TURN_ACTIVE', currentPlayerId: playerId, turnNumber: next.turnNumber + 1, turnStartedAt: context.now, roundEndsAt: context.now + next.config.turnSeconds * 1_000, nextTransitionAt: null, cooldownUntil: { ...next.cooldownUntil, [playerId]: 0 }, lastAttempt };
 }
@@ -125,17 +111,17 @@ export const typeChainGame: MiniGameModule<TypeChainConfig, TypeChainState, Type
   createInitialState(config, context) {
     const parsed = typeChainConfigSchema.parse(config); if (context.players.length < manifest.minPlayers) throw new Error(`Se necesitan al menos ${manifest.minPlayers} jugadores.`);
     const allowed = context.pokemon.forGenerations(parsed.generations, { includeForms: true }).filter((pokemon) => pokemon.types.length > 0);
-    if (allowed.length < 2 || !typeChainStarterCandidates(allowed).length) throw new Error('No hay suficientes Pokémon para crear una cadena con esta configuración.');
+    if (!typeChainEligibleTypes(allowed).length) throw new Error('No hay suficientes Pokémon para crear una cadena con esta configuración.');
     const playerIds = context.players.map((player) => player.id); const turnOrder = shuffle(playerIds, context.random);
     return {
-      phase: 'GAME_STARTING', config: parsed, playerIds, turnOrder, activePlayerIds: [...turnOrder], spectatorIds: [], poolIds: allowed.map((pokemon) => pokemon.id), chainNumber: 0, chain: [], usedPokemonIds: [], longestChain: 0,
+      phase: 'GAME_STARTING', config: parsed, playerIds, turnOrder, activePlayerIds: [...turnOrder], spectatorIds: [], poolIds: allowed.map((pokemon) => pokemon.id), chainNumber: 0, chainType: null, usedChainTypes: [], chain: [], usedPokemonIds: [], longestChain: 0,
       turnNumber: 0, completedTurns: 0, currentPlayerId: null, turnStartedAt: null, roundEndsAt: null, nextTransitionAt: null, cooldownUntil: {}, invalidAttempts: [], lastAttempt: {}, eliminations: [], events: [],
       playerStats: Object.fromEntries(playerIds.map((id) => [id, emptyTypeChainStats()])), winnerId: null, finishReason: null,
     };
   },
   start(state, context) {
     if (state.phase !== 'GAME_STARTING') throw new Error('La partida ya ha comenzado.');
-    const withStarter = newChain(state, context, false); return activateTurn(withStarter, withStarter.turnOrder[0]!, context);
+    const withType = newChain(state, context); return activateTurn(withType, withType.turnOrder[0]!, context);
   },
   handleAction(state, playerId, action, context): GameActionResult<TypeChainState> {
     if (state.phase !== 'TURN_ACTIVE') return { state, accepted: false, error: 'No hay un turno activo.' };
@@ -146,13 +132,12 @@ export const typeChainGame: MiniGameModule<TypeChainConfig, TypeChainState, Type
     const candidate = context.pokemon.byId(action.pokemonId); if (!candidate) return { state, accepted: false, error: 'Pokémon desconocido.' };
     if (!state.poolIds.includes(candidate.id)) return { state: invalidAttempt(state, playerId, candidate, 'OUT_OF_POOL', context), accepted: true };
     if (state.usedPokemonIds.includes(candidate.id)) return { state: invalidAttempt(state, playerId, candidate, 'ALREADY_USED', context), accepted: true };
-    const previous = currentPokemon(state, context); if (!previous) return { state, accepted: false, error: 'La cadena no tiene referencia.' };
-    const shared = sharedPokemonTypes(previous, candidate);
-    if (shared.length !== 1) return { state: invalidAttempt(state, playerId, candidate, shared.length === 0 ? 'NO_SHARED_TYPE' : 'MULTIPLE_SHARED_TYPES', context), accepted: true };
-    const stats = state.playerStats[playerId] ?? emptyTypeChainStats(); const from = pokemonView(previous); const to = pokemonView(candidate); const completedTurns = state.completedTurns + 1;
+    const chainType = state.chainType; if (!chainType) return { state, accepted: false, error: 'La cadena no tiene tipo.' };
+    if (!hasTypeChainType(candidate, chainType)) return { state: invalidAttempt(state, playerId, candidate, 'WRONG_TYPE', context), accepted: true };
+    const stats = state.playerStats[playerId] ?? emptyTypeChainStats(); const named = pokemonView(candidate); const completedTurns = state.completedTurns + 1;
     const successful: TypeChainState = {
-      ...state, chain: [...state.chain, { pokemon: to, playedBy: playerId, sharedType: shared[0]!, turnNumber: state.turnNumber }], usedPokemonIds: [...state.usedPokemonIds, candidate.id], longestChain: Math.max(state.longestChain, state.chain.length + 1), completedTurns,
-      cooldownUntil: { ...state.cooldownUntil, [playerId]: 0 }, events: appendEvent(state.events, { kind: 'SUCCESS', playerId, from, to, sharedType: shared[0]!, at: context.now }),
+      ...state, chain: [...state.chain, { pokemon: named, playedBy: playerId, turnNumber: state.turnNumber }], usedPokemonIds: [...state.usedPokemonIds, candidate.id], longestChain: Math.max(state.longestChain, state.chain.length + 1), completedTurns,
+      cooldownUntil: { ...state.cooldownUntil, [playerId]: 0 }, events: appendEvent(state.events, { kind: 'SUCCESS', playerId, pokemon: named, chainType, at: context.now }),
       playerStats: { ...state.playerStats, [playerId]: { ...stats, validSubmissions: stats.validSubmissions + 1, turnsSurvived: stats.turnsSurvived + 1 } },
     };
     if (completedTurns >= TYPE_CHAIN_MAX_TURNS) return { state: finish(successful, 'MAX_TURNS'), accepted: true };
@@ -174,7 +159,8 @@ export const typeChainGame: MiniGameModule<TypeChainConfig, TypeChainState, Type
     return {
       gameId: 'type-chain', phase: state.phase, turnOrder: state.turnOrder, activePlayerIds: state.activePlayerIds, eliminatedPlayerIds: state.eliminations.map((entry) => entry.playerId),
       currentPlayerId: state.currentPlayerId, nextPlayerId: state.currentPlayerId ? nextActivePlayer(state, state.currentPlayerId) : null, turnNumber: state.turnNumber, chainNumber: state.chainNumber,
-      chain: state.chain, usedPokemonIds: state.usedPokemonIds, longestChain: Math.max(state.longestChain, state.chain.length), turnStartedAt: state.turnStartedAt, roundEndsAt: state.roundEndsAt,
+      chainType: state.chainType, chain: state.chain, usedPokemonIds: state.usedPokemonIds, longestChain: Math.max(state.longestChain, state.chain.length),
+      namedCounts: Object.fromEntries(state.playerIds.map((id) => [id, state.playerStats[id]?.validSubmissions ?? 0])), turnStartedAt: state.turnStartedAt, roundEndsAt: state.roundEndsAt,
       invalidAttempts: state.invalidAttempts, eliminations: state.eliminations, events: state.events, results: state.phase === 'GAME_RESULTS' ? buildTypeChainResults(state) : null,
     };
   },

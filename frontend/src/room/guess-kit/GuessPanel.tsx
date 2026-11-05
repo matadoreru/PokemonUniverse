@@ -25,6 +25,11 @@ export interface GuessSelectorProps {
   maxResults?: number | undefined;
   /** Cambia con la ronda: el buscador se vuelve a montar vacío. */
   roundKey: string | number;
+  /**
+   * Lleva el foco al campo al montarse (sin desplazar la vista; ver `PokemonSelector`). Por defecto no: en los juegos de
+   * rondas el foco va al título de la placa. Type Chain lo pide en tu turno para escribir directamente.
+   */
+  autoFocus?: boolean | undefined;
   /** Pokémon que no se pueden elegir (p. ej. los ya usados en la cadena de Type Chain); por defecto, ninguno. */
   locked?: ReadonlySet<string> | undefined;
   /**
@@ -92,7 +97,7 @@ export function GuessPanel(props: GuessPanelProps) {
     </div>
     {kind === 'guess' && selector && <div className={s.search}>
       <PokemonSelector key={selector.roundKey} pokemon={selector.pokemon} loading={selector.loading} loadError={selector.loadError} onRetry={selector.onRetry}
-        locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={false} inputLabel={selector.inputLabel} {...(selector.maxResults ? { maxResults: selector.maxResults } : {})}
+        locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={selector.autoFocus ?? false} inputLabel={selector.inputLabel} {...(selector.maxResults ? { maxResults: selector.maxResults } : {})}
         onSelect={(pokemonId) => selector.onGuess(pokemonId).catch(ignoreFailure)} />
     </div>}
   </Panel>;

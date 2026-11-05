@@ -31,7 +31,7 @@
       "playerId": "p2",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "umbreon"
+        "pokemonId": "machop"
       },
       "now": 2000
     },
@@ -40,7 +40,7 @@
       "playerId": "p1",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "sneasel"
+        "pokemonId": "hitmontop"
       },
       "now": 3000
     },
@@ -68,7 +68,7 @@
       "playerId": "p2",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "jynx"
+        "pokemonId": "heracross"
       },
       "now": 5000
     },
@@ -95,7 +95,7 @@
       "playerId": "p3",
       "action": {
         "type": "SUBMIT_POKEMON",
-        "pokemonId": "smoochum"
+        "pokemonId": "tyrogue"
       },
       "now": 7000
     },
@@ -137,9 +137,15 @@
         "nextPlayerId": null,
         "turnNumber": 0,
         "chainNumber": 0,
+        "chainType": null,
         "chain": [],
         "usedPokemonIds": [],
         "longestChain": 0,
+        "namedCounts": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
         "turnStartedAt": null,
         "roundEndsAt": null,
         "invalidAttempts": [],
@@ -197,26 +203,15 @@
         "nextPlayerId": "p1",
         "turnNumber": 1,
         "chainNumber": 1,
-        "chain": [
-          {
-            "pokemon": {
-              "id": "muk-alola",
-              "name": "Muk de Alola",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
-              "types": [
-                "poison",
-                "dark"
-              ]
-            },
-            "playedBy": null,
-            "sharedType": null,
-            "turnNumber": 0
-          }
-        ],
-        "usedPokemonIds": [
-          "muk-alola"
-        ],
-        "longestChain": 1,
+        "chainType": "fighting",
+        "chain": [],
+        "usedPokemonIds": [],
+        "longestChain": 0,
+        "namedCounts": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
         "turnStartedAt": 1000,
         "roundEndsAt": 11000,
         "invalidAttempts": [],
@@ -277,40 +272,30 @@
             "nextPlayerId": "p3",
             "turnNumber": 2,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon"
+              "machop"
             ],
-            "longestChain": 2,
+            "longestChain": 1,
+            "namedCounts": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
             "turnStartedAt": 2000,
             "roundEndsAt": 12000,
             "invalidAttempts": [],
@@ -319,24 +304,15 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               }
             ],
@@ -395,55 +371,43 @@
             "nextPlayerId": "p2",
             "turnNumber": 3,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               },
               {
                 "pokemon": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p1",
-                "sharedType": "dark",
                 "turnNumber": 2
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon",
-              "sneasel"
+              "machop",
+              "hitmontop"
             ],
-            "longestChain": 3,
+            "longestChain": 2,
+            "namedCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
             "turnStartedAt": 3000,
             "roundEndsAt": 13000,
             "invalidAttempts": [],
@@ -452,47 +416,29 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               },
               {
                 "kind": "SUCCESS",
                 "playerId": "p1",
-                "from": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                "pokemon": {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-                  "types": [
-                    "dark",
-                    "ice"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 3000
               }
             ],
@@ -553,55 +499,43 @@
             "nextPlayerId": "p1",
             "turnNumber": 4,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               },
               {
                 "pokemon": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p1",
-                "sharedType": "dark",
                 "turnNumber": 2
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon",
-              "sneasel"
+              "machop",
+              "hitmontop"
             ],
-            "longestChain": 3,
+            "longestChain": 2,
+            "namedCounts": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
             "turnStartedAt": 4000,
             "roundEndsAt": 14000,
             "invalidAttempts": [],
@@ -618,47 +552,29 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               },
               {
                 "kind": "SUCCESS",
                 "playerId": "p1",
-                "from": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                "pokemon": {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-                  "types": [
-                    "dark",
-                    "ice"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 3000
               },
               {
@@ -726,70 +642,57 @@
             "nextPlayerId": "p2",
             "turnNumber": 5,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               },
               {
                 "pokemon": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p1",
-                "sharedType": "dark",
                 "turnNumber": 2
               },
               {
                 "pokemon": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "ice",
-                    "psychic"
+                    "bug",
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "ice",
                 "turnNumber": 4
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon",
-              "sneasel",
-              "jynx"
+              "machop",
+              "hitmontop",
+              "heracross"
             ],
-            "longestChain": 4,
+            "longestChain": 3,
+            "namedCounts": {
+              "p1": 1,
+              "p2": 2,
+              "p3": 0
+            },
             "turnStartedAt": 5000,
             "roundEndsAt": 15000,
             "invalidAttempts": [],
@@ -806,47 +709,29 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               },
               {
                 "kind": "SUCCESS",
                 "playerId": "p1",
-                "from": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                "pokemon": {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-                  "types": [
-                    "dark",
-                    "ice"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 3000
               },
               {
@@ -858,25 +743,16 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                "pokemon": {
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "bug",
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
-                  "types": [
-                    "ice",
-                    "psychic"
-                  ]
-                },
-                "sharedType": "ice",
+                "chainType": "fighting",
                 "at": 5000
               }
             ],
@@ -937,70 +813,57 @@
             "nextPlayerId": "p2",
             "turnNumber": 5,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               },
               {
                 "pokemon": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p1",
-                "sharedType": "dark",
                 "turnNumber": 2
               },
               {
                 "pokemon": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "ice",
-                    "psychic"
+                    "bug",
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "ice",
                 "turnNumber": 4
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon",
-              "sneasel",
-              "jynx"
+              "machop",
+              "hitmontop",
+              "heracross"
             ],
-            "longestChain": 4,
+            "longestChain": 3,
+            "namedCounts": {
+              "p1": 1,
+              "p2": 2,
+              "p3": 0
+            },
             "turnStartedAt": 5000,
             "roundEndsAt": 15000,
             "invalidAttempts": [],
@@ -1017,47 +880,29 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               },
               {
                 "kind": "SUCCESS",
                 "playerId": "p1",
-                "from": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                "pokemon": {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-                  "types": [
-                    "dark",
-                    "ice"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 3000
               },
               {
@@ -1069,25 +914,16 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                "pokemon": {
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "bug",
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
-                  "types": [
-                    "ice",
-                    "psychic"
-                  ]
-                },
-                "sharedType": "ice",
+                "chainType": "fighting",
                 "at": 5000
               }
             ],
@@ -1150,70 +986,57 @@
             "nextPlayerId": "p2",
             "turnNumber": 5,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               },
               {
                 "pokemon": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p1",
-                "sharedType": "dark",
                 "turnNumber": 2
               },
               {
                 "pokemon": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "ice",
-                    "psychic"
+                    "bug",
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "ice",
                 "turnNumber": 4
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon",
-              "sneasel",
-              "jynx"
+              "machop",
+              "hitmontop",
+              "heracross"
             ],
-            "longestChain": 4,
+            "longestChain": 3,
+            "namedCounts": {
+              "p1": 1,
+              "p2": 2,
+              "p3": 0
+            },
             "turnStartedAt": 5000,
             "roundEndsAt": 15000,
             "invalidAttempts": [],
@@ -1230,47 +1053,29 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               },
               {
                 "kind": "SUCCESS",
                 "playerId": "p1",
-                "from": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                "pokemon": {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-                  "types": [
-                    "dark",
-                    "ice"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 3000
               },
               {
@@ -1282,25 +1087,16 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                "pokemon": {
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "bug",
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
-                  "types": [
-                    "ice",
-                    "psychic"
-                  ]
-                },
-                "sharedType": "ice",
+                "chainType": "fighting",
                 "at": 5000
               }
             ],
@@ -1362,70 +1158,57 @@
             "nextPlayerId": null,
             "turnNumber": 5,
             "chainNumber": 1,
+            "chainType": "fighting",
             "chain": [
               {
                 "pokemon": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
-                  ]
-                },
-                "playedBy": null,
-                "sharedType": null,
-                "turnNumber": 0
-              },
-              {
-                "pokemon": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "dark",
                 "turnNumber": 1
               },
               {
                 "pokemon": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "fighting"
                   ]
                 },
                 "playedBy": "p1",
-                "sharedType": "dark",
                 "turnNumber": 2
               },
               {
                 "pokemon": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "ice",
-                    "psychic"
+                    "bug",
+                    "fighting"
                   ]
                 },
                 "playedBy": "p2",
-                "sharedType": "ice",
                 "turnNumber": 4
               }
             ],
             "usedPokemonIds": [
-              "muk-alola",
-              "umbreon",
-              "sneasel",
-              "jynx"
+              "machop",
+              "hitmontop",
+              "heracross"
             ],
-            "longestChain": 4,
+            "longestChain": 3,
+            "namedCounts": {
+              "p1": 1,
+              "p2": 2,
+              "p3": 0
+            },
             "turnStartedAt": null,
             "roundEndsAt": null,
             "invalidAttempts": [],
@@ -1449,47 +1232,29 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "muk-alola",
-                  "name": "Muk de Alola",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10113.png",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
                   "types": [
-                    "poison",
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
-                  "types": [
-                    "dark"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 2000
               },
               {
                 "kind": "SUCCESS",
                 "playerId": "p1",
-                "from": {
-                  "id": "umbreon",
-                  "name": "Umbreon",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png",
+                "pokemon": {
+                  "id": "hitmontop",
+                  "name": "Hitmontop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
                   "types": [
-                    "dark"
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-                  "types": [
-                    "dark",
-                    "ice"
-                  ]
-                },
-                "sharedType": "dark",
+                "chainType": "fighting",
                 "at": 3000
               },
               {
@@ -1501,25 +1266,16 @@
               {
                 "kind": "SUCCESS",
                 "playerId": "p2",
-                "from": {
-                  "id": "sneasel",
-                  "name": "Sneasel",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
+                "pokemon": {
+                  "id": "heracross",
+                  "name": "Heracross",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
                   "types": [
-                    "dark",
-                    "ice"
+                    "bug",
+                    "fighting"
                   ]
                 },
-                "to": {
-                  "id": "jynx",
-                  "name": "Jynx",
-                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/124.png",
-                  "types": [
-                    "ice",
-                    "psychic"
-                  ]
-                },
-                "sharedType": "ice",
+                "chainType": "fighting",
                 "at": 5000
               },
               {
@@ -1542,7 +1298,7 @@
                     "invalidAttempts": 0,
                     "turnsSurvived": 2,
                     "timeoutEliminations": 0,
-                    "longestChain": 4
+                    "longestChain": 3
                   }
                 },
                 {
@@ -1555,7 +1311,7 @@
                     "invalidAttempts": 0,
                     "turnsSurvived": 1,
                     "timeoutEliminations": 1,
-                    "longestChain": 4
+                    "longestChain": 3
                   }
                 },
                 {
@@ -1568,7 +1324,7 @@
                     "invalidAttempts": 0,
                     "turnsSurvived": 0,
                     "timeoutEliminations": 0,
-                    "longestChain": 4
+                    "longestChain": 3
                   }
                 }
               ]
@@ -1614,7 +1370,7 @@
             "invalidAttempts": 0,
             "turnsSurvived": 2,
             "timeoutEliminations": 0,
-            "longestChain": 4
+            "longestChain": 3
           }
         },
         {
@@ -1627,7 +1383,7 @@
             "invalidAttempts": 0,
             "turnsSurvived": 1,
             "timeoutEliminations": 1,
-            "longestChain": 4
+            "longestChain": 3
           }
         },
         {
@@ -1640,7 +1396,7 @@
             "invalidAttempts": 0,
             "turnsSurvived": 0,
             "timeoutEliminations": 0,
-            "longestChain": 4
+            "longestChain": 3
           }
         }
       ]

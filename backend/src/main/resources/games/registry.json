@@ -858,14 +858,14 @@
     "id": "type-chain",
     "name": "Type Chain",
     "icon": "⛓️",
-    "description": "Encadena Pokémon compartiendo exactamente un tipo antes de que termine tu turno.",
+    "description": "Cada cadena tiene un tipo: por turnos, nombra un Pokémon de ese tipo sin repetir. Gana quien más nombre.",
     "minPlayers": 2,
     "maxPlayers": 8,
     "profileStats": {
       "metrics": [
         {
           "key": "validSubmissions",
-          "label": "Pokémon válidos enviados",
+          "label": "Pokémon nombrados",
           "aggregation": "SUM"
         },
         {
