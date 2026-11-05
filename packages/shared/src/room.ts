@@ -193,6 +193,9 @@ export interface ClientToServerEvents {
   'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;
 }
 
+/** Presencia de un amigo: sin conexión, conectado fuera de sala, en una sala, o en una sala con partida en curso. */
+export type FriendStatus = 'OFFLINE' | 'ONLINE' | 'IN_ROOM' | 'PLAYING';
+
 export interface ServerToClientEvents {
   'room:state': (room: RoomView) => void;
   'room:kicked': (reason: string) => void;
@@ -201,6 +204,8 @@ export interface ServerToClientEvents {
   'who-is-who:cursor': (cursor: import('./games/who-is-who-pokemon/types.js').WhoIsWhoCursorEvent) => void;
   'who-is-who:cursor-clear': (payload: { playerId: string }) => void;
   'who-is-who:cursors-reset': () => void;
+  'friends:presence': (payload: { userId: string; status: FriendStatus }) => void;
+  'friends:changed': (payload: Record<string, never>) => void;
 }
 
 export type SocketAck<T = Record<string, never>> = (response: ({ ok: true } & T) | { ok: false; error: string }) => void;

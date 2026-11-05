@@ -2,7 +2,9 @@ package es.pokemonuniverse.adapters.in.ws;
 
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.AckMessage;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.PushMessage;
+import es.pokemonuniverse.application.friends.FriendPresence;
 import es.pokemonuniverse.domain.identity.AuthUser;
+import io.micronaut.context.BeanProvider;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.JsonMapper;
@@ -11,6 +13,7 @@ import io.micronaut.websocket.WebSocketSession;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +32,9 @@ import org.slf4j.LoggerFactory;
  * <p>Latido: cada {@code pu.ws.heartbeat-seconds} (25 s, el {@code pingInterval} de Socket.IO) envía un ping a cada
  * sesión abierta; el pong del navegador reinicia el temporizador de inactividad de Netty, que si no cerraría las salas
  * tranquilas al cumplirse {@code micronaut.server.idle-timeout}. Con 0 no hay latido.
+ *
+ * <p>Presencia: al registrar o quitar la conexión de una cuenta registrada avisa a {@link FriendPresence}, que
+ * recalcula en segundo plano. Se resuelve de forma perezosa porque la presencia envía a través de estas conexiones.
  */
 @Singleton
 public class WsSessions {
@@ -70,15 +76,20 @@ public class WsSessions {
 
   private final ExecutorService workers = Executors.newVirtualThreadPerTaskExecutor();
   private final Map<String, Connection> connections = new ConcurrentHashMap<>();
+  /** Índice cuenta → conexiones abiertas; la entrada se borra con la última conexión, así no crece. */
+  private final Map<String, Map<String, Connection>> byUser = new ConcurrentHashMap<>();
   private static final byte[] PING = new byte[0];
 
   private final JsonMapper json;
   private final WsClock clock;
   @Nullable private final ScheduledExecutorService heartbeat;
+  private final BeanProvider<FriendPresence> presence;
 
-  public WsSessions(JsonMapper json, WsClock clock, @Value("${pu.ws.heartbeat-seconds:25}") long heartbeatSeconds) {
+  public WsSessions(JsonMapper json, WsClock clock, @Value("${pu.ws.heartbeat-seconds:25}") long heartbeatSeconds,
+      BeanProvider<FriendPresence> presence) {
     this.json = json;
     this.clock = clock;
+    this.presence = presence;
     if (heartbeatSeconds > 0) {
       heartbeat = Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().name("ws-heartbeat").factory());
       heartbeat.scheduleAtFixedRate(this::pingAll, heartbeatSeconds, heartbeatSeconds, TimeUnit.SECONDS);
@@ -104,7 +115,20 @@ public class WsSessions {
   Connection register(WebSocketSession session, AuthUser identity) {
     var connection = new Connection(session, identity);
     connections.put(session.getId(), connection);
+    // compute por cuenta: un remove simultáneo de otra pestaña no puede borrar el mapa recién llenado.
+    byUser.compute(identity.id(), (id, current) -> {
+      var value = current == null ? new ConcurrentHashMap<String, Connection>() : current;
+      value.put(session.getId(), connection);
+      return value;
+    });
+    if (identity.kind() == AuthUser.Kind.USER) presence.ifPresent(p -> p.connectionOpened(identity.id()));
     return connection;
+  }
+
+  /** Conexiones abiertas de {@code userId} en este momento. */
+  List<Connection> connectionsOf(String userId) {
+    var mine = byUser.get(userId);
+    return mine == null ? List.of() : List.copyOf(mine.values());
   }
 
   @Nullable
@@ -114,7 +138,15 @@ public class WsSessions {
 
   @Nullable
   Connection remove(String connectionId) {
-    return connections.remove(connectionId);
+    var connection = connections.remove(connectionId);
+    if (connection == null) return null;
+    var userId = connection.identity.id();
+    byUser.computeIfPresent(userId, (id, mine) -> {
+      mine.remove(connectionId);
+      return mine.isEmpty() ? null : mine;
+    });
+    if (connection.identity.kind() == AuthUser.Kind.USER) presence.ifPresent(p -> p.connectionClosed(userId));
+    return connection;
   }
 
   /** Envía {@code {event, payload}} a la conexión si sigue abierta y pertenece a {@code memberId}; si no, nada. */

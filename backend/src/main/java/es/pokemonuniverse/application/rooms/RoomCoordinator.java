@@ -124,6 +124,8 @@ public class RoomCoordinator {
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
   /** Experiencia de las cuentas al entrar (nivel del avatar); sin BD, ninguna. */
   private UserExperienceReader experience = UserExperienceReader.NONE;
+  /** Presencia de amigos; sin ella, nadie escucha. */
+  private RoomActivity activity = RoomActivity.NONE;
 
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
@@ -169,6 +171,46 @@ public class RoomCoordinator {
   @Inject
   void useExperience(UserExperienceReader reader) {
     this.experience = reader;
+  }
+
+  /** Inyección por método, como la experiencia: la presencia de amigos escucha los cambios de sala. */
+  @Inject
+  void useActivity(RoomActivity activity) {
+    this.activity = activity;
+  }
+
+  /**
+   * Dónde está {@code playerId}. Toma el lock de la sala: quien avisó a {@link RoomActivity} lo hizo con el lock tomado,
+   * así que esta lectura espera a que termine el cambio y ve el estado final. Una partida terminada (resultados de la
+   * partida, de la sesión o votación de la siguiente) ya no está en curso: cuenta como {@code IN_ROOM}, igual que
+   * {@code liveGame} en {@link #adminRooms()}. No llamar con el lock de otra sala tomado.
+   */
+  public RoomOccupancy occupancyOf(String playerId) {
+    while (true) {
+      var room = store.roomForPlayer(playerId);
+      if (room == null) return RoomOccupancy.NONE;
+      room.lock.lock();
+      try {
+        if (store.roomForPlayer(playerId) != room) continue; // cambió de sala mientras esperaba el lock
+        var game = room.game;
+        return game != null && game.finishReason == null ? RoomOccupancy.PLAYING : RoomOccupancy.IN_ROOM;
+      } finally {
+        room.lock.unlock();
+      }
+    }
+  }
+
+  /** Avisa a la presencia de las cuentas registradas de la sala; solo encola (se llama con el lock tomado). */
+  private void roomActivity(LiveRoom room) {
+    var ids = new ArrayList<String>();
+    for (var member : room.members.values()) {
+      if (member.identity.kind() == AuthUser.Kind.USER) ids.add(member.identity.id());
+    }
+    if (!ids.isEmpty()) activity.changed(List.copyOf(ids));
+  }
+
+  private void roomActivity(AuthUser identity) {
+    if (identity.kind() == AuthUser.Kind.USER) activity.changed(List.of(identity.id()));
   }
 
   /** Se lee fuera del lock de la sala; un fallo solo deja al miembro sin nivel. */
@@ -311,6 +353,7 @@ public class RoomCoordinator {
           track(audit.roomCreated(new RoomCreated(room.historyId, code,
               identity.kind() == AuthUser.Kind.USER ? identity.id() : null, identity.displayName(), maxPlayers, now)),
               "Failed to persist room creation");
+          roomActivity(identity);
           return view(room, identity.id());
         } finally {
           room.lock.unlock();
@@ -352,6 +395,7 @@ public class RoomCoordinator {
           else room.sessionParticipants.put(identity.id(),
               new SessionParticipant(identity, current != null ? current.sessionPoints : 0));
           applyPresenceChange(room);
+          roomActivity(identity);
           return view(room, identity.id());
         } finally {
           room.lock.unlock();
@@ -459,10 +503,12 @@ public class RoomCoordinator {
     boolean retainedByLiveGame = Presence.gameRetainsPlayer(room, playerId);
     if (!retainedByLiveGame) room.members.remove(playerId);
     store.detachPlayer(playerId, room.code);
+    roomActivity(member.identity);
     if (room.hostId.equals(playerId)) transferHost(room);
     if (room.members.values().stream().noneMatch(candidate -> candidate.presence != PresenceStatus.LEFT)) {
       room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
       store.delete(room.code);
+      roomActivity(room);
       track(audit.roomClosed(new RoomClosed(room.historyId, explicit ? "EMPTY_AFTER_LEAVE" : "EMPTY_AFTER_TIMEOUT",
           room.game != null && room.game.finishReason == null ? room.game.resultId : null, clock.now())),
           "Failed to persist room closure");
@@ -603,6 +649,7 @@ public class RoomCoordinator {
       Presence.markLeft(member);
       room.members.remove(playerId);
       store.detachPlayer(playerId, room.code);
+      roomActivity(member.identity);
       broadcast(room);
       return null;
     });
@@ -1187,6 +1234,7 @@ public class RoomCoordinator {
       if (member.presence == PresenceStatus.LEFT) {
         iterator.remove();
         store.detachPlayer(entry.getKey(), room.code);
+        roomActivity(member.identity);
         continue;
       }
       member.role = MemberRole.PLAYER;
@@ -1432,6 +1480,7 @@ public class RoomCoordinator {
     room.revision += 1;
     room.updatedAt = clock.now();
     views.broadcast(room, context(room), hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size());
+    roomActivity(room);
   }
 
   private LiveRoom requiredRoom(String playerId) {
