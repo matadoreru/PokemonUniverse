@@ -11,7 +11,7 @@ interface CategoryDefinition {
   matches?: (pokemon: Pokemon) => boolean;
 }
 
-interface CuratedTemplate {
+export interface CuratedTemplate {
   id: string;
   groups: Array<{ categoryId: string; pokemonIds: readonly string[] }>;
 }
@@ -48,11 +48,11 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
   },
   {
     id: 'food', label: 'Relacionados con comida', explanation: 'Su diseño o concepto está relacionado con alimentos o bebidas.',
-    pokemonIds: ['vanillite', 'vanillish', 'vanilluxe', 'swirlix', 'slurpuff', 'applin', 'flapple', 'appletun', 'sinistea', 'polteageist', 'milcery', 'alcremie', 'smoliv', 'dolliv', 'arboliva', 'fidough', 'dachsbun', 'tatsugiri'],
+    pokemonIds: ['vanillite', 'vanillish', 'vanilluxe', 'swirlix', 'slurpuff', 'applin', 'flapple', 'appletun', 'sinistea', 'polteageist', 'milcery', 'alcremie', 'smoliv', 'dolliv', 'arboliva', 'fidough', 'dachsbun', 'tatsugiri-curly'],
   },
   {
     id: 'cats', label: 'Pokémon con aspecto felino', explanation: 'Su diseño está inspirado en gatos o felinos.',
-    pokemonIds: ['meowth', 'persian', 'skitty', 'delcatty', 'glameow', 'purugly', 'purrloin', 'liepard', 'litleo', 'pyroar', 'espurr', 'meowstic-male', 'litten', 'torracat', 'incineroar', 'sprigatito', 'floragato', 'meowscarada'],
+    pokemonIds: ['meowth', 'persian', 'skitty', 'delcatty', 'glameow', 'purugly', 'purrloin', 'liepard', 'litleo', 'pyroar-male', 'espurr', 'meowstic-male', 'litten', 'torracat', 'incineroar', 'sprigatito', 'floragato', 'meowscarada'],
   },
   {
     id: 'bears', label: 'Pokémon con aspecto de oso', explanation: 'Su diseño está inspirado en osos.',
@@ -68,7 +68,7 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
   },
   {
     id: 'electric-rodents', label: 'Roedores eléctricos', explanation: 'Forman el grupo informal de roedores eléctricos de cada generación.',
-    pokemonIds: ['pikachu', 'raichu', 'pichu', 'plusle', 'minun', 'pachirisu', 'emolga', 'dedenne', 'togedemaru', 'morpeko', 'pawmi', 'pawmo', 'pawmot'],
+    pokemonIds: ['pikachu', 'raichu', 'pichu', 'plusle', 'minun', 'pachirisu', 'emolga', 'dedenne', 'togedemaru', 'morpeko-full-belly', 'pawmi', 'pawmo', 'pawmot'],
   },
   {
     id: 'artificial-objects', label: 'Objetos animados', explanation: 'Su diseño convierte un objeto cotidiano en Pokémon.',
@@ -91,20 +91,20 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
     pokemonIds: ['pidgeot', 'noctowl', 'swellow', 'staraptor', 'unfezant', 'talonflame', 'toucannon', 'corviknight', 'kilowattrel'],
   },
   {
-    id: 'trade-evolution', label: 'Evolucionan al intercambiarlos', explanation: 'Su método evolutivo clásico requiere un intercambio.',
-    pokemonIds: ['kadabra', 'machoke', 'graveler', 'haunter', 'boldore', 'gurdurr', 'phantump', 'pumpkaboo'],
+    id: 'trade-evolution', label: 'Evolucionan al intercambiarlos', explanation: 'Su método de evolución exige un intercambio, a veces con un objeto equipado o por otro Pokémon concreto.',
+    pokemonIds: ['kadabra', 'machoke', 'graveler', 'haunter', 'poliwhirl', 'slowpoke', 'onix', 'scyther', 'seadra', 'porygon', 'rhydon', 'electabuzz', 'magmar', 'porygon2', 'feebas', 'dusclops', 'clamperl', 'boldore', 'gurdurr', 'karrablast', 'shelmet', 'spritzee', 'swirlix', 'phantump', 'pumpkaboo-average'],
   },
   {
     id: 'branch-evolution', label: 'Tienen una evolución ramificada', explanation: 'Pueden evolucionar en especies diferentes según las condiciones.',
-    pokemonIds: ['gloom', 'poliwhirl', 'slowpoke', 'tyrogue', 'wurmple', 'snorunt', 'clamperl', 'kirlia'],
+    pokemonIds: ['eevee', 'gloom', 'poliwhirl', 'slowpoke', 'scyther', 'tyrogue', 'wurmple', 'nincada', 'kirlia', 'snorunt', 'clamperl', 'burmy', 'cosmoem', 'applin', 'charcadet'],
   },
   {
     id: 'friendship-evolution', label: 'Evolucionan con amistad', explanation: 'Una amistad alta forma parte de su método de evolución.',
-    pokemonIds: ['golbat', 'chansey', 'togetic', 'azurill', 'budew', 'buneary', 'riolu', 'snom'],
+    pokemonIds: ['golbat', 'chansey', 'pichu', 'cleffa', 'igglybuff', 'togepi', 'eevee', 'azurill', 'budew', 'chingling', 'buneary', 'riolu', 'munchlax', 'woobat', 'swadloon', 'type-null', 'snom'],
   },
   {
     id: 'stone-evolution', label: 'Evolucionan con una piedra', explanation: 'Necesitan una piedra evolutiva para alcanzar su siguiente fase.',
-    pokemonIds: ['vulpix', 'growlithe', 'staryu', 'gloom', 'sunkern', 'minccino', 'helioptile', 'charjabug'],
+    pokemonIds: ['pikachu', 'nidorina', 'nidorino', 'clefairy', 'vulpix', 'jigglypuff', 'gloom', 'growlithe', 'poliwhirl', 'weepinbell', 'shellder', 'exeggcute', 'staryu', 'eevee', 'togetic', 'murkrow', 'misdreavus', 'sunkern', 'lombre', 'nuzleaf', 'skitty', 'kirlia', 'roselia', 'snorunt', 'pansage', 'pansear', 'panpour', 'munna', 'cottonee', 'petilil', 'minccino', 'eelektrik', 'lampent', 'floette', 'doublade', 'helioptile', 'charjabug', 'crabrawler', 'capsakid', 'tadbulb', 'cetoddle'],
   },
   {
     id: 'turtles', label: 'Pokémon con aspecto de tortuga', explanation: 'Su diseño está inspirado en tortugas terrestres o marinas.',
@@ -196,7 +196,7 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
   },
   {
     id: 'rodents', label: 'Pokémon con aspecto de roedor', explanation: 'Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.',
-    pokemonIds: ['rattata', 'raticate', 'pikachu', 'raichu', 'sandshrew', 'sandslash', 'sentret', 'furret', 'marill', 'plusle', 'minun', 'bidoof', 'bibarel', 'pachirisu', 'emolga', 'dedenne', 'togedemaru', 'skwovet', 'greedent', 'morpeko', 'pawmi', 'pawmo', 'pawmot', 'tandemaus', 'maushold-family-of-four'],
+    pokemonIds: ['rattata', 'raticate', 'pikachu', 'raichu', 'sandshrew', 'sandslash', 'sentret', 'furret', 'marill', 'plusle', 'minun', 'bidoof', 'bibarel', 'pachirisu', 'emolga', 'dedenne', 'togedemaru', 'skwovet', 'greedent', 'morpeko-full-belly', 'pawmi', 'pawmo', 'pawmot', 'tandemaus', 'maushold-family-of-four'],
   },
   {
     id: 'spiders', label: 'Pokémon con aspecto de araña', explanation: 'Su diseño está inspirado en arañas u otros arácnidos similares.',
@@ -208,7 +208,7 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
   },
   {
     id: 'fish', label: 'Pokémon con aspecto de pez', explanation: 'Su diseño está inspirado principalmente en peces.',
-    pokemonIds: ['magikarp', 'goldeen', 'seaking', 'remoraid', 'carvanha', 'feebas', 'relicanth', 'luvdisc', 'finneon', 'lumineon', 'basculin-red-striped', 'wishiwashi-solo', 'bruxish', 'arrokuda', 'barraskewda', 'veluza'],
+    pokemonIds: ['magikarp', 'goldeen', 'seaking', 'chinchou', 'lanturn', 'qwilfish', 'remoraid', 'carvanha', 'sharpedo', 'barboach', 'whiscash', 'feebas', 'relicanth', 'luvdisc', 'finneon', 'lumineon', 'basculin-red-striped', 'alomomola', 'tynamo', 'eelektrik', 'eelektross', 'stunfisk', 'wishiwashi-solo', 'bruxish', 'arrokuda', 'barraskewda', 'basculegion-male', 'overqwil', 'veluza', 'dondozo'],
   },
   {
     id: 'sheep-goats', label: 'Ovejas y cabras', explanation: 'Su diseño está inspirado en ovejas, carneros o cabras.',
@@ -262,9 +262,153 @@ export const connectionCategoryCatalog: readonly CategoryDefinition[] = [
     id: 'mythical-balanced-stats', label: 'Singulares con 100 en cada estadística', explanation: 'Sus seis estadísticas base tienen exactamente 100 puntos.',
     pokemonIds: ['mew', 'celebi', 'jirachi', 'manaphy', 'shaymin-land'],
   },
+  {
+    id: 'movie-stars', label: 'Protagonistas de películas', explanation: 'Cada uno es el Pokémon invitado central de alguna película de Pokémon.',
+    pokemonIds: ['mewtwo', 'mew', 'lugia', 'entei', 'celebi', 'ho-oh', 'latias', 'latios', 'jirachi', 'deoxys-normal', 'rayquaza', 'lucario', 'manaphy', 'darkrai', 'dialga', 'palkia', 'giratina-altered', 'shaymin-land', 'arceus', 'zoroark', 'victini', 'reshiram', 'zekrom', 'kyurem', 'keldeo-ordinary', 'genesect', 'xerneas', 'yveltal', 'diancie', 'hoopa', 'volcanion', 'magearna', 'marshadow', 'zeraora', 'zarude'],
+  },
+  {
+    id: 'ash-team', label: 'Pokémon de Ash', explanation: 'Formaron parte del equipo de Ash en el anime, en la fase en que los tuvo.',
+    pokemonIds: ['pikachu', 'bulbasaur', 'charizard', 'squirtle', 'butterfree', 'pidgeot', 'primeape', 'kingler', 'muk', 'tauros', 'snorlax', 'lapras', 'gengar', 'dragonite', 'heracross', 'bayleef', 'quilava', 'totodile', 'noctowl', 'donphan', 'sceptile', 'corphish', 'torkoal', 'swellow', 'glalie', 'staraptor', 'torterra', 'infernape', 'buizel', 'gible', 'gliscor', 'lucario', 'unfezant', 'pignite', 'oshawott', 'snivy', 'scraggy', 'leavanny', 'palpitoad', 'krookodile', 'boldore', 'greninja', 'talonflame', 'hawlucha', 'goodra', 'noivern', 'rowlet', 'torracat', 'melmetal', 'sirfetchd', 'dracovish'],
+  },
+  {
+    id: 'misty-team', label: 'Pokémon de Misty', explanation: 'Formaron parte del equipo de Misty en el anime.',
+    pokemonIds: ['staryu', 'starmie', 'goldeen', 'horsea', 'psyduck', 'togetic', 'politoed', 'gyarados', 'corsola', 'azurill', 'luvdisc'],
+  },
+  {
+    id: 'brock-team', label: 'Pokémon de Brock', explanation: 'Formaron parte del equipo de Brock en el anime.',
+    pokemonIds: ['geodude', 'steelix', 'vulpix', 'crobat', 'forretress', 'ludicolo', 'marshtomp', 'sudowoodo', 'croagunk'],
+  },
+  {
+    id: 'team-rocket', label: 'Pokémon de Jessie y James', explanation: 'Los usaron Jessie, James o Meowth, del Team Rocket, en el anime.',
+    pokemonIds: ['meowth', 'arbok', 'weezing', 'victreebel', 'lickitung', 'wobbuffet', 'cacnea', 'seviper', 'dustox', 'chimecho', 'yanmega', 'mime-jr', 'carnivine', 'woobat', 'yamask', 'amoonguss', 'frillish-male', 'inkay', 'mimikyu-disguised', 'mareanie'],
+  },
+  {
+    id: 'champion-aces', label: 'Ases de los Campeones', explanation: 'Son el Pokémon estrella de un Campeón de la Liga en los juegos principales.',
+    pokemonIds: ['dragonite', 'metagross', 'milotic', 'garchomp', 'volcarona', 'haxorus', 'gardevoir', 'charizard', 'glimmora', 'pawmot'],
+  },
+  {
+    id: 'box-art', label: 'Mascotas de portada', explanation: 'Aparecen en la portada de algún juego principal de la saga.',
+    pokemonIds: ['venusaur', 'charizard', 'blastoise', 'pikachu', 'eevee', 'ho-oh', 'lugia', 'suicune', 'groudon', 'kyogre', 'rayquaza', 'dialga', 'palkia', 'giratina-altered', 'arceus', 'reshiram', 'zekrom', 'kyurem', 'xerneas', 'yveltal', 'solgaleo', 'lunala', 'necrozma', 'zacian', 'zamazenta', 'koraidon', 'miraidon'],
+  },
+  {
+    id: 'final-starters', label: 'Evoluciones finales de iniciales', explanation: 'Son la última fase de un Pokémon inicial de los juegos principales.',
+    pokemonIds: ['venusaur', 'charizard', 'blastoise', 'meganium', 'typhlosion', 'feraligatr', 'sceptile', 'blaziken', 'swampert', 'torterra', 'infernape', 'empoleon', 'serperior', 'emboar', 'samurott', 'chesnaught', 'delphox', 'greninja', 'decidueye', 'incineroar', 'primarina', 'rillaboom', 'cinderace', 'inteleon', 'meowscarada', 'skeledirge', 'quaquaval'],
+  },
+  {
+    id: 'regional-forms', label: 'Tienen forma regional', explanation: 'Tienen una variante regional de Alola, Galar, Hisui o Paldea.',
+    pokemonIds: ['rattata', 'raticate', 'raichu', 'sandshrew', 'sandslash', 'vulpix', 'ninetales', 'diglett', 'dugtrio', 'meowth', 'persian', 'growlithe', 'arcanine', 'geodude', 'graveler', 'golem', 'ponyta', 'rapidash', 'slowpoke', 'slowbro', 'farfetchd', 'grimer', 'muk', 'voltorb', 'electrode', 'exeggutor', 'marowak', 'weezing', 'mr-mime', 'tauros', 'articuno', 'zapdos', 'moltres', 'typhlosion', 'wooper', 'slowking', 'qwilfish', 'sneasel', 'corsola', 'zigzagoon', 'linoone', 'samurott', 'lilligant', 'darumaka', 'darmanitan-standard', 'yamask', 'zorua', 'zoroark', 'stunfisk', 'braviary', 'sliggoo', 'goodra', 'avalugg', 'decidueye'],
+  },
+  {
+    id: 'kalos-hoenn-megas', label: 'Megaevolucionaron en X/Y o Rubí Omega/Zafiro Alfa', explanation: 'Recibieron una megaevolución en Pokémon X e Y o en Rubí Omega y Zafiro Alfa.',
+    pokemonIds: ['venusaur', 'charizard', 'blastoise', 'beedrill', 'pidgeot', 'alakazam', 'slowbro', 'gengar', 'kangaskhan', 'pinsir', 'gyarados', 'aerodactyl', 'mewtwo', 'ampharos', 'steelix', 'scizor', 'heracross', 'houndoom', 'tyranitar', 'sceptile', 'blaziken', 'swampert', 'gardevoir', 'sableye', 'mawile', 'aggron', 'medicham', 'manectric', 'sharpedo', 'camerupt', 'altaria', 'banette', 'absol', 'glalie', 'salamence', 'metagross', 'latias', 'latios', 'rayquaza', 'lopunny', 'garchomp', 'lucario', 'abomasnow', 'gallade', 'audino', 'diancie'],
+  },
+  {
+    id: 'gigantamax', label: 'Tienen forma Gigamax', explanation: 'Pueden gigamaxizarse en Pokémon Espada y Escudo.',
+    pokemonIds: ['venusaur', 'charizard', 'blastoise', 'butterfree', 'pikachu', 'meowth', 'machamp', 'gengar', 'kingler', 'lapras', 'eevee', 'snorlax', 'garbodor', 'melmetal', 'rillaboom', 'cinderace', 'inteleon', 'corviknight', 'orbeetle', 'drednaw', 'coalossal', 'flapple', 'appletun', 'sandaconda', 'toxtricity-amped', 'centiskorch', 'hatterene', 'grimmsnarl', 'alcremie', 'copperajah', 'duraludon', 'urshifu-single-strike'],
+  },
+  {
+    id: 'fusions', label: 'Pueden fusionarse', explanation: 'Pueden fusionarse con otro Pokémon concreto mediante un objeto.',
+    pokemonIds: ['reshiram', 'zekrom', 'kyurem', 'solgaleo', 'lunala', 'necrozma', 'glastrier', 'spectrier', 'calyrex'],
+  },
+  {
+    id: 'ability-forms', label: 'Cambian de forma en combate por su habilidad', explanation: 'Su habilidad les hace cambiar de forma durante el combate.',
+    pokemonIds: ['castform', 'cherrim', 'darmanitan-standard', 'aegislash-shield', 'zygarde-50', 'wishiwashi-solo', 'minior-red-meteor', 'mimikyu-disguised', 'cramorant', 'eiscue-ice', 'morpeko-full-belly', 'palafin-zero', 'terapagos'],
+  },
+  {
+    id: 'move-evolution', label: 'Evolucionan conociendo un movimiento', explanation: 'Evolucionan al subir de nivel si conocen un movimiento concreto.',
+    pokemonIds: ['lickitung', 'tangela', 'aipom', 'yanma', 'piloswine', 'mime-jr', 'bonsly', 'steenee', 'poipole', 'clobbopus', 'girafarig', 'dunsparce'],
+  },
+  {
+    id: 'cocoons', label: 'Fases de capullo o crisálida', explanation: 'Son la fase intermedia de capullo, crisálida o pupa de su familia.',
+    pokemonIds: ['metapod', 'kakuna', 'pupitar', 'silcoon', 'cascoon', 'swadloon', 'spewpa', 'cosmoem', 'dottler'],
+  },
+  {
+    id: 'human-made', label: 'Creados por el ser humano', explanation: 'Según su historia oficial, los creó o modificó el ser humano.',
+    pokemonIds: ['porygon', 'porygon2', 'porygon-z', 'mewtwo', 'golett', 'golurk', 'genesect', 'type-null', 'silvally', 'magearna'],
+  },
+  {
+    id: 'space', label: 'Relacionados con el espacio', explanation: 'Su diseño o su historia está ligado a estrellas, la Luna, el Sol o el espacio exterior.',
+    pokemonIds: ['clefairy', 'clefable', 'cleffa', 'staryu', 'starmie', 'lunatone', 'solrock', 'jirachi', 'deoxys-normal', 'elgyem', 'beheeyem', 'minior-red-meteor', 'cosmog', 'cosmoem', 'solgaleo', 'lunala', 'necrozma'],
+  },
+  {
+    id: 'japanese-folklore', label: 'Inspirados en el folclore japonés', explanation: 'Su diseño se basa en criaturas o leyendas del folclore japonés.',
+    pokemonIds: ['ninetales', 'drowzee', 'hypno', 'lombre', 'shiftry', 'froslass', 'tornadus-incarnate', 'thundurus-incarnate', 'ogerpon', 'okidogi', 'munkidori', 'fezandipiti'],
+  },
+  {
+    id: 'object-ghosts', label: 'Fantasmas con forma de objeto', explanation: 'Son de tipo Fantasma y su diseño es un objeto inanimado.',
+    pokemonIds: ['shuppet', 'banette', 'drifloon', 'drifblim', 'rotom', 'cofagrigus', 'litwick', 'lampent', 'chandelure', 'honedge', 'doublade', 'aegislash-shield', 'pumpkaboo-average', 'gourgeist-average', 'sandygast', 'palossand', 'dhelmise', 'sinistea', 'polteageist', 'gimmighoul', 'gholdengo', 'poltchageist', 'sinistcha'],
+  },
+  {
+    id: 'dinosaurs', label: 'Inspirados en dinosaurios', explanation: 'Su diseño está inspirado en dinosaurios.',
+    pokemonIds: ['tropius', 'cranidos', 'rampardos', 'shieldon', 'bastiodon', 'archen', 'archeops', 'tyrunt', 'tyrantrum', 'amaura', 'aurorus', 'dracozolt', 'arctozolt'],
+  },
+  {
+    id: 'lizards', label: 'Pokémon con aspecto de lagarto', explanation: 'Su diseño está inspirado en lagartos, lagartijas o camaleones.',
+    pokemonIds: ['charmander', 'charmeleon', 'treecko', 'grovyle', 'sceptile', 'kecleon', 'helioptile', 'heliolisk', 'salandit', 'salazzle', 'sobble', 'drizzile', 'inteleon', 'cyclizar'],
+  },
+  {
+    id: 'crocodiles', label: 'Pokémon con aspecto de cocodrilo', explanation: 'Su diseño está inspirado en cocodrilos o caimanes.',
+    pokemonIds: ['totodile', 'croconaw', 'feraligatr', 'sandile', 'krokorok', 'krookodile'],
+  },
+  {
+    id: 'beetles', label: 'Pokémon con aspecto de escarabajo', explanation: 'Su diseño está inspirado en escarabajos, mariquitas incluidas.',
+    pokemonIds: ['pinsir', 'ledyba', 'ledian', 'heracross', 'grubbin', 'charjabug', 'vikavolt', 'blipbug', 'dottler', 'orbeetle', 'rellor', 'rabsca'],
+  },
+  {
+    id: 'bees', label: 'Abejas y avispas', explanation: 'Su diseño está inspirado en abejas o avispas.',
+    pokemonIds: ['beedrill', 'combee', 'vespiquen', 'cutiefly', 'ribombee'],
+  },
+  {
+    id: 'snails-slugs', label: 'Caracoles y babosas', explanation: 'Su diseño está inspirado en caracoles o babosas.',
+    pokemonIds: ['slugma', 'magcargo', 'shellos', 'gastrodon', 'shelmet', 'accelgor', 'goomy', 'sliggoo', 'goodra'],
+  },
+  {
+    id: 'deer', label: 'Pokémon con aspecto de ciervo', explanation: 'Su diseño está inspirado en ciervos o renos.',
+    pokemonIds: ['stantler', 'deerling', 'sawsbuck', 'xerneas', 'wyrdeer'],
+  },
+  {
+    id: 'fruits-vegetables', label: 'Frutas y hortalizas', explanation: 'Su diseño incluye frutas, verduras u hortalizas.',
+    pokemonIds: ['tropius', 'cherubi', 'cherrim', 'pumpkaboo-average', 'gourgeist-average', 'bounsweet', 'steenee', 'tsareena', 'applin', 'flapple', 'appletun', 'smoliv', 'dolliv', 'arboliva', 'capsakid', 'scovillain', 'dipplin', 'hydrapple'],
+  },
+  {
+    id: 'royalty', label: 'Realeza', explanation: 'Su nombre o su diseño alude a un rey, una reina o un emperador.',
+    pokemonIds: ['nidoqueen', 'nidoking', 'kingler', 'seaking', 'slowking', 'kingdra', 'vespiquen', 'empoleon', 'tsareena', 'calyrex', 'kingambit'],
+  },
+  {
+    id: 'female-only', label: 'Solo existen hembras', explanation: 'Su especie no tiene ejemplares macho ni sin sexo.',
+    pokemonIds: ['nidoran-f', 'nidorina', 'nidoqueen', 'chansey', 'kangaskhan', 'jynx', 'smoochum', 'miltank', 'blissey', 'illumise', 'latias', 'wormadam-plant', 'vespiquen', 'happiny', 'froslass', 'cresselia', 'petilil', 'lilligant', 'vullaby', 'mandibuzz', 'flabebe', 'floette', 'florges', 'salazzle', 'bounsweet', 'steenee', 'tsareena', 'hatenna', 'hattrem', 'hatterene', 'milcery', 'alcremie', 'enamorus-incarnate', 'tinkatink', 'tinkatuff', 'tinkaton', 'ogerpon'],
+  },
+  {
+    id: 'male-only', label: 'Solo existen machos', explanation: 'Su especie no tiene ejemplares hembra ni sin sexo.',
+    pokemonIds: ['nidoran-m', 'nidorino', 'nidoking', 'hitmonlee', 'hitmonchan', 'tauros', 'tyrogue', 'hitmontop', 'volbeat', 'latios', 'mothim', 'gallade', 'throh', 'sawk', 'rufflet', 'braviary', 'tornadus-incarnate', 'thundurus-incarnate', 'landorus-incarnate', 'impidimp', 'morgrem', 'grimmsnarl', 'oinkologne-male', 'okidogi', 'munkidori', 'fezandipiti'],
+  },
+  {
+    id: 'shape-head-only', label: 'Solo tienen cabeza', explanation: 'La Pokédex clasifica oficialmente su forma corporal como solo cabeza.',
+    pokemonIds: ['shellder', 'cloyster', 'gastly', 'voltorb', 'electrode', 'koffing', 'ditto', 'sunkern', 'misdreavus', 'unown', 'pineco', 'forretress', 'silcoon', 'cascoon', 'lunatone', 'solrock', 'castform', 'shuppet', 'glalie', 'clamperl', 'mismagius', 'bronzor', 'rotom', 'whirlipede', 'cottonee', 'solosis', 'duosion', 'ferroseed', 'cryogonal', 'shelmet', 'carbink', 'klefki', 'pumpkaboo-average', 'comfey', 'minior-red-meteor', 'cosmog', 'cosmoem', 'meltan', 'rolycoly', 'sinistea', 'polteageist', 'milcery', 'nacli', 'tadbulb', 'bramblin', 'brambleghast', 'glimmet', 'glimmora', 'poltchageist', 'sinistcha', 'pecharunt'],
+  },
+  {
+    id: 'shape-multiple-bodies', label: 'Formados por varios cuerpos', explanation: 'La Pokédex clasifica oficialmente su forma corporal como varios cuerpos.',
+    pokemonIds: ['dugtrio', 'magneton', 'exeggcute', 'weezing', 'metagross', 'combee', 'cherubi', 'probopass', 'vanilluxe', 'klink', 'klang', 'klinklang', 'doublade', 'binacle', 'barbaracle', 'falinks', 'tandemaus', 'maushold-family-of-four', 'dipplin', 'hydrapple'],
+  },
+  {
+    id: 'shape-tentacles', label: 'Forma corporal con tentáculos', explanation: 'La Pokédex clasifica oficialmente su forma corporal como tentáculos.',
+    pokemonIds: ['tentacool', 'tentacruel', 'omanyte', 'omastar', 'octillery', 'carnivine', 'giratina-altered', 'boldore', 'gigalith', 'frillish-male', 'jellicent-male', 'ferrothorn', 'inkay', 'trevenant', 'toxapex', 'wimpod', 'nihilego', 'buzzwole', 'sizzlipede', 'centiskorch', 'clobbopus', 'grapploct', 'pincurchin', 'toedscruel'],
+  },
+  {
+    id: 'heavyweights', label: 'Pesan 200 kg o más', explanation: 'Su peso oficial alcanza al menos 200 kg.',
+    matches: (pokemon) => (pokemon.weightHectograms ?? 0) >= 2_000,
+  },
+  {
+    id: 'featherweights', label: 'Pesan menos de 1 kg', explanation: 'Su peso oficial no llega a 1 kg.',
+    matches: (pokemon) => (pokemon.weightHectograms ?? 0) > 0 && (pokemon.weightHectograms ?? 0) < 10,
+  },
+  {
+    id: 'giants', label: 'Miden 3 metros o más', explanation: 'Su altura oficial alcanza al menos 3 metros.',
+    matches: (pokemon) => (pokemon.heightDecimeters ?? 0) >= 30,
+  },
 ];
 
-const curatedTemplates: readonly CuratedTemplate[] = [
+export const connectionCuratedTemplates: readonly CuratedTemplate[] = [
   {
     id: 'classic-connections',
     groups: [
@@ -296,7 +440,7 @@ const curatedTemplates: readonly CuratedTemplate[] = [
     id: 'evolution-methods-connections',
     groups: [
       { categoryId: 'trade-evolution', pokemonIds: ['kadabra', 'machoke', 'graveler', 'haunter'] },
-      { categoryId: 'branch-evolution', pokemonIds: ['poliwhirl', 'slowpoke', 'snorunt', 'kirlia'] },
+      { categoryId: 'branch-evolution', pokemonIds: ['tyrogue', 'wurmple', 'nincada', 'burmy'] },
       { categoryId: 'friendship-evolution', pokemonIds: ['golbat', 'chansey', 'buneary', 'riolu'] },
       { categoryId: 'stone-evolution', pokemonIds: ['vulpix', 'growlithe', 'staryu', 'sunkern'] },
     ],
@@ -421,6 +565,13 @@ function membersFor(definition: CategoryDefinition, pool: readonly Pokemon[]): P
   return pool.filter((pokemon) => ids?.has(pokemon.id) || definition.matches?.(pokemon));
 }
 
+/** Ids de los Pokémon del pool que encajan en cada categoría (curada o dinámica); lo usan los tests de ambigüedad. */
+export function connectionsCategoryMemberIds(pool: readonly Pokemon[]): Map<string, Set<string>> {
+  return new Map(resolvedCategoryDefinitions(pool).map((definition) => [
+    definition.id, new Set(membersFor(definition, pool).map((pokemon) => pokemon.id)),
+  ]));
+}
+
 function answerGroup(definition: CategoryDefinition, pokemon: readonly Pokemon[], index: number): ConnectionAnswerGroup {
   return {
     id: `group-${index + 1}`,
@@ -434,7 +585,7 @@ function answerGroup(definition: CategoryDefinition, pokemon: readonly Pokemon[]
 function curatedCandidates(pool: readonly Pokemon[], groupCount: number): GeneratedConnectionsPuzzle[] {
   const byId = new Map(pool.map((pokemon) => [pokemon.id, pokemon]));
   const definitions = new Map(connectionCategoryCatalog.map((definition) => [definition.id, definition]));
-  return curatedTemplates.flatMap((template) => {
+  return connectionCuratedTemplates.flatMap((template) => {
     const offsets = template.groups.length === groupCount ? [0] : template.groups.length > groupCount ? template.groups.map((_, index) => index) : [];
     return offsets.flatMap((offset) => {
       const chosen = rotate(template.groups, offset).slice(0, groupCount);
@@ -456,19 +607,26 @@ function dynamicPuzzle(
 ): GeneratedConnectionsPuzzle | null {
   const candidates = resolvedCategoryDefinitions(pool)
     .map((definition) => ({ definition, members: shuffled(membersFor(definition, pool), context.random) }))
-    .filter(({ members }) => members.length >= groupSize);
+    .filter(({ members }) => members.length >= groupSize)
+    .map((candidate) => ({ ...candidate, memberIds: new Set(candidate.members.map((pokemon) => pokemon.id)) }));
   const randomized = [
     ...shuffled(candidates.filter(({ definition }) => !excludedCategoryIds.has(definition.id)), context.random),
     ...shuffled(candidates.filter(({ definition }) => excludedCategoryIds.has(definition.id)), context.random),
   ];
   for (let attempt = 0; attempt < Math.max(1, randomized.length * 4); attempt += 1) {
     const used = new Set<string>();
+    const chosen: Array<ReadonlySet<string>> = [];
     const groups: ConnectionAnswerGroup[] = [];
     for (const candidate of rotate(randomized, attempt)) {
-      const available = rotate(candidate.members, attempt + groups.length).filter((pokemon) => !used.has(pokemon.id));
+      // Tablero sin ambigüedad: cada Pokémon encaja en una sola de las categorías elegidas. Se descarta la categoría
+      // si ya hay en el tablero un Pokémon que encaja en ella, y no se eligen Pokémon de una categoría ya elegida.
+      if ([...used].some((id) => candidate.memberIds.has(id))) continue;
+      const available = rotate(candidate.members, attempt + groups.length)
+        .filter((pokemon) => chosen.every((memberIds) => !memberIds.has(pokemon.id)));
       if (available.length < groupSize) continue;
       const selected = available.slice(0, groupSize);
       selected.forEach((pokemon) => used.add(pokemon.id));
+      chosen.push(candidate.memberIds);
       groups.push(answerGroup(candidate.definition, selected, groups.length));
       if (groups.length === groupCount) {
         const signature = groups

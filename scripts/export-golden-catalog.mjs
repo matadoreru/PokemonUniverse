@@ -1,5 +1,7 @@
 // Exporta el catálogo de Pokémon de las generaciones 1 y 2 a
-// backend/src/test/resources/golden/catalog/gen1-2.json con el mismo cargador que producción.
+// backend/src/test/resources/golden/catalog/gen1-2.json con el mismo cargador que producción, y los ids de todos
+// los Pokémon por defecto con sprite (generaciones 1–9) a default-pokemon-ids.json, con el que los tests comprueban
+// que las listas fijas de los juegos (las categorías de Pokémon Connections) usan slugs que existen.
 // Requiere DATABASE_URL y el dist del servidor: npm run build -w @pokemon-universe/server
 // Se ejecuta a mano cuando cambia el catálogo; el resultado se commitea.
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -10,6 +12,7 @@ const catalogModule = new URL('../apps/server/dist/src/pokemon/catalog.js', impo
 const dbModule = new URL('../apps/server/dist/src/db.js', import.meta.url);
 const fixtureId = 'gen1-2';
 const target = fileURLToPath(new URL(`../backend/src/test/resources/golden/catalog/${fixtureId}.json`, import.meta.url));
+const idsTarget = fileURLToPath(new URL('../backend/src/test/resources/golden/catalog/default-pokemon-ids.json', import.meta.url));
 
 if (!process.env.DATABASE_URL) {
   console.error('Falta DATABASE_URL: el catálogo se exporta desde la base de datos local.');
@@ -68,6 +71,13 @@ try {
   console.log(`Exportados ${pokemon.length} Pokémon (${pokemon.length - forms} por defecto, ${forms} formas regionales), `
     + `${sortedMoves.length} movimientos, ${learnsets.length} movimientos por nivel, ${Object.keys(evolution).length} evoluciones `
     + `y ${pokedexEntries.length} entradas de Pokédex a ${target}`);
+  // El mismo filtro que el pool de los juegos: forma por defecto y con sprite.
+  const defaultIds = catalog.forGenerations([1, 2, 3, 4, 5, 6, 7, 8, 9], { includeForms: true })
+    .filter((entry) => entry.isDefault !== false && entry.sprite)
+    .map((entry) => entry.id)
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  writeFileSync(idsTarget, JSON.stringify(defaultIds, null, 2) + '\n');
+  console.log(`Exportados ${defaultIds.length} ids de Pokémon por defecto a ${idsTarget}`);
 } finally {
   await prisma.$disconnect();
 }
