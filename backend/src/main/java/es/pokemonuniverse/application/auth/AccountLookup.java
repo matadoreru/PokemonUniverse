@@ -21,9 +21,17 @@ public class AccountLookup {
    */
   public Optional<UserEntity> find(String identifier) {
     if (identifier.contains("@")) return users.findByEmail(identifier);
-    var exact = users.findByUsername(identifier);
+    return findByUsername(identifier);
+  }
+
+  /**
+   * Solo por nombre de usuario (sin email): exacto y, si no hay, sin distinguir mayúsculas siempre que solo coincida
+   * una cuenta. La usan el login y las solicitudes de amistad.
+   */
+  public Optional<UserEntity> findByUsername(String username) {
+    var exact = users.findByUsername(username);
     if (exact.isPresent()) return exact;
-    var matches = users.findAllByUsernameIgnoringCase(identifier);
+    var matches = users.findAllByUsernameIgnoringCase(username);
     return matches.size() == 1 ? Optional.of(matches.getFirst()) : Optional.empty();
   }
 }
