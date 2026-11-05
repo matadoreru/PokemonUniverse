@@ -191,10 +191,20 @@ export interface ClientToServerEvents {
   'game:action': (payload: GameActionRequest, ack: SocketAck) => void;
   'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
   'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;
+  'room:invite': (payload: { userId: string }, ack: SocketAck) => void;
 }
 
 /** Presencia de un amigo: sin conexión, conectado fuera de sala, en una sala, o en una sala con partida en curso. */
 export type FriendStatus = 'OFFLINE' | 'ONLINE' | 'IN_ROOM' | 'PLAYING';
+
+/** Invitación de un amigo a su sala (`friends:invite`). No se guarda: caduca en `expiresAt` (ISO, a los 10 min). */
+export interface FriendInvite {
+  inviteId: string;
+  from: { id: string; username: string; avatar: AvatarRef };
+  roomCode: string;
+  gameName: string | null;
+  expiresAt: string;
+}
 
 export interface ServerToClientEvents {
   'room:state': (room: RoomView) => void;
@@ -206,6 +216,7 @@ export interface ServerToClientEvents {
   'who-is-who:cursors-reset': () => void;
   'friends:presence': (payload: { userId: string; status: FriendStatus }) => void;
   'friends:changed': (payload: Record<string, never>) => void;
+  'friends:invite': (payload: FriendInvite) => void;
 }
 
 export type SocketAck<T = Record<string, never>> = (response: ({ ok: true } & T) | { ok: false; error: string }) => void;

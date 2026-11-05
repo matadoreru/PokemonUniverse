@@ -65,6 +65,27 @@ class RoomCoordinatorTest {
   // ------------------------------------------------------------------------------------- entrar, salir, presencia
 
   @Test
+  @DisplayName("roomOf summarizes the player's room for invitations")
+  void roomOfSummarizesRoom() {
+    var kit = new RoomTestKit();
+    assertTrue(kit.manager.roomOf("host").isEmpty());
+    var created = kit.manager.create(guest("host", "Host"), "socket-host", JsonNode.createNumberNode(3));
+    kit.manager.join(guest("ana", "Ana"), "socket-ana", created.code());
+    kit.manager.selectGame("host", "higher-lower");
+
+    var summary = kit.manager.roomOf("ana").orElseThrow();
+    assertEquals(created.code(), summary.code());
+    assertEquals(Set.of("host", "ana"), summary.memberIds());
+    assertEquals(Set.of("host", "ana"), summary.seatHolders());
+    assertEquals(3, summary.maxPlayers());
+    assertEquals("Higher or Lower", summary.gameName());
+
+    kit.manager.leave("ana");
+    assertTrue(kit.manager.roomOf("ana").isEmpty());
+    assertEquals(Set.of("host"), kit.manager.roomOf("host").orElseThrow().memberIds());
+  }
+
+  @Test
   @DisplayName("creates, joins and rejects full rooms, double membership and unknown codes")
   void createJoinAndMembershipRules() {
     var kit = new RoomTestKit();

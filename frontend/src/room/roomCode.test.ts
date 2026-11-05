@@ -37,7 +37,7 @@ describe('normalizeRoomCode', () => {
 describe('roomErrorMessage', () => {
   it('traduce los errores en inglés del servidor', () => {
     expect(roomErrorMessage(new Error('Room not found'))).toBe('No hay ninguna sala con ese código. Revísalo con quien la creó.');
-    expect(roomErrorMessage(new Error('Room is full'))).toBe('Esa sala está llena.');
+    expect(roomErrorMessage(new Error('Room is full'))).toBe('La sala está llena.');
     expect(roomErrorMessage(new Error('Leave your current room first'))).toMatch(/^Ya estás en otra sala/);
     expect(roomErrorMessage(new Error('Already in a room'))).toMatch(/^Ya estás en otra sala/);
     expect(roomErrorMessage(new Error('Not in a room'))).toBe('Ya no estás en ninguna sala.');
@@ -54,6 +54,20 @@ describe('roomErrorMessage', () => {
   it('lo desconocido da un texto genérico en español', () => {
     expect(roomErrorMessage(new Error('Internal Server Error'))).toBe('No se pudo completar. Inténtalo de nuevo en unos segundos.');
     expect(roomErrorMessage(null)).toBe('No se pudo completar. Inténtalo de nuevo en unos segundos.');
+  });
+});
+
+describe('errores de room:invite', () => {
+  it.each([
+    ['You are not in a room', 'No estás en ninguna sala.'],
+    ['Not a friend', 'Solo puedes invitar a tus amigos.'],
+    ['Friend is offline', 'Tu amigo no está conectado.'],
+    ['Already in this room', 'Ya está en tu sala.'],
+    ['Room is full', 'La sala está llena.'],
+    ['Invitation already sent', 'Ya le has invitado; espera unos segundos.'],
+  ])('«%s» se traduce', (message, spanish) => {
+    expect(roomErrorMessage(new Error(message))).toBe(spanish);
+    expect(roomActionErrorMessage(new Error(message))).toBe(spanish);
   });
 });
 
@@ -85,8 +99,9 @@ describe('roomActionErrorMessage', () => {
 describe('textos del servidor vigilados', () => {
   // Si el backend cambia uno de estos textos, la traducción dejaría de aplicarse en silencio: este test lo detecta.
   const coordinator = javaSource(SERVER_MESSAGE_SOURCES.coordinator);
-  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS))('«%s» sigue saliendo de RoomCoordinator.java', (message) => {
-    expect(coordinator).toContain(`new RoomException("${message}")`);
+  const invitations = javaSource(SERVER_MESSAGE_SOURCES.invitations);
+  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS))('«%s» sigue saliendo de RoomCoordinator.java o RoomInvitations.java', (message) => {
+    expect(coordinator + invitations).toContain(`new RoomException("${message}")`);
   });
   it.each([...SERVER_SPANISH_MESSAGES])('«%s» sigue saliendo de RoomCoordinator.java', (message) => {
     expect(coordinator).toContain(`new RoomException("${message}")`);

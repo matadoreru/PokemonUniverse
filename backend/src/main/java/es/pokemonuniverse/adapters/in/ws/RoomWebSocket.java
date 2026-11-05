@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.ws;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.AckMessage;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.ClientMessage;
 import es.pokemonuniverse.adapters.in.ws.WsSessions.Connection;
+import es.pokemonuniverse.application.friends.RoomInvitations;
 import es.pokemonuniverse.application.rooms.RoomCoordinator;
 import es.pokemonuniverse.application.rooms.RoomException;
 import es.pokemonuniverse.application.rooms.RoomView;
@@ -52,14 +53,16 @@ public class RoomWebSocket {
   private static final Logger LOG = LoggerFactory.getLogger(RoomWebSocket.class);
 
   private final RoomCoordinator coordinator;
+  private final RoomInvitations invitations;
   private final WsSessions sessions;
   private final WsHandshake handshake;
   private final JsonMapper json;
   private final boolean roomsEnabled;
 
-  public RoomWebSocket(RoomCoordinator coordinator, WsSessions sessions, WsHandshake handshake, JsonMapper json,
-      @Value("${pu.rooms.enabled:false}") boolean roomsEnabled) {
+  public RoomWebSocket(RoomCoordinator coordinator, RoomInvitations invitations, WsSessions sessions,
+      WsHandshake handshake, JsonMapper json, @Value("${pu.rooms.enabled:false}") boolean roomsEnabled) {
     this.coordinator = coordinator;
+    this.invitations = invitations;
     this.sessions = sessions;
     this.handshake = handshake;
     this.json = json;
@@ -198,6 +201,11 @@ public class RoomWebSocket {
       case "room:end-session" -> current(connection, () -> coordinator.endSession(playerId));
       case "game:skip-vote:set" -> current(connection, () -> coordinator.setGameSkipVote(playerId, payload));
       case "game:action" -> current(connection, () -> coordinator.gameAction(playerId, payload));
+      // Sin current(): withConnection tomaría el lock de la sala, y la invitación lee la BD y envía sin él.
+      case "room:invite" -> {
+        invitations.invite(identity, text(payload, "userId"));
+        yield empty();
+      }
       case CURSOR -> {
         coordinator.updateWhoIsWhoCursor(playerId, connectionId, payload);
         yield empty();

@@ -23,6 +23,7 @@ export const ROOM_CODE_PATTERN = '/^[A-Z2-9]{6}$/';
 export const SERVER_MESSAGE_SOURCES = {
   coordinator: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCoordinator.java',
   parsers: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCommandParsers.java',
+  invitations: 'backend/src/main/java/es/pokemonuniverse/application/friends/RoomInvitations.java',
 } as const;
 
 const GENERIC = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';
@@ -41,10 +42,12 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * - Del lobby: «This setting can only be changed in the lobby», «Player not found», «Unknown game», «Cannot end the
  *   session during a game» y «No game in progress».
  * - De partida y resultados: «You cannot act in the current game» y «Game has not finished».
+ * - De `room:invite` (`RoomInvitations.invite`): «You are not in a room», «Not a friend», «Friend is offline»,
+ *   «Already in this room», «Room is full» (el mismo texto que `join`) e «Invitation already sent».
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
-  'Room is full': 'Esa sala está llena.',
+  'Room is full': 'La sala está llena.',
   'Leave your current room first': OTHER_ROOM,
   'Already in a room': OTHER_ROOM,
   'Not in a room': 'Ya no estás en ninguna sala.',
@@ -57,6 +60,12 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   // Partida y resultados (`RoomCoordinator.action` y `returnLobby`): no salen del lobby, pero pasan por las mismas órdenes.
   'You cannot act in the current game': 'No puedes hacer eso en esta partida.',
   'Game has not finished': 'La partida todavía no ha terminado.',
+  // Invitar a un amigo (`RoomInvitations.invite`).
+  'You are not in a room': 'No estás en ninguna sala.',
+  'Not a friend': 'Solo puedes invitar a tus amigos.',
+  'Friend is offline': 'Tu amigo no está conectado.',
+  'Already in this room': 'Ya está en tu sala.',
+  'Invitation already sent': 'Ya le has invitado; espera unos segundos.',
 };
 
 /**

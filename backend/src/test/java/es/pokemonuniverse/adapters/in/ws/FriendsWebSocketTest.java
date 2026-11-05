@@ -161,6 +161,47 @@ class FriendsWebSocketTest {
   }
 
   @Test
+  void roomInviteAckAndEventOverWs() {
+    var a = user();
+    var b = user();
+    var stranger = user();
+    friends(a, b);
+    var aSocket = connect(a);
+    var bFirstTab = connect(b);
+    var bSecondTab = connect(b);
+    var strangerSocket = connect(stranger);
+    assertError("Not in a room", strangerSocket.command("room:leave", null));
+    assertError("You are not in a room", aSocket.command("room:invite", "{\"userId\":\"" + b.id() + "\"}"));
+
+    var code = aSocket.command("room:create", "{}").get("data").get("room").get("code").getStringValue();
+    assertOk(aSocket.command("room:select-game", "{\"gameId\":\"higher-lower\"}"));
+    assertError("Not a friend", aSocket.command("room:invite", "{\"userId\":\"" + stranger.id() + "\"}"));
+    assertOk(aSocket.command("room:invite", "{\"userId\":\"" + b.id() + "\"}"));
+    assertError("Invitation already sent", aSocket.command("room:invite", "{\"userId\":\"" + b.id() + "\"}"));
+
+    for (var tab : List.of(bFirstTab, bSecondTab)) {
+      var invite = tab.awaitPush("friends:invite", payload -> true);
+      assertEquals(code, invite.get("roomCode").getStringValue());
+      assertEquals("Higher or Lower", invite.get("gameName").getStringValue());
+      assertEquals(a.id(), invite.get("from").get("id").getStringValue());
+      assertEquals(a.name(), invite.get("from").get("username").getStringValue());
+      assertEquals("DEFAULT", invite.get("from").get("avatar").get("type").getStringValue());
+      assertEquals(36, invite.get("inviteId").getStringValue().length());
+      var expiresAt = Instant.parse(invite.get("expiresAt").getStringValue());
+      var inTenMinutes = Instant.now().plus(10, ChronoUnit.MINUTES);
+      assertTrue(Math.abs(expiresAt.toEpochMilli() - inTenMinutes.toEpochMilli()) < 60_000, expiresAt.toString());
+    }
+
+    assertOk(bFirstTab.command("room:join", "{\"code\":\"" + code + "\"}"));
+    assertError("Already in this room", aSocket.command("room:invite", "{\"userId\":\"" + b.id() + "\"}"));
+
+    // Ida y vuelta por la conexión del extraño: lo que se le fuera a enviar antes ya habría llegado.
+    assertError("Not in a room", strangerSocket.command("room:leave", null));
+    assertTrue(strangerSocket.received.stream().noneMatch(m -> m.get("ok") == null
+        && "friends:invite".equals(m.get("event").getStringValue())), strangerSocket.received.toString());
+  }
+
+  @Test
   void strangerReceivesNothing() {
     var a = user();
     var b = user();

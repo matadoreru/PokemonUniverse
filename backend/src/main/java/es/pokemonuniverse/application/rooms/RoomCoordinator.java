@@ -200,6 +200,31 @@ public class RoomCoordinator {
     }
   }
 
+  /**
+   * Resumen de la sala de {@code playerId} para invitar: código, quién está, plazas y minijuego. Toma el lock de la sala
+   * solo para copiar campos en memoria (sin BD ni envíos) y lo suelta al volver. No llamar con el lock de otra sala
+   * tomado.
+   */
+  public Optional<RoomSummary> roomOf(String playerId) {
+    while (true) {
+      var room = store.roomForPlayer(playerId);
+      if (room == null) return Optional.empty();
+      room.lock.lock();
+      try {
+        if (store.roomForPlayer(playerId) != room) continue; // cambió de sala mientras esperaba el lock
+        var present = new HashSet<String>();
+        room.members.forEach((id, member) -> {
+          if (member.presence != PresenceStatus.LEFT) present.add(id);
+        });
+        var gameName = room.selectedGameId == null ? null
+            : registry.get(room.selectedGameId).map(GameManifest::name).orElse(null);
+        return Optional.of(new RoomSummary(room.code, present, room.members.keySet(), room.maxPlayers, gameName));
+      } finally {
+        room.lock.unlock();
+      }
+    }
+  }
+
   /** Avisa a la presencia de las cuentas registradas de la sala; solo encola (se llama con el lock tomado). */
   private void roomActivity(LiveRoom room) {
     var ids = new ArrayList<String>();
