@@ -1484,7 +1484,7 @@
     "name": "Pokémon Connections",
     "icon": "🧩",
     "description": "Encuentra en privado los grupos de Pokémon que comparten una conexión.",
-    "experimental": true,
+    "experimental": false,
     "minPlayers": 1,
     "profileStats": {
       "metrics": [
@@ -1578,7 +1578,7 @@
     "recommended": true,
     "icon": "💰",
     "description": "Construye tu equipo pujando por Pokémon en una subasta visible.",
-    "experimental": true,
+    "experimental": false,
     "minPlayers": 2,
     "profileStats": {
       "metrics": [
@@ -1641,7 +1641,7 @@
     "name": "Secret Ranking",
     "icon": "📋",
     "description": "Ordena cinco Pokémon en secreto e intenta pensar como el resto del grupo.",
-    "experimental": true,
+    "experimental": false,
     "minPlayers": 3,
     "profileStats": {
       "metrics": [
@@ -1725,7 +1725,7 @@
     "name": "Most Likely To",
     "icon": "👉",
     "description": "Elige qué Pokémon encaja mejor con una situación y convence al grupo.",
-    "experimental": true,
+    "experimental": false,
     "minPlayers": 3,
     "profileStats": {
       "metrics": [
@@ -1811,7 +1811,7 @@
     "name": "Would You Rather Pokémon",
     "icon": "⚖️",
     "description": "Elige entre dos situaciones absurdas y predice qué preferirá la mayoría.",
-    "experimental": true,
+    "experimental": false,
     "minPlayers": 3,
     "profileStats": {
       "metrics": [
@@ -1875,7 +1875,7 @@
     "recommended": true,
     "icon": "🚩",
     "description": "Escribe la red o green flag más divertida de un Pokémon y gana la votación anónima.",
-    "experimental": true,
+    "experimental": false,
     "minPlayers": 3,
     "profileStats": {
       "metrics": [
