@@ -184,8 +184,8 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; 
   } else if (choosing && participating) {
     const own = player.ownChoice;
     const content: SocialPlateContent = own
-      ? { icon: CheckCircle2, tone: 'ok', kicker: 'Elección guardada', title: own.name, text: 'Puedes cambiar tu elección mientras siga abierta la fase.', aside: <span className={s.saved}><Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Guardada</Chip><img className={s.ownSprite} src={guessSprite(own.sprite)} alt="" /></span> }
-      : { icon: Search, tone: 'info', kicker: 'Tu elección secreta', title: 'Elige cualquier Pokémon', text: 'Puedes cambiar tu elección mientras siga abierta la fase.' };
+      ? { icon: CheckCircle2, tone: 'ok', kicker: 'Elección guardada', title: own.name, aside: <span className={s.saved}><Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Guardada</Chip><img className={s.ownSprite} src={guessSprite(own.sprite)} alt="" /></span> }
+      : { icon: Search, tone: 'info', kicker: 'Tu elección secreta', title: 'Elige cualquier Pokémon' };
     bottom = <SocialPlate titleRef={titleRef} content={content} search>
       <PokemonSelector key={game.roundNumber} pokemon={pokemon} loading={poolLoading} loadError={loadError} onRetry={retry} locked={EMPTY_LOCKED} disabled={!player.canSelect}
         variant="embedded" autoFocus={false} inputLabel="Buscar Pokémon para tu categoría" onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} />

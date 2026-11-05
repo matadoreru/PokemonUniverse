@@ -115,11 +115,13 @@ describe('guess-kit: GuessPanel con contenido propio', () => {
   it('`content` sustituye a la placa de `kind` y `guess` sigue montando el buscador', () => {
     const html = panel({ content: { icon: Search, tone: 'ok', kicker: 'Intento enviado', title: 'Pikachu enviado', text: 'Esperando al resto.' } });
     expect(html).toContain('Pikachu enviado');
-    expect(html).toContain('Esperando al resto.');
+    // Junto al buscador la placa solo lleva el kicker y el título: la descripción no se pinta.
+    expect(html).not.toContain('Esperando al resto.');
     expect(html).not.toContain('¿Quién es ese Pokémon?');
     expect(html).toContain('aria-label="Buscar respuesta para la ronda 2"');
     const waiting = panel({ kind: 'waiting', content: { icon: Search, tone: 'info', kicker: 'Ronda 2 cerrada', title: 'Siguiente ronda en 3s' } });
     expect(waiting).toContain('Siguiente ronda en 3s');
+    expect(panel({ kind: 'waiting', content: { icon: Search, tone: 'info', kicker: 'Ronda 2 cerrada', title: 'Siguiente ronda en 3s', text: 'Sin buscador, con ayuda.' } })).toContain('Sin buscador, con ayuda.');
     expect(waiting).not.toContain('Buscar respuesta para la ronda 2');
   });
 });
