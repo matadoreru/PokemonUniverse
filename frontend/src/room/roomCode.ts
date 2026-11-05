@@ -42,6 +42,7 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * - Del lobby: «This setting can only be changed in the lobby», «Player not found», «Unknown game», «Cannot end the
  *   session during a game» y «No game in progress».
  * - De partida y resultados: «You cannot act in the current game» y «Game has not finished».
+ * - De empezar (`RoomCoordinator.startGame`): «Choose at least one game», con la selección de minijuegos vacía.
  * - De `room:invite` (`RoomInvitations.invite`): «You are not in a room», «Not a friend», «Friend is offline»,
  *   «Already in this room», «Room is full» (el mismo texto que `join`) e «Invitation already sent».
  */
@@ -57,6 +58,7 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Unknown game': 'Ese minijuego no existe.',
   'Cannot end the session during a game': 'No se puede finalizar la sesión durante una partida.',
   'No game in progress': 'No hay ninguna partida en curso.',
+  'Choose at least one game': 'Elige al menos un minijuego para empezar.',
   // Partida y resultados (`RoomCoordinator.action` y `returnLobby`): no salen del lobby, pero pasan por las mismas órdenes.
   'You cannot act in the current game': 'No puedes hacer eso en esta partida.',
   'Game has not finished': 'La partida todavía no ha terminado.',

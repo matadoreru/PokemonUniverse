@@ -616,8 +616,9 @@ public class RoomCoordinator {
       }
       for (var game : manifests) ensureGameConfig(room, game);
       room.gameSelectionMode = parsed;
-      // El primero de la lista es el minijuego elegido de la sala mientras está en el lobby.
-      room.selectedGameId = parsed.gameIds().getFirst();
+      // El primero de la lista es el minijuego elegido de la sala mientras está en el lobby; con la lista vacía se
+      // conserva el último (selectedGameId nunca queda vacío).
+      if (!parsed.gameIds().isEmpty()) room.selectedGameId = parsed.gameIds().getFirst();
       broadcast(room);
       return null;
     });
@@ -792,7 +793,7 @@ public class RoomCoordinator {
   private String firstGameId(LiveRoom room) {
     var mode = room.gameSelectionMode;
     var playable = playableGameIds(room, mode.gameIds());
-    if (playable.isEmpty()) return mode.gameIds().getFirst();
+    if (playable.isEmpty()) return mode.gameIds().isEmpty() ? room.selectedGameId : mode.gameIds().getFirst();
     return mode instanceof GameSelectionMode.Random ? randomItem(playable) : playable.getFirst();
   }
 
@@ -824,6 +825,8 @@ public class RoomCoordinator {
     inRequiredRoom(playerId, ignored -> {
       var room = permissionRoom(playerId, RoomPermission.START_GAME);
       assertLobby(room);
+      // Sin minijuegos elegidos no hay nada que empezar (tiene prioridad sobre la confirmación de los invitados).
+      if (room.gameSelectionMode.gameIds().isEmpty()) throw new RoomException("Choose at least one game");
       var pendingNames = room.members.values().stream()
           .filter(member -> member.presence == PresenceStatus.CONNECTED && !member.identity.id().equals(room.hostId)
               && !member.ready)
@@ -1267,8 +1270,9 @@ public class RoomCoordinator {
       if (resetSession) member.sessionPoints = 0;
     }
     if (resetSession) {
-      // Sesión nueva: el minijuego elegido vuelve a ser el primero de la lista.
-      room.selectedGameId = room.gameSelectionMode.gameIds().getFirst();
+      // Sesión nueva: el minijuego elegido vuelve a ser el primero de la lista (con la lista vacía, se conserva).
+      var gameIds = room.gameSelectionMode.gameIds();
+      if (!gameIds.isEmpty()) room.selectedGameId = gameIds.getFirst();
       room.gamesPlayed = 0;
       room.sessionHistory = new ArrayList<>();
       var participants = new LinkedHashMap<String, SessionParticipant>();

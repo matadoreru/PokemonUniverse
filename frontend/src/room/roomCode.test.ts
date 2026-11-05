@@ -86,6 +86,7 @@ describe('roomActionErrorMessage', () => {
     expect(roomActionErrorMessage('Cannot end the session during a game')).toBe('No se puede finalizar la sesión durante una partida.');
     expect(roomActionErrorMessage(new Error('Game has not finished'))).toBe('La partida todavía no ha terminado.');
     expect(roomActionErrorMessage(new Error('You cannot act in the current game'))).toBe('No puedes hacer eso en esta partida.');
+    expect(roomActionErrorMessage(new Error('Choose at least one game'))).toBe('Elige al menos un minijuego para empezar.');
   });
   it('las incidencias de validación, lo desconocido en inglés y lo vacío dan el genérico', () => {
     const generic = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';

@@ -1073,8 +1073,6 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("cohost", "Ana"));
     kit.manager.setRoomRole("host", "cohost", JsonNode.createStringNode("CO_HOST"));
     assertTrue(rejects(() -> kit.manager.updateGameSelection("cohost",
-        json("{\"type\":\"RANDOM\",\"gameIds\":[]}"))).getMessage().contains("Selecciona al menos 1 minijuego."));
-    assertTrue(rejects(() -> kit.manager.updateGameSelection("cohost",
         json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"higher-lower\"]}"))).getMessage()
         .contains("Los minijuegos no pueden repetirse."));
     assertMessage("Minijuego desconocido: missing", () -> kit.manager.updateGameSelection("cohost",
@@ -1091,6 +1089,81 @@ class RoomCoordinatorTest {
     // Cliente antiguo: FIXED se guarda como el orden con solo el juego elegido.
     kit.manager.updateGameSelection("cohost", json("{\"type\":\"FIXED\"}"));
     assertEquals(new GameSelectionMode.Order(List.of("higher-lower")), room.gameSelectionMode);
+  }
+
+  @Test
+  @DisplayName("accepts an empty selection, keeps the selected game and rejects the start until a game is chosen")
+  void emptySelection() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.selectHigherLower("host");
+    kit.manager.updateGameSelection("host", json("{\"type\":\"VOTE\",\"gameIds\":[]}"));
+    assertEquals(new GameSelectionMode.Vote(List.of()), room.gameSelectionMode);
+    // El minijuego elegido de la sala no queda vacío: se conserva el último.
+    assertEquals("higher-lower", room.selectedGameId);
+    assertTrue(serialize(kit.manager.view(room, "host")).contains("\"gameSelectionMode\":{\"type\":\"VOTE\",\"gameIds\":[]}"));
+    // Empezar con la lista vacía se rechaza antes que la confirmación de los invitados.
+    assertMessage("Choose at least one game", () -> kit.manager.startGame("host"));
+    assertMessage("Choose at least one game", () -> kit.startReady(room, "host"));
+    assertEquals(RoomPhase.LOBBY, room.phase);
+    assertNull(room.game);
+    // Con la lista vacía siguen funcionando el modo, la sesión, los roles, salir y entrar.
+    kit.manager.updateGameSelection("host", json("{\"type\":\"RANDOM\",\"gameIds\":[]}"));
+    kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[]}"));
+    kit.manager.updateSession("host", json("{\"type\":\"GAME_COUNT\",\"target\":3}"));
+    kit.manager.setReady("guest", false);
+    kit.manager.leave("guest");
+    kit.manager.join(guest("late", "Late"), "socket-late", room.code);
+    kit.manager.transferHost("host", "late");
+    kit.manager.transferHost("late", "host");
+    assertEquals(new GameSelectionMode.Order(List.of()), room.gameSelectionMode);
+    // Sin juegos no hay votación del siguiente.
+    room.gameSelectionMode = new GameSelectionMode.Vote(List.of());
+    assertFalse(kit.manager.beginNextGameVote(room));
+    // Elegir uno vuelve a permitir empezar.
+    kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\"]}"));
+    kit.startReady(room, "host");
+    assertEquals("higher-lower", room.game.gameId);
+  }
+
+  @Test
+  @DisplayName("ends the session and returns to a new one with an empty selection")
+  void endsSessionWithEmptySelection() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.selectHigherLower("host");
+    kit.startReady(room, "host");
+    kit.manager.action("host", answer("HIGHER"));
+    kit.manager.action("guest", answer("LOWER"));
+    kit.passDeadline(room);
+    kit.manager.returnLobby("host");
+    assertEquals(RoomPhase.LOBBY, room.phase);
+    kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[]}"));
+    kit.manager.endSession("host");
+    assertEquals(RoomPhase.SESSION_RESULTS, room.phase);
+    // La sesión nueva no tiene un primer juego de la lista: se conserva el elegido.
+    kit.manager.returnLobby("host");
+    assertEquals(RoomPhase.LOBBY, room.phase);
+    assertEquals(0, room.gamesPlayed);
+    assertEquals("higher-lower", room.selectedGameId);
+    assertMessage("Choose at least one game", () -> kit.startReady(room, "host"));
+  }
+
+  @Test
+  @DisplayName("continuing a session whose selection was emptied returns to the lobby without crashing")
+  void continuesWithEmptySelection() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.selectHigherLower("host");
+    kit.startReady(room, "host");
+    kit.manager.action("host", answer("HIGHER"));
+    kit.manager.action("guest", answer("LOWER"));
+    kit.passDeadline(room);
+    room.gameSelectionMode = new GameSelectionMode.Random(List.of());
+    assertMessage("Ningún minijuego elegido admite el número actual de jugadores.",
+        () -> kit.manager.continueSession("host"));
+    assertEquals(RoomPhase.LOBBY, room.phase);
+    assertEquals("higher-lower", room.selectedGameId);
   }
 
   @Test

@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, collectErrors, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, cartaDeJuego, collectErrors, conmutarJuego, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, SIZES, uniqueName } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -130,6 +130,45 @@ for (const { w, h } of SIZES) {
     expect(guest.errors).toEqual([]);
   });
 }
+
+test('el host quita el único minijuego: no se puede empezar hasta elegir otro', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+  await guest.page.getByRole('button', { name: 'Marcarme listo' }).click();
+  await expect(host.page.locator('#start-help')).toHaveText('La sala está lista.');
+
+  // Pokédex Distance es el único elegido: pulsarlo lo quita y la selección queda vacía.
+  const empezar = host.page.getByRole('button', { name: 'Empezar partida' });
+  await conmutarJuego(cartaDeJuego(host.page, 'Pokédex Distance'), false);
+  const lista = host.page.getByRole('list', { name: 'Minijuegos' });
+  await expect(lista.getByRole('button', { pressed: true })).toHaveCount(0);
+  await expect(host.page.getByText('0 elegidos', { exact: false })).toBeVisible();
+  await expect(host.page.locator('#start-help')).toHaveText('Elige al menos un minijuego para empezar.');
+  await expect(empezar).toBeDisabled();
+  for (const { w, h } of SIZES) {
+    await host.page.setViewportSize({ width: w, height: h });
+    await capture(host.page, 'lobby-seleccion-vacia');
+  }
+
+  // Configuración: un estado vacío en lugar de los ajustes; el modo se sigue pudiendo cambiar.
+  await host.page.getByRole('tab', { name: 'Configuración' }).click();
+  await expect(host.page.getByText('Elige uno o varios minijuegos')).toBeVisible();
+  await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
+  await host.page.getByRole('button', { name: /^Votación/ }).click();
+  await expect(host.page.getByRole('button', { name: /^Votación/ })).toHaveAttribute('aria-pressed', 'true');
+
+  // Elegir otro minijuego vuelve a dejar empezar.
+  await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+  await conmutarJuego(cartaDeJuego(host.page, 'Shiny Quiz'), true);
+  await expect(host.page.locator('#start-help')).toHaveText('La sala está lista.');
+  await expect(empezar).toBeEnabled();
+
+  expect(host.errors).toEqual([]);
+  expect(guest.errors).toEqual([]);
+});
 
 test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultados', async ({ crearJugador }) => {
   const host = await crearJugador('Host');

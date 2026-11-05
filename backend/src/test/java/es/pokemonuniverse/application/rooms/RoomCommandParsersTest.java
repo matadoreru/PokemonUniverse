@@ -115,19 +115,9 @@ class RoomCommandParsersTest {
             "message": "Los minijuegos no pueden repetirse."
           }
         ]""", error(() -> RoomCommandParsers.gameSelectionMode(json("{\"type\":\"RANDOM\",\"gameIds\":[\"a\",\"a\"]}"), "z")));
-    assertEquals("""
-        [
-          {
-            "origin": "array",
-            "code": "too_small",
-            "minimum": 1,
-            "inclusive": true,
-            "path": [
-              "gameIds"
-            ],
-            "message": "Selecciona al menos 1 minijuego."
-          }
-        ]""", error(() -> RoomCommandParsers.gameSelectionMode(json("{\"type\":\"ORDER\",\"gameIds\":[]}"), "z")));
+    // La lista puede quedar vacía en el lobby: es empezar la partida lo que exige un juego.
+    assertEquals(new GameSelectionMode.Order(List.of()),
+        RoomCommandParsers.gameSelectionMode(json("{\"type\":\"ORDER\",\"gameIds\":[]}"), "z"));
   }
 
   @Test

@@ -3,7 +3,7 @@ import { AlertCircle, Check, ListOrdered, LockKeyhole, Settings2, Shuffle, Vote 
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill } from '../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, StateBox } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { summarizeGameConfig } from './game-config-summary';
 import g from './GameSelectionConfig.module.css';
@@ -36,10 +36,9 @@ export function withGameIds(mode: GameSelectionMode, gameIds: string[]): GameSel
   return { type: mode.type, gameIds };
 }
 
-/** Pone o quita un juego de la selección; el último elegido va al final. Nunca deja la lista vacía (`null`). */
-export function toggleSelectedGame(mode: GameSelectionMode, gameId: string): GameSelectionMode | null {
+/** Pone o quita un juego de la selección; el último elegido va al final. Quitar el único deja la lista vacía. */
+export function toggleSelectedGame(mode: GameSelectionMode, gameId: string): GameSelectionMode {
   const selected = mode.gameIds.includes(gameId);
-  if (selected && mode.gameIds.length <= 1) return null;
   return withGameIds(mode, selected ? mode.gameIds.filter((id) => id !== gameId) : [...mode.gameIds, gameId]);
 }
 
@@ -134,6 +133,7 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
     </Panel>;
   })() : null;
 
+  if (games.length === 0) return <section className={g.editor} aria-label="Ajustes del minijuego"><StateBox kind="empty" onCream title="Elige uno o varios minijuegos" /></section>;
   if (games.length <= 1) return <section className={g.editor} aria-label="Ajustes del minijuego">{editor}</section>;
 
   return <div className={g.rotation}>

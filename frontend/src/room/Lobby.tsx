@@ -72,11 +72,8 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   };
   const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(ignoreFailure); };
   const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(ignoreFailure); };
-  // Las cartas eligen varios juegos: pulsar pone o quita uno (el último elegido va al final; siempre queda uno).
-  const toggleGame = (gameId: string) => {
-    const next = toggleSelectedGame(room.gameSelectionMode, gameId);
-    if (next) gameSelection(next);
-  };
+  // Las cartas eligen varios juegos: pulsar pone o quita uno (el último elegido va al final; la lista puede quedar vacía).
+  const toggleGame = (gameId: string) => gameSelection(toggleSelectedGame(room.gameSelectionMode, gameId));
   // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
   const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(ignoreFailure); };
   const kick = (playerId: string) => { void onKick(playerId).catch(ignoreFailure); };
@@ -107,9 +104,11 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     : compatibleGameIds.length === 0 ? 'Ningún minijuego elegido admite el número actual de jugadores.' : null;
   const startReason = !canStart
     ? 'Solo el host puede iniciar la partida.'
-    : pendingReady.length > 0
-      ? `Falta por confirmar: ${formatPendingReadyNames(pendingReady.map((member) => member.displayName))}.`
-      : playerCountReason ?? configReason;
+    : selectedGameIds.length === 0
+      ? 'Elige al menos un minijuego para empezar.'
+      : pendingReady.length > 0
+        ? `Falta por confirmar: ${formatPendingReadyNames(pendingReady.map((member) => member.displayName))}.`
+        : playerCountReason ?? configReason;
   const status = lobbyActionStatus({ canStart, ready: Boolean(self?.ready), startReason, hostName: hostMember?.displayName });
   const visibleGames = filterGames(room.availableGames, gameQuery);
   const readOnlyChip = <Chip icon={<Icon icon={LockKeyhole} size={18} />}>Solo lectura</Chip>;

@@ -151,6 +151,17 @@ describe('lobby impostor parity', () => {
     expect(markup).toContain('Ningún minijuego elegido admite el número actual de jugadores.');
   });
 
+  it('with no game selected, the start waits for a game before anything else but the host check', () => {
+    const empty: RoomView = { ...parityRoom, gameSelectionMode: { type: 'VOTE', gameIds: [] }, members: parityRoom.members.map((member) => member.id === 'p2' ? { ...member, ready: false } : member) };
+    const markup = render(empty);
+    expect(markup).toContain('Elige al menos un minijuego para empezar.');
+    expect(markup).not.toContain('Falta por confirmar');
+    expect(markup).toMatch(/<button[^>]*aria-describedby="start-help"[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*Empezar partida/);
+    expect(markup).toContain('0 elegidos');
+    // Un invitado sigue viendo que solo el host puede empezar.
+    expect(renderToStaticMarkup(<MemoryRouter><Lobby room={empty} selfId="p2" onLeave={() => undefined} onReady={noOp} onStart={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp} onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} /></MemoryRouter>)).not.toContain('Elige al menos un minijuego para empezar.');
+  });
+
   it('starts a rotation with one compatible game, the excluded one is skipped', () => {
     const markup = render({
       ...parityRoom, selectedGameId: 'pokemon-impostor',

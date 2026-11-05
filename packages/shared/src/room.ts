@@ -161,8 +161,9 @@ export const sessionModeSchema = z.discriminatedUnion('type', [
 ]);
 
 // La selección y el modo se editan en pestañas distintas: cambiar de modo conserva la lista y ningún modo exige más de un
-// juego (lo que depende de los jugadores conectados se comprueba al empezar).
-const selectionGameIdsSchema = z.array(z.string().min(1)).min(1, 'Selecciona al menos 1 minijuego.').refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
+// juego. La lista puede quedar vacía en el lobby: empezar exige un juego (y lo que depende de los jugadores conectados
+// se comprueba también al empezar).
+const selectionGameIdsSchema = z.array(z.string().min(1)).refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
 export const gameSelectionModeSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('ORDER'), gameIds: selectionGameIdsSchema }),
   z.object({ type: z.literal('RANDOM'), gameIds: selectionGameIdsSchema }),

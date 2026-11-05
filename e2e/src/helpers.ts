@@ -230,7 +230,7 @@ export function sinTapar(locator: Locator): Promise<boolean> {
 }
 
 /** Carta (el botón de su celda) de un minijuego en la lista «Minijuegos» del lobby. */
-function cartaDeJuego(page: Page, nombre: string): Locator {
+export function cartaDeJuego(page: Page, nombre: string): Locator {
   return page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) }).getByRole('button').first();
 }
 
@@ -240,7 +240,7 @@ function cartaDeJuego(page: Page, nombre: string): Locator {
  * conmutaciones, y un clic que se pierde de verdad (llegó antes de que el lobby tuviera el estado del `/ws`) se repite
  * una sola vez.
  */
-async function conmutarJuego(opcion: Locator, elegida: boolean): Promise<void> {
+export async function conmutarJuego(opcion: Locator, elegida: boolean): Promise<void> {
   const valor = String(elegida);
   for (let intento = 0; intento < 2; intento += 1) {
     if ((await opcion.getAttribute('aria-pressed')) === valor) return;
@@ -257,7 +257,7 @@ async function conmutarJuego(opcion: Locator, elegida: boolean): Promise<void> {
 
 /**
  * En el lobby (host o co-host), deja `nombre` (nombre del manifest) como único minijuego elegido de la sesión: lo elige
- * primero y después quita los demás (la selección nunca queda vacía).
+ * primero y después quita los demás (así la selección no queda vacía por el camino).
  */
 export async function seleccionarJuego(page: Page, nombre: string): Promise<void> {
   await page.getByRole('tab', { name: 'Minijuegos' }).click();

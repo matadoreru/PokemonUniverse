@@ -73,7 +73,8 @@ public final class RoomCommandParsers {
     }
     var issues = new ZodIssues();
     var type = discriminator(raw, SELECTION_TYPES, issues);
-    var gameIds = gameIds(raw, 1, "Selecciona al menos 1 minijuego.", issues);
+    // La lista puede quedar vacía en el lobby: empezar la partida es lo que exige al menos un juego.
+    var gameIds = gameIds(raw, issues);
     return switch (type) {
       case "ORDER" -> new GameSelectionMode.Order(gameIds);
       case "RANDOM" -> new GameSelectionMode.Random(gameIds);
@@ -176,7 +177,7 @@ public final class RoomCommandParsers {
     return (int) value;
   }
 
-  private static List<String> gameIds(JsonNode raw, int minimum, String minimumMessage, ZodIssues issues) {
+  private static List<String> gameIds(JsonNode raw, ZodIssues issues) {
     var node = raw.get("gameIds");
     var path = List.<Object>of("gameIds");
     if (node == null || !node.isArray()) {
@@ -195,7 +196,6 @@ public final class RoomCommandParsers {
         ids.add(item.getStringValue());
       }
     }
-    if (node.size() < minimum) issues.tooSmall("array", minimum, path, minimumMessage);
     if (issues.isEmpty() && new HashSet<>(ids).size() != ids.size()) {
       issues.custom(path, "Los minijuegos no pueden repetirse.");
     }

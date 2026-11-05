@@ -80,10 +80,11 @@ describe('game selection UI', () => {
     expect(gameOrderHint('VOTE', 1)).toBe('Con un solo minijuego compatible, se juega siempre ese.');
   });
 
-  it('toggles games keeping the selection order and never empties it', () => {
+  it('toggles games keeping the selection order, down to an empty list', () => {
     expect(toggleSelectedGame({ type: 'ORDER', gameIds: ['one'] }, 'two')).toEqual({ type: 'ORDER', gameIds: ['one', 'two'] });
     expect(toggleSelectedGame({ type: 'VOTE', gameIds: ['one', 'two'] }, 'one')).toEqual({ type: 'VOTE', gameIds: ['two'] });
-    expect(toggleSelectedGame({ type: 'RANDOM', gameIds: ['one'] }, 'one')).toBeNull();
+    // Quitar el único elegido deja la lista vacía (el modo se conserva).
+    expect(toggleSelectedGame({ type: 'RANDOM', gameIds: ['one'] }, 'one')).toEqual({ type: 'RANDOM', gameIds: [] });
   });
 
   const realGames: MiniGameManifest[] = [
@@ -99,6 +100,12 @@ describe('game selection UI', () => {
     expect(markup).toContain('Ajustes de Higher or Lower');
     expect(markup).toContain('Máximo 8 jugadores');
     expect(markup).toContain('aria-label="Ajustar Shiny Quiz"');
+  });
+
+  it('with no game selected shows an empty state instead of the settings', () => {
+    const markup = renderToStaticMarkup(createElement(SelectedGamesConfig, { room: { ...lobbyWith([]), selectedGameId: 'higher-lower' }, selfId: 'p1', playerCount: 2, disabled: false, onConfig: async () => undefined }));
+    expect(markup).toContain('Elige uno o varios minijuegos');
+    expect(markup).not.toContain('Ajustes de Higher or Lower');
   });
 
   it('shows only the editor when a single game is selected', () => {
