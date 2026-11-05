@@ -173,7 +173,7 @@
   position: absolute;
   top: var(--sp-1);
   right: var(--sp-1);
-  z-index: 1;
+  z-index: var(--z-content);
   display: grid;
   place-items: center;
   width: 32px;
@@ -197,7 +197,7 @@
   position: absolute;
   right: var(--sp-1);
   bottom: var(--sp-1);
-  z-index: 1;
+  z-index: var(--z-content);
   display: flex;
   max-width: calc(100% - var(--sp-2));
 }
