@@ -81,6 +81,10 @@ describe('game selection UI', () => {
     expect(gameOrderHint('ORDER', 0, 0)).toBe('Elige al menos un minijuego.');
     expect(gameOrderHint('VOTE', 0, 2)).toBe('Ninguno de los minijuegos elegidos admite a los jugadores de ahora.');
     expect(gameOrderHint('RANDOM', 1, 3)).toBe('Con un solo minijuego compatible, se juega siempre ese.');
+    // Al azar o por votación, cada modo marcado es una opción más; en orden no cuenta.
+    expect(gameOrderHint('RANDOM', 1, 1, 2)).toBe('Cada partida sale al azar entre 2 opciones de minijuego y modo, sin repetir la anterior.');
+    expect(gameOrderHint('VOTE', 2, 2, 4)).toBe('Tras cada partida se vota entre 3 de las 4 opciones de minijuego y modo.');
+    expect(gameOrderHint('ORDER', 2, 2, 4)).toBe('Se juegan los 2 minijuegos en el orden en que los elegiste y se vuelve a empezar.');
     const vacio = renderToStaticMarkup(createElement(GameOrderChoice, {
       mode: { type: 'ORDER', gameIds: [] }, compatibleCount: 0, disabled: false, onChange: () => undefined,
     }));

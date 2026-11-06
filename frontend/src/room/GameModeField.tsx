@@ -1,8 +1,43 @@
 import { CLASSIC_MODE_LABEL, gameModeCatalog } from '@pokemon-universe/shared/public';
-import { Segmented } from '../ui';
+import { Check } from 'lucide-react';
+import { createContext, useContext, useId, type ReactNode } from 'react';
+import { Pill, Segmented } from '../ui';
 import s from './GameModeField.module.css';
 
 const MODE_LABEL = 'Modo';
+const ALLOWED_LABEL = 'Modos que pueden salir';
+
+/**
+ * Modos que pueden salir del juego que se ajusta cuando la sesión elige al azar o por votación. Sin este contexto (el
+ * host elige el juego) el selector es el `Segmented` de un solo modo.
+ */
+export interface SessionModes {
+  gameId: string;
+  allowed: readonly string[];
+  onChange(modes: string[]): void;
+}
+
+const SessionModesContext = createContext<SessionModes | null>(null);
+
+export function SessionModesProvider({ value, children }: { value: SessionModes | null; children: ReactNode }) {
+  return <SessionModesContext.Provider value={value}>{children}</SessionModesContext.Provider>;
+}
+
+/**
+ * Si los ajustes propios de `mode` se enseñan: con el host eligiendo, si es el modo de la configuración; al azar o por
+ * votación, si ese modo está marcado.
+ */
+export function useModeShown(gameId: string, configMode: string | undefined): (mode: string) => boolean {
+  const session = useContext(SessionModesContext);
+  if (session && session.gameId === gameId) return (mode) => session.allowed.includes(mode);
+  return (mode) => (configMode ?? 'CLASSIC') === mode;
+}
+
+/** Los modos marcados tras pulsar `mode`, en el orden del catálogo; `null` si dejaría la lista vacía. */
+export function toggleAllowedMode(catalogModes: readonly string[], allowed: readonly string[], mode: string): string[] | null {
+  const next = allowed.includes(mode) ? allowed.filter((value) => value !== mode) : [...allowed, mode];
+  return next.length ? catalogModes.filter((value) => next.includes(value)) : null;
+}
 
 interface Props {
   gameId: string;
@@ -13,14 +48,37 @@ interface Props {
 }
 
 /**
- * Selector «Modo» de los ajustes de un juego con modos (`Segmented` con «Clásico» y el modo nuevo) y, debajo, la línea
- * que explica las reglas del modo elegido. Sin catálogo de modos para `gameId` no pinta nada.
+ * Selector «Modo» de los ajustes de un juego con modos y, debajo, la línea que explica las reglas del modo nuevo. Con
+ * el host eligiendo, un `Segmented` con «Clásico» y el modo nuevo; al azar o por votación (`SessionModesProvider`),
+ * píldoras conmutadoras «Modos que pueden salir» como las de las generaciones: no se puede desmarcar el último. Sin
+ * catálogo de modos para `gameId` no pinta nada.
  */
 export function GameModeField({ gameId, value, onChange, disabled }: Props) {
+  const session = useContext(SessionModesContext);
+  const labelId = useId();
   const catalog = gameModeCatalog(gameId);
   if (!catalog) return null;
+  const label = (option: string) => catalog.labels[option] ?? CLASSIC_MODE_LABEL;
+  if (session && session.gameId === gameId) {
+    const allowed = catalog.modes.filter((mode) => session.allowed.includes(mode));
+    const texts = allowed.map((mode) => catalog.texts[mode]).filter((text): text is string => Boolean(text));
+    return <div className={s.field} role="group" aria-labelledby={labelId}>
+      <span id={labelId} className={s.label}>{ALLOWED_LABEL}</span>
+      <div className={s.options}>
+        {catalog.modes.map((mode) => {
+          const active = allowed.includes(mode);
+          const last = active && allowed.length === 1;
+          return <Pill key={mode} size="small" block variant={active ? 'yellow' : 'cream'} aria-pressed={active} disabled={disabled || last}
+            {...(active ? { icon: Check } : {})} {...(last ? { title: 'Siempre queda al menos un modo marcado.' } : {})}
+            onClick={() => { const next = toggleAllowedMode(catalog.modes, allowed, mode); if (next) session.onChange(next); }}>{label(mode)}</Pill>;
+        })}
+      </div>
+      <p className={s.text}>Cada modo marcado es una opción más al azar y en la votación; siempre queda al menos uno.</p>
+      {texts.map((text) => <p key={text} className={s.text}>{text}</p>)}
+    </div>;
+  }
   const mode = value !== undefined && catalog.modes.includes(value) ? value : 'CLASSIC';
-  const options = catalog.modes.map((option) => ({ value: option, label: catalog.labels[option] ?? CLASSIC_MODE_LABEL, disabled }));
+  const options = catalog.modes.map((option) => ({ value: option, label: label(option), disabled }));
   const text = catalog.texts[mode];
   return <div className={s.field}>
     <span className={s.label} aria-hidden="true">{MODE_LABEL}</span>

@@ -1,7 +1,7 @@
 import { POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE, POKEDEX_DISTANCE_SELECTION_VISIBILITIES, type PokedexDistanceConfig, type PokedexDistanceSelectionVisibility } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField } from '../../room/GameModeField';
+import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { DISTANCE_SELECTION_VISIBILITY_LABEL, distanceSelectionVisibilityLabels } from '../../room/pokedex-distance-selection';
 import { Segmented } from '../../ui';
@@ -13,6 +13,7 @@ import s from './ConfigPanel.module.css';
  */
 export function PokedexDistanceConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokedexDistanceConfig;
+  const shown = useModeShown('pokedex-distance', value.mode);
   const options = POKEDEX_DISTANCE_SELECTION_VISIBILITIES.map((visibility) => ({ value: visibility, label: distanceSelectionVisibilityLabels[visibility], disabled }));
   return <fieldset disabled={disabled} className={s.panel}>
     <GameModeField gameId="pokedex-distance" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
@@ -23,6 +24,6 @@ export function PokedexDistanceConfigPanel({ config, disabled, onChange }: { con
       {value.selectionVisibility === 'LIVE' && <p className={s.warning}>{LIVE_VISIBILITY_WARNING}</p>}
     </div>
     <div className={s.group}><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /></div>
-    {value.mode === 'POINTS' && <div className={s.group}><ConfigRange label="Número de rondas" value={value.pointsRounds} min={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.min} max={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.max} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(pointsRounds) => onChange({ ...value, pointsRounds })} /></div>}
+    {shown('POINTS') && <div className={s.group}><ConfigRange label="Número de rondas" value={value.pointsRounds} min={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.min} max={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.max} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(pointsRounds) => onChange({ ...value, pointsRounds })} /></div>}
   </fieldset>;
 }

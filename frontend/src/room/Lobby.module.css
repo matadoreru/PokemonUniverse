@@ -175,6 +175,14 @@
   font: 800 var(--fs-13) / 1 var(--font-text);
   font-variant-numeric: tabular-nums;
 }
+/* Chips de modos bajo los jugadores: «N modos» y el modo que sale; bajan de línea si no caben. */
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-1);
+  min-width: 0;
+}
 .tick {
   font: 800 var(--fs-13) / 1 var(--font-display);
   font-variant-numeric: tabular-nums;

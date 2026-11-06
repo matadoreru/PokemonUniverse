@@ -122,6 +122,25 @@ describe('lobby game modes', () => {
     expect(card(markup, 'Shiny Quiz')).not.toContain('Supervivencia');
   });
 
+  it('la carta de un juego con varios modos dice cuántos tiene; la de uno sin modos no', () => {
+    const markup = render({});
+    expect(card(markup, 'Pokédex Distance')).toContain('>2 modos<');
+    expect(card(markup, 'Shiny Quiz')).toContain('>2 modos<');
+  });
+
+  it('al azar o por votación el chip dice los modos que pueden salir', () => {
+    const chance = (allowedModes: Record<string, string[]>, type: 'RANDOM' | 'ORDER' = 'RANDOM') => renderToStaticMarkup(<MemoryRouter><Lobby
+      room={{ ...room, gameConfigs: {}, allowedModes, gameSelectionMode: { type, gameIds: room.gameSelectionMode.gameIds } }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+    /></MemoryRouter>);
+    expect(card(chance({ 'pokedex-distance': ['CLASSIC', 'POINTS'] }), 'Pokédex Distance')).toContain('>2 modos en juego<');
+    expect(card(chance({ 'pokedex-distance': ['POINTS'] }), 'Pokédex Distance')).toContain('>Por puntos<');
+    expect(card(chance({ 'pokedex-distance': ['CLASSIC'] }), 'Pokédex Distance')).not.toContain('Clásico');
+    // Con el host eligiendo cuenta el modo de la configuración, no los marcados.
+    expect(card(chance({ 'pokedex-distance': ['CLASSIC', 'POINTS'] }, 'ORDER'), 'Pokédex Distance')).not.toContain('en juego');
+  });
+
   it('sin chip de modo en Clásico ni en una configuración guardada sin mode', () => {
     for (const config of [{ generations: [1], roundSeconds: 20, mode: 'CLASSIC' }, { generations: [1], roundSeconds: 20 }]) {
       const markup = render({ 'pokedex-distance': config });

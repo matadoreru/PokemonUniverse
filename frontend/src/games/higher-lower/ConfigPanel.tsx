@@ -9,7 +9,7 @@ import {
 } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField } from '../../room/GameModeField';
+import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, cx, Segmented, Toggle } from '../../ui';
@@ -52,6 +52,7 @@ function DifficultyPips({ level }: { level: number }) {
  */
 export function HigherLowerConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as HigherLowerConfig;
+  const shown = useModeShown('higher-lower', value.mode);
   const toggleCategory = (category: HigherLowerCategory) => {
     const categories = value.categories.includes(category)
       ? value.categories.filter((item) => item !== category)
@@ -95,7 +96,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
 
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      {value.mode !== 'ENDLESS' && <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />}
+      {shown('CLASSIC') && <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />}
     </div>
   </fieldset>;
 }
