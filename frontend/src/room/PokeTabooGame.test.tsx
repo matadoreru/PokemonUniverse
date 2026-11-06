@@ -43,7 +43,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
   };
 }
 
-function room(player: PokeTabooPlayerState | null, game: PokeTabooPublicState = publicGame()): RoomView {
+function room(player: PokeTabooPlayerState | null, game: PokeTabooPublicState = publicGame(), config: Record<string, unknown> = {}): RoomView {
   return {
     code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8,
     members: [
@@ -53,13 +53,13 @@ function room(player: PokeTabooPlayerState | null, game: PokeTabooPublicState = 
       { id: 'p4', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'SPECTATOR', isHost: false, ready: false, sessionPoints: 0 },
     ],
     availableGames: [{ id: 'poke-taboo', name: 'PokéTaboo', icon: '🎙️', description: 'Describe', minPlayers: 2, profileStats: { metrics: [] } }],
-    selectedGameId: 'poke-taboo', selectedGameConfig: { generations: [1, 4], roundSeconds: 60, laps: 1, includeRegionalForms: true },
+    selectedGameId: 'poke-taboo', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 60, laps: 1, includeRegionalForms: true },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['poke-taboo'] }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, serverNow: 1_000,
   } as RoomView;
 }
 
-const render = (player: PokeTabooPlayerState | null, selfId: string, game?: PokeTabooPublicState) => renderToStaticMarkup(createElement(PokeTabooGame, { room: room(player, game), selfId, onAction: async () => undefined }));
+const render = (player: PokeTabooPlayerState | null, selfId: string, game?: PokeTabooPublicState, config?: Record<string, unknown>) => renderToStaticMarkup(createElement(PokeTabooGame, { room: room(player, game, config), selfId, onAction: async () => undefined }));
 const describer = () => render({ role: 'DESCRIPTOR', canSendHint: true, secretPokemon: secret }, 'p1');
 const guesser = () => render({ role: 'GUESSER', canGuess: true, cooldownUntil: null, attemptCount: 1 }, 'p2');
 const spectator = () => render({ role: 'SPECTATOR' }, 'p4');
@@ -195,5 +195,28 @@ describe('PokéTaboo: resultados y ajustes', () => {
     for (const text of ['Tiempo por turno', '30 s', '120 s', 'Vueltas', 'Cada jugador describe una vez por vuelta.', 'Formas regionales', 'La forma exacta será obligatoria al responder.', 'Mega, Gigamax']) expect(html).toContain(text);
     expect(html).toContain('role="radiogroup"');
     expect(html).toContain('role="switch"');
+  });
+});
+
+describe('PokeTaboo: intentos públicos apagados', () => {
+  const off = { publicAttempts: false };
+  const hiddenGame = { ...publicGame(), attempts: [] };
+  const miss = { playerId: 'p3', guessedPokemon: { id: 'riolu', name: 'Riolu', sprite: '/riolu.png' }, attemptedAt: 2_500 };
+
+  it('quien describe sigue viendo los fallos de los demás', () => {
+    const html = render({ role: 'DESCRIPTOR', canSendHint: true, secretPokemon: null, attempts: [miss] }, 'p1', hiddenGame, off);
+    expect(html).toContain('Riolu');
+    expect(html).toContain('Carlos');
+  });
+
+  it('quien adivina no ve el panel de intentos', () => {
+    const html = render({ role: 'GUESSER', canGuess: true, cooldownUntil: null, attemptCount: 0, attempts: [] }, 'p2', hiddenGame, off);
+    expect(html).not.toContain('Todavía no hay intentos incorrectos.');
+    expect(html).not.toContain('Riolu');
+  });
+
+  it('quien observa no ve el panel de intentos', () => {
+    const html = render({ role: 'SPECTATOR' }, 'p4', hiddenGame, off);
+    expect(html).not.toContain('Todavía no hay intentos incorrectos.');
   });
 });

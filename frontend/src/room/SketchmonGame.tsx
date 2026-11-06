@@ -62,6 +62,8 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
   const drawerName = drawerId ? nameOf(drawerId) : null;
   const participating = player !== null && player.role !== 'SPECTATOR';
   // Con los intentos públicos apagados, los propios llegan en la vista del jugador.
+  // Con los intentos públicos apagados, quien dibuja recibe los de todos en su vista (los necesita para guiarse); quien adivina u observa no ve el panel.
+  const feedAttempts = guessPublicAttempts(config) ? game.attempts : player?.role === 'DRAWER' ? player.attempts ?? [] : null;
   const ownLast = canGuess ? guessOwnLastAttempt((player?.role === 'GUESSER' ? player.attempts : undefined) ?? game.attempts, selfId) : null;
 
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -118,7 +120,7 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
     value={(id) => `+${id === result.winnerId ? result.guesserPoints : id === result.drawerId ? result.drawerPoints : 0}`} />;
   const side = <>
     {turnPoints || turnOrder}
-    {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />}
+    {feedAttempts && <GuessAttemptsFeed attempts={feedAttempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />}
   </>;
 
   let bottom;

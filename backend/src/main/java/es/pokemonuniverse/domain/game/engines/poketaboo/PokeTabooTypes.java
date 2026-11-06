@@ -349,10 +349,12 @@ public final class PokeTabooTypes {
 
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Descriptor(String role, boolean canSendHint, @Nullable PokeTabooSecretPokemon secretPokemon)
+    record Descriptor(String role, boolean canSendHint, @Nullable PokeTabooSecretPokemon secretPokemon,
+        @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokeTabooAttempt> attempts)
         implements PokeTabooPlayerState {
-      Descriptor(boolean canSendHint, @Nullable PokeTabooSecretPokemon secretPokemon) {
-        this("DESCRIPTOR", canSendHint, secretPokemon);
+      Descriptor(boolean canSendHint, @Nullable PokeTabooSecretPokemon secretPokemon,
+          @Nullable List<PokeTabooAttempt> attempts) {
+        this("DESCRIPTOR", canSendHint, secretPokemon, attempts);
       }
     }
 

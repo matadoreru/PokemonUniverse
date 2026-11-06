@@ -665,10 +665,12 @@ public final class SketchmonTypes {
 
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Drawer(String role, boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon)
+    record Drawer(String role, boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon,
+        @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<SketchmonAttempt> attempts)
         implements SketchmonPlayerState {
-      Drawer(boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon) {
-        this("DRAWER", canDraw, secretPokemon);
+      Drawer(boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon,
+          @Nullable List<SketchmonAttempt> attempts) {
+        this("DRAWER", canDraw, secretPokemon, attempts);
       }
     }
 

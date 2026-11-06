@@ -337,7 +337,8 @@ public final class PokeTabooEngine
     if (state.phase() == GamePhase.ROUND_ACTIVE && playerId.equals(state.descriptorId())) {
       var target = byId(context, state.targetPokemonId());
       return new PokeTabooPlayerState.Descriptor(target != null,
-          target != null ? PokeTabooSecretPokemon.of(target) : null);
+          target != null ? PokeTabooSecretPokemon.of(target) : null,
+          GuessingRound.guideAttempts(state.config().publicAttempts(), state.attempts()));
     }
     return new PokeTabooPlayerState.Guesser(
         state.phase() == GamePhase.ROUND_ACTIVE && !playerId.equals(state.descriptorId()),

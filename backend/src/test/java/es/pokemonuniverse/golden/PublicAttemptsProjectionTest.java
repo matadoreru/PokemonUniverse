@@ -26,7 +26,7 @@ import org.junit.jupiter.api.TestFactory;
 /**
  * Ajuste {@code publicAttempts} de los ocho juegos de adivinar con el panel «Intentos públicos». Cada escenario dorado
  * se juega dos veces a la par, con el ajuste encendido y apagado: apagado, la vista pública no lleva ningún fallo y la
- * vista de cada jugador lleva exactamente los suyos; encendido, la vista propia no trae {@code attempts}. Todo lo demás
+ * vista de cada jugador lleva exactamente los suyos (quien dibuja o describe, todos); encendido, la vista propia no trae {@code attempts}. Todo lo demás
  * (estado, aleatoriedad, revelación y resultados) es idéntico en las dos partidas.
  */
 class PublicAttemptsProjectionTest {
@@ -90,19 +90,20 @@ class PublicAttemptsProjectionTest {
       var shownPlayer = shown.playerState(player.id());
       var hiddenPlayer = hidden.playerState(player.id());
       assertNull(shownPlayer.get("attempts"), id + ": encendido, la vista propia no trae attempts");
-      var own = new ArrayList<JsonNode>();
+      var roleNode = hiddenPlayer.get("role"); // los otros juegos no tienen roles
+      var hiddenRole = roleNode == null ? "" : roleNode.getStringValue();
+      // Quien dibuja o describe (Sketchmon, PokéTaboo) ve los fallos de todos aunque el ajuste esté apagado.
+      boolean guide = "DRAWER".equals(hiddenRole) || "DESCRIPTOR".equals(hiddenRole);
+      var expected = new ArrayList<JsonNode>();
       for (var attempt : attempts.values()) {
-        if (attempt.get("playerId").getStringValue().equals(player.id())) own.add(attempt);
+        if (guide || attempt.get("playerId").getStringValue().equals(player.id())) expected.add(attempt);
       }
-      // Quien dibuja, describe u observa en Sketchmon y PokéTaboo no tiene campo attempts (no puede fallar).
-      var received = hiddenPlayer.get("attempts");
-      boolean turnBased = id.startsWith("sketchmon/") || id.startsWith("poke-taboo/");
-      if (received == null && own.isEmpty() && turnBased
-          && !"GUESSER".equals(hiddenPlayer.get("role").getStringValue())) {
-        received = JsonNode.createArrayNode(List.of());
+      if ("SPECTATOR".equals(hiddenRole) && (id.startsWith("sketchmon/") || id.startsWith("poke-taboo/"))) {
+        assertNull(hiddenPlayer.get("attempts"), id + ": el espectador no recibe intentos");
+      } else {
+        assertTrue(JsonTree.equal(JsonNode.createArrayNode(expected), hiddenPlayer.get("attempts")),
+            id + ": apagado, " + player.id() + " recibe " + (guide ? "todos los fallos" : "exactamente sus fallos"));
       }
-      assertTrue(JsonTree.equal(JsonNode.createArrayNode(own), received),
-          id + ": apagado, " + player.id() + " recibe exactamente sus fallos");
       assertTrue(JsonTree.equal(shownPlayer, without(hiddenPlayer, "attempts")),
           id + ": la vista propia solo cambia en attempts");
     }

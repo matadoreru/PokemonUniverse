@@ -2,6 +2,9 @@ package es.pokemonuniverse.domain.game.engine.infra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class GuessingRoundTest {
@@ -25,5 +28,12 @@ class GuessingRoundTest {
     var second = GuessingRound.recordGuessSolve(first, 3, 2, 6_000, 5);
     assertEquals(new Stats(2, 2, 2, 1, 1, 10_000, 4_000, 15), second);
     assertEquals(2_000, GuessingRound.recordGuessSolve(second, 1, 1, 2_000, 0).bestTimeMs());
+  }
+
+  @Test
+  void guideSeesEveryAttemptOnlyWhenTheyAreNotPublic() {
+    var attempts = List.of("a", "b");
+    assertEquals(attempts, GuessingRound.guideAttempts(false, attempts));
+    assertNull(GuessingRound.guideAttempts(true, attempts));
   }
 }

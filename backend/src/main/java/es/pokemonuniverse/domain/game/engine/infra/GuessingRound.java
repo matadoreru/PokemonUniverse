@@ -39,4 +39,12 @@ public final class GuessingRound {
     if (publicAttempts) return null;
     return attempts.stream().filter(attempt -> playerId.equals(playerOf.apply(attempt))).toList();
   }
+
+  /**
+   * Fallos de la ronda para quien dibuja o describe: {@code null} (no se envía) con {@code publicAttempts}, porque ya
+   * van en la vista pública; si no, todos, porque los necesita para guiar su dibujo o descripción.
+   */
+  public static <T> @Nullable List<T> guideAttempts(boolean publicAttempts, List<T> attempts) {
+    return publicAttempts ? null : attempts;
+  }
 }

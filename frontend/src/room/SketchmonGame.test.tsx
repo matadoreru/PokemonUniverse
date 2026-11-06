@@ -44,7 +44,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
   };
 }
 
-function room(player: SketchmonPlayerState | null, game: SketchmonPublicState = publicGame()): RoomView {
+function room(player: SketchmonPlayerState | null, game: SketchmonPublicState = publicGame(), config: Record<string, unknown> = {}): RoomView {
   return {
     code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8,
     members: [
@@ -54,13 +54,13 @@ function room(player: SketchmonPlayerState | null, game: SketchmonPublicState = 
       { id: 'p4', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'SPECTATOR', isHost: false, ready: false, sessionPoints: 0 },
     ],
     availableGames: [{ id: 'sketchmon', name: 'Sketchmon', icon: '🎨', description: 'Dibuja', minPlayers: 2, profileStats: { metrics: [] } }],
-    selectedGameId: 'sketchmon', selectedGameConfig: { generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false },
+    selectedGameId: 'sketchmon', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['sketchmon'] }, nextGameVote: null, gamesPlayed: 0,
     sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, serverNow: 1_000,
   } as RoomView;
 }
 
-const render = (player: SketchmonPlayerState | null, selfId: string, game?: SketchmonPublicState) => renderToStaticMarkup(createElement(SketchmonGame, { room: room(player, game), selfId, onAction: async () => undefined }));
+const render = (player: SketchmonPlayerState | null, selfId: string, game?: SketchmonPublicState, config?: Record<string, unknown>) => renderToStaticMarkup(createElement(SketchmonGame, { room: room(player, game, config), selfId, onAction: async () => undefined }));
 const drawer = (secretPokemon: Extract<SketchmonPlayerState, { role: 'DRAWER' }>['secretPokemon'] = { name: 'Lucario', sprite: '/lucario.png', previewEndsAt: null, types: ['fighting', 'steel'] }) =>
   render({ role: 'DRAWER', canDraw: true, secretPokemon }, 'p1');
 const guesser = () => render({ role: 'GUESSER', canGuess: true, cooldownUntil: null, attemptCount: 1 }, 'p2');
@@ -207,5 +207,28 @@ describe('Sketchmon: resultados y ajustes', () => {
     for (const text of ['Tiempo por dibujo', '60 s', '90 s', '120 s', 'Vueltas', 'Cada jugador dibuja una vez por vuelta, en un orden nuevo.', 'Memoria de 3 segundos', 'Pistas automáticas', 'Formas compatibles', 'Intentos públicos', 'El Pokémon secreto solo se envía a quien dibuja.']) expect(html).toContain(text);
     expect(html).toContain('role="radiogroup"');
     expect(html.match(/role="switch"/g)).toHaveLength(4);
+  });
+});
+
+describe('Sketchmon: intentos públicos apagados', () => {
+  const off = { publicAttempts: false };
+  const hiddenGame = { ...publicGame(), attempts: [] };
+  const miss = { playerId: 'p3', guessedPokemon: { id: 'riolu', name: 'Riolu', sprite: '/riolu.png' }, attemptedAt: 2_500 };
+
+  it('quien dibuja sigue viendo los fallos de los demás', () => {
+    const html = render({ role: 'DRAWER', canDraw: true, secretPokemon: null, attempts: [miss] }, 'p1', hiddenGame, off);
+    expect(html).toContain('Riolu');
+    expect(html).toContain('Carlos');
+  });
+
+  it('quien adivina no ve el panel de intentos', () => {
+    const html = render({ role: 'GUESSER', canGuess: true, cooldownUntil: null, attemptCount: 0, attempts: [] }, 'p2', hiddenGame, off);
+    expect(html).not.toContain('Todavía no hay intentos incorrectos.');
+    expect(html).not.toContain('Riolu');
+  });
+
+  it('quien observa no ve el panel de intentos', () => {
+    const html = render({ role: 'SPECTATOR' }, 'p4', hiddenGame, off);
+    expect(html).not.toContain('Todavía no hay intentos incorrectos.');
   });
 });

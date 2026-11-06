@@ -561,7 +561,8 @@ public final class SketchmonEngine
           pokemon.name(),
           previewVisible ? pokemon.sprite() : null,
           previewEndsAt,
-          state.config().memoryPreviewEnabled() ? List.of() : pokemon.types())).orElse(null));
+          state.config().memoryPreviewEnabled() ? List.of() : pokemon.types())).orElse(null),
+          GuessingRound.guideAttempts(state.config().publicAttempts(), state.attempts()));
     }
     return new SketchmonPlayerState.Guesser(
         state.phase() == GamePhase.ROUND_ACTIVE && !playerId.equals(state.drawerId()),
