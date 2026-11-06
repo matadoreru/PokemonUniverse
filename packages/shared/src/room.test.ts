@@ -11,10 +11,17 @@ describe('room permissions', () => {
     expect(hasRoomPermission('CO_HOST', 'EDIT_GAME_CONFIG')).toBe(true);
     expect(hasRoomPermission('CO_HOST', 'EDIT_SESSION')).toBe(true);
     expect(hasRoomPermission('CO_HOST', 'EDIT_GAME_SELECTION')).toBe(true);
+    expect(hasRoomPermission('CO_HOST', 'MODERATE_CHAT')).toBe(true);
     expect(hasRoomPermission('CO_HOST', 'START_GAME')).toBe(false);
     expect(hasRoomPermission('CO_HOST', 'MANAGE_ROLES')).toBe(false);
     expect(hasRoomPermission('CO_HOST', 'KICK_MEMBER')).toBe(false);
     expect(hasRoomPermission('CO_HOST', 'TRANSFER_HOST')).toBe(false);
+  });
+
+  it('gives MODERATE_CHAT to Host and Co-host but not to Members', () => {
+    expect(hasRoomPermission('HOST', 'MODERATE_CHAT')).toBe(true);
+    expect(hasRoomPermission('CO_HOST', 'MODERATE_CHAT')).toBe(true);
+    expect(hasRoomPermission('MEMBER', 'MODERATE_CHAT')).toBe(false);
   });
 
   it('keeps Members read-only', () => {

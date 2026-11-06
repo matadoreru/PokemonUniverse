@@ -203,6 +203,10 @@ public class RoomWebSocket {
           () -> coordinator.setRoomRole(playerId, text(payload, "playerId"), field(payload, "role")));
       case "room:transfer-host" -> current(connection, () -> coordinator.transferHost(playerId, text(payload, "playerId")));
       case "room:kick" -> current(connection, () -> coordinator.kick(playerId, text(payload, "playerId")));
+      case "room:chat:send" -> current(connection, () -> coordinator.sendChat(playerId, field(payload, "text")));
+      case "room:chat:delete" -> current(connection, () -> coordinator.deleteChatMessage(playerId, field(payload, "seq")));
+      case "room:chat:mute" -> current(connection,
+          () -> coordinator.setChatMute(playerId, text(payload, "playerId"), field(payload, "muted")));
       case "room:set-ready" -> current(connection, () -> coordinator.setReady(playerId, field(payload, "ready")));
       case "room:start-game" -> current(connection, () -> coordinator.startGame(playerId));
       case "room:continue-session" -> current(connection, () -> coordinator.continueSession(playerId));

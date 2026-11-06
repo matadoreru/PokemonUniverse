@@ -24,7 +24,14 @@ export const SERVER_MESSAGE_SOURCES = {
   coordinator: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCoordinator.java',
   parsers: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCommandParsers.java',
   invitations: 'backend/src/main/java/es/pokemonuniverse/application/friends/RoomInvitations.java',
+  chat: 'backend/src/main/java/es/pokemonuniverse/domain/room/RoomChat.java',
 } as const;
+
+/**
+ * Errores del chat del lobby que no salen de `RoomChat.java` sino de `RoomCoordinator.java` (`assertChatLobby`); el test
+ * los busca en `coordinator` entre comillas, no como `new RoomException("…")`.
+ */
+export const CHAT_COORDINATOR_MESSAGES = ['Chat is only available in the lobby'] as const;
 
 const GENERIC = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';
 const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.';
@@ -46,6 +53,10 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  * - De `room:invite` (`RoomInvitations.invite`): «You are not in a room», «Not a friend», «Friend is offline»,
  *   «Already in this room», «Room is full» (el mismo texto que `join`), «Invitation already sent», «Too many invitations»
  *   (límite por anfitrión) e «Invitations are only available in the lobby» (la sala ya no está en el lobby).
+ * - Del chat del lobby (`room:chat:*`): «Chat is only available in the lobby» (`RoomCoordinator.assertChatLobby`),
+ *   «Message is empty», «Message is too long», «You are muted in this chat», «Too many chat messages» y
+ *   «Message not found» (`RoomChat`) y «Cannot mute yourself» (`RoomChat.CANNOT_MUTE_SELF`, lanzado por
+ *   `RoomCoordinator.setChatMute`). «Invalid chat command» no se traduce: solo un cliente a mano la provoca.
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
@@ -71,6 +82,14 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Invitation already sent': 'Ya le has invitado; espera unos segundos.',
   'Too many invitations': 'Has enviado demasiadas invitaciones; espera un minuto.',
   'Invitations are only available in the lobby': 'Solo puedes invitar desde el lobby.',
+  // Chat del lobby (`RoomChat` y `RoomCoordinator.assertChatLobby`).
+  'Chat is only available in the lobby': 'El chat solo está disponible en el lobby.',
+  'Message is empty': 'Escribe algo antes de enviarlo.',
+  'Message is too long': 'El mensaje no puede pasar de 200 caracteres.',
+  'You are muted in this chat': 'Un moderador te ha silenciado en el chat de esta sala.',
+  'Too many chat messages': 'Estás enviando mensajes muy rápido; espera unos segundos.',
+  'Message not found': 'Ese mensaje ya no está en el chat.',
+  'Cannot mute yourself': 'No puedes silenciarte a ti mismo.',
 };
 
 /**

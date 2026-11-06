@@ -9,11 +9,11 @@ export const ROOM_ROLES = ['HOST', 'CO_HOST', 'MEMBER'] as const;
 export type RoomRole = (typeof ROOM_ROLES)[number];
 export const assignableRoomRoleSchema = z.enum(['CO_HOST', 'MEMBER']);
 export type AssignableRoomRole = z.infer<typeof assignableRoomRoleSchema>;
-export const ROOM_PERMISSIONS = ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'EDIT_GAME_SELECTION', 'START_GAME', 'END_SESSION', 'MANAGE_ROLES', 'KICK_MEMBER', 'TRANSFER_HOST'] as const;
+export const ROOM_PERMISSIONS = ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'EDIT_GAME_SELECTION', 'START_GAME', 'END_SESSION', 'MANAGE_ROLES', 'KICK_MEMBER', 'TRANSFER_HOST', 'MODERATE_CHAT'] as const;
 export type RoomPermission = (typeof ROOM_PERMISSIONS)[number];
 const ROOM_ROLE_PERMISSIONS: Record<RoomRole, readonly RoomPermission[]> = {
   HOST: ROOM_PERMISSIONS,
-  CO_HOST: ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'EDIT_GAME_SELECTION'],
+  CO_HOST: ['CHANGE_GAME', 'EDIT_GAME_CONFIG', 'EDIT_SESSION', 'EDIT_GAME_SELECTION', 'MODERATE_CHAT'],
   MEMBER: [],
 };
 
@@ -44,6 +44,20 @@ export interface RoomMemberView {
   sessionPoints: number;
   /** Nivel de la cuenta registrada; `null` para invitados y ausente en el oráculo Node. */
   level?: number | null;
+  /** Silenciado en el chat de la sala (dura lo que la sala). */
+  chatMuted?: boolean;
+}
+
+/** Longitud máxima de un mensaje del chat del lobby, en caracteres (`RoomChat.MAX_LENGTH` en el backend). */
+export const CHAT_MESSAGE_MAX_LENGTH = 200;
+
+/** Mensaje del chat del lobby; `seq` crece por sala y no se reutiliza, `sentAt` son milisegundos epoch. */
+export interface ChatMessage {
+  seq: number;
+  authorId: string;
+  authorName: string;
+  text: string;
+  sentAt: number;
 }
 
 export interface SessionStandingView {
@@ -196,6 +210,9 @@ export interface ClientToServerEvents {
   'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
   'who-is-who:cursor-clear': (_: unknown, ack?: SocketAck) => void;
   'room:invite': (payload: { userId: string }, ack: SocketAck) => void;
+  'room:chat:send': (payload: { text: string }, ack: SocketAck) => void;
+  'room:chat:delete': (payload: { seq: number }, ack: SocketAck) => void;
+  'room:chat:mute': (payload: { playerId: string; muted: boolean }, ack: SocketAck) => void;
 }
 
 /** Presencia de un amigo: sin conexión, conectado fuera de sala, en una sala, o en una sala con partida en curso. */
@@ -222,6 +239,10 @@ export interface ServerToClientEvents {
   'friends:changed': (payload: Record<string, never>) => void;
   'friends:invite': (payload: FriendInvite) => void;
   'achievements:unlocked': (payload: AchievementsUnlocked) => void;
+  /** Lo que había en el chat al unirse o al recuperar la sesión. */
+  'room:chat:history': (payload: { roomInstanceId: string; messages: ChatMessage[] }) => void;
+  'room:chat:message': (payload: { roomInstanceId: string; message: ChatMessage }) => void;
+  'room:chat:deleted': (payload: { roomInstanceId: string; seq: number }) => void;
 }
 
 export type SocketAck<T = Record<string, never>> = (response: ({ ok: true } & T) | { ok: false; error: string }) => void;
