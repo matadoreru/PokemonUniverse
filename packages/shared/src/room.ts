@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { AchievementsUnlocked } from './achievements.js';
 import type { AvatarRef } from './avatar.js';
+import type { DailyGameId, DailyRoomInfo } from './daily.js';
 import type { GamePhase, MiniGameManifest } from './games/contracts.js';
 
 export type RoomPhase = 'LOBBY' | GamePhase | 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS' | 'SESSION_RESULTS';
@@ -181,6 +182,8 @@ export interface RoomView {
   hostCustomCategoryCount?: number;
   /** Enabled custom Would You Rather pairs owned by the host; used for lobby validation only. */
   hostWouldYouRatherPromptCount?: number;
+  /** Sala del reto diario (un jugador, sin código que compartir); `null` en una sala normal. */
+  daily: DailyRoomInfo | null;
 }
 
 export const roomCodeSchema = z.string().trim().toUpperCase().regex(/^[A-Z2-9]{6}$/);
@@ -206,6 +209,8 @@ export interface ClientToServerEvents {
   'session:attach': (_: unknown, ack: SocketAck) => void;
   'room:create': (payload: { maxPlayers?: number }, ack: SocketAck<{ room: RoomView }>) => void;
   'room:join': (payload: { code: string }, ack: SocketAck<{ room: RoomView }>) => void;
+  /** Empieza el reto diario de hoy (el servidor elige el juego): crea la sala del reto y la devuelve. */
+  'daily:start': (payload: Record<string, never>, ack: SocketAck<{ room: RoomView }>) => void;
   'room:leave': (_: unknown, ack: SocketAck) => void;
   'room:select-game': (payload: { gameId: string }, ack: SocketAck) => void;
   'room:update-config': (payload: { config: unknown }, ack: SocketAck) => void;
@@ -256,6 +261,8 @@ export interface ServerToClientEvents {
   'friends:changed': (payload: Record<string, never>) => void;
   'friends:invite': (payload: FriendInvite) => void;
   'achievements:unlocked': (payload: AchievementsUnlocked) => void;
+  /** El resultado del reto diario ya está guardado: la clasificación puede pedirse otra vez. */
+  'daily:recorded': (payload: { date: string; gameId: DailyGameId }) => void;
   /** Lo que había en el chat al unirse o al recuperar la sesión. */
   'room:chat:history': (payload: { roomInstanceId: string; messages: ChatMessage[] }) => void;
   'room:chat:message': (payload: { roomInstanceId: string; message: ChatMessage }) => void;

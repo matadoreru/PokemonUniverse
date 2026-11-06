@@ -37,7 +37,7 @@ function room(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS', override
     ] } : null,
     ...overrides,
   };
-  return { code: 'TEST12', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla', 'DISCONNECTED')], availableGames: [], selectedGameId: 'tcg-higher-lower', selectedGameConfig: { roundSeconds: 15 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['tcg-higher-lower'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return { code: 'TEST12', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla', 'DISCONNECTED')], availableGames: [], selectedGameId: 'tcg-higher-lower', selectedGameConfig: { roundSeconds: 15 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['tcg-higher-lower'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, daily: null, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<TcgHigherLowerGame room={view} selfId={selfId} onAction={async () => undefined} />);

@@ -485,6 +485,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/daily": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** El reto diario de hoy y el estado propio */
+        get: operations["overview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/daily/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Clasificación del reto diario de hoy */
+        get: operations["leaderboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/feedback": {
         parameters: {
             query?: never;
@@ -1106,6 +1140,67 @@ export interface components {
             enabled: boolean;
             createdAt: string;
             updatedAt: string;
+        };
+        /** @description `GET /api/daily/leaderboard`: la clasificación de hoy (las primeras filas terminadas) y la fila propia (`me`), aunque no esté entre ellas. Sin contenido de la partida. */
+        DailyLeaderboardResponse: {
+            date: string;
+            gameId: string;
+            /** Format: int64 */
+            total: number;
+            entries: components["schemas"]["DailyLeaderboardResponse.Entry"][];
+            me: components["schemas"]["DailyLeaderboardResponse.Me"];
+        };
+        /** @description Las puntuaciones iguales comparten `position` (1, 1, 3); `finishedAt` en ISO-8601. */
+        "DailyLeaderboardResponse.Entry": {
+            /** Format: int32 */
+            position: number;
+            userId: string;
+            username: string;
+            avatar: components["schemas"]["AvatarRef"];
+            /** Format: int32 */
+            score: number;
+            /** Format: int32 */
+            correct: number;
+            finishedAt: string;
+        };
+        /** @description La fila propia; `position`, `score`, `correct` y `rounds` son `null` salvo en `FINISHED`. */
+        "DailyLeaderboardResponse.Me": {
+            status: string;
+            /** Format: int32 */
+            position: number | null;
+            /** Format: int32 */
+            score: number | null;
+            /** Format: int32 */
+            correct: number | null;
+            rounds: number[] | null;
+        };
+        /** @description `GET /api/daily`: el reto de hoy (un solo juego), cuántas cuentas lo han terminado y el estado propio. Nunca lleva contenido de la partida; `result` viaja como `null` mientras no esté `FINISHED`. */
+        DailyOverviewResponse: {
+            date: string;
+            resetsAt: string;
+            gameId: string;
+            name: string;
+            icon: string;
+            /** Format: int32 */
+            roundCount: number;
+            /** Format: int64 */
+            players: number;
+            status: string;
+            result: components["schemas"]["DailyOverviewResponse.Result"] | null;
+        };
+        /** @description Resultado propio de hoy; `total` son las cuentas que lo han terminado. */
+        "DailyOverviewResponse.Result": {
+            /** Format: int32 */
+            score: number;
+            /** Format: int32 */
+            correct: number;
+            /** Format: int32 */
+            roundCount: number;
+            rounds: number[];
+            /** Format: int32 */
+            position: number;
+            /** Format: int64 */
+            total: number;
         };
         /**
          * @description Enum nativo `"DataSyncSource"` de Postgres: origen externo de datos.
@@ -3001,6 +3096,73 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ChangelogController.ChangelogResponse"];
+                };
+            };
+        };
+    };
+    overview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyOverviewResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    leaderboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyLeaderboardResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Sin intento de hoy: juega el reto primero */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };

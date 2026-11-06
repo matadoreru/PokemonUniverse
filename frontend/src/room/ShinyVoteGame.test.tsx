@@ -79,7 +79,7 @@ function room(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | nu
     gamesPlayed: 0,
     sessionStandings: [],
     sessionHistory: [],
-    serverNow: 1_000,
+    daily: null, serverNow: 1_000,
     game,
     gamePlayerState: playerState,
   };

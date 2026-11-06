@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { OFFLINE_MESSAGE, TIMEOUT_MESSAGE } from '../lib/realtime';
-import { CHAT_COORDINATOR_MESSAGES, ROOM_CODE_LENGTH, ROOM_CODE_PATTERN, ROOM_ERROR_TRANSLATIONS, SERVER_MESSAGE_SOURCES, SERVER_SPANISH_MESSAGES, normalizeRoomCode, roomActionErrorMessage, roomErrorMessage } from './roomCode';
+import { CHAT_COORDINATOR_MESSAGES, DAILY_MESSAGES, ROOM_CODE_LENGTH, ROOM_CODE_PATTERN, ROOM_ERROR_TRANSLATIONS, SERVER_MESSAGE_SOURCES, SERVER_SPANISH_MESSAGES, normalizeRoomCode, roomActionErrorMessage, roomErrorMessage } from './roomCode';
 
 /** Fuente Java del backend, leída desde la raíz del repositorio. */
 function javaSource(path: string): string {
@@ -104,12 +104,24 @@ describe('textos del servidor vigilados', () => {
   const coordinator = javaSource(SERVER_MESSAGE_SOURCES.coordinator);
   const invitations = javaSource(SERVER_MESSAGE_SOURCES.invitations);
   const chat = javaSource(SERVER_MESSAGE_SOURCES.chat);
+  const daily = javaSource(SERVER_MESSAGE_SOURCES.daily);
   const chatFromCoordinator = new Set<string>(CHAT_COORDINATOR_MESSAGES);
-  const rest = Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !chatFromCoordinator.has(message) && !chat.includes(`"${message}"`));
+  const dailyMessages = new Set<string>(DAILY_MESSAGES);
+  const rest = Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !chatFromCoordinator.has(message) && !dailyMessages.has(message) && !chat.includes(`"${message}"`));
   it.each(rest)('«%s» sigue saliendo de RoomCoordinator.java o RoomInvitations.java', (message) => {
     expect(coordinator + invitations).toContain(`new RoomException("${message}")`);
   });
-  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !rest.includes(message)))('«%s» del chat sigue saliendo de RoomChat.java o del coordinador', (message) => {
+  it.each([...DAILY_MESSAGES])('«%s» del reto diario sigue saliendo de DailyChallengeService.java o del coordinador', (message) => {
+    expect(daily + coordinator).toContain(`= "${message}";`);
+  });
+  it('traduce los errores del reto diario', () => {
+    expect(roomErrorMessage(new Error('Registered account required'))).toBe('El reto diario es solo para cuentas registradas.');
+    expect(roomErrorMessage(new Error('Daily challenge already played'))).toBe('Ya has jugado el reto de hoy.');
+    expect(roomErrorMessage(new Error('Not available in the daily challenge'))).toBe('No disponible en el reto diario.');
+    expect(roomActionErrorMessage(new Error('Not available in the daily challenge'))).toBe('No disponible en el reto diario.');
+    expect(roomErrorMessage(new Error('Leave your current room first'))).toBe('Ya estás en otra sala. Sal de ella antes de unirte a esta.');
+  });
+  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !rest.includes(message) && !dailyMessages.has(message)))('«%s» del chat sigue saliendo de RoomChat.java o del coordinador', (message) => {
     expect(chatFromCoordinator.has(message) ? coordinator : chat).toContain(`"${message}"`);
   });
   it('traduce los siete errores del chat', () => {

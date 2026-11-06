@@ -38,7 +38,7 @@ const guessing: ZoomedPokemonPlayerState = { canGuess: true, solved: false, solv
 const solvedPlayer: ZoomedPokemonPlayerState = { canGuess: false, solved: true, solveOrder: 1, cooldownUntil: null, roundPoints: 14, attemptCount: 1, lastAttempt: { result: 'CORRECT', attemptedAt: 2_000 } };
 
 function room(game: ZoomedPokemonPublicState, player: ZoomedPokemonPlayerState | null, spectator = false): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'zoomed-pokemon', selectedGameConfig: defaultZoomedPokemonConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['zoomed-pokemon'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), game, gamePlayerState: player, members: [
+  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'zoomed-pokemon', selectedGameConfig: defaultZoomedPokemonConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['zoomed-pokemon'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: Date.now(), game, gamePlayerState: player, members: [
     { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, ready: false, sessionPoints: 5 },
     { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
   ] } as RoomView;

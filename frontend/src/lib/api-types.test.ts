@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, FeedbackItem, TcgFilterOptions } from '@pokemon-universe/shared/public';
 import type { components, paths } from './api-types';
-import type { ChangelogResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
+import type { ChangelogResponse, DailyLeaderboardResponse, DailyOverviewResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
 
 const ROUTES = [
   '/api/admin/active-rooms', '/api/admin/changelog', '/api/admin/changelog/{id}', '/api/admin/data-sync',
@@ -10,7 +10,7 @@ const ROUTES = [
   '/api/auth/avatars/{filename}', '/api/auth/guest', '/api/auth/guest/custom-avatar', '/api/auth/login',
   '/api/auth/logout', '/api/auth/me', '/api/auth/profile', '/api/auth/profile/avatar', '/api/auth/profile/avatar/custom',
   '/api/auth/password/forgot', '/api/auth/password/reset', '/api/auth/progress',
-  '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog',
+  '/api/auth/register', '/api/categories', '/api/categories/{id}', '/api/changelog', '/api/daily', '/api/daily/leaderboard',
   '/api/achievements', '/api/feedback', '/api/friends', '/api/friends/requests', '/api/friends/requests/{id}',
   '/api/friends/requests/{id}/accept', '/api/friends/{userId}', '/api/games', '/api/health', '/api/pokemon/selector', '/api/pokemon/{id}/sprite',
   '/api/rooms/{code}/games/{assetToken}/rounds/{roundNumber}/options/{optionId}/audio',
@@ -20,9 +20,9 @@ const ROUTES = [
 ] as const satisfies readonly (keyof paths)[];
 
 describe('contrato OpenAPI generado', () => {
-  it('expone exactamente las 46 rutas del backend Java', () => {
+  it('expone exactamente las 48 rutas del backend Java', () => {
     expectTypeOf<keyof paths>().toEqualTypeOf<typeof ROUTES[number]>();
-    expect(ROUTES).toHaveLength(46);
+    expect(ROUTES).toHaveLength(48);
   });
   it('las opciones TCG coinciden con las de shared y la elegibilidad valida con incidencias de Zod', () => {
     expectTypeOf<paths['/api/tcg/options']['get']['responses'][200]['content']['application/json']>().toEqualTypeOf<TcgFilterOptions>();
@@ -43,6 +43,13 @@ describe('contrato OpenAPI generado', () => {
   it('changelog y feedback usan los tipos de shared, validados contra el contrato generado', () => {
     expectTypeOf<ChangelogResponse['entries'][number]>().toEqualTypeOf<ChangelogEntry>();
     expectTypeOf<FeedbackCreateResponse['feedback']>().toEqualTypeOf<FeedbackItem>();
+  });
+  it('el reto diario da un solo juego y result o me con campos nulos hasta terminar', () => {
+    expectTypeOf<DailyOverviewResponse['gameId']>().toEqualTypeOf<string>();
+    expectTypeOf<DailyOverviewResponse['result']>().toEqualTypeOf<components['schemas']['DailyOverviewResponse.Result'] | null>();
+    expectTypeOf<DailyLeaderboardResponse['me']['score']>().toEqualTypeOf<number | null>();
+    expectTypeOf<paths['/api/daily/leaderboard']['get']['responses'][403]['content']['application/json']>()
+      .toEqualTypeOf<components['schemas']['ApiError']>();
   });
   it('la vista de categoría personalizada coincide con la de shared', () => {
     expectTypeOf<components['schemas']['CustomCategoryView']>().toEqualTypeOf<CustomCategoryView>();

@@ -48,7 +48,7 @@ function room(game: PokemonConnectionsPublicState, player: PokemonConnectionsPla
     availableGames: [{ id: 'pokemon-connections', name: 'Pokémon Connections', icon: '🧩', description: 'Conexiones', minPlayers: 1, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-connections', selectedGameConfig: { ...defaultPokemonConnectionsConfig, generations: [1] },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-connections'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: player,
+    sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player,
     members: [
       { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },
       { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: false, presence: 'DISCONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 1 },

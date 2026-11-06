@@ -14,7 +14,7 @@ function roomWith(members: RoomMemberView[]): RoomView {
     code: 'ABC234', phase: 'LOBBY', hostId: 'p1', maxPlayers: 8, members, availableGames: [],
     selectedGameId: 'pokemon-impostor', selectedGameConfig: { impostorCount: 2 },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] }, nextGameVote: null,
-    gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, serverNow: 1_000,
+    gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, daily: null, serverNow: 1_000,
   };
 }
 

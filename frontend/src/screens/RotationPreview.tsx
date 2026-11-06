@@ -18,7 +18,7 @@ const room: RoomView = {
     'higher-lower': { generations: [1, 2, 3, 4], rounds: 10, roundSeconds: 15 },
   }, customizedGameIds: ['shiny-vote'], sessionMode: { type: 'INFINITE' },
   gameSelectionMode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, nextGameVote: null,
-  gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, serverNow: Date.now(),
+  gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, daily: null, serverNow: Date.now(),
 };
 
 /**

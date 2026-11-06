@@ -13,7 +13,7 @@ function room(roundHistory: DistanceRoundRecord[], results: GameResults, extra: 
     roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null, roundHistory, winnerId: results.winnerId, results, ...extra,
   };
   const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: 0 }));
-  return { code: 'ABC234', phase: 'GAME_RESULTS', hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: defaultPokedexDistanceConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 1, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: null, members };
+  return { code: 'ABC234', phase: 'GAME_RESULTS', hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: defaultPokedexDistanceConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 1, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: null, members };
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(createElement(PokedexDistanceResults, { room: view, selfId, onLobby: () => undefined, onEnd: () => undefined }));

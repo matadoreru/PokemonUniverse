@@ -45,7 +45,7 @@ function room(publicGame: PokemonBluffAuctionPublicState, player: PokemonBluffAu
     availableGames: [{ id: 'pokemon-bluff-auction', name: 'Pokémon Bluff Auction', icon: '🔨', description: 'Pujas', minPlayers: 2, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-bluff-auction', selectedGameConfig: { generations: [1, 2, 3], demonstrationSeconds: 30, rounds: 10, bidSeconds: 20 },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-bluff-auction'] }, nextGameVote: null,
-    gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: publicGame, gamePlayerState: player, serverNow: 1_000,
+    gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: publicGame, gamePlayerState: player, daily: null, serverNow: 1_000,
   };
 }
 

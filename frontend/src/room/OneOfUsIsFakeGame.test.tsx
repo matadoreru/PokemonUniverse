@@ -65,7 +65,7 @@ function room(game: OneOfUsIsFakePublicState, player: OneOfUsIsFakePlayerState |
     availableGames: [{ id: 'one-of-us-is-fake', name: 'One of Us Is Fake', icon: '🕵️', description: 'Categorías', minPlayers: 3, profileStats: { metrics: [] } }],
     selectedGameId: 'one-of-us-is-fake', selectedGameConfig: defaultOneOfUsIsFakeConfig,
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['one-of-us-is-fake'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, serverNow: 1_000,
+    sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, daily: null, serverNow: 1_000,
   };
 }
 

@@ -6,9 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.adapters.out.persistence.UserRepository;
 import es.pokemonuniverse.application.auth.IdentityTokens;
+import es.pokemonuniverse.application.daily.DailyGames;
+import es.pokemonuniverse.application.daily.DailyKey;
+import es.pokemonuniverse.application.rooms.ExecutorRoomSchedulers;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.application.rooms.GameCatalogs;
+import es.pokemonuniverse.application.rooms.RoomSchedulers;
+import es.pokemonuniverse.application.time.Clock;
+import es.pokemonuniverse.application.time.SystemClock;
+import es.pokemonuniverse.domain.daily.DailyCalendar;
+import es.pokemonuniverse.domain.daily.DailySeed;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import io.micronaut.context.annotation.Primary;
@@ -17,22 +26,32 @@ import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MutableHttpRequest;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.cookie.Cookie;
+import io.micronaut.jdbc.DataSourceResolver;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.websocket.WebSocketClient;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,10 +87,68 @@ class RoomWebSocketTest {
     }
   }
 
+  /**
+   * Reloj de las salas con desplazamiento: el reto diario juega en una fecha lejana propia del test, y el avance rápido
+   * lo mueve al disparar cada plazo.
+   */
+  @Singleton
+  @Replaces(SystemClock.class)
+  @Requires(property = "spec.name", value = "RoomWebSocketTest")
+  static class OffsetClock implements Clock {
+    final AtomicLong offset = new AtomicLong();
+
+    @Override
+    public long now() {
+      return System.currentTimeMillis() + offset.get();
+    }
+  }
+
+  /**
+   * Temporizadores reales salvo en avance rápido: entonces cada plazo se dispara enseguida y adelanta el reloj lo que
+   * faltaba, para jugar una partida entera por tiempo vencido sin esperar.
+   */
+  @Singleton
+  @Replaces(ExecutorRoomSchedulers.class)
+  @Requires(property = "spec.name", value = "RoomWebSocketTest")
+  static class FastForwardSchedulers implements RoomSchedulers {
+    private final ScheduledExecutorService executor =
+        Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().name("test-room-timers").factory());
+    private final OffsetClock clock;
+    volatile boolean fast;
+
+    FastForwardSchedulers(OffsetClock clock) {
+      this.clock = clock;
+    }
+
+    @Override
+    public Runnable schedule(long delayMs, Runnable task) {
+      long delay = Math.max(0, delayMs);
+      var future = fast
+          ? executor.schedule(() -> {
+            clock.offset.addAndGet(delay);
+            Thread.ofVirtual().start(task);
+          }, 2, TimeUnit.MILLISECONDS)
+          : executor.schedule(() -> Thread.ofVirtual().start(task), delay, TimeUnit.MILLISECONDS);
+      return () -> future.cancel(false);
+    }
+
+    @PreDestroy
+    void shutdown() {
+      executor.shutdownNow();
+    }
+  }
+
   @Inject @Client("/") WebSocketClient client;
+  @Inject @Client("/") HttpClient http;
   @Inject IdentityTokens tokens;
   @Inject ManualWsClock clock;
   @Inject WsSessions sessions;
+  @Inject OffsetClock roomClock;
+  @Inject FastForwardSchedulers schedulers;
+  @Inject DailyKey dailyKey;
+  @Inject UserRepository users;
+  @Inject DataSource dataSource;
+  @Inject DataSourceResolver resolver;
 
   private WsTestClients clients;
 
@@ -327,6 +404,66 @@ class RoomWebSocketTest {
     for (var socket : List.of(sender, teammate, rival)) socket.awaitPush("who-is-who:cursors-reset", payload -> true);
     assertTrue(rival.received.stream().noneMatch(message -> message.get("event") != null
         && "who-is-who:cursor".equals(message.get("event").getStringValue())), "el equipo rival no ve los cursores");
+  }
+
+  /**
+   * {@code daily:start {}} responde {@code {room}} con la sala del reto, y al terminar la partida (por tiempo vencido,
+   * en avance rápido) llega {@code daily:recorded {date, gameId}} por el mismo socket. Un invitado recibe el error.
+   */
+  @Test
+  void dailyStartOverWsReturnsRoomAndRecordedEventArrives() throws SQLException {
+    var guest = connect(user("ws_daily_guest", "Guest"));
+    assertError("Registered account required", guest.command("daily:start", "{}"));
+
+    // Una fecha lejana y distinta en cada ejecución; la fixture gen1-2 no basta para Learnset Guess.
+    var day = LocalDate.of(2400, 1, 1).plusDays(Math.floorMod(UUID.randomUUID().getMostSignificantBits(), 200_000));
+    while (drawnGame(day).equals("learnset-guess")) day = day.plusDays(1);
+    var gameId = drawnGame(day);
+    long noon = day.atTime(LocalTime.NOON).atZone(DailyCalendar.ZONE).toInstant().toEpochMilli();
+    roomClock.offset.set(noon - System.currentTimeMillis());
+    String userId = null;
+    try {
+      var account = register();
+      userId = account[0];
+      var player = connect(HttpRequest.GET("/ws").header("Cookie", account[1]));
+      schedulers.fast = true;
+      var ack = player.command("daily:start", "{}");
+      assertOk(ack);
+      var daily = ack.get("data").get("room").get("daily");
+      assertEquals(gameId, text(daily, "gameId"));
+      assertEquals(day.toString(), text(daily, "date"));
+      assertTrue(daily.get("result").isNull(), daily.toString());
+
+      var recorded = player.awaitPush("daily:recorded", payload -> true);
+      assertEquals(Map.of("date", day.toString(), "gameId", gameId), asMap(recorded));
+      schedulers.fast = false;
+      assertError("Leave your current room first", player.command("daily:start", "{}"));
+      assertOk(player.command("room:leave", null));
+    } finally {
+      schedulers.fast = false;
+      roomClock.offset.set(0);
+      if (userId != null) users.deleteById(userId); // borra en cascada su DailyResult
+      try (var connection = resolver.resolve(dataSource).getConnection();
+          var statement = connection.prepareStatement("DELETE FROM \"DailyChallenge\" WHERE \"date\" = ?")) {
+        statement.setObject(1, day);
+        statement.executeUpdate();
+      }
+    }
+  }
+
+  private String drawnGame(LocalDate day) {
+    return DailyGames.ofTheDay(DailySeed.seed(dailyKey.bytes(), day)).gameId();
+  }
+
+  /** Cuenta registrada de verdad (el reto exige {@code USER} y una fila en {@code User}): {@code [id, cookie]}. */
+  @SuppressWarnings("unchecked")
+  private String[] register() {
+    var u = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+    var res = http.toBlocking().exchange(HttpRequest.POST("/api/auth/register",
+        Map.of("username", "wd_" + u, "email", "wd" + u + "@mail.com", "password", "0123456789")), Map.class);
+    var cookie = res.getHeaders().getAll("Set-Cookie").stream()
+        .filter(c -> c.startsWith("pu_session=")).findFirst().orElseThrow().split(";")[0];
+    return new String[] {(String) ((Map<String, Object>) res.body().get("user")).get("id"), cookie};
   }
 
   // ------------------------------------------------------------------------------------------------ utilidades

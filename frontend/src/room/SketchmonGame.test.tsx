@@ -56,7 +56,7 @@ function room(player: SketchmonPlayerState | null, game: SketchmonPublicState = 
     availableGames: [{ id: 'sketchmon', name: 'Sketchmon', icon: '🎨', description: 'Dibuja', minPlayers: 2, profileStats: { metrics: [] } }],
     selectedGameId: 'sketchmon', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false },
     sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['sketchmon'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, serverNow: 1_000,
+    sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, daily: null, serverNow: 1_000,
   } as RoomView;
 }
 

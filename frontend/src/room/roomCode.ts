@@ -25,7 +25,14 @@ export const SERVER_MESSAGE_SOURCES = {
   parsers: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCommandParsers.java',
   invitations: 'backend/src/main/java/es/pokemonuniverse/application/friends/RoomInvitations.java',
   chat: 'backend/src/main/java/es/pokemonuniverse/domain/room/RoomChat.java',
+  daily: 'backend/src/main/java/es/pokemonuniverse/application/daily/DailyChallengeService.java',
 } as const;
+
+/**
+ * Errores del reto diario declarados como constantes (`DailyChallengeService` y `RoomCoordinator.DAILY_UNAVAILABLE`),
+ * no como `new RoomException("…")`: el test los busca entre comillas en `daily` y `coordinator`.
+ */
+export const DAILY_MESSAGES = ['Registered account required', 'Daily challenge already played', 'Not available in the daily challenge', 'Daily challenge unavailable: the Pokémon catalog is empty'] as const;
 
 /**
  * Errores del chat del lobby que no salen de `RoomChat.java` sino de `RoomCoordinator.java` (`assertChatLobby`); el test
@@ -57,6 +64,9 @@ const OTHER_ROOM = 'Ya estás en otra sala. Sal de ella antes de unirte a esta.'
  *   «Message is empty», «Message is too long», «You are muted in this chat», «Too many chat messages» y
  *   «Message not found» (`RoomChat`) y «Cannot mute yourself» (`RoomChat.CANNOT_MUTE_SELF`, lanzado por
  *   `RoomCoordinator.setChatMute`). «Invalid chat command» no se traduce: solo un cliente a mano la provoca.
+ * - Del reto diario (`daily:start` y la sala del reto): «Registered account required», «Daily challenge already
+ *   played» y «Daily challenge unavailable: the Pokémon catalog is empty» (`DailyChallengeService`), «Not available in
+ *   the daily challenge» (`RoomCoordinator`) y «Leave your current room first», que ya estaba.
  */
 export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Room not found': 'No hay ninguna sala con ese código. Revísalo con quien la creó.',
@@ -90,6 +100,11 @@ export const ROOM_ERROR_TRANSLATIONS: Record<string, string> = {
   'Too many chat messages': 'Estás enviando mensajes muy rápido; espera unos segundos.',
   'Message not found': 'Ese mensaje ya no está en el chat.',
   'Cannot mute yourself': 'No puedes silenciarte a ti mismo.',
+  // Reto diario (`DailyChallengeService` y la sala del reto en `RoomCoordinator`).
+  'Registered account required': 'El reto diario es solo para cuentas registradas.',
+  'Daily challenge already played': 'Ya has jugado el reto de hoy.',
+  'Not available in the daily challenge': 'No disponible en el reto diario.',
+  'Daily challenge unavailable: the Pokémon catalog is empty': 'El reto diario no está disponible ahora mismo. Inténtalo más tarde.',
 };
 
 /**

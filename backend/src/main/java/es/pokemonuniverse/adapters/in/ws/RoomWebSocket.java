@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.ws;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.AckMessage;
 import es.pokemonuniverse.adapters.in.ws.WsEnvelope.ClientMessage;
 import es.pokemonuniverse.adapters.in.ws.WsSessions.Connection;
+import es.pokemonuniverse.application.daily.DailyChallengeService;
 import es.pokemonuniverse.application.friends.RoomInvitations;
 import es.pokemonuniverse.application.rooms.RoomCoordinator;
 import es.pokemonuniverse.application.rooms.RoomException;
@@ -58,15 +59,19 @@ public class RoomWebSocket {
 
   private final RoomCoordinator coordinator;
   private final RoomInvitations invitations;
+  /** Ausente sin la persistencia del reto (sus repositorios): {@code daily:start} responde como evento desconocido. */
+  @Nullable private final DailyChallengeService daily;
   private final WsSessions sessions;
   private final WsHandshake handshake;
   private final JsonMapper json;
   private final boolean roomsEnabled;
 
-  public RoomWebSocket(RoomCoordinator coordinator, RoomInvitations invitations, WsSessions sessions,
-      WsHandshake handshake, JsonMapper json, @Value("${pu.rooms.enabled:false}") boolean roomsEnabled) {
+  public RoomWebSocket(RoomCoordinator coordinator, RoomInvitations invitations,
+      @Nullable DailyChallengeService daily, WsSessions sessions, WsHandshake handshake, JsonMapper json,
+      @Value("${pu.rooms.enabled:false}") boolean roomsEnabled) {
     this.coordinator = coordinator;
     this.invitations = invitations;
+    this.daily = daily;
     this.sessions = sessions;
     this.handshake = handshake;
     this.json = json;
@@ -190,6 +195,12 @@ public class RoomWebSocket {
       }
       case "room:create" -> roomData(coordinator.create(identity, connectionId, field(payload, "maxPlayers")));
       case "room:join" -> roomData(coordinator.join(identity, connectionId, field(payload, "code")));
+      // Sin current(): aún no hay sala. El servicio lee y escribe la BD sin lock (ya estamos en el hilo virtual de la
+      // conexión, no en el event loop) y el coordinador toma el suyo solo al crear la sala.
+      case "daily:start" -> {
+        if (daily == null) throw new RoomException(UNKNOWN_EVENT);
+        yield roomData(daily.start(identity, connectionId));
+      }
       case "room:leave" -> current(connection, () -> coordinator.leave(playerId));
       case "room:select-game" -> current(connection, () -> coordinator.selectGame(playerId, text(payload, "gameId")));
       case "room:update-config" -> current(connection, () -> coordinator.updateConfig(playerId, field(payload, "config")));

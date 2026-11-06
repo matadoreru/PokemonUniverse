@@ -38,5 +38,8 @@ export type ProfileSettingsResponse = JsonBody<'/api/auth/profile', 'patch', 200
 export type FriendsResponse = JsonBody<'/api/friends', 'get', 200>;
 export type FriendRequestResponse = JsonBody<'/api/friends/requests', 'post', 201>['request'];
 export type FriendResponse = JsonBody<'/api/friends/requests/{id}/accept', 'post', 200>['friend'];
+/** Reto diario de hoy (`gameId` y `status` llegan como `string`: se estrechan con `isDailyGameId` y `DailyStatus`). */
+export type DailyOverviewResponse = JsonBody<'/api/daily', 'get', 200>;
+export type DailyLeaderboardResponse = JsonBody<'/api/daily/leaderboard', 'get', 200>;
 export type GamesResponse = JsonBody<'/api/games', 'get', 200>;
 export type PokemonSelectorResponse = JsonBody<'/api/pokemon/selector', 'get', 200>;

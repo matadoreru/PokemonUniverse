@@ -1157,6 +1157,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ChangelogController.ChangelogResponse"
+  /api/daily:
+    get:
+      tags:
+      - daily
+      summary: El reto diario de hoy y el estado propio
+      operationId: overview
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyOverviewResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/daily/leaderboard:
+    get:
+      tags:
+      - daily
+      summary: Clasificación del reto diario de hoy
+      operationId: leaderboard
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyLeaderboardResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: "Sin intento de hoy: juega el reto primero"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/feedback:
     post:
       tags:
@@ -2517,6 +2561,161 @@ components:
           type: string
       description: Vista pública de una categoría (`CustomCategoryView` de `packages/shared`);
         fechas ISO con milisegundos.
+    DailyLeaderboardResponse:
+      required:
+      - date
+      - entries
+      - gameId
+      - me
+      - total
+      type: object
+      properties:
+        date:
+          type: string
+        gameId:
+          type: string
+        total:
+          type: integer
+          format: int64
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyLeaderboardResponse.Entry"
+        me:
+          $ref: "#/components/schemas/DailyLeaderboardResponse.Me"
+      description: "`GET /api/daily/leaderboard`: la clasificación de hoy (las primeras\
+        \ filas terminadas) y la fila propia (`me`), aunque no esté entre ellas. Sin\
+        \ contenido de la partida."
+    DailyLeaderboardResponse.Entry:
+      required:
+      - avatar
+      - correct
+      - finishedAt
+      - position
+      - score
+      - userId
+      - username
+      type: object
+      properties:
+        position:
+          type: integer
+          format: int32
+        userId:
+          type: string
+        username:
+          type: string
+        avatar:
+          $ref: "#/components/schemas/AvatarRef"
+        score:
+          type: integer
+          format: int32
+        correct:
+          type: integer
+          format: int32
+        finishedAt:
+          type: string
+      description: "Las puntuaciones iguales comparten `position` (1, 1, 3); `finishedAt`\
+        \ en ISO-8601."
+    DailyLeaderboardResponse.Me:
+      required:
+      - correct
+      - position
+      - rounds
+      - score
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        position:
+          type: integer
+          format: int32
+          nullable: true
+        score:
+          type: integer
+          format: int32
+          nullable: true
+        correct:
+          type: integer
+          format: int32
+          nullable: true
+        rounds:
+          type: array
+          nullable: true
+          items:
+            type: integer
+            format: int32
+      description: "La fila propia; `position`, `score`, `correct` y `rounds` son\
+        \ `null` salvo en `FINISHED`."
+    DailyOverviewResponse:
+      required:
+      - date
+      - gameId
+      - icon
+      - name
+      - players
+      - resetsAt
+      - result
+      - roundCount
+      - status
+      type: object
+      properties:
+        date:
+          type: string
+        resetsAt:
+          type: string
+        gameId:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        roundCount:
+          type: integer
+          format: int32
+        players:
+          type: integer
+          format: int64
+        status:
+          type: string
+        result:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/DailyOverviewResponse.Result"
+      description: "`GET /api/daily`: el reto de hoy (un solo juego), cuántas cuentas\
+        \ lo han terminado y el estado propio. Nunca lleva contenido de la partida;\
+        \ `result` viaja como `null` mientras no esté `FINISHED`."
+    DailyOverviewResponse.Result:
+      required:
+      - correct
+      - position
+      - roundCount
+      - rounds
+      - score
+      - total
+      type: object
+      properties:
+        score:
+          type: integer
+          format: int32
+        correct:
+          type: integer
+          format: int32
+        roundCount:
+          type: integer
+          format: int32
+        rounds:
+          type: array
+          items:
+            type: integer
+            format: int32
+        position:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int64
+      description: Resultado propio de hoy; `total` son las cuentas que lo han terminado.
     DataSyncSource:
       type: string
       description: "Enum nativo `\"DataSyncSource\"` de Postgres: origen externo de\
