@@ -5,7 +5,7 @@ import type { CSSProperties, ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
-import { impostorClueLine, impostorTallies, votesLabel } from './presentation';
+import { impostorClueGroupLabel, impostorClueLine, impostorTallies, votesLabel } from './presentation';
 import { impostorVoteHeadline, impostorVoteTargetLabel } from '../../room/pokemon-impostor-texts';
 import s from './PokemonImpostor.module.css';
 
@@ -32,11 +32,11 @@ function personRow(people: ImpostorPeople, id: string) {
 }
 
 /** Placa de la ronda (pantalla superior): ronda, vivos y desempate; el título de la fase y el tiempo a la derecha. */
-export function ImpostorHud({ round, alive, tiebreak, title, timer, strip }: { round: number; alive: number; tiebreak: boolean; title: string; timer: ReactNode; /** Rol compacto (solo en el móvil). */ strip?: ReactNode }) {
+export function ImpostorHud({ roundLabel, alive, tiebreak, title, timer, strip }: { roundLabel: string; alive: number; tiebreak: boolean; title: string; timer: ReactNode; /** Rol compacto (solo en el móvil). */ strip?: ReactNode }) {
   return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
     <div className={s.hudMain}>
       <div className={s.hudMeta}>
-        <Badge>Ronda {round}</Badge>
+        <Badge>{roundLabel}</Badge>
         <Chip tone="neutral" icon={<Icon icon={Users} size={18} />}>{alive} {alive === 1 ? 'vivo' : 'vivos'}</Chip>
         {tiebreak && <Chip tone="warn">Desempate</Chip>}
       </div>
@@ -124,7 +124,7 @@ export function ImpostorClueBoard({ game, people, orderedIds }: { game: PokemonI
         <Row {...row} {...(order >= 0 ? { rank: order + 1 } : {})}
           meta={<span className={s.clues}>{rounds.map((round) => {
             const line = impostorClueLine(game, id, round);
-            return <span key={round} className={cx(s.clue, line.tone === 'clue' ? s.sent : s[line.tone])}><span className={s.clueRound}>R{round}</span><span className={s.clueText} title={line.text}>{line.text}</span></span>;
+            return <span key={round} className={cx(s.clue, line.tone === 'clue' ? s.sent : s[line.tone])}><span className={s.clueRound}>{impostorClueGroupLabel(game.mode, round)}</span><span className={s.clueText} title={line.text}>{line.text}</span></span>;
           })}</span>}
           value={eliminated ? <Chip tone="bad" icon={<Icon icon={UserX} size={18} />}>Eliminado</Chip>
             : turn ? <Chip tone="warn">{row.self ? 'Tu turno' : 'Su turno'}</Chip> : null} />

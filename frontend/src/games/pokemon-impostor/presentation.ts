@@ -3,6 +3,25 @@ import { impostorCluePhaseTitle } from '../../room/pokemon-impostor-texts';
 
 type NameOf = (id: string) => string;
 
+type RoundLabelGame = Pick<PokemonImpostorPublicState, 'phase' | 'roundNumber'> & { mode?: PokemonImpostorPublicState['mode'] };
+
+/**
+ * Ronda para el jugador. En `ONE_WORD` cada vuelta de pistas es un `roundNumber` propio (las claves de `clues`), así que
+ * la ronda visible es ⌈n/2⌉ y la vuelta es 1 o 2. Aparece «· Vuelta k» solo mientras se dan pistas; en la votación
+ * (que cierra las dos vueltas) queda «Ronda c» a secas, porque no es una vuelta.
+ */
+export function impostorRoundLabel(game: RoundLabelGame): string {
+  const round = Math.max(1, game.roundNumber);
+  if (game.mode !== 'ONE_WORD') return `Ronda ${round}`;
+  const label = `Ronda ${Math.ceil(round / 2)}`;
+  return game.phase === 'CLUE_PHASE' || game.phase === 'ROLE_REVEAL' ? `${label} · Vuelta ${(round - 1) % 2 + 1}` : label;
+}
+
+/** Etiqueta corta de un grupo de pistas del tablero: «R2» en Clásico, «R1·V2» en `ONE_WORD`. */
+export function impostorClueGroupLabel(mode: PokemonImpostorPublicState['mode'] | undefined, round: number): string {
+  return mode === 'ONE_WORD' ? `R${Math.ceil(round / 2)}·V${(round - 1) % 2 + 1}` : `R${round}`;
+}
+
 /** Título de la fase (el `h1` de la placa de la ronda). */
 export function impostorPhaseTitle(game: Pick<PokemonImpostorPublicState, 'phase' | 'currentCluePlayerId' | 'votingRound'>, nameOf: NameOf): string {
   switch (game.phase) {

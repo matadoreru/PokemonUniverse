@@ -5,7 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { CUT_IN_DELAYED_LINE_MS, RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from '../games/pokemon-impostor/ImpostorParts';
-import { impostorAnnouncement, impostorFocusKey, impostorPhaseTitle, impostorTimerLabel } from '../games/pokemon-impostor/presentation';
+import { impostorAnnouncement, impostorFocusKey, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel } from '../games/pokemon-impostor/presentation';
 import { validateImpostorClue } from '../games/pokemon-impostor/validation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
@@ -103,7 +103,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
           : <ImpostorClueBoard game={game} people={people} orderedIds={orderedIds} />;
 
   const top = <div className={s.top}>
-    <ImpostorHud round={Math.max(1, game.roundNumber)} alive={game.aliveIds.length} tiebreak={game.phase === 'VOTING' && game.votingRound > 1} title={impostorPhaseTitle(game, people.nameOf)} timer={timer}
+    <ImpostorHud roundLabel={impostorRoundLabel(game)} alive={game.aliveIds.length} tiebreak={game.phase === 'VOTING' && game.votingRound > 1} title={impostorPhaseTitle(game, people.nameOf)} timer={timer}
       strip={game.phase !== 'ROLE_REVEAL' ? <ImpostorRoleStrip player={player} /> : null} />
     {scene}
   </div>;

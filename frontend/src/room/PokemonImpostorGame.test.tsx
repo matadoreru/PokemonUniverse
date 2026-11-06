@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { impostorAnnouncement, impostorClueLine, impostorFocusKey, impostorPhaseTitle, impostorTallies } from '../games/pokemon-impostor/presentation';
+import { impostorAnnouncement, impostorClueLine, impostorFocusKey, impostorPhaseTitle, impostorRoundLabel, impostorClueGroupLabel, impostorTallies } from '../games/pokemon-impostor/presentation';
 import { PokemonImpostorGame } from './PokemonImpostorGame';
 import { impostorResultLine, impostorTeam, PokemonImpostorResults } from './PokemonImpostorResults';
 
@@ -182,6 +182,21 @@ describe('Pokémon Impostor: pantalla', () => {
     expect(html).toContain('Enviar pista');
     expect(html).toContain('Tu turno');
     expect(html).not.toContain('Ronda 1</h');
+  });
+
+  it('Una palabra: la placa cuenta rondas y vueltas, no vueltas como rondas', () => {
+    const base = { mode: 'ONE_WORD' as const };
+    expect(impostorRoundLabel({ ...base, phase: 'CLUE_PHASE', roundNumber: 1 })).toBe('Ronda 1 · Vuelta 1');
+    expect(impostorRoundLabel({ ...base, phase: 'CLUE_PHASE', roundNumber: 2 })).toBe('Ronda 1 · Vuelta 2');
+    expect(impostorRoundLabel({ ...base, phase: 'VOTING', roundNumber: 2 })).toBe('Ronda 1');
+    expect(impostorRoundLabel({ ...base, phase: 'CLUE_PHASE', roundNumber: 3 })).toBe('Ronda 2 · Vuelta 1');
+    expect(impostorRoundLabel({ ...base, phase: 'VOTE_RESULTS', roundNumber: 4 })).toBe('Ronda 2');
+    expect(impostorRoundLabel({ mode: 'CLASSIC', phase: 'CLUE_PHASE', roundNumber: 3 })).toBe('Ronda 3');
+    expect(impostorClueGroupLabel('ONE_WORD', 3)).toBe('R2·V1');
+    expect(impostorClueGroupLabel('CLASSIC', 3)).toBe('R3');
+    const html = render(publicGame({ mode: 'ONE_WORD', clueLap: 2, roundNumber: 4, clues: { 3: {}, 4: {} } }), innocent({ canSubmitClue: true }));
+    expect(html).toContain('Ronda 2 · Vuelta 2');
+    expect(html).toContain('R2·V1');
   });
 
   it('Una palabra: indica «Una sola palabra» bajo el campo y Clásico no', () => {
