@@ -21,7 +21,7 @@ final class PokeddleEvolutions {
 
   private PokeddleEvolutions() {}
 
-  /** Una entrada por Pokémon del pool. Sin aristas en el catálogo se usa la etapa sembrada (o 1/1 si falta). */
+  /** Una entrada por Pokémon del pool. Sin aristas (en el catálogo o para ese Pokémon) se usa la etapa sembrada. */
   static Map<String, EvolutionValue> forPool(PokemonCatalog catalog, List<Pokemon> pool, List<Integer> generations) {
     var result = new LinkedHashMap<String, EvolutionValue>();
     if (!(catalog instanceof EvolutionPokemonCatalog links)) {
@@ -29,7 +29,13 @@ final class PokeddleEvolutions {
       return result;
     }
     var family = new Family(links, Set.copyOf(generations));
-    for (var pokemon : pool) result.put(pokemon.id(), family.value(pokemon.id()));
+    for (var pokemon : pool) {
+      // Sin aristas para un Pokémon que según el catálogo sí evoluciona (p. ej. la tabla de aristas vacía), se usa su
+      // etapa sembrada: mejor la familia completa que un 1/1 falso.
+      boolean unlinked = links.preEvolutionId(pokemon.id()).isEmpty() && links.evolutionIds(pokemon.id()).isEmpty();
+      result.put(pokemon.id(), unlinked && orOne(pokemon.evolutionStageCount()) > 1
+          ? stored(pokemon) : family.value(pokemon.id()));
+    }
     return result;
   }
 

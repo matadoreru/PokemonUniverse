@@ -141,6 +141,15 @@ class PokeddleRaceEngineTest {
   }
 
   @Test
+  void withoutLinksForAPokemonItKeepsItsStoredStage() {
+    // Si faltaran las aristas (tabla vacía), no se pinta 1/1 para todos: se usa la etapa sembrada.
+    var noLinks = new InMemoryPokemonCatalog(
+        List.of(pokemon("magmar", 126, 1, 2, 3), pokemon("magby", 240, 2, 1, 3), pokemon("magmortar", 467, 4, 3, 3)),
+        List.of(), List.of(), Map.of(), List.of(), List.of());
+    assertEquals(new EvolutionValue(2, 3), evolutions(List.of(1), noLinks).get("magmar"));
+  }
+
+  @Test
   void keepsTheCatalogStagesWhenTheWholeFamilyIsChosen() {
     var all = evolutions(List.of(1, 2, 4), magmarFamily());
     assertEquals(new EvolutionValue(1, 3), all.get("magby"));
