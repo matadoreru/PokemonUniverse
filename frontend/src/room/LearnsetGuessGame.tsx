@@ -1,7 +1,7 @@
 import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { useMemo, useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
-import { LearnsetAttempts, LearnsetClues, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
+import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
 import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetManualExhausted, learnsetPlateKind, learnsetPositions, learnsetVerdict } from '../games/learnset-guess/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
@@ -90,12 +90,13 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
 
   const top = <div className={s.top}>
     <LearnsetHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} referenceGeneration={game.referenceGeneration} referenceSource={game.referenceSource}
-      evolutionHint={active ? game.evolutionHint : null} heading={heading} timer={timer} />
+      heading={heading} timer={timer} />
     <LearnsetNotices lastWarning={lastWarning} lastWarningAnnouncement={lastWarningAnnouncement} solver={solver} announcement={announcement} />
     {lastRound
       ? <LearnsetRevealScene result={lastRound} />
       : <LearnsetClues groups={groups} latestStage={latestStage} stake={stake} nextClueIn={!manual && active && game.nextTransitionAt ? transitionRemaining : null} progress={progress}
         emptyText={manual && active && totalGroups === 0 ? <span><strong>Cada jugador ve solo sus pistas.</strong> Los movimientos que desbloquea cada uno se descubren en la revelación.</span> : null} />}
+    {!lastRound && <LearnsetHints evolutionHint={active ? game.evolutionHint : null} className={s.hints} />}
   </div>;
 
   const side = <div className={s.sideColumn}>

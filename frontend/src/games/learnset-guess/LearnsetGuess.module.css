@@ -31,14 +31,15 @@
   .top {
     height: 100%;
   }
-  /* Las pistas (o la revelación) llenan el alto que dejan la placa de la ronda y los avisos. */
-  .top > :last-child:not(:first-child) {
+  /* Las pistas (o la revelación) llenan el alto que dejan la placa de la ronda, los avisos y la pista evolutiva. */
+  .top > :last-child:not(:first-child):not(.hints),
+  .top > .cluesPanel:has(+ .hints) {
     flex: 1 1 auto;
     min-height: 0;
   }
 }
 
-/* Placa de la ronda: ronda, learnset y pista evolutiva arriba, el título debajo, el tiempo a la derecha. */
+/* Placa de la ronda: ronda y learnset arriba, el título debajo, el tiempo a la derecha. */
 .hud {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -62,14 +63,23 @@
 .hudMeta > * {
   max-width: 100%;
 }
-.evolution {
-  display: inline-flex;
-  max-width: 100%;
-}
 /* Los chips de la placa pueden partir su texto en dos líneas antes que salirse de su hueco. */
-.hudMeta > span,
-.evolution > span {
+.hudMeta > span {
   white-space: normal;
+}
+/* Pista evolutiva: la franja del kit (`GuessHints`) bajo las pistas reveladas, encima del buscador. */
+.hints {
+  min-width: 0;
+}
+@media (max-width: 1023px) {
+  /* Móvil y tableta: con la franja, las pistas reveladas tienen tope de alto (se desplazan por dentro) y la franja se ve. */
+  .top > .cluesPanel:has(+ .hints) {
+    max-height: 30svh;
+  }
+  /* Con un aviso visible (último aviso, quién acertó) las pistas reveladas ceden más alto. */
+  .top:has(> .notices:not(.noticesIdle)) > .cluesPanel:has(+ .hints) {
+    max-height: 20svh;
+  }
 }
 .heading {
   overflow: hidden;
@@ -579,8 +589,7 @@
     padding-inline: var(--sp-3);
     font-size: var(--fs-18);
   }
-  .hudMeta > span:not(.evolution),
-  .evolution > span {
+  .hudMeta > span {
     min-height: 30px;
     padding-inline: var(--sp-3);
     font-size: var(--fs-15);

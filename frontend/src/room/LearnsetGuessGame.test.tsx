@@ -69,6 +69,16 @@ describe('LearnsetGuessGame: pantalla', () => {
     expect(html.indexOf('>Nueva<')).toBeLessThan(html.indexOf('title="Cola Férrea"'));
     expect(html.match(/motion-enter-up/g)).toHaveLength(1);
   });
+  it('puts the evolution hint in the hints strip below the revealed clues (not in the round plate), and not in the reveal', () => {
+    const html = render(room('ROUND_ACTIVE', { evolutionHint: 'No evoluciona' }));
+    const strip = html.indexOf('aria-label="Pistas adicionales"');
+    expect(strip).toBeGreaterThan(html.indexOf('aria-label="Movimientos conocidos"'));
+    expect(html.indexOf('Pista evolutiva: No evoluciona')).toBeGreaterThan(strip);
+    expect(html.indexOf('Pista evolutiva')).toBeGreaterThan(html.indexOf('</h1>'));
+    const reveal = render(room('ROUND_RESULTS', { evolutionHint: 'No evoluciona', lastRound: answer, roundEndsAt: null, nextTransitionAt: 5_000 }));
+    expect(reveal).not.toContain('Pistas adicionales');
+    expect(reveal).not.toContain('Pista evolutiva');
+  });
   it('shows what a solve is worth, the next clue and the search with its usual label', () => {
     const html = render(room('ROUND_ACTIVE'));
     expect(html).toMatch(/data-testid="learnset-stake"[^]*Ahora vale 6 pts/);

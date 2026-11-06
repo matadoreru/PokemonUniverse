@@ -8,6 +8,7 @@ import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
 import { learnsetGroupProgress, learnsetRevealStatus } from '../../room/learnset-texts';
 import { revealedLearnsetFlags } from '../../room/learnset-reveal';
+import { GuessHints } from '../../room/guess-kit';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
 import { categoryLabel, learnsetClueOrder, learnsetStageText, moveText, ordinal, typeLabel, type LearnsetPlateKind } from './presentation';
 import s from './LearnsetGuess.module.css';
@@ -17,19 +18,27 @@ export const learnsetSprite = (sprite: string) => sprite.startsWith('/api/') ? a
 
 const categoryIcons: Record<MoveCategory, LucideIcon> = { physical: Swords, special: Sparkles, status: CircleDashed };
 
-/** Placa de la ronda (pantalla superior): ronda, learnset de referencia, pista evolutiva, el título y el plazo. */
-export function LearnsetHud({ roundNumber, totalRounds, referenceGeneration, referenceSource, evolutionHint, heading, timer }: { roundNumber: number; totalRounds: number; referenceGeneration: number; referenceSource: string; evolutionHint: string | null; heading: string; timer: ReactNode }) {
+/** Placa de la ronda (pantalla superior): ronda, learnset de referencia, el título y el plazo. */
+export function LearnsetHud({ roundNumber, totalRounds, referenceGeneration, referenceSource, heading, timer }: { roundNumber: number; totalRounds: number; referenceGeneration: number; referenceSource: string; heading: string; timer: ReactNode }) {
   return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
     <div className={s.hudMain}>
       <div className={s.hudMeta}>
         <Badge>Ronda {roundNumber} de {totalRounds}</Badge>
         <Chip tone="neutral" icon={<Icon icon={BookOpen} size={18} />}>Learnset de Gen {referenceGeneration}<span className={s.source}> · {referenceSource}</span></Chip>
-        {evolutionHint && <span className={s.evolution}><Chip tone="warn" icon={<Icon icon={Sparkles} size={18} />}>Pista evolutiva: {evolutionHint}</Chip></span>}
       </div>
       <h1 className={cx(s.heading, 'ol')} title={heading}>{heading}</h1>
     </div>
     <div className={s.hudTimer}>{timer}</div>
   </Panel>;
+}
+
+/**
+ * Pista evolutiva (si la ronda la da), en la franja del kit bajo las pistas reveladas: como en el resto de juegos, las
+ * pistas van debajo de la pista principal y encima del buscador. Sin pista, nada.
+ */
+export function LearnsetHints({ evolutionHint, className }: { evolutionHint: string | null; className?: string | undefined }) {
+  if (!evolutionHint) return null;
+  return <GuessHints className={className} hints={[{ key: 'evolution', label: `Pista evolutiva: ${evolutionHint}`, icon: <Icon icon={Sparkles} size={18} /> }]} />;
 }
 
 /**
