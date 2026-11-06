@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { DailyOverviewResponse } from '../lib/api-contract';
-import { countdownText, dailyChipText, dailyPlayersText, dailyRowAction } from './daily-state';
+import { countdownText, dailyChipText, dailyPlayersText, dailyRowAction, pollWhileSaving, resetReloadDelay } from './daily-state';
 
 const overviewFixture = (overrides: Partial<DailyOverviewResponse> = {}): DailyOverviewResponse => ({
   date: '2026-11-07', resetsAt: '2026-11-07T23:00:00Z', gameId: 'higher-lower', name: 'Higher or Lower', icon: 'trending-up',
@@ -73,5 +73,62 @@ describe('countdownText', () => {
     expect(countdownText('2026-10-25T23:00:00Z', at('2026-10-25T00:00:00+02:00'))).toBe('Nuevo reto en 25 h');
     // 29/03/2026: de las 00:00 (CET) a la medianoche siguiente (CEST) hay 23 h.
     expect(countdownText('2026-03-29T22:00:00Z', at('2026-03-29T00:00:00+01:00'))).toBe('Nuevo reto en 23 h');
+  });
+});
+
+describe('pollWhileSaving', () => {
+  afterEach(() => { vi.useRealTimers(); });
+
+  it('vuelve a mirar a los 2, 4 y 8 s y para en cuanto ya no está guardando', async () => {
+    vi.useFakeTimers();
+    let calls = 0;
+    const check = vi.fn(() => Promise.resolve(++calls < 3));
+    const giveUp = vi.fn();
+    pollWhileSaving(check, giveUp);
+    await vi.advanceTimersByTimeAsync(1_999);
+    expect(check).toHaveBeenCalledTimes(0);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(check).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(4_000);
+    expect(check).toHaveBeenCalledTimes(2);
+    await vi.advanceTimersByTimeAsync(8_000);
+    expect(check).toHaveBeenCalledTimes(3);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(check).toHaveBeenCalledTimes(3);
+    expect(giveUp).not.toHaveBeenCalled();
+  });
+
+  it('tras 5 intentos sin guardar, se rinde (un fallo de red cuenta como seguir guardando)', async () => {
+    vi.useFakeTimers();
+    const check = vi.fn(() => Promise.reject(new Error('red')));
+    const giveUp = vi.fn();
+    pollWhileSaving(check, giveUp);
+    await vi.advanceTimersByTimeAsync(2_000 + 4_000 + 8_000 + 8_000 + 8_000);
+    expect(check).toHaveBeenCalledTimes(5);
+    expect(giveUp).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(check).toHaveBeenCalledTimes(5);
+  });
+
+  it('cancelar deja de mirar', async () => {
+    vi.useFakeTimers();
+    const check = vi.fn(() => Promise.resolve(true));
+    const giveUp = vi.fn();
+    const cancel = pollWhileSaving(check, giveUp);
+    cancel();
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(check).not.toHaveBeenCalled();
+    expect(giveUp).not.toHaveBeenCalled();
+  });
+});
+
+describe('resetReloadDelay', () => {
+  const resetsAt = '2026-11-07T23:00:00Z';
+  it('hasta `resetsAt` y un segundo de margen', () => {
+    expect(resetReloadDelay(resetsAt, Date.parse('2026-11-07T22:00:00Z'))).toBe(3_601_000);
+  });
+  it('con `resetsAt` ya pasado (reloj adelantado, el servidor sigue en el día viejo), vuelve a mirar a los 30 s', () => {
+    expect(resetReloadDelay(resetsAt, Date.parse('2026-11-07T23:00:00Z'))).toBe(30_000);
+    expect(resetReloadDelay(resetsAt, Date.parse('2026-11-07T23:10:00Z'))).toBe(30_000);
   });
 });

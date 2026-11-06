@@ -37,7 +37,7 @@ export function DailyPage() {
     <Screen width="narrow">
       {failed
         ? <StateBox kind="error" title="No se pudo cargar el reto" text="Comprueba la conexión e inténtalo de nuevo." action={{ label: 'Reintentar', onClick: () => setAttempt((value) => value + 1) }} />
-        : <StateBox kind="loading" title="Cargando el reto de hoy" />}
+        : <StateBox kind="loading" title="Cargando el reto de hoy" live />}
     </Screen>
   );
 
@@ -50,8 +50,10 @@ export function DailyPage() {
           ? <DailyResultSummary gameId={overview.gameId} date={overview.date} roundCount={overview.roundCount} result={result} announcement={announcement} onShare={share}>{back}</DailyResultSummary>
           : <Panel variant="cream" title="Tu resultado" aria-label="Tu resultado">
             <div className="flex flex-col gap-3">
-              <StateBox kind="empty" title="Abandonaste el reto de hoy" text="Cuenta como jugado y no entra en la clasificación. Mañana hay otro." onCream />
+              <StateBox kind="empty" title="Abandonaste el reto de hoy" text="Cuenta como jugado y no entra en la clasificación. Mañana hay otro." onCream live={false} />
               {back}
+              {/* La región viva de la pantalla, siempre montada (aquí no hay nada que compartir). */}
+              <p role="status" className="sr-only">{announcement}</p>
             </div>
           </Panel>}
         <Panel variant="cream" title="Clasificación de hoy" aria-label="Clasificación de hoy" scroll scrollLabel="Clasificación de hoy" className="lg:max-h-96">

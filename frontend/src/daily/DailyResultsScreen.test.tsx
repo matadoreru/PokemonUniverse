@@ -87,6 +87,14 @@ describe('DailyLeaderboardView', () => {
     expect(text(markup)).toContain('(tú)');
   });
 
+  it('si el guardado no llega tras los reintentos, lo dice con calma y ofrece «Reintentar»', () => {
+    const markup = render(DailyLeaderboardView, { data: board({ status: 'IN_PROGRESS', position: null, score: null, correct: null, rounds: null }), error: null, self: { id: 'u1', name: 'ash' }, gaveUp: true, onRetry: () => undefined });
+    expect(text(markup)).not.toContain('Guardando tu resultado…');
+    expect(text(markup)).toContain('No se pudo guardar tu resultado');
+    expect(markup).toMatch(/<button[^>]*>.*Reintentar/);
+    expect(markup).not.toContain('role="alert"');
+  });
+
   it('la fila propia fuera de las primeras va al final', () => {
     const markup = render(DailyLeaderboardView, { data: board({ status: 'FINISHED', position: 77, score: 10, correct: 1, rounds: [] }), error: null, self: { id: 'u1', name: 'ash' } });
     expect(text(markup)).toMatch(/misty .* 77 .*ash/);

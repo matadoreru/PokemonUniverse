@@ -69,11 +69,21 @@ describe('DailyPanel', () => {
     expect(rows(markup)).toHaveLength(0);
   });
 
-  it('el error de «Jugar» sale traducido en el panel', () => {
+  it('el error de «Jugar» sale traducido en el panel, encima de la fila, que sigue con su botón', () => {
     const markup = render({ playError: new Error('Daily challenge already played') });
     expect(markup).toContain('role="alert"');
     expect(text(markup)).toContain('Ya has jugado el reto de hoy.');
     expect(markup).not.toContain('Daily challenge already played');
+    expect(rows(markup)).toHaveLength(1);
+    expect(markup.indexOf('role="alert"')).toBeLessThan(markup.indexOf('Hoy toca'));
+    expect(markup).toMatch(/<button[^>]*>.*Jugar<\/span><\/button>/);
+  });
+
+  it('«Ya has jugado el reto de hoy.» y, al recargar, el estado nuevo: sin el error y con «Ver resultado»', () => {
+    const markup = render({ playError: new Error('Daily challenge already played'), overview: overview({ status: 'FINISHED', result: { score: 612, correct: 7, roundCount: 10, rounds: [], position: 3, total: 40 } }) });
+    expect(markup).not.toContain('role="alert"');
+    expect(text(markup)).not.toContain('Ya has jugado el reto de hoy.');
+    expect(markup).toMatch(/<a[^>]*href="\/daily"[^>]*>.*Ver resultado/);
   });
 
   it('mientras carga, sin fila', () => {

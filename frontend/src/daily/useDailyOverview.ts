@@ -2,10 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import type { DailyOverviewResponse } from '../lib/api-contract';
 import { useRoom } from '../room/RoomContext';
 import { fetchDailyOverview } from './daily-api';
+import { resetReloadDelay } from './daily-state';
 
 const TICK_MS = 30_000;
-/** Margen tras `resetsAt` y mínimo del temporizador: un reloj adelantado no provoca un bucle de peticiones. */
-const RESET_SLACK_MS = 1_000;
 
 export interface DailyOverviewState {
   overview: DailyOverviewResponse | null;
@@ -43,13 +42,12 @@ export function useDailyOverview(enabled: boolean): DailyOverviewState {
     return () => window.clearInterval(timer);
   }, [enabled]);
 
-  const resetsAt = overview?.resetsAt;
+  // Depende de la respuesta entera, no solo de `resetsAt`: si una recarga trae el mismo día, se vuelve a programar.
   useEffect(() => {
-    if (!enabled || !resetsAt) return;
-    const delay = Math.max(RESET_SLACK_MS, Date.parse(resetsAt) - Date.now() + RESET_SLACK_MS);
-    const timer = window.setTimeout(reload, delay);
+    if (!enabled || !overview) return;
+    const timer = window.setTimeout(reload, resetReloadDelay(overview.resetsAt, Date.now()));
     return () => window.clearTimeout(timer);
-  }, [enabled, resetsAt, reload]);
+  }, [enabled, overview, reload]);
 
   useEffect(() => (enabled ? subscribe('daily:recorded', reload) : undefined), [enabled, subscribe, reload]);
 

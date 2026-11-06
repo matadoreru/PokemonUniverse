@@ -84,3 +84,38 @@ export async function shareDailyResult(text: string, nav: ShareNavigator = navig
     return 'No se pudo copiar el resultado';
   }
 }
+
+/** Esperas entre vistazos mientras la fila propia se guarda (`daily:recorded` es un aviso de mejor esfuerzo). */
+export const SAVING_POLL_DELAYS_MS: readonly number[] = [2_000, 4_000, 8_000, 8_000, 8_000];
+
+/**
+ * Vuelve a mirar mientras `check` diga que sigue guardando (un fallo cuenta como seguir guardando), con las esperas de
+ * `delays`; agotadas, llama a `onGiveUp`. Devuelve la función que lo cancela.
+ */
+export function pollWhileSaving(check: () => Promise<boolean>, onGiveUp: () => void, delays: readonly number[] = SAVING_POLL_DELAYS_MS): () => void {
+  let cancelled = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const step = (index: number) => {
+    if (index >= delays.length) { onGiveUp(); return; }
+    timer = setTimeout(() => {
+      void check().catch(() => true).then((saving) => {
+        if (!cancelled && saving) step(index + 1);
+      });
+    }, delays[index]);
+  };
+  step(0);
+  return () => { cancelled = true; clearTimeout(timer); };
+}
+
+const RESET_SLACK_MS = 1_000;
+const STALE_DAY_RETRY_MS = 30_000;
+
+/**
+ * Cuándo volver a pedir el reto: un segundo después de `resetsAt`. Si ya ha pasado (el reloj del navegador va adelantado
+ * y el servidor sigue en el día viejo), otra vez a los 30 s, hasta que llegue el día nuevo.
+ */
+export function resetReloadDelay(resetsAt: string, now: number): number {
+  const until = Date.parse(resetsAt) - now;
+  if (!(until > 0)) return STALE_DAY_RETRY_MS;
+  return until + RESET_SLACK_MS;
+}

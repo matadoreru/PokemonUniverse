@@ -41,8 +41,12 @@ export function PlayPage() {
   useEffect(() => {
     if (!finishedKey || closingRef.current === finishedKey) return;
     closingRef.current = finishedKey;
-    void leaveRoom({ reportError: false }).catch(() => undefined);
+    // Si falla (p. ej. sin conexión), se suelta la guarda: el efecto vuelve a intentarlo cuando cambie el contexto (al reconectar).
+    void leaveRoom({ reportError: false }).catch(() => { if (closingRef.current === finishedKey) closingRef.current = null; });
   }, [finishedKey, leaveRoom]);
+  // Si la recarga tras un fallo de «Jugar» trae otro estado (ya jugado, en curso), el error ya no viene a cuento.
+  const dailyStatus = daily.overview?.status;
+  useEffect(() => { if (dailyStatus && dailyStatus !== 'AVAILABLE') setDailyError(null); }, [dailyStatus]);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState<Busy>(null);
   const [createError, setCreateError] = useState('');

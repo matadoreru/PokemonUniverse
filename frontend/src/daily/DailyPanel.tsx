@@ -14,7 +14,10 @@ export interface DailyPanelProps {
   overview: DailyOverviewResponse | null;
   /** Fallo al cargar el reto (REST). */
   loadError: string | null;
-  /** Fallo de «Jugar» (`daily:start`), sin traducir: el panel es su único dueño. */
+  /**
+   * Fallo de «Jugar» (`daily:start`), sin traducir: el panel es su único dueño. Sale encima de la fila mientras se pueda
+   * jugar; si la recarga trae otro estado (p. ej. ya jugado en otra pestaña), manda el estado nuevo.
+   */
   playError: unknown;
   busy: boolean;
   disabled: boolean;
@@ -46,26 +49,26 @@ export function DailyPanel({ guest, overview, loadError, playError, busy, disabl
     </Panel>
   );
 
-  const status = playError != null
-    ? { kind: 'error' as const, title: 'No se pudo empezar el reto', text: roomErrorMessage(playError), action: { label: 'Reintentar', onClick: onPlay } }
-    : loadError
-      ? { kind: 'error' as const, title: 'No se pudo cargar el reto', text: 'Comprueba la conexión e inténtalo de nuevo.', action: { label: 'Reintentar', onClick: onReload } }
-      : !overview ? { kind: 'loading' as const, title: 'Cargando el reto de hoy', live: false } : null;
+  const status = loadError && !overview
+    ? { kind: 'error' as const, title: 'No se pudo cargar el reto', text: 'Comprueba la conexión e inténtalo de nuevo.', action: { label: 'Reintentar', onClick: onReload } }
+    : !overview ? { kind: 'loading' as const, title: 'Cargando el reto de hoy', live: false } : null;
 
   return (
     <Panel variant="cream" title={title} aria-label="Reto diario" bodyClassName="flex flex-col" status={status}>
-      {overview && <DailyRow overview={overview} busy={busy} disabled={disabled} onPlay={onPlay} />}
+      {overview && <DailyRow overview={overview} playError={playError} busy={busy} disabled={disabled} onPlay={onPlay} />}
     </Panel>
   );
 }
 
-function DailyRow({ overview, busy, disabled, onPlay }: { overview: DailyOverviewResponse; busy: boolean; disabled: boolean; onPlay(): void }) {
+function DailyRow({ overview, playError, busy, disabled, onPlay }: { overview: DailyOverviewResponse; playError: unknown; busy: boolean; disabled: boolean; onPlay(): void }) {
   const action = dailyRowAction(overview);
   const chip = dailyChipText(overview);
   const rule = isDailyGameId(overview.gameId) ? DAILY_RULE_TEXT[overview.gameId] : `${overview.roundCount} rondas`;
   const meta = action === 'play' ? <><span>{rule}</span><span>· {dailyPlayersText(overview.players)}</span></> : <span>{rule}</span>;
   return (
     <div className="flex flex-1 flex-col gap-3 px-1 pb-1 pt-2 2xl:gap-5 2xl:px-3 2xl:pb-3 2xl:pt-4">
+      {/* Sin acción propia: el botón de la fila es el que reintenta. */}
+      {playError != null && action === 'play' && <StateBox kind="error" title="No se pudo empezar el reto" text={roomErrorMessage(playError)} onCream />}
       <p className={cx('text-13 font-extrabold uppercase tracking-wide', tone.textBlueD)}>Hoy toca</p>
       <Row avatar={<GameArt gameId={overview.gameId} />} name={overview.name} meta={meta}
         value={chip ? <Chip tone={action === 'result' ? 'ok' : 'warn'}>{chip}</Chip> : null} />
