@@ -33,8 +33,8 @@ describe('FriendshipAction', () => {
   it('amigos, «Ya sois amigos»', () => {
     expect(render({ friendship: 'FRIENDS' })).toContain('Ya sois amigos');
   });
-  it('una sola región viva, siempre montada', () => {
-    expect(render({}).match(/role="(status|alert)"/g)).toHaveLength(1);
+  it('el éxito en status y el fallo en alert, siempre montados', () => {
+    expect(render({}).match(/role="(status|alert)"/g)).toEqual(['role="status"', 'role="alert"']);
   });
 });
 

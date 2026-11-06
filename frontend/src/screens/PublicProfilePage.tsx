@@ -25,19 +25,19 @@ export function privateText(profile: Pick<PublicProfileResponse, 'visibility'>):
 
 /**
  * Botón de amistad del perfil según la relación que manda el servidor. Tras cada acción se vuelve a pedir el perfil
- * (`onChanged`): hacerse amigos puede abrir un perfil «Solo amigos». Su línea de resultado es la única región viva de
- * la pantalla.
+ * (`onChanged`): hacerse amigos puede abrir un perfil «Solo amigos». El resultado es lo único que se anuncia en la
+ * pantalla ya cargada.
  */
 export function FriendshipAction({ profile, onChanged }: { profile: PublicProfileResponse; onChanged(): void }) {
   const friends = useFriends();
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
   const name = profile.user.username;
   const run = (action: () => Promise<string>) => {
     setBusy(true);
-    setResult('');
-    void action().then((text) => { setResult(text); onChanged(); })
-      .catch((error: unknown) => setResult(friendErrorMessage(error))).finally(() => setBusy(false));
+    setResult(null);
+    void action().then((text) => { setResult({ ok: true, text }); onChanged(); })
+      .catch((error: unknown) => setResult({ ok: false, text: friendErrorMessage(error) })).finally(() => setBusy(false));
   };
   const requestId = profile.requestId;
   return (
@@ -48,7 +48,9 @@ export function FriendshipAction({ profile, onChanged }: { profile: PublicProfil
         {profile.friendship === 'PENDING_RECEIVED' && requestId && <Pill variant="yellow" icon={Check} loading={busy} onClick={() => run(async () => { await friends.accept(requestId); return `${name} y tú ya sois amigos.`; })}>Aceptar solicitud</Pill>}
         {profile.friendship === 'FRIENDS' && <Pill variant="cream" icon={UserCheck} disabled>Ya sois amigos</Pill>}
       </div>
-      <p className={cx('text-15 font-bold empty:hidden', tone.textSky2)} role="status">{result}</p>
+      {/* Como en «Gestionar a…» de la sala: el éxito en `status` y el fallo en `alert`, siempre montados (vacíos no ocupan). */}
+      <p className={cx('text-15 font-bold empty:hidden', tone.textSky2)} role="status">{result?.ok ? result.text : ''}</p>
+      <p className={cx('text-15 font-extrabold empty:hidden', tone.textYellow)} role="alert">{result && !result.ok ? result.text : ''}</p>
     </div>
   );
 }
@@ -118,7 +120,7 @@ export function PublicProfilePage() {
   if (profile.private || !profile.stats || !profile.achievements) {
     return (
       <ProfileLayout aside={plate}>
-        <Panel title="Perfil privado" className="lg:min-h-0" bodyClassName="flex flex-col items-center gap-4 px-5 py-8 text-center">
+        <Panel title="Estadísticas y logros" className="lg:min-h-0" bodyClassName="flex flex-col items-center gap-4 px-5 py-8 text-center lg:justify-center">
           <span className={cx('grid h-16 w-16 place-items-center rounded-full border-[2.5px]', tone.borderNavy, tone.bgCream2)} aria-hidden="true">
             <Icon icon={Lock} size={32} />
           </span>
