@@ -76,7 +76,8 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   };
   const session = (mode: SessionMode) => { if (canEditSession) void onSession(mode).catch(ignoreFailure); };
   const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(ignoreFailure); };
-  const allowedModes = onAllowedModes && canEditGame ? (gameId: string, modes: string[]) => { void onAllowedModes(gameId, modes).catch(ignoreFailure); } : undefined;
+  // Sin permiso, el panel enseña igual los modos marcados (sus píldoras quedan inertes): solo se bloquea la escritura.
+  const allowedModes = onAllowedModes ? (gameId: string, modes: string[]) => { if (canEditGame) void onAllowedModes(gameId, modes).catch(ignoreFailure); } : undefined;
   // Al azar o por votación cada modo marcado es una opción más (en orden, el modo de la configuración).
   const pickedByChance = room.gameSelectionMode.type !== 'ORDER';
   // Las cartas eligen varios juegos: pulsar pone o quita uno (el último elegido va al final; la lista puede quedar vacía).

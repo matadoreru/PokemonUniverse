@@ -11,6 +11,7 @@ import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
 import { Avatar } from '../../components/Avatar';
 import { AvatarStack } from '../../components/AvatarStack';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { GameModeField, SessionModesProvider } from '../../room/GameModeField';
 import { ServerTimer } from '../../components/ServerTimer';
 import { AuctionLot, AuctionPrevious, BidControls, bidBlock, turnOrderEntries, type BidBlockInput } from '../../room/auction-kit';
 import { ConfigRange } from '../../room/ConfigRange';
@@ -1028,6 +1029,14 @@ function GenerationSelectorDemo() {
   return <GenerationSelector selected={generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={setGenerations} />;
 }
 
+/** «Modos que pueden salir» (sesión al azar o por votación) que cambia de verdad: el último marcado no se puede quitar. */
+function SessionModesDemo({ initial }: { initial: string[] }) {
+  const [allowed, setAllowed] = useState<string[]>(initial);
+  return <SessionModesProvider value={{ gameId: 'higher-lower', allowed, onChange: setAllowed }}>
+    <GameModeField gameId="higher-lower" value="CLASSIC" onChange={noop} disabled={false} />
+  </SessionModesProvider>;
+}
+
 const AUCTION_NAMES: Record<string, string> = { a: 'JejeGOz', b: 'Sitogc19', c: 'eru' };
 const auctionName = (id: string) => AUCTION_NAMES[id] ?? 'Entrenador';
 const AUCTION_WAIT: BidBlockInput = { participating: true, open: true, canRaise: false, canPass: false, leading: true, min: 4, max: 17, turnName: 'JejeGOz',
@@ -1066,6 +1075,12 @@ function GamePiecesSection() {
         <fieldset disabled>
           <GenerationSelector selected={[1, 9]} label="Generaciones del pool" onChange={noop} />
         </fieldset>
+      </Fig>
+      <Fig id="session-modes-both" caption="Modos que pueden salir · los dos marcados (sesión al azar o por votación)" wide cream>
+        <SessionModesDemo initial={['CLASSIC', 'ENDLESS']} />
+      </Fig>
+      <Fig id="session-modes-last" caption="Modos que pueden salir · el último marcado, deshabilitado (siempre queda uno)" wide cream>
+        <SessionModesDemo initial={['ENDLESS']} />
       </Fig>
       <Fig id="selector-prompt" caption="Buscador · sin búsqueda (panel)" wide>
         <PokemonSelector pokemon={SELECTOR_POKEMON} locked={new Set()} disabled={false} autoFocus={false} onSelect={asyncNoop} />

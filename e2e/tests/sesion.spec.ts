@@ -180,6 +180,13 @@ test('sesión: modos que pueden salir y votación entre los modos de un juego', 
     await expect(cartaHl(invitado.page).getByText('2 modos en juego', { exact: true })).toBeVisible();
     await capturarPantalla(host.page, 'sesion-modos-carta', cartaHl(host.page));
 
+    // El invitado (sin permiso) ve los mismos modos marcados, en solo lectura.
+    await invitado.page.getByRole('tab', { name: 'Configuración' }).click();
+    const modosInvitado = invitado.page.getByRole('group', { name: 'Modos que pueden salir' });
+    await expect(modosInvitado.getByRole('button', { pressed: true })).toHaveCount(2);
+    await expect(modosInvitado.getByRole('button', { name: 'Racha infinita', exact: true })).toBeDisabled();
+    await expect(invitado.page.getByRole('radiogroup', { name: 'Modo' })).toHaveCount(0);
+
     await iniciarPartida(host.page, [invitado.page]);
     await esperarPartida(pages);
     for (const page of pages) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
