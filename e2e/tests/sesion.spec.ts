@@ -201,8 +201,9 @@ test('sesión: modos que pueden salir y votación entre los modos de un juego', 
     for (const page of pages) await expect(page.getByText('La sala ha elegido Higher or Lower · Racha infinita')).toBeVisible({ timeout: 10_000 });
 
     // Arranca Higher or Lower en Racha infinita (la placa lo dice) sin tocar el modo de los ajustes del lobby.
-    await esperarPartida(pages);
-    await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible({ timeout: 15_000 });
+    await expect(host.page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByRole('heading', { name: 'Elige el siguiente minijuego' })).toHaveCount(0);
+    await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible();
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
