@@ -1,9 +1,10 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
-import { Check, Send, UserMinus, UserPlus, X } from 'lucide-react';
+import { Check, IdCard, Search, Send, UserMinus, UserPlus, X } from 'lucide-react';
 import { useId, useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
 import { useRoom } from '../room/RoomContext';
-import { Dialog, Drawer, Field, Pill, Row, TabPanel, Tabs, type TabItem } from '../ui';
+import { Dialog, Drawer, Field, Pill, PillLink, Row, TabPanel, Tabs, type TabItem } from '../ui';
 import { useFriends, type FriendsContextValue } from './FriendsContext';
 import { FRIEND_STATUS_LABEL, friendErrorMessage, sentText, type FriendEntry } from './friends-state';
 import s from './FriendsDrawer.module.css';
@@ -54,6 +55,39 @@ export function AddFriendDialog({ open, onClose, send }: { open: boolean; onClos
   );
 }
 
+/** Ruta del perfil de una cuenta por su nombre de usuario. */
+export function profilePath(username: string): string {
+  return `/u/${encodeURIComponent(username)}`;
+}
+
+/** Cuerpo de «Buscar jugador»: el nombre de usuario exacto (sin distinguir mayúsculas) lleva a su perfil. */
+function FindPlayerForm({ onFound }: { onFound(path: string): void }) {
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    const name = username.trim();
+    if (!name) { setError('Escribe un nombre de usuario.'); return; }
+    onFound(profilePath(name));
+  };
+  return (
+    <form className={s.form} onSubmit={submit} noValidate>
+      <Field label="Nombre de usuario" autoComplete="off" spellCheck={false} maxLength={24} value={username} error={error}
+        onChange={(event) => { setUsername(event.target.value); if (error) setError(null); }} />
+      <Pill type="submit" variant="yellow" icon={IdCard}>Ver perfil</Pill>
+    </form>
+  );
+}
+
+/** Diálogo «Buscar jugador»: abre el perfil y cierra el panel; si no existe, lo dice la página del perfil. */
+export function FindPlayerDialog({ open, onClose, onFound }: { open: boolean; onClose(): void; onFound(path: string): void }) {
+  return (
+    <Dialog open={open} title="Buscar jugador" onClose={onClose} width={420} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}>
+      {open && <FindPlayerForm onFound={onFound} />}
+    </Dialog>
+  );
+}
+
 type FriendsTab = 'friends' | 'incoming' | 'outgoing';
 
 /**
@@ -67,6 +101,10 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
   const idBase = useId();
   const [tab, setTab] = useState<FriendsTab>('friends');
   const [adding, setAdding] = useState(false);
+  const [finding, setFinding] = useState(false);
+  const navigate = useNavigate();
+  // El panel vive por encima de las rutas: al abrir un perfil se cierra, o seguiría tapándolo.
+  const openProfile = (path: string) => { setFinding(false); friends.closeDrawer(); navigate(path); };
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [removing, setRemoving] = useState<FriendEntry | null>(null);
@@ -100,7 +138,10 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
   ];
   return (
     <div className={s.stack}>
-      <Pill className={s.add ?? ''} variant="yellow" icon={UserPlus} aria-haspopup="dialog" onClick={() => setAdding(true)}>Añadir amigo</Pill>
+      <div className={s.top}>
+        <Pill variant="yellow" icon={UserPlus} aria-haspopup="dialog" onClick={() => setAdding(true)}>Añadir amigo</Pill>
+        <Pill variant="blue" icon={Search} aria-haspopup="dialog" onClick={() => setFinding(true)}>Buscar jugador</Pill>
+      </div>
       <p className={s.error} role="alert">{error ?? ''}</p>
       <div>
         <Tabs items={items} active={tab} onChange={setTab} label="Amigos y solicitudes" idBase={idBase} className={s.tabs ?? ''} />
@@ -119,6 +160,7 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
                             {done ? 'Invitado' : 'Invitar'}
                           </Pill>
                         )}
+                        <PillLink size="round" variant="ghost" icon={IdCard} to={profilePath(friend.username)} aria-label={`Ver perfil de ${friend.username}`} title="Ver perfil" onClick={() => friends.closeDrawer()} />
                         <Pill size="round" variant="ghost" icon={UserMinus} disabled={busy !== null} aria-label={`Quitar a ${friend.username}`} aria-haspopup="dialog" title="Quitar" onClick={() => setRemoving(friend)} />
                       </span>
                     </Row>
@@ -167,6 +209,7 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
         </TabPanel>
       </div>
       <AddFriendDialog open={adding} onClose={() => setAdding(false)} send={friends.send} />
+      <FindPlayerDialog open={finding} onClose={() => setFinding(false)} onFound={openProfile} />
       <Dialog open={removing !== null} title={removing ? `¿Quitar a ${removing.username}?` : 'Quitar amigo'} onClose={() => setRemoving(null)} width={420}
         actions={[
           { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
