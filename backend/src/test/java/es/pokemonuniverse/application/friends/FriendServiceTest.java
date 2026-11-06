@@ -308,14 +308,18 @@ class FriendServiceTest {
     for (int i = 0; i < 200; i++) row(full.id(), user().id(), true);
     var target = user();
     assertCannotSend(FriendRequestException.FRIEND_LIMIT, () -> service.sendRequest(full.id(), target.username()));
-    // Aceptar tampoco puede pasar de 200, ni del lado de quien acepta ni del de quien pidió.
+    // Aceptar tampoco puede pasar de 200, ni del lado de quien acepta ni del de quien pidió; si el lleno es el otro, el
+    // mensaje lo dice (solo entre dos que ya se pidieron la amistad: a un desconocido no le revela nada).
     var other = user();
     var toFull = requestId(service.sendRequest(other.id(), full.username()));
     assertCannotSend(FriendRequestException.FRIEND_LIMIT, () -> service.accept(full.id(), toFull));
+    // Cruzar la solicitud recibida es aceptarla: el lleno es quien la cruza.
+    assertCannotSend(FriendRequestException.FRIEND_LIMIT, () -> service.sendRequest(full.id(), other.username()));
     friendships.deleteById(toFull);
     var fromFull = UUID.randomUUID().toString();
     friendships.save(FriendshipEntity.create(fromFull, full.id(), other.id(), Instant.now()));
-    assertCannotSend(FriendRequestException.FRIEND_LIMIT, () -> service.accept(other.id(), fromFull));
+    assertCannotSend(FriendRequestException.OTHER_FRIEND_LIMIT, () -> service.accept(other.id(), fromFull));
+    assertCannotSend(FriendRequestException.OTHER_FRIEND_LIMIT, () -> service.sendRequest(other.id(), full.username()));
 
     var sender = user();
     for (int i = 0; i < 50; i++) row(sender.id(), user().id(), false);

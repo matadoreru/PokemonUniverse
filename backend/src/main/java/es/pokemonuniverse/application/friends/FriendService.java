@@ -161,7 +161,7 @@ public class FriendService {
       var row = lockedRequest(requestId, userId);
       if (!row.getAddresseeId().equals(userId)) throw new FriendNotFoundException();
       var requester = entityManager.find(UserEntity.class, row.getRequesterId());
-      acceptRow(row, row.getRequesterId(), userId);
+      acceptRow(row, userId, row.getRequesterId());
       return friendView(requester);
     });
     events.changed(userId, result.id());
@@ -217,10 +217,16 @@ public class FriendService {
         .orElseThrow(FriendNotFoundException::new);
   }
 
-  /** Pasa a aceptada si ninguno de los dos llega ya a {@link #MAX_FRIENDS}. */
-  private void acceptRow(FriendshipEntity row, String a, String b) {
-    if (friendships.countAccepted(a) >= MAX_FRIENDS || friendships.countAccepted(b) >= MAX_FRIENDS) {
+  /**
+   * Pasa a aceptada si ninguno de los dos llega ya a {@link #MAX_FRIENDS}. {@code actor} es quien acepta (o cruza la
+   * solicitud); si el lleno es {@code other}, el mensaje lo dice: los dos ya se pidieron la amistad, no revela nada.
+   */
+  private void acceptRow(FriendshipEntity row, String actor, String other) {
+    if (friendships.countAccepted(actor) >= MAX_FRIENDS) {
       throw new FriendRequestException(FriendRequestException.FRIEND_LIMIT);
+    }
+    if (friendships.countAccepted(other) >= MAX_FRIENDS) {
+      throw new FriendRequestException(FriendRequestException.OTHER_FRIEND_LIMIT);
     }
     row.accept(now());
     friendships.update(row);

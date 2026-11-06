@@ -72,6 +72,7 @@ const GENERIC = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';
 export const FRIEND_ERROR_TRANSLATIONS: Record<string, string> = {
   'Cannot send a friend request to this user': 'No se puede enviar la solicitud a ese usuario.',
   'Friend limit reached': 'Has llegado al límite de 200 amigos.',
+  'That user has reached the friend limit': 'Ese usuario ha llegado al límite de amigos.',
   'Too many pending requests': 'Tienes demasiadas solicitudes pendientes.',
   'Friend request not found': 'Esa solicitud ya no existe.',
   'Too many requests': 'Demasiadas solicitudes seguidas. Espera unos minutos y vuelve a probar.',
