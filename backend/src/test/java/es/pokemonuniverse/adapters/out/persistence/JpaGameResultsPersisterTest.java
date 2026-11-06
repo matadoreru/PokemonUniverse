@@ -6,21 +6,29 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.application.achievements.AchievementEvents;
+import es.pokemonuniverse.application.achievements.AchievementsUnlocked;
+import es.pokemonuniverse.application.achievements.AchievementsUnlocked.AchievementUnlock;
 import es.pokemonuniverse.application.rooms.GameResultsPersister.ResultRoomSnapshot;
+import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.GameManifest.MetricDefinition;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import io.micronaut.json.JsonMapper;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 /** {@code persistGameResults} contra Postgres real (Test Resources). */
@@ -36,6 +44,9 @@ class JpaGameResultsPersisterTest {
   @Inject PlayerGameResultRepository playerResults;
   @Inject javax.sql.DataSource dataSource;
   @Inject io.micronaut.jdbc.DataSourceResolver dataSourceResolver;
+  @Inject GameRegistry registry;
+  @Inject JsonMapper json;
+  @Inject UserAchievementRepository userAchievements;
 
   private AuthUser registeredUser() {
     var tag = UUID.randomUUID().toString().substring(0, 8);
@@ -315,6 +326,140 @@ class JpaGameResultsPersisterTest {
     assertTrue(JpaGameResultsPersister.isRetryable(new RuntimeException(new SQLException("x", "23505"))));
     assertFalse(JpaGameResultsPersister.isRetryable(new RuntimeException(new SQLException("x", "23503"))));
     assertFalse(JpaGameResultsPersister.isRetryable(new IllegalStateException("x")));
+  }
+
+  /** Un {@link AchievementEvents} falso que anota cada aviso. */
+  private record Push(String userId, AchievementsUnlocked payload) {}
+
+  private static final class RecordingEvents implements AchievementEvents {
+    final List<Push> pushes = new ArrayList<>();
+
+    @Override
+    public void unlocked(String userId, AchievementsUnlocked payload) {
+      pushes.add(new Push(userId, payload));
+    }
+  }
+
+  /** Un {@link RoomHistoryWriter} que falla con {@code 40001} las {@code failures} primeras veces y luego delega. */
+  private RoomHistoryWriter failingWriter(int failures, AtomicInteger attempts) {
+    return new RoomHistoryWriter(null, null, null) {
+      @Override
+      public Map<String, AchievementsUnlocked> persistResults(String historyId, String roomCode, GameResults results,
+          List<StandingRow> standings, String resultId, Instant startedAt, String gameId, Map<String, Object> config,
+          List<MetricDefinition> metrics) {
+        if (attempts.incrementAndGet() <= failures) {
+          throw new RuntimeException(new SQLException("could not serialize access", "40001"));
+        }
+        return writer.persistResults(historyId, roomCode, results, standings, resultId, startedAt, gameId, config,
+            metrics);
+      }
+    };
+  }
+
+  private static Set<String> ids(Push push) {
+    return Set.copyOf(push.payload().achievements().stream().map(AchievementUnlock::id).toList());
+  }
+
+  private static GameResults firstGame(AuthUser winner, AuthUser... others) {
+    var standings = new ArrayList<GameStanding>();
+    standings.add(standing(winner.id(), 1, 5, Map.of()));
+    for (int index = 0; index < others.length; index++) {
+      standings.add(standing(others[index].id(), index + 2, 1, Map.of()));
+    }
+    return new GameResults(winner.id(), standings);
+  }
+
+  @Test
+  void sendsOnePushPerUserAfterCommit() {
+    var winner = registeredUser();
+    var loser = registeredUser();
+    var guest = guest();
+    var room = room(winner, loser, guest);
+    createRoomHistory(room);
+    var events = new RecordingEvents();
+    var local = new JpaGameResultsPersister(writer, registry, json, events);
+
+    local.persistNow(room, firstGame(winner, loser, guest), UUID.randomUUID().toString(), 1_000, "higher-lower",
+        CONFIG);
+
+    assertEquals(Set.of(winner.id(), loser.id()),
+        Set.copyOf(events.pushes.stream().map(Push::userId).toList()));
+    assertEquals(2, events.pushes.size());
+    var winnerPush = events.pushes.stream().filter(push -> push.userId().equals(winner.id())).findFirst().orElseThrow();
+    assertTrue(ids(winnerPush).contains("general.first-win"), () -> "desbloqueados: " + ids(winnerPush));
+    var loserPush = events.pushes.stream().filter(push -> push.userId().equals(loser.id())).findFirst().orElseThrow();
+    assertEquals(Set.of("general.first-game"), ids(loserPush));
+    // Lo avisado ya está confirmado en la base de datos.
+    assertEquals(ids(winnerPush).size(), userAchievements.findByUserId(winner.id()).size());
+  }
+
+  @Test
+  void replayingSameResultIdSendsNothing() {
+    var user = registeredUser();
+    var room = room(user);
+    createRoomHistory(room);
+    var resultId = UUID.randomUUID().toString();
+    var first = new RecordingEvents();
+    new JpaGameResultsPersister(writer, registry, json, first)
+        .persistNow(room, firstGame(user), resultId, 1_000, "higher-lower", CONFIG);
+    assertEquals(1, first.pushes.size());
+    int rows = userAchievements.findByUserId(user.id()).size();
+
+    var replay = new RecordingEvents();
+    new JpaGameResultsPersister(writer, registry, json, replay)
+        .persistNow(room, firstGame(user), resultId, 1_000, "higher-lower", CONFIG);
+
+    assertTrue(replay.pushes.isEmpty());
+    assertEquals(rows, userAchievements.findByUserId(user.id()).size());
+  }
+
+  @Test
+  void rolledBackAttemptSendsNothing() {
+    var user = registeredUser();
+    var room = room(user);
+    createRoomHistory(room);
+    var attempts = new AtomicInteger();
+    var events = new RecordingEvents();
+    new JpaGameResultsPersister(failingWriter(2, attempts), registry, json, events)
+        .persistNow(room, firstGame(user), UUID.randomUUID().toString(), 1_000, "higher-lower", CONFIG);
+    assertEquals(3, attempts.get());
+    assertEquals(1, events.pushes.size());
+    assertEquals(user.id(), events.pushes.getFirst().userId());
+    assertTrue(ids(events.pushes.getFirst()).contains("general.first-game"));
+
+    var other = registeredUser();
+    var otherRoom = room(other);
+    createRoomHistory(otherRoom);
+    var exhausted = new AtomicInteger();
+    var none = new RecordingEvents();
+    var persister = new JpaGameResultsPersister(failingWriter(3, exhausted), registry, json, none);
+    assertThrows(RuntimeException.class, () -> persister.persistNow(otherRoom, firstGame(other),
+        UUID.randomUUID().toString(), 1_000, "higher-lower", CONFIG));
+    assertEquals(JpaGameResultsPersister.MAX_TRANSACTION_ATTEMPTS, exhausted.get());
+    assertTrue(none.pushes.isEmpty());
+    assertTrue(userAchievements.findByUserId(other.id()).isEmpty());
+  }
+
+  @Test
+  void pushFailureDoesNotFailPersistence() {
+    var first = registeredUser();
+    var second = registeredUser();
+    var room = room(first, second);
+    createRoomHistory(room);
+    var resultId = UUID.randomUUID().toString();
+    var calls = new AtomicInteger();
+    AchievementEvents failing = (userId, payload) -> {
+      calls.incrementAndGet();
+      throw new IllegalStateException("socket closed");
+    };
+
+    new JpaGameResultsPersister(writer, registry, json, failing)
+        .persistNow(room, firstGame(first, second), resultId, 1_000, "higher-lower", CONFIG);
+
+    assertEquals(2, calls.get(), "un fallo con una cuenta no corta los avisos de las demás");
+    assertEquals(GameHistoryStatus.COMPLETED, games.findByResultId(resultId).orElseThrow().getStatus());
+    assertEquals(1, userStats.findById(first.id()).orElseThrow().getGamesPlayed());
+    assertFalse(userAchievements.findByUserId(first.id()).isEmpty());
   }
 
   private static Map<String, Integer> intValues(Map<String, Object> metrics) {
