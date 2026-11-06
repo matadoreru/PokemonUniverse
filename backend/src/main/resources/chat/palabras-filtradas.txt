@@ -1,0 +1,24 @@
+# Palabras que el chat del lobby tapa con ***.
+# Formato: una palabra por línea, en minúsculas y sin tildes (la ñ se conserva).
+# Se tapan también el plural con «s» o «es». Las líneas con # y las vacías se ignoran.
+cabron
+cabrona
+cabronazo
+capullo
+coño
+follar
+gilipollas
+hijoputa
+imbecil
+joder
+jodido
+jodida
+mamon
+maricon
+mierda
+pendejo
+polla
+puta
+puto
+subnormal
+zorra
