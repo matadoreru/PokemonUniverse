@@ -28,6 +28,14 @@ public class UserStatsEntity {
   @Column(name = "xp")
   private int xp;
 
+  /** Juego de la última partida terminada (V9); {@code null} si no hay ninguna desde la V9. */
+  @Column(name = "lastGameId")
+  private String lastGameId;
+
+  /** Partidas seguidas terminadas de {@code lastGameId}, esta incluida (V9; logro «Fiel»). */
+  @Column(name = "sameGameStreak")
+  private int sameGameStreak;
+
   protected UserStatsEntity() {}
 
   public UserStatsEntity(String userId) {
@@ -52,6 +60,23 @@ public class UserStatsEntity {
 
   public int getXp() {
     return xp;
+  }
+
+  public String getLastGameId() {
+    return lastGameId;
+  }
+
+  public int getSameGameStreak() {
+    return sameGameStreak;
+  }
+
+  /**
+   * Cuenta una partida terminada de {@code gameId}, clasificada o no: la racha sigue si es el mismo juego que la
+   * anterior y, si no, vuelve a 1.
+   */
+  public void recordGameOf(String gameId) {
+    sameGameStreak = gameId.equals(lastGameId) ? sameGameStreak + 1 : 1;
+    lastGameId = gameId;
   }
 
   /** Suma la experiencia de una partida terminada sin desbordar la columna. */

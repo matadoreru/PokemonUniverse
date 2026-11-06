@@ -20,7 +20,7 @@ class AchievementFactsTest {
 
   private static AchievementFacts facts(String gameId, String mode, int xp, GameResults results) {
     return AchievementFacts.of(gameId, mode, results.standings().getFirst(), results, true, 1, 1, xp, Map.of(),
-        List.of(), Instant.parse("2026-11-06T02:30:00Z"));
+        1, Instant.parse("2026-11-06T02:30:00Z"));
   }
 
   @Test
@@ -59,7 +59,7 @@ class AchievementFactsTest {
     assertTrue(facts.individualRanking());
 
     var last = AchievementFacts.of("pokemon-trivia", null, P2, new GameResults("p1", List.of(P1, P2)), false, 1, 0,
-        0, Map.of(), List.of(), Instant.EPOCH);
+        0, Map.of(), 1, Instant.EPOCH);
     assertTrue(last.lastPlace());
 
     var tied = new GameStanding("p2", 1, 10, null, Map.of());

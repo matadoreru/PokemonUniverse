@@ -44,6 +44,7 @@ class RoomHistoryWriterAchievementsTest {
   @Inject GameRegistry registry;
   @Inject UserRepository users;
   @Inject UserGameStatsRepository userGameStats;
+  @Inject UserStatsRepository userStats;
   @Inject MutableClock clock;
   @Inject DataSource dataSource;
   @Inject DataSourceResolver dataSourceResolver;
@@ -206,6 +207,67 @@ class RoomHistoryWriterAchievementsTest {
     var classic = soloHigherLower(user, "CLASSIC", 8);
     assertTrue(classic.get(user.id()) == null || classic.get(user.id()).records().isEmpty());
     assertEquals(5, endlessBestStreak(user));
+  }
+
+  @Test
+  void endlessRecordRisesTwice() {
+    var user = registeredUser();
+    soloHigherLower(user, "ENDLESS", 5);
+
+    var higher = soloHigherLower(user, "ENDLESS", 8);
+    assertEquals(List.of(new PersonalRecord("higher-lower", "endlessBestStreak", "Récord en Racha infinita", 8, 5)),
+        higher.get(user.id()).records());
+    assertEquals(8, endlessBestStreak(user));
+  }
+
+  private void soloTrivia(AuthUser user) {
+    play("pokemon-trivia", Map.of(), UUID.randomUUID().toString(), user.id(), List.of(user),
+        List.of(standing(user, 1, 1, Map.of())));
+  }
+
+  @Test
+  void sameGameStreakCountsConsecutiveGamesOfOneGame() {
+    var user = registeredUser();
+    soloHigherLower(user, "CLASSIC", 1);
+    var stats = userStats.findById(user.id()).orElseThrow();
+    assertEquals("higher-lower", stats.getLastGameId());
+    assertEquals(1, stats.getSameGameStreak());
+
+    soloHigherLower(user, "ENDLESS", 1);
+    assertEquals(2, userStats.findById(user.id()).orElseThrow().getSameGameStreak());
+
+    soloTrivia(user);
+    stats = userStats.findById(user.id()).orElseThrow();
+    assertEquals("pokemon-trivia", stats.getLastGameId());
+    assertEquals(1, stats.getSameGameStreak());
+  }
+
+  @Test
+  void sameGameStreakCountsUnrankedGamesAndSkipsGuests() {
+    var user = registeredUser();
+    var guest = guest();
+    for (int game = 0; game < 2; game += 1) {
+      clock.advance(Duration.ofMinutes(1));
+      var historyId = UUID.randomUUID().toString();
+      writer.roomCreated(historyId, "ABCDEF", null, "Host", 8, Instant.now());
+      var standings = List.of(standing(user, 1, 3, Map.of("groupTotal", 4)), standing(guest, 2, 1, Map.of()));
+      var rows = List.of(new RoomHistoryWriter.StandingRow(standings.get(0), user),
+          new RoomHistoryWriter.StandingRow(standings.get(1), guest));
+      writer.persistResults(historyId, "ABCDEF", GameResults.unranked(standings), rows, UUID.randomUUID().toString(),
+          Instant.now(), "type-duel", Map.of("mode", "COOP"),
+          registry.get("type-duel").orElseThrow().profileStats().metrics());
+    }
+
+    assertEquals(2, userStats.findById(user.id()).orElseThrow().getSameGameStreak());
+    assertTrue(userStats.findById(guest.id()).isEmpty());
+  }
+
+  @Test
+  void loyalBrokenByAnotherGame() {
+    var user = registeredUser();
+    for (int game = 1; game <= 9; game += 1) soloHigherLower(user, "CLASSIC", 1);
+    soloTrivia(user);
+    assertFalse(ids(soloHigherLower(user, "CLASSIC", 1), user).contains("secret.2"));
   }
 
   @Test

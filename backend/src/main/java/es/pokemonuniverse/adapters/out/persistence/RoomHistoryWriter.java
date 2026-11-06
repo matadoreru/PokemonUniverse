@@ -17,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +47,8 @@ public class RoomHistoryWriter {
   static final String RECORD_MODE = "ENDLESS";
   static final String RECORD_KEY = "endlessBestStreak";
   static final String RECORD_LABEL = "Récord en Racha infinita";
-  /** Partidas completadas que mira «Fiel». */
-  static final int RECENT_GAMES = 10;
-  /** Juegos de las últimas partidas completadas de la cuenta, la más reciente primero («Fiel» de la spec). */
-  static final String RECENT_GAME_IDS = "SELECT h.\"gameId\" FROM \"PlayerGameResult\" p "
-      + "JOIN \"GameHistory\" h ON h.id = p.\"historyId\" WHERE p.\"userId\" = ?1 AND h.status = 'COMPLETED' "
-      + "ORDER BY h.\"endedAt\" DESC LIMIT " + RECENT_GAMES;
+  /** Logros ya desbloqueados de la cuenta; usa la clave primaria ("userId", "achievementId"). */
+  static final String UNLOCKED_IDS = "SELECT \"achievementId\" FROM \"UserAchievement\" WHERE \"userId\" = ?1";
 
   private final EntityManager entityManager;
   private final AchievementCatalog catalog;
@@ -162,11 +159,13 @@ public class RoomHistoryWriter {
         if (ranked) userStats.addGame(won, standing.points());
         else userStats.addUnrankedGame(standing.points());
         userStats.addXp(xp);
+        userStats.recordGameOf(gameId);
         entityManager.persist(userStats);
       } else {
         if (ranked) userStats.addGame(won, standing.points());
         else userStats.addUnrankedGame(standing.points());
         userStats.addXp(xp);
+        userStats.recordGameOf(gameId);
       }
       var gameStats = entityManager.createQuery("select s from UserGameStatsEntity s where s.userId = :userId "
               + "and s.gameId = :gameId", UserGameStatsEntity.class)
@@ -202,12 +201,15 @@ public class RoomHistoryWriter {
             UserGameStatsEntity.class)
         .setParameter("userId", userId).getResultList()
         .forEach(stats -> winsByGame.put(stats.getGameId(), stats.getGamesWon()));
-    @SuppressWarnings("unchecked")
-    List<String> recentGameIds = entityManager.createNativeQuery(RECENT_GAME_IDS).setParameter(1, userId)
-        .getResultList();
     var facts = AchievementFacts.of(gameId, mode, standing, results, won, userStats.getGamesPlayed(),
-        userStats.getGamesWon(), userStats.getXp(), winsByGame, recentGameIds, now);
-    var inserted = UserAchievementInserts.insertMissing(entityManager, userId, catalog.met(facts), now);
+        userStats.getGamesWon(), userStats.getXp(), winsByGame, userStats.getSameGameStreak(), now);
+    // Solo los cumplidos que aún no tiene: una cuenta veterana no lanza una inserción vacía por cada logro.
+    @SuppressWarnings("unchecked")
+    var unlockedBefore = new HashSet<String>(entityManager.createNativeQuery(UNLOCKED_IDS).setParameter(1, userId)
+        .getResultList());
+    var missing = catalog.met(facts).stream().filter(id -> !unlockedBefore.contains(id)).toList();
+    var inserted = missing.isEmpty() ? List.<String>of()
+        : UserAchievementInserts.insertMissing(entityManager, userId, missing, now);
     var achievements = inserted.stream()
         .map(id -> AchievementUnlock.of(catalog.byId(id).orElseThrow())).toList();
     return new AchievementsUnlocked(achievements, personalRecords(gameId, mode, previousMetrics, mergedMetrics));

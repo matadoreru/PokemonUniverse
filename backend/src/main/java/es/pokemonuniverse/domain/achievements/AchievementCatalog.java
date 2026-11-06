@@ -64,8 +64,7 @@ public final class AchievementCatalog {
     list.add(secret("secret.1", "Foto finish", "Termina empatado en el primer puesto.",
         f -> f.individualRanking() && f.playerCount() >= 2 && f.sharedFirst()));
     list.add(secret("secret.2", "Fiel", "Juega 10 partidas seguidas del mismo minijuego.",
-        f -> f.recentGameIds().size() >= LOYAL_GAMES
-            && f.recentGameIds().stream().limit(LOYAL_GAMES).allMatch(f.gameId()::equals)));
+        f -> f.sameGameStreak() >= LOYAL_GAMES));
     list.add(secret("secret.3", "Búho nocturno", "Termina una partida entre las 3:00 y las 5:00.", f -> {
       var time = f.endedAt().toLocalTime();
       return !time.isBefore(NIGHT_START) && time.isBefore(NIGHT_END);

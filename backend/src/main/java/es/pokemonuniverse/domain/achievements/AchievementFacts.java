@@ -13,8 +13,8 @@ import java.util.Map;
 /**
  * Hechos de una partida terminada para un jugador registrado, sobre los que se evalúan las condiciones del catálogo.
  * {@code gamesPlayed}, {@code gamesWon} y {@code level} ya incluyen esta partida; {@code winsByGame} son las victorias
- * de la cuenta en cada juego y {@code recentGameIds} los juegos de sus últimas partidas completadas, la más reciente
- * primero y esta incluida. {@code endedAt} va en hora de Madrid.
+ * de la cuenta en cada juego y {@code sameGameStreak} las partidas seguidas que lleva de este juego, esta incluida.
+ * {@code endedAt} va en hora de Madrid.
  */
 public record AchievementFacts(
     String gameId,
@@ -26,7 +26,7 @@ public record AchievementFacts(
     int gamesWon,
     int level,
     Map<String, Integer> winsByGame,
-    List<String> recentGameIds,
+    int sameGameStreak,
     ZonedDateTime endedAt) {
 
   /** Zona en la que se mide la hora de fin («Búho nocturno»). */
@@ -35,7 +35,6 @@ public record AchievementFacts(
   public AchievementFacts {
     standings = List.copyOf(standings);
     winsByGame = Map.copyOf(winsByGame);
-    recentGameIds = List.copyOf(recentGameIds);
   }
 
   /**
@@ -43,10 +42,10 @@ public record AchievementFacts(
    * la hora de fin pasa a {@code Europe/Madrid}.
    */
   public static AchievementFacts of(String gameId, @Nullable String mode, GameStanding standing, GameResults results,
-      boolean won, int gamesPlayed, int gamesWon, int xp, Map<String, Integer> winsByGame, List<String> recentGameIds,
+      boolean won, int gamesPlayed, int gamesWon, int xp, Map<String, Integer> winsByGame, int sameGameStreak,
       Instant endedAt) {
     return new AchievementFacts(gameId, mode == null ? "CLASSIC" : mode, standing, results.standings(), won,
-        gamesPlayed, gamesWon, Experience.levelFor(xp), winsByGame, recentGameIds, endedAt.atZone(ZONE));
+        gamesPlayed, gamesWon, Experience.levelFor(xp), winsByGame, sameGameStreak, endedAt.atZone(ZONE));
   }
 
   /** Jugadores clasificados en la partida. */

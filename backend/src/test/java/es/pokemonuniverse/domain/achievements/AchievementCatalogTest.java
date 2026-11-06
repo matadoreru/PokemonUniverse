@@ -11,7 +11,6 @@ import es.pokemonuniverse.domain.game.engine.GameStanding;
 import io.micronaut.serde.ObjectMapper;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ class AchievementCatalogTest {
     int gamesWon = 0;
     int xp = 0;
     Map<String, Integer> winsByGame = Map.of();
-    List<String> recentGameIds = List.of();
+    int sameGameStreak = 1;
     Instant endedAt = NOON;
 
     Facts game(String id, String value) {
@@ -54,7 +53,7 @@ class AchievementCatalogTest {
     AchievementFacts build() {
       var results = ranked ? new GameResults(null, standings) : GameResults.unranked(standings);
       return AchievementFacts.of(gameId, mode, standings.getFirst(), results, won, gamesPlayed, gamesWon, xp,
-          winsByGame, recentGameIds, endedAt);
+          winsByGame, sameGameStreak, endedAt);
     }
 
     List<String> met() {
@@ -212,22 +211,16 @@ class AchievementCatalogTest {
   @Test
   void loyalNeedsTenSameGame() {
     var nine = new Facts();
-    nine.recentGameIds = Collections.nCopies(9, "pokemon-trivia");
+    nine.sameGameStreak = 9;
     assertFalse(nine.met().contains("secret.2"));
 
     var ten = new Facts();
-    ten.recentGameIds = Collections.nCopies(10, "pokemon-trivia");
+    ten.sameGameStreak = 10;
     assertTrue(ten.met().contains("secret.2"));
 
-    var mixed = new Facts();
-    var ids = new ArrayList<>(Collections.nCopies(10, "pokemon-trivia"));
-    ids.set(9, "pokemon-bingo");
-    mixed.recentGameIds = ids;
-    assertFalse(mixed.met().contains("secret.2"));
-
-    var otherGame = new Facts();
-    otherGame.recentGameIds = Collections.nCopies(10, "pokemon-bingo");
-    assertFalse(otherGame.met().contains("secret.2"));
+    var more = new Facts();
+    more.sameGameStreak = 25;
+    assertTrue(more.met().contains("secret.2"));
   }
 
   private static boolean nightOwlAt(String instant) {
