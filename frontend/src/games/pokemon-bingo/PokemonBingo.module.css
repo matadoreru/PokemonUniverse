@@ -121,10 +121,12 @@
 }
 .grid > [data-bingo-cell] > span[data-part='art'] > img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: var(--sp-1);
+  width: calc(100% - 2 * var(--sp-1));
+  height: calc(100% - 2 * var(--sp-1));
   object-fit: contain;
+  /* Sprites de 96 px ampliados: píxeles nítidos, como en el resto de juegos (`GameArt`). */
+  image-rendering: pixelated;
 }
 /* La condición es lo que se lee primero: arriba y en hasta tres líneas (con `title` si no cabe). */
 .grid > [data-bingo-cell] > span[data-part='name'] {
@@ -395,23 +397,34 @@
     gap: var(--sp-2);
     padding-bottom: 6px;
   }
-  .gridFill > [data-bingo-cell] {
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-    grid-template-areas: 'name name' 'art state';
-    justify-items: start;
+  .gridFill:not(.dense) > [data-bingo-cell] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 46%;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: 'name art' 'state art';
+    justify-items: center;
     align-items: center;
-    text-align: left;
+    text-align: center;
     column-gap: var(--sp-2);
+    row-gap: var(--sp-1);
   }
-  .gridFill > [data-bingo-cell] > span[data-part='art'] {
-    width: 2.5rem;
-    height: 2.5rem;
-    align-self: center;
+  .gridFill:not(.dense) > [data-bingo-cell] > span[data-part='art'] {
+    width: 100%;
+    height: 100%;
+    align-self: stretch;
   }
-  .gridFill .filled,
-  .gridFill .empty {
-    justify-content: flex-start;
+  .gridFill:not(.dense) > [data-bingo-cell] > span[data-part='name'] {
+    align-self: end;
+  }
+  .gridFill:not(.dense) > [data-bingo-cell] > .filled,
+  .gridFill:not(.dense) > [data-bingo-cell] > .empty {
+    align-self: start;
+    justify-content: center;
+  }
+  /* El tic pasa a la esquina del texto: a la derecha taparía al sprite. */
+  .gridFill:not(.dense) .done {
+    right: auto;
+    left: var(--sp-1);
   }
 }
 @media (min-width: 1024px) {
@@ -429,13 +442,53 @@
     column-gap: var(--sp-2);
   }
   .gridFill.dense > [data-bingo-cell] > span[data-part='art'] {
-    width: 2.75rem;
-    height: 2.75rem;
-    align-self: center;
+    /* El alto es el de la fila: el sprite recortado llena lo que queda bajo la condición. */
+    width: 3.75rem;
+    height: 100%;
+    align-self: stretch;
   }
   .gridFill.dense .filled,
   .gridFill.dense .empty {
     justify-content: flex-start;
+  }
+}
+
+/* Escritorio alto: las casillas densas tienen alto de sobra, el sprite se ensancha con ellas. */
+@media (min-width: 1024px) and (min-height: 801px) {
+  .gridFill.dense > [data-bingo-cell] > span[data-part='art'] {
+    width: 5.5rem;
+  }
+}
+
+/* Tablero de 3 filas en escritorio alto: casillas anchas y bajas, igual reparto (texto a la izquierda, sprite a la derecha). */
+@media (min-width: 1024px) and (min-height: 801px) {
+  .gridFill.rows3:not(.dense) > [data-bingo-cell] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 46%;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: 'name art' 'state art';
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    column-gap: var(--sp-2);
+    row-gap: var(--sp-1);
+  }
+  .gridFill.rows3:not(.dense) > [data-bingo-cell] > span[data-part='art'] {
+    width: 100%;
+    height: 100%;
+    align-self: stretch;
+  }
+  .gridFill.rows3:not(.dense) > [data-bingo-cell] > span[data-part='name'] {
+    align-self: end;
+  }
+  .gridFill.rows3:not(.dense) > [data-bingo-cell] > .filled,
+  .gridFill.rows3:not(.dense) > [data-bingo-cell] > .empty {
+    align-self: start;
+    justify-content: center;
+  }
+  .gridFill.rows3:not(.dense) .done {
+    right: auto;
+    left: var(--sp-1);
   }
 }
 
@@ -463,20 +516,11 @@
 }
 
 /*
- * Casilla con Pokémon: el sprite ocupa casi toda la casilla (detrás de la condición y del nombre, que llevan fondo crema
- * para leerse), a cualquier tamaño y también en las casillas compactas. Selector reforzado para ganar a las compactas.
+ * Casilla con Pokémon: el sprite va en su fila (entre la condición y el nombre), sin quedar detrás de ningún texto, y
+ * `trimSprite` recorta su margen transparente para que el Pokémon llene el hueco.
  */
-.grid.grid > [data-bingo-cell][data-filled='true'] > span[data-part='art'] {
-  /* Fuera de la rejilla: con su área («art») el bloque contenedor sería esa celda, y en las casillas compactas su
-     columna es `auto` y mide 0 si el sprite va absoluto. Sin área, se coloca sobre toda la casilla. */
-  grid-area: auto;
-  /* La compacta lo centra (`align-self: center`), y un absoluto centrado en una rejilla se encoge a su contenido. */
-  align-self: stretch;
-  justify-self: stretch;
-  position: absolute;
-  inset: var(--sp-1);
-  width: auto;
-  height: auto;
+.grid > [data-filled='true'] > span[data-part='art'] {
+  /* El hueco del sprite de `Card` es azul cielo: aquí el Pokémon va sobre la crema de la casilla. */
   background: transparent;
 }
 .grid > [data-filled='true'] > span[data-part='name'],

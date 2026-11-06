@@ -1,8 +1,9 @@
 import type { BingoPublicBoard, PokemonBingoPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Eye, Grid3x3, Plus, Trophy } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { guessSprite } from '../../room/guess-kit';
+import { trimSprite } from './sprite-trim';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../../ui';
 import { bingoCellLabel, bingoPlayerOrder, bingoProgressText } from './presentation';
@@ -27,7 +28,9 @@ export function BingoBoard({ board, width, height, selectedCellId = null, onSele
   fill?: boolean;
   label: string;
 }) {
-  return <div className={cx(s.grid, fill && s.gridFill, width >= 4 && s.many, height >= 4 && s.dense)} style={{ '--cols': width, '--rows': height } as CSSProperties} role="group" aria-label={label} data-testid="bingo-board">
+  const gridRef = useRef<HTMLDivElement>(null);
+  useTrimmedSprites(gridRef);
+  return <div className={cx(s.grid, fill && s.gridFill, width >= 4 && s.many, height >= 4 && s.dense, height === 3 && s.rows3)} ref={gridRef} style={{ '--cols': width, '--rows': height } as CSSProperties} role="group" aria-label={label} data-testid="bingo-board">
     {board.cells.map((cell, index) => {
       const condition = bingoCellLabel(cell);
       const assigned = cell.assignment;
@@ -61,6 +64,24 @@ export function BingoBoard({ board, width, height, selectedCellId = null, onSele
       </Card>;
     })}
   </div>;
+}
+
+/**
+ * Recorta el margen transparente de los sprites de las casillas, ya cargados o cuando carguen (la miniatura de
+ * «Podías usar» queda como está). `load` no sube por el árbol, así que se escucha en cada imagen.
+ */
+function useTrimmedSprites(grid: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const images = Array.from(grid.current?.querySelectorAll<HTMLImageElement>('[data-part="art"] img') ?? []);
+    const cleanups: Array<() => void> = [];
+    for (const img of images) {
+      if (img.complete && img.naturalWidth > 0) { trimSprite(img); continue; }
+      const onLoad = () => trimSprite(img);
+      img.addEventListener('load', onLoad, { once: true });
+      cleanups.push(() => img.removeEventListener('load', onLoad));
+    }
+    return () => { for (const cleanup of cleanups) cleanup(); };
+  });
 }
 
 /**
