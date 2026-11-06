@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
+import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.Repository;
@@ -30,4 +31,8 @@ public interface UserRepository extends CrudRepository<UserEntity, String> {
   @Query("UPDATE UserEntity u SET u.avatarType = :type, u.avatarValue = :value, u.avatarVersion = u.avatarVersion + 1,"
       + " u.updatedAt = :now WHERE u.id = :id")
   int updateAvatar(String id, String type, @Nullable String value, Instant now);
+
+  /** @return filas actualizadas (0 si el usuario ya no existe) */
+  @Query("UPDATE UserEntity u SET u.profileVisibility = :visibility, u.updatedAt = :now WHERE u.id = :id")
+  int updateProfileVisibility(String id, ProfileVisibility visibility, Instant now);
 }
