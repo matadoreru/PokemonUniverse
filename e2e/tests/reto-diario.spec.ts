@@ -6,7 +6,7 @@
  * partida normal. Cuentas nuevas por tamaño (un intento por cuenta y día), borradas al terminar cada prueba.
  */
 import { expect, test, type Browser, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, fijarJuegoDelDia, jugarHigherLowerHastaElFinal, loginAsGuest, nuevaCuenta, psql, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
+import { borrarCuentas, capture, checkLayout, collectErrors, comprobarBdE2E, createRoom, DESKTOP, fijarJuegoDelDia, jugarHigherLowerHastaElFinal, loginAsGuest, nuevaCuenta, psql, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
 
 const JUEGO = 'Higher or Lower';
 const cuentas: CuentaE2E[] = [];
@@ -167,3 +167,63 @@ for (const { w, h } of SIZES) {
     }
   });
 }
+
+for (const { w, h } of DESKTOP) {
+  test(`reto diario: la clasificación larga se desplaza dentro de su panel (${w}×${h})`, async ({ browser }) => {
+    const sesion = await abrir(browser, { width: w, height: h });
+    const propias = Array.from({ length: 15 }, (_, i) => nuevaCuenta(`retol${i}`));
+    cuentas.push(...propias);
+    try {
+      // Quince cuentas con su resultado de hoy ya guardado (la última queda con la sesión abierta).
+      for (const cuenta of propias) await registrarPorApi(sesion.page, cuenta);
+      psql(`
+        INSERT INTO "DailyResult" (id, "userId", "date", "gameId", status, score, correct, rounds, "startedAt", "finishedAt")
+        SELECT gen_random_uuid()::text, u.id, (now() AT TIME ZONE 'Europe/Madrid')::date, 'higher-lower', 'FINISHED', 1, 1,
+          '[1,0,0,0,0,0,0,0,0,0]'::jsonb, now(), now()
+        FROM "User" u WHERE u.email = ANY(string_to_array(:'emails', ','));`, { emails: propias.map((c) => c.email).join(',') });
+      await sesion.page.goto('/daily');
+      await expect(titulo(sesion.page)).toBeVisible();
+      await expect(filas(sesion.page)).toHaveCount(finishedHoy());
+      const desborda = await clasificacion(sesion.page).evaluate((el) => el.scrollHeight > el.clientHeight);
+      expect(desborda, 'la clasificación se desplaza dentro de su panel').toBe(true);
+      // Sin scroll de página ni del `main`: lo que no cabe se queda dentro del panel.
+      await checkLayout(sesion.page, 'reto-diario-clasificacion-larga');
+      expect(sesion.errors).toEqual([]);
+    } finally {
+      await sesion.cerrar();
+      borrarCuentas(propias.map((c) => c.email), () => undefined);
+      for (const cuenta of propias) cuentas.splice(cuentas.indexOf(cuenta), 1);
+    }
+  });
+}
+
+test('reto diario: el fallo de «Jugar» sale traducido en su panel', async ({ browser }) => {
+  const d = await conCuenta(browser, { width: 1280, height: 720 }, 'retod');
+  const otra = await abrir(browser, { width: 1280, height: 720 });
+  try {
+    await d.page.goto('/play');
+    const jugar = panel(d.page).getByRole('button', { name: 'Jugar', exact: true });
+    await expect(jugar).toBeEnabled();
+    // La misma cuenta crea una sala en otro contexto: «Jugar» se rechaza antes de escribir nada (sigue disponible).
+    const login = await otra.page.request.post('/api/auth/login', { data: { identifier: d.cuenta.email, password: d.cuenta.password } });
+    expect(login.status()).toBe(200);
+    await otra.page.goto('/play');
+    await createRoom(otra.page);
+    await jugar.click();
+    const error = panel(d.page).getByText('No se pudo empezar el reto');
+    await expect(error).toBeVisible();
+    await expect(panel(d.page).getByText(/Leave your current room first/)).toHaveCount(0);
+    await expect(d.page).toHaveURL(/\/play$/);
+    await expect(jugar).toBeVisible();
+    // Un solo dueño: la única alerta es la del panel (el aviso global de la sala no lo repite).
+    await expect(d.page.getByRole('alert')).toHaveCount(1);
+    await expect(panel(d.page).getByRole('alert')).toContainText('No se pudo empezar el reto');
+    await otra.page.getByRole('button', { name: 'Salir de la sala' }).first().click();
+    await expect(otra.page).toHaveURL(/\/play$/);
+    expect(d.errors).toEqual([]);
+  } finally {
+    await Promise.all([d.cerrar(), otra.cerrar()]);
+    borrarCuentas([d.cuenta.email], () => undefined);
+    cuentas.splice(cuentas.indexOf(d.cuenta), 1);
+  }
+});
