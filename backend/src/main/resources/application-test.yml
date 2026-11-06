@@ -19,3 +19,9 @@ pu:
   # Salas Java en /ws activas (en producción las enciende compose.yaml).
   rooms:
     enabled: true
+  # Sin precalentado de miniaturas (iría a raw.githubusercontent.com en cada contexto) ni copia en disco (una prueba
+  # serviría a otra el sprite de su origen falso).
+  sprites:
+    warmup:
+      enabled: false
+    cache-dir: ""

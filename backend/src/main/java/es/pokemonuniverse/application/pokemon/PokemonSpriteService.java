@@ -14,10 +14,13 @@ import es.pokemonuniverse.domain.pokemon.Pokemon;
  */
 public class PokemonSpriteService {
 
-  /** Unos 1 500 sprites de unos pocos KiB caben enteros; 40 miniaturas por búsqueda y varios jugadores a la vez. */
+  /**
+   * Unos 1 500 sprites de unos pocos KiB caben enteros (el catálogo tiene unos 1 100, de 0,5 a 3 KiB); 40 miniaturas
+   * por búsqueda y varios jugadores a la vez. El precalentado ocupa 4 de las 16 descargas simultáneas.
+   */
   public static final long SPRITE_CACHE_BYTES = 16L * 1024 * 1024;
   public static final int SPRITE_CACHE_ENTRIES = 4096;
-  public static final int SPRITE_CACHE_CONCURRENCY = 8;
+  public static final int SPRITE_CACHE_CONCURRENCY = 16;
   public static final int SPRITE_CACHE_PENDING = 512;
 
   private final GameAssetService assets;

@@ -47,6 +47,8 @@ services:
       WEB_ORIGIN: "${PU_PUBLIC_ORIGIN:?Define PU_PUBLIC_ORIGIN en .env}"
       COOKIE_SECURE: "${PU_SECURE_COOKIE:-true}"
       AVATAR_STORAGE_DIR: "/data/avatars"
+      # Copia en disco de las miniaturas del buscador: en el volumen de avatares para que un despliegue no la pierda.
+      SPRITE_CACHE_DIR: "/data/avatars/sprite-cache"
       ROOM_MAX_PLAYERS: "${PU_ROOM_MAX_PLAYERS:-8}"
       RECONNECT_GRACE_MS: "${PU_RECONNECT_GRACE_MS:-30000}"
       # PNG del modo Artwork (local-artwork:<id>), copiados en la imagen desde backend/assets/pokemon-artworks.

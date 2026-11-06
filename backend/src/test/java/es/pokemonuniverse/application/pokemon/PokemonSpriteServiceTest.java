@@ -86,11 +86,28 @@ class PokemonSpriteServiceTest {
     assertTrue(burst(service) > 0);
   }
 
+  /**
+   * El precalentado mete todo el catálogo: 1 025 especies y unas 60 formas, de 0,5 a 3 KiB cada miniatura (medido en
+   * PokéAPI). Con margen, 1 300 sprites de 8 KiB siguen cabiendo sin expulsar ninguno.
+   */
+  @Test
+  void theWholeCatalogFitsInTheCache() {
+    var calls = new AtomicInteger();
+    AssetSourceLoader loader = source -> {
+      calls.incrementAndGet();
+      return new LoadedAsset(new byte[8 * 1024], "image/png");
+    };
+    var service = new PokemonSpriteService(new GameAssetService(loader, PokemonSpriteService.cache()));
+    for (int i = 0; i < 1300; i++) service.sprite(pokemon("fit-" + i));
+    for (int i = 0; i < 1300; i++) service.sprite(pokemon("fit-" + i));
+    assertEquals(1300, calls.get());
+  }
+
   @Test
   void cacheBoundsMatchThePlan() {
     assertEquals(16L * 1024 * 1024, PokemonSpriteService.SPRITE_CACHE_BYTES);
     assertEquals(4096, PokemonSpriteService.SPRITE_CACHE_ENTRIES);
-    assertEquals(8, PokemonSpriteService.SPRITE_CACHE_CONCURRENCY);
+    assertEquals(16, PokemonSpriteService.SPRITE_CACHE_CONCURRENCY);
     assertEquals(512, PokemonSpriteService.SPRITE_CACHE_PENDING);
   }
 }

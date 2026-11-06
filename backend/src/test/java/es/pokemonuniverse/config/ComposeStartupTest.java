@@ -1,6 +1,7 @@
 package es.pokemonuniverse.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -79,6 +80,9 @@ class ComposeStartupTest {
     assertTrue(copy.find(), "El Dockerfile no copia assets/pokemon-artworks");
     assertEquals(copy.group(1).replaceAll("/$", ""), env.get("POKEMON_ARTWORK_DIR"));
     assertTrue(Files.isDirectory(Path.of("assets", "pokemon-artworks")));
+    // La copia de las miniaturas vive en el volumen de avatares: el resto del contenedor es de solo lectura o tmpfs.
+    var sprites = env.get("SPRITE_CACHE_DIR");
+    assertTrue(sprites.startsWith(env.get("AVATAR_STORAGE_DIR") + "/"), sprites);
   }
 
   /**
@@ -166,6 +170,9 @@ class ComposeStartupTest {
     env.put("DB_PASSWORD", POSTGRES.getPassword());
     env.put("POKEMON_ARTWORK_DIR", Path.of("assets", "pokemon-artworks").toString());
     env.put("AVATAR_STORAGE_DIR", Files.createTempDirectory("compose-avatars").toString());
+    env.put("SPRITE_CACHE_DIR", Files.createTempDirectory("compose-sprites").toString());
+    // Los sprites de la PokéAPI grabada apuntan a raw.githubusercontent.com: sin precalentado, la prueba no sale a la red.
+    env.put("SPRITE_WARMUP_ENABLED", "false");
     env.put("POKEAPI_BASE_URL", pokeapi.urls().base());
     env.put("POKEAPI_SPRITE_BASE_URL", pokeapi.spriteBase());
     env.put("TCGDEX_BASE_URL", tcgdex.urls().base());
@@ -184,6 +191,7 @@ class ComposeStartupTest {
       assertTrue(context.getProperty("pu.rooms.enabled", Boolean.class).orElse(false));
       assertTrue(context.getProperty("pu.interrupt-stale-rooms", Boolean.class).orElse(false));
       assertTrue(context.getProperty("pu.data-sync.enabled", Boolean.class).orElse(false));
+      assertFalse(context.getProperty("pu.sprites.warmup.enabled", Boolean.class).orElse(true));
       context.getBean(EmbeddedServer.class).start();
       return context;
     } catch (RuntimeException | Error e) {

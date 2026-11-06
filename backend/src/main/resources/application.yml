@@ -103,6 +103,14 @@ pu:
     sprite-base-url: ${POKEAPI_SPRITE_BASE_URL:`https://raw.githubusercontent.com`}
     # TCGdex (Node usa https://api.tcgdex.net/v2/en fijo); mismas reglas de origen.
     tcgdex-base-url: ${TCGDEX_BASE_URL:`https://api.tcgdex.net/v2/en`}
+  sprites:
+    # Miniaturas del buscador. Al arrancar se descargan en segundo plano las de todos los Pokémon por defecto (4 a la
+    # vez) para que la primera búsqueda no espere al origen; test lo apaga.
+    warmup:
+      enabled: ${SPRITE_WARMUP_ENABLED:true}
+    # Copia en disco para que un despliegue no las pierda; vacío la desactiva. compose.yaml la pone dentro del volumen
+    # de avatares (el único escribible y persistente del contenedor). Relativo a backend/ en dev:backend.
+    cache-dir: ${SPRITE_CACHE_DIR:.data/sprite-cache}
   ws:
     # Ping a cada sesión de /ws (pingInterval de Socket.IO); 0 lo desactiva. El proxy debe tolerar más que esto.
     heartbeat-seconds: ${WS_HEARTBEAT_SECONDS:25}

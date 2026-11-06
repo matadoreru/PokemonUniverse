@@ -1,9 +1,11 @@
 package es.pokemonuniverse.config;
 
 import es.pokemonuniverse.adapters.out.assets.TrustedAssetSourceLoader;
+import es.pokemonuniverse.adapters.out.storage.FilesystemSpriteStorage;
 import es.pokemonuniverse.application.assets.AssetSourceLoader;
 import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.pokemon.PokemonSpriteService;
+import es.pokemonuniverse.application.pokemon.StoredSpriteSourceLoader;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Property;
 import jakarta.inject.Singleton;
@@ -26,9 +28,16 @@ public class AssetBeans {
     return new GameAssetService(loader, GameAssetService.defaultCache());
   }
 
-  /** Su {@link GameAssetService} no es un bean: solo existe uno inyectable, el de las rondas. */
+  /**
+   * Su {@link GameAssetService} no es un bean: solo existe uno inyectable, el de las rondas. Con
+   * {@code pu.sprites.cache-dir} (en producción, una carpeta del volumen de avatares) las miniaturas se guardan también
+   * en disco y sobreviven a un despliegue; vacío (test) solo quedan en memoria.
+   */
   @Singleton
-  PokemonSpriteService pokemonSpriteService(AssetSourceLoader loader) {
-    return new PokemonSpriteService(new GameAssetService(loader, PokemonSpriteService.cache()));
+  PokemonSpriteService pokemonSpriteService(AssetSourceLoader loader,
+      @Property(name = "pu.sprites.cache-dir", defaultValue = "") String cacheDir) {
+    var source = cacheDir.isBlank() ? loader
+        : new StoredSpriteSourceLoader(loader, new FilesystemSpriteStorage(Path.of(cacheDir)));
+    return new PokemonSpriteService(new GameAssetService(source, PokemonSpriteService.cache()));
   }
 }

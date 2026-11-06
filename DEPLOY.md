@@ -30,7 +30,9 @@ La imagen web sale del `Dockerfile` raíz (contexto la raíz del repositorio, ú
 Desde el corte 2D, `compose.yaml` ya no tiene el servicio `server` (Node): el `backend` (Java, Micronaut) es el único
 servidor. Solo depende de `postgres`: Flyway crea el esquema en una BD vacía o reconoce el de Prisma (baseline 1). Usa
 el volumen de avatares (`pokemon_universe_avatar_data`, uid/gid 1000, el mismo que tenía Node) y el secreto
-`PU_JWT_SECRET`. Enciende en compose tres interruptores que en el código valen `false` (solo los apaga
+`PU_JWT_SECRET`. En ese volumen guarda también, en `sprite-cache/` (`SPRITE_CACHE_DIR`), la copia de las miniaturas del
+buscador (unos 2 MB; se puede borrar, se vuelve a descargar): tras arrancar las precarga en segundo plano, 4 a la vez.
+Enciende en compose tres interruptores que en el código valen `false` (solo los apaga
 `PU_CUTOVER_ROLLBACK_JAVA`, interna del rollback de `deploy.sh`, §5):
 `ROOMS_ENABLED=true` (salas en `/ws`), `INTERRUPT_STALE_ROOMS=true` (al arrancar marca `INTERRUPTED`/`SERVER_STOPPED`
 las salas `ACTIVE` y las partidas `IN_PROGRESS` que dejó el proceso anterior) y `BACKEND_DATA_SYNC_ENABLED=true`
