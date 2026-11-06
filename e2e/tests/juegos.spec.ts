@@ -4628,6 +4628,18 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
       await expect(page.getByTestId('bid-budget')).toContainText('2');
     }
     await capturarTamanos(p1, 'juego-pokemon-team-auction-lote', { sigue: placa(p1).filter({ hasText: 'Tu turno' }) });
+    // La regla de «Presupuestos y equipos» se lee entera en los tres tamaños (al pie del panel, fuera del desplazamiento).
+    const regla = p1.getByText(/^Quien pasa vuelve a participar/);
+    for (const { w, h } of SIZES) {
+      await p1.setViewportSize({ width: w, height: h });
+      await regla.scrollIntoViewIfNeeded();
+      expect(await regla.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        const panel = el.closest('section')!.getBoundingClientRect();
+        return r.height > 0 && r.top >= panel.top && r.bottom <= panel.bottom + 0.5 && el.scrollHeight <= el.clientHeight + 1;
+      }), `${w}x${h}: la regla del panel lateral sin recortar`).toBe(true);
+    }
+    await p1.setViewportSize({ width: 1280, height: 720 });
     // A 390×844 sin desplazar: el lote, la puja actual y los controles.
     await p1.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await p1.evaluate(() => window.scrollTo(0, 0));
@@ -4814,12 +4826,19 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
       await expect(page.getByTestId('bluff-condition')).toBeVisible();
     }
     const p1 = await activa(pujar);
-    await expect(titulo(p1)).toHaveText('Tu turno');
+    // El título es la condición; el turno va en el reloj, el orden de turno y la placa de abajo.
+    await expect(titulo(p1)).toHaveText((await p1.getByTestId('bluff-condition').locator('p').first().textContent())!);
+    await expect(p1.getByRole('timer')).toHaveAccessibleName(/^Tu turno: \d+ s$/);
+    await expect(p1.locator('[data-testid="turn-order-entry"][data-state="turn"]')).toContainText(`${nombreDe(p1)} (Tú)`);
     await expect(placa(p1)).toHaveText('Tu turno');
     await expect(p1.getByTestId('auction-current-bid')).toHaveText('Sin pujas');
     await expect(p1.getByTestId('bid-step')).toContainText(['Mínima: 1', '+2: 3', '+5: 6']);
     await expect(p1.getByTestId('bid-step')).toHaveCount(3);
-    for (const page of paginas.filter((page) => page !== p1)) await expect(titulo(page)).toHaveText(`Turno de ${nombreDe(p1)}`);
+    for (const page of paginas.filter((page) => page !== p1)) {
+      await expect(page.getByRole('timer')).toHaveAccessibleName(new RegExp(`^Turno de ${nombreDe(p1)}: \\d+ s$`));
+      await expect(placa(page)).toHaveText(`Le toca a ${nombreDe(p1)}`);
+      await expect(page.getByTestId('bid-submit')).toHaveCount(0);
+    }
     await capturarTamanos(p1, 'juego-pokemon-bluff-auction-subasta', { sigue: placa(p1).filter({ hasText: 'Tu turno' }) });
     // A 390×844 sin desplazar: la condición, la puja actual y los controles.
     await p1.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -4838,7 +4857,8 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await p1.keyboard.press('1');
     await expect(campo(p1)).toHaveValue('1');
     await pujar(p1).click();
-    await expect(placa(p1)).toHaveText('Ya vas ganando', { timeout: 5_000 });
+    await expect(placa(p1)).toHaveText(/^Le toca a /, { timeout: 5_000 });
+    await expect(p1.getByTestId('bid-controls')).toContainText('Tú vas ganando con 1 Pokémon.');
 
     // El segundo ve la puja y el historial, y puja 2.
     const p2 = await activa(pujar, paginas.filter((page) => page !== p1));
@@ -4847,7 +4867,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await expect(viva(p2)).toContainText(`${nombreDe(p1)} puja 1 Pokémon.`);
     await expect(pujar(p2)).toHaveText('Pujar 2');
     await pujar(p2).click();
-    await expect(placa(p2)).toHaveText('Ya vas ganando', { timeout: 5_000 });
+    await expect(placa(p2)).toHaveText(/^Le toca a /, { timeout: 5_000 });
 
     // El tercero pasa con el diálogo; con él abierto, los atajos no cambian el campo.
     const p3 = paginas.find((page) => page !== p1 && page !== p2)!;
@@ -4909,9 +4929,11 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     const maximo = await campo(q1).getAttribute('max');
     await campo(q1).fill(maximo!);
     await pujar(q1).click();
-    await expect(placa(q1)).toHaveText('Ya vas ganando', { timeout: 5_000 });
+    await expect(placa(q1)).toHaveText(/^Le toca a /, { timeout: 5_000 });
     const q2 = await activa(pasar, paginas.filter((page) => page !== q1));
     await expect(placa(q2)).toHaveText('Puja máxima');
+    await expect(q2.getByTestId('auction-status')).toContainText('Puja máxima alcanzada');
+    await expect(q2.getByTestId('auction-status')).not.toContainText('Mínimo para superarla');
     await expect(pujar(q2)).toBeDisabled();
     await expect(pujar(q2)).toHaveText('Puja máxima');
     await capturarTamanos(q2, 'juego-pokemon-bluff-auction-puja-maxima', { sigue: placa(q2).filter({ hasText: 'Puja máxima' }) });

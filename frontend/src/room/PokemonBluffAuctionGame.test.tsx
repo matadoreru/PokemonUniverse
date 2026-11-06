@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { PokemonBluffAuctionConfigPanel } from '../games/pokemon-bluff-auction/ConfigPanel';
-import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffRoundLines, bluffSelfVerdict, bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
+import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffRoundLines, bluffTimerLabel, bluffSelfVerdict, bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
 import { bidBlock } from './auction-kit';
 import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
@@ -69,13 +69,20 @@ describe('Pokémon Bluff Auction: subasta', () => {
     expect(html).toMatch(/data-testid="auction-current-bid"><span[^>]*><strong>5<\/strong> <small>Pokémon<\/small>/);
     expect(html).toMatch(/data-testid="auction-leader">.*Carlos/);
     expect(html).toMatch(/Mínimo para superarla.*<strong>6<\/strong>/);
-    expect(html).toContain('>Tu turno</h1>');
+    // El título es lo que se subasta (la condición); el turno, solo en el reloj, el orden de turno y la placa de abajo.
+    expect(html).toContain('>Tipo Agua + Velocidad &gt; 80</h1>');
+    expect(html).toContain('aria-label="Orden de turno"');
+    expect(html).toMatch(/data-state="passed"[^>]*>.*Pedro/);
+    expect(html).toMatch(/data-state="turn"[^>]*>.*Ana \(Tú\)/);
+    expect(html).toMatch(/data-state="leading"[^>]*>.*Carlos/);
+    expect(html).not.toContain('Está pujando');
+    // El líder lleva su avatar (decorativo) junto al nombre.
+    expect(html).toMatch(/data-testid="auction-leader">.*<span class="[^"]*avatar/i);
     expect(html).toContain('Bluff por voz externa');
     // La mesa: orden, estado en texto y la última puja o «Pasó».
     expect(html).toContain('Mesa de pujas');
     expect(html.match(/data-testid="budget-row"/g)).toHaveLength(3);
     expect(html).toContain('Orden 1 · 0 pts');
-    expect(html).toContain('Está pujando');
     expect(html).toContain('Fuera de la ronda');
     expect(html).toContain('Va ganando');
     expect(html).toContain('Pasó');
@@ -103,6 +110,9 @@ describe('Pokémon Bluff Auction: subasta', () => {
     expect(block).toMatchObject({ reason: 'noBudget', canRaise: false, canPass: true, title: 'Puja máxima' });
     const html = play(top, turn);
     expect(html).toContain('>Puja máxima</h2>');
+    // Con la puja en el máximo no hay «mínimo para superarla» imposible (1026 con un máximo de 1025).
+    expect(html).toContain('Puja máxima alcanzada');
+    expect(html).not.toContain('Mínimo para superarla');
     expect(html).toMatch(/<button[^>]*data-testid="bid-pass"[^>]*>/);
     expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-pass"|data-testid="bid-pass"[^>]*disabled=""/);
     expect(html).not.toContain('NaN');
@@ -111,7 +121,7 @@ describe('Pokémon Bluff Auction: subasta', () => {
   it('los textos del bloqueo hablan de rondas, no de lotes ni presupuestos', () => {
     for (const [publicGame, player, selfId, title] of [
       [game(), idle, 'p2', 'Has pasado'],
-      [game(), idle, 'p3', 'Ya vas ganando'],
+      [game(), idle, 'p3', 'Le toca a Ana'],
       [game(), spectator, 'x', 'Estás observando'],
     ] as const) {
       const block = bidBlock(bluffBlockInput(publicGame, player, selfId, nameOf));
@@ -120,10 +130,22 @@ describe('Pokémon Bluff Auction: subasta', () => {
     }
   });
 
+  it('sin tu turno, la placa dice a quién le toca y cómo va la puja, sin controles grises', () => {
+    expect(bidBlock(bluffBlockInput(game(), idle, 'p3', nameOf))).toMatchObject({ reason: 'leading', title: 'Le toca a Ana', text: 'Tú vas ganando con 5 Pokémon.' });
+    const waiting = { ...game(), passedPlayerIds: [] };
+    expect(bidBlock(bluffBlockInput(waiting, idle, 'p2', nameOf))).toMatchObject({ reason: 'waiting', title: 'Le toca a Ana', text: 'Puja actual: 5 de Carlos.' });
+    const html = play(game(), idle, 'p3');
+    expect(html).toContain('>Le toca a Ana</h2>');
+    expect(html).not.toContain('bid-submit');
+    expect(bluffTimerLabel(game(), 'p1', nameOf)).toBe('Tu turno');
+    expect(bluffTimerLabel(game(), 'p2', nameOf)).toBe('Turno de Ana');
+    expect(play({ ...game(), roundEndsAt: 21_000 }, idle, 'p3')).toContain('aria-label="Turno de Ana: ');
+  });
+
   it('la región viva dice la última puja y el turno', () => {
     expect(bluffAnnouncement(game(), 'p1', nameOf)).toBe('Carlos puja 5 Pokémon. Es tu turno.');
     expect(bluffAnnouncement({ ...game(), bidHistory: [] }, 'p2', nameOf)).toBe('Ronda 2 de 10: Tipo Agua + Velocidad > 80. Turno de Ana.');
-    expect(bluffHeading(game(), 'p2', nameOf)).toBe('Turno de Ana');
+    expect(bluffHeading(game(), 'p2', nameOf)).toBe('Tipo Agua + Velocidad > 80');
   });
 });
 

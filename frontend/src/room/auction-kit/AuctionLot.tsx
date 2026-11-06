@@ -10,6 +10,8 @@ const SEAT_ICON: Partial<Record<TurnOrderState, LucideIcon>> = { turn: Gavel, le
 /** Quien va ganando la puja actual (en texto: «va ganando Ana (Tú)»). */
 export interface AuctionLeader {
   name: string;
+  /** Avatar decorativo junto al nombre (el nombre ya va escrito); en el móvil no se pinta. */
+  avatar?: ReactNode;
   self?: boolean;
 }
 
@@ -23,6 +25,8 @@ export interface AuctionLotProps {
   currentBid: number | null;
   leader: AuctionLeader | null;
   minimumBid: number;
+  /** Tope de la puja (Bluff: el pool entero): con la mínima por encima, «Puja máxima alcanzada» en vez de la mínima. */
+  maximumBid?: number | undefined;
   /** Unidad de la puja («monedas» por defecto, «Pokémon» en Bluff). */
   unit?: string;
   /** Fila del orden de turno (`turnOrderEntries`) al pie de la tarjeta; sin ella no se pinta. */
@@ -44,9 +48,10 @@ export interface AuctionLotProps {
  * cifra rebota al cambiar (solo `transform`/`opacity`, quieta con la reducción de movimiento).
  * `data-testid`: `auction-lot`, `auction-status`, `auction-current-bid`, `auction-leader`, `turn-order-entry`.
  */
-export function AuctionLot({ kicker, item, facts, currentBid, leader, minimumBid, unit = 'monedas', order, turn, previous, emptyText = 'La subasta ha terminado.', className }: AuctionLotProps) {
+export function AuctionLot({ kicker, item, facts, currentBid, leader, minimumBid, maximumBid, unit = 'monedas', order, turn, previous, emptyText = 'La subasta ha terminado.', className }: AuctionLotProps) {
   const titleId = useId();
   const bid = currentBid === null ? null : safeAmount(currentBid);
+  const atMaximum = maximumBid !== undefined && safeAmount(minimumBid) > safeAmount(maximumBid);
   return <Panel variant="cream" as="section" aria-label={kicker} className={cx(s.panel, className)} bodyClassName={cx(s.body)}>
     <div className={s.lot} data-testid="auction-lot">
       {item != null ? <>
@@ -65,10 +70,12 @@ export function AuctionLot({ kicker, item, facts, currentBid, leader, minimumBid
                 : <span className={s.bid} data-testid="auction-current-bid"><span key={bid} className={s.amount}><strong>{bid}</strong> <small>{unit === 'monedas' && bid === 1 ? 'moneda' : unit}</small></span></span>}
               {bid !== null && leader && <span className={s.leader} data-testid="auction-leader">
                 <span className={s.leaderLabel}><span aria-hidden="true">· </span>va ganando</span>
-                <span className={s.leaderName}><span className={s.name} title={leader.name}>{leader.name}</span>{leader.self && <span className={s.self}>(Tú)</span>}</span>
+                <span className={s.leaderName}>{leader.avatar && <span className={s.avatar}>{leader.avatar}</span>}<span className={s.name} title={leader.name}>{leader.name}</span>{leader.self && <span className={s.self}>(Tú)</span>}</span>
               </span>}
             </p>
-            <p className={s.minimum}><Icon icon={Gavel} size={18} /><span>{bid === null ? 'Puja mínima' : 'Mínimo para superarla'}: <strong>{safeAmount(minimumBid)}</strong></span></p>
+            {atMaximum
+              ? <p className={s.minimum}><Icon icon={Gavel} size={18} /><strong>Puja máxima alcanzada</strong></p>
+              : <p className={s.minimum}><Icon icon={Gavel} size={18} /><span>{bid === null ? 'Puja mínima' : 'Mínimo para superarla'}: <strong>{safeAmount(minimumBid)}</strong></span></p>}
             {order && order.length > 0 && <ol className={s.order} aria-label="Orden de turno">{order.map((entry, index) => {
               const icon = SEAT_ICON[entry.state];
               return <li key={entry.id} className={cx(s.seat, s[`seat_${entry.state}`])} data-testid="turn-order-entry" data-state={entry.state} aria-current={entry.state === 'turn' ? 'true' : undefined}>

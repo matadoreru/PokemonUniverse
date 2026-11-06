@@ -44,17 +44,21 @@ export interface BudgetPlateProps {
  * conexión». Todo lo que pinta es público. `data-testid="budget-row"` con `data-player`.
  */
 export function BudgetPlate({ title = 'Presupuestos', entries, unit = 'monedas', badge, note, className }: BudgetPlateProps) {
-  return <Panel title={title} variant="dark" scroll scrollLabel={title} {...(className ? { className } : {})} {...(badge != null ? { right: <Badge tone="cream">{badge}</Badge> } : {})}>
-    <ol className={s.rows} aria-label={title}>{entries.map((entry) => <li key={entry.id} data-testid="budget-row" data-player={entry.id} aria-current={entry.self ? 'true' : undefined}>
-      <Row name={entry.name} self={Boolean(entry.self)} disconnected={Boolean(entry.disconnected)} {...(entry.color ? { color: entry.color } : {})} {...(entry.avatar ? { avatar: entry.avatar } : {})}
-        meta={(entry.status || entry.detail) ? <span className={s.rowMeta}>
-          {entry.status && <Chip tone={entry.status.tone} {...(entry.status.icon ? { icon: <Icon icon={entry.status.icon} size={18} /> } : {})}>{entry.status.text}</Chip>}
-          {entry.detail && <span className={s.detail}>{entry.detail}</span>}
-        </span> : undefined}
-        {...(entry.value != null ? { value: <span className={s.value}>{entry.value}</span> } : entry.budget !== null ? { value: <span className={s.value}><strong>{safeAmount(entry.budget)}</strong><small>{unit === 'monedas' && safeAmount(entry.budget) === 1 ? 'moneda' : unit}</small></span> } : {})}>
-        {entry.action && <span className={cx(s.action)}>{entry.action}</span>}
-      </Row>
-    </li>)}</ol>
-    {note && <p className={s.note}>{note}</p>}
+  const list = <ol className={s.rows} aria-label={title}>{entries.map((entry) => <li key={entry.id} data-testid="budget-row" data-player={entry.id} aria-current={entry.self ? 'true' : undefined}>
+    <Row name={entry.name} self={Boolean(entry.self)} disconnected={Boolean(entry.disconnected)} {...(entry.color ? { color: entry.color } : {})} {...(entry.avatar ? { avatar: entry.avatar } : {})}
+      meta={(entry.status || entry.detail) ? <span className={s.rowMeta}>
+        {entry.status && <Chip tone={entry.status.tone} {...(entry.status.icon ? { icon: <Icon icon={entry.status.icon} size={18} /> } : {})}>{entry.status.text}</Chip>}
+        {entry.detail && <span className={s.detail}>{entry.detail}</span>}
+      </span> : undefined}
+      {...(entry.value != null ? { value: <span className={s.value}>{entry.value}</span> } : entry.budget !== null ? { value: <span className={s.value}><strong>{safeAmount(entry.budget)}</strong><small>{unit === 'monedas' && safeAmount(entry.budget) === 1 ? 'moneda' : unit}</small></span> } : {})}>
+      {entry.action && <span className={cx(s.action)}>{entry.action}</span>}
+    </Row>
+  </li>)}</ol>;
+  const head = { title, ...(className ? { className } : {}), ...(badge != null ? { right: <Badge tone="cream">{badge}</Badge> } : {}) };
+  if (!note) return <Panel {...head} variant="dark" scroll scrollLabel={title}>{list}</Panel>;
+  // Con nota: solo la lista se desplaza; la nota queda fija al pie y siempre entera (nunca cortada por el borde del scroll).
+  return <Panel {...head} variant="dark" flush bodyClassName={cx(s.plateBody)}>
+    <div className={s.plateList} tabIndex={0} role="region" aria-label={title}>{list}</div>
+    <p className={s.note}>{note}</p>
   </Panel>;
 }

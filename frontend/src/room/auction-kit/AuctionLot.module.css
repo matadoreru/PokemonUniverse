@@ -138,8 +138,10 @@
   font: 800 var(--fs-22) / 1.15 var(--font-display);
   color: var(--ink);
 }
-.self {
+.self,
+.avatar {
   flex: none;
+  display: inline-flex;
 }
 .name {
   min-width: 0;
@@ -426,7 +428,8 @@
   .minimum {
     font-size: var(--fs-15);
   }
-  .minimum > :first-child {
+  .minimum > :first-child,
+  .avatar {
     display: none;
   }
   .order {

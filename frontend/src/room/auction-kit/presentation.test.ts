@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, parseBid, safeAmount, turnOrderEntries, type BidBlockInput } from './presentation';
+import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, parseBid, safeAmount, turnOrderEntries, waitTexts, type BidBlockInput } from './presentation';
 
 const base: BidBlockInput = { participating: true, open: true, canRaise: true, canPass: true, leading: false, passed: false, full: false, min: 5, max: 20, turnName: 'Ana' };
 
@@ -142,5 +142,17 @@ describe('orden de turno', () => {
   it('sin turno ni líder, todos esperan; quien pasó y es líder cuenta como líder', () => {
     expect(turnOrderEntries({ order: ['a', 'b'], turnId: null, passedIds: [], leaderId: null }, nameOf).map((entry) => entry.state)).toEqual(['waiting', 'waiting']);
     expect(turnOrderEntries({ order: ['a'], turnId: null, passedIds: ['a'], leaderId: 'a' }, nameOf)[0]?.state).toBe('leading');
+  });
+});
+
+describe('textos sin turno', () => {
+  it('a quién le toca y cómo va la puja; sin nadie con el turno, nada (los del kit)', () => {
+    expect(waitTexts({ turnName: 'Leo', currentBid: 3, leaderName: 'Ana', unit: 'monedas', passedText: 'Vuelves luego.' })).toEqual({
+      leading: { title: 'Le toca a Leo', text: 'Tú vas ganando con 3 monedas.' },
+      waiting: { title: 'Le toca a Leo', text: 'Puja actual: 3 de Ana.' },
+      passed: { title: 'Has pasado', text: 'Le toca a Leo. Vuelves luego.' },
+    });
+    expect(waitTexts({ turnName: 'Leo', currentBid: null, leaderName: null, unit: 'Pokémon', passedText: 'x' }).waiting?.text).toBe('Aún no hay pujas.');
+    expect(waitTexts({ turnName: null, currentBid: 3, leaderName: 'Ana', unit: 'monedas', passedText: 'x' })).toEqual({});
   });
 });

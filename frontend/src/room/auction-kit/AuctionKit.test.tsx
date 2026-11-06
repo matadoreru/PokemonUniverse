@@ -100,6 +100,17 @@ describe('auction-kit: lote y adjudicación', () => {
     expect(html).toMatch(/data-state="leading"[^>]*>.*eru.*\(Tú\)/);
   });
 
+  it('con la puja en el máximo: «Puja máxima alcanzada», nunca un mínimo imposible', () => {
+    const html = renderToStaticMarkup(<AuctionLot kicker="Ronda 2" item={<span>x</span>} currentBid={1025} leader={{ name: 'Ana' }} minimumBid={1026} maximumBid={1025} unit="Pokémon" />);
+    expect(html).toContain('Puja máxima alcanzada');
+    expect(html).not.toContain('Mínimo para superarla');
+    expect(renderToStaticMarkup(<AuctionLot kicker="Ronda 2" item={<span>x</span>} currentBid={5} leader={{ name: 'Ana' }} minimumBid={6} maximumBid={1025} />)).toContain('Mínimo para superarla');
+  });
+
+  it('el líder puede llevar su avatar decorativo junto al nombre', () => {
+    expect(renderToStaticMarkup(<AuctionLot kicker="L" item={<span>x</span>} currentBid={3} leader={{ name: 'Ana', avatar: <i data-avatar="ana" /> }} minimumBid={4} />)).toMatch(/data-testid="auction-leader">.*data-avatar="ana".*Ana/);
+  });
+
   it('sin pujas: «Sin pujas» y la mínima para abrir; sin lote, el texto de fin', () => {
     const html = renderToStaticMarkup(<AuctionLot kicker="Lote 1" item={<span>x</span>} currentBid={null} leader={null} minimumBid={1} />);
     expect(html).toMatch(/data-testid="auction-current-bid">Sin pujas</);

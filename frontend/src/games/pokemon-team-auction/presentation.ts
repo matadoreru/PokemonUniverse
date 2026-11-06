@@ -1,6 +1,6 @@
 import type { PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, TeamAuctionLotResult, TeamAuctionPokemon } from '@pokemon-universe/shared/public';
 import type { AuctionPreviousProps, BidBlockInput, BidEventLike, TurnOrderEntry } from '../../room/auction-kit';
-import { amountText, turnOrderEntries } from '../../room/auction-kit';
+import { amountText, turnOrderEntries, waitTexts } from '../../room/auction-kit';
 
 /**
  * Textos y cálculos de Pokémon Team Auction (puros, sin React). El motor no tiene fase de adjudicación: cierra el lote y
@@ -81,13 +81,7 @@ export function teamBlockInput(game: PokemonTeamAuctionPublicState, player: Poke
   const team = player?.team ?? game.participants[selfId]?.team ?? [];
   const turnName = game.currentTurnPlayerId && game.currentTurnPlayerId !== selfId ? nameOf(game.currentTurnPlayerId) : null;
   // Sin turno propio, a quién le toca y cómo va la puja (sin controles grises: `BidControls` solo pinta la placa).
-  const texts: NonNullable<BidBlockInput['texts']> = {};
-  if (turnName) {
-    const bid = game.currentBid;
-    texts.leading = { title: `Le toca a ${turnName}`, text: `Tú vas ganando con ${amountText(bid ?? 0)}.` };
-    texts.waiting = { title: `Le toca a ${turnName}`, text: bid !== null && game.currentBidderId ? `Puja actual: ${bid} de ${nameOf(game.currentBidderId)}.` : 'Aún no hay pujas en este lote.' };
-    texts.passed = { title: 'Has pasado', text: `Le toca a ${turnName}. Vuelves a pujar en el siguiente lote.` };
-  }
+  const texts = waitTexts({ turnName, currentBid: game.currentBid, leaderName: game.currentBidderId ? nameOf(game.currentBidderId) : null, passedText: 'Vuelves a pujar en el siguiente lote.', noBidsText: 'Aún no hay pujas en este lote.' });
   return {
     participating,
     open: game.phase === 'ROUND_ACTIVE' && game.currentPokemon !== null,

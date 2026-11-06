@@ -226,3 +226,17 @@ export function turnOrderEntries({ order, turnId, passedIds, leaderId }: { order
     return { id, name: nameOf(id), state, stateText: TURN_ORDER_TEXT[state], self: id === selfId };
   });
 }
+
+/**
+ * Textos de la placa sin turno propio (para `BidBlockInput.texts`): a quién le toca y cómo va la puja, en vez de
+ * controles grises. Sin nadie con el turno, vacío (quedan los del kit).
+ */
+export function waitTexts({ turnName, currentBid, leaderName, unit = 'monedas', passedText, noBidsText = 'Aún no hay pujas.' }: { turnName: string | null; currentBid: number | null; leaderName: string | null; unit?: string; passedText: string; noBidsText?: string }): NonNullable<BidBlockInput['texts']> {
+  if (!turnName) return {};
+  const title = `Le toca a ${turnName}`;
+  return {
+    leading: { title, text: `Tú vas ganando con ${amountText(currentBid ?? 0, unit)}.` },
+    waiting: { title, text: currentBid !== null && leaderName ? `Puja actual: ${safeAmount(currentBid)} de ${leaderName}.` : noBidsText },
+    passed: { title: 'Has pasado', text: `${title}. ${passedText}` },
+  };
+}

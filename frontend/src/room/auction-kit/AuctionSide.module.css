@@ -54,6 +54,26 @@
 .tabPanel {
   padding: var(--sp-2);
 }
+/* Presupuestos con nota: la lista se desplaza y la nota queda al pie, entera. */
+.plateBody {
+  display: flex;
+  flex-direction: column;
+}
+.plateList {
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: var(--sp-3) 14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--yellow) transparent;
+}
+.plateBody > .note {
+  flex: none;
+  margin: 0;
+  padding: var(--sp-2) 14px var(--sp-3);
+  border-top: 2px solid var(--navy-2);
+}
 .note {
   margin-top: var(--sp-3);
   font: 700 var(--fs-13) / 1.35 var(--font-text);
