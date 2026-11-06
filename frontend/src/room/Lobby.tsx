@@ -196,7 +196,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const side = (
     <div className={s.side}>
       <LobbyInviteButton room={room} />
-      <RoomPlayersPanel className={s.sidePanel ?? ''} bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} onSetChatMute={setChatMute} />
+      <RoomPlayersPanel className={s.playersPanel ?? ''} bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} onSetChatMute={setChatMute} />
       {wide && chatPanel}
     </div>
   );

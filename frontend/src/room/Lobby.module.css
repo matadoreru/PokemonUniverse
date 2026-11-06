@@ -357,9 +357,14 @@
   .side {
     flex: 1 1 auto;
   }
-  /* «Jugadores» y «Chat» se reparten a partes iguales el alto que deja «Invitar amigos». */
+  /* «Jugadores» mide lo que necesita (con su tope y su propio scroll) y «Chat» ocupa el resto. */
+  .playersPanel {
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 50%;
+  }
   .sidePanel {
     flex: 1 1 0;
-    min-height: 0;
+    min-height: 12rem;
   }
 }
