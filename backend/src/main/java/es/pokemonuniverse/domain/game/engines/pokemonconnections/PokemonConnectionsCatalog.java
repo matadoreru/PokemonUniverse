@@ -53,7 +53,7 @@ public final class PokemonConnectionsCatalog {
       "espesura", "Espesura", "mar-llamas", "Mar Llamas", "torrente", "Torrente", "enjambre", "Enjambre",
       "levitacion", "Levitación", "intimidacion", "Intimidación", "robustez", "Robustez", "sincronia", "Sincronía",
       "nado-rapido", "Nado Rápido", "clorofila", "Clorofila", "absorbe-agua", "Absorbe Agua",
-      "electricidad-estatica", "Electricidad Estática", "pararrayos", "Pararrayos", "presion", "Presión");
+      "electricidad-estatica", "Electricidad Estática");
 
   /** Iniciales del nombre mostrado con bastantes Pokémon en todas las generaciones. */
   private static final List<String> NAME_INITIALS = List.of("A", "B", "C", "D", "G", "M", "P", "T");

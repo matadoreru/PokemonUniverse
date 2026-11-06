@@ -129,7 +129,7 @@ class PokemonConnectionsCatalogTest {
       "dual-ground-rock", "dual-water-ground", "dual-water-ice",
       "ability-espesura", "ability-mar-llamas", "ability-torrente", "ability-enjambre", "ability-levitacion",
       "ability-intimidacion", "ability-robustez", "ability-sincronia", "ability-nado-rapido", "ability-clorofila",
-      "ability-absorbe-agua", "ability-electricidad-estatica", "ability-pararrayos", "ability-presion",
+      "ability-absorbe-agua", "ability-electricidad-estatica",
       "letter-a", "letter-b", "letter-c", "letter-d", "letter-g", "letter-m", "letter-p", "letter-t",
       "tiny");
 
