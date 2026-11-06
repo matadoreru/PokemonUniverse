@@ -2,12 +2,12 @@ import type { PokedexDistancePublicState } from '@pokemon-universe/shared/public
 import { describe, expect, it } from 'vitest';
 import {
   DISTANCE_HIDDEN_PICKED_LABEL, DISTANCE_SELECTION_VISIBILITY_LABEL, distanceMemberStatus, distanceSelectionVisibilityLabels,
-  DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint,
+  DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceScoreboard, distanceSpectatorHint,
 } from './pokedex-distance-selection';
 
 function game(overrides: Partial<PokedexDistancePublicState>): PokedexDistancePublicState {
   return {
-    gameId: 'pokedex-distance', phase: 'ROUND_ACTIVE', roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 25,
+    gameId: 'pokedex-distance', phase: 'ROUND_ACTIVE', mode: 'CLASSIC', roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 25,
     eligibleIds: ['p1', 'p2'], survivorIds: ['p1', 'p2'], spectatorIds: [], selections: {}, selectedIds: [],
     lockedPokemonIds: [], roundStartedAt: 0, roundEndsAt: 20_000, nextTransitionAt: null, lastRound: null, roundHistory: [], winnerId: null,
     results: null, ...overrides,
@@ -147,5 +147,30 @@ describe('distanceExactAtReveal', () => {
     expect(distanceExactAtReveal(game({ phase: 'ROUND_RESULTS', lastRound: round(0) }), 'p2')).toBe(false);
     expect(distanceExactAtReveal(game({ phase: 'ROUND_ACTIVE', lastRound: round(0) }), 'p1')).toBe(false);
     expect(distanceExactAtReveal(game({ phase: 'ROUND_RESULTS', lastRound: null }), 'p1')).toBe(false);
+  });
+});
+
+describe('modo Por puntos', () => {
+  const scored = { eligibleIds: ['p1', 'p2'], reason: 'SCORED' as const, eliminatedIds: [], tiedIds: [], points: { p1: 97, p2: 0 },
+    selections: { p1: { pokemonId: 'raichu', pokemonName: 'Raichu', sprite: '/26.png', dexNumber: 26, distance: 3, selectedAt: 1 } } };
+  it('la ronda puntuada no habla de caídas ni empates', () => {
+    const outcome = distanceRoundOutcome(scored);
+    expect(outcome.title).toBe('🎯 Puntos de la ronda');
+    expect(outcome.note).toContain('100 menos tu distancia');
+    expect(outcome.showTiedChip('p1')).toBe(false);
+  });
+  it('el aviso dice cuánto suma cada uno, también sin elección', () => {
+    const base = { phase: 'ROUND_RESULTS' as const, roundNumber: 2, target: '#025', eligible: true, hasSelection: true, exactHit: false, ownPickName: null, lastRound: scored };
+    expect(distanceAnnouncement({ ...base, selfId: 'p1' })).toBe('Ronda 2 revelada: nadie queda fuera, cada uno suma según su distancia. Te quedaste a 3: sumas 97.');
+    expect(distanceAnnouncement({ ...base, selfId: 'p2' })).toContain('No elegiste a tiempo: sumas 0.');
+    expect(distanceAnnouncement({ ...base, selfId: 'p2' })).not.toMatch(/fuera de la partida|Cae/);
+  });
+  it('el marcador ordena por puntos y los empatados comparten puesto', () => {
+    expect(distanceScoreboard({ p1: 150, p2: 169, p3: 150, p4: 0 })).toEqual([
+      { playerId: 'p2', score: 169, position: 1 },
+      { playerId: 'p1', score: 150, position: 2 },
+      { playerId: 'p3', score: 150, position: 2 },
+      { playerId: 'p4', score: 0, position: 4 },
+    ]);
   });
 });

@@ -27,8 +27,8 @@ public final class PokedexDistanceTypes {
   /** {@code EliminationRecord['reason']}. */
   public enum EliminationReason { FARTHEST, NO_RESPONSE }
 
-  /** {@code RoundResult['reason']}. */
-  public enum RoundReason { FARTHEST, NO_RESPONSE, TIE }
+  /** {@code RoundResult['reason']}; {@code SCORED} es la ronda de {@code POINTS}: puntúa y nadie cae. */
+  public enum RoundReason { FARTHEST, NO_RESPONSE, TIE, SCORED }
 
   /**
    * {@code PlayerRoundStats}. Cinco enteros contiguos: no se construye por posición fuera de este record, solo con
@@ -66,14 +66,21 @@ public final class PokedexDistanceTypes {
     }
   }
 
-  /** {@code RoundResult}. */
+  /** {@code RoundResult}; {@code points} (puntos de la ronda por elegible) solo en {@code POINTS}, nulo en Clásico. */
   public record RoundResult(int targetDexNumber, Map<String, RoundSelection> selections, List<String> eliminatedIds,
-      RoundReason reason, List<String> tiedIds) {
+      RoundReason reason, List<String> tiedIds, @Nullable Map<String, Integer> points) {
 
     public RoundResult {
       selections = frozenMap(selections);
       eliminatedIds = frozenList(eliminatedIds);
       tiedIds = frozenList(tiedIds);
+      points = points == null ? null : frozenMap(points);
+    }
+
+    /** Una ronda del Clásico, sin puntos. */
+    public RoundResult(int targetDexNumber, Map<String, RoundSelection> selections, List<String> eliminatedIds,
+        RoundReason reason, List<String> tiedIds) {
+      this(targetDexNumber, selections, eliminatedIds, reason, tiedIds, null);
     }
   }
 
@@ -118,6 +125,7 @@ public final class PokedexDistanceTypes {
       List<EliminationRecord> eliminations,
       List<DistanceRoundRecord> roundHistory,
       Map<String, PlayerRoundStats> playerStats,
+      Map<String, Integer> scores,
       @Nullable String winnerId) implements TimedGameState {
 
     public PokedexDistanceState {
@@ -131,6 +139,7 @@ public final class PokedexDistanceTypes {
       eliminations = frozenList(eliminations);
       roundHistory = frozenList(roundHistory);
       playerStats = frozenMap(playerStats);
+      scores = frozenMap(scores);
     }
 
     public static Builder builder() {
@@ -143,7 +152,7 @@ public final class PokedexDistanceTypes {
           .targetDexNumber(targetDexNumber).selections(selections).lockedPokemonIds(lockedPokemonIds)
           .roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt)
           .pendingEligibleIds(pendingEligibleIds).pendingTiebreakDepth(pendingTiebreakDepth).lastRound(lastRound)
-          .eliminations(eliminations).roundHistory(roundHistory).playerStats(playerStats).winnerId(winnerId);
+          .eliminations(eliminations).roundHistory(roundHistory).playerStats(playerStats).scores(scores).winnerId(winnerId);
     }
 
     /** Listas y mapas vacíos por defecto; {@code phase} y {@code config} los valida {@link #build()}. */
@@ -168,6 +177,7 @@ public final class PokedexDistanceTypes {
       private List<EliminationRecord> eliminations = List.of();
       private List<DistanceRoundRecord> roundHistory = List.of();
       private Map<String, PlayerRoundStats> playerStats = Map.of();
+      private Map<String, Integer> scores = Map.of();
       private String winnerId;
 
       private Builder() {}
@@ -212,13 +222,16 @@ public final class PokedexDistanceTypes {
 
       public Builder playerStats(Map<String, PlayerRoundStats> value) { playerStats = value; return this; }
 
+      /** Puntos acumulados en {@code POINTS}; solo cambian al resolver una ronda, nunca al elegir. */
+      public Builder scores(Map<String, Integer> value) { scores = value; return this; }
+
       public Builder winnerId(@Nullable String value) { winnerId = value; return this; }
 
       public PokedexDistanceState build() {
         return new PokedexDistanceState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             initialPlayerIds, survivorIds, spectatorIds, roundNumber, tiebreakDepth, eligibleIds, targetDexNumber,
             selections, lockedPokemonIds, roundStartedAt, roundEndsAt, nextTransitionAt, pendingEligibleIds,
-            pendingTiebreakDepth, lastRound, eliminations, roundHistory, playerStats, winnerId);
+            pendingTiebreakDepth, lastRound, eliminations, roundHistory, playerStats, scores, winnerId);
       }
     }
   }
@@ -264,24 +277,32 @@ public final class PokedexDistanceTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record TargetPokemon(String id, String name, int nationalDexNumber, String sprite) {}
 
-  /** {@code PublicRoundResult}: el {@code RoundResult} con {@code eligibleIds}, {@code targetPokemon} y selecciones ricas. */
+  /**
+   * {@code PublicRoundResult}: el {@code RoundResult} con {@code eligibleIds}, {@code targetPokemon} y selecciones ricas.
+   * {@code points} solo sale en {@code POINTS} (ausente en Clásico).
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PublicRoundResult(int targetDexNumber, Map<String, PublicSelection> selections,
       List<String> eliminatedIds, RoundReason reason, List<String> tiedIds, List<String> eligibleIds,
-      TargetPokemon targetPokemon) {
+      TargetPokemon targetPokemon, @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Map<String, Integer> points) {
 
     public PublicRoundResult {
       selections = frozenMap(selections);
+      points = points == null ? null : frozenMap(points);
     }
   }
 
-  /** {@code PokedexDistancePublicState}. Tres listas y dos instantes contiguos: se construye con {@link #builder()}. */
+  /**
+   * {@code PokedexDistancePublicState}. Tres listas y dos instantes contiguos: se construye con {@link #builder()}.
+   * {@code pointsRound}, {@code pointsRounds} y {@code scores} solo salen en {@code POINTS} (ausentes en Clásico).
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokedexDistancePublicState(
       String gameId,
       GamePhase phase,
+      PokedexDistanceMode mode,
       int roundNumber,
       int tiebreakDepth,
       @Nullable Integer targetDexNumber,
@@ -297,11 +318,15 @@ public final class PokedexDistanceTypes {
       List<DistanceRoundRecord> roundHistory,
       @Nullable String winnerId,
       @Nullable Long nextTransitionAt,
-      @Nullable GameResults results) {
+      @Nullable GameResults results,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer pointsRound,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer pointsRounds,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Map<String, Integer> scores) {
 
     public PokedexDistancePublicState {
       selections = frozenMap(selections);
       roundHistory = frozenList(roundHistory);
+      scores = scores == null ? null : frozenMap(scores);
     }
 
     static Builder builder() {
@@ -311,6 +336,7 @@ public final class PokedexDistanceTypes {
     static final class Builder {
       private String gameId;
       private GamePhase phase;
+      private PokedexDistanceMode mode;
       private int roundNumber;
       private int tiebreakDepth;
       private Integer targetDexNumber;
@@ -327,12 +353,17 @@ public final class PokedexDistanceTypes {
       private List<DistanceRoundRecord> roundHistory;
       private String winnerId;
       private GameResults results;
+      private Integer pointsRound;
+      private Integer pointsRounds;
+      private Map<String, Integer> scores;
 
       private Builder() {}
 
       Builder gameId(String value) { gameId = value; return this; }
 
       Builder phase(GamePhase value) { phase = value; return this; }
+
+      Builder mode(PokedexDistanceMode value) { mode = value; return this; }
 
       Builder roundNumber(int value) { roundNumber = value; return this; }
 
@@ -366,14 +397,22 @@ public final class PokedexDistanceTypes {
 
       Builder results(@Nullable GameResults value) { results = value; return this; }
 
+      Builder pointsRound(@Nullable Integer value) { pointsRound = value; return this; }
+
+      Builder pointsRounds(@Nullable Integer value) { pointsRounds = value; return this; }
+
+      Builder scores(@Nullable Map<String, Integer> value) { scores = value; return this; }
+
       PokedexDistancePublicState build() {
         return new PokedexDistancePublicState(Objects.requireNonNull(gameId, "gameId"),
-            Objects.requireNonNull(phase, "phase"), roundNumber, tiebreakDepth, targetDexNumber,
+            Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(mode, "mode"), roundNumber, tiebreakDepth,
+            targetDexNumber,
             Objects.requireNonNull(eligibleIds, "eligibleIds"), Objects.requireNonNull(survivorIds, "survivorIds"),
             Objects.requireNonNull(spectatorIds, "spectatorIds"), Objects.requireNonNull(selections, "selections"),
             Objects.requireNonNull(selectedIds, "selectedIds"),
             Objects.requireNonNull(lockedPokemonIds, "lockedPokemonIds"), roundStartedAt, roundEndsAt, lastRound,
-            Objects.requireNonNull(roundHistory, "roundHistory"), winnerId, nextTransitionAt, results);
+            Objects.requireNonNull(roundHistory, "roundHistory"), winnerId, nextTransitionAt, results, pointsRound,
+            pointsRounds, scores);
       }
     }
   }

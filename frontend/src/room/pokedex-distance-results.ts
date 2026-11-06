@@ -129,3 +129,20 @@ export function distanceStatsLine(stats: Readonly<Record<string, number | undefi
   if (tiebreaks > 0) parts.push(plural(tiebreaks, 'desempate superado', 'desempates superados'));
   return parts.join(' · ');
 }
+
+/**
+ * Título de la pantalla de resultados. En Clásico, sin ganador la partida queda desierta (cayeron todos a la vez). En
+ * `POINTS` sin líder único es un empate en cabeza, salvo que nadie sumara nada.
+ */
+export function distanceResultsTitle(pointsMode: boolean, winnerId: string | null, standings: readonly { points: number }[]): string {
+  if (winnerId) return 'Resultado de la partida';
+  if (!pointsMode || standings.every((standing) => standing.points === 0)) return 'Partida desierta';
+  return 'Empate en cabeza';
+}
+
+/** Leyenda de la tabla «Distancia por ronda»: en `POINTS` nadie cae ni hay desempates. */
+export function distanceTableFootnote(pointsMode: boolean): string {
+  return pointsMode
+    ? 'Distancia al número de Pokédex objetivo. ✓ acierto exacto · en azul, a 10 o menos · — sin respuesta.'
+    : 'Distancia al número de Pokédex objetivo. ✓ acierto exacto · en azul, a 10 o menos · ✗ ronda en la que cayó · — sin respuesta o no jugaba. D1, D2… son los desempates.';
+}

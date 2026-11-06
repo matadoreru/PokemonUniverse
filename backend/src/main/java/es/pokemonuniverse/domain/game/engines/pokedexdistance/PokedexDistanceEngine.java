@@ -151,7 +151,46 @@ public final class PokedexDistanceEngine implements
         .build();
   }
 
+  private static boolean pointsMode(PokedexDistanceState state) {
+    return state.config().mode() == PokedexDistanceMode.POINTS;
+  }
+
+  /**
+   * Ronda de {@code POINTS}: cada elegible suma sus puntos (0 sin elección) y nadie cae; sin desempates. Es el único
+   * sitio donde cambia {@code scores}: al elegir no se mueve, para no adelantar distancias ocultas.
+   */
+  private static PokedexDistanceState scoreRound(PokedexDistanceState state, GameContext context) {
+    int targetDexNumber = Objects.requireNonNull(state.targetDexNumber(), "targetDexNumber");
+    var points = PokedexDistanceRules.roundPoints(state);
+    var scores = new LinkedHashMap<>(state.scores());
+    points.forEach((id, value) -> scores.merge(id, value, Integer::sum));
+    var history = new ArrayList<DistanceRoundRecord>(state.roundHistory());
+    history.add(PokedexDistanceRules.roundRecord(state, List.of()));
+    return state.toBuilder()
+        .phase(GamePhase.ROUND_RESULTS)
+        .lastRound(new RoundResult(targetDexNumber, state.selections(), List.of(), RoundReason.SCORED, List.of(), points))
+        .roundHistory(history)
+        .scores(scores)
+        .roundEndsAt(null)
+        .nextTransitionAt(context.now() + RESULTS_DURATION_MS)
+        .pendingEligibleIds(state.initialPlayerIds())
+        .pendingTiebreakDepth(0)
+        .build();
+  }
+
+  /** Fin de {@code POINTS} tras {@code pointsRounds} rondas: gana el líder único por puntos, o nadie si empatan. */
+  private static PokedexDistanceState finishPoints(PokedexDistanceState state) {
+    return state.toBuilder()
+        .phase(GamePhase.GAME_RESULTS)
+        .winnerId(PokedexDistanceRules.pointsLeader(state.scores()))
+        .eligibleIds(List.of())
+        .roundEndsAt(null)
+        .nextTransitionAt(null)
+        .build();
+  }
+
   private static PokedexDistanceState resolveRound(PokedexDistanceState state, GameContext context) {
+    if (pointsMode(state)) return scoreRound(state, context);
     int targetDexNumber = Objects.requireNonNull(state.targetDexNumber(), "targetDexNumber");
     var missing = state.eligibleIds().stream().filter(id -> !state.selections().containsKey(id)).toList();
     if (!missing.isEmpty()) {
@@ -204,6 +243,8 @@ public final class PokedexDistanceEngine implements
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var playerStats = new LinkedHashMap<String, PlayerRoundStats>();
     for (var id : playerIds) playerStats.put(id, PokedexDistanceRules.emptyPlayerStats());
+    var scores = new LinkedHashMap<String, Integer>();
+    for (var id : playerIds) scores.put(id, 0);
     return PokedexDistanceState.builder()
         .phase(GamePhase.GAME_STARTING)
         .config(config)
@@ -213,6 +254,7 @@ public final class PokedexDistanceEngine implements
         .tiebreakDepth(0)
         .pendingTiebreakDepth(0)
         .playerStats(playerStats)
+        .scores(scores)
         .build();
   }
 
@@ -268,6 +310,10 @@ public final class PokedexDistanceEngine implements
   @Override
   public PokedexDistanceState handleTimeout(PokedexDistanceState state, GameContext context) {
     if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
+      if (pointsMode(state)) {
+        if (state.roundNumber() >= state.config().pointsRounds()) return finishPoints(state);
+        return beginRound(state, context, state.pendingEligibleIds(), 0);
+      }
       if (state.survivorIds().size() <= 1) return finishIfWinner(state);
       return beginRound(state, context, state.pendingEligibleIds(), state.pendingTiebreakDepth());
     }
@@ -307,11 +353,13 @@ public final class PokedexDistanceEngine implements
       });
       lastRound = new PublicRoundResult(round.targetDexNumber(), roundSelections, round.eliminatedIds(), round.reason(),
           round.tiedIds(), state.eligibleIds(),
-          new TargetPokemon(target.id(), target.name(), target.nationalDexNumber(), target.sprite()));
+          new TargetPokemon(target.id(), target.name(), target.nationalDexNumber(), target.sprite()), round.points());
     }
+    boolean points = pointsMode(state);
     return PokedexDistancePublicState.builder()
         .gameId(ID)
         .phase(state.phase())
+        .mode(state.config().mode())
         .roundNumber(state.roundNumber())
         .tiebreakDepth(state.tiebreakDepth())
         .targetDexNumber(state.targetDexNumber())
@@ -329,6 +377,10 @@ public final class PokedexDistanceEngine implements
         .winnerId(state.winnerId())
         .nextTransitionAt(state.nextTransitionAt())
         .results(state.phase() == GamePhase.GAME_RESULTS ? PokedexDistanceRules.buildResults(state) : null)
+        // Solo en POINTS: la ronda en curso («N de M») y el marcador, que solo cambia al revelar.
+        .pointsRound(points ? state.roundNumber() : null)
+        .pointsRounds(points ? state.config().pointsRounds() : null)
+        .scores(points ? state.scores() : null)
         .build();
   }
 

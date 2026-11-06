@@ -132,6 +132,7 @@
       "publicState": {
         "gameId": "pokedex-distance",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "roundNumber": 0,
         "tiebreakDepth": 0,
         "targetDexNumber": null,
@@ -176,6 +177,7 @@
       "publicState": {
         "gameId": "pokedex-distance",
         "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
         "roundNumber": 1,
         "tiebreakDepth": 0,
         "targetDexNumber": 31,
@@ -226,6 +228,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 0,
             "targetDexNumber": 31,
@@ -281,6 +284,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 0,
             "targetDexNumber": 31,
@@ -375,6 +379,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "TIEBREAKER_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 1,
             "targetDexNumber": 236,
@@ -425,6 +430,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "TIEBREAKER_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 1,
             "targetDexNumber": 236,
@@ -480,6 +486,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 1,
             "targetDexNumber": 236,
@@ -574,6 +581,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "TIEBREAKER_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 2,
             "targetDexNumber": 141,
@@ -624,6 +632,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "TIEBREAKER_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 2,
             "targetDexNumber": 141,
@@ -679,6 +688,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 2,
             "targetDexNumber": 141,
@@ -773,6 +783,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "TIEBREAKER_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 3,
             "targetDexNumber": 13,
@@ -823,6 +834,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "TIEBREAKER_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 3,
             "targetDexNumber": 13,
@@ -881,6 +893,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 3,
             "targetDexNumber": 13,
@@ -981,6 +994,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 3,
             "targetDexNumber": 13,

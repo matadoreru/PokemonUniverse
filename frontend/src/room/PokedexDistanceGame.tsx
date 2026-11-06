@@ -1,4 +1,4 @@
-import type { PokedexDistanceConfig, PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type PokedexDistanceConfig, type PokedexDistancePlayerState, type PokedexDistancePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
@@ -18,7 +18,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { PlayerList } from './PlayerList';
 import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
-import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
+import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distancePointsText, distanceScoreboard, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
 import s from './PokedexDistanceGame.module.css';
 
 /** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
@@ -37,6 +37,9 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   const serverOffset = useServerOffset(room.serverNow);
   const member = room.members.find((item) => item.id === selfId);
   const lastRound = game.lastRound;
+  // Modo «Por puntos»: nadie cae y cada ronda suma; la placa de la ronda lleva el nombre del modo.
+  const pointsMode = game.mode === 'POINTS';
+  const modeLabel = gameModeLabel('pokedex-distance', game);
   const revealing = game.phase === 'ROUND_RESULTS' && lastRound !== null;
   const outcome = lastRound ? distanceRoundOutcome(lastRound) : null;
   const activePhase = game.phase === 'ROUND_ACTIVE' || game.phase === 'TIEBREAKER_ACTIVE';
@@ -64,8 +67,9 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
 
   const hud = <Panel variant="dark" as="div" className={cx(s.hudPanel)} bodyClassName={cx(s.hud)}>
     <div className={s.round}>
-      <Badge>Ronda {game.roundNumber}</Badge>
+      <Badge>{pointsMode ? `Ronda ${game.pointsRound ?? game.roundNumber} de ${game.pointsRounds ?? config.pointsRounds}` : `Ronda ${game.roundNumber}`}</Badge>
       {game.tiebreakDepth > 0 && <Chip tone="warn">Desempate {game.tiebreakDepth}</Chip>}
+      {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
       <span className={s.points}><Icon icon={Trophy} size={18} />{member?.sessionPoints ?? 0} pts</span>
     </div>
     <div className={s.target}>
@@ -98,7 +102,9 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     {revealing
       ? <DistanceRuler round={lastRound} members={room.members} selfId={selfId} className={s.scene} />
       : <DexStrip target={game.targetDexNumber} generations={config.generations} className={s.scene} />}
-    {!activePhase && !revealing && <p className={s.lead}>Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: cae quien quede más lejos.</p>}
+    {!activePhase && !revealing && <p className={s.lead}>{pointsMode
+      ? 'Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: nadie cae, cada ronda suma puntos.'
+      : 'Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: cae quien quede más lejos.'}</p>}
   </div>;
 
   const panel = revealing
@@ -119,19 +125,39 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
               {row.eliminated && <Chip tone="bad" icon={<Icon icon={UserX} size={18} />}>Eliminado</Chip>}
               {row.tied && <Chip tone="warn">Empate</Chip>}
               {row.exact && <Chip tone="ok" icon={<Icon icon={Crosshair} size={18} />}>{DISTANCE_EXACT_HIT_TITLE}</Chip>}
+              {pointsMode && <Chip tone={(lastRound.points?.[row.playerId] ?? 0) > 0 ? 'ok' : 'neutral'}>{distancePointsText(lastRound.points?.[row.playerId] ?? 0)}</Chip>}
             </span>}
             value={selection ? <span className={s.distance}><small>a </small>{selection.distance}</span> : <span className={s.distance}>—</span>}
           />
         </li>;
       })}</ul>
     </Panel>
-    : <Panel title="En la ronda" variant="dark" scroll scrollLabel="Jugadores de la ronda" className={cx(s.sidePanel)} right={<Badge tone="cream">{`${game.survivorIds.length} siguen`}</Badge>}>
-      <PlayerList members={room.members} game={game} selfId={selfId} />
-    </Panel>;
+    : pointsMode
+      // Marcador de la partida: solo cambia al revelar cada ronda (quién ha elegido ya sale en las fichas de arriba).
+      ? <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" className={cx(s.sidePanel)}>
+        <ul className={s.rows} aria-label="Marcador de la partida">{distanceScoreboard(game.scores ?? {}).map((entry) => {
+          const rowMember = memberOf(entry.playerId);
+          const name = rowMember?.displayName ?? entry.playerId;
+          return <li key={entry.playerId}>
+            <Row
+              name={name}
+              color={colorOf(entry.playerId)}
+              self={entry.playerId === selfId}
+              disconnected={rowMember?.presence !== undefined && rowMember.presence !== 'CONNECTED'}
+              avatar={<Avatar name={name} avatar={rowMember?.avatar} level={rowMember?.level} size="sm" />}
+              meta={<span className={s.rowMeta}><span className={s.clip}>{`${entry.position}.º`}</span></span>}
+              value={<span className={s.distance}>{entry.score}<small> pts</small></span>}
+            />
+          </li>;
+        })}</ul>
+      </Panel>
+      : <Panel title="En la ronda" variant="dark" scroll scrollLabel="Jugadores de la ronda" className={cx(s.sidePanel)} right={<Badge tone="cream">{`${game.survivorIds.length} siguen`}</Badge>}>
+        <PlayerList members={room.members} game={game} selfId={selfId} />
+      </Panel>;
   const side = <div className={s.side}>{panel}<GameSkipSlot className={s.skip} /></div>;
 
   const bottom = revealing
-    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={`Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note ? 'warn' : 'info'} titleRef={titleRef} />
+    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={pointsMode ? `Ronda ${game.pointsRound ?? game.roundNumber} de ${game.pointsRounds ?? config.pointsRounds}` : `Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note && !pointsMode ? 'warn' : 'info'} titleRef={titleRef} />
     : activePhase && eligible && !hasSelection
       ? <div className={s.selector}><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} /></div>
       : member?.role === 'SPECTATOR' || !eligible
@@ -143,7 +169,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
             tone={playerState?.exactHit ? 'ok' : 'info'}
             titleRef={titleRef}
             aside={ownPick ? <span className={s.pick}><Card size="sm" name={ownPick.name} sprite={ownPick.sprite} decorativeSprite state={playerState?.exactHit ? 'correct' : 'selected'} /></span> : null} />
-          : <ActionStatus icon={Clock3} kicker="Pokédex Distance" title="Siguiente ronda en breve…" text="El servidor prepara el próximo objetivo." tone="info" />;
+          : <ActionStatus icon={Clock3} kicker={modeLabel ? `Pokédex Distance · ${modeLabel}` : 'Pokédex Distance'} title="Siguiente ronda en breve…" text="El servidor prepara el próximo objetivo." tone="info" />;
 
   return <div className={cx('content-row', s.screen)}>
     {/* Primero: tras el armazón, su posición estática (absoluta, sin ancestro posicionado) alargaría la página en el móvil. */}

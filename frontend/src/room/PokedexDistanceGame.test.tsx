@@ -9,14 +9,14 @@ vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{
 
 const member = (id: string, displayName: string, presence: 'CONNECTED' | 'DISCONNECTED' = 'CONNECTED') => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: presence === 'CONNECTED', presence, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 });
 
-function room(overrides: Partial<PokedexDistancePublicState> = {}, player: Partial<PokedexDistancePlayerState> = {}): RoomView {
+function room(overrides: Partial<PokedexDistancePublicState> = {}, player: Partial<PokedexDistancePlayerState> = {}, config: Record<string, unknown> = {}): RoomView {
   const game: PokedexDistancePublicState = {
-    gameId: 'pokedex-distance', phase: 'ROUND_ACTIVE', roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 25,
+    gameId: 'pokedex-distance', phase: 'ROUND_ACTIVE', mode: 'CLASSIC', roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 25,
     eligibleIds: ['p1', 'p2'], survivorIds: ['p1', 'p2'], spectatorIds: [], selections: {}, selectedIds: [],
     lockedPokemonIds: [], roundStartedAt: 0, roundEndsAt: 20_000, nextTransitionAt: null, lastRound: null, roundHistory: [], winnerId: null,
     results: null, ...overrides,
   };
-  return { code: 'TEST11', phase: game.phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno', 'DISCONNECTED')], availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN' }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canSelect: true, selection: null, exactHit: false, ...player }, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return { code: 'TEST11', phase: game.phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno', 'DISCONNECTED')], availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN', pointsRounds: 10, mode: 'CLASSIC', ...config }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canSelect: true, selection: null, exactHit: false, ...player }, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<PokedexDistanceGame room={view} selfId={selfId} onAction={async () => undefined} />);
@@ -46,5 +46,41 @@ describe('PokedexDistanceGame: foco y avisos', () => {
     expect(liveText(html)).not.toContain('Resultado de la ronda');
     // Bruno (p2) está desconectado: su fila lo dice; la de Ana no.
     expect(html.match(/Sin conexión/g)).toHaveLength(1);
+  });
+});
+
+describe('PokedexDistanceGame: modo Por puntos', () => {
+  const points = { mode: 'POINTS' as const, pointsRound: 2, pointsRounds: 5, scores: { p1: 70, p2: 150 } };
+  it('el título lleva el modo, la placa dice la ronda «N de M» y nadie cae', () => {
+    const html = render(room({ ...points, phase: 'GAME_STARTING', roundNumber: 0, eligibleIds: [], roundStartedAt: null, roundEndsAt: null }, { canSelect: false }, { mode: 'POINTS', pointsRounds: 5 }));
+    // La placa de la ronda lleva el nombre del modo, en todas las fases.
+    expect(html).toMatch(/Ronda 2 de 5<\/span>.*Por puntos/);
+    expect(html).toContain('nadie cae, cada ronda suma puntos');
+    expect(html).not.toContain('cae quien quede más lejos');
+  });
+  it('muestra el marcador de puntos en lugar de quién sigue', () => {
+    const html = render(room(points));
+    expect(html).toContain('Marcador de la partida');
+    expect(html).not.toContain('siguen');
+    // Bruno va primero con 150.
+    const board = html.slice(html.indexOf('Marcador de la partida'));
+    expect(board.indexOf('Bruno')).toBeLessThan(board.indexOf('Ana'));
+    expect(html).toContain('150<small> pts</small>');
+    expect(html.match(/class="sr-only" role="status"/g)).toHaveLength(1);
+  });
+  it('en la revelación cada fila lleva sus puntos de la ronda y no hay eliminados', () => {
+    const scored = { ...lastRound, reason: 'SCORED' as const, eliminatedIds: [], points: { p1: 99, p2: 0 } };
+    const html = render(room({ ...points, phase: 'ROUND_RESULTS', lastRound: scored, roundEndsAt: null, nextTransitionAt: 9_000 }));
+    expect(html).toContain('+99 pts');
+    expect(html).toContain('+0 pts');
+    expect(html).toMatch(/<h2 tabindex="-1"[^>]*>🎯 Puntos de la ronda<\/h2>/);
+    expect(html).not.toContain('Eliminado');
+    expect(html).not.toContain('Cae quien quedó más lejos');
+    expect(liveText(html)).toContain('sumas 99');
+  });
+  it('en Clásico el título no lleva modo', () => {
+    const html = render(room({ phase: 'GAME_STARTING', roundNumber: 0, eligibleIds: [] }, { canSelect: false }));
+    expect(html).not.toContain('Por puntos');
+    expect(html).toContain('Ronda 0');
   });
 });

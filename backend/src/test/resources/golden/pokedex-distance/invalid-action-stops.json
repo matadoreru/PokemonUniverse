@@ -71,6 +71,7 @@
       "publicState": {
         "gameId": "pokedex-distance",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "roundNumber": 0,
         "tiebreakDepth": 0,
         "targetDexNumber": null,
@@ -115,6 +116,7 @@
       "publicState": {
         "gameId": "pokedex-distance",
         "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
         "roundNumber": 1,
         "tiebreakDepth": 0,
         "targetDexNumber": 11,
@@ -165,6 +167,7 @@
           "publicState": {
             "gameId": "pokedex-distance",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "tiebreakDepth": 0,
             "targetDexNumber": 11,

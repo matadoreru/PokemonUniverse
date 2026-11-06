@@ -1,8 +1,8 @@
-import type { PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type PokedexDistancePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Crosshair, Target } from 'lucide-react';
 import { cx, Icon, Panel } from '../ui';
 import { playerColor } from './player-color';
-import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceRoundLabel, distanceStandingLabel, distanceStatsLine } from './pokedex-distance-results';
+import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
 import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from './PokedexDistanceResults.module.css';
@@ -30,11 +30,14 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
   const memberOf = (playerId: string) => room.members.find((member) => member.id === playerId);
   const nameOf = (playerId: string) => memberOf(playerId)?.displayName ?? 'Entrenador';
   const best = summary.best;
+  // «Por puntos»: la clasificación (del servidor) va por puntos y nadie cae; el subtítulo lleva el nombre del modo.
+  const pointsMode = game.mode === 'POINTS';
+  const modeLabel = gameModeLabel('pokedex-distance', game);
 
   const rows: ResultsStanding[] = standings.map((standing) => {
     const player = byPlayer.get(standing.playerId);
     // «Ganador» ya lo pone la insignia de la franja: aquí solo la ronda en la que cayó.
-    const label = player && standing.playerId !== winnerId ? distanceStandingLabel(player, winnerId) : null;
+    const label = player && !pointsMode && standing.playerId !== winnerId ? distanceStandingLabel(player, winnerId) : null;
     return {
       id: standing.playerId,
       position: standing.position,
@@ -73,11 +76,11 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room:
         </tr>)}</tbody>
       </table>
     </div>
-    <p className={s.foot}>Distancia al número de Pokédex objetivo. ✓ acierto exacto · en azul, a 10 o menos · ✗ ronda en la que cayó · — sin respuesta o no jugaba. D1, D2… son los desempates.</p>
+    <p className={s.foot}>{distanceTableFootnote(pointsMode)}</p>
   </Panel>;
 
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
 
-  return <ResultsShell won={winnerId === selfId} title={winnerId ? 'Resultado de la partida' : 'Partida desierta'} subtitle={`Pokédex Distance · Partida ${room.gamesPlayed}`}
+  return <ResultsShell won={winnerId === selfId} title={distanceResultsTitle(pointsMode, winnerId, standings)} subtitle={`Pokédex Distance${modeLabel ? ` · ${modeLabel}` : ''} · Partida ${room.gamesPlayed}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={<div className={s.aside}>{bestHit}{rounds}</div>} actions={actions} fillLarge />;
 }

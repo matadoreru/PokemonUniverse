@@ -19,6 +19,7 @@ import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** Lo que las fixtures doradas no cubren: manifiesto, configuración por defecto, parseo y errores de arranque. */
@@ -194,5 +195,97 @@ class PokedexDistanceEngineTest {
     var started = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
     var error = assertThrows(EngineException.class, () -> engine.start(started, context));
     assertEquals("Game already started", error.getMessage());
+  }
+
+  // --- Modo Por puntos ---
+
+  private static PokedexDistanceConfig points(int rounds) {
+    return new PokedexDistanceConfig(List.of(1, 2), 20, SelectionVisibility.HIDDEN, rounds, PokedexDistanceMode.POINTS);
+  }
+
+  @Test
+  void pointsPerRoundFormula() {
+    assertEquals(150, PokedexDistanceRules.pointsForDistance(0));
+    assertEquals(70, PokedexDistanceRules.pointsForDistance(30));
+    assertEquals(0, PokedexDistanceRules.pointsForDistance(120));
+    assertEquals(0, PokedexDistanceRules.pointsForDistance(null));
+  }
+
+  @Test
+  void pointsModeNeverEliminates() {
+    var context = contextAt(3, 1000);
+    var state = engine.start(engine.createInitialState(points(3), context), context).toBuilder()
+        .targetDexNumber(1)
+        .build();
+    state = engine.handleAction(state, "p1", new PokedexDistanceAction("bulbasaur"), context).state();
+    state = engine.handleAction(state, "p2", new PokedexDistanceAction("charmander"), context).state();
+    // p3 no elige: vence el tiempo, pero nadie cae.
+    state = engine.handleTimeout(state, contextAt(3, state.roundEndsAt()));
+    var round = state.lastRound();
+    assertEquals(PokedexDistanceTypes.RoundReason.SCORED, round.reason());
+    assertEquals(List.of(), round.eliminatedIds());
+    assertEquals(List.of(), round.tiedIds());
+    assertEquals(List.of("p1", "p2", "p3"), state.survivorIds());
+    assertEquals(List.of(), state.spectatorIds());
+    assertEquals(150, round.points().get("p1"));
+    assertEquals(97, round.points().get("p2"));
+    assertEquals(0, round.points().get("p3"));
+    var view = engine.getPublicState(state, context);
+    assertEquals(PokedexDistanceMode.POINTS, view.mode());
+    assertEquals(150, view.scores().get("p1"));
+    assertEquals(0, view.scores().get("p3"));
+    assertEquals(150, view.lastRound().points().get("p1"));
+    state = engine.handleTimeout(state, contextAt(3, state.nextTransitionAt()));
+    assertEquals(List.of("p1", "p2", "p3"), state.eligibleIds());
+    assertEquals(0, state.tiebreakDepth());
+    assertEquals(2, engine.getPublicState(state, context).pointsRound());
+  }
+
+  /** Las elecciones ocultas no mueven el marcador hasta la revelación: no adelantan la distancia de nadie. */
+  @Test
+  void pointsModeScoresOnlyMoveAtTheReveal() {
+    var context = contextAt(3, 1000);
+    var state = engine.start(engine.createInitialState(points(3), context), context).toBuilder()
+        .targetDexNumber(1)
+        .build();
+    state = engine.handleAction(state, "p1", new PokedexDistanceAction("bulbasaur"), context).state();
+    var view = engine.getPublicState(state, context);
+    assertEquals(0, view.scores().get("p1"));
+    assertEquals(Map.of(), view.selections());
+  }
+
+  @Test
+  void pointsModeEndsAfterPointsRounds() {
+    var state = engine.start(engine.createInitialState(points(3), contextAt(2, 1000)), contextAt(2, 1000));
+    for (int round = 1; round <= 3; round++) {
+      assertEquals(round, state.roundNumber());
+      state = engine.handleTimeout(state, contextAt(2, state.roundEndsAt()));
+      assertEquals(es.pokemonuniverse.domain.game.engine.GamePhase.ROUND_RESULTS, state.phase());
+      state = engine.handleTimeout(state, contextAt(2, state.nextTransitionAt()));
+    }
+    assertTrue(engine.isFinished(state));
+    var view = engine.getPublicState(state, contextAt(2, 1000));
+    assertEquals(3, view.pointsRounds());
+    assertEquals(3, view.roundHistory().size());
+  }
+
+  @Test
+  void pointsModeTieSharesPosition() {
+    var state = engine.start(engine.createInitialState(points(3), contextAt(3, 1000)), contextAt(3, 1000));
+    for (int round = 1; round <= 3; round++) {
+      var context = contextAt(3, state.roundStartedAt() + 1000);
+      state = state.toBuilder().targetDexNumber(10).build();
+      state = engine.handleAction(state, "p1", new PokedexDistanceAction("bulbasaur"), context).state();
+      state = engine.handleAction(state, "p2", new PokedexDistanceAction("bulbasaur"), context).state();
+      state = engine.handleAction(state, "p3", new PokedexDistanceAction("mew"), context).state();
+      state = engine.handleTimeout(state, contextAt(3, state.nextTransitionAt()));
+    }
+    assertTrue(engine.isFinished(state));
+    var results = engine.getResults(state);
+    assertEquals(null, results.winnerId());
+    var standings = results.standings();
+    assertEquals(List.of("p1", "p2", "p3"), standings.stream().map(s -> s.playerId()).toList());
+    assertEquals(List.of(1, 1, 3), standings.stream().map(s -> s.position()).toList());
+    assertEquals(List.of(273, 273, 0), standings.stream().map(s -> s.points()).toList());
   }
 }

@@ -68,11 +68,35 @@ export interface DistanceRoundOutcome {
   showTiedChip(playerId: string): boolean;
 }
 
+/** Regla del modo `POINTS` en la placa de la revelación (el texto largo del modo está en el panel del lobby). */
+export const DISTANCE_POINTS_RULE = 'Cada ronda suma 100 menos tu distancia, y 50 extra si clavas el número.';
+
+/** Fila del marcador de `POINTS`: puesto de competición (1, 1, 3) por puntos. */
+export interface DistanceScoreEntry {
+  playerId: string;
+  score: number;
+  position: number;
+}
+
+/** Marcador de `POINTS`, de más a menos puntos; a igualdad conserva el orden del servidor y comparten puesto. */
+export function distanceScoreboard(scores: Readonly<Record<string, number>>): DistanceScoreEntry[] {
+  const ordered = Object.entries(scores).map(([playerId, score], index) => ({ playerId, score, index })).sort((a, b) => b.score - a.score || a.index - b.index);
+  return ordered.map((entry) => ({
+    playerId: entry.playerId,
+    score: entry.score,
+    position: ordered.findIndex((other) => other.score === entry.score) + 1,
+  }));
+}
+
+/** Puntos de una ronda de `POINTS` con su signo: `+97 pts`. */
+export const distancePointsText = (points: number) => `+${points} pts`;
+
 /**
- * Cabecera y nota del resultado de una ronda. Un `FARTHEST` con `tiedIds` es un empate resuelto a la fuerza en el tope
+ * Cabecera y nota del resultado de una ronda. `SCORED` es una ronda de `POINTS`: nadie cae y no hay empates. Un `FARTHEST` con `tiedIds` es un empate resuelto a la fuerza en el tope
  * de desempates (`MAX_TIEBREAK_DEPTH`): se explica el criterio y el eliminado lleva solo «Eliminado».
  */
 export function distanceRoundOutcome(round: Pick<PokedexDistancePublicState['lastRound'] & object, 'reason' | 'eliminatedIds' | 'tiedIds'>): DistanceRoundOutcome {
+  if (round.reason === 'SCORED') return { title: '🎯 Puntos de la ronda', note: DISTANCE_POINTS_RULE, showTiedChip: () => false };
   const forcedTie = round.reason === 'FARTHEST' && round.tiedIds.length > 0;
   const title = round.reason === 'TIE' ? '⚔️ Empate en la peor distancia'
     : forcedTie ? '⚔️ Empate tras 3 desempates'
@@ -139,9 +163,17 @@ export function distanceAnnouncement({ phase, roundNumber, target, eligible, has
   hasSelection: boolean;
   exactHit: boolean;
   ownPickName: string | null;
-  lastRound: Pick<PokedexDistancePublicState['lastRound'] & object, 'eligibleIds' | 'selections' | 'reason' | 'eliminatedIds' | 'tiedIds'> | null;
+  lastRound: Pick<PokedexDistancePublicState['lastRound'] & object, 'eligibleIds' | 'selections' | 'reason' | 'eliminatedIds' | 'tiedIds' | 'points'> | null;
   selfId: string;
 }): string {
+  if (phase === 'ROUND_RESULTS' && lastRound?.reason === 'SCORED') {
+    const verdict = `Ronda ${roundNumber} revelada: nadie queda fuera, cada uno suma según su distancia.`;
+    if (!lastRound.eligibleIds.includes(selfId)) return verdict;
+    const distance = lastRound.selections[selfId]?.distance;
+    const points = lastRound.points?.[selfId] ?? 0;
+    const own = distance === undefined ? 'No elegiste a tiempo: sumas 0.' : `Te quedaste a ${distance}: sumas ${points}.`;
+    return `${verdict} ${own}`;
+  }
   if (phase === 'ROUND_RESULTS' && lastRound) {
     const outcome = distanceRoundOutcome(lastRound);
     // La regla con otras palabras que la nota de la placa (`outcome.note`), que las E2E buscan como texto.

@@ -1,6 +1,6 @@
 import type { GamePhase } from '../contracts.js';
 import type { GameResults } from '../contracts.js';
-import type { PokedexDistanceConfig } from './config.js';
+import type { PokedexDistanceConfig, PokedexDistanceMode } from './config.js';
 import { z } from 'zod';
 
 export interface PlayerRoundStats {
@@ -30,8 +30,11 @@ export interface RoundResult {
   targetDexNumber: number;
   selections: Record<string, RoundSelection>;
   eliminatedIds: string[];
-  reason: 'FARTHEST' | 'NO_RESPONSE' | 'TIE';
+  /** `SCORED`: ronda del modo `POINTS`, que puntúa y en la que nadie cae. */
+  reason: 'FARTHEST' | 'NO_RESPONSE' | 'TIE' | 'SCORED';
   tiedIds: string[];
+  /** Solo en `POINTS`: puntos de la ronda por elegible (0 sin elección). */
+  points?: Record<string, number>;
 }
 
 /**
@@ -72,6 +75,8 @@ export interface PokedexDistanceState {
    */
   roundHistory: DistanceRoundRecord[];
   playerStats: Record<string, PlayerRoundStats>;
+  /** Puntos acumulados en `POINTS`; solo cambian al resolver una ronda. */
+  scores: Record<string, number>;
   winnerId: string | null;
 }
 
@@ -104,6 +109,7 @@ export interface PublicRoundResult extends Omit<RoundResult, 'selections'> {
 export interface PokedexDistancePublicState {
   gameId: 'pokedex-distance';
   phase: GamePhase;
+  mode: PokedexDistanceMode;
   roundNumber: number;
   tiebreakDepth: number;
   targetDexNumber: number | null;
@@ -123,6 +129,12 @@ export interface PokedexDistancePublicState {
   roundHistory: DistanceRoundRecord[];
   winnerId: string | null;
   results: GameResults | null;
+  /** Solo en `POINTS`: la ronda en curso («N de M»). */
+  pointsRound?: number;
+  /** Solo en `POINTS`: las rondas de la partida. */
+  pointsRounds?: number;
+  /** Solo en `POINTS`: el marcador, que solo cambia al revelar cada ronda. */
+  scores?: Record<string, number>;
 }
 
 export interface PokedexDistancePlayerState {

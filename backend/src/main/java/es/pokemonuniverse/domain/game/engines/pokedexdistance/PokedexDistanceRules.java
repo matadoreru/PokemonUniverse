@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTyp
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PlayerRoundStats;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PokedexDistanceState;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.RoundSelection;
+import io.micronaut.core.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,6 +33,32 @@ public final class PokedexDistanceRules {
 
   public static int distanceBetween(int selectedDex, int targetDex) {
     return Math.abs(selectedDex - targetDex);
+  }
+
+  /** Bonificación de {@code POINTS} por clavar el número (distancia 0). */
+  public static final int EXACT_HIT_BONUS = 50;
+
+  /** Puntos de una ronda de {@code POINTS}: {@code max(0, 100 − distancia)} y +50 si es 0; sin elección ({@code null}), 0. */
+  public static int pointsForDistance(@Nullable Integer distance) {
+    if (distance == null) return 0;
+    return Math.max(0, 100 - distance) + (distance == 0 ? EXACT_HIT_BONUS : 0);
+  }
+
+  /** Puntos de la ronda que se resuelve, uno por elegible en su orden; quien no eligió suma 0. */
+  public static Map<String, Integer> roundPoints(PokedexDistanceState state) {
+    var points = new LinkedHashMap<String, Integer>();
+    for (var id : state.eligibleIds()) {
+      var selection = state.selections().get(id);
+      points.put(id, pointsForDistance(selection == null ? null : selection.distance()));
+    }
+    return points;
+  }
+
+  /** Líder único por puntos en {@code POINTS}, o {@code null} si empatan en cabeza (o no hay jugadores). */
+  public static @Nullable String pointsLeader(Map<String, Integer> scores) {
+    int best = scores.values().stream().mapToInt(Integer::intValue).max().orElse(0);
+    var leaders = scores.entrySet().stream().filter(entry -> entry.getValue() == best).map(Map.Entry::getKey).toList();
+    return leaders.size() == 1 ? leaders.getFirst() : null;
   }
 
   /** Jugadores con la distancia máxima, en el orden de inserción de {@code selections} ({@code Object.entries}). */
@@ -65,6 +92,7 @@ public final class PokedexDistanceRules {
     if (state.phase() != GamePhase.GAME_RESULTS) {
       throw new EngineException("Results are unavailable before the game finishes");
     }
+    if (state.config().mode() == PokedexDistanceMode.POINTS) return buildPointsResults(state);
     int total = state.initialPlayerIds().size();
     var positions = new HashMap<String, Integer>();
     // `if (state.winnerId)`: los ids nunca son la cadena vacía, así que basta con comprobar que no es nulo.
@@ -91,6 +119,30 @@ public final class PokedexDistanceRules {
     }
     standings.sort(Comparator.comparingInt(GameStanding::position).thenComparing(GameStanding::playerId));
     return new GameResults(state.winnerId(), standings);
+  }
+
+  /**
+   * Clasificación de {@code POINTS}: por puntos acumulados (descendente) y, a igualdad, por id; empate en puntos →
+   * comparten puesto (1, 1, 3). {@code points} de cada fila son sus puntos de la partida; líder único o {@code null}.
+   */
+  static GameResults buildPointsResults(PokedexDistanceState state) {
+    var entries = state.initialPlayerIds().stream()
+        .map(id -> new Scoring.ScoreEntry<>(id, state.scores().getOrDefault(id, 0),
+            state.playerStats().getOrDefault(id, PlayerRoundStats.ZERO)))
+        .toList();
+    Comparator<Scoring.ScoreEntry<PlayerRoundStats>> compare = (left, right) -> {
+      int byPoints = Integer.compare(right.points(), left.points());
+      return byPoints != 0 ? byPoints : left.playerId().compareTo(right.playerId());
+    };
+    return Scoring.buildRankedResults(entries, compare, Scoring.ScoreEntry::points, entry -> {
+      var stats = entry.stats();
+      var mapped = new LinkedHashMap<String, Number>();
+      mapped.put("exactHits", stats.exactHits());
+      mapped.put("selections", stats.selections());
+      mapped.put("averageDistance", stats.selections() == 0 ? 0
+          : Math.round((double) stats.distanceTotal() / stats.selections() * 100) / 100.0);
+      return mapped;
+    });
   }
 
   /** {@code emptyPlayerStats}. */

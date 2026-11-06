@@ -1,6 +1,6 @@
 import type { DistanceRoundRecord } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { distanceBestLabel, distanceCell, distanceResultsSummary, distanceRoundLabel, distanceStandingLabel, distanceStatsLine } from './pokedex-distance-results';
+import { distanceBestLabel, distanceCell, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
 
 const record = (roundNumber: number, tiebreakDepth: number, distances: Record<string, number | null>, eliminatedIds: string[]): DistanceRoundRecord =>
   ({ roundNumber, tiebreakDepth, targetDexNumber: 100, distances, eliminatedIds });
@@ -108,5 +108,18 @@ describe('Pokédex Distance: resultados', () => {
     expect(distanceCell(record(1, 3, { p1: 20, p2: null }, ['p2']), 'p2').label).toBe('R1 · D3: sin respuesta, cayó');
     // Por debajo del tope no hay empate forzado.
     expect(distanceCell(record(1, 2, { p1: 20, p2: 20 }, ['p2']), 'p2').label).toBe('R1 · D2: a 20, cayó');
+  });
+});
+
+describe('distanceResultsTitle y distanceTableFootnote', () => {
+  it('Clásico sin ganador es desierta; Por puntos sin líder único es empate salvo que nadie sume', () => {
+    expect(distanceResultsTitle(false, 'p1', [])).toBe('Resultado de la partida');
+    expect(distanceResultsTitle(false, null, [{ points: 0 }])).toBe('Partida desierta');
+    expect(distanceResultsTitle(true, null, [{ points: 90 }, { points: 90 }])).toBe('Empate en cabeza');
+    expect(distanceResultsTitle(true, null, [{ points: 0 }, { points: 0 }])).toBe('Partida desierta');
+  });
+  it('la leyenda de Por puntos no habla de caídas ni desempates', () => {
+    expect(distanceTableFootnote(true)).not.toMatch(/cayó|desempate/);
+    expect(distanceTableFootnote(false)).toContain('cayó');
   });
 });

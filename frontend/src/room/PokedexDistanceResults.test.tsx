@@ -6,11 +6,11 @@ import { PokedexDistanceResults } from './PokedexDistanceResults';
 
 const stats = (exactHits: number, tiebreaksWon: number) => ({ exactHits, roundsSurvived: 1, selections: 2, averageDistance: 4.5, tiebreaksWon });
 
-function room(roundHistory: DistanceRoundRecord[], results: GameResults): RoomView {
+function room(roundHistory: DistanceRoundRecord[], results: GameResults, extra: Partial<PokedexDistancePublicState> = {}): RoomView {
   const game: PokedexDistancePublicState = {
-    gameId: 'pokedex-distance', phase: 'GAME_RESULTS', roundNumber: 2, tiebreakDepth: 0, targetDexNumber: 100, eligibleIds: [],
+    gameId: 'pokedex-distance', phase: 'GAME_RESULTS', mode: 'CLASSIC', roundNumber: 2, tiebreakDepth: 0, targetDexNumber: 100, eligibleIds: [],
     survivorIds: results.winnerId ? [results.winnerId] : [], spectatorIds: [], selections: {}, selectedIds: [], lockedPokemonIds: [],
-    roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null, roundHistory, winnerId: results.winnerId, results,
+    roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null, roundHistory, winnerId: results.winnerId, results, ...extra,
   };
   const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: 0 }));
   return { code: 'ABC234', phase: 'GAME_RESULTS', hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: defaultPokedexDistanceConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 1, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: null, members };
@@ -57,5 +57,32 @@ describe('PokedexDistanceResults', () => {
     expect(html).toContain('R1: sin respuesta, cayó');
     expect(html).toContain('Esperando al host…');
     expect(html).not.toMatch(/NaN|Infinity|ronda 0|Ganador/);
+  });
+
+  it('Por puntos: subtítulo con el modo, clasificación por puntos con empate compartido y sin «cayó»', () => {
+    const pointsStats = (exactHits: number) => ({ exactHits, selections: 2, averageDistance: 15.5 });
+    const html = render(room([
+      { roundNumber: 1, tiebreakDepth: 0, targetDexNumber: 130, distances: { p1: 0, p2: 105, p3: 30 }, eliminatedIds: [] },
+      { roundNumber: 2, tiebreakDepth: 0, targetDexNumber: 158, distances: { p1: 157, p2: 0, p3: null }, eliminatedIds: [] },
+    ], { winnerId: 'p3', standings: [
+      { playerId: 'p3', position: 1, points: 169, won: true, stats: pointsStats(0) },
+      { playerId: 'p1', position: 2, points: 150, won: false, stats: pointsStats(1) },
+      { playerId: 'p2', position: 2, points: 150, won: false, stats: pointsStats(1) },
+    ] }, { mode: 'POINTS', pointsRound: 2, pointsRounds: 2, scores: { p1: 150, p2: 150, p3: 169 } }));
+    expect(html).toContain('Pokédex Distance · Por puntos · Partida 1');
+    expect(html).toContain('Resultado de la partida');
+    expect(html).toContain('169 pts');
+    expect(html.indexOf('Leo')).toBeLessThan(html.indexOf('Eru'));
+    expect(html).not.toMatch(/Cayó|cayó|desempates/);
+  });
+
+  it('Por puntos: empate en cabeza no es una partida desierta', () => {
+    const zero = { exactHits: 0, selections: 1, averageDistance: 10 };
+    const html = render(room([], { winnerId: null, standings: [
+      { playerId: 'p1', position: 1, points: 90, won: true, stats: zero },
+      { playerId: 'p2', position: 1, points: 90, won: true, stats: zero },
+    ] }, { mode: 'POINTS' }));
+    expect(html).toContain('Empate en cabeza');
+    expect(html).not.toContain('Partida desierta');
   });
 });
