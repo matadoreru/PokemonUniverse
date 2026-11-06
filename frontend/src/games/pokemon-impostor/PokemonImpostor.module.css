@@ -189,10 +189,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* El aviso del impostor se parte en dos líneas antes que recortarse. */
+/* Una sola línea: con aliados de nombre largo se recorta con puntos suspensivos (el texto entero va en `title`). */
 .stripNote {
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 @media (min-width: 1024px) {
   .roleStrip {

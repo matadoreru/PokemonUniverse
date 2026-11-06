@@ -1,6 +1,6 @@
 import type { ImpostorVoteResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { clampImpostorClue, impostorClueLength, impostorCluePhaseTitle, impostorEliminationCutIn, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorCluePhaseTitle, impostorEliminationCutIn, impostorFellowsShort, impostorFellowsText, impostorFinishText, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 
 const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno' } as Record<string, string>)[id] ?? id;
 function result(overrides: Partial<ImpostorVoteResult>): ImpostorVoteResult {
@@ -91,5 +91,27 @@ describe('impostorEliminationCutIn', () => {
   });
   it('an innocent: aqua tone', () => {
     expect(impostorEliminationCutIn({ playerId: 'p2', role: 'INNOCENT' }, 'Bruno')).toEqual({ tone: 'aqua', title: 'Bruno', delayedLine: '…era inocente' });
+  });
+});
+
+describe('impostorFellowsText', () => {
+  const ana = { name: 'Ana', out: false };
+  const bea = { name: 'Bea', out: false };
+  const carla = { name: 'Carla', out: false };
+  it('un aliado, dos y tres', () => {
+    expect(impostorFellowsText([ana])).toBe('Otro impostor: Ana');
+    expect(impostorFellowsText([ana, bea])).toBe('Otros impostores: Ana y Bea');
+    expect(impostorFellowsText([ana, bea, carla])).toBe('Otros impostores: Ana, Bea y Carla');
+  });
+  it('un expulsado lleva (fuera)', () => {
+    expect(impostorFellowsText([ana, { name: 'Bea', out: true }])).toBe('Otros impostores: Ana y Bea (fuera)');
+  });
+  it('sin aliados no hay texto', () => {
+    expect(impostorFellowsText([])).toBeNull();
+    expect(impostorFellowsShort([])).toBeNull();
+  });
+  it('la línea corta del móvil', () => {
+    expect(impostorFellowsShort(['Ana', 'Bea'])).toBe('con Ana y Bea');
+    expect(impostorFellowsShort(['Ana', 'Bea', 'Carla'])).toBe('con Ana, Bea y Carla');
   });
 });

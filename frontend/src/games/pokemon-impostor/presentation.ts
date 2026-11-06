@@ -1,5 +1,5 @@
 import type { ImpostorVoteResult, PokemonImpostorPlayerState, PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
-import { impostorCluePhaseTitle } from '../../room/pokemon-impostor-texts';
+import { impostorCluePhaseTitle, impostorFellowsShort } from '../../room/pokemon-impostor-texts';
 
 type NameOf = (id: string) => string;
 
@@ -64,11 +64,15 @@ function voteClosedAnnouncement(result: ImpostorVoteResult, nameOf: NameOf): str
  * Texto de la única región `status` de la pantalla (siempre montada; solo cambia su texto). En la expulsión no dice
  * nada: el cut-in ya se anuncia por su cuenta y el rol no puede llegar al DOM antes de la pausa de 1 s.
  */
-export function impostorAnnouncement(game: Pick<PokemonImpostorPublicState, 'phase' | 'currentCluePlayerId' | 'lastVoteResult'>, player: Pick<PokemonImpostorPlayerState, 'role' | 'canSubmitClue' | 'ownClue' | 'canVote' | 'ownVote'>, selfId: string, nameOf: NameOf): string {
+export function impostorAnnouncement(game: Pick<PokemonImpostorPublicState, 'phase' | 'currentCluePlayerId' | 'lastVoteResult'>, player: Pick<PokemonImpostorPlayerState, 'role' | 'canSubmitClue' | 'ownClue' | 'canVote' | 'ownVote' | 'fellowImpostorIds'>, selfId: string, nameOf: NameOf): string {
   switch (game.phase) {
     case 'ROLE_REVEAL':
       if (!player.role) return 'Reparto de roles: observas la partida.';
-      return `Reparto de roles: eres ${player.role === 'IMPOSTOR' ? 'impostor' : 'inocente'}.`;
+      if (player.role === 'IMPOSTOR') {
+        const fellows = impostorFellowsShort((player.fellowImpostorIds ?? []).map(nameOf));
+        return `Reparto de roles: eres impostor${fellows ? `, ${fellows}` : ''}.`;
+      }
+      return 'Reparto de roles: eres inocente.';
     case 'CLUE_PHASE':
       if (player.canSubmitClue) return 'Es tu turno: escribe tu pista.';
       if (player.ownClue?.status === 'SUBMITTED') return 'Pista registrada. Esperando al resto de turnos.';

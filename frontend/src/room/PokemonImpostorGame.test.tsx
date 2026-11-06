@@ -164,6 +164,33 @@ describe('Pokémon Impostor: privacidad', () => {
   });
 });
 
+describe('Pokémon Impostor: aliados', () => {
+  it('en el reparto el impostor ve a su aliado; inocente e impostor sin la clave, no', () => {
+    const reveal = publicGame({ phase: 'ROLE_REVEAL', roundEndsAt: null, nextTransitionAt: 6_000 });
+    const html = render(reveal, impostor({ fellowImpostorIds: ['p2'] }));
+    expect(html).toContain('data-testid="impostor-fellows"');
+    expect(html).toContain('Otro impostor: <strong>Ana</strong>');
+    expect(render(reveal, innocent())).not.toContain('impostor-fellows');
+    expect(render(reveal, impostor())).not.toContain('impostor-fellows');
+  });
+
+  it('en las pistas lo muestran el panel lateral y la línea del móvil; el expulsado lleva (fuera)', () => {
+    const html = render(publicGame(), impostor({ fellowImpostorIds: ['p2'] }));
+    expect(html).toContain('data-testid="impostor-fellows"');
+    expect(html).toContain('con Ana');
+    expect(html).not.toContain('no conoces el Pokémon');
+    const fuera = render(publicGame({ aliveIds: ['p1', 'p3', 'p4'], eliminatedIds: ['p2'] }), impostor({ fellowImpostorIds: ['p2'] }));
+    expect(fuera).toContain('(fuera)');
+  });
+
+  it('la región viva del reparto nombra al aliado', () => {
+    const game = publicGame({ phase: 'ROLE_REVEAL' });
+    const names = (id: string) => ({ p2: 'Ana' } as Record<string, string>)[id] ?? id;
+    expect(impostorAnnouncement(game, impostor({ fellowImpostorIds: ['p2'] }), 'p1', names)).toBe('Reparto de roles: eres impostor, con Ana.');
+    expect(impostorAnnouncement(game, impostor(), 'p1', names)).toBe('Reparto de roles: eres impostor.');
+  });
+});
+
 describe('Pokémon Impostor: pantalla', () => {
   it('reparto de roles: el rol grande y el aviso de privacidad', () => {
     const html = render(publicGame({ phase: 'ROLE_REVEAL', roundEndsAt: null, nextTransitionAt: 6_000 }), impostor());

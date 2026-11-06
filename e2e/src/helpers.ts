@@ -195,14 +195,14 @@ export interface SalaConJugadores {
  * Abre `n` contextos de navegador, entra como invitado en cada uno, el primero crea una sala
  * privada y los demás se unen con su código. Espera a que el host vea a todos en la lista.
  */
-export async function crearSalaConJugadores(browser: Browser, n: number, viewport = { width: 1280, height: 720 }): Promise<SalaConJugadores> {
+export async function crearSalaConJugadores(browser: Browser, n: number, viewport = { width: 1280, height: 720 }, prefijos?: readonly string[]): Promise<SalaConJugadores> {
   const jugadores: Jugador[] = [];
   const cerrar = async () => { await Promise.all(jugadores.map((j) => j.context.close())); };
   try {
     for (let i = 0; i < n; i++) {
       const context = await browser.newContext({ viewport });
       const page = await context.newPage();
-      const jugador: Jugador = { context, page, errors: collectErrors(page), name: uniqueName(i === 0 ? 'Host' : `Inv${i}`), websockets: [], sockets: [] };
+      const jugador: Jugador = { context, page, errors: collectErrors(page), name: uniqueName(prefijos?.[i] ?? (i === 0 ? 'Host' : `Inv${i}`)), websockets: [], sockets: [] };
       page.on('websocket', (ws) => { jugador.websockets.push(ws.url()); jugador.sockets.push(ws); });
       jugadores.push(jugador);
       await loginAsGuest(page, jugador.name);

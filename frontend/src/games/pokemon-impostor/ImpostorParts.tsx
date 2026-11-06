@@ -1,12 +1,12 @@
 import { IMPOSTOR_SKIP_TARGET, type ImpostorEliminationReveal, type ImpostorVoteResult, type PokemonImpostorPlayerState, type PokemonImpostorPublicState, type RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Brain, Check, CircleDashed, Eye, ShieldCheck, Skull, SkipForward, UserX, Users } from 'lucide-react';
-import type { CSSProperties, ReactNode, Ref } from 'react';
+import { Fragment, type CSSProperties, type ReactNode, type Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
 import { impostorClueGroupLabel, impostorClueLine, impostorTallies, votesLabel } from './presentation';
-import { impostorVoteHeadline, impostorVoteTargetLabel } from '../../room/pokemon-impostor-texts';
+import { impostorFellowsLead, impostorFellowsShort, impostorVoteHeadline, impostorVoteTargetLabel } from '../../room/pokemon-impostor-texts';
 import s from './PokemonImpostor.module.css';
 
 export type NameOf = (id: string) => string;
@@ -17,6 +17,8 @@ export interface ImpostorPeople {
   colors: ReadonlyMap<string, number>;
   selfId: string;
   nameOf: NameOf;
+  /** Jugadores expulsados (`eliminatedIds` de la partida): los aliados que estén aquí llevan «(fuera)». */
+  outIds?: ReadonlySet<string>;
 }
 
 function personRow(people: ImpostorPeople, id: string) {
@@ -62,14 +64,34 @@ function SecretPokemon({ player, box }: { player: PokemonImpostorPlayerState; bo
   return <p className={s.help}>No conoces el Pokémon. Intenta disimular.</p>;
 }
 
+/** Aliados del impostor (`fellowImpostorIds`) con su nombre y si están fuera. Vacío para el resto. */
+function fellowsOf(player: PokemonImpostorPlayerState, people: ImpostorPeople): { name: string; out: boolean }[] {
+  if (player.role !== 'IMPOSTOR') return [];
+  return (player.fellowImpostorIds ?? []).map((id) => ({ name: people.nameOf(id), out: people.outIds?.has(id) ?? false }));
+}
+
+/** Línea «Otro impostor: Ana» / «Otros impostores: Ana y Bea», con los nombres en negrita; nada sin aliados. */
+function FellowsLine({ player, people }: { player: PokemonImpostorPlayerState; people: ImpostorPeople }) {
+  const fellows = fellowsOf(player, people);
+  if (fellows.length === 0) return null;
+  return <p className={s.help} data-testid="impostor-fellows">
+    {impostorFellowsLead(fellows.length)}
+    {fellows.map((fellow, index) => <Fragment key={index}>
+      {index === 0 ? '' : index === fellows.length - 1 ? ' y ' : ', '}
+      <strong>{fellow.name}</strong>{fellow.out ? ' (fuera)' : ''}
+    </Fragment>)}
+  </p>;
+}
+
 /** Reparto de roles (pantalla superior en `ROLE_REVEAL`): el rol grande y el Pokémon secreto, solo a quien le toca. */
-export function ImpostorRoleReveal({ player }: { player: PokemonImpostorPlayerState }) {
+export function ImpostorRoleReveal({ player, people }: { player: PokemonImpostorPlayerState; people: ImpostorPeople }) {
   const look = roleLook(player.role);
   return <Panel variant="cream" as="section" aria-labelledby="impostor-role-title" bodyClassName={cx(s.reveal)}>
     <span className={cx(s.roleIcon, s.roleIconLg, look.tone)}><Icon icon={look.icon} size={32} /></span>
     <span className={s.kicker}>Tu rol</span>
     <h2 id="impostor-role-title" className={cx(s.roleName, look.tone && s.roleNameTone, look.tone)}>{look.label}</h2>
     <SecretPokemon player={player} box="reveal" />
+    <FellowsLine player={player} people={people} />
   </Panel>;
 }
 
@@ -77,14 +99,16 @@ export function ImpostorRoleReveal({ player }: { player: PokemonImpostorPlayerSt
  * Tu rol en una línea dentro de la placa de la ronda, solo en el móvil (la columna lateral queda bajo el pliegue): el
  * sprite y el nombre del Pokémon secreto o, al impostor, que no lo conoce.
  */
-export function ImpostorRoleStrip({ player }: { player: PokemonImpostorPlayerState }) {
+export function ImpostorRoleStrip({ player, people }: { player: PokemonImpostorPlayerState; people: ImpostorPeople }) {
   if (!player.role) return null;
+  const fellows = impostorFellowsShort(fellowsOf(player, people).map((fellow) => fellow.name));
+  const note = fellows ?? (player.role === 'IMPOSTOR' ? 'Impostor · no conoces el Pokémon' : 'Sin Pokémon');
   const look = roleLook(player.role);
   return <p className={s.roleStrip} data-testid="impostor-role-strip">
     <span className={cx(s.roleTag, look.tone)}><Icon icon={look.icon} size={18} />{look.label}</span>
     {player.secretPokemon
       ? <><img className={s.stripSprite} src={player.secretPokemon.sprite} alt="" /><span className={s.stripName} title={player.secretPokemon.name}>{player.secretPokemon.name}</span></>
-      : <span className={s.stripNote}>{player.role === 'IMPOSTOR' ? 'Impostor · no conoces el Pokémon' : 'Sin Pokémon'}</span>}
+      : <span className={s.stripNote} title={note}>{note}</span>}
   </p>;
 }
 
@@ -92,12 +116,13 @@ export function ImpostorRoleStrip({ player }: { player: PokemonImpostorPlayerSta
  * Tu rol en la columna lateral (todas las fases salvo el reparto): rol, Pokémon secreto y, al impostor durante las
  * pistas, su único intento de adivinar el Pokémon.
  */
-export function ImpostorRolePanel({ player, phase, guessOpen, onToggleGuess }: { player: PokemonImpostorPlayerState; phase: PokemonImpostorPublicState['phase']; guessOpen: boolean; onToggleGuess(): void }) {
+export function ImpostorRolePanel({ player, phase, guessOpen, onToggleGuess, people }: { player: PokemonImpostorPlayerState; phase: PokemonImpostorPublicState['phase']; guessOpen: boolean; onToggleGuess(): void; people: ImpostorPeople }) {
   const look = roleLook(player.role);
   const guessing = phase === 'CLUE_PHASE' && player.role === 'IMPOSTOR';
   return <Panel title="Tu rol" variant="cream" as="section" bodyClassName={cx(s.rolePanel)}
     right={<span className={cx(s.roleTag, look.tone)}><Icon icon={look.icon} size={18} />{look.label}</span>}>
     <SecretPokemon player={player} box="side" />
+    <FellowsLine player={player} people={people} />
     {!player.alive && player.role && <p className={s.help}><strong>Eliminado</strong> · ahora eres espectador</p>}
     {guessing && <div className={s.guess}>
       <span className={s.guessTitle}><Icon icon={Brain} size={18} />Adivinar el Pokémon</span>

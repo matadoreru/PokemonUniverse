@@ -37,7 +37,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   const config = room.selectedGameConfig as PokemonImpostorConfig;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
   const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const people: ImpostorPeople = useMemo(() => ({ members, colors, selfId, nameOf: (id: string) => members.get(id)?.displayName ?? id }), [colors, members, selfId]);
+  const people: ImpostorPeople = useMemo(() => ({ members, colors, selfId, nameOf: (id: string) => members.get(id)?.displayName ?? id, outIds: new Set(game.eliminatedIds) }), [colors, members, selfId, game.eliminatedIds]);
   const [clueText, setClueText] = useState('');
   const [voteDraft, setVoteDraft] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -93,7 +93,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   const timer = deadline ? <ServerTimer deadline={deadline} serverOffset={serverOffset} label={impostorTimerLabel(game.phase)} {...(totalMs ? { totalMs } : {})} /> : null;
 
   const scene = game.phase === 'ROLE_REVEAL'
-    ? <ImpostorRoleReveal player={player} />
+    ? <ImpostorRoleReveal player={player} people={people} />
     : game.phase === 'VOTING'
       ? <ImpostorVoteGrid game={game} people={people} selectedId={player.ownVote?.targetId ?? voteDraft} interactive={player.canVote && !submitting} onSelect={setVoteDraft} />
       : game.phase === 'VOTE_RESULTS' && game.lastVoteResult
@@ -104,12 +104,12 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
 
   const top = <div className={s.top}>
     <ImpostorHud roundLabel={impostorRoundLabel(game)} alive={game.aliveIds.length} tiebreak={game.phase === 'VOTING' && game.votingRound > 1} title={impostorPhaseTitle(game, people.nameOf)} timer={timer}
-      strip={game.phase !== 'ROLE_REVEAL' ? <ImpostorRoleStrip player={player} /> : null} />
+      strip={game.phase !== 'ROLE_REVEAL' ? <ImpostorRoleStrip player={player} people={people} /> : null} />
     {scene}
   </div>;
 
   const side = <div className={s.side}>
-    {game.phase !== 'ROLE_REVEAL' && <ImpostorRolePanel player={player} phase={game.phase} guessOpen={showGuess} onToggleGuess={() => setShowGuess((open) => !open)} />}
+    {game.phase !== 'ROLE_REVEAL' && <ImpostorRolePanel player={player} phase={game.phase} guessOpen={showGuess} onToggleGuess={() => setShowGuess((open) => !open)} people={people} />}
     {game.phase !== 'CLUE_PHASE' && <ImpostorPlayersPanel game={game} people={people} className={s.sidePanel} />}
     <GameSkipSlot className={s.skip} />
   </div>;

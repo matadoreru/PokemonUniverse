@@ -509,6 +509,53 @@ test.describe('pokemon-impostor: eliminación', () => {
   });
 });
 
+test('pokemon-impostor: con dos impostores, cada uno ve al otro', async ({ browser }) => {
+  test.setTimeout(120_000);
+  // Prefijos de 19 caracteres: con el sufijo de `uniqueName` los nombres llegan a 24, el máximo permitido.
+  const sala = await crearSalaConJugadores(browser, 5, undefined, ['Host', 'Entrenadora Largaa1', 'Entrenadora Largaa2', 'Entrenadora Largaa3', 'Entrenadora Largaa4']);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const pages = jugadores.map((j) => j.page);
+    await seleccionarJuego(host.page, 'Pokémon Impostor');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    for (const [nombre, tecla, valor] of [['Impostores', 'ArrowRight', '2'], ['Tiempo por pista', 'End', '120']] as const) {
+      const rango = host.page.getByRole('slider', { name: nombre });
+      await rango.focus();
+      await rango.press('Home');
+      await rango.press(tecla);
+      await rango.blur();
+      await expect(rango).toHaveValue(valor);
+    }
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(pages);
+
+    // Reparto de roles: solo los dos impostores ven la línea de aliados y cada uno nombra al otro.
+    for (const page of pages) await expect(page.getByRole('heading', { name: 'Descubre tu rol' })).toBeVisible({ timeout: 15_000 });
+    const conAliados: Jugador[] = [];
+    for (const jugador of jugadores) if (await jugador.page.getByTestId('impostor-fellows').isVisible()) conAliados.push(jugador);
+    expect(conAliados.map((j) => j.name), 'exactamente dos impostores ven aliados').toHaveLength(2);
+    const [a, b] = conAliados as [Jugador, Jugador];
+    test.info().annotations.push({ type: 'impostores', description: `${a.name} | ${b.name}` });
+    await expect(a.page.getByTestId('impostor-fellows')).toContainText(b.name);
+    await expect(b.page.getByTestId('impostor-fellows')).toContainText(a.name);
+    for (const jugador of jugadores) if (!conAliados.includes(jugador)) await expect(jugador.page.getByTestId('impostor-fellows')).toHaveCount(0);
+
+    // Pistas: la tarjeta lateral y, en el móvil, la línea del rol con «con …» sin salirse de la vista.
+    for (const page of pages) await expect(page.getByRole('heading', { name: 'Descubre tu rol' })).toBeHidden({ timeout: 15_000 });
+    await expect(a.page.getByTestId('impostor-fellows')).toContainText(b.name);
+    await capturarTamanos(a.page, 'juego-pokemon-impostor-aliados');
+    await a.page.setViewportSize({ width: 390, height: 844 });
+    const linea = a.page.getByTestId('impostor-role-strip');
+    await expect(linea).toBeInViewport({ ratio: 1 });
+    await expect(linea).toContainText('con ');
+    await a.page.setViewportSize({ width: 1280, height: 720 });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 test('pokemon-impostor: panel de configuración', async ({ browser }) => {
   const sala = await crearSalaConJugadores(browser, 3);
   try {
