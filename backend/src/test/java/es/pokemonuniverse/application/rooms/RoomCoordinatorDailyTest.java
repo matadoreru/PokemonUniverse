@@ -184,7 +184,8 @@ class RoomCoordinatorDailyTest {
     assertEquals("POINTS", room.game.configTree.get("mode").getStringValue());
     assertEquals(List.of(ASH.id()), room.game.participantIds);
     assertEquals(new RoomView.DailyView("pokedex-distance", "2026-11-07", 5, null), view.daily());
-    assertNull(view.gameSkipState());
+    // El id de la partida viaja en el estado de salto: sin él, la web no puede enviar `game:action`.
+    assertEquals(room.game.resultId, view.gameSkipState().gameInstanceId());
     assertEquals(Map.of(), view.allowedModes());
     assertEquals(List.of(), view.customizedGameIds());
     assertEquals(List.of("pokedex-distance"), List.copyOf(view.gameConfigs().keySet()));

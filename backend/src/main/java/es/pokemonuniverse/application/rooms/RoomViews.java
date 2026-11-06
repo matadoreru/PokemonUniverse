@@ -123,8 +123,9 @@ final class RoomViews {
 
   RoomView view(LiveRoom room, String playerId, RoomView shared, GameContext context) {
     var vote = room.nextGameVote;
-    // En el reto no se salta la partida: sin estado de salto.
-    return shared.forMember(room.daily != null ? null : GameSkip.stateView(room, playerId),
+    // También en el reto: la web saca de aquí el id de la partida para `game:action`. Saltar no se puede (el voto se
+    // rechaza con DAILY_UNAVAILABLE y la web no pinta el control).
+    return shared.forMember(GameSkip.stateView(room, playerId),
         shared.nextGameVote() == null ? null
             : shared.nextGameVote().withOwnVote(vote == null ? null : vote.votes.get(playerId)),
         room.game != null ? toTree.apply(room.game.engine.getPlayerState(room.game.state, playerId, context)) : null);

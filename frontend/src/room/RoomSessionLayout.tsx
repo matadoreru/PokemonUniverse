@@ -88,7 +88,7 @@ function RoomSessionContent() {
       <p>{daily ? ABANDON_DAILY_TEXT : 'Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.'}</p>
     </Dialog>
     {/* En la intro y en los juegos rediseñados el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
-    {room?.gameSkipState && skipRowInLayout(room) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
+    {room?.gameSkipState && !daily && skipRowInLayout(room) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
     <Outlet />

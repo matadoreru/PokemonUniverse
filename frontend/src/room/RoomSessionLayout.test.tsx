@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { RoomPlate, roomPlateHeading } from './RoomPlate';
 import { RoomNotice } from './RoomNotice';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
+import { GameSkipSlot } from './GameSkipSlot';
 
 const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn(), holdRoomSession: vi.fn(() => () => undefined) }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
@@ -31,6 +32,17 @@ describe('global room actions', () => {
 
   it.each(['pokedex-distance', 'shiny-vote', 'pokemon-impostor', 'higher-lower', 'type-duel', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'pokemon-bingo', 'most-likely-to', 'pokemon-red-flag', 'would-you-rather', 'one-of-us-is-fake', 'secret-ranking', 'poke-taboo', 'sketchmon', 'pokemon-team-auction', 'pokemon-bluff-auction', 'who-is-who-pokemon'])('%s pinta «Saltar minijuego» dentro de su pantalla, no en el armazón', (gameId) => {
     expect(render(gameId, 'ROUND_ACTIVE', skip)).not.toContain('Votar para saltar el minijuego');
+  });
+
+  it('no pinta «Saltar minijuego» en el reto diario, aunque la sala lleve el estado de salto (de él sale el id de la partida)', () => {
+    const dailyView = { gameId: 'higher-lower', date: '2026-11-07', roundCount: 10, result: null };
+    expect(render('future-minigame', 'ROUND_ACTIVE', skip)).toContain('Votar para saltar el minijuego');
+    context.room = { ...context.room, daily: dailyView } as RoomView;
+    expect(renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(RoomSessionLayout)))).not.toContain('Votar para saltar el minijuego');
+    render('higher-lower', 'ROUND_ACTIVE', skip);
+    expect(renderToStaticMarkup(createElement(GameSkipSlot))).toContain('Votar para saltar el minijuego');
+    context.room = { ...context.room, daily: dailyView } as RoomView;
+    expect(renderToStaticMarkup(createElement(GameSkipSlot))).toBe('');
   });
 
   it.each(['LOBBY', 'GAME_RESULTS', 'SESSION_RESULTS', 'NEXT_GAME_VOTE'] as const)('has no skip control in %s', (phase) => {
