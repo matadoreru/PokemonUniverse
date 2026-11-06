@@ -45,7 +45,7 @@ class ShinyVoteEngineTest {
   }
 
   private static ShinyVoteConfig config(List<Integer> generations, CandidateMode mode, int optionCount) {
-    return new ShinyVoteConfig(generations, 20, 2, mode, optionCount, VoteVisibility.LIVE, 4);
+    return new ShinyVoteConfig(generations, 20, 2, mode, optionCount, VoteVisibility.LIVE, 4, ShinyVoteMode.CLASSIC);
   }
 
   @Test
@@ -189,12 +189,12 @@ class ShinyVoteEngineTest {
     var withShiny = gen1.get(3).id();
     var context = GameContext.builder(new InMemoryPokemonCatalog(mixed), () -> 0.99)
         .players(List.of(new GamePlayer("p1", "Player 1"))).now(1000).roomCode("GOLD01").build();
-    var config = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL, 4);
+    var config = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL, 4, ShinyVoteMode.CLASSIC);
     var started = engine.start(engine.createInitialState(config, context), context);
     assertTrue(started.options().stream().allMatch(option -> option.pokemonId().equals(withShiny)));
     var revealed = engine.handleTimeout(started, context.withNow(started.roundEndsAt()));
     assertTrue(revealed.preparedOptions().stream().allMatch(option -> option.pokemonId().equals(withShiny)));
-    var different = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.DIFFERENT_POKEMON, 4, VoteVisibility.REVEAL, 4);
+    var different = new ShinyVoteConfig(List.of(1), 20, 3, CandidateMode.DIFFERENT_POKEMON, 4, VoteVisibility.REVEAL, 4, ShinyVoteMode.CLASSIC);
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(different, context));
     assertEquals("At least 4 Pokémon are required for the selected generations", error.getMessage());
   }

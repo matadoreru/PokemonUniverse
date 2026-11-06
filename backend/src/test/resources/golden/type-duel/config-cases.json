@@ -18,7 +18,9 @@
       ],
       "typeSelectSeconds": 10,
       "searchSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -40,7 +42,9 @@
       ],
       "typeSelectSeconds": 10,
       "searchSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -61,7 +65,9 @@
       ],
       "typeSelectSeconds": 5,
       "searchSeconds": 10,
-      "rounds": 1
+      "rounds": 1,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -82,7 +88,9 @@
       ],
       "typeSelectSeconds": 60,
       "searchSeconds": 60,
-      "rounds": 50
+      "rounds": 50,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -103,7 +111,9 @@
       ],
       "typeSelectSeconds": 15,
       "searchSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -259,6 +269,283 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "COOP"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "COOP"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "TURBO"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "coop"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 30,
+      "mode": "COOP"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 30,
+      "mode": "COOP"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 120
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 120,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 30
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 29
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 121
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": 30.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": "10"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 10,
+      "coopSeconds": null
+    },
     "valid": false
   }
 ]

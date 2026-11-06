@@ -17,7 +17,8 @@ public record HigherLowerConfig(
     HigherLowerAnswerVisibility answerVisibility,
     HigherLowerDifficulty difficulty,
     int roundSeconds,
-    int rounds) {
+    int rounds,
+    HigherLowerMode mode) {
 
   public HigherLowerConfig {
     generations = List.copyOf(generations);
@@ -36,13 +37,14 @@ public record HigherLowerConfig(
   public static HigherLowerConfig defaults() {
     var generations = ConfigReader.allGenerations();
     return new HigherLowerConfig(generations, Arrays.asList(HigherLowerCategory.values()), true,
-        HigherLowerAnswerVisibility.REVEAL, HigherLowerDifficulty.NORMAL, 20, 10);
+        HigherLowerAnswerVisibility.REVEAL, HigherLowerDifficulty.NORMAL, 20, 10, HigherLowerMode.CLASSIC);
   }
 
   /**
    * {@code higherLowerConfigSchema.parse}: objeto obligatorio; las claves desconocidas se ignoran (el esquema no es
    * {@code .strict()}); {@code generations} sin duplicados y ascendentes; {@code categories} sin duplicados en orden de
-   * primera aparición. Los enteros admiten {@code 10.0} (JS tiene un único tipo numérico) y rechazan {@code 10.5}.
+   * primera aparición; {@code mode} ausente es {@code CLASSIC}. Los enteros admiten {@code 10.0} (JS tiene un único
+   * tipo numérico) y rechazan {@code 10.5}.
    */
   public static HigherLowerConfig parse(JsonNode raw) {
     var config = ConfigReader.of(raw, "Higher or Lower");
@@ -67,6 +69,7 @@ public record HigherLowerConfig(
         config.enumValue("answerVisibility", HigherLowerAnswerVisibility.class),
         config.enumValue("difficulty", HigherLowerDifficulty.class),
         config.integer("roundSeconds", 10, 60),
-        config.integer("rounds", 1, 50));
+        config.integer("rounds", 1, 50),
+        config.enumValueOrDefault("mode", HigherLowerMode.class, HigherLowerMode.CLASSIC));
   }
 }

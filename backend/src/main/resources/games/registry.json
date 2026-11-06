@@ -44,7 +44,9 @@
         9
       ],
       "roundSeconds": 20,
-      "selectionVisibility": "HIDDEN"
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -108,7 +110,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "REVEAL",
-      "revealSeconds": 4
+      "revealSeconds": 4,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -188,7 +191,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 15,
-      "voteSeconds": 20
+      "voteSeconds": 20,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -261,7 +265,8 @@
       "answerVisibility": "REVEAL",
       "difficulty": "NORMAL",
       "roundSeconds": 20,
-      "rounds": 10
+      "rounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -338,7 +343,9 @@
       ],
       "typeSelectSeconds": 15,
       "searchSeconds": 20,
-      "rounds": 10
+      "rounds": 10,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -419,7 +426,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 60,
-      "rounds": 10
+      "rounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {

@@ -24,7 +24,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -49,7 +50,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -74,7 +76,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 3,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -99,7 +102,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 6,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -124,7 +128,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -149,7 +154,8 @@
       "candidateMode": "DIFFERENT_POKEMON",
       "optionCount": 4,
       "voteVisibility": "REVEAL",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -175,7 +181,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -200,7 +207,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 4
+      "revealSeconds": 4,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -225,7 +233,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 6
+      "revealSeconds": 6,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -496,6 +505,140 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "SURVIVAL"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "SURVIVAL"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "TURBO"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 10,
+      "candidateMode": "SAME_POKEMON",
+      "optionCount": 4,
+      "voteVisibility": "REVEAL",
+      "revealSeconds": 4,
+      "mode": "survival"
+    },
     "valid": false
   }
 ]

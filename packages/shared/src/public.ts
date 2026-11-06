@@ -14,6 +14,7 @@ export * from './tcg/types.js';
 export * from './games/contracts.js';
 export * from './games/config.js';
 export * from './games/config-readiness.js';
+export * from './games/modes.js';
 export * from './games/infrastructure/timing.js';
 export * from './games/infrastructure/runoff-voting.js';
 export * from './games/pokedex-distance/config.js';

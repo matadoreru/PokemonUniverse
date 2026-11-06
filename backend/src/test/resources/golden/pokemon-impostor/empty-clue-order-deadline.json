@@ -142,7 +142,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 10,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

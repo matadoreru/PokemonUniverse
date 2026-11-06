@@ -9,6 +9,10 @@ export type HigherLowerAnswerVisibility = (typeof HIGHER_LOWER_VISIBILITIES)[num
 export const HIGHER_LOWER_DIFFICULTIES = ['VERY_EASY', 'EASY', 'NORMAL', 'HARD', 'VERY_HARD'] as const;
 export type HigherLowerDifficulty = (typeof HIGHER_LOWER_DIFFICULTIES)[number];
 
+/** Modos de juego: `CLASSIC` y `ENDLESS` (un fallo y fuera; gana la racha más larga). */
+export const HIGHER_LOWER_MODES = ['CLASSIC', 'ENDLESS'] as const;
+export type HigherLowerMode = (typeof HIGHER_LOWER_MODES)[number];
+
 export const higherLowerConfigSchema = z.object({
   generations: pokemonGenerationsSchema,
   categories: z.array(z.enum(HIGHER_LOWER_CATEGORIES)).min(1).transform((values) => [...new Set(values)]),
@@ -17,10 +21,11 @@ export const higherLowerConfigSchema = z.object({
   difficulty: z.enum(HIGHER_LOWER_DIFFICULTIES),
   roundSeconds: z.number().int().min(10).max(60),
   rounds: z.number().int().min(1).max(50),
+  mode: z.enum(HIGHER_LOWER_MODES).default('CLASSIC'),
 });
 export type HigherLowerConfig = z.infer<typeof higherLowerConfigSchema>;
 
 export const defaultHigherLowerConfig: HigherLowerConfig = {
   generations: [...GENERATIONS], categories: [...HIGHER_LOWER_CATEGORIES], showPreviousValue: true,
-  answerVisibility: 'REVEAL', difficulty: 'NORMAL', roundSeconds: 20, rounds: 10,
+  answerVisibility: 'REVEAL', difficulty: 'NORMAL', roundSeconds: 20, rounds: 10, mode: 'CLASSIC',
 };

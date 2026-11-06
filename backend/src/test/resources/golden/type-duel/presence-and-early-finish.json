@@ -162,7 +162,9 @@
       ],
       "typeSelectSeconds": 10,
       "searchSeconds": 20,
-      "rounds": 5
+      "rounds": 5,
+      "coopSeconds": 60,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

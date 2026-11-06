@@ -56,7 +56,7 @@ class LearnsetGuessEngineTest {
   }
 
   private static LearnsetGuessConfig config(boolean showLevels, boolean showEvolution) {
-    return new LearnsetGuessConfig(List.of(1), showLevels, showEvolution, 30, 3);
+    return new LearnsetGuessConfig(List.of(1), showLevels, showEvolution, 30, 3, LearnsetGuessMode.CLASSIC);
   }
 
   /** Catálogo con esos Pokémon de {@code gen1-2}, sus movimientos de generación 1 (editados) y esa evolución. */
@@ -151,7 +151,7 @@ class LearnsetGuessEngineTest {
   void needsLearnsetsForTheReferenceGeneration() {
     // gen1-2 solo trae movimientos de Yellow y Crystal: con la generación 3 como referencia no hay candidatos.
     var context = context(GOLDEN, 2);
-    var initial = engine.createInitialState(new LearnsetGuessConfig(List.of(1, 3), true, true, 30, 3), context);
+    var initial = engine.createInitialState(new LearnsetGuessConfig(List.of(1, 3), true, true, 30, 3, LearnsetGuessMode.CLASSIC), context);
     var error = assertThrows(EngineException.class, () -> engine.start(initial, context));
     assertEquals("No hay Pokémon con learnsets válidos para esa selección de generaciones. Ejecuta el seed actualizado.",
         error.getMessage());
@@ -272,7 +272,7 @@ class LearnsetGuessEngineTest {
   void lastWarningDropsAHintAtOrAfterTheCutDeadline() {
     var context = context(GOLDEN, 3);
     var started = engine.start(engine.createInitialState(
-        new LearnsetGuessConfig(List.of(1), true, true, 60, 3), context), context);
+        new LearnsetGuessConfig(List.of(1), true, true, 60, 3, LearnsetGuessMode.CLASSIC), context), context);
     var answer = started.correctPokemonId();
     for (long hint : List.of(16_000L, 20_000L)) {
       var state = started.toBuilder().nextTransitionAt(hint).build();

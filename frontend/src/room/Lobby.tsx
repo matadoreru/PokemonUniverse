@@ -1,4 +1,4 @@
-import { formatPendingReadyNames, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
+import { formatPendingReadyNames, gameModeLabel, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
@@ -169,11 +169,14 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
             const position = selectedGameIds.indexOf(game.id) + 1;
             const selected = position > 0;
             const preloadConfig = () => { void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined); };
+            const modeLabel = gameModeLabel(game.id, rotationConfig(game.id));
             return (
               <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
                 {/* Solo lectura: carta sin botón (no se atenúa, la elegida se sigue viendo amarilla). */}
                 <Card size="sm" art={<GameArt gameId={game.id} size={32} />} name={game.name} state={selected ? 'selected' : 'idle'} {...(canEditGameSelection ? { onSelect: () => toggleGame(game.id) } : {})}>
                   <span className={s.players}><Icon icon={Users} size={18} />{playerRangeLabel(game)}</span>
+                  {/* Modo distinto de Clásico: chip con su nombre bajo los jugadores. */}
+                  {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
                   {/* Elegida: su número de orden en la esquina superior izquierda, para que la carta no cambie de tamaño
                       (el estado ya lo dicen el amarillo y `aria-pressed`). */}
                   {selected && <><span className={s.tick} aria-hidden="true">{position}</span><span className="sr-only">{`, n.º ${position} de la sesión`}</span></>}

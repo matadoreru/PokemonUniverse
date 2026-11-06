@@ -192,7 +192,9 @@
         1
       ],
       "roundSeconds": 10,
-      "selectionVisibility": "LIVE"
+      "selectionVisibility": "LIVE",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

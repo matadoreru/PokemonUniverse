@@ -16,7 +16,9 @@
         2
       ],
       "roundSeconds": 20,
-      "selectionVisibility": "HIDDEN"
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -37,7 +39,9 @@
         9
       ],
       "roundSeconds": 60,
-      "selectionVisibility": "LIVE"
+      "selectionVisibility": "LIVE",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -54,7 +58,9 @@
         1
       ],
       "roundSeconds": 10,
-      "selectionVisibility": "HIDDEN"
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -87,7 +93,9 @@
         9
       ],
       "roundSeconds": 20,
-      "selectionVisibility": "LIVE"
+      "selectionVisibility": "LIVE",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -246,6 +254,261 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "POINTS"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "POINTS"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "TURBO"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "points"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 3,
+      "mode": "POINTS"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 3,
+      "mode": "POINTS"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 30
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 3
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 3,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 2
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 31
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 3.5
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": "10"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": null
+    },
     "valid": false
   }
 ]

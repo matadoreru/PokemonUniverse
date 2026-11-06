@@ -424,7 +424,8 @@
       ],
       "impostorCount": 2,
       "clueSeconds": 120,
-      "voteSeconds": 90
+      "voteSeconds": 90,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

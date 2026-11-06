@@ -17,7 +17,8 @@ public record ShinyVoteConfig(
     CandidateMode candidateMode,
     int optionCount,
     VoteVisibility voteVisibility,
-    int revealSeconds) {
+    int revealSeconds,
+    ShinyVoteMode mode) {
 
   /** {@code SHINY_REVEAL_SECONDS_RANGE}: duración de la revelación de cada ronda, en segundos. */
   public static final int REVEAL_SECONDS_MIN = 3;
@@ -39,13 +40,14 @@ public record ShinyVoteConfig(
   /** {@code defaultShinyVoteConfig}. */
   public static ShinyVoteConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new ShinyVoteConfig(generations, 20, 10, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL, 4);
+    return new ShinyVoteConfig(generations, 20, 10, CandidateMode.SAME_POKEMON, 4, VoteVisibility.REVEAL, 4,
+        ShinyVoteMode.CLASSIC);
   }
 
   /**
    * {@code shinyVoteConfigSchema.parse}: {@code generations} sin duplicados y ascendentes
-   * ({@code pokemonGenerationsSchema}); {@code candidateMode} distingue mayúsculas. Los enteros admiten {@code 10.0} y
-   * rechazan {@code 10.5}.
+   * ({@code pokemonGenerationsSchema}); {@code candidateMode} distingue mayúsculas; {@code mode} ausente es
+   * {@code CLASSIC}. Los enteros admiten {@code 10.0} y rechazan {@code 10.5}.
    */
   public static ShinyVoteConfig parse(JsonNode raw) {
     var config = ConfigReader.of(raw, "Shiny Quiz");
@@ -57,7 +59,8 @@ public record ShinyVoteConfig(
     int optionCount = config.integer("optionCount", 3, 6);
     var voteVisibility = config.enumValue("voteVisibility", VoteVisibility.class);
     int revealSeconds = config.integer("revealSeconds", REVEAL_SECONDS_MIN, REVEAL_SECONDS_MAX);
+    var mode = config.enumValueOrDefault("mode", ShinyVoteMode.class, ShinyVoteMode.CLASSIC);
     return new ShinyVoteConfig(generations, roundSeconds, rounds, candidateMode, optionCount, voteVisibility,
-        revealSeconds);
+        revealSeconds, mode);
   }
 }

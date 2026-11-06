@@ -31,7 +31,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 15,
-      "voteSeconds": 20
+      "voteSeconds": 20,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -56,7 +57,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 10,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -75,7 +77,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 10,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -94,7 +97,8 @@
       ],
       "impostorCount": 10,
       "clueSeconds": 10,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -113,7 +117,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 120,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -132,7 +137,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 10,
-      "voteSeconds": 90
+      "voteSeconds": 90,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -151,7 +157,8 @@
       ],
       "impostorCount": 2,
       "clueSeconds": 30,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -163,7 +170,7 @@
       "clueSeconds": 10,
       "voteSeconds": 10,
       "unknownKey": "se descarta",
-      "mode": "classic"
+      "legacyMode": "classic"
     },
     "valid": true,
     "normalized": {
@@ -172,7 +179,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 10,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -191,7 +199,8 @@
       ],
       "impostorCount": 1,
       "clueSeconds": 10,
-      "voteSeconds": 10
+      "voteSeconds": 10,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -371,6 +380,113 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "ONE_WORD"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "ONE_WORD"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "TURBO"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "impostorCount": 1,
+      "clueSeconds": 15,
+      "voteSeconds": 20,
+      "mode": "one_word"
+    },
     "valid": false
   }
 ]

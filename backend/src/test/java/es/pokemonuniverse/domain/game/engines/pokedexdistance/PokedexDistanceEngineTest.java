@@ -152,7 +152,7 @@ class PokedexDistanceEngineTest {
   @Test
   void liveKeepsTheLockAndTheLiveSelections() {
     var context = context(3);
-    var live = new PokedexDistanceConfig(List.of(1, 2), 20, SelectionVisibility.LIVE);
+    var live = new PokedexDistanceConfig(List.of(1, 2), 20, SelectionVisibility.LIVE, 10, PokedexDistanceMode.CLASSIC);
     var state = engine.start(engine.createInitialState(live, context), context);
     var first = engine.handleAction(state, "p1", new PokedexDistanceAction("pikachu"), context);
     var duplicate = engine.handleAction(first.state(), "p2", new PokedexDistanceAction("pikachu"), context);
@@ -183,7 +183,7 @@ class PokedexDistanceEngineTest {
     var config = engine.defaultConfig();
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(config, context(1)));
     assertEquals("At least 2 players are required", error.getMessage());
-    var tiny = new PokedexDistanceConfig(List.of(9), 20, SelectionVisibility.HIDDEN); // gen1-2 no tiene Pokémon de la generación 9
+    var tiny = new PokedexDistanceConfig(List.of(9), 20, SelectionVisibility.HIDDEN, 10, PokedexDistanceMode.CLASSIC); // gen1-2 no tiene Pokémon de la generación 9
     error = assertThrows(EngineException.class, () -> engine.createInitialState(tiny, context(2)));
     assertEquals("The Pokémon pool is too small for this player count", error.getMessage());
   }

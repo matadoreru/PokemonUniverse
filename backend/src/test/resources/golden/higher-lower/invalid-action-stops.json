@@ -84,7 +84,8 @@
       "answerVisibility": "LIVE",
       "difficulty": "VERY_EASY",
       "roundSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

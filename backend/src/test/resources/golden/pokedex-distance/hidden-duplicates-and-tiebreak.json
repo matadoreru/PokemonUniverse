@@ -149,7 +149,9 @@
         2
       ],
       "roundSeconds": 20,
-      "selectionVisibility": "HIDDEN"
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 10,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

@@ -20,7 +20,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 30,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -41,7 +42,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 30,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -64,7 +66,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 30,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -85,7 +88,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 15,
-      "rounds": 1
+      "rounds": 1,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -106,7 +110,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 120,
-      "rounds": 20
+      "rounds": 20,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -127,7 +132,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 15,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -148,7 +154,8 @@
       "showLevels": false,
       "showEvolution": false,
       "roundSeconds": 30,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -336,6 +343,122 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "MANUAL_REVEAL"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "MANUAL_REVEAL"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "TURBO"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 60,
+      "rounds": 10,
+      "mode": "manual_reveal"
+    },
     "valid": false
   }
 ]

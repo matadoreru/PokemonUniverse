@@ -11,7 +11,12 @@ import java.util.List;
  * Zod.
  */
 @Serdeable
-public record PokemonImpostorConfig(List<Integer> generations, int impostorCount, int clueSeconds, int voteSeconds) {
+public record PokemonImpostorConfig(
+    List<Integer> generations,
+    int impostorCount,
+    int clueSeconds,
+    int voteSeconds,
+    PokemonImpostorMode mode) {
 
   public PokemonImpostorConfig {
     generations = List.copyOf(generations);
@@ -33,6 +38,7 @@ public record PokemonImpostorConfig(List<Integer> generations, int impostorCount
     private int impostorCount;
     private int clueSeconds;
     private int voteSeconds;
+    private PokemonImpostorMode mode = PokemonImpostorMode.CLASSIC;
 
     private Builder() {}
 
@@ -44,15 +50,17 @@ public record PokemonImpostorConfig(List<Integer> generations, int impostorCount
 
     public Builder voteSeconds(int value) { voteSeconds = value; return this; }
 
+    public Builder mode(PokemonImpostorMode value) { mode = value; return this; }
+
     public PokemonImpostorConfig build() {
-      return new PokemonImpostorConfig(generations, impostorCount, clueSeconds, voteSeconds);
+      return new PokemonImpostorConfig(generations, impostorCount, clueSeconds, voteSeconds, mode);
     }
   }
 
   /**
    * {@code pokemonImpostorConfigSchema.parse}: objeto no estricto; {@code generations} sin duplicados y ascendentes;
-   * cada campo es un entero seguro en sus límites. Los enteros admiten {@code 15.0} (JS tiene un único tipo numérico)
-   * y rechazan {@code 15.5}.
+   * cada campo es un entero seguro en sus límites; {@code mode} ausente es {@code CLASSIC}. Los enteros admiten
+   * {@code 15.0} (JS tiene un único tipo numérico) y rechazan {@code 15.5}.
    */
   public static PokemonImpostorConfig parse(JsonNode raw) {
     var config = ConfigReader.of(raw, "Pokémon Impostor");
@@ -61,6 +69,7 @@ public record PokemonImpostorConfig(List<Integer> generations, int impostorCount
     int clueSeconds = config.integer("clueSeconds", 10, 120);
     int voteSeconds = config.integer("voteSeconds", 10, 90);
     return builder().generations(generations).impostorCount(impostorCount).clueSeconds(clueSeconds)
-        .voteSeconds(voteSeconds).build();
+        .voteSeconds(voteSeconds).mode(config.enumValueOrDefault("mode", PokemonImpostorMode.class,
+            PokemonImpostorMode.CLASSIC)).build();
   }
 }

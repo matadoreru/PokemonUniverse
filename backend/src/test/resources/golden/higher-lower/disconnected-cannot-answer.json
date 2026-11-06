@@ -195,7 +195,8 @@
       "answerVisibility": "REVEAL",
       "difficulty": "NORMAL",
       "roundSeconds": 15,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

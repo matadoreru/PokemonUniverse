@@ -2,6 +2,7 @@ import { SHINY_REVEAL_SECONDS_RANGE, SHINY_VOTE_VISIBILITIES, type ShinyCandidat
 import { Layers3, Shuffle, type LucideIcon } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { GameModeField } from '../../room/GameModeField';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, Icon, Segmented } from '../../ui';
 import { SHINY_REVEAL_DURATION_LABEL, shinyRevealSecondsLabel } from './reveal';
@@ -17,7 +18,7 @@ const CANDIDATE_MODES: { value: ShinyCandidateMode; label: string; icon: LucideI
 ];
 
 /**
- * Ajustes de Shiny Quiz con los controles del catálogo: modo de candidatos (`Card` seleccionables), número de opciones
+ * Ajustes de Shiny Quiz con los controles del catálogo: el modo de juego (`GameModeField`), modo de candidatos (`Card` seleccionables), número de opciones
  * y visibilidad de los votos (`Segmented`, con el aviso de copia en «En directo»), generaciones y los tiempos (`ConfigRange`, el `Slider`).
  */
 export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
@@ -25,6 +26,7 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
   const counts = OPTION_COUNTS.map((count) => ({ value: count, label: String(count), disabled }));
   const visibilities = SHINY_VOTE_VISIBILITIES.map((visibility) => ({ value: visibility, label: shinyVisibilityLabels[visibility], disabled }));
   return <fieldset disabled={disabled} className={s.panel}>
+    <GameModeField gameId="shiny-vote" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <div className={s.group}>
       <span className={s.label} aria-hidden="true">{CANDIDATE_MODE_LABEL}</span>
       <div className={s.modes} role="group" aria-label={CANDIDATE_MODE_LABEL}>{CANDIDATE_MODES.map((mode) => <Card key={mode.value} size="sm" art={<Icon icon={mode.icon} size={32} />} name={mode.label}

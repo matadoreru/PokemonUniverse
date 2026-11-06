@@ -108,6 +108,29 @@ describe('lobby how to play', () => {
   });
 });
 
+describe('lobby game modes', () => {
+  const render = (gameConfigs: Record<string, unknown>) => renderToStaticMarkup(<MemoryRouter><Lobby
+    room={{ ...room, gameConfigs }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+    onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+  /></MemoryRouter>);
+  const card = (markup: string, name: string) => markup.match(new RegExp(`<li[^>]*>(?:(?!</li>).)*${name}(?:(?!</li>).)*</li>`))?.[0] ?? '';
+
+  it('la carta lleva un chip con el modo cuando no es Clásico', () => {
+    const markup = render({ 'pokedex-distance': { generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN', pointsRounds: 10, mode: 'POINTS' } });
+    expect(card(markup, 'Pokédex Distance')).toContain('>Por puntos<');
+    expect(card(markup, 'Shiny Quiz')).not.toContain('Supervivencia');
+  });
+
+  it('sin chip de modo en Clásico ni en una configuración guardada sin mode', () => {
+    for (const config of [{ generations: [1], roundSeconds: 20, mode: 'CLASSIC' }, { generations: [1], roundSeconds: 20 }]) {
+      const markup = render({ 'pokedex-distance': config });
+      expect(card(markup, 'Pokédex Distance')).not.toContain('Por puntos');
+      expect(card(markup, 'Pokédex Distance')).not.toContain('Clásico');
+    }
+  });
+});
+
 describe('lobby impostor parity', () => {
   const impostorManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
   const members = ['host', 'p2', 'p3', 'p4'].map((id) => ({

@@ -9,6 +9,7 @@ import {
 } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { GameModeField } from '../../room/GameModeField';
 import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, cx, Segmented, Toggle } from '../../ui';
@@ -43,7 +44,8 @@ function DifficultyPips({ level }: { level: number }) {
 }
 
 /**
- * Ajustes de Higher or Lower con los controles del catálogo: las categorías (`Toggle`, al menos una queda encendida),
+ * Ajustes de Higher or Lower con los controles del catálogo: el modo (`GameModeField`; «Racha infinita» no tiene
+ * número de rondas), las categorías (`Toggle`, al menos una queda encendida),
  * la dificultad (`Card` seleccionables con su nivel en pips), las generaciones, si se ve el valor del anterior
  * (`Toggle`), la visibilidad de las respuestas (`Segmented`, con el aviso de copia en «En directo») y los tiempos
  * (`ConfigRange`, el `Slider`).
@@ -60,6 +62,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
   const onlyCategory = value.categories.length === 1 ? value.categories[0] : null;
 
   return <fieldset disabled={disabled} className={s.panel}>
+    <GameModeField gameId="higher-lower" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <div className={s.group}>
       <span className={s.label} aria-hidden="true">{CATEGORIES_LABEL}</span>
       <div className={s.categories} role="group" aria-label={CATEGORIES_LABEL}>{HIGHER_LOWER_CATEGORIES.map((category) => <Toggle key={category} label={categoryLabels[category]} checked={value.categories.includes(category)}
@@ -92,7 +95,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
 
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      {value.mode !== 'ENDLESS' && <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />}
     </div>
   </fieldset>;
 }

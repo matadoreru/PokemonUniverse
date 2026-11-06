@@ -254,7 +254,8 @@
       "candidateMode": "SAME_POKEMON",
       "optionCount": 4,
       "voteVisibility": "LIVE",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

@@ -166,7 +166,8 @@
       "answerVisibility": "LIVE",
       "difficulty": "HARD",
       "roundSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

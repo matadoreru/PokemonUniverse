@@ -181,7 +181,8 @@
       "candidateMode": "DIFFERENT_POKEMON",
       "optionCount": 6,
       "voteVisibility": "REVEAL",
-      "revealSeconds": 3
+      "revealSeconds": 3,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

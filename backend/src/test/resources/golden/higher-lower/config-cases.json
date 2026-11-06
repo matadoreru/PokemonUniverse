@@ -43,7 +43,8 @@
       "answerVisibility": "LIVE",
       "difficulty": "NORMAL",
       "roundSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -80,7 +81,8 @@
       "answerVisibility": "LIVE",
       "difficulty": "NORMAL",
       "roundSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -127,7 +129,8 @@
       "answerVisibility": "LIVE",
       "difficulty": "NORMAL",
       "roundSeconds": 20,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -172,7 +175,8 @@
       "answerVisibility": "REVEAL",
       "difficulty": "VERY_HARD",
       "roundSeconds": 10,
-      "rounds": 1
+      "rounds": 1,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -217,7 +221,8 @@
       "answerVisibility": "LIVE",
       "difficulty": "NORMAL",
       "roundSeconds": 60,
-      "rounds": 50
+      "rounds": 50,
+      "mode": "CLASSIC"
     }
   },
   {
@@ -540,6 +545,221 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "ENDLESS"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "ENDLESS"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "TURBO"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "REVEAL",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 10,
+      "mode": "endless"
+    },
     "valid": false
   }
 ]

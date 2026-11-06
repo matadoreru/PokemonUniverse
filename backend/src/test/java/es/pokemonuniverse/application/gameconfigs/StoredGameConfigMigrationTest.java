@@ -22,7 +22,8 @@ import org.junit.jupiter.api.TestFactory;
 /**
  * {@code migrateStoredGameConfig} contra el de Node: {@code gameconfigs/migration-cases.json} guarda, para los casos
  * del brief (higher-lower y pokemon-bingo), varios refinamientos entre campos y un barrido de sondas sobre cada clave
- * de los 28 juegos, la salida de Node calculada una vez con {@code generate-migration-cases.ts} (junto al JSON).
+ * de los 28 juegos, la salida de Node calculada una vez con {@code generate-migration-cases.ts} (junto al JSON). Desde
+ * la Fase 3 (modos de juego) el JSON se edita a mano: {@code mode} y sus ajustes en los seis juegos con modos.
  */
 class StoredGameConfigMigrationTest {
 
@@ -69,6 +70,15 @@ class StoredGameConfigMigrationTest {
         "higher-lower: array con un elemento inválido sustituido entero", "higher-lower: JSON no objeto",
         "higher-lower: configuración válida sin cambios", "pokemon-bingo: configuración válida sin cambios")) {
       assertTrue(all.stream().anyMatch(c -> c.name().equals(name)), name);
+    }
+    // Fase 3: una configuración guardada antes de existir `mode` se lee como CLASSIC (sin migración de datos).
+    for (var gameId : List.of("pokedex-distance", "higher-lower", "shiny-vote", "learnset-guess", "type-duel",
+        "pokemon-impostor")) {
+      var name = gameId + ": configuración guardada sin mode se lee como CLASSIC";
+      var pinned = all.stream().filter(c -> c.name().equals(name)).findFirst();
+      assertTrue(pinned.isPresent(), name);
+      assertTrue(pinned.get().stored().get("mode") == null, name);
+      assertEquals("CLASSIC", pinned.get().expected().get("mode").getStringValue(), name);
     }
   }
 

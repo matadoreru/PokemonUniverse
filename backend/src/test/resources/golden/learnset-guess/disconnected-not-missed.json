@@ -106,7 +106,8 @@
       "showLevels": true,
       "showEvolution": true,
       "roundSeconds": 30,
-      "rounds": 3
+      "rounds": 3,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

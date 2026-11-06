@@ -48,7 +48,17 @@ const panels: { game: string; Panel: Panel; config: unknown; shape: Record<strin
   { game: 'pokemon-impostor', Panel: PokemonImpostorConfigPanel, config: defaultPokemonImpostorConfig, shape: pokemonImpostorConfigSchema.shape, fields: { Impostores: 'impostorCount', 'Tiempo por pista': 'clueSeconds', 'Tiempo de votación': 'voteSeconds' } },
   { game: 'pokedex-distance', Panel: PokedexDistanceConfigPanel, config: defaultPokedexDistanceConfig, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds' } },
   { game: 'learnset-guess', Panel: LearnsetGuessConfigPanel, config: defaultLearnsetGuessConfig, shape: learnsetGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  // Los ajustes propios de un modo solo salen en ese modo; los que el modo no usa se ocultan.
+  { game: 'pokedex-distance POINTS', Panel: PokedexDistanceConfigPanel, config: { ...defaultPokedexDistanceConfig, mode: 'POINTS' }, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'pointsRounds' } },
+  { game: 'type-duel COOP', Panel: TypeDuelConfigPanel, config: { ...defaultTypeDuelConfig, mode: 'COOP' }, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
+  { game: 'higher-lower ENDLESS', Panel: HigherLowerConfigPanel, config: { ...defaultHigherLowerConfig, mode: 'ENDLESS' }, shape: higherLowerConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds' } },
 ];
+
+/** El campo numérico del esquema, sin el `.default()` de los ajustes que una configuración guardada puede no traer. */
+const numericField = (field: unknown): NumericField => {
+  const unwrap = (field as { unwrap?: () => unknown }).unwrap;
+  return (typeof unwrap === 'function' ? unwrap.call(field) : field) as NumericField;
+};
 
 describe('config panel ranges', () => {
   it('widens rounds to 50 in Higher or Lower, Type Duel and Shiny Quiz', () => {
@@ -68,7 +78,7 @@ describe('config panel ranges', () => {
     const ranges = renderRanges(Panel, config);
     expect([...ranges.keys()].sort()).toEqual(Object.keys(fields).sort());
     for (const [label, field] of Object.entries(fields)) {
-      const schema = shape[field] as NumericField;
+      const schema = numericField(shape[field]);
       expect({ label, ...ranges.get(label) }).toEqual({ label, min: schema.minValue, max: schema.maxValue });
     }
   });

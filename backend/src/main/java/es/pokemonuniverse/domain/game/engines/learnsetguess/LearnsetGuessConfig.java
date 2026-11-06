@@ -16,9 +16,11 @@ public record LearnsetGuessConfig(
     boolean showLevels,
     boolean showEvolution,
     int roundSeconds,
-    int rounds) {
+    int rounds,
+    LearnsetGuessMode mode) {
 
-  private static final Set<String> KEYS = Set.of("generations", "showLevels", "showEvolution", "roundSeconds", "rounds");
+  private static final Set<String> KEYS = Set.of("generations", "showLevels", "showEvolution", "roundSeconds", "rounds",
+      "mode");
 
   public LearnsetGuessConfig {
     generations = List.copyOf(generations);
@@ -27,12 +29,12 @@ public record LearnsetGuessConfig(
   /** {@code defaultLearnsetGuessConfig}. */
   public static LearnsetGuessConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new LearnsetGuessConfig(generations, true, true, 60, 10);
+    return new LearnsetGuessConfig(generations, true, true, 60, 10, LearnsetGuessMode.CLASSIC);
   }
 
   /**
-   * {@code learnsetGuessConfigSchema.parse}: objeto estricto; {@code generations} sin duplicados y ascendentes. Los
-   * enteros admiten {@code 15.0} y rechazan {@code 15.5}.
+   * {@code learnsetGuessConfigSchema.parse}: objeto estricto; {@code generations} sin duplicados y ascendentes;
+   * {@code mode} ausente es {@code CLASSIC}. Los enteros admiten {@code 15.0} y rechazan {@code 15.5}.
    */
   public static LearnsetGuessConfig parse(JsonNode raw) {
     var config = ConfigReader.of(raw, "Learnset Guess");
@@ -42,6 +44,7 @@ public record LearnsetGuessConfig(
     boolean showEvolution = config.bool("showEvolution");
     int roundSeconds = config.integer("roundSeconds", 15, 120);
     int rounds = config.integer("rounds", 1, 20);
-    return new LearnsetGuessConfig(generations, showLevels, showEvolution, roundSeconds, rounds);
+    var mode = config.enumValueOrDefault("mode", LearnsetGuessMode.class, LearnsetGuessMode.CLASSIC);
+    return new LearnsetGuessConfig(generations, showLevels, showEvolution, roundSeconds, rounds, mode);
   }
 }

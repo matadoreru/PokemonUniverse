@@ -1,0 +1,15 @@
+/* Selector «Modo» arriba de los ajustes del juego, con la línea de reglas del modo elegido. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-width: 36rem;
+}
+.label {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.text {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}

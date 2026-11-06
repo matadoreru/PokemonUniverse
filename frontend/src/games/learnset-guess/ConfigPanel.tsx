@@ -2,17 +2,19 @@ import { GENERATION_LEARNSET_SOURCES, type LearnsetGuessConfig } from '@pokemon-
 import { BookOpenCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { GameModeField } from '../../room/GameModeField';
 import { Badge, Icon, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
 /**
- * Ajustes de Learnset Guess con los controles del catálogo: generaciones (el learnset de referencia sale de la más
+ * Ajustes de Learnset Guess con los controles del catálogo: el modo (`GameModeField`), generaciones (el learnset de referencia sale de la más
  * alta), niveles e información evolutiva (`Toggle`) y los tiempos (`ConfigRange`). El ritmo de las pistas y el
  * enfriamiento entre intentos los fija el servidor.
  */
 export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as LearnsetGuessConfig; const reference = Math.max(...value.generations) as keyof typeof GENERATION_LEARNSET_SOURCES;
   return <fieldset disabled={disabled} className={s.panel}>
+    <GameModeField gameId="learnset-guess" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.reference}>
       <span className={s.referenceIcon}><Icon icon={BookOpenCheck} size={24} /></span>

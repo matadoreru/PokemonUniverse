@@ -194,7 +194,8 @@
       "showLevels": false,
       "showEvolution": false,
       "roundSeconds": 15,
-      "rounds": 4
+      "rounds": 4,
+      "mode": "CLASSIC"
     },
     "initial": {
       "lifecycle": {

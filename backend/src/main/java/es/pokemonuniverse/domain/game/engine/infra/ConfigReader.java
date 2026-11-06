@@ -194,6 +194,19 @@ public final class ConfigReader {
     return enumValue(required(key), key, type);
   }
 
+  /**
+   * {@code z.enum([...]).default(defaultValue)}: una clave ausente vale {@code defaultValue} (una configuración guardada
+   * antes de existir la clave); un {@code null} explícito se rechaza, como Zod, que solo rellena {@code undefined}.
+   */
+  public <E extends Enum<E>> E enumValueOrDefault(String key, Class<E> type, E defaultValue) {
+    return has(key) ? enumValue(key, type) : defaultValue;
+  }
+
+  /** {@code z.number().int().min(min).max(max).default(defaultValue)}, con la misma regla de ausencia. */
+  public int integerOrDefault(String key, int min, int max, int defaultValue) {
+    return has(key) ? integer(key, min, max) : defaultValue;
+  }
+
   /** {@link #enumValue(String, Class)} con un mensaje de error propio del motor. */
   public <E extends Enum<E>> E enumValue(String key, Class<E> type, String message) {
     var value = required(key);
