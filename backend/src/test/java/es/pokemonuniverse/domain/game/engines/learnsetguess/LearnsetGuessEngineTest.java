@@ -286,4 +286,221 @@ class LearnsetGuessEngineTest {
       assertTrue(engine.getPublicState(state, at).lastWarning());
     }
   }
+
+  // --- Revelación manual (MANUAL_REVEAL) ---
+
+  private static final String EXHAUSTED = "Ya no te quedan pistas en esta ronda.";
+
+  private static LearnsetGuessConfig manual(int roundSeconds) {
+    return new LearnsetGuessConfig(List.of(1), true, true, roundSeconds, 3, LearnsetGuessMode.MANUAL_REVEAL);
+  }
+
+  private static GameContext manualContext(int players, int seed) {
+    var list = new ArrayList<GamePlayer>();
+    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
+    return GameContext.builder(GOLDEN, new Mulberry32(seed)).players(list).now(1000).build();
+  }
+
+  /** Un Pokémon de Gen 1 que no es la respuesta de la ronda. */
+  private static LearnsetGuessTypes.LearnsetGuessAction wrongGuess(LearnsetGuessTypes.LearnsetGuessState state) {
+    return new LearnsetGuessTypes.LearnsetGuessAction(
+        "bulbasaur".equals(state.correctPokemonId()) ? "charmander" : "bulbasaur");
+  }
+
+  private static LearnsetGuessTypes.LearnsetGuessAction rightGuess(LearnsetGuessTypes.LearnsetGuessState state) {
+    return new LearnsetGuessTypes.LearnsetGuessAction(state.correctPokemonId());
+  }
+
+  private static int totalGroups(LearnsetGuessTypes.LearnsetGuessState state) {
+    return LearnsetGuessEngine.groupLearnset(state.learnset()).size();
+  }
+
+  private static List<String> groupMoveIds(LearnsetGuessTypes.LearnsetGuessState state, int index) {
+    return LearnsetGuessEngine.groupLearnset(state.learnset()).get(index).stream()
+        .map(ResolvedLevelUpMove::moveId).toList();
+  }
+
+  private static String text(Object value) throws IOException {
+    return ObjectMapper.getDefault().writeValueAsString(GoldenReplayer.tree(value));
+  }
+
+  private LearnsetGuessTypes.LearnsetGuessState startManual(GameContext context, int roundSeconds) {
+    var state = engine.start(engine.createInitialState(manual(roundSeconds), context), context);
+    assertTrue(totalGroups(state) >= 3, "la semilla debe dar un Pokémon con al menos 3 grupos");
+    return state;
+  }
+
+  @Test
+  void startsWithFirstGroupOnly() throws IOException {
+    var context = manualContext(2, 7);
+    var state = startManual(context, 60);
+    var publicState = engine.getPublicState(state, context);
+    assertEquals(LearnsetGuessMode.MANUAL_REVEAL, publicState.mode());
+    assertEquals(List.of(), publicState.visibleGroups());
+    assertNull(publicState.nextTransitionAt());
+    for (var id : List.of("p1", "p2")) {
+      var player = engine.getPlayerState(state, id, context);
+      assertTrue(player.canGuess());
+      assertEquals(1, player.revealedGroups().size());
+      assertEquals(groupMoveIds(state, 0),
+          player.revealedGroups().getFirst().moves().stream().map(LearnsetGuessTypes.LearnsetMoveHint::moveId).toList());
+      assertEquals(0, player.revealedGroups().getFirst().stage());
+      assertEquals(totalGroups(state), player.totalGroups());
+      assertEquals(List.of(), player.attempts());
+    }
+    // Clásico: sin los campos del modo.
+    var classicContext = context(GOLDEN, 2);
+    var classic = engine.start(engine.createInitialState(config(true, true), classicContext), classicContext);
+    var classicPlayer = text(engine.getPlayerState(classic, "p1", classicContext));
+    assertFalse(classicPlayer.contains("revealedGroups"));
+    assertFalse(classicPlayer.contains("totalGroups"));
+    assertEquals(LearnsetGuessMode.CLASSIC, engine.getPublicState(classic, classicContext).mode());
+  }
+
+  @Test
+  void wrongGuessRevealsNextGroupForThatPlayerOnly() {
+    var context = manualContext(2, 7);
+    var state = startManual(context, 60);
+    var result = engine.handleAction(state, "p1", wrongGuess(state), context.withNow(2_000));
+    assertTrue(result.accepted());
+    state = result.state();
+    var p1 = engine.getPlayerState(state, "p1", context.withNow(2_000));
+    assertEquals(2, p1.revealedGroups().size());
+    assertEquals(1, p1.revealedGroups().get(1).stage());
+    assertEquals(groupMoveIds(state, 1),
+        p1.revealedGroups().get(1).moves().stream().map(LearnsetGuessTypes.LearnsetMoveHint::moveId).toList());
+    assertEquals(1, p1.attempts().size());
+    assertEquals(3_000L, p1.cooldownUntil());
+    var p2 = engine.getPlayerState(state, "p2", context.withNow(2_000));
+    assertEquals(1, p2.revealedGroups().size());
+    assertEquals(List.of(), p2.attempts());
+  }
+
+  @Test
+  void noTimedReveal() {
+    var context = manualContext(2, 7);
+    var state = startManual(context, 60);
+    assertNull(state.nextTransitionAt());
+    assertEquals(state.roundEndsAt(), engine.getLifecycle(state).nextDeadline());
+    var later = context.withNow(state.roundEndsAt() - 1);
+    var ticked = engine.handleTimeout(state, later);
+    assertEquals(GamePhase.ROUND_ACTIVE, ticked.phase());
+    assertEquals(1, engine.getPlayerState(ticked, "p1", later).revealedGroups().size());
+    var ended = engine.handleTimeout(ticked, context.withNow(state.roundEndsAt()));
+    assertEquals(GamePhase.ROUND_RESULTS, ended.phase());
+  }
+
+  @Test
+  void roundEndsWhenAllSolvedOrExhaustedOrTimeout() {
+    // Tres jugadores: p1 agota los grupos (y ya no puede adivinar), p2 acierta y p3 agota: la ronda se cierra sola.
+    var context = manualContext(3, 7);
+    var state = startManual(context, 120);
+    int total = totalGroups(state);
+    long now = 1_000;
+    for (int miss = 0; miss < total; miss++) {
+      now += 1_000;
+      var result = engine.handleAction(state, "p1", wrongGuess(state), context.withNow(now));
+      assertTrue(result.accepted());
+      state = result.state();
+    }
+    assertEquals(GamePhase.ROUND_ACTIVE, state.phase());
+    assertFalse(engine.getPlayerState(state, "p1", context.withNow(now)).canGuess());
+    assertEquals(total, engine.getPlayerState(state, "p1", context.withNow(now)).revealedGroups().size());
+    now += 1_000;
+    var rejected = engine.handleAction(state, "p1", rightGuess(state), context.withNow(now));
+    assertFalse(rejected.accepted());
+    assertEquals(EXHAUSTED, rejected.error());
+    state = engine.handleAction(state, "p2", rightGuess(state), context.withNow(now)).state();
+    // Sin último aviso en este modo: la ronda sigue con su tope.
+    assertFalse(state.lastWarning());
+    assertEquals(1_000L + 120_000L, state.roundEndsAt());
+    for (int miss = 0; miss < total; miss++) {
+      assertEquals(GamePhase.ROUND_ACTIVE, state.phase());
+      now += 1_000;
+      state = engine.handleAction(state, "p3", wrongGuess(state), context.withNow(now)).state();
+    }
+    assertEquals(GamePhase.ROUND_RESULTS, state.phase());
+    assertEquals(Map.of("p1", total, "p2", 1, "p3", total), state.lastRound().groupsSeen());
+    assertEquals(total, state.lastRound().totalGroups());
+
+    // Nadie acierta: dos jugadores que agotan cierran la ronda.
+    var pair = manualContext(2, 7);
+    var both = startManual(pair, 120);
+    now = 1_000;
+    for (var id : List.of("p1", "p2")) {
+      for (int miss = 0; miss < totalGroups(both); miss++) {
+        now += 1_000;
+        both = engine.handleAction(both, id, wrongGuess(both), pair.withNow(now)).state();
+      }
+    }
+    assertEquals(GamePhase.ROUND_RESULTS, both.phase());
+    assertEquals(Map.of(), both.lastRound().solves());
+
+    // Nadie juega: el tope de roundSeconds cierra la ronda.
+    var fresh = manualContext(2, 7);
+    var idle = startManual(fresh, 30);
+    var timedOut = engine.handleTimeout(idle, fresh.withNow(idle.roundEndsAt()));
+    assertEquals(GamePhase.ROUND_RESULTS, timedOut.phase());
+    assertEquals(1, timedOut.playerStats().get("p1").missed());
+  }
+
+  @Test
+  void scoringFormula() {
+    assertEquals(50, LearnsetGuessRules.manualRevealPoints(5, 1));
+    assertEquals(40, LearnsetGuessRules.manualRevealPoints(5, 2));
+    assertEquals(10, LearnsetGuessRules.manualRevealPoints(5, 5));
+    assertEquals(10, LearnsetGuessRules.manualRevealPoints(5, 7));
+
+    var context = manualContext(3, 7);
+    var state = startManual(context, 60);
+    int total = totalGroups(state);
+    state = engine.handleAction(state, "p1", wrongGuess(state), context.withNow(2_000)).state();
+    state = engine.handleAction(state, "p1", rightGuess(state), context.withNow(3_000)).state();
+    // Sin bonus por orden: el segundo en acertar, con un solo grupo, vale más que el primero.
+    state = engine.handleAction(state, "p2", rightGuess(state), context.withNow(3_100)).state();
+    assertEquals((total - 1) * 10, state.solves().get("p1").points());
+    assertEquals(1, state.solves().get("p1").revealStage());
+    assertEquals(total * 10, state.solves().get("p2").points());
+    assertEquals(total * 10, state.scores().get("p2"));
+    assertEquals((total - 1) * 10, engine.getPlayerState(state, "p1", context.withNow(3_100)).roundPoints());
+    assertEquals(1, state.playerStats().get("p2").initialSolves());
+    assertEquals(0, state.playerStats().get("p1").initialSolves());
+  }
+
+  @Test
+  void publicProjectionHidesOthersGroups() throws IOException {
+    // Una semilla cuyo segundo grupo trae un movimiento que no está en el primero (un mismo movimiento puede repetirse).
+    int seed = 1;
+    while (true) {
+      var probe = startManual(manualContext(2, seed), 60);
+      var extra = new ArrayList<>(groupMoveIds(probe, 1));
+      extra.removeAll(groupMoveIds(probe, 0));
+      if (!extra.isEmpty()) break;
+      seed += 1;
+    }
+    var context = manualContext(2, seed);
+    var state = startManual(context, 60);
+    var at = context.withNow(2_000);
+    state = engine.handleAction(state, "p1", wrongGuess(state), at).state();
+    var hidden = new ArrayList<>(groupMoveIds(state, 1));
+    hidden.removeAll(groupMoveIds(state, 0));
+    var publicText = text(engine.getPublicState(state, at));
+    var others = List.of(text(engine.getPlayerState(state, "p2", at)), text(engine.getPlayerState(state, "p9", at)));
+    for (var moveId : hidden) {
+      assertFalse(publicText.contains("\"" + moveId + "\""), moveId);
+      for (var other : others) assertFalse(other.contains("\"" + moveId + "\""), moveId);
+    }
+    // Ni siquiera el primer grupo ni el intento fallido salen en la proyección pública.
+    for (var moveId : groupMoveIds(state, 0)) assertFalse(publicText.contains("\"" + moveId + "\""), moveId);
+    assertEquals(List.of(), engine.getPublicState(state, at).attempts());
+    assertTrue(text(engine.getPlayerState(state, "p1", at)).contains("\"" + hidden.getFirst() + "\""));
+    // Quien no participa no recibe grupos.
+    assertNull(engine.getPlayerState(state, "p9", at).revealedGroups());
+    // En la revelación se publica lo que llegó a ver el que más vio.
+    var ended = engine.handleTimeout(state, at.withNow(state.roundEndsAt()));
+    var revealed = engine.getPublicState(ended, at).lastRound().revealedMoves().stream()
+        .map(LearnsetGuessTypes.LearnsetMoveHint::moveId).toList();
+    assertTrue(revealed.containsAll(groupMoveIds(state, 1)));
+    assertEquals(Map.of("p1", 2, "p2", 1), ended.lastRound().groupsSeen());
+  }
 }

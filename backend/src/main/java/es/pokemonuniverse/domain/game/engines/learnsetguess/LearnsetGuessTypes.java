@@ -97,24 +97,32 @@ public final class LearnsetGuessTypes {
     }
   }
 
+  /**
+   * {@code absentIds}: jugadores sin acierto que no estaban obligados a jugar al cerrar la ronda (no suman missed).
+   * {@code groupsSeen} (grupos que vio cada jugador) y {@code totalGroups} solo salen en {@code MANUAL_REVEAL}.
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  /** {@code absentIds}: jugadores sin acierto que no estaban obligados a jugar al cerrar la ronda (no suman missed). */
   public record LearnsetRoundResult(LearnsetRoundPokemon pokemon, int referenceGeneration, String referenceSource,
       List<LearnsetMoveHint> revealedMoves, List<LearnsetMoveHint> learnset, Map<String, LearnsetGuessSolve> solves,
-      List<String> absentIds) {
+      List<String> absentIds,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Map<String, Integer> groupsSeen,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer totalGroups) {
 
     public LearnsetRoundResult {
       revealedMoves = frozenList(revealedMoves);
       learnset = frozenList(learnset);
       solves = frozenMap(solves);
       absentIds = frozenList(absentIds);
+      groupsSeen = groupsSeen == null ? null : frozenMap(groupsSeen);
     }
   }
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
-   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 21 campos no se usa en el motor).
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 22 campos no se usa en el motor).
+   * {@code manualMisses} solo cuenta en {@code MANUAL_REVEAL}: intentos fallidos de cada jugador en la ronda (ve
+   * {@code 1 + fallos} grupos y los agota al fallar con todos a la vista).
    */
   public record LearnsetGuessState(
       GamePhase phase,
@@ -137,7 +145,8 @@ public final class LearnsetGuessTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable LearnsetRoundResult lastRound) implements TimedGameState {
+      @Nullable LearnsetRoundResult lastRound,
+      Map<String, Integer> manualMisses) implements TimedGameState {
 
     public LearnsetGuessState {
       playerIds = frozenList(playerIds);
@@ -148,6 +157,7 @@ public final class LearnsetGuessTypes {
       cooldownUntil = frozenMap(cooldownUntil);
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
+      manualMisses = frozenMap(manualMisses);
     }
 
     public static Builder builder() {
@@ -160,7 +170,7 @@ public final class LearnsetGuessTypes {
           .learnset(learnset).evolutionInfo(evolutionInfo).initialGroupCount(initialGroupCount)
           .revealedExtraGroups(revealedExtraGroups).attempts(attempts).solves(solves).cooldownUntil(cooldownUntil)
           .lastWarning(lastWarning).scores(scores).playerStats(playerStats).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
-          .nextTransitionAt(nextTransitionAt).lastRound(lastRound);
+          .nextTransitionAt(nextTransitionAt).lastRound(lastRound).manualMisses(manualMisses);
     }
 
     /** Listas y mapas vacíos por defecto; {@code phase} y {@code config} los valida {@link #build()}. */
@@ -186,6 +196,7 @@ public final class LearnsetGuessTypes {
       private Long roundEndsAt;
       private Long nextTransitionAt;
       private LearnsetRoundResult lastRound;
+      private Map<String, Integer> manualMisses = Map.of();
 
       private Builder() {}
 
@@ -231,12 +242,14 @@ public final class LearnsetGuessTypes {
 
       public Builder lastRound(@Nullable LearnsetRoundResult value) { lastRound = value; return this; }
 
+      public Builder manualMisses(Map<String, Integer> value) { manualMisses = value; return this; }
+
       public LearnsetGuessState build() {
         return new LearnsetGuessState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             playerIds, roundNumber, referenceGeneration, correctPokemonId, usedPokemonIds, learnset, evolutionInfo,
             initialGroupCount, revealedExtraGroups, attempts, solves, cooldownUntil, lastWarning, scores,
             playerStats,
-            roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+            roundStartedAt, roundEndsAt, nextTransitionAt, lastRound, manualMisses);
       }
     }
   }
@@ -245,12 +258,17 @@ public final class LearnsetGuessTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record LearnsetGuessSolvedPlayer(String playerId, int solveOrder) {}
 
-  /** {@code LearnsetGuessPublicState}: componentes en el orden del literal de {@code getPublicState}. */
+  /**
+   * {@code LearnsetGuessPublicState}: componentes en el orden del literal de {@code getPublicState}; {@code mode} va
+   * siempre detrás de {@code phase}. En {@code MANUAL_REVEAL} no lleva grupos ni intentos durante la ronda (son de
+   * cada jugador) ni {@code nextTransitionAt} de pista.
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record LearnsetGuessPublicState(
       String gameId,
       GamePhase phase,
+      LearnsetGuessMode mode,
       int roundNumber,
       int totalRounds,
       int referenceGeneration,
@@ -267,10 +285,24 @@ public final class LearnsetGuessTypes {
       Map<String, Integer> scores,
       @Nullable GameResults results) {}
 
+  /**
+   * Estado de cada jugador. En {@code MANUAL_REVEAL}, y solo para quien juega la partida, lleva los grupos que él ve
+   * ({@code revealedGroups}), sus intentos fallidos de la ronda ({@code attempts}) y el total de grupos; en Clásico
+   * esos campos no salen.
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record LearnsetGuessPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
-      @Nullable Long cooldownUntil, int roundPoints) {}
+      @Nullable Long cooldownUntil, int roundPoints,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<LearnsetMoveGroup> revealedGroups,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<LearnsetGuessAttempt> attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer totalGroups) {
+
+    public LearnsetGuessPlayerState {
+      revealedGroups = revealedGroups == null ? null : frozenList(revealedGroups);
+      attempts = attempts == null ? null : frozenList(attempts);
+    }
+  }
 
   /** {@code learnsetGuessActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 64. */
   public record LearnsetGuessAction(String pokemonId) {

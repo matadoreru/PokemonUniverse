@@ -32,6 +32,14 @@ public final class LearnsetGuessRules {
   }
 
   /**
+   * {@code MANUAL_REVEAL}: acertar con {@code visibleGroups} grupos a la vista vale
+   * {@code max(1, totalGroups - visibleGroups + 1) × 10}, sin bonus por orden.
+   */
+  public static int manualRevealPoints(int totalGroups, int visibleGroups) {
+    return Math.max(1, totalGroups - visibleGroups + 1) * 10;
+  }
+
+  /**
    * Clasificación final: puntos descendentes y, al final, {@code playerId.localeCompare}, aquí
    * {@link String#compareTo} (equivalente sobre ids de jugador, regla 21 del README de motores). Sin {@code mapStats}:
    * las estadísticas se copian tal cual ({@code { ...entry.stats }}) en el orden de sus claves.

@@ -1,6 +1,7 @@
 import type { LearnsetGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Lightbulb, Trophy } from 'lucide-react';
 import { learnsetRecords, learnsetStatsLine } from '../games/learnset-guess/presentation';
+import { learnsetModeLabel } from './learnset-texts';
 import { Chip, Icon } from '../ui';
 import { sharesPosition } from './results-ties';
 import { playerColor } from './player-color';
@@ -30,13 +31,15 @@ export function LearnsetGuessResults({ room, selfId, onLobby, onEnd }: { room: R
       meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{learnsetStatsLine(standing.stats)}</span></>,
     };
   });
+  // Revelación manual: «iniciales» es acertar con el primer grupo; el subtítulo nombra el modo.
+  const manual = game.mode === 'MANUAL_REVEAL';
   const records = learnsetRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
   const aside = <ResultsRecords id="learnset-records-title" records={[
     { key: 'correct', title: 'Más aciertos', icon: CheckCircle2, names: records.correct?.names ?? null, value: records.correct?.value ?? '', unit: records.correct?.value === '1' ? 'Pokémon acertado' : 'Pokémon acertados' },
-    { key: 'initial', title: 'Con las pistas iniciales', icon: Lightbulb, names: records.initial?.names ?? null, value: records.initial?.value ?? '', unit: 'aciertos antes de la primera pista nueva' },
+    { key: 'initial', title: manual ? 'A la primera' : 'Con las pistas iniciales', icon: Lightbulb, names: records.initial?.names ?? null, value: records.initial?.value ?? '', unit: manual ? 'aciertos con el primer grupo' : 'aciertos antes de la primera pista nueva' },
     { key: 'bestRound', title: 'Mejor ronda', icon: Trophy, names: records.bestRound?.names ?? null, value: records.bestRound?.value ?? '', unit: 'puntos en una sola ronda' },
   ]} />;
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Learnset Guess" subtitle={`Learnset Guess · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Learnset Guess" subtitle={`Learnset Guess${manual ? ` · ${learnsetModeLabel}` : ''} · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

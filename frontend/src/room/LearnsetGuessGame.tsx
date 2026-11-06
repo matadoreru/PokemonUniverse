@@ -2,7 +2,7 @@ import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublic
 import { useMemo, useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { LearnsetAttempts, LearnsetClues, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
-import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetPlateKind, learnsetPositions, learnsetVerdict } from '../games/learnset-guess/presentation';
+import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetManualExhausted, learnsetPlateKind, learnsetPositions, learnsetVerdict } from '../games/learnset-guess/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
@@ -10,7 +10,7 @@ import { useTimedVisibility } from '../hooks/useTimedVisibility';
 import { cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './GameSkipSlot';
 import { useFocusOnTransition } from './focus-transition';
-import { learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
+import { learnsetGroupProgress, learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetManualStakeText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 import { PokemonSelector } from './PokemonSelector';
 import s from '../games/learnset-guess/LearnsetGuess.module.css';
 
@@ -25,6 +25,9 @@ const ignoreFailure = () => undefined;
  * acertar) y las pistas de movimientos, la última arriba; en la revelación, la carta del Pokémon y su learnset. Abajo
  * se actúa: el buscador, el acierto con sus puntos o el veredicto. Al lado, el marcador en vivo y los intentos públicos
  * (en la revelación, los puntos de la ronda de cada uno).
+ *
+ * Revelación manual (`MANUAL_REVEAL`): las pistas y los intentos son los propios (`gamePlayerState`), con «N de M
+ * grupos»; no hay cuenta atrás de la siguiente pista (cada fallo enseña un grupo más), solo el tope de la ronda.
  *
  * Privacidad: solo se pinta lo proyectado. La respuesta solo llega en `lastRound`, que el servidor manda únicamente en
  * `ROUND_RESULTS`; aun así la pantalla solo la usa en esa fase.
@@ -46,8 +49,13 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
   const solved = player?.solved === true;
   const canGuess = participating && player?.canGuess === true;
   const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
-  const kind = learnsetPlateKind(game.phase, player ? { canGuess, solved } : null, lastRound !== null);
-  const latestStage = learnsetLatestStage(game.visibleGroups);
+  const manual = game.mode === 'MANUAL_REVEAL';
+  const exhausted = manual && participating && learnsetManualExhausted(player);
+  // En Revelación manual nunca se usan los grupos públicos: solo los que ha desbloqueado quien mira.
+  const groups = manual ? player?.revealedGroups ?? [] : game.visibleGroups;
+  const totalGroups = manual ? player?.totalGroups ?? 0 : 0;
+  const kind = learnsetPlateKind(game.phase, player ? { canGuess, solved, exhausted } : null, lastRound !== null);
+  const latestStage = learnsetLatestStage(groups);
   const latestSolver = game.solvedPlayers.at(-1);
   const latestSolverMember = latestSolver && latestSolver.playerId !== selfId ? members.get(latestSolver.playerId) : undefined;
 
@@ -60,9 +68,11 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
 
   const lastWarning = active ? learnsetLastWarningText(game.lastWarning, solved || !canGuess, roundRemaining) : null;
   const lastWarningAnnouncement = active ? learnsetLastWarningAnnouncement(game.lastWarning, solved || !canGuess) : null;
-  const stake = active && canGuess ? learnsetStakeText(game.visibleGroups, game.solvedPlayers.length) : null;
+  const stake = !active || !canGuess ? null : manual ? learnsetManualStakeText(totalGroups, groups.length) : learnsetStakeText(groups, game.solvedPlayers.length);
+  const progress = manual && active && totalGroups > 0 ? learnsetGroupProgress(groups.length, totalGroups) : null;
   const solver = active && solvedNoticeVisible && latestSolverMember ? { key: `${game.roundNumber}:${game.solvedPlayers.length}`, member: latestSolverMember, text: learnsetSolvedAnnouncement(latestSolverMember.displayName) } : null;
-  const announcement = learnsetAnnouncement({ kind, game, roundPoints: player?.roundPoints ?? 0 });
+  const announcement = learnsetAnnouncement({ kind, game: { ...game, visibleGroups: groups }, roundPoints: player?.roundPoints ?? 0 });
+  const attempts = manual ? player?.attempts ?? [] : game.attempts;
 
   const scoreboard = learnsetScoreboard(room.members, game.scores);
   const positions = learnsetPositions(scoreboard.map((line) => line.points));
@@ -84,7 +94,8 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
     <LearnsetNotices lastWarning={lastWarning} lastWarningAnnouncement={lastWarningAnnouncement} solver={solver} announcement={announcement} />
     {lastRound
       ? <LearnsetRevealScene result={lastRound} />
-      : <LearnsetClues groups={game.visibleGroups} latestStage={latestStage} stake={stake} nextClueIn={active && game.nextTransitionAt ? transitionRemaining : null} />}
+      : <LearnsetClues groups={groups} latestStage={latestStage} stake={stake} nextClueIn={!manual && active && game.nextTransitionAt ? transitionRemaining : null} progress={progress}
+        emptyText={manual && active && totalGroups === 0 ? <span><strong>Cada jugador ve solo sus pistas.</strong> Los movimientos que desbloquea cada uno se descubren en la revelación.</span> : null} />}
   </div>;
 
   const side = <div className={s.sideColumn}>
@@ -92,7 +103,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
       ? <LearnsetRevealBoard result={lastRound} members={room.members} colors={colors} selfId={selfId} className={s.sidePanel} />
       : <>
         <LearnsetScoreboard lines={lines} selfId={selfId} className={s.sidePanel} />
-        <LearnsetAttempts attempts={game.attempts} members={members} colors={colors} className={s.attemptsPanel} />
+        <LearnsetAttempts attempts={attempts} members={members} colors={colors} className={s.attemptsPanel} own={manual} />
       </>}
     <GameSkipSlot className={s.skip} />
   </div>;
@@ -103,7 +114,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; 
       onSelect={(pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }).catch(ignoreFailure)} />
   </div>;
 
-  const bottom = <LearnsetPlate kind={kind} search={search} searchNote={<LearnsetSearchNote cooldownMs={cooldownMs} lastAttempt={learnsetOwnLastAttempt(game, selfId)} />}
+  const bottom = <LearnsetPlate kind={kind} search={search} searchNote={<LearnsetSearchNote cooldownMs={cooldownMs} lastAttempt={learnsetOwnLastAttempt({ attempts }, selfId)} />}
     solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0} verdict={lastRound ? learnsetVerdict(lastRound, selfId, participating) : null}
     countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} titleRef={titleRef} />;
 

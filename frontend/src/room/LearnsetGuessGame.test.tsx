@@ -29,7 +29,7 @@ const answer: LearnsetRoundResult = {
 
 type Phase = LearnsetGuessPublicState['phase'];
 function room(phase: Phase, overrides: Partial<LearnsetGuessPublicState> = {}, player: Partial<LearnsetGuessPlayerState> = {}): RoomView {
-  const game: LearnsetGuessPublicState = { gameId: 'learnset-guess', phase, roundNumber: 1, totalRounds: 3, referenceGeneration: 9, referenceSource: 'Pokémon Scarlet / Violet', visibleGroups: phase === 'ROUND_ACTIVE' ? groups : [], evolutionHint: null, attempts: [], solvedPlayers: [], roundStartedAt: 1_000, roundEndsAt: 61_000, nextTransitionAt: 8_000, lastWarning: false, lastRound: null, scores: { p1: 0, p2: 0, p3: 0 }, results: null, ...overrides };
+  const game: LearnsetGuessPublicState = { gameId: 'learnset-guess', phase, mode: 'CLASSIC', roundNumber: 1, totalRounds: 3, referenceGeneration: 9, referenceSource: 'Pokémon Scarlet / Violet', visibleGroups: phase === 'ROUND_ACTIVE' ? groups : [], evolutionHint: null, attempts: [], solvedPlayers: [], roundStartedAt: 1_000, roundEndsAt: 61_000, nextTransitionAt: 8_000, lastWarning: false, lastRound: null, scores: { p1: 0, p2: 0, p3: 0 }, results: null, ...overrides };
   return { code: 'TEST11', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla'), member('s1', 'Sara', 'SPECTATOR')], availableGames: [], selectedGameId: 'learnset-guess', selectedGameConfig: { generations: [1], showLevels: true, showEvolution: true, roundSeconds: 60, rounds: 3 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['learnset-guess'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canGuess: phase === 'ROUND_ACTIVE', solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, ...player }, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
 }
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<LearnsetGuessGame room={view} selfId={selfId} onAction={async () => undefined} />);
@@ -114,6 +114,63 @@ describe('LearnsetGuessGame: pantalla', () => {
     expect(html).toContain('Pistas que llegaron a verse');
     expect(html).toContain('Sin revelar · 1');
     expect(html).toMatch(/Siguiente ronda en \d+s/);
+  });
+});
+
+describe('LearnsetGuessGame: Revelación manual', () => {
+  /** El jugador ve sus dos primeros grupos (de 3); la proyección pública no trae ninguno. */
+  const own = [{ ...groups[0]!, stage: 0 }, { ...groups[1]!, stage: 1 }];
+  const ownAttempts = [{ playerId: 'p1', pokemonId: 'raichu', pokemonName: 'Raichu', sprite: '/api/pokemon/raichu/sprite', attemptedAt: 2_000 }];
+  const manualRoom = (phase: Phase, overrides: Partial<LearnsetGuessPublicState> = {}, player: Partial<LearnsetGuessPlayerState> = {}) =>
+    room(phase, { mode: 'MANUAL_REVEAL', visibleGroups: [], nextTransitionAt: null, ...overrides }, { revealedGroups: own, attempts: ownAttempts, totalGroups: 3, ...player });
+
+  it('paints only the own unlocked groups with «N de M grupos» and no next-clue countdown', () => {
+    const html = render(manualRoom('ROUND_ACTIVE'));
+    expect(html).toContain('Impactrueno');
+    expect(html).toContain('Gruñido');
+    expect(html).not.toContain('Cola Férrea');
+    expect(html).toContain('2 de 3 grupos');
+    expect(html).not.toMatch(/Nueva pista en/);
+    // max(1, 3 − 2 + 1) × 10
+    expect(html).toMatch(/data-testid="learnset-stake"[^]*Ahora vale 20 pts/);
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+  });
+  it('never uses public groups in this mode and lists only the own attempts', () => {
+    const html = render(manualRoom('ROUND_ACTIVE', { visibleGroups: groups }));
+    expect(html).not.toContain('Cola Férrea');
+    expect(html).toContain('Tus intentos');
+    expect(html).toContain('Raichu');
+    expect(html).not.toContain('Intentos públicos');
+  });
+  it('tells a player who used every group to wait for the reveal', () => {
+    const attempts = [1, 2, 3].map((index) => ({ ...ownAttempts[0]!, attemptedAt: index * 1_000 }));
+    const html = render(manualRoom('ROUND_ACTIVE', {}, { canGuess: false, attempts, revealedGroups: [...own, groups[2]!], totalGroups: 3 }));
+    expect(html).toContain('Has agotado los grupos');
+    expect(html).toContain('3 de 3 grupos');
+    expect(html).not.toContain('aria-label="Buscar Pokémon"');
+    expect(html).not.toContain('Estás observando');
+  });
+  it('gives spectators no groups, with a text that explains why', () => {
+    const view = manualRoom('ROUND_ACTIVE', {}, { canGuess: false });
+    view.gamePlayerState = { canGuess: false, solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0 };
+    const html = render(view, 's1');
+    expect(html).toContain('Cada jugador ve solo sus pistas');
+    expect(html).not.toContain('Gruñido');
+    expect(html).toContain('Estás observando');
+  });
+  it('shows in the reveal how many groups each player saw', () => {
+    const lastRound = { ...answer, solves: { p1: { solveOrder: 1, solvedAt: 2_000, revealStage: 1, points: 20 } }, groupsSeen: { p1: 2, p2: 3, p3: 1 }, totalGroups: 3 };
+    const html = render(manualRoom('ROUND_RESULTS', { lastRound, roundEndsAt: null, nextTransitionAt: 5_000 }));
+    expect(html).toContain('Con 2 de 3 grupos');
+    expect(html).toContain('Vio 3 de 3 grupos');
+    expect(html).not.toContain('Después de 1 reveal');
+  });
+  it('names the mode in the results and words the first-group record for it', () => {
+    const results = { winnerId: 'p1', standings: [{ playerId: 'p1', position: 1, points: 30, stats: { correct: 1, missed: 0, initialSolves: 1, pointsFromSolves: 30, bestRoundPoints: 30 } }] };
+    const html = renderToStaticMarkup(<LearnsetGuessResults room={room('GAME_RESULTS', { mode: 'MANUAL_REVEAL', results } as never)} selfId="p1" onLobby={() => undefined} onEnd={() => undefined} />);
+    expect(html).toContain('Learnset Guess · Revelación manual · 3 rondas');
+    expect(html).toContain('A la primera');
+    expect(html).toContain('aciertos con el primer grupo');
   });
 });
 

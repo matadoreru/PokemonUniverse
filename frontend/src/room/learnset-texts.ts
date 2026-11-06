@@ -1,4 +1,7 @@
-import { learnsetPoints } from '@pokemon-universe/shared/public';
+import { gameModeLabel, learnsetManualRevealPoints, learnsetPoints } from '@pokemon-universe/shared/public';
+
+/** Nombre visible de Revelación manual (el del catálogo de modos). */
+export const learnsetModeLabel = gameModeLabel('learnset-guess', { mode: 'MANUAL_REVEAL' }) ?? 'Revelación manual';
 
 /**
  * Texto del último aviso de Learnset Guess. `solved` es verdadero para quien ya no tiene que adivinar (ha acertado,
@@ -31,6 +34,17 @@ export function learnsetStakeText(visibleGroups: readonly { stage: number }[], s
   const stage = Math.max(0, ...visibleGroups.map((group) => group.stage));
   const points = learnsetPoints(stage, solvedCount + 1);
   return `Ahora vale ${points} ${points === 1 ? 'pt' : 'pts'}`;
+}
+
+/** Revelación manual: lo que vale ahora un acierto con `visibleGroups` de `totalGroups` grupos a la vista. */
+export function learnsetManualStakeText(totalGroups: number, visibleGroups: number): string {
+  const points = learnsetManualRevealPoints(totalGroups, visibleGroups);
+  return `Ahora vale ${points} ${points === 1 ? 'pt' : 'pts'}`;
+}
+
+/** Revelación manual: «N de M grupos» desbloqueados. */
+export function learnsetGroupProgress(visibleGroups: number, totalGroups: number): string {
+  return `${visibleGroups} de ${totalGroups} ${totalGroups === 1 ? 'grupo' : 'grupos'}`;
 }
 
 /**

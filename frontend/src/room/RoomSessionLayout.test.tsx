@@ -60,11 +60,12 @@ describe('room plate', () => {
   });
 
   it('adds the mode to the title when the running game is not Classic', () => {
-    const base = { phase: 'GAME_STARTING', selectedGameId: 'pokedex-distance', availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }, { id: 'learnset-guess', name: 'Learnset Guess' }] };
+    const base = { phase: 'GAME_STARTING', selectedGameId: 'pokedex-distance', availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }, { id: 'type-duel', name: 'Type Duel' }] };
     const fromState = { ...base, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, selectedGameConfig: { mode: 'CLASSIC' } } as unknown as RoomView;
     expect(roomPlateHeading(fromState).title).toBe('Pokédex Distance · Por puntos');
-    const fromConfig = { ...base, selectedGameId: 'learnset-guess', game: { gameId: 'learnset-guess' }, selectedGameConfig: { mode: 'MANUAL_REVEAL' } } as unknown as RoomView;
-    expect(roomPlateHeading(fromConfig).title).toBe('Learnset Guess · Revelación manual');
+    // Type Duel todavía no publica `mode` en su estado: el título lo toma de la configuración elegida.
+    const fromConfig = { ...base, selectedGameId: 'type-duel', game: { gameId: 'type-duel' }, selectedGameConfig: { mode: 'COOP' } } as unknown as RoomView;
+    expect(roomPlateHeading(fromConfig).title).toBe('Type Duel · Cooperativo');
     const classic = { ...base, game: { gameId: 'pokedex-distance', mode: 'CLASSIC' }, selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;
     expect(roomPlateHeading(classic).title).toBe('Pokédex Distance');
     const noModes = { ...base, selectedGameId: 'type-chain', game: { gameId: 'type-chain' }, availableGames: [{ id: 'type-chain', name: 'Type Chain' }], selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;

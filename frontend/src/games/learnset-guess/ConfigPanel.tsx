@@ -29,7 +29,7 @@ export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { confi
       <Toggle label="Información evolutiva" hint="Muestra únicamente la etapa, nunca nombres." checked={value.showEvolution} disabled={disabled} onChange={(showEvolution) => void onChange({ ...value, showEvolution })} />
     </div>
     <div className={s.ranges}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint={value.mode === 'MANUAL_REVEAL' ? 'Tope de la ronda · cada fallo enseña un grupo más · 1 segundo de espera tras un fallo.' : 'Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo.'} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
   </fieldset>;

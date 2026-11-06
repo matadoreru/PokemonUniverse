@@ -22,13 +22,21 @@ export function learnsetClueOrder(groups: readonly LearnsetMoveGroup[]): Learnse
 export const learnsetLatestStage = (groups: readonly { stage: number }[]) => Math.max(0, ...groups.map((group) => group.stage));
 
 /** Pantalla inferior: qué placa toca. */
-export type LearnsetPlateKind = 'guess' | 'solved' | 'watching' | 'reveal' | 'waiting';
+export type LearnsetPlateKind = 'guess' | 'solved' | 'watching' | 'exhausted' | 'reveal' | 'waiting';
 
-export function learnsetPlateKind(phase: GamePhase, player: Pick<LearnsetGuessPlayerState, 'canGuess' | 'solved'> | null, hasLastRound: boolean): LearnsetPlateKind {
+/** `exhausted`: en Revelación manual, ha fallado con todos los grupos a la vista y espera la revelación. */
+export function learnsetPlateKind(phase: GamePhase, player: Pick<LearnsetGuessPlayerState, 'canGuess' | 'solved'> & { exhausted?: boolean } | null, hasLastRound: boolean): LearnsetPlateKind {
   if (phase === 'ROUND_RESULTS') return hasLastRound ? 'reveal' : 'waiting';
   if (phase !== 'ROUND_ACTIVE') return 'waiting';
   if (player?.solved) return 'solved';
+  if (player?.exhausted) return 'exhausted';
   return player?.canGuess ? 'guess' : 'watching';
+}
+
+/** Revelación manual: ya no adivina quien ha fallado tantas veces como grupos tiene el learnset. */
+export function learnsetManualExhausted(player: Pick<LearnsetGuessPlayerState, 'solved' | 'attempts' | 'totalGroups'> | null): boolean {
+  if (!player || player.solved || !player.totalGroups) return false;
+  return (player.attempts?.length ?? 0) >= player.totalGroups;
 }
 
 /** Clave del foco (ver `useFocusOnTransition`): al acertar y al revelar, el título de la placa inferior. */

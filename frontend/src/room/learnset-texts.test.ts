@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetRevealStatus, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
+import { learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetRevealStatus, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText, learnsetGroupProgress, learnsetManualStakeText } from './learnset-texts';
 
 describe('learnsetLastWarningText', () => {
   it('tells the only missing player the real seconds left', () => {
@@ -79,5 +79,16 @@ describe('learnsetLastWarningAnnouncement', () => {
     expect(learnsetLastWarningAnnouncement(false, false)).toBeNull();
     expect(learnsetLastWarningAnnouncement(true, false)).toBe('¡Último aviso! Solo faltas tú: la ronda se cierra en unos segundos.');
     expect(learnsetLastWarningAnnouncement(true, true)).not.toMatch(/\d/);
+  });
+});
+
+describe('Revelación manual', () => {
+  it('values a solve with max(1, total − visible + 1) × 10', () => {
+    expect(learnsetManualStakeText(5, 1)).toBe('Ahora vale 50 pts');
+    expect(learnsetManualStakeText(5, 5)).toBe('Ahora vale 10 pts');
+  });
+  it('counts the unlocked groups', () => {
+    expect(learnsetGroupProgress(1, 7)).toBe('1 de 7 grupos');
+    expect(learnsetGroupProgress(1, 1)).toBe('1 de 1 grupo');
   });
 });

@@ -14,6 +14,11 @@ export function learnsetPoints(revealStage: number, solveOrder: number): number 
   return Math.max(LEARNSET_MIN_POINTS, LEARNSET_INITIAL_POINTS - revealStage) + bonus;
 }
 
+/** `MANUAL_REVEAL`: acertar con `visibleGroups` grupos a la vista vale `max(1, totalGroups − visibleGroups + 1) × 10`. */
+export function learnsetManualRevealPoints(totalGroups: number, visibleGroups: number): number {
+  return Math.max(1, totalGroups - visibleGroups + 1) * 10;
+}
+
 export function emptyLearnsetStats(): LearnsetGuessPlayerStats {
   return { correct: 0, missed: 0, initialSolves: 0, incorrectGuesses: 0, pointsFromSolves: 0, bestRoundPoints: 0 };
 }

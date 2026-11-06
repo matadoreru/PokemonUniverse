@@ -232,6 +232,7 @@
       "publicState": {
         "gameId": "learnset-guess",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "roundNumber": 0,
         "totalRounds": 3,
         "referenceGeneration": 1,
@@ -287,6 +288,7 @@
       "publicState": {
         "gameId": "learnset-guess",
         "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
         "roundNumber": 1,
         "totalRounds": 3,
         "referenceGeneration": 1,
@@ -385,6 +387,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -490,6 +493,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -595,6 +599,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -762,6 +767,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -929,6 +935,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1096,6 +1103,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 2,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1214,6 +1222,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 2,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1332,6 +1341,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 2,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1450,6 +1460,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 2,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1568,6 +1579,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 2,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1767,6 +1779,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 3,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1838,6 +1851,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 3,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1909,6 +1923,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 3,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -1980,6 +1995,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 3,
             "totalRounds": 3,
             "referenceGeneration": 1,
@@ -2105,6 +2121,7 @@
           "publicState": {
             "gameId": "learnset-guess",
             "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 3,
             "totalRounds": 3,
             "referenceGeneration": 1,

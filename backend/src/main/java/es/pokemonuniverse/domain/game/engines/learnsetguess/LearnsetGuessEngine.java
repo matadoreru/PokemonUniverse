@@ -168,6 +168,27 @@ public final class LearnsetGuessEngine
         showLevels ? entry.level() : null, entry.move().type(), entry.move().category());
   }
 
+  /** Mensaje de quien ya ha fallado con todos los grupos a la vista en {@code MANUAL_REVEAL}. */
+  public static final String EXHAUSTED_MESSAGE = "Ya no te quedan pistas en esta ronda.";
+
+  private static boolean manual(LearnsetGuessState state) {
+    return state.config().mode() == LearnsetGuessMode.MANUAL_REVEAL;
+  }
+
+  private static int manualMisses(LearnsetGuessState state, String playerId) {
+    return state.manualMisses().getOrDefault(playerId, 0);
+  }
+
+  /** {@code MANUAL_REVEAL}: cada jugador ve el primer grupo y uno más por cada intento fallido. */
+  private static int manualVisibleCount(LearnsetGuessState state, String playerId, int totalGroups) {
+    return Math.min(totalGroups, 1 + manualMisses(state, playerId));
+  }
+
+  /** {@code MANUAL_REVEAL}: ha fallado con todos los grupos a la vista; ya no adivina en esta ronda. */
+  private static boolean manualExhausted(LearnsetGuessState state, String playerId) {
+    return manualMisses(state, playerId) >= groupLearnset(state.learnset()).size();
+  }
+
   private static int visibleGroupCount(LearnsetGuessState state) {
     return state.initialGroupCount() + state.revealedExtraGroups();
   }
@@ -178,14 +199,19 @@ public final class LearnsetGuessEngine
   }
 
   private static List<LearnsetMoveGroup> publicGroups(LearnsetGuessState state) {
+    return moveGroups(state, visibleGroups(state), state.initialGroupCount());
+  }
+
+  /** {@code stage}: 0 para los grupos iniciales y, después, el número de grupo extra. */
+  private static List<LearnsetMoveGroup> moveGroups(LearnsetGuessState state, List<List<ResolvedLevelUpMove>> groups,
+      int initialGroupCount) {
     boolean showLevels = state.config().showLevels();
-    var groups = visibleGroups(state);
     var result = new ArrayList<LearnsetMoveGroup>();
     for (int index = 0; index < groups.size(); index++) {
       var entries = groups.get(index);
       result.add(new LearnsetMoveGroup(showLevels ? entries.getFirst().level() : null,
           entries.stream().map(entry -> hint(entry, showLevels)).toList(),
-          Math.max(0, index - state.initialGroupCount() + 1)));
+          Math.max(0, index - initialGroupCount + 1)));
     }
     return result;
   }
@@ -226,7 +252,11 @@ public final class LearnsetGuessEngine
         .filter(entries -> entries.getFirst().level() <= LEARNSET_INITIAL_MAX_LEVEL)
         .count();
     long roundEndsAt = context.now() + state.config().roundSeconds() * 1_000L;
-    boolean hasExtra = groups.size() > initialGroupCount && context.now() + LEARNSET_HINT_INTERVAL_MS < roundEndsAt;
+    // MANUAL_REVEAL: sin pistas por tiempo; cada jugador empieza con el primer grupo y los fallos le enseñan más.
+    boolean manual = manual(state);
+    if (manual) initialGroupCount = 1;
+    boolean hasExtra = !manual && groups.size() > initialGroupCount
+        && context.now() + LEARNSET_HINT_INTERVAL_MS < roundEndsAt;
     var catalog = requireLearnsets(context);
     if (context.preloadImage() != null) context.preloadImage().accept(selected.pokemon().sprite());
     var usedPokemonIds = new LinkedHashSet<>(state.usedPokemonIds());
@@ -243,6 +273,7 @@ public final class LearnsetGuessEngine
         .attempts(List.of())
         .solves(Map.of())
         .cooldownUntil(Map.of())
+        .manualMisses(Map.of())
         .lastWarning(false)
         .roundStartedAt(context.now())
         .roundEndsAt(roundEndsAt)
@@ -255,7 +286,22 @@ public final class LearnsetGuessEngine
     var pokemon = state.correctPokemonId() == null ? null : context.pokemon().byId(state.correctPokemonId()).orElse(null);
     if (pokemon == null) throw new EngineException("Learnset Guess answer is missing from the catalog");
     boolean showLevels = state.config().showLevels();
-    var visibleMoves = visibleGroups(state).stream()
+    boolean manual = manual(state);
+    var allGroups = groupLearnset(state.learnset());
+    Map<String, Integer> groupsSeen = null;
+    var revealedGroups = visibleGroups(state);
+    if (manual) {
+      // Cada jugador vio sus grupos; en la revelación se publican los que llegó a ver el que más vio.
+      groupsSeen = new LinkedHashMap<>();
+      int seen = 0;
+      for (var playerId : state.playerIds()) {
+        int count = manualVisibleCount(state, playerId, allGroups.size());
+        groupsSeen.put(playerId, count);
+        seen = Math.max(seen, count);
+      }
+      revealedGroups = allGroups.subList(0, Math.min(allGroups.size(), seen));
+    }
+    var visibleMoves = revealedGroups.stream()
         .flatMap(List::stream)
         .map(entry -> hint(entry, showLevels))
         .toList();
@@ -273,7 +319,7 @@ public final class LearnsetGuessEngine
     var lastRound = new LearnsetRoundResult(LearnsetRoundPokemon.of(pokemon), state.referenceGeneration(),
         GenerationLearnsetSources.label(state.referenceGeneration()), visibleMoves,
         state.learnset().stream().map(entry -> hint(entry, showLevels)).toList(), new LinkedHashMap<>(state.solves()),
-        absentIds);
+        absentIds, groupsSeen, manual ? allGroups.size() : null);
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
         .playerStats(playerStats)
@@ -301,6 +347,8 @@ public final class LearnsetGuessEngine
    * que caiga en el nuevo cierre o después.
    */
   private static LearnsetGuessState applyLastWarning(LearnsetGuessState state, GameContext context) {
+    // MANUAL_REVEAL («sin prisas»): la ronda solo se cierra al completarla todos o al llegar a roundSeconds.
+    if (manual(state)) return state;
     if (state.phase() != GamePhase.ROUND_ACTIVE || state.roundEndsAt() == null || state.solves().isEmpty()) {
       return state;
     }
@@ -316,9 +364,11 @@ public final class LearnsetGuessEngine
     return state.toBuilder().lastWarning(true).roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).build();
   }
 
+  /** Completa la ronda quien acierta y, en {@code MANUAL_REVEAL}, también quien agota los grupos. */
   private static LearnsetGuessState resolveIfComplete(LearnsetGuessState state, GameContext context) {
+    boolean manual = manual(state);
     return Timing.resolveWhenRequiredPlayersComplete(state, context, state.playerIds(),
-        id -> state.solves().containsKey(id), LearnsetGuessEngine::resolveRound);
+        id -> state.solves().containsKey(id) || manual && manualExhausted(state, id), LearnsetGuessEngine::resolveRound);
   }
 
   @Override
@@ -359,6 +409,8 @@ public final class LearnsetGuessEngine
       return GameActionResult.reject(state, "No estás conectado como participante.");
     }
     if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
+    boolean manual = manual(state);
+    if (manual && manualExhausted(state, playerId)) return GameActionResult.reject(state, EXHAUSTED_MESSAGE);
     if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
       // El rechazo lleva ya la ronda resuelta, como el TS.
       return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
@@ -374,9 +426,13 @@ public final class LearnsetGuessEngine
     var stats = state.playerStats().getOrDefault(playerId, LearnsetGuessPlayerStats.ZERO);
     var playerStats = new LinkedHashMap<>(state.playerStats());
     if (guessed.id().equals(state.correctPokemonId())) {
-      int revealStage = state.revealedExtraGroups();
+      int totalGroups = groupLearnset(state.learnset()).size();
+      int visible = manual ? manualVisibleCount(state, playerId, totalGroups) : 0;
+      int revealStage = manual ? visible - 1 : state.revealedExtraGroups();
       int solveOrder = state.solves().size() + 1;
-      int points = LearnsetGuessRules.learnsetPoints(revealStage, solveOrder);
+      int points = manual
+          ? LearnsetGuessRules.manualRevealPoints(totalGroups, visible)
+          : LearnsetGuessRules.learnsetPoints(revealStage, solveOrder);
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, new LearnsetGuessSolve(solveOrder, context.now(), revealStage, points));
       var scores = new LinkedHashMap<>(state.scores());
@@ -388,12 +444,17 @@ public final class LearnsetGuessEngine
     var attempts = new ArrayList<>(state.attempts());
     attempts.add(LearnsetGuessAttempt.of(playerId, guessed, context.now()));
     playerStats.put(playerId, stats.afterIncorrectGuess());
-    return GameActionResult.accept(state.toBuilder()
+    var failed = state.toBuilder()
         .attempts(attempts)
         .cooldownUntil(Timing.setPlayerCooldown(state.cooldownUntil(), playerId, context.now(),
             LEARNSET_GUESS_COOLDOWN_MS))
         .playerStats(playerStats)
-        .build());
+        .build();
+    if (!manual) return GameActionResult.accept(failed);
+    // MANUAL_REVEAL: el fallo le enseña el siguiente grupo; fallar con todos a la vista puede cerrar la ronda.
+    var misses = new LinkedHashMap<>(state.manualMisses());
+    misses.put(playerId, manualMisses(state, playerId) + 1);
+    return GameActionResult.accept(resolveIfComplete(failed.toBuilder().manualMisses(misses).build(), context));
   }
 
   @Override
@@ -409,18 +470,20 @@ public final class LearnsetGuessEngine
   @Override
   public LearnsetGuessPublicState getPublicState(LearnsetGuessState state, GameContext context) {
     boolean active = state.phase() == GamePhase.ROUND_ACTIVE;
+    // MANUAL_REVEAL: los grupos y los intentos son de cada jugador (getPlayerState); aquí no sale ninguno.
+    boolean manual = manual(state);
     var evolution = state.evolutionInfo();
     var solvedPlayers = state.solves().entrySet().stream()
         .map(entry -> new LearnsetGuessSolvedPlayer(entry.getKey(), entry.getValue().solveOrder()))
         .sorted(Comparator.comparingInt(LearnsetGuessSolvedPlayer::solveOrder))
         .toList();
-    return new LearnsetGuessPublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
-        state.referenceGeneration(), GenerationLearnsetSources.label(state.referenceGeneration()),
-        active ? publicGroups(state) : List.of(),
+    return new LearnsetGuessPublicState(ID, state.phase(), state.config().mode(), state.roundNumber(),
+        state.config().rounds(), state.referenceGeneration(), GenerationLearnsetSources.label(state.referenceGeneration()),
+        active && !manual ? publicGroups(state) : List.of(),
         active && state.config().showEvolution() && evolution != null
             ? evolutionHint(evolution.stage(), evolution.stages())
             : null,
-        state.attempts(), solvedPlayers, state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
+        manual ? List.of() : state.attempts(), solvedPlayers, state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         active && state.lastWarning(),
         state.phase() == GamePhase.ROUND_RESULTS ? state.lastRound() : null, state.scores(),
         state.phase() == GamePhase.GAME_RESULTS ? LearnsetGuessRules.buildLearnsetResults(state) : null);
@@ -429,13 +492,20 @@ public final class LearnsetGuessEngine
   @Override
   public LearnsetGuessPlayerState getPlayerState(LearnsetGuessState state, String playerId, GameContext context) {
     var solve = state.solves().get(playerId);
+    boolean player = state.playerIds().contains(playerId);
+    // MANUAL_REVEAL: solo quien juega la partida recibe sus grupos y sus intentos; nunca los de otro.
+    boolean manual = manual(state) && player;
+    var groups = manual ? groupLearnset(state.learnset()) : List.<List<ResolvedLevelUpMove>>of();
     return new LearnsetGuessPlayerState(
-        state.phase() == GamePhase.ROUND_ACTIVE && state.playerIds().contains(playerId)
-            && context.isPlayerRequired(playerId) && solve == null,
+        state.phase() == GamePhase.ROUND_ACTIVE && player
+            && context.isPlayerRequired(playerId) && solve == null && !(manual && manualExhausted(state, playerId)),
         solve != null,
         solve == null ? null : solve.solveOrder(),
         state.cooldownUntil().get(playerId),
-        solve == null ? 0 : solve.points());
+        solve == null ? 0 : solve.points(),
+        manual ? moveGroups(state, groups.subList(0, manualVisibleCount(state, playerId, groups.size())), 1) : null,
+        manual ? state.attempts().stream().filter(attempt -> attempt.playerId().equals(playerId)).toList() : null,
+        manual ? groups.size() : null);
   }
 
   @Override

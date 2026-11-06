@@ -6,7 +6,7 @@ import { Avatar } from '../../components/Avatar';
 import { ScorePop } from '../../components/ScorePop';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
-import { learnsetRevealStatus } from '../../room/learnset-texts';
+import { learnsetGroupProgress, learnsetRevealStatus } from '../../room/learnset-texts';
 import { revealedLearnsetFlags } from '../../room/learnset-reveal';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
 import { categoryLabel, learnsetClueOrder, learnsetStageText, moveText, ordinal, typeLabel, type LearnsetPlateKind } from './presentation';
@@ -60,17 +60,18 @@ function MoveRow({ move, fresh }: { move: LearnsetMoveHint; fresh: boolean }) {
  * Pistas reveladas (pantalla superior): una franja por movimiento, la última pista arriba (entra con `motion-enter-up`
  * y va marcada «Nueva»). En la cabecera, lo que vale ahora un acierto y cuándo llega la siguiente pista.
  */
-export function LearnsetClues({ groups, latestStage, stake, nextClueIn }: { groups: readonly LearnsetMoveGroup[]; latestStage: number; stake: string | null; nextClueIn: number | null }) {
+export function LearnsetClues({ groups, latestStage, stake, nextClueIn, progress = null, emptyText = null }: { groups: readonly LearnsetMoveGroup[]; latestStage: number; stake: string | null; nextClueIn: number | null; /** Revelación manual: «N de M grupos». */ progress?: string | null; /** Texto del vacío si no es la espera de siempre. */ emptyText?: ReactNode }) {
   const ordered = learnsetClueOrder(groups);
   const moveCount = groups.reduce((total, group) => total + group.moves.length, 0);
   return <Panel title="Pistas reveladas" variant="dark" scroll scrollLabel="Pistas reveladas" className={cx(s.cluesPanel)}
     right={<span className={s.cluesRight}>
       {stake && <span key={stake} className={cx(s.stake, 'motion-bump')} data-testid="learnset-stake"><Badge><Icon icon={Coins} size={18} />{stake}</Badge></span>}
       {nextClueIn !== null && <Chip tone="info" icon={<Icon icon={Lightbulb} size={18} />}>Nueva pista en {nextClueIn}s</Chip>}
-      {stake === null && nextClueIn === null && <Badge tone="cream">{`${moveCount} ${moveCount === 1 ? 'movimiento' : 'movimientos'}`}</Badge>}
+      {progress && <Chip tone="info" icon={<Icon icon={Lightbulb} size={18} />}>{progress}</Chip>}
+      {stake === null && nextClueIn === null && progress === null && <Badge tone="cream">{`${moveCount} ${moveCount === 1 ? 'movimiento' : 'movimientos'}`}</Badge>}
     </span>}>
     {ordered.length === 0
-      ? <p className={s.empty}><Icon icon={Hourglass} size={24} /><span><strong>Preparando las pistas…</strong> Llegan los movimientos que aprende el Pokémon por nivel.</span></p>
+      ? <p className={s.empty}><Icon icon={Hourglass} size={24} />{emptyText ?? <span><strong>Preparando las pistas…</strong> Llegan los movimientos que aprende el Pokémon por nivel.</span>}</p>
       : <ul className={s.clues} aria-label="Movimientos conocidos">{ordered.flatMap((group) => group.moves.map((move, index) => {
         const fresh = group.stage > 0 && group.stage === latestStage;
         return <li key={`${group.stage}-${move.moveId}-${move.level ?? 'x'}-${index}`} className={cx(group.stage > 0 && 'motion-enter-up')} data-stage={group.stage}><MoveRow move={move} fresh={fresh} /></li>;
@@ -96,13 +97,18 @@ export function LearnsetScoreboard({ lines, selfId, className }: { lines: readon
   </Panel>;
 }
 
-/** Intentos públicos (columna lateral): los fallos de la ronda, el último arriba. */
-export function LearnsetAttempts({ attempts, members, colors, className }: { attempts: readonly LearnsetGuessAttempt[]; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; className?: string | undefined }) {
+/**
+ * Intentos (columna lateral): los fallos de la ronda, el último arriba. Públicos en Clásico; en Revelación manual
+ * (`own`) solo los propios, que nadie más ve.
+ */
+export function LearnsetAttempts({ attempts, members, colors, className, own = false }: { attempts: readonly LearnsetGuessAttempt[]; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; className?: string | undefined; own?: boolean }) {
   const ordered = [...attempts].reverse();
-  return <Panel title="Intentos públicos" variant="dark" scroll scrollLabel="Intentos públicos de la ronda" {...(className ? { className } : {})} right={<Badge tone="cream">{attempts.length}</Badge>}>
+  return <Panel title={own ? 'Tus intentos' : 'Intentos públicos'} variant="dark" scroll scrollLabel={own ? 'Tus intentos de la ronda' : 'Intentos públicos de la ronda'} {...(className ? { className } : {})} right={<Badge tone="cream">{attempts.length}</Badge>}>
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
     {ordered.length === 0
-      ? <p className={s.empty}><Icon icon={Search} size={24} /><span><strong>Todavía no hay intentos incorrectos.</strong> Cuanto antes aciertes, más puntos: cada pista nueva resta uno.</span></p>
+      ? <p className={s.empty}><Icon icon={Search} size={24} />{own
+        ? <span><strong>Todavía no has fallado.</strong> Cada fallo te enseña otro grupo de movimientos, pero el acierto vale 10 puntos menos.</span>
+        : <span><strong>Todavía no hay intentos incorrectos.</strong> Cuanto antes aciertes, más puntos: cada pista nueva resta uno.</span>}</p>
       : <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
         const name = members.get(attempt.playerId)?.displayName ?? attempt.playerId;
         return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`}>
@@ -150,12 +156,15 @@ export function LearnsetRevealBoard({ result, members, colors, selfId, className
     <ol className={s.rows} aria-label="Resultado de cada jugador">{ordered.map((member) => {
       const solve = result.solves[member.id];
       const status = learnsetRevealStatus(Boolean(solve), !result.absentIds.includes(member.id));
+      // Revelación manual: cuántos grupos vio cada uno (en Clásico, la etapa de siempre).
+      const seen = result.groupsSeen?.[member.id];
+      const manualSeen = seen !== undefined && result.totalGroups !== undefined ? learnsetGroupProgress(seen, result.totalGroups) : null;
       return <li key={member.id} data-testid="learnset-reveal-row">
         <Row {...(solve ? { rank: solve.solveOrder } : {})} name={member.displayName} color={playerColor(colors.get(member.id) ?? 0)} self={member.id === selfId}
           avatar={<Avatar name={member.displayName} avatar={member.avatar} level={member.level} size="sm" />}
           meta={<span className={s.rowMeta}>{solve
-            ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.attemptBy}>{learnsetStageText(solve.revealStage)}</span></>
-            : status === 'offline' ? <Chip tone="neutral" icon={<Icon icon={WifiOff} size={18} />}>Sin conexión</Chip> : <Chip tone="bad">✗ No acertó</Chip>}</span>}
+            ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.attemptBy}>{manualSeen ? `Con ${manualSeen}` : learnsetStageText(solve.revealStage)}</span></>
+            : <>{status === 'offline' ? <Chip tone="neutral" icon={<Icon icon={WifiOff} size={18} />}>Sin conexión</Chip> : <Chip tone="bad">✗ No acertó</Chip>}{manualSeen && <span className={s.attemptBy}>Vio {manualSeen}</span>}</>}</span>}
           value={<span className={s.score}>+{solve?.points ?? 0}</span>} />
       </li>;
     })}</ol>
@@ -206,6 +215,7 @@ function plateContent({ kind, searchNote, solveOrder, roundPoints, verdict, coun
       icon: CheckCircle2, tone: 'ok', kicker: `${solveOrder ? ordinal(solveOrder) : ''} en acertar`, title: '¡Has acertado!',
       text: 'La respuesta sigue oculta para los demás.', aside: points(roundPoints, true),
     };
+    case 'exhausted': return { icon: Hourglass, tone: 'warn', kicker: 'Sin más pistas', title: 'Has agotado los grupos', text: 'Ya no puedes adivinar en esta ronda: espera a la revelación.' };
     case 'watching': return { icon: Eye, tone: 'info', kicker: 'No adivinas en esta ronda', title: 'Estás observando', text: 'Las pistas y los aciertos aparecen en directo.' };
     case 'reveal': return {
       icon: verdict?.tone === 'ok' ? CheckCircle2 : verdict?.tone === 'bad' ? X : Eye, tone: verdict?.tone ?? 'info', kicker: verdict?.text ?? 'Resultado de la ronda', title: countdown,
