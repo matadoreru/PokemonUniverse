@@ -1053,6 +1053,9 @@ function GamePiecesSection() {
           aside={<Panel variant="cream" as="div"><p>Métricas propias del juego: mejor acierto, distancia por ronda…</p></Panel>}
           actions={<><Pill variant="yellow">Continuar sesión</Pill><Pill variant="ghost">Terminar sesión</Pill></>} />
       </Fig>
+      <Fig id="results-shell-no-winner" caption="Resultados cooperativos (ResultsShell con noWinner: nadie lleva insignia de ganador)" wide>
+        <ResultsShell title="Resultado del grupo" subtitle="Type Duel · Cooperativo · 3 rondas" standings={RESULTS} selfId="ash" noWinner />
+      </Fig>
     </Section>
   );
 }

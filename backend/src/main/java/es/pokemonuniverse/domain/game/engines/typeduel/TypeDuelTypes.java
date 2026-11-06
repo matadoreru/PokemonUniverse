@@ -29,9 +29,14 @@ public final class TypeDuelTypes {
   public static final List<String> POKEMON_TYPES = List.of("normal", "fire", "water", "electric", "grass", "ice",
       "fighting", "poison", "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy");
 
-  /** {@code TypeDuelRoundResult['reason']}. */
+  /** {@code TypeDuelRoundResult['reason']}; {@code ALL_FOUND} solo en {@code COOP} (el grupo los encontró todos). */
   public enum TypeDuelRoundReason { WINNER, TIMEOUT, TYPE_TIMEOUT, TYPE_FORFEIT, DISCONNECTED, DISCONNECT_FORFEIT,
-    INVALID_COMBINATION }
+    INVALID_COMBINATION, ALL_FOUND }
+
+  /** {@code COOP}: un Pokémon de la combinación de la ronda y quién lo encontró primero. */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record TypeDuelCoopFind(String pokemonId, String playerId, String pokemonName, String sprite) {}
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -83,7 +88,10 @@ public final class TypeDuelTypes {
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
-   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 21 campos no se usa en el motor).
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 24 campos no se usa en el motor).
+   * Solo en {@code COOP}: {@code coopFound} (lo encontrado en la ronda, en orden), {@code contributions} (Pokémon
+   * aportados por cada jugador en la partida) y {@code usedCombinations} (claves {@code tipo/tipo} ya sorteadas). En
+   * {@code COOP}, {@code participants} queda con la pareja inicial y no se usa: busca toda la sala.
    */
   public record TypeDuelState(
       GamePhase phase,
@@ -106,7 +114,10 @@ public final class TypeDuelTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable TypeDuelRoundResult lastRound) implements TimedGameState {
+      @Nullable TypeDuelRoundResult lastRound,
+      List<TypeDuelCoopFind> coopFound,
+      Map<String, Integer> contributions,
+      List<String> usedCombinations) implements TimedGameState {
 
     public TypeDuelState {
       playerIds = frozenList(playerIds);
@@ -120,6 +131,9 @@ public final class TypeDuelTypes {
       cooldownUntil = frozenMap(cooldownUntil);
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
+      coopFound = frozenList(coopFound);
+      contributions = frozenMap(contributions);
+      usedCombinations = frozenList(usedCombinations);
     }
 
     public static Builder builder() {
@@ -133,7 +147,8 @@ public final class TypeDuelTypes {
           .requiredTypes(requiredTypes).invalidCombinations(invalidCombinations)
           .validPokemonIds(validPokemonIds).attempts(attempts).cooldownUntil(cooldownUntil).scores(scores)
           .playerStats(playerStats).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
-          .nextTransitionAt(nextTransitionAt).lastRound(lastRound);
+          .nextTransitionAt(nextTransitionAt).lastRound(lastRound).coopFound(coopFound).contributions(contributions)
+          .usedCombinations(usedCombinations);
     }
 
     /** {@code finish}: {@code { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }}. */
@@ -164,6 +179,9 @@ public final class TypeDuelTypes {
       private Long roundEndsAt;
       private Long nextTransitionAt;
       private TypeDuelRoundResult lastRound;
+      private List<TypeDuelCoopFind> coopFound = List.of();
+      private Map<String, Integer> contributions = Map.of();
+      private List<String> usedCombinations = List.of();
 
       private Builder() {}
 
@@ -209,12 +227,18 @@ public final class TypeDuelTypes {
 
       public Builder lastRound(@Nullable TypeDuelRoundResult value) { lastRound = value; return this; }
 
+      public Builder coopFound(List<TypeDuelCoopFind> value) { coopFound = value; return this; }
+
+      public Builder contributions(Map<String, Integer> value) { contributions = value; return this; }
+
+      public Builder usedCombinations(List<String> value) { usedCombinations = value; return this; }
+
       public TypeDuelState build() {
         return new TypeDuelState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             playerIds, completedRounds, selectionCycles, roundNumber,
             Objects.requireNonNull(participants, "participants"), participationCounts, lastPair, typeSelections,
             requiredTypes, invalidCombinations, validPokemonIds, attempts, cooldownUntil, scores, playerStats,
-            roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+            roundStartedAt, roundEndsAt, nextTransitionAt, lastRound, coopFound, contributions, usedCombinations);
       }
     }
   }
@@ -269,11 +293,17 @@ public final class TypeDuelTypes {
     }
   }
 
+  /**
+   * {@code TypeDuelPublicState}: {@code mode} va siempre detrás de {@code phase}. Solo en {@code COOP} (en Clásico no
+   * salen): {@code combination} (los tipos de la ronda), {@code found} (lo encontrado en la ronda y quién) y
+   * {@code contributions} (Pokémon aportados por cada jugador en la partida).
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record TypeDuelPublicState(
       String gameId,
       GamePhase phase,
+      TypeDuelMode mode,
       List<String> playerIds,
       int completedRounds,
       int roundNumber,
@@ -292,7 +322,17 @@ public final class TypeDuelTypes {
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
       @Nullable TypeDuelRoundResult lastRound,
-      @Nullable GameResults results) {}
+      @Nullable GameResults results,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<String> combination,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<TypeDuelCoopFind> found,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Map<String, Integer> contributions) {
+
+    public TypeDuelPublicState {
+      combination = combination == null ? null : frozenList(combination);
+      found = found == null ? null : frozenList(found);
+      contributions = contributions == null ? null : frozenMap(contributions);
+    }
+  }
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)

@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { TypeDuelPlayerState, TypeDuelPublicState, RoomView } from '@pokemon-universe/shared';
-import { typeDuelAnnouncement, typeDuelFocusKey, typeDuelMemberStatus, typeDuelOwnLastAttempt, typeDuelPlateKind, typeDuelRecords, typeDuelStatsLine, typeDuelVerdict, typeGridMove } from '../games/type-duel/presentation';
+import { typeDuelAnnouncement, typeDuelCoopAnnouncement, typeDuelCoopRanking, typeDuelCoopRoundTitle, typeDuelCoopStatsLine, typeDuelFocusKey, typeDuelMemberStatus, typeDuelOwnLastAttempt, typeDuelPlateKind, typeDuelRecords, typeDuelStatsLine, typeDuelVerdict, typeGridMove } from '../games/type-duel/presentation';
 import { TypeDuelGame } from './TypeDuelGame';
 import { TypeDuelResults } from './TypeDuelResults';
 
@@ -15,7 +15,7 @@ type Phase = TypeDuelPublicState['phase'];
 const attempt = (playerId: string, pokemonName: string, correct: boolean, attemptedAt: number) => ({ playerId, pokemonId: pokemonName.toLowerCase(), pokemonName, sprite: `/api/pokemon/${pokemonName.toLowerCase()}/sprite`, correct, attemptedAt });
 
 function room(phase: Phase, overrides: Partial<TypeDuelPublicState> = {}, player: Partial<TypeDuelPlayerState> = {}): RoomView {
-  const game: TypeDuelPublicState = { gameId: 'type-duel', phase, playerIds: ['p1', 'p2', 'p3'], completedRounds: 0, roundNumber: 1, totalRounds: 3, participants: ['p1', 'p2'], participationCounts: { p1: 1, p2: 1, p3: 0 }, typeSelectionCompletedIds: [], revealedTypes: {}, requiredTypes: null, solutionCount: null, invalidCombinations: 0, finalSelectionCycle: false, attempts: [], scores: { p1: 0, p2: 0, p3: 0 }, roundStartedAt: 1_000, roundEndsAt: 16_000, nextTransitionAt: null, lastRound: null, results: null, ...overrides };
+  const game: TypeDuelPublicState = { gameId: 'type-duel', phase, mode: 'CLASSIC', playerIds: ['p1', 'p2', 'p3'], completedRounds: 0, roundNumber: 1, totalRounds: 3, participants: ['p1', 'p2'], participationCounts: { p1: 1, p2: 1, p3: 0 }, typeSelectionCompletedIds: [], revealedTypes: {}, requiredTypes: null, solutionCount: null, invalidCombinations: 0, finalSelectionCycle: false, attempts: [], scores: { p1: 0, p2: 0, p3: 0 }, roundStartedAt: 1_000, roundEndsAt: 16_000, nextTransitionAt: null, lastRound: null, results: null, ...overrides };
   return { code: 'TEST11', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla')], availableGames: [], selectedGameId: 'type-duel', selectedGameConfig: { generations: [1], typeSelectSeconds: 15, searchSeconds: 20, rounds: 3 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['type-duel'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { participant: true, ownType: null, canSelectType: phase === 'SELECTING_TYPES', canAttempt: phase === 'POKEMON_SEARCH', cooldownUntil: 0, ...player }, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
 }
 
@@ -159,5 +159,83 @@ describe('TypeDuelResults', () => {
     expect(html).toContain('Ganó 1 de 1 · 100% · 0 fallos · media 3.0s');
     expect(html.match(/>Empate</g)).toHaveLength(2);
     expect(html).toContain('Continuar sesión');
+  });
+});
+
+describe('TypeDuelGame: Cooperativo', () => {
+  const find = (pokemonId: string, playerId: string) => ({ pokemonId, playerId, pokemonName: pokemonId[0]!.toUpperCase() + pokemonId.slice(1), sprite: `/api/pokemon/${pokemonId}/sprite` });
+  const coop = (phase: Phase, overrides: Partial<TypeDuelPublicState> = {}, player: Partial<TypeDuelPlayerState> = {}) => {
+    const view = room(phase, { mode: 'COOP', combination: ['water', 'ground'], solutionCount: 2, found: [], contributions: { p1: 0, p2: 0, p3: 0 }, roundEndsAt: 31_000, ...overrides }, { canAttempt: phase === 'POKEMON_SEARCH', ...player });
+    return { ...view, selectedGameConfig: { generations: [1, 2], typeSelectSeconds: 15, searchSeconds: 20, rounds: 3, coopSeconds: 30, mode: 'COOP' } } as RoomView;
+  };
+
+  it('shows the combination, the group counter, the own contribution and who found each one', () => {
+    const html = render(coop('POKEMON_SEARCH', { found: [find('wooper', 'p2'), find('quagsire', 'p1')], contributions: { p1: 3, p2: 1, p3: 0 } }), 'p1');
+    expect(html).toContain('data-testid="type-duel-coop-board"');
+    expect(typesIn(html)).toEqual(['water', 'ground']);
+    expect(html).toMatch(/<h1[^>]*>Tipo Agua y Tierra<\/h1>/);
+    expect(html).toContain('2 de 2</strong>');
+    expect(html).toContain('tuyo esta ronda · 3 en la partida');
+    expect(html).toContain('Lo encontró Bruno');
+    expect(html).toContain('Lo encontraste tú');
+    // El último encontrado, arriba.
+    expect(html.indexOf('Quagsire')).toBeLessThan(html.indexOf('Wooper'));
+    expect(html).toContain('Buscar Pokémon con esos tipos');
+    // Sin nada del duelo por parejas.
+    expect(html).not.toContain('type-duel-versus');
+    expect(html).not.toContain('Duelista');
+  });
+  it('lets every player search, and a spectator only watches', () => {
+    expect(render(coop('POKEMON_SEARCH'), 'p3')).toContain('Buscar Pokémon con esos tipos');
+    const spectator = render(coop('POKEMON_SEARCH', {}, { participant: false, canAttempt: false }), 'p9');
+    expect(spectator).not.toContain('Buscar Pokémon con esos tipos');
+    expect(spectator).toContain('El grupo está buscando');
+  });
+  it('shows the round result with the missed ones and the host action', () => {
+    const lastRound = { reason: 'TIMEOUT' as const, winnerId: null, attempts: [], solutions: [{ id: 'quagsire', name: 'Quagsire', sprite: '/api/pokemon/quagsire/sprite' }], requiredTypes: ['water' as const, 'ground' as const], selectedTypes: {}, disconnectedIds: [] };
+    const html = render(coop('ROUND_RESULTS', { lastRound, found: [find('wooper', 'p2')], completedRounds: 1, roundEndsAt: null, nextTransitionAt: 41_000 }));
+    expect(html).toContain('data-testid="type-duel-coop-result"');
+    expect(html).toContain('Encontrasteis 1 de 2');
+    expect(html).toContain('Os faltaron');
+    expect(html).toContain('Siguiente ronda en');
+    expect(html.match(/>Siguiente ronda</g)).toHaveLength(2);
+  });
+  it('has exactly one live region, and it never repeats the duplicate message', () => {
+    for (const view of [coop('POKEMON_SEARCH'), coop('POKEMON_SEARCH', { attempts: [attempt('p1', 'Wooper', true, 2_000)], found: [find('wooper', 'p1')] })]) {
+      const html = render(view);
+      expect(html.match(/role="status"/g)).toHaveLength(1);
+      expect(html).not.toContain('Ya lo ha encontrado alguien.');
+    }
+  });
+  it('presentation: titles, ranking, announcement and stats line', () => {
+    expect(typeDuelCoopRoundTitle('ALL_FOUND', 2, 2)).toBe('¡Los encontrasteis todos!');
+    expect(typeDuelCoopRoundTitle('TIMEOUT', 0, 5)).toBe('No encontrasteis ninguno');
+    expect(typeDuelCoopRoundTitle('TIMEOUT', 3, 5)).toBe('Encontrasteis 3 de 5');
+    expect(typeDuelCoopRanking(['p1', 'p2', 'p3'], { p1: 1, p2: 3, p3: 1 }, (id) => id)).toEqual([
+      { id: 'p2', count: 3, position: 1 }, { id: 'p1', count: 1, position: 2 }, { id: 'p3', count: 1, position: 2 },
+    ]);
+    expect(typeDuelCoopAnnouncement({ phase: 'POKEMON_SEARCH', roundNumber: 2, combination: ['psychic'], found: 0, total: 12, lastAttempt: null, player: true })).toBe('Ronda 2: buscad juntos Pokémon de tipo Psíquico. Hay 12.');
+    expect(typeDuelCoopAnnouncement({ phase: 'POKEMON_SEARCH', roundNumber: 2, combination: ['psychic'], found: 1, total: 12, lastAttempt: attempt('p1', 'Abra', true, 1), player: true })).toBe('Abra suma para el grupo: 1 de 12.');
+    expect(typeDuelCoopStatsLine({ contribution: 3, groupTotal: 7 })).toBe('Aportó 3 de 7 · 43%');
+    expect(typeDuelCoopStatsLine({ contribution: 0, groupTotal: 7 })).toBe('No aportó ningún Pokémon');
+  });
+  it('results show the group total and each contribution, with no winner', () => {
+    const standings = [
+      { playerId: 'p1', position: 1, points: 3, stats: { contribution: 3, groupTotal: 7 } },
+      { playerId: 'p3', position: 1, points: 3, stats: { contribution: 3, groupTotal: 7 } },
+      { playerId: 'p2', position: 3, points: 1, stats: { contribution: 1, groupTotal: 7 } },
+    ];
+    const view = coop('GAME_RESULTS', { results: { winnerId: null, standings } as never, completedRounds: 3, roundEndsAt: null });
+    const html = renderToStaticMarkup(<TypeDuelResults room={view} selfId="p1" onLobby={() => undefined} onEnd={() => undefined} />);
+    expect(html).toContain('Resultado del grupo');
+    expect(html).toContain('Type Duel · Cooperativo · 3 rondas');
+    expect(html).toContain('Total del grupo');
+    expect(html).toContain('>7<');
+    expect(html).toContain('Pokémon distintos encontrados');
+    expect(html).toContain('Aportó 3 de 7 · 43%');
+    expect(html).toContain('3 Pokémon');
+    expect(html).toContain('Ana, Carla');
+    expect(html).not.toContain('Ganador');
+    expect(html).not.toContain('duelo');
   });
 });

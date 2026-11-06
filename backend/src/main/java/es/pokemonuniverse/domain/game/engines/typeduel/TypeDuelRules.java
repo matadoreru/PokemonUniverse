@@ -4,6 +4,7 @@ import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelState;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelStats;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
@@ -39,6 +40,35 @@ public final class TypeDuelRules {
   }
 
   /**
+   * {@code COOP}: las combinaciones de tipos (un tipo o dos, sin orden) con al menos un Pokémon de {@code pool}, en el
+   * orden de {@code POKEMON_TYPES}: primero el tipo {@code a} solo y luego {@code a} con cada tipo posterior.
+   */
+  public static List<List<String>> coopCombinations(List<Pokemon> pool) {
+    var types = TypeDuelTypes.POKEMON_TYPES;
+    var combinations = new ArrayList<List<String>>();
+    for (int a = 0; a < types.size(); a += 1) {
+      for (int b = a; b < types.size(); b += 1) {
+        var typeA = types.get(a);
+        var typeB = types.get(b);
+        if (pool.stream().anyMatch(pokemon -> isValidPokemonForTypes(pokemon, typeA, typeB))) {
+          combinations.add(requiredTypeCombination(typeA, typeB));
+        }
+      }
+    }
+    return combinations;
+  }
+
+  /** Clave estable de una combinación ({@code fire/flying}, {@code ice}) para no repetirla entre rondas. */
+  public static String combinationKey(List<String> combination) {
+    return String.join("/", combination);
+  }
+
+  /** {@code isValidPokemonForTypes} con una combinación de uno o dos tipos. */
+  public static boolean matchesCombination(Pokemon pokemon, List<String> combination) {
+    return isValidPokemonForTypes(pokemon, combination.getFirst(), combination.getLast());
+  }
+
+  /**
    * Pareja con menos participaciones acumuladas que no repita la anterior si hay alternativa. Consume {@code random}
    * exactamente una vez.
    */
@@ -62,21 +92,27 @@ public final class TypeDuelRules {
   }
 
   /**
-   * Clasificación final con {@code winRate} y {@code averageCorrectTimeMs} derivados. El desempate de TS es
+   * Clasificación final con {@code winRate} y {@code averageCorrectTimeMs} derivados. En {@code COOP}, los puntos son
+   * la aportación, las estadísticas suman {@code contribution} y {@code groupTotal}, y nadie gana ({@code winnerId} y
+   * {@code won} nulos). El desempate de TS es
    * {@code playerId.localeCompare}; aquí {@link String#compareTo} (equivalente sobre ids de jugador, ver el README de
    * motores, regla 21).
    */
   public static GameResults buildTypeDuelResults(TypeDuelState state) {
     if (state.phase() != GamePhase.GAME_RESULTS) throw new EngineException("Results unavailable");
+    boolean coop = state.config().mode() == TypeDuelMode.COOP;
+    // COOP: la clasificación (y la de la sesión) usa la aportación de cada uno; no hay ganador individual.
+    int groupTotal = state.contributions().values().stream().mapToInt(Integer::intValue).sum();
     var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
+        .map(playerId -> new Scoring.ScoreEntry<>(playerId,
+            coop ? state.contributions().getOrDefault(playerId, 0) : state.scores().getOrDefault(playerId, 0),
             state.playerStats().get(playerId)))
         .toList();
     Comparator<Scoring.ScoreEntry<TypeDuelStats>> compare = (left, right) -> {
       int byPoints = Integer.compare(right.points(), left.points());
       return byPoints != 0 ? byPoints : left.playerId().compareTo(right.playerId());
     };
-    return Scoring.buildRankedResults(entries, compare, Scoring.ScoreEntry::points, entry -> {
+    var results = Scoring.buildRankedResults(entries, compare, Scoring.ScoreEntry::points, entry -> {
       var stats = entry.stats();
       var mapped = new LinkedHashMap<String, Number>();
       mapped.put("duelsPlayed", stats.duelsPlayed());
@@ -88,7 +124,16 @@ public final class TypeDuelRules {
           ? Math.round((double) stats.duelsWon() / stats.duelsPlayed() * 100) : 0);
       mapped.put("averageCorrectTimeMs", stats.correctAttempts() != 0
           ? Math.round((double) stats.correctTimeTotalMs() / stats.correctAttempts()) : 0);
+      if (coop) {
+        mapped.put("contribution", entry.points());
+        mapped.put("groupTotal", groupTotal);
+      }
       return mapped;
     });
+    if (!coop) return results;
+    return new GameResults(null, results.standings().stream()
+        .map(standing -> new GameStanding(standing.playerId(), standing.position(), standing.points(), null,
+            standing.stats()))
+        .toList());
   }
 }

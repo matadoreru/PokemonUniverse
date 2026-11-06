@@ -175,3 +175,66 @@ export function typeDuelRecords(entries: readonly { name: string; stats: Standin
     fastest: fastest && { value: `${(fastest.value / 1000).toFixed(1)}s`, names: fastest.names },
   };
 }
+
+// ------------------------------------------------------------------------------------------------- Cooperativo
+
+/** `COOP`: la combinación en texto («Agua y Tierra», «Psíquico»). */
+export function typeDuelCombinationText(types: readonly PokemonType[]): string {
+  return types.map(typeLabel).join(' y ');
+}
+
+/** `COOP`: chip de la fase en la placa de la ronda. */
+export function typeDuelCoopPhaseLabel(phase: GamePhase): string {
+  switch (phase) {
+    case 'POKEMON_SEARCH': return 'Búsqueda conjunta';
+    case 'ROUND_RESULTS': return 'Resultado';
+    default: return 'Preparando';
+  }
+}
+
+/** `COOP`: título del resultado de la ronda (cuántos encontró el grupo de los que había). */
+export function typeDuelCoopRoundTitle(reason: TypeDuelRoundResult['reason'] | null, found: number, total: number): string {
+  if (reason === 'ALL_FOUND' || (total > 0 && found >= total)) return '¡Los encontrasteis todos!';
+  if (found === 0) return 'No encontrasteis ninguno';
+  return `Encontrasteis ${found} de ${total}`;
+}
+
+/** `COOP`: cuántos Pokémon aportó cada jugador en la partida, de más a menos (empates comparten puesto). */
+export function typeDuelCoopRanking(playerIds: readonly string[], contributions: Readonly<Record<string, number>>, nameOf: (id: string) => string): Array<{ id: string; count: number; position: number }> {
+  const sorted = [...playerIds].sort((a, b) => (contributions[b] ?? 0) - (contributions[a] ?? 0) || nameOf(a).localeCompare(nameOf(b)));
+  return sorted.map((id) => {
+    const count = contributions[id] ?? 0;
+    return { id, count, position: sorted.findIndex((other) => (contributions[other] ?? 0) === count) + 1 };
+  });
+}
+
+/**
+ * `COOP`: aviso de la región `status` (siempre montada). Durante la búsqueda dice la combinación y el contador del
+ * grupo; tras un intento propio, si sumó o no valía. El duplicado no se repite aquí: lo publica el aviso de la sala.
+ */
+export function typeDuelCoopAnnouncement({ phase, roundNumber, combination, found, total, lastAttempt, player }: {
+  phase: GamePhase;
+  roundNumber: number;
+  combination: readonly PokemonType[];
+  found: number;
+  total: number;
+  lastAttempt: TypeDuelAttempt | null;
+  player: boolean;
+}): string {
+  const target = typeDuelCombinationText(combination);
+  switch (phase) {
+    case 'POKEMON_SEARCH':
+      if (player && lastAttempt) return lastAttempt.correct ? `${lastAttempt.pokemonName} suma para el grupo: ${found} de ${total}.` : `${lastAttempt.pokemonName} no tiene esos tipos.`;
+      return `Ronda ${roundNumber}: buscad juntos Pokémon de tipo ${target}. Hay ${total}.`;
+    case 'ROUND_RESULTS': return `Ronda terminada: el grupo encontró ${found} de ${total}.`;
+    default: return 'Preparando la búsqueda conjunta.';
+  }
+}
+
+/** `COOP`: línea de un jugador en los resultados (su aportación al total del grupo). */
+export function typeDuelCoopStatsLine(stats: Readonly<Record<string, number | undefined>>): string {
+  const contribution = stats.contribution ?? 0;
+  const total = stats.groupTotal ?? 0;
+  if (contribution === 0) return 'No aportó ningún Pokémon';
+  return `Aportó ${contribution} de ${total}${total > 0 ? ` · ${Math.round((contribution / total) * 100)}%` : ''}`;
+}

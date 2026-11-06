@@ -68,6 +68,14 @@ describe('config panel ranges', () => {
     }
   });
 
+  it('Type Duel COOP explains that each round is one combination for the whole group', () => {
+    const render = (config: unknown) => renderToStaticMarkup(createElement(TypeDuelConfigPanel, { config, disabled: false, onChange: async () => undefined }));
+    const coop = render({ ...defaultTypeDuelConfig, mode: 'COOP' });
+    expect(coop).toContain('Cada ronda, una combinación de tipos nueva para todo el grupo.');
+    expect(coop).toContain('Lo que dura cada ronda');
+    expect(render(defaultTypeDuelConfig)).not.toContain('Cada ronda, una combinación');
+  });
+
   it('offers 1–10 impostors and up to 120 seconds per clue in Impostor', () => {
     const ranges = renderRanges(PokemonImpostorConfigPanel, defaultPokemonImpostorConfig);
     expect(ranges.get('Impostores')).toEqual({ min: 1, max: 10 });

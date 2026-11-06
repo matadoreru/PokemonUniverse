@@ -9,10 +9,12 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelAction;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelAttempt;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelCoopFind;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelPlayerState;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelPublicState;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelRoundReason;
@@ -37,6 +39,8 @@ public final class TypeDuelEngine
   private static final long TYPE_REVEAL_MS = 2_000;
   private static final long INVALID_COMBINATION_MS = 3_000;
   public static final long RESULT_MS = 10_000;
+  /** {@code COOP}: el Pokémon ya está en la lista del grupo (lo encontrara quien lo encontrase). */
+  public static final String COOP_DUPLICATE_MESSAGE = "Ya lo ha encontrado alguien.";
 
   private final GameManifest manifest;
 
@@ -168,7 +172,127 @@ public final class TypeDuelEngine
         .build();
   }
 
+  private static boolean coop(TypeDuelState state) {
+    return state.config().mode() == TypeDuelMode.COOP;
+  }
+
+  /**
+   * {@code COOP}: toda la sala busca a la vez los Pokémon de una combinación sorteada entre las que tienen alguno en las
+   * generaciones elegidas (primero las que aún no han salido). Consume {@code random} una vez; sin ninguna combinación
+   * posible, la partida termina.
+   */
+  private static TypeDuelState startCoopRound(TypeDuelState state, GameContext context) {
+    var pool = context.pokemon().forGenerations(state.config().generations(), true);
+    var combinations = TypeDuelRules.coopCombinations(pool);
+    if (combinations.isEmpty()) return state.finished();
+    var unused = combinations.stream()
+        .filter(combination -> !state.usedCombinations().contains(TypeDuelRules.combinationKey(combination)))
+        .toList();
+    var combination = Randoms.randomItem(unused.isEmpty() ? combinations : unused, context.random());
+    var used = new ArrayList<>(state.usedCombinations());
+    used.add(TypeDuelRules.combinationKey(combination));
+    return state.toBuilder()
+        .phase(GamePhase.POKEMON_SEARCH)
+        .roundNumber(state.completedRounds() + 1)
+        .typeSelections(Map.of())
+        .requiredTypes(combination)
+        .validPokemonIds(pool.stream().filter(pokemon -> TypeDuelRules.matchesCombination(pokemon, combination))
+            .map(pokemon -> pokemon.id()).toList())
+        .attempts(List.of())
+        .cooldownUntil(Map.of())
+        .coopFound(List.of())
+        .usedCombinations(used)
+        .roundStartedAt(context.now())
+        .roundEndsAt(context.now() + state.config().coopSeconds() * 1_000L)
+        .nextTransitionAt(null)
+        .lastRound(null)
+        .build();
+  }
+
+  /** {@code COOP}: cierra la búsqueda; las soluciones son las que nadie encontró. Nadie gana la ronda. */
+  private static TypeDuelState coopRoundResult(TypeDuelState state, GameContext context, TypeDuelRoundReason reason) {
+    var foundIds = new HashSet<String>();
+    for (var find : state.coopFound()) foundIds.add(find.pokemonId());
+    List<TypeDuelSolution> missed = state.validPokemonIds().stream()
+        .filter(id -> !foundIds.contains(id))
+        .limit(TypeDuelRules.MAX_SOLUTIONS)
+        .map(id -> context.pokemon().byId(id).orElseThrow(() -> new EngineException("Pokémon desconocido: " + id)))
+        .map(pokemon -> new TypeDuelSolution(pokemon.id(), pokemon.name(), pokemon.sprite()))
+        .toList();
+    return state.toBuilder()
+        .phase(GamePhase.ROUND_RESULTS)
+        .completedRounds(state.completedRounds() + 1)
+        .roundEndsAt(null)
+        .nextTransitionAt(context.now() + RESULT_MS)
+        .lastRound(new TypeDuelRoundResult(reason, null, new ArrayList<>(state.attempts()), missed,
+            state.requiredTypes(), Map.of(), List.of()))
+        .build();
+  }
+
+  /**
+   * {@code COOP}: cualquier jugador de la partida busca. Las acciones de la sala llegan de una en una, así que de dos
+   * jugadores que dicen el mismo Pokémon «a la vez» cuenta el primero y el segundo recibe
+   * {@link #COOP_DUPLICATE_MESSAGE} sin cambiar el estado (ni espera ni intento).
+   */
+  private static GameActionResult<TypeDuelState> coopAction(TypeDuelState state, String playerId,
+      TypeDuelAction action, GameContext context) {
+    if (!state.playerIds().contains(playerId)) return GameActionResult.reject(state, "Observas esta partida.");
+    if (!context.isPlayerRequired(playerId)) {
+      return GameActionResult.reject(state, "No estás conectado como participante.");
+    }
+    if (!(action instanceof TypeDuelAction.AttemptPokemon attemptAction)) {
+      return GameActionResult.reject(state, "No se están eligiendo tipos.");
+    }
+    if (state.phase() != GamePhase.POKEMON_SEARCH) return GameActionResult.reject(state, "La carrera no está activa.");
+    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+      return GameActionResult.reject(state, "El tiempo ha terminado.");
+    }
+    var cooldown = state.cooldownUntil().get(playerId);
+    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
+      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
+    }
+    var lookup = context.pokemon().byId(attemptAction.pokemonId());
+    if (lookup.isEmpty() || !state.config().generations().contains(lookup.get().generation())) {
+      return GameActionResult.reject(state, "Pokémon fuera del pool.");
+    }
+    var pokemon = lookup.get();
+    if (state.coopFound().stream().anyMatch(find -> find.pokemonId().equals(pokemon.id()))) {
+      return GameActionResult.reject(state, COOP_DUPLICATE_MESSAGE);
+    }
+    if (state.attempts().stream()
+        .anyMatch(prev -> prev.playerId().equals(playerId) && prev.pokemonId().equals(pokemon.id()))) {
+      return GameActionResult.reject(state, "Ya lo probaste.");
+    }
+    boolean correct = state.validPokemonIds().contains(pokemon.id());
+    var attempts = new ArrayList<>(state.attempts());
+    attempts.add(new TypeDuelAttempt(playerId, pokemon.id(), pokemon.name(), pokemon.sprite(), correct, context.now()));
+    var playerStats = new LinkedHashMap<>(state.playerStats());
+    long elapsed = context.now() - (state.roundStartedAt() == null ? context.now() : state.roundStartedAt());
+    playerStats.put(playerId,
+        Objects.requireNonNull(state.playerStats().get(playerId), "playerStats").afterAttempt(correct, elapsed));
+    var next = state.toBuilder().attempts(attempts).playerStats(playerStats);
+    if (!correct) {
+      return GameActionResult.accept(next
+          .cooldownUntil(Timing.setPlayerCooldown(state.cooldownUntil(), playerId, context.now(),
+              TypeDuelRules.ATTEMPT_COOLDOWN_MS))
+          .build());
+    }
+    var found = new ArrayList<>(state.coopFound());
+    found.add(new TypeDuelCoopFind(pokemon.id(), playerId, pokemon.name(), pokemon.sprite()));
+    var contributions = new LinkedHashMap<>(state.contributions());
+    contributions.put(playerId, contributions.getOrDefault(playerId, 0) + 1);
+    var scores = new LinkedHashMap<>(state.scores());
+    scores.put(playerId, scores.getOrDefault(playerId, 0) + 1);
+    var updated = next.coopFound(found).contributions(contributions).scores(scores).build();
+    // Todo encontrado: la ronda acaba sin esperar al reloj.
+    return GameActionResult.accept(found.size() >= state.validPokemonIds().size()
+        ? coopRoundResult(updated, context, TypeDuelRoundReason.ALL_FOUND) : updated);
+  }
+
   private static TypeDuelState advanceAfterResult(TypeDuelState state, GameContext context) {
+    if (coop(state)) {
+      return state.completedRounds() >= state.config().rounds() ? state.finished() : startCoopRound(state, context);
+    }
     // Tope duro: como mucho rounds × 2 entradas en SELECTING_TYPES, reintentos incluidos.
     boolean done = state.completedRounds() >= state.config().rounds()
         || state.selectionCycles() >= state.config().rounds() * 2;
@@ -187,10 +311,12 @@ public final class TypeDuelEngine
     var participationCounts = new LinkedHashMap<String, Integer>();
     var scores = new LinkedHashMap<String, Integer>();
     var playerStats = new LinkedHashMap<String, TypeDuelStats>();
+    var contributions = new LinkedHashMap<String, Integer>();
     for (var id : playerIds) {
       participationCounts.put(id, 0);
       scores.put(id, 0);
       playerStats.put(id, TypeDuelStats.ZERO);
+      contributions.put(id, 0);
     }
     return TypeDuelState.builder()
         .phase(GamePhase.GAME_STARTING)
@@ -202,12 +328,13 @@ public final class TypeDuelEngine
         .participationCounts(participationCounts)
         .scores(scores)
         .playerStats(playerStats)
+        .contributions(contributions)
         .build();
   }
 
   @Override
   public TypeDuelState start(TypeDuelState state, GameContext context) {
-    return selectPlayers(state, context);
+    return coop(state) ? startCoopRound(state, context) : selectPlayers(state, context);
   }
 
   @Override
@@ -222,6 +349,7 @@ public final class TypeDuelEngine
       }
       return GameActionResult.accept(advanceAfterResult(state, context));
     }
+    if (coop(state)) return coopAction(state, playerId, action, context);
     if (!state.participants().contains(playerId)) return GameActionResult.reject(state, "Observas este duelo.");
     if (!context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No estás conectado como participante.");
@@ -280,6 +408,15 @@ public final class TypeDuelEngine
 
   @Override
   public TypeDuelState handleTimeout(TypeDuelState state, GameContext context) {
+    if (coop(state)) {
+      if (state.phase() == GamePhase.POKEMON_SEARCH && reached(context, state.roundEndsAt())) {
+        return coopRoundResult(state, context, TypeDuelRoundReason.TIMEOUT);
+      }
+      if (state.phase() == GamePhase.ROUND_RESULTS && reached(context, state.nextTransitionAt())) {
+        return advanceAfterResult(state, context);
+      }
+      return state;
+    }
     if (state.phase() == GamePhase.SELECTING_TYPES && reached(context, state.roundEndsAt())) {
       var playersWhoSelected = state.participants().stream().filter(state.typeSelections()::containsKey).toList();
       return playersWhoSelected.size() == 1
@@ -316,6 +453,8 @@ public final class TypeDuelEngine
 
   @Override
   public TypeDuelState handlePresenceChange(TypeDuelState state, GameContext context) {
+    // COOP: no hay duelo que perder por abandono; la búsqueda sigue hasta el reloj.
+    if (coop(state)) return state;
     var phase = state.phase();
     if (phase == GamePhase.SELECTING_TYPES || phase == GamePhase.TYPE_REVEAL
         || phase == GamePhase.INVALID_COMBINATION || phase == GamePhase.POKEMON_SEARCH) {
@@ -334,13 +473,17 @@ public final class TypeDuelEngine
 
   @Override
   public TypeDuelPublicState getPublicState(TypeDuelState state, GameContext context) {
-    boolean reveal = state.participants().stream().allMatch(state.typeSelections()::containsKey)
+    boolean coop = coop(state);
+    // COOP: no hay tipos elegidos que revelar; la combinación sale en `combination`.
+    boolean reveal = !coop && state.participants().stream().allMatch(state.typeSelections()::containsKey)
         && state.phase() != GamePhase.SELECTING_TYPES;
     boolean resultsPhase = state.phase() == GamePhase.ROUND_RESULTS || state.phase() == GamePhase.GAME_RESULTS;
-    // Cuántos Pokémon cumplen la combinación (nunca cuáles), solo mientras se revela y se busca.
+    // Cuántos Pokémon cumplen la combinación (nunca cuáles), solo mientras se revela y se busca; en COOP, también en el
+    // resultado de la ronda (el contador del grupo).
     Integer solutionCount = state.phase() == GamePhase.TYPE_REVEAL || state.phase() == GamePhase.POKEMON_SEARCH
+        || coop && state.phase() == GamePhase.ROUND_RESULTS
         ? state.validPokemonIds().size() : null;
-    return new TypeDuelPublicState(ID, state.phase(), state.playerIds(), state.completedRounds(), state.roundNumber(),
+    return new TypeDuelPublicState(ID, state.phase(), state.config().mode(), state.playerIds(), state.completedRounds(), state.roundNumber(),
         state.config().rounds(), state.participants(), state.participationCounts(),
         new ArrayList<>(state.typeSelections().keySet()),
         reveal ? state.typeSelections() : Map.of(),
@@ -350,11 +493,21 @@ public final class TypeDuelEngine
         state.selectionCycles() >= state.config().rounds() * 2,
         state.attempts(), state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         resultsPhase ? state.lastRound() : null,
-        state.phase() == GamePhase.GAME_RESULTS ? TypeDuelRules.buildTypeDuelResults(state) : null);
+        state.phase() == GamePhase.GAME_RESULTS ? TypeDuelRules.buildTypeDuelResults(state) : null,
+        coop ? state.requiredTypes() : null,
+        coop ? state.coopFound() : null,
+        coop ? state.contributions() : null);
   }
 
   @Override
   public TypeDuelPlayerState getPlayerState(TypeDuelState state, String playerId, GameContext context) {
+    if (coop(state)) {
+      // COOP: participa toda la partida; no hay tipo propio.
+      boolean player = state.playerIds().contains(playerId);
+      var cooldown = state.cooldownUntil().get(playerId);
+      return new TypeDuelPlayerState(player, null, false, player && state.phase() == GamePhase.POKEMON_SEARCH,
+          cooldown == null ? 0 : cooldown);
+    }
     boolean participant = state.participants().contains(playerId);
     var cooldown = state.cooldownUntil().get(playerId);
     return new TypeDuelPlayerState(participant, state.typeSelections().get(playerId),

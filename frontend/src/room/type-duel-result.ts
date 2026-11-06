@@ -27,6 +27,9 @@ export function typeDuelResultText(lastRound: TypeDuelRoundResult, participants:
     }
     case 'INVALID_COMBINATION':
       return { title: 'Combinación imposible', detail: 'Ninguna combinación elegida tenía Pokémon válidos: el duelo cuenta sin puntos.' };
+    case 'ALL_FOUND':
+      // Solo en Cooperativo, que pinta su propio resultado; por completitud.
+      return { title: '¡Los encontrasteis todos!', detail: null };
   }
 }
 

@@ -73,6 +73,7 @@
       "publicState": {
         "gameId": "type-duel",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2"
@@ -133,6 +134,7 @@
       "publicState": {
         "gameId": "type-duel",
         "phase": "SELECTING_TYPES",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2"
@@ -196,6 +198,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2"

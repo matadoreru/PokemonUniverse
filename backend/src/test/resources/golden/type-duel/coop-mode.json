@@ -1,0 +1,4008 @@
+{
+  "engineId": "type-duel",
+  "scenario": "coop-mode",
+  "seed": 707,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "typeSelectSeconds": 15,
+    "searchSeconds": 20,
+    "rounds": 3,
+    "coopSeconds": 30,
+    "mode": "COOP"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "wooper"
+      },
+      "now": 1500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_TYPE",
+        "pokemonType": "fire"
+      },
+      "now": 1800
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "missingno"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "wooper"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "wooper"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "wooper"
+      },
+      "now": 2600
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "psyduck"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "golduck"
+      },
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "psyduck"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "CONTINUE"
+      },
+      "now": 4600
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "quagsire"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "CONTINUE"
+      },
+      "now": 6000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "CONTINUE"
+      },
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "abra"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "ponyta-galar"
+      },
+      "now": 8500
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "mew"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "kadabra"
+      },
+      "now": 10500
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 11000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "kadabra"
+      },
+      "now": 11500
+    },
+    {
+      "kind": "timeout",
+      "now": 36999
+    },
+    {
+      "kind": "timeout",
+      "now": 37000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "hypno"
+      },
+      "now": 37500
+    },
+    {
+      "kind": "timeout",
+      "now": 47000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "scizor"
+      },
+      "now": 48000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "scizor"
+      },
+      "now": 48000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "forretress"
+      },
+      "now": 77000
+    },
+    {
+      "kind": "timeout",
+      "now": 77000
+    },
+    {
+      "kind": "timeout",
+      "now": 87000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER"
+      },
+      "now": 88000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ATTEMPT_POKEMON",
+        "pokemonId": "abra"
+      },
+      "now": 89000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "typeSelectSeconds": 15,
+      "searchSeconds": 20,
+      "rounds": 3,
+      "coopSeconds": 30,
+      "mode": "COOP"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-duel",
+        "phase": "GAME_STARTING",
+        "mode": "COOP",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "completedRounds": 0,
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "participants": [
+          "p1",
+          "p2"
+        ],
+        "participationCounts": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "typeSelectionCompletedIds": [],
+        "revealedTypes": {},
+        "requiredTypes": null,
+        "solutionCount": null,
+        "invalidCombinations": 0,
+        "finalSelectionCycle": false,
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null,
+        "found": [],
+        "contributions": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        }
+      },
+      "playerStates": {
+        "p1": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        },
+        "p2": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        },
+        "p3": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": false,
+          "cooldownUntil": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "POKEMON_SEARCH",
+        "nextDeadline": 31000,
+        "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "type-duel",
+        "phase": "POKEMON_SEARCH",
+        "mode": "COOP",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "completedRounds": 0,
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "participants": [
+          "p1",
+          "p2"
+        ],
+        "participationCounts": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "typeSelectionCompletedIds": [],
+        "revealedTypes": {},
+        "requiredTypes": null,
+        "solutionCount": 2,
+        "invalidCombinations": 0,
+        "finalSelectionCycle": false,
+        "attempts": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 31000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null,
+        "combination": [
+          "water",
+          "ground"
+        ],
+        "found": [],
+        "contributions": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        }
+      },
+      "playerStates": {
+        "p1": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": true,
+          "cooldownUntil": 0
+        },
+        "p2": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": true,
+          "cooldownUntil": 0
+        },
+        "p3": {
+          "participant": true,
+          "ownType": null,
+          "canSelectType": false,
+          "canAttempt": true,
+          "cooldownUntil": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Observas esta partida.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [],
+            "contributions": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No se están eligiendo tipos.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [],
+            "contributions": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Pokémon fuera del pool.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [],
+            "contributions": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya lo ha encontrado alguien.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya lo ha encontrado alguien.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "psyduck",
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "correct": false,
+                "attemptedAt": 3000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 4000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.5s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "psyduck",
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "correct": false,
+                "attemptedAt": 3000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 4000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya lo probaste.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "psyduck",
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "correct": false,
+                "attemptedAt": 3000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 4000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay ningún resultado que avanzar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 0,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "psyduck",
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "correct": false,
+                "attemptedAt": 3000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 4000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "psyduck",
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "correct": false,
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "quagsire",
+                "pokemonName": "Quagsire",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/195.png",
+                "correct": true,
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 1
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 15000,
+            "lastRound": {
+              "reason": "ALL_FOUND",
+              "winnerId": null,
+              "attempts": [
+                {
+                  "playerId": "p1",
+                  "pokemonId": "wooper",
+                  "pokemonName": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                  "correct": true,
+                  "attemptedAt": 2500
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "psyduck",
+                  "pokemonName": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                  "correct": false,
+                  "attemptedAt": 3000
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "quagsire",
+                  "pokemonName": "Quagsire",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/195.png",
+                  "correct": true,
+                  "attemptedAt": 5000
+                }
+              ],
+              "solutions": [],
+              "requiredTypes": [
+                "water",
+                "ground"
+              ],
+              "selectedTypes": {},
+              "disconnectedIds": []
+            },
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              {
+                "pokemonId": "quagsire",
+                "playerId": "p3",
+                "pokemonName": "Quagsire",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/195.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 1
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 4000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Solo el Host puede avanzar la ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 15000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "wooper",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                "correct": true,
+                "attemptedAt": 2500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "psyduck",
+                "pokemonName": "Psyduck",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                "correct": false,
+                "attemptedAt": 3000
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "quagsire",
+                "pokemonName": "Quagsire",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/195.png",
+                "correct": true,
+                "attemptedAt": 5000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 1
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 15000,
+            "lastRound": {
+              "reason": "ALL_FOUND",
+              "winnerId": null,
+              "attempts": [
+                {
+                  "playerId": "p1",
+                  "pokemonId": "wooper",
+                  "pokemonName": "Wooper",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+                  "correct": true,
+                  "attemptedAt": 2500
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "psyduck",
+                  "pokemonName": "Psyduck",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                  "correct": false,
+                  "attemptedAt": 3000
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "quagsire",
+                  "pokemonName": "Quagsire",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/195.png",
+                  "correct": true,
+                  "attemptedAt": 5000
+                }
+              ],
+              "solutions": [],
+              "requiredTypes": [
+                "water",
+                "ground"
+              ],
+              "selectedTypes": {},
+              "disconnectedIds": []
+            },
+            "results": null,
+            "combination": [
+              "water",
+              "ground"
+            ],
+            "found": [
+              {
+                "pokemonId": "wooper",
+                "playerId": "p1",
+                "pokemonName": "Wooper",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png"
+              },
+              {
+                "pokemonId": "quagsire",
+                "playerId": "p3",
+                "pokemonName": "Quagsire",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/195.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 1
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 4000
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 1
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [],
+            "contributions": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 1
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              }
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 1
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              }
+            ],
+            "contributions": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 1
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 1
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 1
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No estás conectado como participante.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 2
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "kadabra",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                "correct": true,
+                "attemptedAt": 11500
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              {
+                "pokemonId": "kadabra",
+                "playerId": "p3",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 37000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 1,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "kadabra",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                "correct": true,
+                "attemptedAt": 11500
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": 37000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              {
+                "pokemonId": "kadabra",
+                "playerId": "p3",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "kadabra",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                "correct": true,
+                "attemptedAt": 11500
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 47000,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "winnerId": null,
+              "attempts": [
+                {
+                  "playerId": "p2",
+                  "pokemonId": "abra",
+                  "pokemonName": "Abra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                  "correct": true,
+                  "attemptedAt": 8000
+                },
+                {
+                  "playerId": "p1",
+                  "pokemonId": "ponyta-galar",
+                  "pokemonName": "Ponyta de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                  "correct": true,
+                  "attemptedAt": 8500
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "mew",
+                  "pokemonName": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                  "correct": true,
+                  "attemptedAt": 9000
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "kadabra",
+                  "pokemonName": "Kadabra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                  "correct": true,
+                  "attemptedAt": 11500
+                }
+              ],
+              "solutions": [
+                {
+                  "id": "alakazam",
+                  "name": "Alakazam",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+                },
+                {
+                  "id": "slowpoke-galar",
+                  "name": "Slowpoke de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10164.png"
+                },
+                {
+                  "id": "drowzee",
+                  "name": "Drowzee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png"
+                },
+                {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                },
+                {
+                  "id": "espeon",
+                  "name": "Espeon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+                },
+                {
+                  "id": "unown",
+                  "name": "Unown",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/201.png"
+                },
+                {
+                  "id": "wobbuffet",
+                  "name": "Wobbuffet",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/202.png"
+                }
+              ],
+              "requiredTypes": [
+                "psychic"
+              ],
+              "selectedTypes": {},
+              "disconnectedIds": []
+            },
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              {
+                "pokemonId": "kadabra",
+                "playerId": "p3",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La carrera no está activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 47000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 12,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p2",
+                "pokemonId": "abra",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                "correct": true,
+                "attemptedAt": 8000
+              },
+              {
+                "playerId": "p1",
+                "pokemonId": "ponyta-galar",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                "correct": true,
+                "attemptedAt": 8500
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "mew",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                "correct": true,
+                "attemptedAt": 9000
+              },
+              {
+                "playerId": "p3",
+                "pokemonId": "kadabra",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                "correct": true,
+                "attemptedAt": 11500
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 7000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 47000,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "winnerId": null,
+              "attempts": [
+                {
+                  "playerId": "p2",
+                  "pokemonId": "abra",
+                  "pokemonName": "Abra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
+                  "correct": true,
+                  "attemptedAt": 8000
+                },
+                {
+                  "playerId": "p1",
+                  "pokemonId": "ponyta-galar",
+                  "pokemonName": "Ponyta de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png",
+                  "correct": true,
+                  "attemptedAt": 8500
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "mew",
+                  "pokemonName": "Mew",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png",
+                  "correct": true,
+                  "attemptedAt": 9000
+                },
+                {
+                  "playerId": "p3",
+                  "pokemonId": "kadabra",
+                  "pokemonName": "Kadabra",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png",
+                  "correct": true,
+                  "attemptedAt": 11500
+                }
+              ],
+              "solutions": [
+                {
+                  "id": "alakazam",
+                  "name": "Alakazam",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+                },
+                {
+                  "id": "slowpoke-galar",
+                  "name": "Slowpoke de Galar",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10164.png"
+                },
+                {
+                  "id": "drowzee",
+                  "name": "Drowzee",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png"
+                },
+                {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                {
+                  "id": "mewtwo",
+                  "name": "Mewtwo",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+                },
+                {
+                  "id": "espeon",
+                  "name": "Espeon",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+                },
+                {
+                  "id": "unown",
+                  "name": "Unown",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/201.png"
+                },
+                {
+                  "id": "wobbuffet",
+                  "name": "Wobbuffet",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/202.png"
+                }
+              ],
+              "requiredTypes": [
+                "psychic"
+              ],
+              "selectedTypes": {},
+              "disconnectedIds": []
+            },
+            "results": null,
+            "combination": [
+              "psychic"
+            ],
+            "found": [
+              {
+                "pokemonId": "abra",
+                "playerId": "p2",
+                "pokemonName": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+              },
+              {
+                "pokemonId": "ponyta-galar",
+                "playerId": "p1",
+                "pokemonName": "Ponyta de Galar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10162.png"
+              },
+              {
+                "pokemonId": "mew",
+                "playerId": "p3",
+                "pokemonName": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
+              },
+              {
+                "pokemonId": "kadabra",
+                "playerId": "p3",
+                "pokemonName": "Kadabra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+              }
+            ],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",3,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "bug",
+              "steel"
+            ],
+            "found": [],
+            "contributions": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",3,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "scizor",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                "correct": true,
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "bug",
+              "steel"
+            ],
+            "found": [
+              {
+                "pokemonId": "scizor",
+                "playerId": "p1",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+              }
+            ],
+            "contributions": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya lo ha encontrado alguien.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",3,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "scizor",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                "correct": true,
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "bug",
+              "steel"
+            ],
+            "found": [
+              {
+                "pokemonId": "scizor",
+                "playerId": "p1",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+              }
+            ],
+            "contributions": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "POKEMON_SEARCH",
+            "nextDeadline": 77000,
+            "actionEpoch": "[\"POKEMON_SEARCH\",3,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "POKEMON_SEARCH",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 2,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "scizor",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                "correct": true,
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": 77000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null,
+            "combination": [
+              "bug",
+              "steel"
+            ],
+            "found": [
+              {
+                "pokemonId": "scizor",
+                "playerId": "p1",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+              }
+            ],
+            "contributions": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": true,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 87000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "ROUND_RESULTS",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 3,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": 2,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "scizor",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                "correct": true,
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 87000,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "winnerId": null,
+              "attempts": [
+                {
+                  "playerId": "p1",
+                  "pokemonId": "scizor",
+                  "pokemonName": "Scizor",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                  "correct": true,
+                  "attemptedAt": 48000
+                }
+              ],
+              "solutions": [
+                {
+                  "id": "forretress",
+                  "name": "Forretress",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
+                }
+              ],
+              "requiredTypes": [
+                "bug",
+                "steel"
+              ],
+              "selectedTypes": {},
+              "disconnectedIds": []
+            },
+            "results": null,
+            "combination": [
+              "bug",
+              "steel"
+            ],
+            "found": [
+              {
+                "pokemonId": "scizor",
+                "playerId": "p1",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+              }
+            ],
+            "contributions": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,47000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "type-duel",
+            "phase": "GAME_RESULTS",
+            "mode": "COOP",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "completedRounds": 3,
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "participants": [
+              "p1",
+              "p2"
+            ],
+            "participationCounts": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "typeSelectionCompletedIds": [],
+            "revealedTypes": {},
+            "requiredTypes": null,
+            "solutionCount": null,
+            "invalidCombinations": 0,
+            "finalSelectionCycle": false,
+            "attempts": [
+              {
+                "playerId": "p1",
+                "pokemonId": "scizor",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                "correct": true,
+                "attemptedAt": 48000
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundStartedAt": 47000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "reason": "TIMEOUT",
+              "winnerId": null,
+              "attempts": [
+                {
+                  "playerId": "p1",
+                  "pokemonId": "scizor",
+                  "pokemonName": "Scizor",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png",
+                  "correct": true,
+                  "attemptedAt": 48000
+                }
+              ],
+              "solutions": [
+                {
+                  "id": "forretress",
+                  "name": "Forretress",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
+                }
+              ],
+              "requiredTypes": [
+                "bug",
+                "steel"
+              ],
+              "selectedTypes": {},
+              "disconnectedIds": []
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 3,
+                  "stats": {
+                    "duelsPlayed": 0,
+                    "duelsWon": 0,
+                    "correctAttempts": 3,
+                    "incorrectAttempts": 0,
+                    "correctTimeTotalMs": 4000,
+                    "winRate": 0,
+                    "averageCorrectTimeMs": 1333,
+                    "contribution": 3,
+                    "groupTotal": 7
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 3,
+                  "stats": {
+                    "duelsPlayed": 0,
+                    "duelsWon": 0,
+                    "correctAttempts": 3,
+                    "incorrectAttempts": 1,
+                    "correctTimeTotalMs": 10500,
+                    "winRate": 0,
+                    "averageCorrectTimeMs": 3500,
+                    "contribution": 3,
+                    "groupTotal": 7
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 3,
+                  "points": 1,
+                  "stats": {
+                    "duelsPlayed": 0,
+                    "duelsWon": 0,
+                    "correctAttempts": 1,
+                    "incorrectAttempts": 0,
+                    "correctTimeTotalMs": 1000,
+                    "winRate": 0,
+                    "averageCorrectTimeMs": 1000,
+                    "contribution": 1,
+                    "groupTotal": 7
+                  }
+                }
+              ]
+            },
+            "combination": [
+              "bug",
+              "steel"
+            ],
+            "found": [
+              {
+                "pokemonId": "scizor",
+                "playerId": "p1",
+                "pokemonName": "Scizor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+              }
+            ],
+            "contributions": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 3
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p2": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            },
+            "p3": {
+              "participant": true,
+              "ownType": null,
+              "canSelectType": false,
+              "canAttempt": false,
+              "cooldownUntil": 0
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 29
+}

@@ -3,7 +3,8 @@ import { useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
 import { TypeDuelAttempts, TypeDuelContinue, TypeDuelHud, TypeDuelPickBoard, TypeDuelPlate, TypeDuelResultScene, TypeDuelSearchNote, TypeDuelSidebar, type PickDuelist } from '../games/type-duel/TypeDuelParts';
-import { typeDuelAnnouncement, typeDuelFocusKey, typeDuelOwnLastAttempt, typeDuelPhaseLabel, typeDuelPlateKind, typeDuelTimerLabel, typeDuelVerdict } from '../games/type-duel/presentation';
+import { TypeDuelCoopBoard, TypeDuelCoopContributions, TypeDuelCoopFound, TypeDuelCoopFoundNote, TypeDuelCoopPlate, TypeDuelCoopResultScene, type TypeDuelCoopPlateKind } from '../games/type-duel/TypeDuelCoopParts';
+import { typeDuelAnnouncement, typeDuelCombinationText, typeDuelCoopAnnouncement, typeDuelCoopPhaseLabel, typeDuelCoopRoundTitle, typeDuelFocusKey, typeDuelOwnLastAttempt, typeDuelPhaseLabel, typeDuelPlateKind, typeDuelTimerLabel, typeDuelVerdict } from '../games/type-duel/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
@@ -23,6 +24,13 @@ const ignoreFailure = () => undefined;
 /** Puntos del ganador de un duelo (regla del motor). */
 const WIN_POINTS = 5;
 
+type TypeDuelScreenProps = { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> };
+
+/** Type Duel: el duelo por parejas (Clásico) o la búsqueda de toda la sala (Cooperativo), según `mode`. */
+export function TypeDuelGame(props: TypeDuelScreenProps) {
+  return (props.room.game as TypeDuelPublicState).mode === 'COOP' ? <TypeDuelCoopGame {...props} /> : <TypeDuelClassicGame {...props} />;
+}
+
 /**
  * Type Duel (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda y la escena de la fase (la elección secreta
  * frente a frente, la losa del VS con los tipos y cuántos Pokémon valen, la combinación imposible o el resultado del
@@ -33,7 +41,7 @@ const WIN_POINTS = 5;
  * (`typeSelectionCompletedIds`); los tipos salen cuando el servidor los revela (`revealedTypes`), el propio antes solo
  * desde el estado del jugador (`ownType`).
  */
-export function TypeDuelGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+function TypeDuelClassicGame({ room, selfId, onAction }: TypeDuelScreenProps) {
   const game = room.game as TypeDuelPublicState;
   const player = room.gamePlayerState as TypeDuelPlayerState | null;
   const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;
@@ -126,6 +134,84 @@ export function TypeDuelGame({ room, selfId, onAction }: { room: RoomView; selfI
     hostAction={selfId === room.hostId ? <TypeDuelContinue last={last} pending={continuing} onContinue={() => void continueNow()} /> : undefined}
     titleRef={titleRef} onPick={(type) => void pick(type)} />;
 
+  return <div className={cx('content-row', s.screen)}>
+    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
+  </div>;
+}
+
+/**
+ * Type Duel · Cooperativo (spec «Type Duel · Cooperativo»). Arriba, la placa de la ronda y la combinación con el
+ * contador del grupo y la aportación propia (o el resultado de la ronda con los que faltaron). Abajo, el buscador
+ * (los ya encontrados quedan bloqueados) o la cuenta atrás con la acción del host. Al lado, lo encontrado y quién lo
+ * dijo, y la aportación de cada jugador en la partida. Un duplicado lo rechaza el servidor con «Ya lo ha encontrado
+ * alguien.», que sale en el aviso de la sala (aquí no se repite).
+ */
+function TypeDuelCoopGame({ room, selfId, onAction }: TypeDuelScreenProps) {
+  const game = room.game as TypeDuelPublicState;
+  const player = room.gamePlayerState as TypeDuelPlayerState | null;
+  const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;
+  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
+  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const offset = useServerOffset(room.serverNow);
+  const deadline = game.roundEndsAt ?? game.nextTransitionAt;
+  const remaining = Math.ceil(useRemainingMs(deadline, offset) / 1000);
+  const cooldownMs = useRemainingMs(player?.cooldownUntil ?? 0, offset);
+  const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: true });
+  const [continuing, setContinuing] = useState(false);
+
+  const combination = game.combination ?? [];
+  const found = useMemo(() => game.found ?? [], [game.found]);
+  const foundIds = useMemo(() => new Set(found.map((find) => find.pokemonId)), [found]);
+  const contributions = game.contributions ?? {};
+  const total = game.solutionCount ?? 0;
+  const isPlayer = player?.participant === true;
+  const ownRound = found.filter((find) => find.playerId === selfId).length;
+  const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
+  const last = typeDuelIsLastResult(game);
+  const lastAttempt = typeDuelOwnLastAttempt(game.attempts, selfId);
+  const allFound = total > 0 && found.length >= total;
+  const kind: TypeDuelCoopPlateKind = game.phase === 'POKEMON_SEARCH' ? (player?.canAttempt ? 'search' : 'watching') : game.phase === 'ROUND_RESULTS' ? 'result' : 'waiting';
+
+  useSfxCue('reveal', game.phase === 'POKEMON_SEARCH' ? `coop:${game.roundNumber}` : null);
+  useSfxCue('win', lastRound && allFound ? game.roundNumber : null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  useFocusOnTransition(kind === 'result' ? `coop-result-${game.roundNumber}` : null, titleRef);
+
+  async function continueNow() {
+    if (continuing) return;
+    setContinuing(true);
+    try { await onAction({ type: 'CONTINUE' }).catch(ignoreFailure); } finally { setContinuing(false); }
+  }
+
+  const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={game.phase === 'POKEMON_SEARCH' ? 'Buscar' : last ? 'Clasificación' : 'Siguiente ronda'}
+    {...(game.phase === 'POKEMON_SEARCH' ? { totalMs: (config?.coopSeconds ?? 60) * 1_000 } : {})} /> : null;
+  const heading = combination.length > 0 ? `Tipo ${typeDuelCombinationText(combination)}` : 'Búsqueda conjunta';
+  const scene = lastRound
+    ? <TypeDuelCoopResultScene lastRound={lastRound} title={typeDuelCoopRoundTitle(lastRound.reason, found.length, total)} found={found.length} total={total} />
+    : combination.length > 0 ? <TypeDuelCoopBoard combination={combination} found={found.length} total={total} ownRound={ownRound} ownTotal={contributions[selfId] ?? 0} /> : null;
+  const top = <div className={s.top}>
+    <TypeDuelHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} phaseLabel={typeDuelCoopPhaseLabel(game.phase)} heading={heading} timer={timer} />
+    {scene}
+  </div>;
+
+  const side = <div className={s.sideColumn}>
+    <TypeDuelCoopFound found={found} total={total} members={members} colors={colors} selfId={selfId} className={s.attemptsPanel} />
+    <TypeDuelCoopContributions playerIds={game.playerIds} contributions={contributions} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />
+    <GameSkipSlot className={s.skip} />
+  </div>;
+
+  const search = kind === 'search' && <div className={s.search}>
+    <PokemonSelector key={`${game.roundNumber}-${game.phase}`} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={foundIds} disabled={false}
+      confirmationDisabled={cooldownMs > 0} variant="embedded" inputLabel="Buscar Pokémon con esos tipos"
+      onSelect={(pokemonId) => onAction({ type: 'ATTEMPT_POKEMON', pokemonId }).catch(ignoreFailure)} />
+  </div>;
+  const searchNote = cooldownMs <= 0 && lastAttempt?.correct ? <TypeDuelCoopFoundNote name={lastAttempt.pokemonName} /> : <TypeDuelSearchNote cooldownMs={cooldownMs} lastAttempt={lastAttempt} />;
+  const countdown = `${last ? 'Clasificación' : 'Siguiente ronda'} en ${remaining}s`;
+  const bottom = <TypeDuelCoopPlate kind={kind} countdown={countdown} search={search} searchNote={searchNote} allFound={allFound} titleRef={titleRef}
+    hostAction={selfId === room.hostId ? <TypeDuelContinue last={last} pending={continuing} onContinue={() => void continueNow()} /> : undefined} />;
+
+  const announcement = typeDuelCoopAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, combination, found: found.length, total, lastAttempt, player: isPlayer });
   return <div className={cx('content-row', s.screen)}>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>

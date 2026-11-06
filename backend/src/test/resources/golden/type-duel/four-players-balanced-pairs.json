@@ -276,6 +276,7 @@
       "publicState": {
         "gameId": "type-duel",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2",
@@ -356,6 +357,7 @@
       "publicState": {
         "gameId": "type-duel",
         "phase": "SELECTING_TYPES",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2",
@@ -438,6 +440,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -528,6 +531,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -612,6 +616,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -696,6 +701,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -779,6 +785,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -864,6 +871,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "TYPE_REVEAL",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -955,6 +963,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1048,6 +1057,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1141,6 +1151,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1234,6 +1245,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1327,6 +1339,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1420,6 +1433,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1513,6 +1527,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1605,6 +1620,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1736,6 +1752,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1865,6 +1882,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1947,6 +1965,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2030,6 +2049,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2116,6 +2136,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2201,6 +2222,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "TYPE_REVEAL",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2293,6 +2315,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "TYPE_REVEAL",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2383,6 +2406,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2473,6 +2497,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2607,6 +2632,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2691,6 +2717,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2774,6 +2801,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2860,6 +2888,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "SELECTING_TYPES",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2945,6 +2974,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "TYPE_REVEAL",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3035,6 +3065,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "POKEMON_SEARCH",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3125,6 +3156,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3269,6 +3301,7 @@
           "publicState": {
             "gameId": "type-duel",
             "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
