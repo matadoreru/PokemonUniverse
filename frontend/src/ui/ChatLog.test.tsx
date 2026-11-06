@@ -46,6 +46,13 @@ describe('ChatLog', () => {
     expect(html).toContain('aria-label="Moderar el mensaje de Ash"');
   });
 
+  it('un mensaje con `moderatable: false` no lleva botón de moderar', () => {
+    const html = render({ items: [{ ...items[0]!, moderatable: false }, items[1]!], onModerate: () => undefined, moderateLabel: (i: ChatLogItem) => `Moderar el mensaje de ${i.author}` });
+    expect(html.match(/<button/g)).toHaveLength(1);
+    expect(html).not.toContain('aria-label="Moderar el mensaje de Misty"');
+    expect(html).toContain('aria-label="Moderar el mensaje de Ash"');
+  });
+
   it('«Ver mensajes nuevos» solo aparece cuando hay mensajes sin ver', () => {
     expect(render()).not.toContain('Ver mensajes nuevos');
     expect(render({ forceUnseen: true })).toContain('Ver mensajes nuevos');

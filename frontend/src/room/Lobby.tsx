@@ -1,11 +1,14 @@
-import { formatPendingReadyNames, gameModeCount, gameModeLabel, gameModeName, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Headphones, Infinity as InfinityIcon, LockKeyhole, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { formatPendingReadyNames, gameModeCount, gameModeLabel, gameModeName, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
+import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
 import { canInviteFriend } from '../friends/FriendsDrawer';
 import { clientGameRegistry } from '../games/registry';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import { GameArt } from '../games/GameArt';
+import { ChatAnnouncer } from './chat/chat-announcer';
+import { LobbyChat } from './chat/LobbyChat';
 import { allowedModesOf, GameOrderChoice, GameOrderHint, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
@@ -28,18 +31,29 @@ interface Props {
   onTransferHost(playerId: string): Promise<void>;
   onKick(playerId: string): Promise<void>;
   onEndSession(): void;
+  /** Últimos mensajes del chat de la sala (de `useRoom()`), por `seq`. */
+  chat: ChatMessage[];
+  /** Sube con cada historial aplicado: el historial nunca se anuncia ni suma no leídos. */
+  chatHistoryVersion: number;
+  onSendChat(text: string): Promise<void>;
+  onDeleteChatMessage(seq: number): Promise<void>;
+  onSetChatMute(playerId: string, muted: boolean): Promise<void>;
 }
 
-type LobbyTab = 'games' | 'config' | 'session';
+type LobbyTab = 'games' | 'config' | 'session' | 'chat';
 const TAB_ID = 'lobby';
-const TABS: TabItem<LobbyTab>[] = [
-  { key: 'games', label: 'Minijuegos', icon: Gamepad2 },
-  { key: 'config', label: 'Configuración', icon: Settings2 },
-  // En el móvil se lee «Modo»; el nombre accesible sigue siendo «Modo y sesión».
-  { key: 'session', label: <>Modo<span className="max-sm:sr-only"> y sesión</span></>, icon: Shuffle },
+// Por debajo de 1024 px (el corte de la pestaña «Chat») se leen las etiquetas cortas, para que quepan las cuatro; el
+// nombre accesible sigue siendo el largo.
+const BASE_TABS: TabItem<LobbyTab>[] = [
+  { key: 'games', label: <><span className="lg:hidden" aria-hidden="true">Juegos</span><span className="max-lg:sr-only">Minijuegos</span></>, icon: Gamepad2 },
+  { key: 'config', label: <><span className="lg:hidden" aria-hidden="true">Ajustes</span><span className="max-lg:sr-only">Configuración</span></>, icon: Settings2 },
+  { key: 'session', label: <>Modo<span className="max-lg:sr-only"> y sesión</span></>, icon: Shuffle },
 ];
+const HOST_RECONNECTING = 'El host está reconectando. La sala conserva la configuración y esperará antes de transferir el control.';
 
-export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession, onGameSelection, onAllowedModes, onSetRoomRole, onTransferHost, onKick, onEndSession }: Props) {
+const maxSeq = (messages: ChatMessage[]) => messages.reduce((max, message) => Math.max(max, message.seq), 0);
+
+export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession, onGameSelection, onAllowedModes, onSetRoomRole, onTransferHost, onKick, onEndSession, chat, chatHistoryVersion, onSendChat, onDeleteChatMessage, onSetChatMute }: Props) {
   const self = room.members.find((member) => member.id === selfId);
   const roomRole = self?.roomRole ?? 'MEMBER';
   const canEditGame = hasRoomPermission(roomRole, 'EDIT_GAME_CONFIG');
@@ -55,6 +69,32 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const [starting, setStarting] = useState(false);
   const [gameQuery, setGameQuery] = useState('');
   const [activeTab, setActiveTab] = useState<LobbyTab>('games');
+  // Un solo chat montado: en la columna lateral desde 1024 px y, por debajo, en su pestaña.
+  const wide = useMediaQuery('(min-width: 1024px)');
+  const shownTab: LobbyTab = wide && activeTab === 'chat' ? 'games' : activeTab;
+  useEffect(() => { if (wide && activeTab === 'chat') setActiveTab('games'); }, [wide, activeTab]);
+  const chatVisible = wide || shownTab === 'chat';
+
+  // No leídos: los mensajes de otros con `seq` mayor que el último visto. Al montarse (también al volver de una
+  // partida) todo lo que ya hay cuenta como visto, y un historial nuevo también: solo suman los mensajes en vivo.
+  const [seen, setSeen] = useState(() => ({ seq: maxSeq(chat), history: chatHistoryVersion }));
+  const latestSeq = maxSeq(chat);
+  if (seen.history !== chatHistoryVersion || (chatVisible && seen.seq < latestSeq)) {
+    setSeen({ seq: Math.max(seen.seq, latestSeq), history: chatHistoryVersion });
+  }
+  const unread = chatVisible ? 0 : chat.filter((message) => message.authorId !== selfId && message.seq > seen.seq).length;
+
+  // La única región viva del lobby: los mensajes de otros (agrupados) y el aviso del host reconectando.
+  const [chatAnnouncement, setChatAnnouncement] = useState('');
+  const announcer = useRef<ChatAnnouncer | null>(null);
+  const announcedHistory = useRef(chatHistoryVersion);
+  useEffect(() => {
+    const current = (announcer.current ??= new ChatAnnouncer(selfId, setChatAnnouncement));
+    const fromHistory = announcedHistory.current !== chatHistoryVersion;
+    announcedHistory.current = chatHistoryVersion;
+    current.seen(chat, fromHistory);
+  }, [chat, chatHistoryVersion, selfId]);
+  useEffect(() => () => { announcer.current?.dispose(); announcer.current = null; }, []);
 
   useEffect(() => {
     const preloadTimer = window.setTimeout(() => { void gameClient.preloadGameplay().catch(() => undefined); }, 600);
@@ -85,6 +125,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
   const transferHost = (playerId: string) => { void onTransferHost(playerId).catch(ignoreFailure); };
   const kick = (playerId: string) => { void onKick(playerId).catch(ignoreFailure); };
+  const setChatMute = (playerId: string, muted: boolean) => { void onSetChatMute(playerId, muted).catch(ignoreFailure); };
 
   const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
   // Con varios juegos, un requisito de jugadores (rango del manifest o paridad de impostores) excluye el juego, como en el servidor.
@@ -144,17 +185,17 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     </Panel>
   );
 
+  const chatPanel = <LobbyChat className={wide ? s.sidePanel ?? '' : ''} messages={chat} members={room.members} selfId={selfId} selfRole={roomRole} onSend={onSendChat} onDelete={onDeleteChatMessage} onSetMute={onSetChatMute} />;
+  const tabs: TabItem<LobbyTab>[] = wide ? BASE_TABS : [...BASE_TABS, {
+    key: 'chat', label: 'Chat', icon: MessageCircle,
+    ...(unread > 0 ? { badge: <>{unread > 99 ? '99+' : unread}<span className="sr-only"> sin leer</span></> } : {}),
+  }];
+
   const side = (
     <div className={s.side}>
       <LobbyInviteButton room={room} />
-      <RoomPlayersPanel className="lg:flex-1" bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} />
-      <aside className={s.tip} aria-label="Recomendación para jugar">
-        <Icon icon={Headphones} size={22} className={s.tipIcon} />
-        <p>
-          <strong className={s.tipTitle}>Hablando es mejor</strong>
-          Te recomendamos estar en una llamada de voz con tus amigos, por Discord, Zoom o vuestra aplicación favorita.
-        </p>
-      </aside>
+      <RoomPlayersPanel className={s.sidePanel ?? ''} bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} onSetChatMute={setChatMute} />
+      {wide && chatPanel}
     </div>
   );
 
@@ -260,12 +301,15 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     </>
   );
 
+  const hostReconnecting = hostMember?.presence === 'TEMPORARILY_DISCONNECTED';
   const main = (
     <div className={s.main}>
       {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
       <h1 className="sr-only">Lobby de la sala</h1>
-      {hostMember?.presence === 'TEMPORARILY_DISCONNECTED' && (
-        <div className={s.notice} role="status" aria-live="polite">
+      {/* Siempre montada y fuera de los paneles de pestaña: se oye también con la pestaña «Chat» cerrada. */}
+      <p className="sr-only" role="status" aria-live="polite"><span>{hostReconnecting ? HOST_RECONNECTING : ''}</span><span>{chatAnnouncement}</span></p>
+      {hostReconnecting && (
+        <div className={s.notice}>
           <span className={s.noticeBadge}><Icon icon={WifiOff} size={22} /></span>
           <span>
             <strong className={s.noticeTitle}>El host está reconectando.</strong>
@@ -274,11 +318,12 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
         </div>
       )}
       <div className={s.tabbed}>
-        <Tabs items={TABS} active={activeTab} onChange={setActiveTab} label="Secciones del lobby" idBase={TAB_ID} className={cx(s.tabs)} />
-        {/* Los tres paneles quedan montados: cambiar de pestaña no pierde búsquedas ni ajustes a medio confirmar. */}
-        <TabPanel idBase={TAB_ID} tabKey="games" hidden={activeTab !== 'games'} className={cx(s.body)}>{gamesPanel}</TabPanel>
-        <TabPanel idBase={TAB_ID} tabKey="config" hidden={activeTab !== 'config'} className={cx(s.body)}>{configPanel}</TabPanel>
-        <TabPanel idBase={TAB_ID} tabKey="session" hidden={activeTab !== 'session'} className={cx(s.body)}>{sessionPanel}</TabPanel>
+        <Tabs items={tabs} active={shownTab} onChange={setActiveTab} label="Secciones del lobby" idBase={TAB_ID} className={cx(s.tabs)} />
+        {/* Los paneles quedan montados: cambiar de pestaña no pierde búsquedas, ajustes a medio confirmar ni el borrador del chat. */}
+        <TabPanel idBase={TAB_ID} tabKey="games" hidden={shownTab !== 'games'} className={cx(s.body)}>{gamesPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="config" hidden={shownTab !== 'config'} className={cx(s.body)}>{configPanel}</TabPanel>
+        <TabPanel idBase={TAB_ID} tabKey="session" hidden={shownTab !== 'session'} className={cx(s.body)}>{sessionPanel}</TabPanel>
+        {!wide && <TabPanel idBase={TAB_ID} tabKey="chat" hidden={shownTab !== 'chat'} className={cx(s.body)}>{chatPanel}</TabPanel>}
       </div>
     </div>
   );

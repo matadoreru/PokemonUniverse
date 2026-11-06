@@ -15,6 +15,8 @@ export interface ChatLogItem {
   text: string;
   /** Mensaje propio: fondo del jugador propio y etiqueta «Tú». */
   own: boolean;
+  /** Con `onModerate`, `false` quita el botón de este mensaje (quien modera no puede hacer nada con él). */
+  moderatable?: boolean;
 }
 
 export interface ChatLogProps {
@@ -98,7 +100,7 @@ export function ChatLog({ items, label, empty, onModerate, moderateLabel, newMes
                 </div>
                 <p className={s.text}>{item.text}</p>
               </div>
-              {onModerate && (
+              {onModerate && item.moderatable !== false && (
                 <Pill variant="cream" size="round" icon={Shield} aria-label={moderateLabel ? moderateLabel(item) : item.author} onClick={() => onModerate(item.id)} />
               )}
             </li>

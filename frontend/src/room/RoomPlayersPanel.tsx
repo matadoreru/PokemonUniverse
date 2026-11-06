@@ -12,6 +12,8 @@ interface Props {
   onSetRoomRole(id: string, role: 'CO_HOST' | 'MEMBER'): void;
   onTransferHost(id: string): void;
   onKick(id: string): void;
+  /** Silenciar o quitar el silencio en el chat (Host y Co-host). */
+  onSetChatMute?(id: string, muted: boolean): void;
   className?: string;
   /** Clase del cuerpo que se desplaza (el lobby le pone el tope de alto por debajo de 1024 px). */
   bodyClassName?: string;

@@ -1,8 +1,12 @@
-import type { RoomView } from '@pokemon-universe/shared';
+import type { ChatMessage, RoomView } from '@pokemon-universe/shared';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Lobby } from './Lobby';
+
+// El hook real, sin `matchMedia` (como en estas pruebas de marcado), da `false`: el móvil. `wide` simula el escritorio.
+let wide = false;
+vi.mock('../hooks/useMediaQuery', () => ({ useMediaQuery: () => wide }));
 
 const room: RoomView = {
   code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8,
@@ -20,13 +24,15 @@ const room: RoomView = {
 };
 
 const noOp = async () => undefined;
+/** Chat vacío y sus órdenes: los tests de chat los cambian. */
+const chatProps = { chat: [] as ChatMessage[], chatHistoryVersion: 0, onSendChat: noOp, onDeleteChatMessage: noOp, onSetChatMute: noOp };
 
 describe('lobby information hierarchy', () => {
   it('shows game cards without descriptions and separates the lobby into accessible tabs', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
 
     expect(markup).toContain('role="tablist"');
@@ -45,16 +51,18 @@ describe('lobby information hierarchy', () => {
     expect(markup).toContain('>BETA<');
     expect(markup).toContain('>TOP<');
     expect(markup).toContain('placeholder="Buscar entre 2 juegos"');
+    // La nota «Hablando es mejor» pasa a ser el estado vacío del chat.
     expect(markup).toContain('Hablando es mejor');
     expect(markup).toContain('Discord, Zoom');
+    expect(markup).not.toContain('Recomendación para jugar');
     // El feedback con contexto sale de la píldora de la cabecera: sin tarjeta duplicada en el lobby.
     expect(markup).not.toContain('Tu opinión cuenta');
     expect(markup).not.toContain('/feedback');
     expect(markup).toContain('>Jugadores<');
     expect(markup).toContain('Iniciar partida');
-    // Las tres pestañas quedan montadas (la activa visible): cambiar de pestaña no pierde el estado.
-    expect(markup.match(/role="tabpanel"/g)).toHaveLength(3);
-    expect(markup.match(/role="tabpanel"[^>]*hidden=""/g)).toHaveLength(2);
+    // Las cuatro pestañas (con «Chat» en el móvil) quedan montadas: cambiar de pestaña no pierde el estado.
+    expect(markup.match(/role="tabpanel"/g)).toHaveLength(4);
+    expect(markup.match(/role="tabpanel"[^>]*hidden=""/g)).toHaveLength(3);
     expect(markup).toContain('Ajustes de Pokédex Distance');
   });
 
@@ -62,7 +70,7 @@ describe('lobby information hierarchy', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
     expect(markup).toContain('¡Empezar partida!');
     expect(markup).toContain('id="start-help"');
@@ -82,7 +90,7 @@ describe('lobby how to play', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
     expect(markup).not.toContain('Cómo se juega');
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>TOP<\/span>/);
@@ -96,7 +104,7 @@ describe('lobby how to play', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={{ ...room, members: room.members.map((member) => member.id === 'guest' ? { ...member, ready: false } : member) }} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
     expect(markup).not.toContain('Empezar partida');
     expect(markup).toContain('Marcarme listo');
@@ -112,7 +120,7 @@ describe('lobby game modes', () => {
   const render = (gameConfigs: Record<string, unknown>) => renderToStaticMarkup(<MemoryRouter><Lobby
     room={{ ...room, gameConfigs }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
     onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
   /></MemoryRouter>);
   const card = (markup: string, name: string) => markup.match(new RegExp(`<li[^>]*>(?:(?!</li>).)*${name}(?:(?!</li>).)*</li>`))?.[0] ?? '';
 
@@ -132,7 +140,7 @@ describe('lobby game modes', () => {
     const chance = (allowedModes: Record<string, string[]>, type: 'RANDOM' | 'ORDER' = 'RANDOM') => renderToStaticMarkup(<MemoryRouter><Lobby
       room={{ ...room, gameConfigs: {}, allowedModes, gameSelectionMode: { type, gameIds: room.gameSelectionMode.gameIds } }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
     expect(card(chance({ 'pokedex-distance': ['CLASSIC', 'POINTS'] }), 'Pokédex Distance')).toContain('>2 modos en juego<');
     expect(card(chance({ 'pokedex-distance': ['POINTS'] }), 'Pokédex Distance')).toContain('>Por puntos<');
@@ -164,7 +172,7 @@ describe('lobby impostor parity', () => {
   const render = (value: RoomView) => renderToStaticMarkup(<MemoryRouter><Lobby
     room={value} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
     onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
-    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined}
+    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
   /></MemoryRouter>);
 
   it('blocks a single-game start with the parity literal', () => {
@@ -201,7 +209,7 @@ describe('lobby impostor parity', () => {
     expect(markup).toMatch(/<button[^>]*aria-describedby="start-help"[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*Empezar partida/);
     expect(markup).toContain('0 elegidos');
     // Un invitado sigue viendo que solo el host puede empezar.
-    expect(renderToStaticMarkup(<MemoryRouter><Lobby room={empty} selfId="p2" onLeave={() => undefined} onReady={noOp} onStart={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp} onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} /></MemoryRouter>)).not.toContain('Elige al menos un minijuego para empezar.');
+    expect(renderToStaticMarkup(<MemoryRouter><Lobby room={empty} selfId="p2" onLeave={() => undefined} onReady={noOp} onStart={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp} onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps} /></MemoryRouter>)).not.toContain('Elige al menos un minijuego para empezar.');
   });
 
   it('starts a rotation with one compatible game, the excluded one is skipped', () => {
@@ -213,3 +221,88 @@ describe('lobby impostor parity', () => {
   });
 });
 
+
+/** Quita del marcado cada `div` que empieza por `start`, con todo su contenido (cuenta los `div` anidados). */
+function stripDivs(markup: string, start: string): string {
+  let out = markup;
+  for (let at = out.indexOf(start); at !== -1; at = out.indexOf(start)) {
+    const tags = /<div[\s>]|<\/div>/g;
+    tags.lastIndex = at;
+    let depth = 0;
+    let end = out.length;
+    for (let tag = tags.exec(out); tag; tag = tags.exec(out)) {
+      depth += tag[0] === '</div>' ? -1 : 1;
+      if (depth === 0) { end = tag.index + tag[0].length; break; }
+    }
+    out = out.slice(0, at) + out.slice(end);
+  }
+  return out;
+}
+
+describe('lobby chat', () => {
+  const message = (seq: number, authorId: string, authorName: string, text: string): ChatMessage => ({ seq, authorId, authorName, text, sentAt: 0 });
+  const reconnecting: RoomView = { ...room, members: room.members.map((member) => member.id === 'host' ? { ...member, presence: 'TEMPORARILY_DISCONNECTED' as const, connected: false } : member) };
+  const render = (props: { room?: RoomView; selfId?: string; chat?: ChatMessage[] } = {}) => renderToStaticMarkup(<MemoryRouter><Lobby
+    room={props.room ?? room} selfId={props.selfId ?? 'guest'} onLeave={() => undefined} onReady={noOp} onStart={noOp}
+    onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps} chat={props.chat ?? []}
+  /></MemoryRouter>);
+  const tabs = (markup: string) => [...markup.matchAll(/<button[^>]*role="tab"[^>]*>((?:(?!<\/button>).)*)<\/button>/g)].map((match) => match[1] ?? '');
+  /**
+   * Regiones vivas del lobby fuera de los paneles de pestaña. Las de dentro de una pestaña (el aviso del orden de los
+   * minijuegos, las notas de los ajustes) son de esa pestaña y quedan inertes mientras está oculta (`hidden` =
+   * `display: none`); la del lobby es la única que se oye siempre: el chat y el aviso del host reconectando.
+   */
+  const liveRegions = (markup: string) => stripDivs(markup, '<div role="tabpanel"').match(/role="status"|aria-live=/g) ?? [];
+
+  it('sin matchMedia (móvil) hay cuatro pestañas y la cuarta es «Chat»', () => {
+    wide = false;
+    const labels = tabs(render());
+    expect(labels).toHaveLength(4);
+    expect(labels[3]).toContain('Chat');
+    expect(render()).toContain('id="lobby-panel-chat"');
+  });
+
+  it('los nombres accesibles «Minijuegos» y «Configuración» se mantienen, con las etiquetas cortas ocultas', () => {
+    const markup = render();
+    expect(markup).toContain('<span class="lg:hidden" aria-hidden="true">Juegos</span><span class="max-lg:sr-only">Minijuegos</span>');
+    expect(markup).toContain('<span class="lg:hidden" aria-hidden="true">Ajustes</span><span class="max-lg:sr-only">Configuración</span>');
+    expect(markup).toContain('Modo<span class="max-lg:sr-only"> y sesión</span>');
+  });
+
+  it('en escritorio el chat va en la columna lateral, sin pestaña «Chat»', () => {
+    wide = true;
+    try {
+      const markup = render();
+      expect(tabs(markup)).toHaveLength(3);
+      expect(markup).not.toContain('id="lobby-panel-chat"');
+      expect(markup).toMatch(/aria-label="Mensajes del chat"|Hablando es mejor/);
+      expect(markup.indexOf('>Chat<')).toBeGreaterThan(markup.indexOf('>Jugadores<'));
+    } finally { wide = false; }
+  });
+
+  it('lobby has one live region', () => {
+    for (const isWide of [false, true]) {
+      wide = isWide;
+      try {
+        for (const value of [room, reconnecting]) {
+          const markup = render({ room: value, chat: [message(1, 'host', 'Eru', 'hola')] });
+          expect(liveRegions(markup)).toHaveLength(2); // role="status" y aria-live del mismo <p>
+          expect(markup).toMatch(/<p class="sr-only" role="status" aria-live="polite">/);
+        }
+        expect(liveRegions(render({ chat: [] }))).toHaveLength(2);
+      } finally { wide = false; }
+    }
+    // El aviso visible del host reconectando ya no es región viva: su texto va por la del lobby.
+    expect(render({ room: reconnecting })).toMatch(/<p class="sr-only" role="status" aria-live="polite"><span>El host está reconectando/);
+  });
+
+  it('remount with existing messages shows no unread', () => {
+    const markup = render({ chat: [message(1, 'host', 'Eru', 'hola'), message(2, 'host', 'Eru', '¿listos?')] });
+    const chatTab = tabs(markup)[3] ?? '';
+    expect(chatTab).toContain('Chat');
+    expect(chatTab).not.toContain('sin leer');
+    expect(chatTab.replace(/<svg.*?<\/svg>/g, '')).not.toMatch(/\d/);
+    expect(markup).toMatch(/<p class="sr-only" role="status" aria-live="polite"><span><\/span><span><\/span><\/p>/);
+  });
+});

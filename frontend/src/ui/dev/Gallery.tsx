@@ -649,8 +649,8 @@ function ChatSection() {
       <Fig id="chatlog-messages" caption="ChatLog con mensajes (propio, ajeno, nombre largo, palabra larga, ***)" wide cream>
         <ChatLog items={CHAT_ITEMS} label="Mensajes del chat" empty={empty} />
       </Fig>
-      <Fig id="chatlog-moderate" caption="ChatLog con botones de moderar" wide cream>
-        <ChatLog items={CHAT_ITEMS.slice(0, 3)} label="Mensajes del chat" empty={empty} onModerate={noop} moderateLabel={moderateLabel} />
+      <Fig id="chatlog-moderate" caption="ChatLog con botones de moderar (el último no es moderable: sin botón)" wide cream>
+        <ChatLog items={[...CHAT_ITEMS.slice(0, 2), { ...CHAT_ITEMS[2]!, moderatable: false }]} label="Mensajes del chat" empty={empty} onModerate={noop} moderateLabel={moderateLabel} />
       </Fig>
       <Fig id="chatlog-unseen" caption="ChatLog con «Ver mensajes nuevos»" wide cream>
         <ChatLog items={CHAT_ITEMS.slice(0, 2)} label="Mensajes del chat" empty={empty} forceUnseen />

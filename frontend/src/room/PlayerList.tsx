@@ -1,11 +1,12 @@
 import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
-import { ArrowRightLeft, Check, CheckCircle2, Clock, Crown, Eye, MoreVertical, Star, UserCheck, UserMinus, UserPlus, UserRoundCog } from 'lucide-react';
+import { ArrowRightLeft, Check, CheckCircle2, Clock, Crown, Eye, MessageSquare, MessageSquareOff, MoreVertical, Star, UserCheck, UserMinus, UserPlus, UserRoundCog } from 'lucide-react';
 import { memo, useEffect, useRef, useState } from 'react';
 import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
 import { useOptionalFriends, type FriendsContextValue } from '../friends/FriendsContext';
 import { friendErrorMessage, friendRelation, isGuestId, sentText } from '../friends/friends-state';
 import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
+import { canMuteInChat } from './chat/LobbyChat';
 import { playerColor } from './player-color';
 import { distanceMemberStatus, distanceMemberStatusLabels } from './pokedex-distance-selection';
 import s from './PlayerList.module.css';
@@ -23,6 +24,8 @@ interface Props {
   onSetRoomRole?(id: string, role: 'CO_HOST' | 'MEMBER'): void;
   onTransferHost?(id: string): void;
   onKick?(id: string): void;
+  /** Lobby: silenciar o quitar el silencio en el chat (Host y Co-host, según las reglas de `canMuteInChat`). */
+  onSetChatMute?(id: string, muted: boolean): void;
   /** Tras confirmar una expulsión o un traspaso del Host: la fila (o su botón) desaparece, así que el foco va a otro sitio. */
   onConfirmed?(): void;
 }
@@ -32,7 +35,7 @@ function sameMembers(left: RoomMemberView[], right: RoomMemberView[]): boolean {
     const other = right[index];
     return other && member.id === other.id && member.displayName === other.displayName && member.roomRole === other.roomRole
       && member.presence === other.presence && member.sessionPoints === other.sessionPoints && member.role === other.role
-      && member.ready === other.ready
+      && member.ready === other.ready && Boolean(member.chatMuted) === Boolean(other.chatMuted)
       && JSON.stringify(member.avatar) === JSON.stringify(other.avatar);
   });
 }
@@ -105,15 +108,18 @@ interface MemberMenuProps {
   member: RoomMemberView;
   /** El host (con `MANAGE_ROLES`) sobre otro que no es el Host: Co-host, Transferir Host y Expulsar. */
   hostActions: boolean;
+  /** Quien mira puede silenciar a esta persona en el chat (Host o Co-host); no depende de `hostActions`. */
+  canMuteChat: boolean;
   /** Amigos de quien mira; sin cuenta registrada (o sobre un invitado) no hay acción de amistad. */
   friends: FriendsContextValue | null;
   onSetRoomRole?: ((id: string, role: 'CO_HOST' | 'MEMBER') => void) | undefined;
+  onSetChatMute?: ((id: string, muted: boolean) => void) | undefined;
   onAsk?(kind: 'kick' | 'transfer'): void;
   onClose?(): void;
 }
 
 /** Cuerpo del diálogo «Gestionar a…»: se monta al abrirlo, así que el resultado de la amistad empieza vacío cada vez. */
-export function MemberMenu({ member, hostActions, friends, onSetRoomRole, onAsk, onClose }: MemberMenuProps) {
+export function MemberMenu({ member, hostActions, canMuteChat, friends, onSetRoomRole, onSetChatMute, onAsk, onClose }: MemberMenuProps) {
   const befriend = Boolean(friends?.enabled) && !isGuestId(member.id);
   return (
     <div className={s.menu}>
@@ -123,18 +129,26 @@ export function MemberMenu({ member, hostActions, friends, onSetRoomRole, onAsk,
         </Pill>
         {member.presence === 'CONNECTED' && <Pill variant="cream" block icon={ArrowRightLeft} onClick={() => onAsk?.('transfer')}>Transferir Host</Pill>}
       </>}
+      {/* Sin confirmación: se deshace con otro clic. */}
+      {canMuteChat && <Pill variant="cream" block icon={member.chatMuted ? MessageSquare : MessageSquareOff} onClick={() => { onClose?.(); onSetChatMute?.(member.id, !member.chatMuted); }}>
+        {member.chatMuted ? 'Quitar el silencio del chat' : 'Silenciar en el chat'}
+      </Pill>}
       {befriend && friends && <FriendAction member={member} friends={friends} />}
       {hostActions && <Pill variant="danger" block icon={UserMinus} onClick={() => onAsk?.('kick')}>Expulsar de la sala</Pill>}
     </div>
   );
 }
 
-export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, friendActions = false, onSetRoomRole, onTransferHost, onKick, onConfirmed }: Props) {
+export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, friendActions = false, onSetRoomRole, onTransferHost, onKick, onSetChatMute, onConfirmed }: Props) {
   const friends = useOptionalFriends();
   // Amistad desde el menú: solo en el lobby y con una cuenta registrada, sobre otra cuenta (nunca sobre un invitado).
   const befriend = friendActions && Boolean(friends?.enabled);
   const hostManages = (member: RoomMemberView) => canManage && member.roomRole !== 'HOST' && member.id !== selfId;
   const friendManages = (member: RoomMemberView) => befriend && member.id !== selfId && !isGuestId(member.id);
+  // Silenciar en el chat: el Host y el Co-host (este sin las acciones de gestión de personas), solo en el lobby.
+  const selfRole = members.find((member) => member.id === selfId)?.roomRole ?? 'MEMBER';
+  const muteManages = (member: RoomMemberView) => Boolean(onSetChatMute) && canMuteInChat(selfId, selfRole, member);
+  const anyMute = members.some(muteManages);
   const previousMembers = useRef(members);
   // Menú «Gestionar a…» (del host, o de amistad) y, aparte, la confirmación del host: dos diálogos con su Esc y su foco.
   const [menuFor, setMenuFor] = useState<string | null>(null);
@@ -152,7 +166,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
     <>
       <ul className={s.list}>
         {members.map((member, index) => {
-          const manageable = hostManages(member) || friendManages(member);
+          const manageable = hostManages(member) || friendManages(member) || muteManages(member);
           const status = game ? distanceMemberStatus(game, member.id) : null;
           const selection = status?.kind === 'picked' ? status : null;
           const readiness = memberReadiness(member);
@@ -167,6 +181,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
                   {member.roomRole === 'HOST' && <Badge tone="navy"><Icon icon={Crown} size={18} /> Host</Badge>}
                   {member.roomRole === 'CO_HOST' && <Badge tone="cream"><Icon icon={Star} size={18} /> Co-host</Badge>}
                   {member.role === 'SPECTATOR' && <span>Espectador</span>}
+                  {member.chatMuted && <Chip icon={<Icon icon={MessageSquareOff} size={18} />}>Silenciado<span className="sr-only"> en el chat</span></Chip>}
                   {!game && (readiness.kind === 'ready'
                     ? <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Listo</Chip>
                     : readiness.kind !== 'host' && <span className={readiness.kind === 'away' ? s.away : undefined}>{readiness.label}</span>)}
@@ -190,10 +205,10 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
           );
         })}
       </ul>
-      {(canManage || befriend) && <Dialog open={Boolean(menuMember)} title={menuMember ? `Gestionar a ${menuMember.displayName}` : 'Gestionar jugador'} onClose={closeMenu} width={420}
+      {(canManage || befriend || anyMute) && <Dialog open={Boolean(menuMember)} title={menuMember ? `Gestionar a ${menuMember.displayName}` : 'Gestionar jugador'} onClose={closeMenu} width={420}
         actions={[{ label: 'Cerrar', variant: 'blue', onClick: closeMenu }]}>
-        {menuMember && <MemberMenu key={menuMember.id} member={menuMember} hostActions={hostManages(menuMember)} friends={befriend ? friends : null}
-          onSetRoomRole={onSetRoomRole} onAsk={(kind) => ask(kind, menuMember)} onClose={closeMenu} />}
+        {menuMember && <MemberMenu key={menuMember.id} member={menuMember} hostActions={hostManages(menuMember)} canMuteChat={muteManages(menuMember)} friends={befriend ? friends : null}
+          onSetRoomRole={onSetRoomRole} onSetChatMute={onSetChatMute} onAsk={(kind) => ask(kind, menuMember)} onClose={closeMenu} />}
       </Dialog>}
       {canManage && <>
         <Dialog open={Boolean(pending)} title={pending && confirm ? confirm.title(pending.member.displayName) : 'Confirmar'} onClose={() => setPending(null)} width={420}
@@ -206,4 +221,4 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
       </>}
     </>
   );
-}, (previous, next) => previous.selfId === next.selfId && previous.canManage === next.canManage && previous.friendActions === next.friendActions && previous.game === next.game && sameMembers(previous.members, next.members));
+}, (previous, next) => previous.selfId === next.selfId && previous.canManage === next.canManage && previous.friendActions === next.friendActions && Boolean(previous.onSetChatMute) === Boolean(next.onSetChatMute) && previous.game === next.game && sameMembers(previous.members, next.members));

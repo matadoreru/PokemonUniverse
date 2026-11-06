@@ -3,6 +3,8 @@
  * cartas de minijuego, configuración enmarcada y la acción («¡Empezar partida!») abajo, siempre a la vista.
  */
 .main {
+  /* Ancla de la región viva `sr-only` del lobby (no al final del documento: añadiría scroll de página). */
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
@@ -36,7 +38,7 @@
 .tabs {
   flex: none;
 }
-/* Por debajo de 640 px las tres pestañas caben en una fila: sin iconos y con menos aire. */
+/* Por debajo de 640 px las cuatro pestañas caben en una fila: sin iconos y con menos aire. */
 @media (max-width: 639px) {
   .tabs {
     gap: var(--sp-1);
@@ -344,7 +346,7 @@
     max-height: min(40dvh, 22rem);
   }
 }
-/* Columna lateral: jugadores y, debajo, la recomendación de jugar en llamada. */
+/* Columna lateral: «Invitar amigos», jugadores y, desde 1024 px, el chat. */
 .side {
   display: flex;
   flex-direction: column;
@@ -355,24 +357,9 @@
   .side {
     flex: 1 1 auto;
   }
-}
-.tip {
-  flex: none;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-  padding: var(--sp-3);
-  border: var(--ol-2-5) solid var(--navy);
-  border-radius: var(--r-franja);
-  background: var(--navy-2);
-  color: var(--white);
-  font: 700 var(--fs-13) / 1.35 var(--font-text);
-}
-.tipIcon {
-  flex: none;
-  color: var(--sky-2);
-}
-.tipTitle {
-  display: block;
-  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  /* «Jugadores» y «Chat» se reparten a partes iguales el alto que deja «Invitar amigos». */
+  .sidePanel {
+    flex: 1 1 0;
+    min-height: 0;
+  }
 }

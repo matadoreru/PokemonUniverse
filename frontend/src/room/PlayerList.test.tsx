@@ -88,6 +88,38 @@ describe('PlayerList', () => {
   });
 });
 
+describe('PlayerList: silencio del chat', () => {
+  const lobby = [
+    member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true }),
+    member({ id: 'co', displayName: 'Ana', roomRole: 'CO_HOST' }),
+    member({ id: 'co2', displayName: 'Bea', roomRole: 'CO_HOST' }),
+    member({ id: 'leo', displayName: 'Leo', chatMuted: true }),
+  ];
+  const list = (props: Partial<Parameters<typeof PlayerList>[0]> = {}) =>
+    renderToStaticMarkup(createElement(PlayerList, { members: lobby, selfId: 'leo', onSetChatMute: () => undefined, ...props }));
+  beforeEach(() => { friends = null; });
+
+  it('marca al silenciado con el chip «Silenciado», visible para todos', () => {
+    // Sin `onSetChatMute` (quien mira no modera): el chip se ve igual.
+    const markup = renderToStaticMarkup(createElement(PlayerList, { members: lobby, selfId: 'leo' }));
+    expect(markup).toContain('lucide-message-square-off');
+    expect(markup.match(/Silenciado/g)).toHaveLength(1);
+    expect(markup).toContain('Silenciado<span class="sr-only"> en el chat</span>');
+  });
+
+  it('el Host y el Co-host pueden silenciar a los miembros; un miembro no', () => {
+    // Un Co-host no gestiona personas (`canManage` falso), pero ve «Gestionar a…» sobre los miembros sin rol.
+    const co = list({ selfId: 'co' });
+    expect(co).toContain('aria-label="Gestionar a Leo"');
+    expect(co).not.toContain('aria-label="Gestionar a Eru"');
+    expect(co).not.toContain('aria-label="Gestionar a Bea"');
+    const host = list({ selfId: 'host', canManage: true });
+    expect(host).toContain('aria-label="Gestionar a Ana"');
+    expect(host).toContain('aria-label="Gestionar a Leo"');
+    expect(list({ selfId: 'leo' })).not.toContain('Gestionar a');
+  });
+});
+
 describe('PlayerList: amistad desde «Gestionar a…»', () => {
   const lobby = [
     member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true }),
@@ -130,7 +162,7 @@ describe('MemberMenu', () => {
   const ana = member({ id: 'ana', displayName: 'Ana' });
   const party = (id: string) => ({ id, username: id, avatar });
   const menu = (overview: FriendsResponse | null, props: Partial<Parameters<typeof MemberMenu>[0]> = {}) =>
-    renderToStaticMarkup(createElement(MemberMenu, { member: ana, hostActions: false, friends: friendsOf(overview), ...props }));
+    renderToStaticMarkup(createElement(MemberMenu, { member: ana, hostActions: false, canMuteChat: false, friends: friendsOf(overview), ...props }));
   const createdAt = '2026-11-06T10:00:00Z';
 
   it('sin relación: «Enviar solicitud de amistad», con su región para el resultado', () => {
@@ -170,12 +202,20 @@ describe('MemberMenu', () => {
     expect(guest).not.toContain('Expulsar de la sala');
   });
 
+  it('«Silenciar en el chat» solo con `canMuteChat`, sin depender de las acciones del host', () => {
+    expect(menu(null)).not.toContain('chat');
+    const co = menu(null, { canMuteChat: true });
+    expect(co).toContain('Silenciar en el chat');
+    expect(co).not.toContain('Expulsar de la sala');
+    expect(menu(null, { canMuteChat: true, member: { ...ana, chatMuted: true } })).toContain('Quitar el silencio del chat');
+  });
+
   it('sin amistad posible (viendo un invitado, o siendo invitado) el host solo ve sus acciones', () => {
     const guestMember = member({ id: 'guest_1', displayName: 'Invi' });
     const markup = menu(null, { member: guestMember, hostActions: true });
     expect(markup).toContain('Expulsar de la sala');
     expect(markup).not.toContain('amistad');
-    const asGuest = renderToStaticMarkup(createElement(MemberMenu, { member: ana, hostActions: true, friends: friendsOf(null, false) }));
+    const asGuest = renderToStaticMarkup(createElement(MemberMenu, { member: ana, hostActions: true, canMuteChat: false, friends: friendsOf(null, false) }));
     expect(asGuest).not.toContain('amistad');
   });
 });

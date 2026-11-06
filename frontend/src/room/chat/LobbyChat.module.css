@@ -1,0 +1,28 @@
+/* Chat del lobby: la lista se desplaza por dentro y el campo de escribir queda siempre a la vista, abajo. */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.log {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+/* Por debajo de 1024 px (pestaña «Chat») la lista tiene tope de alto: el campo no cae bajo el pliegue. */
+@media (max-width: 1023.98px) {
+  .log {
+    max-height: min(50dvh, 24rem);
+  }
+}
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.quote {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border-left: var(--ol-3) solid var(--navy);
+  font: 700 var(--fs-15) / 1.35 var(--font-text);
+  overflow-wrap: anywhere;
+}
