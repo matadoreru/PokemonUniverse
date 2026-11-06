@@ -5062,3 +5062,387 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
     await sala.cerrar();
   }
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Modos de juego (Fase 3): un recorrido por modo, filtrable con `-g "<nombre del modo>"`. Cada uno elige el modo en los
+// ajustes del juego, comprueba el chip de la carta del lobby, juega con ajustes mínimos hasta los resultados y captura la
+// pantalla de juego y la de resultados a los tres tamaños.
+// ---------------------------------------------------------------------------------------------------------------------
+
+/** Elige el modo en los ajustes del juego (selector «Modo»), vuelve a «Minijuegos» y comprueba el chip de la carta. */
+async function elegirModo(host: Page, modo: string): Promise<void> {
+  await host.getByRole('tab', { name: 'Configuración' }).click();
+  const opcion = host.getByRole('radio', { name: modo, exact: true });
+  await opcion.click();
+  await expect(opcion).toHaveAttribute('aria-checked', 'true');
+}
+
+/** Pone un deslizador del panel de ajustes en su mínimo o su máximo. */
+async function ajustarRango(page: Page, nombre: string, tecla: 'Home' | 'End', valor: string): Promise<void> {
+  const rango = page.getByRole('slider', { name: nombre });
+  await rango.focus();
+  await rango.press(tecla);
+  await rango.blur();
+  await expect(rango).toHaveValue(valor);
+}
+
+/** La carta del juego en el lobby lleva el chip con el nombre del modo. */
+async function comprobarChipDeCarta(page: Page, juego: string, modo: string): Promise<Locator> {
+  await page.getByRole('tab', { name: 'Minijuegos' }).click();
+  const carta = page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(juego, { exact: true }) });
+  await expect(carta.getByText(modo, { exact: true })).toBeVisible();
+  // La carta con el chip a la vista (la lista del lobby se desplaza por dentro) para que la captura la enseñe.
+  await carta.scrollIntoViewIfNeeded();
+  return carta;
+}
+
+/** Capturas a los tres tamaños con `objetivo` a la vista en cada uno (el cambio de tamaño devuelve el desplazamiento al principio). */
+async function capturarMostrando(page: Page, nombre: string, objetivo: Locator, { sigue }: { sigue?: Locator } = {}): Promise<void> {
+  for (const { w, h } of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    // Al centro de la vista: lo que queda justo sobre la pantalla inferior fija (en el móvil) cuenta como visible para Playwright.
+    await objetivo.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+    await expect(objetivo, `${nombre}: el objetivo se ve a ${w}×${h}`).toBeInViewport();
+    const { id, problems } = await layoutProblems(page, nombre, true);
+    if (sigue) await expect(sigue, `${nombre}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 });
+    expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+}
+
+/** El título de la cabecera de sala a 1280×720 lleva «<Juego> · <Modo>» mientras se juega. */
+async function comprobarTituloDeCabecera(page: Page, titulo: string): Promise<void> {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await expect(page.locator('header, [data-layer="screen-top"]').getByText(titulo, { exact: true }).first()).toBeVisible();
+}
+
+/** Las cartas de una misma fila del lobby miden lo mismo: el chip del modo no estira solo la carta del juego con modo. */
+async function comprobarAlturaDeCartas(page: Page): Promise<void> {
+  const cajas = await page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').evaluateAll((items) => items.map((item) => { const r = item.getBoundingClientRect(); return { top: Math.round(r.top), height: Math.round(r.height) }; }));
+  const porFila = new Map<number, Set<number>>();
+  for (const { top, height } of cajas) porFila.set(top, (porFila.get(top) ?? new Set<number>()).add(height));
+  for (const [top, alturas] of porFila) expect(alturas.size, `cartas de la fila en y=${top} con alturas distintas: ${[...alturas].join(', ')}`).toBe(1);
+}
+
+test('pokedex-distance: modo Por puntos, tres rondas sin eliminar a nadie y clasificación por puntos', async ({ browser }) => {
+  test.setTimeout(180_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Pokédex Distance');
+    await elegirModo(host.page, 'Por puntos');
+    await ajustarRango(host.page, 'Número de rondas', 'Home', '3');
+    await ajustarRango(host.page, 'Tiempo por ronda', 'End', '60');
+    const carta = await comprobarChipDeCarta(host.page, 'Pokédex Distance', 'Por puntos');
+    await comprobarAlturaDeCartas(host.page);
+    await capturarMostrando(host.page, 'lobby-modo-por-puntos', carta);
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
+
+    const buscador = (page: Page) => page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    await expect(buscador(host.page)).toBeVisible({ timeout: 20_000 });
+    // Cabecera de la ronda: «Ronda 1 de 3», chip del modo y puntos.
+    await expect(host.page.getByText('Ronda 1 de 3', { exact: true }).first()).toBeVisible();
+    await expect(host.page.getByText('Por puntos', { exact: true }).first()).toBeVisible();
+    await comprobarTituloDeCabecera(host.page, 'Pokédex Distance · Por puntos');
+    // Elige solo el host: el resto sigue pensando y el juego se captura a los tres tamaños.
+    await elegirPokemon(host.page, 'Pikachu');
+    await expect(host.page.getByRole('heading', { name: /Selección confirmada|Acierto exacto/ })).toBeVisible({ timeout: 10_000 });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-por-puntos', { sigue: host.page.getByText('Ronda 1 de 3', { exact: true }).first() });
+    for (const { page } of invitados) await elegirPokemon(page, 'Pikachu');
+
+    // Rondas 2 y 3: todos eligen; nadie cae en ninguna.
+    for (const ronda of [2, 3]) {
+      for (const { page } of jugadores) {
+        await expect(page.getByText(`Ronda ${ronda} de 3`, { exact: true }).first()).toBeVisible({ timeout: 30_000 });
+        await expect(buscador(page)).toBeVisible({ timeout: 20_000 });
+        await elegirPokemon(page, 'Pikachu');
+      }
+    }
+    const clasificacion = host.page.getByRole('list', { name: 'Clasificación' });
+    await expect(clasificacion).toBeVisible({ timeout: 30_000 });
+    await expect(clasificacion.getByRole('listitem')).toHaveCount(3);
+    await expect(host.page.getByText('Pokédex Distance · Por puntos', { exact: false }).first()).toBeVisible();
+    await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-por-puntos-resultados', { sigue: clasificacion, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('higher-lower: modo Racha infinita, fallos que eliminan y clasificación por racha', async ({ browser }) => {
+  test.setTimeout(240_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Higher or Lower');
+    await elegirModo(host.page, 'Racha infinita');
+    // Sin número de rondas en este modo.
+    await expect(host.page.getByRole('slider', { name: 'Número de rondas' })).toHaveCount(0);
+    await ajustarRango(host.page, 'Tiempo por ronda', 'End', '60');
+    const carta = await comprobarChipDeCarta(host.page, 'Higher or Lower', 'Racha infinita');
+    await comprobarAlturaDeCartas(host.page);
+    await capturarMostrando(host.page, 'lobby-modo-racha-infinita', carta);
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
+
+    const boton = (page: Page, nombre: string) => page.getByRole('button', { name: nombre, exact: true });
+    await expect(boton(host.page, 'Mayor')).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByText('Racha infinita', { exact: true }).first()).toBeVisible();
+    await expect(host.page.getByText('Ronda 1', { exact: true }).first()).toBeVisible();
+    await comprobarTituloDeCabecera(host.page, 'Higher or Lower · Racha infinita');
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-racha-infinita', { sigue: boton(host.page, 'Mayor') });
+
+    // Cada uno responde distinto: Igual casi nunca acierta, así que cae al menos uno en cada ronda hasta que no quede nadie.
+    const respuestas = ['Mayor', 'Menor', 'Igual'];
+    const fin = host.page.getByRole('heading', { name: 'Clasificación Higher or Lower' });
+    let capturadaRonda2 = false;
+    for (let ronda = 1; ronda <= 40 && !(await fin.isVisible()); ronda += 1) {
+      await expect.poll(async () => {
+        if (await fin.isVisible()) return true;
+        for (const { page } of jugadores) if (await boton(page, 'Mayor').isVisible()) return true;
+        return false;
+      }, { timeout: 30_000 }).toBe(true);
+      if (await fin.isVisible()) break;
+      // A partir de la segunda ronda queda alguien con racha: su columna «N racha» a los tres tamaños.
+      if (ronda === 2 && !capturadaRonda2) {
+        capturadaRonda2 = true;
+        const vivo = (await Promise.all(jugadores.map(async ({ page }) => (await boton(page, 'Mayor').isVisible()) ? page : null))).find(Boolean)!;
+        await expect(vivo.locator('[data-streak]').filter({ hasText: /^\d+ racha$/ }).first()).toBeVisible();
+        await capturarMostrando(vivo, 'juego-modo-racha-infinita-racha', vivo.locator('[data-streak]').filter({ hasText: /^\d+ racha$/ }).first(), { sigue: boton(vivo, 'Mayor') });
+      }
+      for (const [i, { page }] of jugadores.entries()) {
+        if (await boton(page, 'Mayor').isVisible()) await boton(page, respuestas[i]!).click().catch(() => undefined);
+      }
+    }
+    await expect(fin).toBeVisible({ timeout: 30_000 });
+    await expect(host.page.getByText(/Higher or Lower · Racha infinita · \d+ rondas?/)).toBeVisible();
+    await expect(host.page.getByText(/^Racha \d+$/).first()).toBeVisible();
+    await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-racha-infinita-resultados', { sigue: fin, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('shiny-vote: modo Supervivencia, un fallo elimina y clasificación por rondas', async ({ browser }) => {
+  test.setTimeout(240_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Shiny Quiz');
+    await elegirModo(host.page, 'Supervivencia');
+    await ajustarRango(host.page, 'Duración de la revelación', 'Home', '3');
+    await ajustarRango(host.page, 'Tiempo por ronda', 'End', '60');
+    const carta = await comprobarChipDeCarta(host.page, 'Shiny Quiz', 'Supervivencia');
+    await comprobarAlturaDeCartas(host.page);
+    await capturarMostrando(host.page, 'lobby-modo-supervivencia', carta);
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
+
+    const opcion = (page: Page, letra: string) => page.locator(`[data-shiny-option="${letra}"]`);
+    await expect(opcion(host.page, 'A')).toBeEnabled({ timeout: 20_000 });
+    await expect(host.page.getByText(/^\d+ candidatos$/).first()).toBeVisible();
+    await comprobarTituloDeCabecera(host.page, 'Shiny Quiz · Supervivencia');
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-supervivencia', { sigue: opcion(host.page, 'A') });
+
+    // Cada uno vota una opción distinta: como mucho uno acierta; los demás caen. Se sigue hasta que no queda nadie. Solo
+    // quien sigue en pie tiene las cartas como botones («Opción A: …»); cada uno vota una vez por ronda.
+    const letras = ['A', 'B', 'C'];
+    const fin = host.page.getByRole('heading', { name: 'Clasificación shiny' });
+    const votaEnRonda = new Map<Page, string>();
+    let capturadaRonda2 = false;
+    await expect.poll(async () => {
+      if (await fin.isVisible()) return true;
+      for (const [i, { page }] of jugadores.entries()) {
+        const carta = page.getByRole('button', { name: new RegExp(`^Opción ${letras[i]}:`) });
+        if (!(await carta.isVisible())) continue;
+        const ronda = await page.getByText(/^Ronda \d+ de \d+$/).first().innerText();
+        if (votaEnRonda.get(page) === ronda) continue;
+        if (ronda.startsWith('Ronda 2 ') && !capturadaRonda2) {
+          capturadaRonda2 = true;
+          await capturarTamanos(page, 'juego-modo-supervivencia-ronda-2', { sigue: carta });
+        }
+        votaEnRonda.set(page, ronda);
+        await carta.click();
+        await page.getByRole('button', { name: 'Confirmar voto' }).click();
+      }
+      return false;
+    }, { timeout: 150_000, intervals: [400] }).toBe(true);
+    await expect(fin).toBeVisible({ timeout: 30_000 });
+    await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-supervivencia-resultados', { sigue: fin, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('type-duel: modo Cooperativo, búsqueda conjunta contra el reloj y resultado del grupo', async ({ browser }) => {
+  test.setTimeout(180_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Type Duel');
+    await elegirModo(host.page, 'Cooperativo');
+    // Sin los tiempos del duelo: solo la búsqueda conjunta (30 s, el mínimo) y una ronda.
+    await expect(host.page.getByRole('slider', { name: 'Tiempo para elegir tipo' })).toHaveCount(0);
+    await expect(host.page.getByRole('slider', { name: 'Tiempo para buscar' })).toHaveCount(0);
+    await ajustarRango(host.page, 'Tiempo de búsqueda conjunta', 'Home', '30');
+    await ajustarRango(host.page, 'Número de rondas', 'Home', '1');
+    const carta = await comprobarChipDeCarta(host.page, 'Type Duel', 'Cooperativo');
+    await comprobarAlturaDeCartas(host.page);
+    await capturarMostrando(host.page, 'lobby-modo-cooperativo', carta);
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
+    await comprobarTituloDeCabecera(host.page, 'Type Duel · Cooperativo');
+
+    // La combinación es pública: se busca en la BD un Pokémon de ese tipo exacto (nombre sin guiones) y lo dice el primer invitado.
+    const tablero = (page: Page) => page.getByTestId('type-duel-coop-board');
+    await expect(tablero(host.page)).toBeVisible({ timeout: 20_000 });
+    const tipos = [...new Set(await tablero(host.page).locator('[data-type]').evaluateAll((els) => els.map((el) => el.getAttribute('data-type')!)))];
+    const nombres = psql(
+      `SELECT p.id FROM "Pokemon" p WHERE p."isDefault" AND p.id !~ '-' AND (SELECT array_agg(a."typeId" ORDER BY a."typeId") FROM "PokemonTypeAssignment" a WHERE a."pokemonId" = p.id) = (SELECT array_agg(t ORDER BY t) FROM unnest(string_to_array(:'tipos', ',')) AS t) ORDER BY p."nationalDexNumber" LIMIT 3;`,
+      { tipos: tipos.join(',') },
+    ).split('\n').filter(Boolean);
+    test.info().annotations.push({ type: 'coop', description: `combinación ${tipos.join('/')}; candidatos ${nombres.join(', ')}` });
+    expect(nombres.length, `Pokémon de la combinación ${tipos.join('/')} en la BD`).toBeGreaterThan(0);
+
+    const primero = invitados[0]!.page;
+    const buscador = primero.getByLabel('Buscar Pokémon con esos tipos');
+    await expect(buscador).toBeVisible({ timeout: 10_000 });
+    // Búsqueda abierta (antes de decir nada: con una sola solución, el primer acierto cierra la ronda).
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-cooperativo', { sigue: tablero(host.page) });
+    const candidatos = primero.locator('.pokemon-selector-results button');
+    await buscador.fill(nombres[0]!);
+    await expect(candidatos.first()).toBeVisible({ timeout: 10_000 });
+    await expect(candidatos.first()).toBeEnabled({ timeout: 5_000 });
+    await buscador.press('Enter');
+    // El acierto cuenta para todos: aparece en la lista «Encontrados» de cada página, con quién lo encontró.
+    for (const { page } of jugadores) await expect(page.getByText(/Lo encontr(ó|aste)/).first()).toBeVisible({ timeout: 10_000 });
+
+    // Con una sola solución la ronda cierra al encontrarla; con varias, al agotarse los 30 s: resultado del grupo.
+    const resultado = host.page.getByTestId('type-duel-coop-result');
+    await expect(resultado).toBeVisible({ timeout: 45_000 });
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-cooperativo-ronda', { sigue: resultado });
+    await host.page.getByRole('button', { name: 'Ver clasificación' }).click();
+    const fin = host.page.getByRole('heading', { name: 'Resultado del grupo' });
+    await expect(fin).toBeVisible({ timeout: 15_000 });
+    await expect(host.page.getByText(/Type Duel · Cooperativo · 1 ronda/)).toBeVisible();
+    await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-cooperativo-resultados', { sigue: fin, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('learnset-guess: modo Revelación manual, cada fallo revela más movimientos y clasificación', async ({ browser }) => {
+  test.setTimeout(180_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    await seleccionarJuego(host.page, 'Learnset Guess');
+    await elegirModo(host.page, 'Revelación manual');
+    // Una ronda de 15 s (el mínimo): nadie acierta y la ronda cierra por tiempo.
+    await ajustarRango(host.page, 'Número de rondas', 'Home', '1');
+    await ajustarRango(host.page, 'Tiempo por ronda', 'Home', '15');
+    const carta = await comprobarChipDeCarta(host.page, 'Learnset Guess', 'Revelación manual');
+    await comprobarAlturaDeCartas(host.page);
+    await capturarMostrando(host.page, 'lobby-modo-revelacion-manual', carta);
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
+    await comprobarTituloDeCabecera(host.page, 'Learnset Guess · Revelación manual');
+
+    const buscador = (page: Page) => page.getByRole('textbox', { name: 'Buscar Pokémon' });
+    await expect(buscador(host.page)).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByText(/^\d+ de \d+ grupos?$/).first()).toBeVisible({ timeout: 10_000 });
+    const antes = await host.page.getByText(/^\d+ de \d+ grupos?$/).first().innerText();
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-revelacion-manual', { sigue: buscador(host.page) });
+
+    // Un fallo del host (Magikarp): le desbloquea el siguiente grupo y solo a él.
+    await elegirPokemon(host.page, 'Magikarp');
+    await expect.poll(() => host.page.getByText(/^\d+ de \d+ grupos?$/).first().innerText(), { timeout: 10_000 }).not.toBe(antes);
+    await expect(invitados[0]!.page.getByText(antes, { exact: true }).first()).toBeVisible();
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarAnotando(host.page, 'juego-modo-revelacion-manual-fallo', host.page.getByText(/^\d+ de \d+ grupos?$/).first());
+
+    const fin = host.page.getByRole('heading', { name: 'Clasificación Learnset Guess' });
+    await expect(fin).toBeVisible({ timeout: 60_000 });
+    await expect(host.page.getByText(/Learnset Guess · Revelación manual · 1 ronda/)).toBeVisible();
+    await expect(host.page.getByText(/NaN|Infinity/)).toHaveCount(0);
+    await host.page.evaluate(() => window.scrollTo(0, 0));
+    await capturarTamanos(host.page, 'juego-modo-revelacion-manual-resultados', { sigue: fin, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('pokemon-impostor: modo Una palabra, dos vueltas de pistas por ronda, votación y victoria por tres rondas sin expulsión', async ({ browser }) => {
+  test.setTimeout(240_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const pages = jugadores.map((j) => j.page);
+    await seleccionarJuego(host.page, 'Pokémon Impostor');
+    await elegirModo(host.page, 'Una palabra');
+    const carta = await comprobarChipDeCarta(host.page, 'Pokémon Impostor', 'Una palabra');
+    await comprobarAlturaDeCartas(host.page);
+    await capturarMostrando(host.page, 'lobby-modo-una-palabra', carta);
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(pages);
+    await comprobarTituloDeCabecera(host.page, 'Pokémon Impostor · Una palabra');
+
+    const campo = (page: Page) => page.getByPlaceholder('Escribe algo relacionado…');
+    const saltar = (page: Page) => page.getByRole('button', { name: 'Saltar', exact: true });
+    const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
+    // Tres rondas sin expulsión (todos saltan): en cada una, dos vueltas de pistas (3 turnos cada una) con la insignia
+    // «Ronda c · Vuelta k» y, tras la segunda vuelta, la votación con «Ronda c» a secas.
+    for (const ronda of [1, 2, 3]) {
+      for (const vuelta of [1, 2]) {
+        for (let turno = 0; turno < 3; turno++) {
+          const page = await primeraVisible(pages, campo, 30_000);
+          await expect(page.getByText(`Ronda ${ronda} · Vuelta ${vuelta}`, { exact: true }).first()).toBeVisible();
+          await expect(page.getByText(/^Una sola palabra · \d+\//)).toBeVisible();
+          if (ronda === 1 && vuelta === 2 && turno === 1) await capturarTamanos(page, 'juego-modo-una-palabra', { sigue: campo(page) });
+          // Se espera a ver la pista en el orden de turnos (se mantiene toda la ronda) antes de pasar al turno siguiente: quien cierra
+          // una vuelta abre la siguiente y su campo puede seguir a la vista.
+          const pista = `pista${ronda}${vuelta}${turno}`;
+          await campo(page).fill(pista);
+          await campo(page).press('Enter');
+          // El último turno de la segunda vuelta pasa a la votación: ahí se espera a «Saltar».
+          if (vuelta === 1 || turno < 2) await expect(page.getByText(`«${pista}»`).first()).toBeVisible();
+        }
+      }
+      for (const page of pages) await expect(saltar(page)).toBeVisible({ timeout: 20_000 });
+      await expect(host.page.getByText(`Ronda ${ronda}`, { exact: true }).first()).toBeVisible();
+      await expect(host.page.getByText(/Vuelta \d/)).toHaveCount(0);
+      if (ronda === 1) await capturarTamanos(host.page, 'juego-modo-una-palabra-votacion', { sigue: saltar(host.page) });
+      for (const page of pages) {
+        await saltar(page).click();
+        await confirmar(page).click();
+      }
+      for (const page of pages) await expect(page.getByText('Se salta la votación: nadie es expulsado')).toBeVisible({ timeout: 10_000 });
+    }
+    const titulo = host.page.getByRole('heading', { name: 'Ganan los impostores' });
+    await expect(titulo).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByText(/Una palabra/).first()).toBeVisible();
+    await capturarTamanos(host.page, 'juego-modo-una-palabra-resultados', { sigue: titulo, completa: true });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
