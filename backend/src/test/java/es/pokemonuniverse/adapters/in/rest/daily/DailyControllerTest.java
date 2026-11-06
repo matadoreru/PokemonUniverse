@@ -18,8 +18,10 @@ import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import io.micronaut.jdbc.DataSourceResolver;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,16 +45,24 @@ class DailyControllerTest {
   @Inject DailyChallengeRepository challenges;
   @Inject DailyResultRepository results;
   @Inject UserRepository users;
+  @Inject DataSource dataSource;
+  @Inject DataSourceResolver resolver;
 
   private final List<String> createdUsers = new ArrayList<>();
 
   private record Account(String id, String cookie) {}
 
   @AfterEach
-  void cleanUp() {
-    // Borrar la cuenta borra en cascada sus filas de DailyResult; la fila de hoy de DailyChallenge se queda (puede
-    // haberla fijado otra partida).
+  void cleanUp() throws SQLException {
+    // Borrar la cuenta borra en cascada sus filas de DailyResult. Después se quita la fila de hoy de DailyChallenge que
+    // fijó la prueba, salvo que otra cuenta tenga un intento de hoy (la clave ajena no cae en cascada).
     createdUsers.forEach(id -> users.deleteById(id));
+    try (var connection = resolver.resolve(dataSource).getConnection();
+        var statement = connection.prepareStatement("DELETE FROM \"DailyChallenge\" c WHERE c.\"date\" = ?"
+            + " AND NOT EXISTS (SELECT 1 FROM \"DailyResult\" r WHERE r.\"date\" = c.\"date\")")) {
+      statement.setObject(1, DailyCalendar.dateAt(System.currentTimeMillis()));
+      statement.executeUpdate();
+    }
   }
 
   @SuppressWarnings("unchecked")

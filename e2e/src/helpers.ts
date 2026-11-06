@@ -480,3 +480,41 @@ export async function escribirEnChat(page: Page, texto: string): Promise<void> {
   await campo.press('Enter');
   await expect(campo).toHaveValue('');
 }
+
+/**
+ * Fija el juego del reto de hoy (fecha de Madrid) en `DailyChallenge`, para que el spec no dependa del sorteo: el juego
+ * guardado manda. Si no hay fila, la crea con el catálogo vigente en el orden del servidor (número de Pokédex y, a
+ * igualdad, id en orden binario, como `String.compareTo`) y su huella (SHA-256 de los ids unidos por `\n`); si ya la hay
+ * (la BD de desarrollo puede tenerla con otro juego), solo cambia el juego.
+ */
+export function fijarJuegoDelDia(gameId: string): void {
+  psql(`
+    INSERT INTO "DailyChallenge" ("date", "gameId", "pokemonIds", "catalogFingerprint")
+    SELECT (now() AT TIME ZONE 'Europe/Madrid')::date, :'gameId',
+      coalesce(jsonb_agg("id" ORDER BY "nationalDexNumber", "id" COLLATE "C"), '[]'::jsonb),
+      encode(sha256(convert_to(coalesce(string_agg("id", E'\\n' ORDER BY "nationalDexNumber", "id" COLLATE "C"), ''), 'UTF8')), 'hex')
+    FROM "Pokemon"
+    ON CONFLICT ("date") DO UPDATE SET "gameId" = EXCLUDED."gameId";`, { gameId });
+}
+
+/**
+ * Juega Higher or Lower hasta que se ve `fin` (la pantalla de resultados): en cada ronda pulsa «Mayor» y anota la pareja
+ * de Pokémon del duelo. Devuelve las parejas en orden de ronda («Anterior vs actual»).
+ */
+export async function jugarHigherLowerHastaElFinal(page: Page, fin: Locator, timeoutMs = 240_000): Promise<string[]> {
+  const parejas = new Map<number, string>();
+  const mayor = page.getByRole('button', { name: 'Mayor', exact: true });
+  const nombre = (lado: 'previous' | 'current') => page.locator(`[data-hl-card="${lado}"] [data-part="name"]`).innerText({ timeout: 2_000 });
+  const limite = Date.now() + timeoutMs;
+  while (Date.now() < limite) {
+    if (await fin.isVisible()) return [...parejas.entries()].sort(([a], [b]) => a - b).map(([, pareja]) => pareja);
+    if (await mayor.isVisible() && await mayor.isEnabled()) {
+      const hud = await page.getByText(/^Ronda \d+ de \d+$/).first().innerText({ timeout: 2_000 }).catch(() => '');
+      const ronda = Number(hud.match(/^Ronda (\d+)/)?.[1] ?? NaN);
+      if (Number.isFinite(ronda) && !parejas.has(ronda)) parejas.set(ronda, `${await nombre('previous')} vs ${await nombre('current')}`);
+      await mayor.click({ timeout: 2_000 }).catch(() => undefined);
+    }
+    await page.waitForTimeout(150);
+  }
+  throw new Error(`jugarHigherLowerHastaElFinal: sin resultados en ${timeoutMs / 1000} s (rondas vistas: ${[...parejas.keys()].join(', ')})`);
+}

@@ -26,12 +26,7 @@ export interface DailyPanelProps {
   onReload(): void;
 }
 
-function Title({ countdown }: { countdown: string | null }) {
-  return <span className="flex flex-col gap-1">
-    <span className="flex items-center gap-2"><Icon icon={CalendarDays} size={18} />Reto diario</span>
-    {countdown && <span className={cx('text-13 font-bold', tone.textInk2)}>{countdown}</span>}
-  </span>;
-}
+const title = <span className="flex items-center gap-2"><Icon icon={CalendarDays} size={18} />Reto diario</span>;
 
 /**
  * Tercer panel de Jugar (spec «Interfaz»): una sola franja con el minijuego de hoy y, debajo, su acción según el estado
@@ -39,7 +34,8 @@ function Title({ countdown }: { countdown: string | null }) {
  * envía `daily:start`; el error de «Jugar» sale aquí traducido, como el de «Crear sala» en el suyo.
  */
 export function DailyPanel({ guest, overview, loadError, playError, busy, disabled, now, onPlay, onReload }: DailyPanelProps) {
-  const title = <Title countdown={overview ? countdownText(overview.resetsAt, now) : null} />;
+  // La cuenta atrás va a la derecha de la cabecera (de alto fijo): debajo del título no cabía.
+  const countdown = overview ? countdownText(overview.resetsAt, now) : null;
   if (guest) return (
     <Panel variant="cream" title={title} aria-label="Reto diario" bodyClassName="flex flex-col">
       <div className="flex flex-1 flex-col gap-4 px-1 pb-1 pt-2 2xl:gap-5 2xl:px-3 2xl:pb-3 2xl:pt-4">
@@ -54,7 +50,7 @@ export function DailyPanel({ guest, overview, loadError, playError, busy, disabl
     : !overview ? { kind: 'loading' as const, title: 'Cargando el reto de hoy', live: false } : null;
 
   return (
-    <Panel variant="cream" title={title} aria-label="Reto diario" bodyClassName="flex flex-col" status={status}>
+    <Panel variant="cream" title={title} right={countdown} aria-label="Reto diario" bodyClassName="flex flex-col" status={status}>
       {overview && <DailyRow overview={overview} playError={playError} busy={busy} disabled={disabled} onPlay={onPlay} />}
     </Panel>
   );
@@ -64,7 +60,8 @@ function DailyRow({ overview, playError, busy, disabled, onPlay }: { overview: D
   const action = dailyRowAction(overview);
   const chip = dailyChipText(overview);
   const rule = isDailyGameId(overview.gameId) ? DAILY_RULE_TEXT[overview.gameId] : `${overview.roundCount} rondas`;
-  const meta = action === 'play' ? <><span>{rule}</span><span>· {dailyPlayersText(overview.players)}</span></> : <span>{rule}</span>;
+  // Un solo texto: así parte la línea entre palabras y no en dos columnas.
+  const meta = action === 'play' ? `${rule} · ${dailyPlayersText(overview.players)}` : rule;
   return (
     <div className="flex flex-1 flex-col gap-3 px-1 pb-1 pt-2 2xl:gap-5 2xl:px-3 2xl:pb-3 2xl:pt-4">
       {/* Sin acción propia: el botón de la fila es el que reintenta. */}
