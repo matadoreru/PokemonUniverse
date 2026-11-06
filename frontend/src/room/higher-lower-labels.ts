@@ -52,8 +52,22 @@ export function higherLowerStatsLine(stats: Readonly<Record<string, number | und
   return `${plural(correct, 'acierto', 'aciertos')} · ${plural(sameCorrect, 'igual', 'iguales')} · mejor racha ${bestStreak} · ${accuracy}%`;
 }
 
-/** Cuenta atrás del revelado: tras la última ronda (`roundNumber >= rounds`, como el motor) llega la clasificación. */
-export function higherLowerRevealCountdown(game: { roundNumber: number; totalRounds: number }, remainingSeconds: number): string {
+/** Estadísticas de Racha infinita: en qué ronda cayó (racha + 1) o, si llegó al tope, que sigue en pie. */
+export function higherLowerEndlessStatsLine(stats: Readonly<Record<string, number | undefined>>): string {
+  const { correct = 0, incorrect = 0 } = stats;
+  return incorrect > 0 ? `Cayó en la ronda ${correct + 1}` : 'Sigue en pie';
+}
+
+/**
+ * El revelado es el último: tras la última ronda (`roundNumber >= rounds`, como el motor) o, en Racha infinita (`alive`
+ * presente), cuando ya no queda nadie en pie.
+ */
+export function higherLowerLastReveal(game: { roundNumber: number; totalRounds: number; alive?: string[] | undefined }): boolean {
+  return game.roundNumber >= game.totalRounds || game.alive?.length === 0;
+}
+
+/** Cuenta atrás del revelado: tras el último (ver `higherLowerLastReveal`) llega la clasificación. */
+export function higherLowerRevealCountdown(game: { roundNumber: number; totalRounds: number; alive?: string[] | undefined }, remainingSeconds: number): string {
   const seconds = Math.max(1, remainingSeconds);
-  return game.roundNumber >= game.totalRounds ? `Clasificación en ${seconds}s…` : `Siguiente ronda en ${seconds}s…`;
+  return higherLowerLastReveal(game) ? `Clasificación en ${seconds}s…` : `Siguiente ronda en ${seconds}s…`;
 }

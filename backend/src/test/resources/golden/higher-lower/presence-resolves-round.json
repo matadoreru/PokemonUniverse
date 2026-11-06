@@ -179,6 +179,7 @@
       "publicState": {
         "gameId": "higher-lower",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2",
@@ -243,6 +244,7 @@
       "publicState": {
         "gameId": "higher-lower",
         "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2",
@@ -310,6 +312,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -387,6 +390,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -471,6 +475,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -588,6 +593,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -656,6 +662,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -723,6 +730,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -800,6 +808,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -917,6 +926,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -983,6 +993,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1050,6 +1061,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1127,6 +1139,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1211,6 +1224,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1328,6 +1342,7 @@
           "publicState": {
             "gameId": "higher-lower",
             "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",

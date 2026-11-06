@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { HigherLowerCategory, HigherLowerConfig } from './config.js';
+import type { HigherLowerCategory, HigherLowerConfig, HigherLowerMode } from './config.js';
 
 export const HIGHER_LOWER_CHOICES = ['HIGHER', 'SAME', 'LOWER'] as const;
 export type HigherLowerChoice = (typeof HIGHER_LOWER_CHOICES)[number];
@@ -15,15 +15,22 @@ export interface HigherLowerState {
   answers: Record<string, HigherLowerAnswer>; scores: Record<string, number>; streaks: Record<string, number>;
   playerStats: Record<string, HigherLowerStats>; roundStartedAt: number | null; roundEndsAt: number | null;
   nextTransitionAt: number | null; lastRound: HigherLowerRoundResult | null;
+  /** Solo cuenta en `ENDLESS`: quien sigue en pie. */
+  alive: string[];
 }
 export const higherLowerActionSchema = z.object({ type: z.literal('ANSWER'), choice: z.enum(HIGHER_LOWER_CHOICES) }).strict();
 export type HigherLowerAction = z.infer<typeof higherLowerActionSchema>;
 
 export interface HigherLowerPokemonView { id: string; name: string; sprite: string; value: number | null }
+/**
+ * En `ENDLESS` (Racha infinita): `alive` dice quién sigue en pie (ausente en Clásico), `streaks` es la racha de cada uno
+ * (congelada al caer, y es su puntuación) y `totalRounds` es el tope de seguridad.
+ */
 export interface HigherLowerPublicState {
-  gameId: 'higher-lower'; phase: GamePhase; playerIds: string[]; roundNumber: number; totalRounds: number;
+  gameId: 'higher-lower'; phase: GamePhase; mode: HigherLowerMode; playerIds: string[]; roundNumber: number; totalRounds: number;
   category: HigherLowerCategory; previousPokemon: HigherLowerPokemonView; currentPokemon: HigherLowerPokemonView;
   answers: Record<string, HigherLowerAnswer>; answeredIds: string[]; scores: Record<string, number>; streaks: Record<string, number>;
+  alive?: string[];
   roundStartedAt: number | null; roundEndsAt: number | null; nextTransitionAt: number | null;
   lastRound: HigherLowerRoundResult | null; results: GameResults | null;
 }

@@ -1,6 +1,6 @@
 import type { HigherLowerAnswerVisibility, HigherLowerChoice, HigherLowerOutcome, HigherLowerPokemonView, HigherLowerPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, XCircle } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, UserX, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { ScorePop } from '../../components/ScorePop';
@@ -20,20 +20,23 @@ export const CHOICE_ICONS: Record<HigherLowerChoice, LucideIcon> = { HIGHER: Arr
 
 /**
  * Placa de la ronda (pantalla superior): ronda y visibilidad de las respuestas, la stat que se compara y, a la derecha,
- * el tiempo del servidor (al revelar, el de la siguiente ronda en el mismo hueco: la placa no cambia de alto).
+ * el tiempo del servidor (al revelar, el de la siguiente ronda en el mismo hueco: la placa no cambia de alto). Sin
+ * `totalRounds` (Racha infinita, que no tiene número de rondas) solo dice «Ronda N»; `modeLabel` añade el chip del modo.
  */
-export function HigherLowerHud({ roundNumber, totalRounds, category, visibility, timer }: {
+export function HigherLowerHud({ roundNumber, totalRounds, category, visibility, timer, modeLabel = null }: {
   roundNumber: number;
-  totalRounds: number;
+  totalRounds: number | null;
   category: string;
   /** Visibilidad de las respuestas ajenas (de la configuración de la partida); sin ella, no se pinta el chip. */
   visibility: HigherLowerAnswerVisibility | null;
   timer: ReactNode;
+  modeLabel?: string | null;
 }) {
   return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
     <div className={s.hudMain}>
       <div className={s.hudMeta}>
-        <Badge>Ronda {roundNumber} de {totalRounds}</Badge>
+        <Badge>{totalRounds === null ? `Ronda ${roundNumber}` : `Ronda ${roundNumber} de ${totalRounds}`}</Badge>
+        {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
         {visibility && <Chip tone="neutral" icon={<Icon icon={Eye} size={18} />}>Respuestas {higherLowerVisibilityLabels[visibility].toLowerCase()}</Chip>}
       </div>
       <div className={s.hudTitle}>
@@ -83,6 +86,8 @@ export function HigherLowerOutcomeChip({ outcome }: { outcome: HigherLowerOutcom
 /**
  * Marcador (columna lateral): una franja por jugador con su color, los puntos, la racha (salta al crecer) y el estado de
  * la ronda. Con «Al revelar» solo se ve quién ha respondido; con «En directo», también qué; al revelar, el resultado.
+ * En Racha infinita (`alive` presente) la racha es la puntuación (columna de la derecha), las respuestas cuentan solo a
+ * quien sigue en pie, la cabecera dice cuántos quedan y los caídos llevan «Eliminado».
  */
 export function HigherLowerSidebar({ game, members, colors, selfId, className }: {
   game: HigherLowerPublicState;
@@ -92,36 +97,42 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
   className?: string | undefined;
 }) {
   const reveal = game.phase === 'ROUND_RESULTS' && game.lastRound !== null;
-  const answered = game.answeredIds.filter((id) => game.playerIds.includes(id)).length;
+  const endless = game.alive !== undefined;
+  const playing = game.alive ?? game.playerIds;
+  const answered = game.answeredIds.filter((id) => playing.includes(id)).length;
   const privateAnswers = !reveal && Object.keys(game.answers).length === 0 && game.answeredIds.length > 0;
   const ranking = higherLowerRanking(game, (id) => memberName(members.get(id), id));
   const points = (id: string) => game.scores[id] ?? 0;
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}
-    right={<Badge tone="cream">{`${answered} / ${game.playerIds.length} respuestas`}</Badge>}>
-    <p className={s.sideHint}>{reveal ? 'Resultado de la ronda' : answered < game.playerIds.length ? `Pendientes · ${game.playerIds.length - answered}` : 'Todos han respondido'}{privateAnswers && <> · <strong>Respuestas privadas</strong> hasta revelar</>}</p>
+    right={<Badge tone="cream">{`${answered} / ${playing.length} respuestas`}</Badge>}>
+    <p className={s.sideHint}>{endless && <><strong>{playing.length} en pie</strong> · </>}{reveal ? 'Resultado de la ronda' : answered < playing.length ? `Pendientes · ${playing.length - answered}` : 'Todos han respondido'}{privateAnswers && <> · <strong>Respuestas privadas</strong> hasta revelar</>}</p>
     <ol className={s.rows} aria-label="Clasificación de la partida">{ranking.map(({ id, position }) => {
       const member = members.get(id);
       const name = memberName(member, id);
       const streak = game.streaks[id] ?? 0;
       const status = higherLowerMemberStatus(game, id);
-      const chip = status.kind === 'outcome'
+      const chip = status.kind === 'eliminated'
+        ? <Chip tone="bad" icon={<Icon icon={UserX} size={18} />}>Eliminado</Chip>
+        : status.kind === 'outcome'
         ? <HigherLowerOutcomeChip outcome={status.outcome} />
         : status.kind === 'choice'
           ? <Chip tone="info" icon={<Icon icon={CHOICE_ICONS[status.choice]} size={18} />}>{higherLowerChoiceLabels[status.choice]}</Chip>
           : status.kind === 'answered'
             ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Respondió</Chip>
             : <Chip tone="neutral" icon={<Icon icon={CircleDashed} size={18} />}>Pendiente</Chip>;
-      const line = status.kind === 'outcome' && status.outcome?.correct ? higherLowerOutcomeLine(status.outcome) : null;
+      const line = !endless && status.kind === 'outcome' && status.outcome?.correct ? higherLowerOutcomeLine(status.outcome) : null;
       return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
           avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>
             {chip}
             {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
-            <span key={streak} className={cx(s.streak, streak > 0 && 'motion-bump')} data-streak={id}><Badge tone={streak > 0 ? 'yellow' : 'cream'}><Icon icon={Flame} size={18} />Racha {streak}</Badge></span>
+            {!endless && <span key={streak} className={cx(s.streak, streak > 0 && 'motion-bump')} data-streak={id}><Badge tone={streak > 0 ? 'yellow' : 'cream'}><Icon icon={Flame} size={18} />Racha {streak}</Badge></span>}
             {line && <span className={s.outcomeLine} data-outcome-line>{line}</span>}
           </span>}
-          value={<span className={s.score}>{game.scores[id] ?? 0}<small> pts</small></span>} />
+          value={endless
+            ? <span key={streak} className={cx(s.score, streak > 0 && 'motion-bump')} data-streak={id}>{streak}<small> racha</small></span>
+            : <span className={s.score}>{game.scores[id] ?? 0}<small> pts</small></span>} />
       </li>;
     })}</ol>
   </Panel>;
@@ -140,8 +151,10 @@ interface PlateContent {
  * Pantalla inferior: elegir (tres píldoras con su atajo 1–3 como insignia), la respuesta bloqueada, observar o, al
  * revelar, la respuesta correcta con el veredicto propio y los puntos («+N»). El aviso para lectores de pantalla va en
  * una región `status` siempre montada (solo cambia su texto). El título admite foco por programa (`tabIndex={-1}`).
+ * En Racha infinita (`endless`) el revelado dice si sigues en pie o caes, con tu racha en lugar de los puntos, y quien
+ * ya cayó (`eliminated`) mira la partida.
  */
-export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, announcement, titleRef, onAnswer }: {
+export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, announcement, titleRef, onAnswer, endless = false, eliminated = false, streak = 0 }: {
   kind: HigherLowerPlateKind;
   answer: HigherLowerChoice | null;
   /** Respuesta enviada a la espera del servidor. */
@@ -154,8 +167,12 @@ export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome
   announcement: string;
   titleRef: Ref<HTMLHeadingElement>;
   onAnswer(choice: HigherLowerChoice): void;
+  endless?: boolean;
+  eliminated?: boolean;
+  /** Racha propia (Racha infinita). */
+  streak?: number;
 }) {
-  const content = plateContent({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, onAnswer });
+  const content = plateContent({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, onAnswer, endless, eliminated, streak });
   return <Panel variant="cream" as="section" bodyClassName={cx(s.plate, kind === 'answer' && s.plateAnswer)} {...(kind === 'answer' ? { 'aria-label': 'Tu respuesta' } : {})}>
     <span className={cx(s.plateIcon, s[`tone_${content.tone}`])}><Icon icon={content.icon} size={32} /></span>
     <div className={s.plateText}>
@@ -168,7 +185,7 @@ export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome
   </Panel>;
 }
 
-function plateContent({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, onAnswer }: {
+function plateContent({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, onAnswer, endless, eliminated, streak }: {
   kind: HigherLowerPlateKind;
   answer: HigherLowerChoice | null;
   pending: HigherLowerChoice | null;
@@ -178,9 +195,23 @@ function plateContent({ kind, answer, pending, correctAnswer, outcome, participa
   countdown: string;
   verdict: string;
   onAnswer(choice: HigherLowerChoice): void;
+  endless: boolean;
+  eliminated: boolean;
+  streak: number;
 }): PlateContent {
   switch (kind) {
     case 'reveal': {
+      if (endless) {
+        const correct = outcome?.correct === true;
+        return {
+          icon: eliminated ? UserX : !participant ? Eye : correct ? CheckCircle2 : outcome?.choice ? XCircle : TimerOff,
+          tone: eliminated || (participant && !correct) ? 'bad' : participant ? 'ok' : 'info',
+          kicker: verdict,
+          title: `Respuesta: ${correctAnswer ? higherLowerChoiceLabels[correctAnswer] : '—'}`,
+          text: <>{participant && <span className={s.helpStrong}>{correct ? `Sigues en pie · Racha ${streak}` : `Quedas eliminado con racha ${streak}.`}</span>}<span className={s.countdown}>{countdown}</span></>,
+          aside: participant ? <strong className={s.points}>{correct && <ScorePop points={1} tone="leaf" self />}{streak}<small> racha</small></strong> : undefined,
+        };
+      }
       const correct = outcome?.correct === true;
       const points = correct ? outcome.awardedPoints : 0;
       return {
@@ -193,11 +224,13 @@ function plateContent({ kind, answer, pending, correctAnswer, outcome, participa
       };
     }
     case 'locked': return { icon: Check, tone: 'ok', kicker: 'Respuesta bloqueada', title: `Respuesta ${higherLowerChoiceLabels[answer!]} bloqueada.`, text: 'Esperando al resto de entrenadores.' };
-    case 'watching': return { icon: Eye, tone: 'info', kicker: 'Sin respuesta esta ronda', title: 'Estás observando', text: 'Ves la ronda como espectador.' };
+    case 'watching': return eliminated
+      ? { icon: UserX, tone: 'bad', kicker: 'Eliminado', title: 'Estás fuera', text: `Tu racha: ${streak}. Sigues la partida como espectador.` }
+      : { icon: Eye, tone: 'info', kicker: 'Sin respuesta esta ronda', title: 'Estás observando', text: 'Ves la ronda como espectador.' };
     case 'waiting': return { icon: Clock3, tone: 'info', kicker: 'Higher or Lower', title: 'Preparando la ronda…', text: 'El servidor elige los dos Pokémon.' };
     default: return {
       icon: MousePointerClick, tone: 'warn', kicker: 'Tu respuesta', title: '¿Mayor, igual o menor?',
-      text: <span className={s.shortcuts}>Atajos: 1, 2 y 3 · Igual vale más puntos</span>,
+      text: <span className={s.shortcuts}>{endless ? 'Atajos: 1, 2 y 3 · Un fallo y estás fuera' : 'Atajos: 1, 2 y 3 · Igual vale más puntos'}</span>,
       aside: <>{HIGHER_LOWER_CHOICE_ORDER.map((choice, index) => <Pill key={choice} variant={choice === 'SAME' ? 'yellow' : 'blue'} icon={CHOICE_ICONS[choice]} badge={String(index + 1)}
         aria-label={higherLowerChoiceLabels[choice]} aria-keyshortcuts={String(index + 1)} className={s.choice}
         loading={pending === choice} disabled={pending !== null && pending !== choice} onClick={() => onAnswer(choice)}>{higherLowerChoiceLabels[choice]}</Pill>)}</>,

@@ -23,12 +23,19 @@ export function higherLowerRanking(game: Pick<HigherLowerPublicState, 'playerIds
  */
 export type HigherLowerMemberStatus =
   | { kind: 'outcome'; outcome: HigherLowerOutcome | undefined }
+  | { kind: 'eliminated' }
   | { kind: 'choice'; choice: HigherLowerChoice }
   | { kind: 'answered' }
   | { kind: 'pending' };
 
-export function higherLowerMemberStatus(game: Pick<HigherLowerPublicState, 'phase' | 'answers' | 'answeredIds' | 'lastRound'>, id: string): HigherLowerMemberStatus {
-  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return { kind: 'outcome', outcome: game.lastRound.outcomes[id] };
+/**
+ * En Racha infinita (`alive` presente) quien ya no está en pie sale «Eliminado», salvo en el revelado de la ronda en la
+ * que cayó, que enseña su resultado.
+ */
+export function higherLowerMemberStatus(game: Pick<HigherLowerPublicState, 'phase' | 'answers' | 'answeredIds' | 'lastRound' | 'alive'>, id: string): HigherLowerMemberStatus {
+  const outcome = game.phase === 'ROUND_RESULTS' ? game.lastRound?.outcomes[id] : undefined;
+  if (game.alive && !game.alive.includes(id) && !outcome) return { kind: 'eliminated' };
+  if (game.phase === 'ROUND_RESULTS' && game.lastRound) return { kind: 'outcome', outcome };
   const answer = game.answers[id];
   if (answer) return { kind: 'choice', choice: answer.choice };
   return game.answeredIds.includes(id) ? { kind: 'answered' } : { kind: 'pending' };
@@ -56,7 +63,7 @@ export function higherLowerVerdict(outcome: HigherLowerOutcome | null, participa
  * Aviso de la región `status` (siempre montada). No repite los textos visibles que localizan las E2E («Respuesta: …»,
  * «Respuesta … bloqueada.», «Clasificación en …»): dice lo mismo con otras palabras.
  */
-export function higherLowerAnnouncement({ kind, roundNumber, category, answer, correctAnswer, outcome, participant }: {
+export function higherLowerAnnouncement({ kind, roundNumber, category, answer, correctAnswer, outcome, participant, endless = false, eliminated = false }: {
   kind: HigherLowerPlateKind;
   roundNumber: number;
   category: string;
@@ -64,15 +71,21 @@ export function higherLowerAnnouncement({ kind, roundNumber, category, answer, c
   correctAnswer: HigherLowerChoice | null;
   outcome: HigherLowerOutcome | null;
   participant: boolean;
+  /** Racha infinita: cada acierto suma racha y un fallo elimina. */
+  endless?: boolean;
+  /** Racha infinita: el jugador cayó en una ronda anterior y mira la partida. */
+  eliminated?: boolean;
 }): string {
   switch (kind) {
     case 'reveal': {
-      const verdict = !participant ? '' : outcome?.correct ? `Has acertado: +${outcome.awardedPoints} puntos.` : outcome?.choice ? 'Has fallado: +0 puntos.' : 'No respondiste: +0 puntos.';
+      const verdict = !participant ? '' : endless
+        ? outcome?.correct ? `Has acertado: racha ${outcome.streak}.` : `${outcome?.choice ? 'Has fallado' : 'No respondiste'}: quedas eliminado con racha ${outcome?.streak ?? 0}.`
+        : outcome?.correct ? `Has acertado: +${outcome.awardedPoints} puntos.` : outcome?.choice ? 'Has fallado: +0 puntos.' : 'No respondiste: +0 puntos.';
       return `Valor revelado. La correcta era ${correctAnswer ? higherLowerChoiceLabels[correctAnswer] : '—'}. ${verdict}`.trim();
     }
     case 'locked': return `Has elegido ${higherLowerChoiceLabels[answer!.choice]}. Esperando al resto de entrenadores.`;
     case 'answer': return `Ronda ${roundNumber}, ${category}: elige mayor, igual o menor.`;
-    case 'watching': return `Ronda ${roundNumber}: estás observando.`;
+    case 'watching': return eliminated ? `Ronda ${roundNumber}: estás eliminado y miras la partida.` : `Ronda ${roundNumber}: estás observando.`;
     default: return 'Preparando la ronda.';
   }
 }

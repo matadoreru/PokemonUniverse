@@ -19,7 +19,7 @@ function room(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS', overrides: Partial<Higher
     p2: { choice: 'LOWER' as const, correct: false, basePoints: 0, streakBonus: 0, speedBonus: 0, awardedPoints: 0, streak: 0 },
     p3: { choice: null, correct: false, basePoints: 0, streakBonus: 0, speedBonus: 0, awardedPoints: 0, streak: 0 },
   } };
-  const game: HigherLowerPublicState = { gameId: 'higher-lower', phase, playerIds: ['p1', 'p2', 'p3'], roundNumber: 1, totalRounds: 5, category: 'HP', previousPokemon: { id: 'pidgey', name: 'Pidgey', sprite: '/api/pokemon/pidgey/sprite', value: 40 }, currentPokemon: { id: 'onix', name: 'Onix', sprite: '/api/pokemon/onix/sprite', value: phase === 'ROUND_RESULTS' ? 63 : null }, answers: {}, answeredIds: [], scores: { p1: 2, p2: 0, p3: 0 }, streaks: { p1: 1, p2: 0, p3: 0 }, roundStartedAt: 1_000, roundEndsAt: phase === 'ROUND_ACTIVE' ? 21_000 : null, nextTransitionAt: phase === 'ROUND_RESULTS' ? 4_000 : null, lastRound: phase === 'ROUND_RESULTS' ? lastRound : null, results: null, ...overrides };
+  const game: HigherLowerPublicState = { gameId: 'higher-lower', phase, mode: 'CLASSIC', playerIds: ['p1', 'p2', 'p3'], roundNumber: 1, totalRounds: 5, category: 'HP', previousPokemon: { id: 'pidgey', name: 'Pidgey', sprite: '/api/pokemon/pidgey/sprite', value: 40 }, currentPokemon: { id: 'onix', name: 'Onix', sprite: '/api/pokemon/onix/sprite', value: phase === 'ROUND_RESULTS' ? 63 : null }, answers: {}, answeredIds: [], scores: { p1: 2, p2: 0, p3: 0 }, streaks: { p1: 1, p2: 0, p3: 0 }, roundStartedAt: 1_000, roundEndsAt: phase === 'ROUND_ACTIVE' ? 21_000 : null, nextTransitionAt: phase === 'ROUND_RESULTS' ? 4_000 : null, lastRound: phase === 'ROUND_RESULTS' ? lastRound : null, results: null, ...overrides };
   return { code: 'TEST11', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla')], availableGames: [], selectedGameId: 'higher-lower', selectedGameConfig: { answerVisibility: visibility, roundSeconds: 20 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['higher-lower'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
 }
 
@@ -164,5 +164,83 @@ describe('HigherLowerResults', () => {
     expect(html).toContain('Continuar sesión');
     // p2 comparte puesto con nadie aquí: sin empate.
     expect(html).not.toContain('Empate');
+  });
+});
+
+describe('Higher or Lower · Racha infinita', () => {
+  // Carla cayó en una ronda anterior; en esta ronda Ana acierta (racha 2) y Bruno falla (se queda en 1).
+  const endlessRound = { previousValue: 40, currentValue: 63, correctAnswer: 'HIGHER' as const, outcomes: {
+    p1: { choice: 'HIGHER' as const, correct: true, basePoints: 1, streakBonus: 0, speedBonus: 0, awardedPoints: 1, streak: 2 },
+    p2: { choice: 'LOWER' as const, correct: false, basePoints: 0, streakBonus: 0, speedBonus: 0, awardedPoints: 0, streak: 1 },
+  } };
+  const endless = (phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS', overrides: Partial<HigherLowerPublicState> = {}, player: Partial<HigherLowerPlayerState> = {}) => {
+    const view = room(phase, { mode: 'ENDLESS', roundNumber: 3, totalRounds: 100, alive: phase === 'ROUND_ACTIVE' ? ['p1', 'p2'] : ['p1'], scores: { p1: 2, p2: 1, p3: 0 }, streaks: { p1: 2, p2: 1, p3: 0 }, ...(phase === 'ROUND_RESULTS' ? { lastRound: endlessRound } : {}), ...overrides }, player);
+    return { ...view, selectedGameConfig: { ...(view.selectedGameConfig as object), mode: 'ENDLESS' } } as RoomView;
+  };
+
+  it('shows each streak and who is still standing, with «Eliminado» for the fallen', () => {
+    const html = render(endless('ROUND_ACTIVE'));
+    expect(html).toContain('Ronda 3');
+    expect(html).not.toContain('Ronda 3 de');
+    expect(html).toContain('Racha infinita');
+    expect(html).toContain('2 en pie');
+    // Las respuestas cuentan solo a los que siguen en pie.
+    expect(html).toContain('0 / 2 respuestas');
+    const board = html.slice(html.indexOf('Clasificación de la partida'));
+    expect(board.match(/>Eliminado</g)).toHaveLength(1);
+    expect(board.indexOf('Carla')).toBeGreaterThan(board.indexOf('Bruno'));
+    expect(board).toContain('2<small> racha</small>');
+    expect(html).toContain('Un fallo y estás fuera');
+    expect(html).not.toContain('Igual vale más puntos');
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+  });
+
+  it('the eliminated player watches the rest of the game and cannot answer', () => {
+    const html = render(endless('ROUND_ACTIVE', {}, { canAnswer: false }), 'p3');
+    expect(html).toContain('Eliminado');
+    expect(html).toContain('Sigues la partida como espectador');
+    expect(html).not.toContain('aria-label="Mayor"');
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+  });
+
+  it('at the reveal, the one who fails is out with their streak, and nobody left means the ranking is next', () => {
+    const fell = render(endless('ROUND_RESULTS', { alive: [] }), 'p2');
+    expect(fell).toContain('Quedas eliminado con racha 1');
+    expect(fell).toContain('Clasificación en');
+    const survivor = render(endless('ROUND_RESULTS'), 'p1');
+    expect(survivor).toContain('Sigues en pie');
+    expect(survivor).toContain('Siguiente ronda en');
+    // Quien cayó antes no tiene resultado en esta ronda: sale «Eliminado», no «Sin respuesta».
+    expect(survivor).not.toContain('Sin respuesta');
+    const watcher = render(endless('ROUND_RESULTS'), 'p3');
+    expect(watcher).toContain('Eliminado');
+    expect(watcher).not.toContain('Sin respuesta');
+  });
+
+  it('announces the elimination in the live region', () => {
+    expect(higherLowerAnnouncement({ kind: 'reveal', roundNumber: 3, category: 'HP', answer: null, correctAnswer: 'HIGHER', outcome: endlessRound.outcomes.p2, participant: true, endless: true })).toContain('quedas eliminado con racha 1');
+    expect(higherLowerAnnouncement({ kind: 'reveal', roundNumber: 3, category: 'HP', answer: null, correctAnswer: 'HIGHER', outcome: endlessRound.outcomes.p1, participant: true, endless: true })).toContain('racha 2');
+  });
+
+  it('member status marks the fallen as eliminated', () => {
+    const base = { phase: 'ROUND_ACTIVE' as const, answers: {}, answeredIds: [], lastRound: null, alive: ['p1'] };
+    expect(higherLowerMemberStatus(base, 'p2')).toEqual({ kind: 'eliminated' });
+    expect(higherLowerMemberStatus(base, 'p1')).toEqual({ kind: 'pending' });
+    expect(higherLowerMemberStatus({ ...base, phase: 'ROUND_RESULTS', lastRound: endlessRound }, 'p2')).toEqual({ kind: 'outcome', outcome: endlessRound.outcomes.p2 });
+  });
+
+  it('results rank by streak, in the server order, with the mode in the subtitle', () => {
+    const view = endless('ROUND_RESULTS', { phase: 'GAME_RESULTS', roundNumber: 4, alive: [], results: { winnerId: 'p1', standings: [
+      { playerId: 'p1', position: 1, points: 3, stats: { correct: 3, incorrect: 1, sameCorrect: 0, answered: 3, bestStreak: 3, accuracy: 75 } },
+      { playerId: 'p2', position: 2, points: 1, stats: { correct: 1, incorrect: 1, sameCorrect: 0, answered: 1, bestStreak: 1, accuracy: 50 } },
+      { playerId: 'p3', position: 3, points: 0, stats: { correct: 0, incorrect: 1, sameCorrect: 0, answered: 1, bestStreak: 0, accuracy: 0 } },
+    ] } as HigherLowerPublicState['results'] });
+    const html = renderToStaticMarkup(<HigherLowerResults room={view} selfId="p1" onLobby={() => undefined} onEnd={() => undefined} />);
+    expect(html).toContain('Higher or Lower · Racha infinita · 4 rondas');
+    expect(html).toContain('Racha 3');
+    expect(html).not.toContain('3 pts');
+    expect(html.indexOf('Ana')).toBeLessThan(html.indexOf('Bruno'));
+    expect(html.indexOf('Bruno')).toBeLessThan(html.indexOf('Carla'));
+    expect(html).not.toContain('Iguales acertados');
   });
 });

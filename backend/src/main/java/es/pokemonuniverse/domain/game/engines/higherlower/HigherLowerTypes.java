@@ -55,7 +55,8 @@ public final class HigherLowerTypes {
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
-   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 15 campos no se usa en el motor).
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 16 campos no se usa en el motor).
+   * {@code alive} solo cuenta en {@code ENDLESS}: quien sigue en pie, en el orden de {@code playerIds}.
    */
   public record HigherLowerState(
       GamePhase phase,
@@ -72,7 +73,8 @@ public final class HigherLowerTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable HigherLowerRoundResult lastRound) implements TimedGameState {
+      @Nullable HigherLowerRoundResult lastRound,
+      List<String> alive) implements TimedGameState {
 
     public HigherLowerState {
       playerIds = frozenList(playerIds);
@@ -80,6 +82,7 @@ public final class HigherLowerTypes {
       scores = frozenMap(scores);
       streaks = frozenMap(streaks);
       playerStats = frozenMap(playerStats);
+      alive = frozenList(alive);
     }
 
     public static Builder builder() {
@@ -90,7 +93,7 @@ public final class HigherLowerTypes {
       return new Builder().phase(phase).config(config).playerIds(playerIds).roundNumber(roundNumber)
           .previousPokemonId(previousPokemonId).currentPokemonId(currentPokemonId).category(category).answers(answers)
           .scores(scores).streaks(streaks).playerStats(playerStats).roundStartedAt(roundStartedAt)
-          .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).lastRound(lastRound);
+          .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).lastRound(lastRound).alive(alive);
     }
 
     /** {@code finish}: {@code { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }}. */
@@ -115,6 +118,7 @@ public final class HigherLowerTypes {
       private Long roundEndsAt;
       private Long nextTransitionAt;
       private HigherLowerRoundResult lastRound;
+      private List<String> alive = List.of();
 
       private Builder() {}
 
@@ -148,10 +152,12 @@ public final class HigherLowerTypes {
 
       public Builder lastRound(@Nullable HigherLowerRoundResult value) { lastRound = value; return this; }
 
+      public Builder alive(List<String> value) { alive = value; return this; }
+
       public HigherLowerState build() {
         return new HigherLowerState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             playerIds, roundNumber, Objects.requireNonNull(previousPokemonId, "previousPokemonId"), currentPokemonId,
-            category, answers, scores, streaks, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound);
+            category, answers, scores, streaks, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound, alive);
       }
     }
   }
@@ -185,11 +191,16 @@ public final class HigherLowerTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record HigherLowerPokemonView(String id, String name, String sprite, @Nullable Integer value) {}
 
+  /**
+   * Estado público. {@code mode} va siempre detrás de {@code phase}; {@code alive} solo sale en {@code ENDLESS}
+   * (ausente en Clásico, así su proyección no cambia). En {@code ENDLESS}, {@code totalRounds} es el tope de seguridad.
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record HigherLowerPublicState(
       String gameId,
       GamePhase phase,
+      HigherLowerMode mode,
       List<String> playerIds,
       int roundNumber,
       int totalRounds,
@@ -200,6 +211,7 @@ public final class HigherLowerTypes {
       List<String> answeredIds,
       Map<String, Integer> scores,
       Map<String, Integer> streaks,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<String> alive,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,

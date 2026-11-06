@@ -1,9 +1,9 @@
-import type { HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type HigherLowerPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Flame, Target } from 'lucide-react';
 import { higherLowerRecord } from '../games/higher-lower/presentation';
 import { Chip, Icon } from '../ui';
-import { higherLowerStatsLine } from './higher-lower-labels';
+import { higherLowerEndlessStatsLine, higherLowerStatsLine } from './higher-lower-labels';
 import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
@@ -15,13 +15,19 @@ const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: num
   { key: 'accuracy', title: 'Mejor precisión', icon: Target, unit: () => 'de aciertos' },
 ];
 
+const endlessPoints = (points: number) => `Racha ${points}`;
+
 /**
  * Resultados de Higher or Lower: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
  * insignia y «+N», aciertos, iguales, mejor racha y precisión de cada uno) y, al lado, los récords de la partida (mejor
  * racha, iguales acertados y mejor precisión; empates juntos). Abajo, la acción del host. Un empate a cero no corona.
+ * En Racha infinita la puntuación es la racha (el servidor ya ordena por ella), cada fila dice en qué ronda cayó y el
+ * único récord es la mejor racha.
  */
 export function HigherLowerResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
   const game = room.game as HigherLowerPublicState; const host = room.hostId === selfId;
+  const endless = game.mode === 'ENDLESS';
+  const modeLabel = gameModeLabel('higher-lower', game);
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
   const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
@@ -34,16 +40,18 @@ export function HigherLowerResults({ room, selfId, onLobby, onEnd }: { room: Roo
       points: standing.points,
       avatar: room.members[index]?.avatar,
       color: playerColor(Math.max(0, index)),
-      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{higherLowerStatsLine(standing.stats)}</span></>,
+      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{endless ? higherLowerEndlessStatsLine(standing.stats) : higherLowerStatsLine(standing.stats)}</span></>,
     };
   });
   const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
-  const aside = <ResultsRecords id="higher-lower-records-title" records={RECORDS.map(({ key, title, icon, unit }) => {
+  const aside = <ResultsRecords id="higher-lower-records-title" records={(endless ? RECORDS.filter(({ key }) => key === 'bestStreak') : RECORDS).map(({ key, title, icon, unit }) => {
     const record = higherLowerRecord(entries, key);
     const value = record ? (key === 'accuracy' ? `${record.value}%` : String(record.value)) : '';
     return { key, title, icon, names: record?.names ?? null, value, unit: record ? unit(record.value) : '', valueInHelp: true };
   })} />;
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower" subtitle={`Higher or Lower · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
+  // En Racha infinita no hay número de rondas: el subtítulo dice cuántas se jugaron.
+  const rounds = endless ? game.roundNumber : game.totalRounds;
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower" subtitle={`Higher or Lower${modeLabel ? ` · ${modeLabel}` : ''} · ${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`}
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge {...(endless ? { pointsLabel: endlessPoints } : {})} />;
 }

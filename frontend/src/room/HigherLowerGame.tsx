@@ -1,4 +1,4 @@
-import type { HigherLowerChoice, HigherLowerConfig, HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
@@ -9,7 +9,7 @@ import { useSfxCue } from '../hooks/useSfxCue';
 import { cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
-import { higherLowerBars, higherLowerCategoryLabels, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
+import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
 import { useFocusOnTransition } from './focus-transition';
 import s from '../games/higher-lower/HigherLower.module.css';
 
@@ -28,6 +28,9 @@ function ignoresGameShortcuts(target: EventTarget | null): boolean {
  * «Mayor / Igual / Menor» (atajos 1–3), la respuesta bloqueada o el veredicto con los puntos. Al lado, el marcador con
  * las rachas; en el móvil, entre el duelo y la pantalla inferior.
  *
+ * Racha infinita (`mode: 'ENDLESS'`): sin número de rondas, la racha de cada uno es su puntuación y quien falla (o no
+ * responde) cae: el servidor le quita `canAnswer` y aquí pasa a mirar con «Eliminado».
+ *
  * Privacidad: solo se pinta lo proyectado. El valor del actual llega en `null` hasta el revelado, y con «Al revelar» las
  * respuestas ajenas también (solo `answeredIds`). Los sprites van por el proxy opaco y nunca se pinta el número de Pokédex.
  */
@@ -44,8 +47,12 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
   const category = higherLowerCategoryLabels[game.category];
   // Solo en `ROUND_RESULTS`: en la ronda siguiente `lastRound` sigue siendo el de la anterior.
   const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
-  const participant = game.playerIds.includes(selfId);
+  const endless = game.mode === 'ENDLESS';
   const selfOutcome = lastRound?.outcomes[selfId] ?? null;
+  // En Racha infinita, quien cayó en una ronda anterior ya no juega: no tiene resultado y mira la partida.
+  const eliminated = endless && game.playerIds.includes(selfId) && !(game.alive ?? []).includes(selfId) && !selfOutcome;
+  const participant = game.playerIds.includes(selfId) && !eliminated;
+  const selfStreak = game.streaks[selfId] ?? 0;
   const milestone = selfOutcome ? higherLowerStreakMilestone(selfOutcome) : null;
   const answer = player?.answer ?? null;
   const canAnswer = active && player?.canAnswer === true;
@@ -83,10 +90,10 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
   const roundMs = Math.max(1, (config?.roundSeconds ?? 20) * 1_000);
   const timer = active
     ? <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} totalMs={roundMs} label="Tiempo" />
-    : lastRound ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label={game.roundNumber >= game.totalRounds ? 'Clasificación' : 'Siguiente ronda'} /> : null;
+    : lastRound ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label={higherLowerLastReveal(game) ? 'Clasificación' : 'Siguiente ronda'} /> : null;
 
   const top = <div className={cx(s.top, lastRound && s.revealed)}>
-    <HigherLowerHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} category={category} visibility={config?.answerVisibility ?? null} timer={timer} />
+    <HigherLowerHud roundNumber={game.roundNumber} totalRounds={endless ? null : game.totalRounds} category={category} visibility={config?.answerVisibility ?? null} timer={timer} modeLabel={gameModeLabel('higher-lower', game)} />
     <div className={s.duel} role="group" aria-label={`Duelo de ${category}`}>
       <HigherLowerDuelCard side="previous" pokemon={game.previousPokemon} category={category} flip={false} leader={bars !== null && bars.leader !== 'current'} />
       <span className={cx(s.vs, 'ol')} aria-hidden="true">VS</span>
@@ -100,10 +107,10 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
     <GameSkipSlot className={s.skip} />
   </div>;
 
-  const announcement = higherLowerAnnouncement({ kind, roundNumber: game.roundNumber, category, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant });
+  const announcement = higherLowerAnnouncement({ kind, roundNumber: game.roundNumber, category, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant, endless, eliminated });
   const bottom = <HigherLowerPlate kind={kind} answer={answer?.choice ?? null} pending={pending} correctAnswer={lastRound?.correctAnswer ?? null} outcome={selfOutcome}
-    participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={higherLowerVerdict(selfOutcome, participant)}
-    announcement={announcement} titleRef={titleRef} onAnswer={(choice) => void submit(choice)} />;
+    participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={eliminated ? 'Eliminado' : higherLowerVerdict(selfOutcome, participant)}
+    announcement={announcement} titleRef={titleRef} onAnswer={(choice) => void submit(choice)} endless={endless} eliminated={eliminated} streak={selfStreak} />;
 
   return <div className={cx('content-row', s.screen)}>
     {milestone && <RevealCutIn key={game.roundNumber} tone="electric" title={milestone.title} subtitle={milestone.subtitle} />}

@@ -1,0 +1,1574 @@
+{
+  "engineId": "higher-lower",
+  "scenario": "endless-mode",
+  "seed": 77,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "categories": [
+      "DEX_NUMBER",
+      "HP",
+      "ATTACK",
+      "DEFENSE",
+      "SPECIAL_ATTACK",
+      "SPECIAL_DEFENSE",
+      "SPEED",
+      "BASE_STAT_TOTAL"
+    ],
+    "showPreviousValue": true,
+    "answerVisibility": "LIVE",
+    "difficulty": "NORMAL",
+    "roundSeconds": 20,
+    "rounds": 3,
+    "mode": "ENDLESS"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "timeout",
+      "now": 7000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 8000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 10000
+    },
+    {
+      "kind": "timeout",
+      "now": 13000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 14000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "LOWER"
+      },
+      "now": 15000
+    },
+    {
+      "kind": "timeout",
+      "now": 18000
+    },
+    {
+      "kind": "timeout",
+      "now": 39000
+    },
+    {
+      "kind": "timeout",
+      "now": 42000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER",
+        "choice": "HIGHER",
+        "extra": true
+      },
+      "now": 43000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "categories": [
+        "DEX_NUMBER",
+        "HP",
+        "ATTACK",
+        "DEFENSE",
+        "SPECIAL_ATTACK",
+        "SPECIAL_DEFENSE",
+        "SPEED",
+        "BASE_STAT_TOTAL"
+      ],
+      "showPreviousValue": true,
+      "answerVisibility": "LIVE",
+      "difficulty": "NORMAL",
+      "roundSeconds": 20,
+      "rounds": 3,
+      "mode": "ENDLESS"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "GAME_STARTING",
+        "mode": "ENDLESS",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "roundNumber": 0,
+        "totalRounds": 100,
+        "category": "DEX_NUMBER",
+        "previousPokemon": {
+          "id": "hitmonchan",
+          "name": "Hitmonchan",
+          "sprite": "/api/pokemon/hitmonchan/sprite",
+          "value": 107
+        },
+        "currentPokemon": {
+          "id": "hitmonchan",
+          "name": "Hitmonchan",
+          "sprite": "/api/pokemon/hitmonchan/sprite",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "alive": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": false,
+          "answer": null
+        },
+        "p2": {
+          "canAnswer": false,
+          "answer": null
+        },
+        "p3": {
+          "canAnswer": false,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "higher-lower",
+        "phase": "ROUND_ACTIVE",
+        "mode": "ENDLESS",
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "roundNumber": 1,
+        "totalRounds": 100,
+        "category": "DEX_NUMBER",
+        "previousPokemon": {
+          "id": "hitmonchan",
+          "name": "Hitmonchan",
+          "sprite": "/api/pokemon/hitmonchan/sprite",
+          "value": 107
+        },
+        "currentPokemon": {
+          "id": "jigglypuff",
+          "name": "Jigglypuff",
+          "sprite": "/api/pokemon/jigglypuff/sprite",
+          "value": null
+        },
+        "answers": {},
+        "answeredIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "streaks": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "alive": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canAnswer": true,
+          "answer": null
+        },
+        "p2": {
+          "canAnswer": true,
+          "answer": null
+        },
+        "p3": {
+          "canAnswer": true,
+          "answer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 100,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "hitmonchan",
+              "name": "Hitmonchan",
+              "sprite": "/api/pokemon/hitmonchan/sprite",
+              "value": 107
+            },
+            "currentPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Tu respuesta ya está bloqueada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 100,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "hitmonchan",
+              "name": "Hitmonchan",
+              "sprite": "/api/pokemon/hitmonchan/sprite",
+              "value": 107
+            },
+            "currentPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 100,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "hitmonchan",
+              "name": "Hitmonchan",
+              "sprite": "/api/pokemon/hitmonchan/sprite",
+              "value": 107
+            },
+            "currentPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "p3": {
+              "canAnswer": true,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 7000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 1,
+            "totalRounds": 100,
+            "category": "DEX_NUMBER",
+            "previousPokemon": {
+              "id": "hitmonchan",
+              "name": "Hitmonchan",
+              "sprite": "/api/pokemon/hitmonchan/sprite",
+              "value": 107
+            },
+            "currentPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": 39
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              },
+              "p2": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              },
+              "p3": {
+                "choice": "HIGHER",
+                "answeredAt": 4000
+              }
+            },
+            "answeredIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2"
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 7000,
+            "lastRound": {
+              "previousValue": 107,
+              "currentValue": 39,
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 1
+                },
+                "p2": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 1
+                },
+                "p3": {
+                  "choice": "HIGHER",
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 2000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 3000
+              }
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 4000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 100,
+            "category": "DEFENSE",
+            "previousPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": 20
+            },
+            "currentPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2"
+            ],
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Estás eliminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 100,
+            "category": "DEFENSE",
+            "previousPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": 20
+            },
+            "currentPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2"
+            ],
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 27000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 100,
+            "category": "DEFENSE",
+            "previousPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": 20
+            },
+            "currentPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": null
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1",
+              "p2"
+            ],
+            "roundStartedAt": 7000,
+            "roundEndsAt": 27000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "p2": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 13000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,7000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 2,
+            "totalRounds": 100,
+            "category": "DEFENSE",
+            "previousPokemon": {
+              "id": "jigglypuff",
+              "name": "Jigglypuff",
+              "sprite": "/api/pokemon/jigglypuff/sprite",
+              "value": 20
+            },
+            "currentPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": 60
+            },
+            "answers": {
+              "p1": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1"
+            ],
+            "roundStartedAt": 7000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 13000,
+            "lastRound": {
+              "previousValue": 20,
+              "currentValue": 60,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": "HIGHER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 2
+                },
+                "p2": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 1
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "HIGHER",
+                "answeredAt": 9000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 100,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": 115
+            },
+            "currentPokemon": {
+              "id": "exeggutor",
+              "name": "Exeggutor",
+              "sprite": "/api/pokemon/exeggutor/sprite",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1"
+            ],
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Estás eliminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 100,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": 115
+            },
+            "currentPokemon": {
+              "id": "exeggutor",
+              "name": "Exeggutor",
+              "sprite": "/api/pokemon/exeggutor/sprite",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1"
+            ],
+            "roundStartedAt": 13000,
+            "roundEndsAt": 33000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 18000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,13000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 3,
+            "totalRounds": 100,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "persian",
+              "name": "Persian",
+              "sprite": "/api/pokemon/persian/sprite",
+              "value": 115
+            },
+            "currentPokemon": {
+              "id": "exeggutor",
+              "name": "Exeggutor",
+              "sprite": "/api/pokemon/exeggutor/sprite",
+              "value": 55
+            },
+            "answers": {
+              "p1": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "answeredIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1"
+            ],
+            "roundStartedAt": 13000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 18000,
+            "lastRound": {
+              "previousValue": 115,
+              "currentValue": 55,
+              "correctAnswer": "LOWER",
+              "outcomes": {
+                "p1": {
+                  "choice": "LOWER",
+                  "correct": true,
+                  "basePoints": 1,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 1,
+                  "streak": 3
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": {
+                "choice": "LOWER",
+                "answeredAt": 15000
+              }
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 38000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",4,18000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_ACTIVE",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 100,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "exeggutor",
+              "name": "Exeggutor",
+              "sprite": "/api/pokemon/exeggutor/sprite",
+              "value": 55
+            },
+            "currentPokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "/api/pokemon/mankey/sprite",
+              "value": null
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [
+              "p1"
+            ],
+            "roundStartedAt": 18000,
+            "roundEndsAt": 38000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": true,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 42000,
+            "actionEpoch": "[\"ROUND_RESULTS\",4,18000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "ROUND_RESULTS",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 100,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "exeggutor",
+              "name": "Exeggutor",
+              "sprite": "/api/pokemon/exeggutor/sprite",
+              "value": 55
+            },
+            "currentPokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "/api/pokemon/mankey/sprite",
+              "value": 70
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [],
+            "roundStartedAt": 18000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 42000,
+            "lastRound": {
+              "previousValue": 55,
+              "currentValue": 70,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 3
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",4,18000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "higher-lower",
+            "phase": "GAME_RESULTS",
+            "mode": "ENDLESS",
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "roundNumber": 4,
+            "totalRounds": 100,
+            "category": "SPEED",
+            "previousPokemon": {
+              "id": "exeggutor",
+              "name": "Exeggutor",
+              "sprite": "/api/pokemon/exeggutor/sprite",
+              "value": 55
+            },
+            "currentPokemon": {
+              "id": "mankey",
+              "name": "Mankey",
+              "sprite": "/api/pokemon/mankey/sprite",
+              "value": 70
+            },
+            "answers": {},
+            "answeredIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "streaks": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 0
+            },
+            "alive": [],
+            "roundStartedAt": 18000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "previousValue": 55,
+              "currentValue": 70,
+              "correctAnswer": "HIGHER",
+              "outcomes": {
+                "p1": {
+                  "choice": null,
+                  "correct": false,
+                  "basePoints": 0,
+                  "streakBonus": 0,
+                  "speedBonus": 0,
+                  "awardedPoints": 0,
+                  "streak": 3
+                }
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 3,
+                  "won": true,
+                  "stats": {
+                    "correct": 3,
+                    "incorrect": 1,
+                    "sameCorrect": 0,
+                    "answered": 3,
+                    "bestStreak": 3,
+                    "accuracy": 75
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 1,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "incorrect": 1,
+                    "sameCorrect": 0,
+                    "answered": 1,
+                    "bestStreak": 1,
+                    "accuracy": 50
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "incorrect": 1,
+                    "sameCorrect": 0,
+                    "answered": 1,
+                    "bestStreak": 0,
+                    "accuracy": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p2": {
+              "canAnswer": false,
+              "answer": null
+            },
+            "p3": {
+              "canAnswer": false,
+              "answer": null
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 14
+}

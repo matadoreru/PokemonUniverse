@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { HigherLowerOutcome } from '@pokemon-universe/shared/public';
-import { higherLowerBars, higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerStreakMilestone, higherLowerVisibilityLabels } from './higher-lower-labels';
+import { higherLowerBars, higherLowerChoiceLabels, higherLowerEndlessStatsLine, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerRevealCountdown, higherLowerStatsLine, higherLowerStreakMilestone, higherLowerVisibilityLabels } from './higher-lower-labels';
 
 describe('higherLowerChoiceLabels', () => {
   it('traduce las tres respuestas al español', () => {
@@ -22,6 +22,19 @@ describe('higherLowerRevealCountdown', () => {
   it('anuncia la clasificación tras la última ronda, como el motor (roundNumber >= rounds)', () => {
     expect(higherLowerRevealCountdown({ roundNumber: 1, totalRounds: 1 }, 2)).toBe('Clasificación en 2s…');
     expect(higherLowerRevealCountdown({ roundNumber: 10, totalRounds: 10 }, 0)).toBe('Clasificación en 1s…');
+  });
+  it('en Racha infinita anuncia la clasificación cuando no queda nadie en pie', () => {
+    expect(higherLowerRevealCountdown({ roundNumber: 4, totalRounds: 100, alive: ['p1'] }, 3)).toBe('Siguiente ronda en 3s…');
+    expect(higherLowerRevealCountdown({ roundNumber: 4, totalRounds: 100, alive: [] }, 3)).toBe('Clasificación en 3s…');
+    expect(higherLowerRevealCountdown({ roundNumber: 100, totalRounds: 100, alive: ['p1'] }, 3)).toBe('Clasificación en 3s…');
+  });
+});
+
+describe('higherLowerEndlessStatsLine', () => {
+  it('dice en qué ronda cayó cada uno, o que llegó al tope en pie', () => {
+    expect(higherLowerEndlessStatsLine({ correct: 3, incorrect: 1 })).toBe('Cayó en la ronda 4');
+    expect(higherLowerEndlessStatsLine({ correct: 0, incorrect: 1 })).toBe('Cayó en la ronda 1');
+    expect(higherLowerEndlessStatsLine({ correct: 100, incorrect: 0 })).toBe('Sigue en pie');
   });
 });
 

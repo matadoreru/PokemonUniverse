@@ -39,6 +39,8 @@ public final class HigherLowerEngine
 
   public static final String ID = "higher-lower";
   private static final long REVEAL_MS = 3_000;
+  /** Tope de seguridad de {@code ENDLESS}: la partida acaba a las 100 rondas aunque quede alguien en pie. */
+  public static final int ENDLESS_MAX_ROUNDS = 100;
 
   private final GameManifest manifest;
 
@@ -58,8 +60,10 @@ public final class HigherLowerEngine
       return state.finished();
     }
 
+    /** En {@code ENDLESS} acaba cuando no queda nadie en pie o en el tope de rondas; {@code rounds} no se usa. */
     @Override
     public boolean isComplete(HigherLowerState state) {
+      if (endless(state)) return state.alive().isEmpty() || state.roundNumber() >= ENDLESS_MAX_ROUNDS;
       return state.roundNumber() >= state.config().rounds();
     }
   };
@@ -90,6 +94,10 @@ public final class HigherLowerEngine
   @Override
   public HigherLowerConfig defaultConfig() {
     return HigherLowerConfig.defaults();
+  }
+
+  private static boolean endless(HigherLowerState state) {
+    return state.config().mode() == HigherLowerMode.ENDLESS;
   }
 
   private static Pokemon pokemon(GameContext context, String id) {
@@ -136,14 +144,19 @@ public final class HigherLowerEngine
     var streaks = new LinkedHashMap<>(state.streaks());
     var playerStats = new LinkedHashMap<>(state.playerStats());
     var outcomes = new LinkedHashMap<String, HigherLowerOutcome>();
-    for (var id : state.playerIds()) {
+    boolean endless = endless(state);
+    var alive = new ArrayList<String>();
+    // En ENDLESS solo juegan los que siguen en pie: los eliminados no tienen resultado ni estadísticas nuevas.
+    for (var id : endless ? state.alive() : state.playerIds()) {
       var answer = state.answers().get(id);
       HigherLowerChoice choice = answer == null ? null : answer.choice();
       boolean correct = choice == correctAnswer;
-      int streak = correct ? streaks.getOrDefault(id, 0) + 1 : 0;
-      int basePoints = correct ? HigherLowerRules.POINTS.get(correctAnswer) : 0;
-      int bonus = correct ? HigherLowerRules.streakBonus(streak) : 0;
-      int speed = correct
+      // En ENDLESS un fallo (o no responder) elimina y la racha se congela; cada acierto vale 1, sin bonus.
+      int streak = correct ? streaks.getOrDefault(id, 0) + 1 : endless ? streaks.getOrDefault(id, 0) : 0;
+      if (endless && correct) alive.add(id);
+      int basePoints = !correct ? 0 : endless ? 1 : HigherLowerRules.POINTS.get(correctAnswer);
+      int bonus = correct && !endless ? HigherLowerRules.streakBonus(streak) : 0;
+      int speed = correct && !endless
           ? HigherLowerRules.speedBonus(Objects.requireNonNull(answer).answeredAt(),
               Objects.requireNonNull(state.roundStartedAt(), "roundStartedAt"), state.config().roundSeconds())
           : 0;
@@ -163,6 +176,7 @@ public final class HigherLowerEngine
         .scores(scores)
         .streaks(streaks)
         .playerStats(playerStats)
+        .alive(endless ? alive : state.alive())
         .roundEndsAt(null)
         .nextTransitionAt(context.now() + REVEAL_MS)
         .lastRound(new HigherLowerRoundResult(previousValue, currentValue, correctAnswer, outcomes))
@@ -173,8 +187,9 @@ public final class HigherLowerEngine
     return beginRound(state.toBuilder().previousPokemonId(Objects.requireNonNull(state.currentPokemonId())).build(), context);
   }
 
+  /** En {@code ENDLESS} la ronda la completan los que siguen en pie (un eliminado conectado no la bloquea). */
   private static HigherLowerState resolveIfComplete(HigherLowerState state, GameContext context) {
-    return Timing.resolveWhenRequiredPlayersComplete(state, context, state.playerIds(),
+    return Timing.resolveWhenRequiredPlayersComplete(state, context, endless(state) ? state.alive() : state.playerIds(),
         id -> state.answers().containsKey(id), HigherLowerEngine::reveal);
   }
 
@@ -201,6 +216,7 @@ public final class HigherLowerEngine
         .scores(scores)
         .streaks(streaks)
         .playerStats(playerStats)
+        .alive(playerIds)
         .build();
   }
 
@@ -214,6 +230,7 @@ public final class HigherLowerEngine
       HigherLowerAction action, GameContext context) {
     if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La ronda no está activa.");
     if (!state.playerIds().contains(playerId)) return GameActionResult.reject(state, "No participas.");
+    if (endless(state) && !state.alive().contains(playerId)) return GameActionResult.reject(state, "Estás eliminado.");
     if (!context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No estás conectado como participante.");
     }
@@ -243,14 +260,17 @@ public final class HigherLowerEngine
     var current = pokemon(context, state.currentPokemonId() != null ? state.currentPokemonId() : state.previousPokemonId());
     var category = state.category() != null ? state.category() : state.config().categories().getFirst();
     boolean showAnswers = state.config().answerVisibility() == HigherLowerAnswerVisibility.LIVE || revealPhase;
-    return new HigherLowerPublicState(ID, state.phase(), state.playerIds(), state.roundNumber(), state.config().rounds(),
+    boolean endless = endless(state);
+    return new HigherLowerPublicState(ID, state.phase(), state.config().mode(), state.playerIds(), state.roundNumber(),
+        endless ? ENDLESS_MAX_ROUNDS : state.config().rounds(),
         category,
         pokemonView(previous, revealPhase || state.config().showPreviousValue()
             ? HigherLowerRules.pokemonCategoryValue(previous, category) : null),
         pokemonView(current, revealPhase ? HigherLowerRules.pokemonCategoryValue(current, category) : null),
         showAnswers ? state.answers() : Map.of(),
         new ArrayList<>(state.answers().keySet()),
-        state.scores(), state.streaks(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
+        state.scores(), state.streaks(), endless ? state.alive() : null,
+        state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         revealPhase ? state.lastRound() : null,
         state.phase() == GamePhase.GAME_RESULTS ? HigherLowerRules.buildHigherLowerResults(state) : null);
   }
@@ -259,6 +279,7 @@ public final class HigherLowerEngine
   public HigherLowerPlayerState getPlayerState(HigherLowerState state, String playerId, GameContext context) {
     return new HigherLowerPlayerState(
         state.phase() == GamePhase.ROUND_ACTIVE && state.playerIds().contains(playerId)
+            && (!endless(state) || state.alive().contains(playerId))
             && context.isPlayerRequired(playerId) && !state.answers().containsKey(playerId),
         state.answers().get(playerId));
   }
