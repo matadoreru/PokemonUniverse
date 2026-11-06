@@ -82,7 +82,9 @@
     "rounds tipo erróneo": "Configuración de Higher or Lower no válida: rounds debe ser un número entero.",
     "rounds 10.5": "Configuración de Higher or Lower no válida: rounds debe ser un número entero.",
     "rounds 1e20": "Configuración de Higher or Lower no válida: rounds debe estar entre 1 y 50.",
-    "rounds -1": "Configuración de Higher or Lower no válida: rounds debe estar entre 1 y 50."
+    "rounds -1": "Configuración de Higher or Lower no válida: rounds debe estar entre 1 y 50.",
+    "mode ausente": "valid",
+    "mode tipo erróneo": "Configuración de Higher or Lower no válida: mode tiene un valor no válido."
   },
   "learnset-guess": {
     "<raíz null>": "Configuración de Learnset Guess no válida: la configuración debe ser un objeto.",
@@ -106,7 +108,9 @@
     "rounds tipo erróneo": "Configuración de Learnset Guess no válida: rounds debe ser un número entero.",
     "rounds 10.5": "Configuración de Learnset Guess no válida: rounds debe ser un número entero.",
     "rounds 1e20": "Configuración de Learnset Guess no válida: rounds debe estar entre 1 y 20.",
-    "rounds -1": "Configuración de Learnset Guess no válida: rounds debe estar entre 1 y 20."
+    "rounds -1": "Configuración de Learnset Guess no válida: rounds debe estar entre 1 y 20.",
+    "mode ausente": "valid",
+    "mode tipo erróneo": "Configuración de Learnset Guess no válida: mode tiene un valor no válido."
   },
   "most-likely-to": {
     "<raíz null>": "Configuración de Most Likely To no válida: la configuración debe ser un objeto.",
@@ -261,7 +265,14 @@
     "roundSeconds 1e20": "Configuración de Pokédex Distance no válida: roundSeconds debe estar entre 10 y 60.",
     "roundSeconds -1": "Configuración de Pokédex Distance no válida: roundSeconds debe estar entre 10 y 60.",
     "selectionVisibility ausente": "Configuración de Pokédex Distance no válida: falta selectionVisibility.",
-    "selectionVisibility tipo erróneo": "Configuración de Pokédex Distance no válida: selectionVisibility tiene un valor no válido."
+    "selectionVisibility tipo erróneo": "Configuración de Pokédex Distance no válida: selectionVisibility tiene un valor no válido.",
+    "pointsRounds ausente": "valid",
+    "pointsRounds tipo erróneo": "Configuración de Pokédex Distance no válida: pointsRounds debe ser un número entero.",
+    "pointsRounds 10.5": "Configuración de Pokédex Distance no válida: pointsRounds debe ser un número entero.",
+    "pointsRounds 1e20": "Configuración de Pokédex Distance no válida: pointsRounds debe estar entre 3 y 30.",
+    "pointsRounds -1": "Configuración de Pokédex Distance no válida: pointsRounds debe estar entre 3 y 30.",
+    "mode ausente": "valid",
+    "mode tipo erróneo": "Configuración de Pokédex Distance no válida: mode tiene un valor no válido."
   },
   "pokedex-entry-guess": {
     "<raíz null>": "Configuración de Pokédex Entry Guess no válida: la configuración debe ser un objeto.",
@@ -472,7 +483,9 @@
     "voteSeconds tipo erróneo": "Configuración de Pokémon Impostor no válida: voteSeconds debe ser un número entero.",
     "voteSeconds 10.5": "Configuración de Pokémon Impostor no válida: voteSeconds debe ser un número entero.",
     "voteSeconds 1e20": "Configuración de Pokémon Impostor no válida: voteSeconds debe estar entre 10 y 90.",
-    "voteSeconds -1": "Configuración de Pokémon Impostor no válida: voteSeconds debe estar entre 10 y 90."
+    "voteSeconds -1": "Configuración de Pokémon Impostor no válida: voteSeconds debe estar entre 10 y 90.",
+    "mode ausente": "valid",
+    "mode tipo erróneo": "Configuración de Pokémon Impostor no válida: mode tiene un valor no válido."
   },
   "pokemon-palette-guess": {
     "<raíz null>": "Configuración de Adivina por la Paleta no válida: la configuración debe ser un objeto.",
@@ -640,7 +653,9 @@
     "revealSeconds tipo erróneo": "Configuración de Shiny Quiz no válida: revealSeconds debe ser un número entero.",
     "revealSeconds 10.5": "Configuración de Shiny Quiz no válida: revealSeconds debe ser un número entero.",
     "revealSeconds 1e20": "Configuración de Shiny Quiz no válida: revealSeconds debe estar entre 3 y 6.",
-    "revealSeconds -1": "Configuración de Shiny Quiz no válida: revealSeconds debe estar entre 3 y 6."
+    "revealSeconds -1": "Configuración de Shiny Quiz no válida: revealSeconds debe estar entre 3 y 6.",
+    "mode ausente": "valid",
+    "mode tipo erróneo": "Configuración de Shiny Quiz no válida: mode tiene un valor no válido."
   },
   "sketchmon": {
     "<raíz null>": "Configuración de Sketchmon no válida: la configuración debe ser un objeto.",
@@ -742,7 +757,14 @@
     "rounds tipo erróneo": "Configuración de Type Duel no válida: rounds debe ser un número entero.",
     "rounds 10.5": "Configuración de Type Duel no válida: rounds debe ser un número entero.",
     "rounds 1e20": "Configuración de Type Duel no válida: rounds debe estar entre 1 y 50.",
-    "rounds -1": "Configuración de Type Duel no válida: rounds debe estar entre 1 y 50."
+    "rounds -1": "Configuración de Type Duel no válida: rounds debe estar entre 1 y 50.",
+    "coopSeconds ausente": "valid",
+    "coopSeconds tipo erróneo": "Configuración de Type Duel no válida: coopSeconds debe ser un número entero.",
+    "coopSeconds 10.5": "Configuración de Type Duel no válida: coopSeconds debe ser un número entero.",
+    "coopSeconds 1e20": "Configuración de Type Duel no válida: coopSeconds debe estar entre 30 y 120.",
+    "coopSeconds -1": "Configuración de Type Duel no válida: coopSeconds debe estar entre 30 y 120.",
+    "mode ausente": "valid",
+    "mode tipo erróneo": "Configuración de Type Duel no válida: mode tiene un valor no válido."
   },
   "who-is-who-pokemon": {
     "<raíz null>": "Configuración de Quién es Quién — Pokémon no válida: la configuración debe ser un objeto.",
