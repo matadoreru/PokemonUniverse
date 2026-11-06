@@ -28,6 +28,8 @@ import es.pokemonuniverse.domain.progression.Experience;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
 import es.pokemonuniverse.domain.room.GameFinishReason;
+import es.pokemonuniverse.domain.room.GameModes;
+import es.pokemonuniverse.domain.room.GamePick;
 import es.pokemonuniverse.domain.room.GameRuntime;
 import es.pokemonuniverse.domain.room.GameSelectionMode;
 import es.pokemonuniverse.domain.room.GameSkip;
@@ -591,6 +593,10 @@ public class RoomCoordinator {
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
       var engine = engine(gameId).orElseThrow(() -> new RoomException(NOT_PORTED));
       var parsed = toTree(engine.parseConfig(config));
+      // Cambiar el modo de la configuración (host eligiendo) devuelve los modos permitidos a su valor por defecto.
+      if (!GameModes.configMode(gameId, room.gameConfigs.get(gameId)).equals(GameModes.configMode(gameId, parsed))) {
+        room.allowedModes.remove(gameId);
+      }
       room.gameConfigs.put(gameId, parsed);
       var actor = room.members.get(playerId);
       if (actor != null && actor.identity.kind() == AuthUser.Kind.USER) {
@@ -629,6 +635,27 @@ public class RoomCoordinator {
       // El primero de la lista es el minijuego elegido de la sala mientras está en el lobby; con la lista vacía se
       // conserva el último (selectedGameId nunca queda vacío).
       if (!parsed.gameIds().isEmpty()) room.selectedGameId = parsed.gameIds().getFirst();
+      broadcast(room);
+      return null;
+    });
+  }
+
+  /**
+   * {@code room:update-allowed-modes}: los modos de {@code gameId} que pueden salir cuando la sesión elige al azar o
+   * por votación (al menos uno, todos del juego). Se guardan en el orden del catálogo.
+   */
+  public void updateAllowedModes(String playerId, @Nullable String gameId, @Nullable JsonNode modes) {
+    inRequiredRoom(playerId, ignored -> {
+      var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_CONFIG);
+      assertLobby(room);
+      registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
+      if (!GameModes.hasModes(gameId)) throw new RoomException("Este minijuego no tiene modos.");
+      var requested = RoomCommandParsers.allowedModes(modes);
+      var catalog = GameModes.of(gameId);
+      for (var mode : requested) {
+        if (!catalog.contains(mode)) throw new RoomException("Ese modo no existe en este minijuego.");
+      }
+      room.allowedModes.put(gameId, catalog.stream().filter(requested::contains).toList());
       broadcast(room);
       return null;
     });
@@ -738,19 +765,51 @@ public class RoomCoordinator {
 
   List<String> playableGameIds(LiveRoom room, List<String> gameIds) {
     int playerCount = connectedPlayerCount(room);
-    return gameIds.stream().filter(gameId -> {
-      var module = registry.get(gameId).orElse(null);
-      var engine = engine(gameId).orElse(null);
-      if (module == null || engine == null || !ManifestView.supportsPlayerCount(module, playerCount)) return false;
-      Object parsed;
-      try {
-        parsed = engine.parseConfig(room.gameConfigs.get(gameId));
-      } catch (ConfigValidationException e) {
-        return false;
+    return gameIds.stream().filter(gameId -> playable(room, new GamePick(gameId, null), playerCount)).toList();
+  }
+
+  /**
+   * Los pares juego y modo que pueden salir de {@code gameIds}: en orden, cada juego jugable con el modo de su
+   * configuración; al azar o por votación, cada modo permitido de cada juego (un juego sin modos es un par) cuya
+   * configuración con ese modo admite a los conectados.
+   */
+  List<GamePick> playablePicks(LiveRoom room, List<String> gameIds) {
+    int playerCount = connectedPlayerCount(room);
+    var picks = new ArrayList<GamePick>();
+    for (var gameId : gameIds) {
+      var modes = room.gameSelectionMode instanceof GameSelectionMode.Order ? List.<String>of() : allowedModes(room, gameId);
+      if (modes.isEmpty()) {
+        picks.add(new GamePick(gameId, null));
+      } else {
+        for (var mode : modes) picks.add(new GamePick(gameId, mode));
       }
-      return GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room, playerCount)).isEmpty()
-          && engine.checkAvailability(parsed, context(room, catalogSnapshot())).isEmpty();
-    }).toList();
+    }
+    return picks.stream().filter(pick -> playable(room, pick, playerCount)).toList();
+  }
+
+  private List<String> allowedModes(LiveRoom room, String gameId) {
+    return GameModes.allowed(room.allowedModes, gameId, room.gameConfigs.get(gameId));
+  }
+
+  /** La configuración con la que arranca {@code pick}: la del lobby con el modo del par, si lo trae. */
+  private @Nullable JsonNode pickConfig(LiveRoom room, GamePick pick) {
+    var config = room.gameConfigs.get(pick.gameId());
+    return pick.mode() == null ? config : GameModes.withMode(config, pick.mode());
+  }
+
+  private boolean playable(LiveRoom room, GamePick pick, int playerCount) {
+    var gameId = pick.gameId();
+    var module = registry.get(gameId).orElse(null);
+    var engine = engine(gameId).orElse(null);
+    if (module == null || engine == null || !ManifestView.supportsPlayerCount(module, playerCount)) return false;
+    Object parsed;
+    try {
+      parsed = engine.parseConfig(pickConfig(room, pick));
+    } catch (ConfigValidationException e) {
+      return false;
+    }
+    return GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room, playerCount)).isEmpty()
+        && engine.checkAvailability(parsed, context(room, catalogSnapshot())).isEmpty();
   }
 
   private Optional<String> gameConfigReadinessReason(LiveRoom room, String gameId) {
@@ -794,39 +853,44 @@ public class RoomCoordinator {
       var configReason = gameConfigReadinessReason(room, gameId);
       if (configReason.isPresent()) throw new RoomException(module.name() + ": " + configReason.get());
     }
-    if (gameIds.size() > 1 && playableGameIds(room, gameIds).isEmpty()) {
+    if (gameIds.size() > 1 && playablePicks(room, gameIds).isEmpty()) {
       throw new RoomException("Ningún minijuego elegido admite el número actual de jugadores.");
     }
   }
 
-  /** Primer juego de la sesión: el primero jugable de la lista (en aleatorio, uno al azar). */
-  private String firstGameId(LiveRoom room) {
+  /**
+   * Primer juego de la sesión: el primer par jugable de la lista (en aleatorio, un par al azar: cada juego y modo con
+   * la misma probabilidad).
+   */
+  private GamePick firstPick(LiveRoom room) {
     var mode = room.gameSelectionMode;
-    var playable = playableGameIds(room, mode.gameIds());
-    if (playable.isEmpty()) return mode.gameIds().isEmpty() ? room.selectedGameId : mode.gameIds().getFirst();
+    var playable = playablePicks(room, mode.gameIds());
+    if (playable.isEmpty()) {
+      return new GamePick(mode.gameIds().isEmpty() ? room.selectedGameId : mode.gameIds().getFirst(), null);
+    }
     return mode instanceof GameSelectionMode.Random ? randomItem(playable) : playable.getFirst();
   }
 
   /**
-   * Juegos que pueden seguir a {@code previousGameId}, el preferido primero: en orden, los siguientes de la lista
-   * (vuelve al principio y el propio juego va el último); en aleatorio, uno al azar distinto del anterior si lo hay y
-   * después el resto. Los demás son reserva por si el preferido no puede arrancar.
+   * Pares que pueden seguir a {@code previous}, el preferido primero: en orden, los juegos siguientes de la lista
+   * (vuelve al principio y el propio juego va el último); en aleatorio, un par al azar distinto del anterior si lo hay
+   * y después el resto. Los demás son reserva por si el preferido no puede arrancar.
    */
-  private List<String> nextGameIds(LiveRoom room, String previousGameId, List<String> candidates) {
+  private List<GamePick> nextPicks(LiveRoom room, GamePick previous, List<GamePick> candidates) {
     if (room.gameSelectionMode instanceof GameSelectionMode.Random) {
-      var alternatives = candidates.stream().filter(gameId -> !gameId.equals(previousGameId)).toList();
+      var alternatives = candidates.stream().filter(pick -> !pick.equals(previous)).toList();
       var preferred = randomItem(alternatives.isEmpty() ? candidates : alternatives);
-      var ordered = new ArrayList<String>();
+      var ordered = new ArrayList<GamePick>();
       ordered.add(preferred);
-      for (var gameId : candidates) if (!gameId.equals(preferred)) ordered.add(gameId);
+      for (var pick : candidates) if (!pick.equals(preferred)) ordered.add(pick);
       return ordered;
     }
     var gameIds = room.gameSelectionMode.gameIds();
-    int start = gameIds.indexOf(previousGameId) + 1;
-    var ordered = new ArrayList<String>();
+    int start = gameIds.indexOf(previous.gameId()) + 1;
+    var ordered = new ArrayList<GamePick>();
     for (int step = 0; step < gameIds.size(); step++) {
       var gameId = gameIds.get((start + step) % gameIds.size());
-      if (candidates.contains(gameId)) ordered.add(gameId);
+      for (var pick : candidates) if (pick.gameId().equals(gameId)) ordered.add(pick);
     }
     return ordered;
   }
@@ -845,13 +909,21 @@ public class RoomCoordinator {
         throw new RoomException("Falta por confirmar: " + RoomTexts.formatPendingReadyNames(pendingNames) + ".");
       }
       assertRotationReady(room);
-      room.selectedGameId = firstGameId(room);
+      var pick = firstPick(room);
+      room.selectedGameId = pick.gameId();
+      room.selectedMode = pick.mode();
       launchGame(room);
       return null;
     });
   }
 
+  /**
+   * Arranca {@code room.selectedGameId}. El modo sorteado o votado ({@code room.selectedMode}) se aplica solo a esta
+   * partida y se consume: la configuración del lobby no cambia.
+   */
   void launchGame(LiveRoom room) {
+    var pick = new GamePick(room.selectedGameId, room.selectedMode);
+    room.selectedMode = null;
     var players = room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED)
         .map(member -> new GamePlayer(member.identity.id(), member.identity.displayName(), true, true)).toList();
     var module = registry.get(room.selectedGameId).orElseThrow(() -> new RoomException("Unknown game"));
@@ -872,7 +944,7 @@ public class RoomCoordinator {
         .hostCustomCategories(hostCustomCategories(room))
         .hostWouldYouRatherPrompts(hostWouldYouRatherPrompts(room))
         .build();
-    var config = engine.parseConfig(room.gameConfigs.get(room.selectedGameId));
+    var config = engine.parseConfig(pickConfig(room, pick));
     var configTree = toTree(config);
     var configReason = GameConfigReadiness.validate(module.id(), configTree, new GameConfigReadiness.Context(
         context.hostCustomCategories().size(), context.hostWouldYouRatherPrompts().size(), players.size()));
@@ -1042,16 +1114,19 @@ public class RoomCoordinator {
   }
 
   boolean beginNextGameVote(LiveRoom room) {
-    return beginNextGameVote(room, playableGameIds(room, room.gameSelectionMode.gameIds()));
+    return beginNextGameVote(room, playablePicks(room, room.gameSelectionMode.gameIds()));
   }
 
-  /** Votación entre hasta {@code NEXT_GAME_VOTE_OPTIONS} de {@code candidates}; con menos de dos no hay votación. */
-  private boolean beginNextGameVote(LiveRoom room, List<String> candidates) {
+  /**
+   * Votación entre hasta {@code NEXT_GAME_VOTE_OPTIONS} pares de {@code candidates} (cada modo permitido de un juego
+   * es una opción); con menos de dos no hay votación.
+   */
+  private boolean beginNextGameVote(LiveRoom room, List<GamePick> candidates) {
     if (!(room.gameSelectionMode instanceof GameSelectionMode.Vote)) return false;
     var options = shuffled(candidates);
-    var optionGameIds = options.subList(0, Math.min(NEXT_GAME_VOTE_OPTIONS, options.size()));
-    if (optionGameIds.size() < 2) return false;
-    room.nextGameVote = new NextGameVote(optionGameIds, clock.now() + NEXT_GAME_VOTE_MS);
+    var picks = options.subList(0, Math.min(NEXT_GAME_VOTE_OPTIONS, options.size()));
+    if (picks.size() < 2) return false;
+    room.nextGameVote = new NextGameVote(picks, clock.now() + NEXT_GAME_VOTE_MS);
     room.phase = RoomPhase.NEXT_GAME_VOTE;
     return true;
   }
@@ -1060,25 +1135,29 @@ public class RoomCoordinator {
     var vote = room.nextGameVote;
     if (vote == null || room.phase != RoomPhase.NEXT_GAME_VOTE) return;
     var tallies = new LinkedHashMap<String, Integer>();
-    for (var gameId : vote.optionGameIds) tallies.put(gameId, 0);
-    for (var gameId : vote.votes.values()) tallies.merge(gameId, 1, Integer::sum);
-    var playable = playableGameIds(room, vote.optionGameIds);
+    for (var optionId : vote.optionIds) tallies.put(optionId, 0);
+    for (var optionId : vote.votes.values()) tallies.merge(optionId, 1, Integer::sum);
+    int playerCount = connectedPlayerCount(room);
+    var playable = vote.options.stream().filter(option -> playable(room, option.pick(), playerCount)).toList();
     if (playable.isEmpty()) {
       resetToLobby(room, false);
       return;
     }
-    int maximum = playable.stream().mapToInt(gameId -> tallies.getOrDefault(gameId, 0)).max().orElse(0);
-    var tiedGameIds = playable.stream().filter(gameId -> Objects.equals(tallies.get(gameId), maximum)).toList();
-    var resolvedGameId = randomItem(tiedGameIds);
+    int maximum = playable.stream().mapToInt(option -> tallies.getOrDefault(option.id(), 0)).max().orElse(0);
+    var tied = playable.stream().filter(option -> Objects.equals(tallies.get(option.id()), maximum)).toList();
+    var resolved = randomItem(tied);
     vote.endsAt = null;
-    vote.resolvedGameId = resolvedGameId;
+    vote.resolvedOptionId = resolved.id();
     vote.tallies = tallies;
     vote.nextTransitionAt = clock.now() + NEXT_GAME_VOTE_RESULT_MS;
-    room.selectedGameId = resolvedGameId;
+    // El modo votado sobrevive a la vuelta al lobby de tick(): launchGame lo consume al arrancar.
+    room.selectedGameId = resolved.gameId();
+    room.selectedMode = resolved.mode();
     room.phase = RoomPhase.NEXT_GAME_VOTE_RESULTS;
   }
 
-  public void voteNextGame(String playerId, @Nullable String gameId) {
+  /** {@code optionId}: el id de la opción (el del juego si sale con un solo modo, {@code juego:MODO} si no). */
+  public void voteNextGame(String playerId, @Nullable String optionId) {
     inRequiredRoom(playerId, room -> {
       var vote = room.nextGameVote;
       if (vote == null || room.phase != RoomPhase.NEXT_GAME_VOTE) {
@@ -1094,15 +1173,14 @@ public class RoomCoordinator {
         schedule(room);
         throw new RoomException("La votación ha terminado.");
       }
-      if (gameId == null || !vote.optionGameIds.contains(gameId)) {
-        throw new RoomException("Ese minijuego no es una opción válida.");
-      }
-      var manifest = registry.get(gameId).orElse(null);
+      var option = vote.option(optionId);
+      if (option == null) throw new RoomException("Ese minijuego no es una opción válida.");
+      var manifest = registry.get(option.gameId()).orElse(null);
       if (manifest == null || !ManifestView.supportsPlayerCount(manifest, connectedPlayerCount(room))) {
         throw new RoomException("Ese minijuego ya no admite el número actual de jugadores.");
       }
       if (vote.votes.containsKey(playerId)) throw new RoomException("Tu voto ya está bloqueado.");
-      vote.votes.put(playerId, gameId);
+      vote.votes.put(playerId, option.id());
       var eligibleIds = eligibleNextGameVoterIds(room);
       if (vote.votes.keySet().containsAll(eligibleIds)) resolveNextGameVote(room);
       broadcast(room);
@@ -1297,6 +1375,7 @@ public class RoomCoordinator {
       }
       room.sessionParticipants = participants;
     }
+    if (resetSession) room.selectedMode = null;
     cancelPresenceGraces(room);
     room.game = null;
     room.nextGameVote = null;
@@ -1341,9 +1420,10 @@ public class RoomCoordinator {
       showSessionResults(room);
       return;
     }
-    var previousGameId = room.selectedGameId;
-    var candidates = playableGameIds(room, room.gameSelectionMode.gameIds()).stream()
-        .filter(gameId -> !gameId.equals(skippedGameId)).toList();
+    var previous = new GamePick(room.selectedGameId, previousMode(room));
+    // Un juego saltado queda fuera con todos sus modos: no vuelve justo después.
+    var candidates = playablePicks(room, room.gameSelectionMode.gameIds()).stream()
+        .filter(pick -> !pick.gameId().equals(skippedGameId)).toList();
     if (candidates.isEmpty()) {
       if (skippedGameId != null) {
         showSessionResults(room);
@@ -1358,22 +1438,30 @@ public class RoomCoordinator {
       schedule(room);
       return;
     }
-    launchFirstStartable(room, nextGameIds(room, previousGameId, candidates), skippedGameId != null);
+    launchFirstStartable(room, nextPicks(room, previous, candidates), skippedGameId != null);
+  }
+
+  /** El modo con el que se jugó la última partida, si su juego tiene modos (para no repetir el mismo par). */
+  private @Nullable String previousMode(LiveRoom room) {
+    var game = room.game;
+    if (game == null || !GameModes.hasModes(game.gameId)) return null;
+    return GameModes.configMode(game.gameId, game.configTree);
   }
 
   /**
-   * Arranca el primero de {@code gameIds} que pueda empezar. Si ninguno puede: tras un salto se pasa a la
+   * Arranca el primero de {@code picks} que pueda empezar. Si ninguno puede: tras un salto se pasa a la
    * clasificación final (la sala no vuelve al lobby); si no, se propaga el último error.
    */
-  private void launchFirstStartable(LiveRoom room, List<String> gameIds, boolean afterSkip) {
+  private void launchFirstStartable(LiveRoom room, List<GamePick> picks, boolean afterSkip) {
     RuntimeException last = null;
-    for (var gameId : gameIds) {
-      room.selectedGameId = gameId;
+    for (var pick : picks) {
+      room.selectedGameId = pick.gameId();
+      room.selectedMode = pick.mode();
       try {
         launchGame(room);
         return;
       } catch (RuntimeException error) {
-        LOG.warn("Game {} could not start; trying the next one", gameId, error);
+        LOG.warn("Game {} could not start; trying the next one", pick.gameId(), error);
         last = error;
       }
     }

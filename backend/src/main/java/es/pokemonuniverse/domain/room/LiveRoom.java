@@ -27,6 +27,13 @@ public final class LiveRoom {
   public SessionMode sessionMode = new SessionMode.Infinite();
   /** Empieza en el orden de un solo juego, el elegido al crear la sala. */
   public GameSelectionMode gameSelectionMode;
+  /**
+   * Modos que pueden salir de cada juego con modos cuando la sesión es al azar o por votación; solo los que eligió el
+   * host (sin entrada, sale el modo de su configuración: {@link GameModes#allowed}).
+   */
+  public final Map<String, List<String>> allowedModes = new LinkedHashMap<>();
+  /** Modo sorteado o votado para el próximo arranque; {@code null} usa el de la configuración. */
+  public @Nullable String selectedMode;
   public @Nullable NextGameVote nextGameVote;
   public int gamesPlayed;
   public Map<String, SessionParticipant> sessionParticipants = new LinkedHashMap<>();

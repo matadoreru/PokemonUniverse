@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * {@code RoomView} de {@code room.ts} con exactamente sus claves; las opcionales de TS siempre están presentes, como
- * las envía Node. Se construye con {@link Builder}: son 27 campos.
+ * las envía Node. Se construye con {@link Builder}: son 28 campos.
  */
 @Serdeable
 @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -38,6 +38,7 @@ public record RoomView(
     Map<String, JsonNode> gameConfigs,
     List<String> customizedGameIds,
     GameSelectionMode gameSelectionMode,
+    Map<String, List<String>> allowedModes,
     @Nullable NextGameVoteView nextGameVote,
     @Nullable StateView gameSkipState,
     int gamesPlayed,
@@ -62,16 +63,24 @@ public record RoomView(
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record SessionStandingView(String id, String displayName, AvatarRef avatar, int sessionPoints) {}
 
-  /** {@code NextGameVoteView}; {@code ownVoteGameId} es privado de cada miembro. */
+  /** {@code NextGameVoteOptionView}: una opción de voto, el par juego y modo ({@code mode} nulo sin modos). */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record NextGameVoteView(List<ManifestView> options, List<String> eligibleVoterIds,
-      List<String> votedPlayerIds, @Nullable String ownVoteGameId, @Nullable Long endsAt,
-      @Nullable String resolvedGameId, @Nullable Map<String, Integer> tallies, @Nullable Long nextTransitionAt) {
+  public record NextGameVoteOptionView(String id, ManifestView game, @Nullable String mode) {}
 
-    public NextGameVoteView withOwnVote(@Nullable String gameId) {
-      return new NextGameVoteView(options, eligibleVoterIds, votedPlayerIds, gameId, endsAt, resolvedGameId, tallies,
-          nextTransitionAt);
+  /**
+   * {@code NextGameVoteView}; {@code ownVoteOptionId} es privado de cada miembro. Los votos, el recuento y el ganador
+   * van por id de opción.
+   */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record NextGameVoteView(List<NextGameVoteOptionView> options, List<String> eligibleVoterIds,
+      List<String> votedPlayerIds, @Nullable String ownVoteOptionId, @Nullable Long endsAt,
+      @Nullable String resolvedOptionId, @Nullable Map<String, Integer> tallies, @Nullable Long nextTransitionAt) {
+
+    public NextGameVoteView withOwnVote(@Nullable String optionId) {
+      return new NextGameVoteView(options, eligibleVoterIds, votedPlayerIds, optionId, endsAt, resolvedOptionId,
+          tallies, nextTransitionAt);
     }
   }
 
@@ -91,7 +100,7 @@ public record RoomView(
         .code(code).phase(phase).hostId(hostId).maxPlayers(maxPlayers).members(members).availableGames(availableGames)
         .selectedGameId(selectedGameId).selectedGameConfig(selectedGameConfig).sessionMode(sessionMode)
         .gameConfigs(gameConfigs).customizedGameIds(customizedGameIds).gameSelectionMode(gameSelectionMode)
-        .nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
+        .allowedModes(allowedModes).nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
         .sessionStandings(sessionStandings).sessionHistory(sessionHistory).gameActionEpoch(gameActionEpoch).game(game)
         .gamePlayerState(gamePlayerState).serverNow(serverNow).hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount);
@@ -113,6 +122,7 @@ public record RoomView(
     private Map<String, JsonNode> gameConfigs = Map.of();
     private List<String> customizedGameIds = List.of();
     private GameSelectionMode gameSelectionMode;
+    private Map<String, List<String>> allowedModes = Map.of();
     private NextGameVoteView nextGameVote;
     private StateView gameSkipState;
     private int gamesPlayed;
@@ -157,6 +167,8 @@ public record RoomView(
 
     public Builder gameSelectionMode(GameSelectionMode v) { gameSelectionMode = v; return this; }
 
+    public Builder allowedModes(Map<String, List<String>> v) { allowedModes = v; return this; }
+
     public Builder nextGameVote(@Nullable NextGameVoteView v) { nextGameVote = v; return this; }
 
     public Builder gameSkipState(@Nullable StateView v) { gameSkipState = v; return this; }
@@ -183,7 +195,7 @@ public record RoomView(
     public RoomView build() {
       return new RoomView(roomInstanceId, revision, gameCatalogVersion, code, phase, hostId, maxPlayers, members,
           availableGames, selectedGameId, selectedGameConfig, sessionMode, gameConfigs, customizedGameIds,
-          gameSelectionMode, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
+          gameSelectionMode, allowedModes, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
           gameActionEpoch, game, gamePlayerState, serverNow, hostCustomCategoryCount, hostWouldYouRatherPromptCount);
     }
   }

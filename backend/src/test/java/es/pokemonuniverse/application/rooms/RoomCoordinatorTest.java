@@ -25,6 +25,7 @@ import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonAudioCatalog;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.room.GameFinishReason;
+import es.pokemonuniverse.domain.room.GamePick;
 import es.pokemonuniverse.domain.room.GameSelectionMode;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.MemberRole;
@@ -1293,7 +1294,7 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote"));
     assertTrue(kit.manager.beginNextGameVote(room));
-    assertEquals(Set.of("higher-lower", "shiny-vote"), Set.copyOf(room.nextGameVote.optionGameIds));
+    assertEquals(Set.of("higher-lower", "shiny-vote"), Set.copyOf(room.nextGameVote.optionIds));
 
     var single = new RoomTestKit();
     var lone = single.room(8, guest("host", "Host"), guest("guest", "Ana"));
@@ -1319,7 +1320,7 @@ class RoomCoordinatorTest {
     room.gameSelectionMode = new GameSelectionMode.Vote(
         List.of("pokemon-impostor", "pokemon-bingo", "one-of-us-is-fake", "pokedex-distance", "shiny-vote"));
     assertTrue(kit.manager.beginNextGameVote(room));
-    assertEquals(Set.of("pokemon-bingo", "pokedex-distance", "shiny-vote"), Set.copyOf(room.nextGameVote.optionGameIds));
+    assertEquals(Set.of("pokemon-bingo", "pokedex-distance", "shiny-vote"), Set.copyOf(room.nextGameVote.optionIds));
   }
 
   @Test
@@ -1370,39 +1371,39 @@ class RoomCoordinatorTest {
     assertEquals(2, kit.publicGame(room, "guest").get("results").get("standings").size());
     kit.manager.continueSession("host");
     assertEquals(RoomPhase.NEXT_GAME_VOTE, room.phase);
-    assertEquals(3, room.nextGameVote.optionGameIds.size());
+    assertEquals(3, room.nextGameVote.optionIds.size());
     assertEquals(kit.time.now() + 15_000, room.nextGameVote.endsAt);
     var guestVote = kit.manager.view(room, "guest").nextGameVote();
-    assertNull(guestVote.ownVoteGameId());
+    assertNull(guestVote.ownVoteOptionId());
     assertNull(guestVote.tallies());
     assertEquals(List.of(), guestVote.votedPlayerIds());
     assertEquals(3, guestVote.options().size());
     assertTrue(serialize(guestVote).contains("\"tallies\":null"));
     assertFalse(serialize(guestVote).contains("defaultConfig"));
 
-    var hostChoice = room.nextGameVote.optionGameIds.get(0);
-    var guestChoice = room.nextGameVote.optionGameIds.get(1);
+    var hostChoice = room.nextGameVote.optionIds.get(0);
+    var guestChoice = room.nextGameVote.optionIds.get(1);
     assertMessage("Ese minijuego no es una opción válida.", () -> kit.manager.voteNextGame("host", "type-duel"));
     kit.manager.voteNextGame("host", hostChoice);
     assertMessage("Tu voto ya está bloqueado.", () -> kit.manager.voteNextGame("host", guestChoice));
-    assertEquals(hostChoice, kit.manager.view(room, "host").nextGameVote().ownVoteGameId());
+    assertEquals(hostChoice, kit.manager.view(room, "host").nextGameVote().ownVoteOptionId());
     var hidden = kit.manager.view(room, "guest").nextGameVote();
-    assertNull(hidden.ownVoteGameId());
+    assertNull(hidden.ownVoteOptionId());
     assertNull(hidden.tallies());
     assertEquals(List.of("host"), hidden.votedPlayerIds());
     kit.manager.disconnect("host", "socket-host");
     kit.manager.attach(guest("host", "Host"), "host-restored");
     var restored = (RoomView) kit.events.named("session:restored").getLast().payload();
-    assertEquals(hostChoice, restored.nextGameVote().ownVoteGameId());
+    assertEquals(hostChoice, restored.nextGameVote().ownVoteOptionId());
     kit.manager.voteNextGame("guest", guestChoice);
 
     assertEquals(RoomPhase.NEXT_GAME_VOTE_RESULTS, room.phase);
-    assertEquals(Map.of(hostChoice, 1, guestChoice, 1, room.nextGameVote.optionGameIds.get(2), 0),
+    assertEquals(Map.of(hostChoice, 1, guestChoice, 1, room.nextGameVote.optionIds.get(2), 0),
         room.nextGameVote.tallies);
-    assertTrue(List.of(hostChoice, guestChoice).contains(room.nextGameVote.resolvedGameId));
+    assertTrue(List.of(hostChoice, guestChoice).contains(room.nextGameVote.resolvedOptionId));
     assertEquals(kit.time.now() + 3_000, room.nextGameVote.nextTransitionAt);
 
-    var winner = room.nextGameVote.resolvedGameId;
+    var winner = room.nextGameVote.resolvedOptionId;
     kit.time.advance(3_005);
     assertNotEquals(RoomPhase.LOBBY, room.phase);
     assertEquals(winner, room.game.gameId);
@@ -1421,7 +1422,7 @@ class RoomCoordinatorTest {
     assertEquals(RoomPhase.NEXT_GAME_VOTE, room.phase);
     kit.time.advance(1);
     assertEquals(RoomPhase.NEXT_GAME_VOTE_RESULTS, room.phase);
-    assertNotNull(room.nextGameVote.resolvedGameId);
+    assertNotNull(room.nextGameVote.resolvedOptionId);
     assertEquals(List.of(0, 0, 0), List.copyOf(room.nextGameVote.tallies.values()));
     assertMessage("No hay una votación de minijuegos activa.", () -> kit.manager.voteNextGame("host", "higher-lower"));
   }
@@ -1440,13 +1441,138 @@ class RoomCoordinatorTest {
       manager.join(guest("guest", "Ana"), "g", room.code);
       room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote", "pokemon-bingo"));
       manager.beginNextGameVote(room);
-      var options = room.nextGameVote.optionGameIds;
+      var options = room.nextGameVote.optionIds;
       manager.voteNextGame("host", options.get(0));
       manager.voteNextGame("guest", options.get(1));
-      assertTrue(Set.of(options.get(0), options.get(1)).contains(room.nextGameVote.resolvedGameId));
-      winners.add(room.nextGameVote.resolvedGameId.equals(options.get(0)) ? "first" : "second");
+      assertTrue(Set.of(options.get(0), options.get(1)).contains(room.nextGameVote.resolvedOptionId));
+      winners.add(room.nextGameVote.resolvedOptionId.equals(options.get(0)) ? "first" : "second");
     }
     assertEquals(Set.of("first", "second"), winners);
+  }
+
+  // ------------------------------------------------------------------------------------- modos en la sesión
+
+  /** Modo de la configuración con la que corre la partida. */
+  private static String runningMode(LiveRoom room) {
+    return room.game.configTree.get("mode").getStringValue();
+  }
+
+  @Test
+  @DisplayName("allows the configured mode by default and publishes the allowed modes of every game with modes")
+  void allowedModesDefaultToTheConfiguredMode() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    var allowed = kit.manager.view(room, "host").allowedModes();
+    assertEquals(Set.of("pokedex-distance", "higher-lower", "shiny-vote", "learnset-guess", "type-duel",
+        "pokemon-impostor"), allowed.keySet());
+    assertEquals(List.of("CLASSIC"), allowed.get("higher-lower"));
+    assertFalse(allowed.containsKey("pokemon-red-flag"));
+    room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "pokedex-distance"));
+    assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("pokedex-distance", "CLASSIC")),
+        kit.manager.playablePicks(room, room.gameSelectionMode.gameIds()));
+  }
+
+  @Test
+  @DisplayName("turns every allowed mode into a pair in random and vote sessions, never in order")
+  void allowedModesBecomePairs() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"ENDLESS\",\"CLASSIC\"]"));
+    assertEquals(List.of("CLASSIC", "ENDLESS"), kit.manager.view(room, "host").allowedModes().get("higher-lower"));
+    var gameIds = List.of("higher-lower", "pokedex-distance");
+    room.gameSelectionMode = new GameSelectionMode.Vote(gameIds);
+    assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS"),
+        new GamePick("pokedex-distance", "CLASSIC")), kit.manager.playablePicks(room, gameIds));
+    room.gameSelectionMode = new GameSelectionMode.Order(gameIds);
+    assertEquals(List.of(new GamePick("higher-lower", null), new GamePick("pokedex-distance", null)),
+        kit.manager.playablePicks(room, gameIds));
+  }
+
+  @Test
+  @DisplayName("rejects allowed modes that are empty, repeated, unknown or for a game without modes")
+  void rejectsInvalidAllowedModes() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    assertMessage("Marca al menos un modo.", () -> kit.manager.updateAllowedModes("host", "higher-lower", json("[]")));
+    assertMessage("Los modos no pueden repetirse.",
+        () -> kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"CLASSIC\"]")));
+    assertMessage("Ese modo no existe en este minijuego.",
+        () -> kit.manager.updateAllowedModes("host", "higher-lower", json("[\"POINTS\"]")));
+    assertMessage("Este minijuego no tiene modos.",
+        () -> kit.manager.updateAllowedModes("host", "pokemon-red-flag", json("[\"RED\"]")));
+    assertMessage("Modos inválidos.", () -> kit.manager.updateAllowedModes("host", "higher-lower", null));
+    rejects(() -> kit.manager.updateAllowedModes("guest", "higher-lower", json("[\"ENDLESS\"]")));
+    assertEquals(List.of("CLASSIC"), kit.manager.view(room, "host").allowedModes().get("higher-lower"));
+  }
+
+  @Test
+  @DisplayName("resets the allowed modes when the host changes the configured mode")
+  void configModeChangeResetsAllowedModes() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
+    var config = new LinkedHashMap<>(RoomTestKit.asMap(room.gameConfigs.get("higher-lower")));
+    config.put("rounds", 3);
+    kit.manager.updateGameConfig("host", "higher-lower", RoomTestKit.tree(config));
+    assertEquals(List.of("CLASSIC", "ENDLESS"), kit.manager.view(room, "host").allowedModes().get("higher-lower"));
+    config.put("mode", "ENDLESS");
+    kit.manager.updateGameConfig("host", "higher-lower", RoomTestKit.tree(config));
+    assertEquals(List.of("ENDLESS"), kit.manager.view(room, "host").allowedModes().get("higher-lower"));
+  }
+
+  @Test
+  @DisplayName("starts a random session with an allowed mode without touching the lobby configuration")
+  void randomStartUsesTheAllowedMode() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameSelection("host", json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\"]}"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"ENDLESS\"]"));
+    var lobbyConfig = room.gameConfigs.get("higher-lower");
+    kit.startReady(room, "host");
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals("ENDLESS", runningMode(room));
+    assertSame(lobbyConfig, room.gameConfigs.get("higher-lower"));
+    assertEquals("CLASSIC", room.gameConfigs.get("higher-lower").get("mode").getStringValue());
+    // La vista en partida lleva la configuración con la que arrancó.
+    assertEquals("ENDLESS", kit.manager.view(room, "guest").selectedGameConfig().get("mode").getStringValue());
+    assertNull(room.selectedMode);
+  }
+
+  @Test
+  @DisplayName("keeps the configured mode in an ordered session even with several allowed modes")
+  void orderedSessionIgnoresAllowedModes() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\"]}"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"ENDLESS\"]"));
+    kit.startReady(room, "host");
+    assertEquals("CLASSIC", runningMode(room));
+  }
+
+  @Test
+  @DisplayName("votes between the modes of a single game and starts the winning pair after the reveal")
+  void votesBetweenModesOfOneGame() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameSelection("host", json("{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\"]}"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
+    assertTrue(kit.manager.beginNextGameVote(room));
+    assertEquals(Set.of("higher-lower:CLASSIC", "higher-lower:ENDLESS"), Set.copyOf(room.nextGameVote.optionIds));
+    var view = kit.manager.view(room, "guest").nextGameVote();
+    assertEquals(Set.of("CLASSIC", "ENDLESS"),
+        Set.copyOf(view.options().stream().map(RoomView.NextGameVoteOptionView::mode).toList()));
+    assertTrue(view.options().stream().allMatch(option -> option.game().id().equals("higher-lower")));
+    assertMessage("Ese minijuego no es una opción válida.", () -> kit.manager.voteNextGame("host", "higher-lower"));
+    kit.manager.voteNextGame("host", "higher-lower:ENDLESS");
+    assertEquals("higher-lower:ENDLESS", kit.manager.view(room, "host").nextGameVote().ownVoteOptionId());
+    kit.manager.voteNextGame("guest", "higher-lower:ENDLESS");
+    assertEquals(RoomPhase.NEXT_GAME_VOTE_RESULTS, room.phase);
+    assertEquals("higher-lower:ENDLESS", room.nextGameVote.resolvedOptionId);
+    assertEquals(Map.of("higher-lower:CLASSIC", 0, "higher-lower:ENDLESS", 2), room.nextGameVote.tallies);
+    kit.time.advance(3_005);
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals("ENDLESS", runningMode(room));
+    assertEquals("CLASSIC", room.gameConfigs.get("higher-lower").get("mode").getStringValue());
   }
 
   // ------------------------------------------------------------------------------- juegos sin motor y vistas
@@ -1544,8 +1670,8 @@ class RoomCoordinatorTest {
     assertEquals(first.roomInstanceId(), second.roomInstanceId());
     var keys = RoomTestKit.asMap(second).keySet();
     assertEquals(Set.of("code", "phase", "hostId", "maxPlayers", "members", "availableGames", "selectedGameId",
-        "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "nextGameVote",
-        "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
+        "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "allowedModes",
+        "nextGameVote", "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
         "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "hostCustomCategoryCount",
         "hostWouldYouRatherPromptCount"), keys);
     var serialized = serialize(second);
@@ -2031,7 +2157,7 @@ class RoomCoordinatorTest {
       assertEquals(RoomPhase.NEXT_GAME_VOTE, f.room().phase);
       assertNull(f.room().game);
       // El juego saltado no se vuelve a votar: quedan los otros dos.
-      assertEquals(Set.of("shiny-vote", "pokemon-bingo"), Set.copyOf(f.room().nextGameVote.optionGameIds));
+      assertEquals(Set.of("shiny-vote", "pokemon-bingo"), Set.copyOf(f.room().nextGameVote.optionIds));
       assertNull(f.kit().manager.view(f.room(), "skip-p1").gameSkipState());
       assertTrue(f.room().sessionHistory.isEmpty());
     }

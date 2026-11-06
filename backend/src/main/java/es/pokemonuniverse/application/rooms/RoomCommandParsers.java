@@ -82,6 +82,22 @@ public final class RoomCommandParsers {
     };
   }
 
+  /**
+   * {@code allowedModesSchema}: los modos que pueden salir de un juego, una lista de textos sin repetir y con al menos
+   * uno. Que cada modo exista en el juego lo comprueba el coordinador.
+   */
+  public static List<String> allowedModes(@Nullable JsonNode raw) {
+    if (raw == null || !raw.isArray()) throw new RoomException("Modos inválidos.");
+    var modes = new ArrayList<String>();
+    for (var item : raw.values()) {
+      if (!item.isString() || item.getStringValue().isEmpty()) throw new RoomException("Modos inválidos.");
+      if (modes.contains(item.getStringValue())) throw new RoomException("Los modos no pueden repetirse.");
+      modes.add(item.getStringValue());
+    }
+    if (modes.isEmpty()) throw new RoomException("Marca al menos un modo.");
+    return List.copyOf(modes);
+  }
+
   /** {@code assignableRoomRoleSchema}. */
   public static RoomRole assignableRole(@Nullable JsonNode raw) {
     if (raw != null && raw.isString() && ASSIGNABLE_ROLES.contains(raw.getStringValue())) {

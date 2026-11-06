@@ -6,6 +6,7 @@ import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.progression.Experience;
+import es.pokemonuniverse.domain.room.GameModes;
 import es.pokemonuniverse.domain.room.GameSkip;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.PresenceStatus;
@@ -47,8 +48,9 @@ final class RoomViews {
     eligibleVoterIds.addAll(acceptedVoterIds);
     var vote = room.nextGameVote;
     var nextGameVote = vote == null ? null : new RoomView.NextGameVoteView(
-        vote.optionGameIds.stream().map(gameId -> ManifestView.of(registry.get(gameId).orElseThrow())).toList(),
-        List.copyOf(eligibleVoterIds), acceptedVoterIds, null, vote.endsAt, vote.resolvedGameId,
+        vote.options.stream().map(option -> new RoomView.NextGameVoteOptionView(option.id(),
+            ManifestView.of(registry.get(option.gameId()).orElseThrow()), option.mode())).toList(),
+        List.copyOf(eligibleVoterIds), acceptedVoterIds, null, vote.endsAt, vote.resolvedOptionId,
         vote.tallies == null ? null : new LinkedHashMap<>(vote.tallies), vote.nextTransitionAt);
     var game = room.game;
     return RoomView.builder()
@@ -65,12 +67,15 @@ final class RoomViews {
             member.sessionPoints, member.xp == null ? null : Experience.levelFor(member.xp))).toList())
         .availableGames(registry.manifests().stream().map(ManifestView::of).toList())
         .selectedGameId(room.selectedGameId)
-        .selectedGameConfig(room.gameConfigs.get(room.selectedGameId))
+        // En partida, la configuración con la que arrancó (con el modo sorteado o votado); en el lobby, la elegida.
+        .selectedGameConfig(game != null && game.gameId.equals(room.selectedGameId) ? game.configTree
+            : room.gameConfigs.get(room.selectedGameId))
         .sessionMode(room.sessionMode)
         .gameConfigs(new LinkedHashMap<>(room.gameConfigs))
         .customizedGameIds(registry.list().stream().map(GameManifest::id)
             .filter(id -> !configEquals(room.gameConfigs.get(id), defaultConfigs.get(id))).toList())
         .gameSelectionMode(room.gameSelectionMode)
+        .allowedModes(allowedModes(room))
         .nextGameVote(nextGameVote)
         .gameSkipState(null)
         .gamesPlayed(room.gamesPlayed)
@@ -85,6 +90,18 @@ final class RoomViews {
         .hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount)
         .build();
+  }
+
+  /** Los modos que pueden salir de cada juego con modos registrado (los elegidos o el de su configuración). */
+  private Map<String, List<String>> allowedModes(LiveRoom room) {
+    var allowed = new LinkedHashMap<String, List<String>>();
+    for (var manifest : registry.list()) {
+      var gameId = manifest.id();
+      if (GameModes.hasModes(gameId)) {
+        allowed.put(gameId, GameModes.allowed(room.allowedModes, gameId, room.gameConfigs.get(gameId)));
+      }
+    }
+    return allowed;
   }
 
   /** {@code isDeepStrictEqual}; ausente en un lado solo es igual si falta en ambos. */
