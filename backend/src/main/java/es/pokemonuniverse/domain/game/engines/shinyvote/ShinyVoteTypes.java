@@ -79,7 +79,8 @@ public final class ShinyVoteTypes {
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
-   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 16 campos no se usa en el motor).
+   * {@link #toBuilder()} (setters con nombre: el constructor posicional de 17 campos no se usa en el motor).
+   * {@code alive} solo cuenta en {@code SURVIVAL}: quien sigue en pie, en el orden de {@code playerIds}.
    */
   public record ShinyVoteState(
       GamePhase phase,
@@ -97,7 +98,8 @@ public final class ShinyVoteTypes {
       @Nullable Long nextTransitionAt,
       @Nullable ShinyRoundResult lastRound,
       @Nullable List<ShinyOptionState> preparedOptions,
-      @Nullable ShinyOptionId preparedCorrectOptionId) implements TimedGameState {
+      @Nullable ShinyOptionId preparedCorrectOptionId,
+      List<String> alive) implements TimedGameState {
 
     public ShinyVoteState {
       playerIds = frozenList(playerIds);
@@ -106,6 +108,7 @@ public final class ShinyVoteTypes {
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
       preparedOptions = preparedOptions == null ? null : frozenList(preparedOptions);
+      alive = frozenList(alive);
     }
 
     public static Builder builder() {
@@ -117,7 +120,7 @@ public final class ShinyVoteTypes {
           .roundNumber(roundNumber).options(options).correctOptionId(correctOptionId).votes(votes).scores(scores)
           .playerStats(playerStats).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
           .nextTransitionAt(nextTransitionAt).lastRound(lastRound).preparedOptions(preparedOptions)
-          .preparedCorrectOptionId(preparedCorrectOptionId);
+          .preparedCorrectOptionId(preparedCorrectOptionId).alive(alive);
     }
 
     /** {@code finishGame}: {@code { ...state, phase: 'GAME_RESULTS', roundEndsAt: null, nextTransitionAt: null }}. */
@@ -143,6 +146,7 @@ public final class ShinyVoteTypes {
       private ShinyRoundResult lastRound;
       private List<ShinyOptionState> preparedOptions;
       private ShinyOptionId preparedCorrectOptionId;
+      private List<String> alive = List.of();
 
       private Builder() {}
 
@@ -181,6 +185,8 @@ public final class ShinyVoteTypes {
         return this;
       }
 
+      public Builder alive(List<String> value) { alive = value; return this; }
+
       /** {@code Pick<ShinyVoteState, 'preparedOptions' | 'preparedCorrectOptionId'>}: nulo deja ambos a null. */
       public Builder prepared(@Nullable ShinyGeneratedOptions value) {
         preparedOptions = value == null ? null : value.options();
@@ -192,7 +198,7 @@ public final class ShinyVoteTypes {
         return new ShinyVoteState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             Objects.requireNonNull(assetToken, "assetToken"), playerIds, roundNumber, options, correctOptionId,
             votes, scores, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt, lastRound, preparedOptions,
-            preparedCorrectOptionId);
+            preparedCorrectOptionId, alive);
       }
     }
   }
@@ -222,11 +228,16 @@ public final class ShinyVoteTypes {
     }
   }
 
+  /**
+   * Estado público. {@code mode} va siempre detrás de {@code phase}; {@code alive} y {@code roundsSurvived} solo salen
+   * en {@code SURVIVAL} (ausentes en Clásico, así su proyección no cambia).
+   */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record ShinyVotePublicState(
       String gameId,
       GamePhase phase,
+      ShinyVoteMode mode,
       int roundNumber,
       int totalRounds,
       List<String> playerIds,
@@ -242,5 +253,7 @@ public final class ShinyVoteTypes {
       @Nullable ShinyOptionId correctOptionId,
       @Nullable ShinyRoundResult lastRound,
       @Nullable String winnerId,
-      @Nullable GameResults results) {}
+      @Nullable GameResults results,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<String> alive,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Map<String, Integer> roundsSurvived) {}
 }

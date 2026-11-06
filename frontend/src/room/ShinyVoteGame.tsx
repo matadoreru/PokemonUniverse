@@ -50,6 +50,9 @@ function useShinyCardsReady(roundKey: string, total: number) {
  * opción (`Card` llena: seleccionable, seleccionada, correcta que gira al revelar, incorrecta). Abajo se actúa: confirmar
  * el voto o, al revelar, el veredicto con los puntos. En la columna lateral, el marcador y, debajo, el antes y el
  * después al revelar; en el móvil, entre las cartas y la pantalla inferior.
+ *
+ * Supervivencia (`game.alive` presente): la placa dice cuántos candidatos hay, el marcador quién sigue en pie y quien
+ * cayó en una ronda anterior deja de jugar (mira la partida con su propia placa).
  */
 export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
   const game = room.game as ShinyVotePublicState;
@@ -61,9 +64,14 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const active = game.phase === 'ROUND_ACTIVE';
   const reveal = game.phase === 'ROUND_RESULTS';
   const revealPhase = game.phase === 'ROUND_RESULTS' || game.phase === 'GAME_RESULTS';
-  const transitionLabel = game.roundNumber >= game.totalRounds ? 'Resultados finales' : 'Siguiente ronda';
+  const survival = game.alive !== undefined;
+  const transitionLabel = game.roundNumber >= game.totalRounds || game.alive?.length === 0 ? 'Resultados finales' : 'Siguiente ronda';
   const ownVote = playerState?.vote ?? game.votes[selfId] ?? null;
-  const participant = game.playerIds.includes(selfId);
+  // En Supervivencia, quien cayó antes de esta ronda ya no juega; quien cae en ella la sigue hasta su revelación.
+  const fellThisRound = reveal && (game.lastRound?.missedPlayerIds.includes(selfId) ?? false);
+  const eliminated = survival && game.playerIds.includes(selfId) && !game.alive?.includes(selfId) && !fellThisRound;
+  const participant = game.playerIds.includes(selfId) && !eliminated;
+  const survivalStatus = survival ? { eliminated, roundsSurvived: game.roundsSurvived?.[selfId] ?? game.scores[selfId] ?? 0 } : null;
   const roundKey = `${game.roundNumber}|${game.options.map((option) => option.sprite).join('|')}`;
   const cards = useShinyCardsReady(roundKey, game.options.length);
   // Al revelar las cartas ya estaban cargadas: el esqueleto solo bloquea el voto de la ronda abierta.
@@ -149,7 +157,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
     : <div className={s.grid} data-count={4} role="status" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <span key={index} className={s.ghostCard}><span className={s.skeleton} /></span>)}</div>;
 
   const top = <div className={s.top}>
-    <ShinyGameHeader roundNumber={game.roundNumber} totalRounds={game.totalRounds} voteVisibility={game.voteVisibility} candidateMode={config.candidateMode} timer={timer} />
+    <ShinyGameHeader roundNumber={game.roundNumber} totalRounds={game.totalRounds} voteVisibility={game.voteVisibility} candidateMode={config.candidateMode} timer={timer} candidates={survival && game.options.length > 0 ? game.options.length : null} />
     {grid}
   </div>;
 
@@ -170,6 +178,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
     points={playerState?.roundResult?.points ?? 0}
     submitting={submitting}
     onConfirm={() => void confirmVote()}
+    survival={survivalStatus}
   />;
 
   return <div className={cx('content-row', s.screen)}>

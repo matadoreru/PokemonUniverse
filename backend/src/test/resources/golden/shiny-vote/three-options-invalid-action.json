@@ -106,6 +106,7 @@
       "publicState": {
         "gameId": "shiny-vote",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "roundNumber": 0,
         "totalRounds": 3,
         "playerIds": [
@@ -148,6 +149,7 @@
       "publicState": {
         "gameId": "shiny-vote",
         "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
         "roundNumber": 1,
         "totalRounds": 3,
         "playerIds": [
@@ -245,6 +247,7 @@
           "publicState": {
             "gameId": "shiny-vote",
             "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
             "roundNumber": 1,
             "totalRounds": 3,
             "playerIds": [
@@ -332,6 +335,7 @@
           "publicState": {
             "gameId": "shiny-vote",
             "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
             "roundNumber": 2,
             "totalRounds": 3,
             "playerIds": [

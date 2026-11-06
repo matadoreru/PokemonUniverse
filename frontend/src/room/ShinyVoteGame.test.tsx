@@ -37,6 +37,7 @@ function publicGame(overrides: Partial<ShinyVotePublicState> = {}): ShinyVotePub
   return {
     gameId: 'shiny-vote',
     phase: 'ROUND_ACTIVE',
+    mode: 'CLASSIC',
     roundNumber: 1,
     totalRounds: 10,
     playerIds: members.map((member) => member.id),
@@ -326,5 +327,86 @@ describe('Shiny Quiz UI', () => {
     expect(guest).toContain('Esperando al host…');
     expect(guest).not.toContain('Continuar sesión');
     expect(shinyStatsLine({})).toBe('0 aciertos · 0% de precisión');
+  });
+});
+
+describe('Shiny Quiz · Supervivencia', () => {
+  const three = options.slice(0, 3);
+  // p1 y p2 siguen en pie; p3, p4 y p5 cayeron en rondas anteriores.
+  function survivalGame(overrides: Partial<ShinyVotePublicState> = {}): ShinyVotePublicState {
+    return publicGame({
+      mode: 'SURVIVAL',
+      roundNumber: 2,
+      options: three,
+      alive: ['p1', 'p2'],
+      pendingPlayerIds: ['p1', 'p2'],
+      scores: { p1: 1, p2: 1, p3: 0, p4: 0, p5: 0 },
+      roundsSurvived: { p1: 1, p2: 1, p3: 0, p4: 0, p5: 0 },
+      ...overrides,
+    });
+  }
+
+  it('enseña cuántos siguen en pie, el número de candidatos y «Eliminado» para quien cayó', () => {
+    const html = render(survivalGame({ votes: { p2: { optionId: 'A', votedAt: 2_000 } }, votedPlayerIds: ['p2'], pendingPlayerIds: ['p1'] }));
+    expect(html).toContain('3 candidatos');
+    expect(html).toContain('2 en pie');
+    expect(html).toContain('1 / 2 votos');
+    expect(html.match(/Eliminado/g)).toHaveLength(3);
+    expect(html).toMatch(/1<small> rondas<\/small>/);
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+    // En Clásico, nada de esto.
+    const classic = render(publicGame());
+    expect(classic).not.toContain('candidatos');
+    expect(classic).not.toContain('en pie');
+    expect(classic).not.toContain('Eliminado');
+  });
+
+  it('quien ya cayó mira la partida: sin confirmar voto y con su placa propia', () => {
+    const html = render(survivalGame({ alive: ['p2'], pendingPlayerIds: ['p2'], scores: { p1: 1, p2: 1, p3: 0, p4: 0, p5: 0 }, roundsSurvived: { p1: 1, p2: 1, p3: 0, p4: 0, p5: 0 } }), player({ canVote: false }));
+    expect(html).toContain('Estás fuera');
+    expect(html).toContain('Superaste 1 ronda. Sigues la partida como espectador.');
+    expect(html).not.toContain('Confirmar voto');
+    expect(html).not.toContain('Tiempo agotado');
+    expect(html).toContain('Estás eliminado: sigues la partida como espectador.');
+    expect(html.match(/role="status"/g)).toHaveLength(1);
+  });
+
+  it('al revelar dice si sigues en pie o quedas eliminado', () => {
+    const right = { p1: { optionId: 'B' as const, votedAt: 2_000 }, p2: { optionId: 'A' as const, votedAt: 2_100 } };
+    const wrong = { p1: { optionId: 'A' as const, votedAt: 2_000 }, p2: { optionId: 'B' as const, votedAt: 2_100 } };
+    const reveal = (alive: string[], scores: Record<string, number>, votes: ShinyVotePublicState['votes'] = right) => survivalGame({
+      phase: 'ROUND_RESULTS', votes, votedPlayerIds: ['p1', 'p2'], pendingPlayerIds: [], roundEndsAt: null, nextTransitionAt: 4_000,
+      correctOptionId: 'B', alive, scores, roundsSurvived: scores,
+      lastRound: { roundNumber: 2, correctOptionId: 'B', votes, correctPlayerIds: alive, missedPlayerIds: ['p1', 'p2'].filter((id) => !alive.includes(id)) },
+    });
+    const ok = render(reveal(['p1'], { p1: 2, p2: 1, p3: 0, p4: 0, p5: 0 }), player({ canVote: false, vote: right.p1, roundResult: { correct: true, points: 1 } }));
+    expect(ok).toContain('Sigues en pie · 2 rondas superadas');
+    expect(ok).toContain('Has acertado: sigues en pie.');
+    expect(ok).toContain('Siguiente ronda');
+    const out = render(reveal(['p2'], { p1: 1, p2: 2, p3: 0, p4: 0, p5: 0 }, wrong), player({ canVote: false, vote: wrong.p1, roundResult: { correct: false, points: 0 } }));
+    expect(out).toContain('Quedas eliminado con 1 ronda superada.');
+    expect(out).toContain('Has fallado: quedas eliminado.');
+    // Nadie en pie: la siguiente parada son los resultados.
+    const none = render(reveal([], { p1: 1, p2: 1, p3: 0, p4: 0, p5: 0 }, wrong), player({ canVote: false, vote: wrong.p1, roundResult: { correct: false, points: 0 } }));
+    expect(none).toContain('Resultados finales');
+  });
+
+  it('los resultados ordenan por rondas superadas y dicen quién sigue en pie', () => {
+    const finished = survivalGame({
+      phase: 'GAME_RESULTS', roundNumber: 5, roundEndsAt: null, winnerId: 'p1', alive: [],
+      results: { winnerId: 'p1', standings: [
+        { playerId: 'p1', position: 1, points: 4, won: true, stats: { votes: 4, correctVotes: 4, accuracy: 100 } },
+        { playerId: 'p2', position: 2, points: 1, won: false, stats: { votes: 2, correctVotes: 1, accuracy: 50 } },
+      ] },
+    });
+    const html = renderToStaticMarkup(createElement(ShinyVoteResults, { room: room(finished, null), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(html).toContain('Shiny Quiz · Supervivencia · 5 rondas jugadas');
+    expect(html).toContain('4 rondas');
+    expect(html).toContain('Cayó en la ronda 5');
+    expect(html).toContain('Cayó en la ronda 2');
+    expect(html).toContain('Más rondas superadas');
+    expect(html).not.toContain('Mejor precisión');
+    const standing = renderToStaticMarkup(createElement(ShinyVoteResults, { room: room({ ...finished, alive: ['p1'] }, null), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
+    expect(standing).toContain('Sigue en pie');
   });
 });

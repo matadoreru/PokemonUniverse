@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { GameAssetRecolor, GamePhase, GameResults } from '../contracts.js';
-import type { ShinyVoteConfig, ShinyVoteVisibility } from './config.js';
+import type { ShinyVoteConfig, ShinyVoteMode, ShinyVoteVisibility } from './config.js';
 
 export const SHINY_OPTION_IDS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 export type ShinyOptionId = (typeof SHINY_OPTION_IDS)[number];
@@ -58,6 +58,8 @@ export interface ShinyVoteState {
   lastRound: ShinyRoundResult | null;
   preparedOptions: ShinyOptionState[] | null;
   preparedCorrectOptionId: ShinyOptionId | null;
+  /** Solo cuenta en `SURVIVAL`: quien sigue en pie, en el orden de `playerIds`. */
+  alive: string[];
 }
 
 export const shinyVoteActionSchema = z.object({
@@ -66,9 +68,14 @@ export const shinyVoteActionSchema = z.object({
 }).strict();
 export type ShinyVoteAction = z.infer<typeof shinyVoteActionSchema>;
 
+/**
+ * En `SURVIVAL` (Supervivencia): `alive` dice quién sigue en pie y `roundsSurvived` las rondas superadas de cada uno
+ * (ambos ausentes en Clásico); `pendingPlayerIds` solo cuenta a quien sigue en pie y cada acierto vale 1 punto.
+ */
 export interface ShinyVotePublicState {
   gameId: 'shiny-vote';
   phase: GamePhase;
+  mode: ShinyVoteMode;
   roundNumber: number;
   totalRounds: number;
   playerIds: string[];
@@ -85,4 +92,6 @@ export interface ShinyVotePublicState {
   lastRound: ShinyRoundResult | null;
   winnerId: string | null;
   results: GameResults | null;
+  alive?: string[];
+  roundsSurvived?: Record<string, number>;
 }

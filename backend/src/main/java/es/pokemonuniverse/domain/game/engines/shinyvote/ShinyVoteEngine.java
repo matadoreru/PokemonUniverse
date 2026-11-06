@@ -79,6 +79,29 @@ public final class ShinyVoteEngine
     return ShinyVoteConfig.defaults();
   }
 
+  private static boolean survival(ShinyVoteState state) {
+    return state.config().mode() == ShinyVoteMode.SURVIVAL;
+  }
+
+  /**
+   * Opciones de la ronda {@code roundNumber} (base 1): {@code optionCount} en Clásico; en {@code SURVIVAL} empiezan
+   * en 3 y suben una cada 3 rondas hasta {@code optionCount}.
+   */
+  static int optionCountForRound(ShinyVoteConfig config, int roundNumber) {
+    if (config.mode() != ShinyVoteMode.SURVIVAL) return config.optionCount();
+    return Math.min(config.optionCount(), 3 + (roundNumber - 1) / 3);
+  }
+
+  /** La partida acaba tras {@code rounds} rondas o, en {@code SURVIVAL}, cuando no queda nadie en pie. */
+  private static boolean lastRoundPlayed(ShinyVoteState state) {
+    return state.roundNumber() >= state.config().rounds() || survival(state) && state.alive().isEmpty();
+  }
+
+  /** Quien juega la ronda: todos en Clásico; en {@code SURVIVAL}, solo quien sigue en pie. */
+  private static List<String> roundPlayers(ShinyVoteState state) {
+    return survival(state) ? state.alive() : state.playerIds();
+  }
+
   /** {@code takeRandom}: extrae sin reemplazo con {@code splice}; un {@code random()} por elemento elegido. */
   static <T> List<T> takeRandom(List<T> source, int count, DoubleSupplier random) {
     var pool = new ArrayList<>(source);
@@ -109,11 +132,13 @@ public final class ShinyVoteEngine
   /**
    * {@code createOptions}: {@code requiredPokemon} extracciones de {@code takeRandom}, una para el índice correcto, cinco
    * para barajar las paletas y una por señuelo ({@code useShinySpriteForFake}); el shiny oficial no consume
-   * ({@code authentic || ...}).
+   * ({@code authentic || ...}). Genera la ronda {@code roundNumber() + 1}: el número de opciones sale de
+   * {@link #optionCountForRound} (en Clásico, {@code optionCount}, sin cambios en las extracciones).
    */
   private static ShinyGeneratedOptions createOptions(ShinyVoteState state, GameContext context) {
     boolean samePokemon = state.config().candidateMode() == CandidateMode.SAME_POKEMON;
-    var optionIds = List.of(ShinyOptionId.values()).subList(0, state.config().optionCount());
+    var optionIds = List.of(ShinyOptionId.values())
+        .subList(0, optionCountForRound(state.config(), state.roundNumber() + 1));
     int requiredPokemon = samePokemon ? 1 : optionIds.size();
     var selected = takeRandom(shinyPool(state.config(), context), requiredPokemon, context.random());
     if (selected.size() < requiredPokemon) throw new EngineException(requiredPokemonMessage(requiredPokemon));
@@ -148,9 +173,13 @@ public final class ShinyVoteEngine
     for (var option : options) preload.accept(optionResolution(option));
   }
 
-  /** {@code prepareNextRound}: nulo tras la última ronda; precarga cada opción si el contexto lo trae. */
+  /**
+   * {@code prepareNextRound}: nulo tras la última ronda (en {@code SURVIVAL}, también si ya no queda nadie en pie, sin
+   * extracciones ni precarga); precarga cada opción si el contexto lo trae. {@code state.alive()} es el de después de
+   * revelar.
+   */
   private static @Nullable ShinyGeneratedOptions prepareNextRound(ShinyVoteState state, GameContext context) {
-    if (state.roundNumber() >= state.config().rounds()) return null;
+    if (lastRoundPlayed(state)) return null;
     var generated = createOptions(state, context);
     preloadOptions(generated.options(), context);
     return generated;
@@ -184,13 +213,16 @@ public final class ShinyVoteEngine
     for (int index = 0; index < state.playerIds().size(); index++) {
       playerOrder.put(state.playerIds().get(index), index);
     }
-    var correctPlayerIds = state.playerIds().stream()
+    // En SURVIVAL solo juegan los que siguen en pie: los eliminados no tienen resultado ni estadísticas nuevas.
+    boolean survival = survival(state);
+    var players = roundPlayers(state);
+    var correctPlayerIds = players.stream()
         .filter(playerId -> state.votes().containsKey(playerId)
             && state.votes().get(playerId).optionId() == correctOptionId)
         .sorted(Comparator.<String>comparingLong(playerId -> state.votes().get(playerId).votedAt())
             .thenComparingInt(playerOrder::get))
         .toList();
-    var missedPlayerIds = state.playerIds().stream()
+    var missedPlayerIds = players.stream()
         .filter(playerId -> !state.votes().containsKey(playerId)
             || state.votes().get(playerId).optionId() != correctOptionId)
         .toList();
@@ -201,19 +233,23 @@ public final class ShinyVoteEngine
     for (int index = 0; index < correctPlayerIds.size(); index++) {
       correctOrder.put(correctPlayerIds.get(index), index + 1);
     }
-    for (var playerId : state.playerIds()) {
+    for (var playerId : players) {
       var previous = state.playerStats().getOrDefault(playerId, ShinyPlayerStats.ZERO);
       boolean voted = state.votes().containsKey(playerId);
       boolean correct = correctSet.contains(playerId);
+      // En SURVIVAL cada ronda superada vale 1, sin bonus de orden: la puntuación son las rondas superadas.
       scores.put(playerId, scores.getOrDefault(playerId, 0)
-          + (correct ? ShinyVoteRules.shinyPointsForOrder(correctOrder.get(playerId)) : 0));
+          + (!correct ? 0 : survival ? 1 : ShinyVoteRules.shinyPointsForOrder(correctOrder.get(playerId))));
       playerStats.put(playerId,
           new ShinyPlayerStats(previous.votes() + (voted ? 1 : 0), previous.correctVotes() + (correct ? 1 : 0)));
     }
     var lastRound = new ShinyRoundResult(state.roundNumber(), correctOptionId, new LinkedHashMap<>(state.votes()),
         correctPlayerIds, missedPlayerIds);
-    return state.toBuilder()
-        .prepared(prepareNextRound(state, context))
+    // Un fallo (o no votar) en SURVIVAL deja fuera: siguen en pie los que acertaron, en el orden de playerIds.
+    var alive = survival ? players.stream().filter(correctSet::contains).toList() : state.alive();
+    var revealed = state.toBuilder().alive(alive).build();
+    return revealed.toBuilder()
+        .prepared(prepareNextRound(revealed, context))
         .phase(GamePhase.ROUND_RESULTS)
         .scores(scores)
         .playerStats(playerStats)
@@ -223,8 +259,13 @@ public final class ShinyVoteEngine
         .build();
   }
 
+  /**
+   * En {@code SURVIVAL} la ronda la completan los que siguen en pie (un eliminado conectado no la bloquea). Quien
+   * está dentro de su gracia de reconexión cuenta como conectado ({@link GameContext}); al expirar deja de ser
+   * requerido y, si la ronda se resuelve sin su voto, cae.
+   */
   private static ShinyVoteState resolveIfComplete(ShinyVoteState state, GameContext context) {
-    return Timing.resolveWhenRequiredPlayersComplete(state, context, state.playerIds(),
+    return Timing.resolveWhenRequiredPlayersComplete(state, context, roundPlayers(state),
         id -> state.votes().containsKey(id), ShinyVoteEngine::revealRound);
   }
 
@@ -251,6 +292,7 @@ public final class ShinyVoteEngine
         .roundNumber(0)
         .scores(scores)
         .playerStats(playerStats)
+        .alive(playerIds)
         .build();
   }
 
@@ -265,6 +307,7 @@ public final class ShinyVoteEngine
   public GameActionResult<ShinyVoteState> handleAction(ShinyVoteState state, String playerId, ShinyVoteAction action,
       GameContext context) {
     if (!state.playerIds().contains(playerId)) return GameActionResult.reject(state, "No participas en esta partida.");
+    if (survival(state) && !state.alive().contains(playerId)) return GameActionResult.reject(state, "Estás eliminado.");
     if (!context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No estás conectado como participante.");
     }
@@ -290,7 +333,7 @@ public final class ShinyVoteEngine
   public ShinyVoteState handleTimeout(ShinyVoteState state, GameContext context) {
     if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
         && context.now() >= state.nextTransitionAt()) {
-      return state.roundNumber() >= state.config().rounds() ? state.finished() : beginRound(state, context);
+      return lastRoundPlayed(state) ? state.finished() : beginRound(state, context);
     }
     if (state.phase() != GamePhase.ROUND_ACTIVE || state.roundEndsAt() == null
         || context.now() < state.roundEndsAt()) {
@@ -317,15 +360,17 @@ public final class ShinyVoteEngine
                     "sprite")
                 : option.sprite()))
         .toList();
-    return new ShinyVotePublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
+    boolean survival = survival(state);
+    return new ShinyVotePublicState(ID, state.phase(), state.config().mode(), state.roundNumber(),
+        state.config().rounds(),
         // REVEAL: durante la ronda solo se publica quién ha votado, nunca qué.
         state.playerIds(), options,
         state.config().voteVisibility() == VoteVisibility.LIVE || reveal ? state.votes() : Map.of(),
         List.copyOf(state.votes().keySet()), state.config().voteVisibility(),
-        state.playerIds().stream().filter(playerId -> !state.votes().containsKey(playerId)).toList(),
+        roundPlayers(state).stream().filter(playerId -> !state.votes().containsKey(playerId)).toList(),
         state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         reveal ? state.correctOptionId() : null, reveal ? state.lastRound() : null, results == null ? null : results.winnerId(),
-        results);
+        results, survival ? state.alive() : null, survival ? state.scores() : null);
   }
 
   /** {@code canVote} no comprueba la conexión; {@code roundResult} solo en {@code ROUND_RESULTS}. */
@@ -335,11 +380,11 @@ public final class ShinyVoteEngine
     int correctIndex = lastRound == null ? -1 : lastRound.correctPlayerIds().indexOf(playerId);
     return new ShinyVotePlayerState(
         state.phase() == GamePhase.ROUND_ACTIVE && state.playerIds().contains(playerId)
-            && !state.votes().containsKey(playerId),
+            && (!survival(state) || state.alive().contains(playerId)) && !state.votes().containsKey(playerId),
         state.votes().get(playerId),
         state.phase() == GamePhase.ROUND_RESULTS && lastRound != null
             ? new ShinyPlayerRoundResult(correctIndex >= 0,
-                correctIndex >= 0 ? ShinyVoteRules.shinyPointsForOrder(correctIndex + 1) : 0)
+                correctIndex < 0 ? 0 : survival(state) ? 1 : ShinyVoteRules.shinyPointsForOrder(correctIndex + 1))
             : null);
   }
 

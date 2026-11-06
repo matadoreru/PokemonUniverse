@@ -22,6 +22,15 @@ public final class ShinyVoteRules {
     return 1 + (solveOrder >= 1 && solveOrder <= ORDER_BONUSES.length ? ORDER_BONUSES[solveOrder - 1] : 0);
   }
 
+  /**
+   * Rondas que jugó: {@code rounds} en Clásico. En {@code SURVIVAL}, cada acierto más la ronda en que cayó (si cayó):
+   * tras caer ya no juega, así que esas rondas no cuentan como «sin votar».
+   */
+  private static int roundsPlayed(ShinyVoteState state, String playerId, ShinyPlayerStats stats) {
+    if (state.config().mode() != ShinyVoteMode.SURVIVAL) return state.config().rounds();
+    return stats.correctVotes() + (state.alive().contains(playerId) ? 0 : 1);
+  }
+
   public static GameResults buildShinyResults(ShinyVoteState state) {
     if (state.phase() != GamePhase.GAME_RESULTS) {
       throw new EngineException("Results are unavailable before the game finishes");
@@ -39,7 +48,7 @@ public final class ShinyVoteRules {
       mapped.put("correctVotes", stats.correctVotes());
       mapped.put("votes", stats.votes());
       mapped.put("incorrectVotes", stats.votes() - stats.correctVotes());
-      mapped.put("unanswered", Math.max(0, state.config().rounds() - stats.votes()));
+      mapped.put("unanswered", Math.max(0, roundsPlayed(state, entry.playerId(), stats) - stats.votes()));
       // Math.round(correctVotes / votes * 100) de JS: división en coma flotante y redondeo de mitades hacia +∞.
       mapped.put("accuracy", stats.votes() == 0 ? 0 : Math.round((double) stats.correctVotes() / stats.votes() * 100));
       return mapped;
