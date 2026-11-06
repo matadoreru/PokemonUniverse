@@ -224,6 +224,11 @@
           "key": "bestStreak",
           "label": "Mejor racha",
           "aggregation": "MAX"
+        },
+        {
+          "key": "endlessBestStreak",
+          "label": "Récord en Racha infinita",
+          "aggregation": "MAX"
         }
       ],
       "derivedMetrics": [

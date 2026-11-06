@@ -293,4 +293,46 @@ class HigherLowerEngineTest {
     assertEquals(List.of(2, 1), results.standings().stream().map(GameStanding::points).toList());
     assertEquals(2, results.standings().getFirst().stats().get("bestStreak"));
   }
+
+  @Test
+  void endlessResultsCarryEndlessBestStreak() {
+    var players = players(1);
+    var context = at(1_000, players);
+    var state = startEndless(context);
+    for (int round = 1; round <= 3; round++) {
+      var now = at(state.roundStartedAt() + 1_000, players);
+      state = next(answer(state, "p1", correct(state, now), now), players);
+    }
+    var now = at(state.roundStartedAt() + 1_000, players);
+    state = next(answer(state, "p1", wrong(state, now), now), players);
+    assertEquals(GamePhase.GAME_RESULTS, state.phase());
+    var stats = engine.getResults(state).standings().getFirst().stats();
+    assertEquals(3, stats.get("bestStreak"));
+    assertEquals(3, stats.get("endlessBestStreak"));
+    assertEquals(List.of("correct", "incorrect", "sameCorrect", "answered", "bestStreak", "accuracy", "endlessBestStreak"),
+        List.copyOf(stats.keySet()));
+  }
+
+  @Test
+  void classicResultsHaveNoEndlessBestStreak() {
+    var players = players(1);
+    var context = at(1_000, players);
+    var classic = new HigherLowerConfig(List.of(1, 2), List.of(HigherLowerConfig.HigherLowerCategory.values()), true,
+        HigherLowerConfig.HigherLowerAnswerVisibility.REVEAL, HigherLowerConfig.HigherLowerDifficulty.NORMAL, 20, 2,
+        HigherLowerMode.CLASSIC);
+    var state = engine.start(engine.createInitialState(classic, context), context);
+    while (state.phase() != GamePhase.GAME_RESULTS) {
+      var now = at(state.roundStartedAt() + 1_000, players);
+      state = next(answer(state, "p1", correct(state, now), now), players);
+    }
+    assertFalse(engine.getResults(state).standings().getFirst().stats().containsKey("endlessBestStreak"));
+  }
+
+  @Test
+  void profileStatsDeclareEndlessRecord() {
+    var metric = engine.manifest().profileStats().metrics().stream()
+        .filter(m -> m.key().equals("endlessBestStreak")).findFirst().orElseThrow();
+    assertEquals("MAX", metric.aggregation());
+    assertEquals("Récord en Racha infinita", metric.label());
+  }
 }

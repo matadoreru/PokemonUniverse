@@ -1514,7 +1514,8 @@
                     "sameCorrect": 0,
                     "answered": 3,
                     "bestStreak": 3,
-                    "accuracy": 75
+                    "accuracy": 75,
+                    "endlessBestStreak": 3
                   }
                 },
                 {
@@ -1528,7 +1529,8 @@
                     "sameCorrect": 0,
                     "answered": 1,
                     "bestStreak": 1,
-                    "accuracy": 50
+                    "accuracy": 50,
+                    "endlessBestStreak": 1
                   }
                 },
                 {
@@ -1542,7 +1544,8 @@
                     "sameCorrect": 0,
                     "answered": 1,
                     "bestStreak": 0,
-                    "accuracy": 0
+                    "accuracy": 0,
+                    "endlessBestStreak": 0
                   }
                 }
               ]

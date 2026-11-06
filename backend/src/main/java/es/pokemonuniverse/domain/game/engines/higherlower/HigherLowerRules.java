@@ -133,6 +133,8 @@ public final class HigherLowerRules {
       mapped.put("answered", stats.answered());
       mapped.put("bestStreak", stats.bestStreak());
       mapped.put("accuracy", resolvedRounds != 0 ? (int) Math.round((double) stats.correct() / resolvedRounds * 100) : 0);
+      // Récord de Racha infinita: solo existe en ENDLESS, para que el perfil no mezcle modos.
+      if (state.config().mode() == HigherLowerMode.ENDLESS) mapped.put("endlessBestStreak", stats.bestStreak());
       return mapped;
     });
   }
