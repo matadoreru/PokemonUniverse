@@ -23,10 +23,11 @@ public record PokemonPaletteGuessConfig(
     int rounds,
     int paletteSize,
     boolean hintsEnabled,
-    List<PokemonPaletteHintKind> hintKinds) {
+    List<PokemonPaletteHintKind> hintKinds,
+    boolean publicAttempts) {
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "rounds", "paletteSize", "hintsEnabled", "hintKinds");
+      Set.of("generations", "roundSeconds", "rounds", "paletteSize", "hintsEnabled", "hintKinds", "publicAttempts");
 
   public PokemonPaletteGuessConfig {
     generations = List.copyOf(generations);
@@ -40,7 +41,7 @@ public record PokemonPaletteGuessConfig(
   public static PokemonPaletteGuessConfig defaults() {
     var generations = ConfigReader.allGenerations();
     return new PokemonPaletteGuessConfig(generations, 25, 10, 8, false, List.of(PokemonPaletteHintKind.GENERATION,
-        PokemonPaletteHintKind.TYPE, PokemonPaletteHintKind.EVOLUTION));
+        PokemonPaletteHintKind.TYPE, PokemonPaletteHintKind.EVOLUTION), true);
   }
 
   /**
@@ -64,7 +65,8 @@ public record PokemonPaletteGuessConfig(
         hintKinds.add(config.enumValue(value, "hintKinds", PokemonPaletteHintKind.class));
       }
     }
+    var publicAttempts = config.boolOrDefault("publicAttempts", true);
     return new PokemonPaletteGuessConfig(generations, roundSeconds, rounds, paletteSize, hintsEnabled,
-        new ArrayList<>(hintKinds));
+        new ArrayList<>(hintKinds), publicAttempts);
   }
 }

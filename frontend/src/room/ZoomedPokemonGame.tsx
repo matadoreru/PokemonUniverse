@@ -5,7 +5,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Chip, cx, Icon } from '../ui';
 import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
-  guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+  guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
 import s from '../games/zoomed-pokemon/Zoomed.module.css';
 
@@ -70,7 +70,7 @@ export function ZoomedPokemonGame({ room, selfId, onAction }: { room: RoomView; 
       detail={({ solve }) => solve ? `Zoom ${zoomLabel(solve.zoom)} · +${solve.zoomBonus} extra` : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solves))} selfId={selfId} />
-      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+      {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
   const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME}

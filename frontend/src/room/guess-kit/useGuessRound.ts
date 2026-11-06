@@ -28,6 +28,8 @@ export interface GuessRoundPlayer {
   cooldownUntil: number | null;
   roundPoints: number;
   attemptCount: number;
+  /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (la vista pública ya no los trae). */
+  attempts?: readonly GuessAttemptLike[] | undefined;
 }
 
 /** El resultado de la ronda: al menos los aciertos (para el veredicto de quien mira). */
@@ -94,7 +96,7 @@ export function useGuessRound<L extends GuessRoundResultLike>({ room, selfId, ga
   const participating = forced ?? members.get(selfId)?.role === 'PLAYER';
   const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
   const kind = guessPanelKind(game.phase, player ? { participating, canGuess: player.canGuess, solved: player.solved } : null, lastRound !== null);
-  const ownLast = active ? guessOwnLastAttempt(game.attempts, selfId) : null;
+  const ownLast = active ? guessOwnLastAttempt(player?.attempts ?? game.attempts, selfId) : null;
 
   useSfxCue('hit', active && player?.solved ? game.roundNumber : null);
   const titleRef = useRef<HTMLHeadingElement>(null);

@@ -700,7 +700,8 @@
         "height": false,
         "weight": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

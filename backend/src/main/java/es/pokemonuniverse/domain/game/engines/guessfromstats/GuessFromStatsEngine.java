@@ -320,7 +320,8 @@ public final class GuessFromStatsEngine
     return new GuessFromStatsPublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
         active && prepared != null ? prepared.visibleStats() : List.of(),
         active && prepared != null ? prepared.hints() : List.of(),
-        state.attempts(), solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
+        GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()),
+        solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
         state.nextTransitionAt(), revealPhase ? state.lastRound() : null,
         state.phase() == GamePhase.GAME_RESULTS ? GuessFromStatsRules.buildGuessFromStatsResults(state) : null);
   }
@@ -336,7 +337,9 @@ public final class GuessFromStatsEngine
         state.cooldownUntil().get(playerId),
         solve == null ? 0 : solve.points(),
         state.attemptCounts().getOrDefault(playerId, 0),
-        state.lastAttemptResult().get(playerId));
+        state.lastAttemptResult().get(playerId),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            GuessFromStatsAttempt::playerId, playerId));
   }
 
   @Override

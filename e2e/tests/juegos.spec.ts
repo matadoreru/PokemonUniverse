@@ -2095,6 +2095,67 @@ test('pokemon-cry-quiz: una ronda corta con un fallo, el grito, la revelación p
   }
 });
 
+/**
+ * Adivina el Grito con «Intentos públicos» apagado en los ajustes: quien falla sigue viendo su «X no era», los demás no
+ * reciben su fallo (ni el panel ni el nombre en el DOM) y el marcador ocupa la columna lateral.
+ */
+test('pokemon-cry-quiz: con los intentos públicos apagados, cada uno solo ve sus fallos', async ({ browser }) => {
+  test.setTimeout(120_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [primero] = invitados as [Jugador, Jugador];
+    await seleccionarJuego(host.page, 'Adivina el Grito');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    for (const gen of [2, 3, 4, 5, 6, 7, 8, 9]) {
+      const boton = host.page.getByRole('button', { name: `Gen ${gen}`, exact: true });
+      await boton.click();
+      await expect(boton).toHaveAttribute('aria-pressed', 'false');
+    }
+    const rondas = host.page.getByRole('slider', { name: 'Número de rondas' });
+    await rondas.focus();
+    await rondas.press('Home');
+    await rondas.blur();
+    await expect(rondas).toHaveValue('1');
+    const ajuste = host.page.getByRole('switch', { name: 'Intentos públicos' });
+    await expect(ajuste).toHaveAttribute('aria-checked', 'true');
+    await expect(ajuste).toHaveAccessibleDescription('Si lo apagas, nadie ve los fallos de los demás.');
+    await ajuste.click();
+    await expect(ajuste).toHaveAttribute('aria-checked', 'false');
+    await ajuste.scrollIntoViewIfNeeded();
+    await capturarAnotando(host.page, 'lobby-pokemon-cry-quiz-intentos-publicos', ajuste);
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+
+    const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(jugadores.map((j) => j.page));
+    const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
+    await expect(host.page.getByTestId('cry-play')).toHaveText('Reproducir grito', { timeout: 20_000 });
+
+    const intento = catalogo[0]!.name;
+    await adivinar(host.page, intento);
+    const resultado = await Promise.race([
+      host.page.getByTestId('guess-cooldown').waitFor({ timeout: 5_000 }).then(() => 'fallo' as const),
+      host.page.getByRole('heading', { name: '¡Grito acertado!' }).waitFor({ timeout: 5_000 }).then(() => 'acierto' as const),
+    ]);
+    if (resultado === 'acierto') test.info().annotations.push({ type: 'grito', description: `${intento} acertó por azar: sin fallo que ocultar` });
+    else {
+      // Quien falla ve su fallo; el panel «Intentos públicos» no está en ninguna pantalla.
+      await expect(host.page.getByText(`${intento} no era`, { exact: true })).toBeVisible();
+      for (const jugador of jugadores) {
+        await expect(jugador.page.getByText('Intentos públicos', { exact: true })).toHaveCount(0);
+        await expect(jugador.page.getByTestId('guess-attempt')).toHaveCount(0);
+        await expect(jugador.page.getByRole('list', { name: 'Marcador' })).toBeVisible();
+      }
+      expect(await textoDeMain(primero.page), 'el fallo del host no llega a los demás').not.toContain(intento);
+    }
+    await capturarTamanos(host.page, 'juego-pokemon-cry-quiz-sin-intentos', { sigue: host.page.getByRole('list', { name: 'Marcador' }) });
+    for (const jugador of [host, primero]) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
 /** Lo que el test lee del estado público de Pokédex Entry Guess. */
 interface EntryVisible { phase: string; entryText: string | null }
 

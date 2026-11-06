@@ -108,6 +108,17 @@ describe('Adivina el Grito: pantalla', () => {
     expect(html).toContain('aria-label="Buscar respuesta para el grito 1"');
   });
 
+  it('intentos públicos apagados: sin el panel; el marcador ocupa la columna y el fallo propio sigue saliendo', () => {
+    // El servidor ya no manda los fallos de nadie en la vista pública: los propios llegan en `player.attempts`.
+    const view = { ...room(publicGame('ROUND_ACTIVE', { attempts: [] }), { ...guessing, attemptCount: 1, lastAttempt: { result: 'INCORRECT', attemptedAt: 1_500 }, attempts: [{ playerId: 'p1', guessedPokemon: { id: 'raichu', name: 'Raichu', sprite: '/raichu.png' }, attemptedAt: 1_500 }] }), selectedGameConfig: { ...config, publicAttempts: false } };
+    const html = render(view);
+    expect(html).not.toContain('Intentos públicos');
+    expect(html).not.toContain('Intentos de la ronda');
+    expect(html).toContain('aria-label="Marcador"');
+    expect(html).toContain('Raichu</span> no era');
+    expect(html).toContain('Incorrecto (1 intento): Raichu no era.');
+  });
+
   it('el espectador (por su `player.role`) puede escuchar el grito y ve el marcador, sin buscador', () => {
     const html = render(room(publicGame(), spectator));
     expect(html).toContain('Estás observando');

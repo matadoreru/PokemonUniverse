@@ -12,6 +12,8 @@ export const pokedexEntryGuessConfigSchema = z.object({
   rounds: z.number().int().min(1).max(20),
   hintsEnabled: z.boolean(),
   hints: pokedexEntryHintConfigSchema,
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict().superRefine((value, context) => {
   if (value.hintsEnabled && !Object.values(value.hints).some(Boolean)) context.addIssue({ code: 'custom', path: ['hints'], message: 'Selecciona al menos una pista adicional.' });
 });
@@ -21,4 +23,5 @@ export type PokedexEntryGuessConfig = z.infer<typeof pokedexEntryGuessConfigSche
 export const defaultPokedexEntryGuessConfig: PokedexEntryGuessConfig = {
   generations: [...GENERATIONS], roundSeconds: 25, rounds: 10, hintsEnabled: false,
   hints: { generation: true, type: true, evolution: true, typeCount: false, category: false },
+  publicAttempts: true,
 };

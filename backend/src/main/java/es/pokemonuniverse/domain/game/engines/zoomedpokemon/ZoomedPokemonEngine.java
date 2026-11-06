@@ -14,6 +14,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog;
 import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog.Source;
 import es.pokemonuniverse.domain.game.engine.infra.AssetTokens;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
@@ -380,7 +381,8 @@ public final class ZoomedPokemonEngine
         active ? assetPath(state, context, "stage-" + state.currentZoomStage()) : null,
         active ? state.visual().source() : null, ZoomedPokemonFocusPoint.CENTER, ZoomedPokemonRules.ZOOM_STAGES,
         state.currentZoomStage(), ZoomedPokemonRules.zoomBonusForStage(state.currentZoomStage()), visibleHints,
-        state.attempts(), solves, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
+        GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()),
+        solves, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
         state.nextTransitionAt(), publicLastRound,
         state.phase() == GamePhase.GAME_RESULTS ? ZoomedPokemonRules.buildZoomedPokemonResults(state) : null);
   }
@@ -396,7 +398,9 @@ public final class ZoomedPokemonEngine
         state.cooldownUntil().get(playerId),
         solve == null ? 0 : solve.points(),
         state.attemptCounts().getOrDefault(playerId, 0),
-        state.lastAttemptResult().get(playerId));
+        state.lastAttemptResult().get(playerId),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            ZoomedPokemonAttempt::playerId, playerId));
   }
 
   /**

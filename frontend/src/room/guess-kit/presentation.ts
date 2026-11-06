@@ -160,3 +160,9 @@ export function guessAnnouncement({ kind, roundNumber, answer, solveOrder, round
   if (kind === 'guess' && lastWrong) return `Incorrecto${attemptCount ? ` (${attemptsText(attemptCount)})` : ''}: ${lastWrong} no era. Hay una breve espera antes del siguiente intento.`;
   return '';
 }
+
+/**
+ * `publicAttempts` de un juego de adivinar: si la pantalla pinta el panel «Intentos públicos». Una configuración
+ * guardada sin la clave los muestra. Apagado, el servidor ya no envía los fallos ajenos: esto solo quita el panel.
+ */
+export const guessPublicAttempts = (config: { publicAttempts?: boolean | undefined } | null | undefined): boolean => config?.publicAttempts !== false;

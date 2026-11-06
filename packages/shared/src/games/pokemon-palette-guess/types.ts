@@ -26,7 +26,9 @@ export interface PokemonPaletteGuessPublicState {
   lastRound: ({ pokemon: { name: string; sprite: string; generation: number }; palette: string[]; paletteWeights: number[]; solves: Record<string, PokemonPaletteSolve>; attemptCounts: Record<string, number> }) | null; results: GameResults | null;
 }
 
-export interface PokemonPaletteGuessPlayerState { role: 'PLAYER' | 'SPECTATOR'; canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null }
+export interface PokemonPaletteGuessPlayerState { role: 'PLAYER' | 'SPECTATOR'; canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null;
+  /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
+  attempts?: PokemonPaletteAttempt[] }
 
 export const pokemonPaletteGuessActionSchema = z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict();
 export type PokemonPaletteGuessAction = z.infer<typeof pokemonPaletteGuessActionSchema>;

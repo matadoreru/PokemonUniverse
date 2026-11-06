@@ -348,7 +348,8 @@ public final class PokedexEntryGuessEngine implements
             ? PokedexEntryGuessRules.sanitizePokedexEntry(target.entry().text(), pokemon)
             : null,
         active && pokemon != null ? PokedexEntryGuessRules.buildPokedexEntryHints(pokemon, state.config()) : List.of(),
-        state.attempts(), solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
+        GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()),
+        solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
         state.nextTransitionAt(), publicRoundResult(state),
         state.phase() == GamePhase.GAME_RESULTS ? PokedexEntryGuessRules.buildPokedexEntryResults(state) : null);
   }
@@ -365,7 +366,9 @@ public final class PokedexEntryGuessEngine implements
         state.cooldownUntil().get(playerId),
         solve == null ? 0 : solve.points(),
         state.attemptCounts().getOrDefault(playerId, 0),
-        state.lastAttemptResult().get(playerId));
+        state.lastAttemptResult().get(playerId),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            PokedexEntryGuessAttempt::playerId, playerId));
   }
 
   @Override

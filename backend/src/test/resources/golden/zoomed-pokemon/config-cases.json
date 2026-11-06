@@ -32,7 +32,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -65,7 +66,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -97,7 +99,8 @@
         "TYPE",
         "GENERATION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -122,7 +125,8 @@
       "rounds": 3,
       "hintsEnabled": false,
       "hintKinds": [],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -155,7 +159,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -188,7 +193,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -221,7 +227,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -254,7 +261,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": true
+      "includeForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -287,7 +295,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -556,6 +565,86 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "imageMode": "MIXED",
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ],
+      "includeForms": false,
+      "publicAttempts": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "imageMode": "MIXED",
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ],
+      "includeForms": false,
+      "publicAttempts": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "imageMode": "MIXED",
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ],
+      "includeForms": false,
+      "publicAttempts": "x"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "imageMode": "MIXED",
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hintKinds": [
+        "GENERATION",
+        "TYPE",
+        "EVOLUTION"
+      ],
+      "includeForms": false,
+      "publicAttempts": null
+    },
     "valid": false
   }
 ]

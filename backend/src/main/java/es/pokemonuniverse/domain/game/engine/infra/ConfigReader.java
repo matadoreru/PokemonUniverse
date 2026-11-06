@@ -202,6 +202,11 @@ public final class ConfigReader {
     return has(key) ? enumValue(key, type) : defaultValue;
   }
 
+  /** {@code z.boolean().default(defaultValue)}, con la misma regla de ausencia. */
+  public boolean boolOrDefault(String key, boolean defaultValue) {
+    return has(key) ? bool(key) : defaultValue;
+  }
+
   /** {@code z.number().int().min(min).max(max).default(defaultValue)}, con la misma regla de ausencia. */
   public int integerOrDefault(String key, int min, int max, int defaultValue) {
     return has(key) ? integer(key, min, max) : defaultValue;

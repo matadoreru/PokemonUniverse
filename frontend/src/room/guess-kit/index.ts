@@ -12,7 +12,7 @@ export type { GuessHint } from './GuessHints';
 export { GuessRoundReveal } from './GuessRoundReveal';
 export type { GuessAnswer } from './GuessRoundReveal';
 export {
-  attemptsText, guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSeconds,
+  attemptsText, guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessPublicAttempts, guessRevealLines, guessScoreboard, guessSeconds,
   guessSolvedOrders, guessSprite, guessVerdict, ordinal, pointsWord,
 } from './presentation';
 export type { GuessAttemptLike, GuessPanelKind, GuessRevealLine, GuessRevealSolveLike, GuessScoreLine, GuessVerdict } from './presentation';

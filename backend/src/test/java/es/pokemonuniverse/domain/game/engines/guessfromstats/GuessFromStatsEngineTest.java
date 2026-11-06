@@ -69,7 +69,7 @@ class GuessFromStatsEngineTest {
         () -> engine.createInitialState(engine.defaultConfig(), context(1)));
     assertEquals("Se necesitan al menos 2 jugadores.", error.getMessage());
     var defaults = engine.defaultConfig();
-    var empty = new GuessFromStatsConfig(List.of(9), 30, 3, defaults.stats(), false, defaults.hints());
+    var empty = new GuessFromStatsConfig(List.of(9), 30, 3, defaults.stats(), false, defaults.hints(), true);
     error = assertThrows(EngineException.class, () -> engine.createInitialState(empty, context(2)));
     assertEquals("No hay suficientes Pokémon con estadísticas válidas para esta configuración.", error.getMessage());
   }

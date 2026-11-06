@@ -206,7 +206,8 @@
       "roundSeconds": 10,
       "rounds": 4,
       "cryVersion": "RANDOM",
-      "includeRegionalForms": true
+      "includeRegionalForms": true,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

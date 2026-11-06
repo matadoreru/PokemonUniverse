@@ -13,7 +13,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
-import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, pointsWord } from './guess-kit';
+import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from './guess-kit';
 import { useSketchPad } from './SketchmonCanvas';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';
 import s from '../games/sketchmon/Sketchmon.module.css';
@@ -61,7 +61,8 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
   const drawerId = result?.drawerId ?? game.drawerId;
   const drawerName = drawerId ? nameOf(drawerId) : null;
   const participating = player !== null && player.role !== 'SPECTATOR';
-  const ownLast = canGuess ? guessOwnLastAttempt(game.attempts, selfId) : null;
+  // Con los intentos públicos apagados, los propios llegan en la vista del jugador.
+  const ownLast = canGuess ? guessOwnLastAttempt((player?.role === 'GUESSER' ? player.attempts : undefined) ?? game.attempts, selfId) : null;
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   // Cambia con la fase, el dibujo y el rol (quien dibuja pasa a ver la revelación como uno más).
@@ -117,7 +118,7 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
     value={(id) => `+${id === result.winnerId ? result.guesserPoints : id === result.drawerId ? result.drawerPoints : 0}`} />;
   const side = <>
     {turnPoints || turnOrder}
-    <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />
+    {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />}
   </>;
 
   let bottom;

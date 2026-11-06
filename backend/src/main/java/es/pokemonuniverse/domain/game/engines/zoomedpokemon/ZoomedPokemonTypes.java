@@ -374,11 +374,13 @@ public final class ZoomedPokemonTypes {
       @Nullable ZoomedPokemonRoundPublicResult lastRound,
       @Nullable GameResults results) {}
 
+  /** {@code attempts}: con {@code publicAttempts} apagado, solo los fallos propios de la ronda; si no, no se envía. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record ZoomedPokemonPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
       @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable ZoomedPokemonLastAttempt lastAttempt) {}
+      @Nullable ZoomedPokemonLastAttempt lastAttempt,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<ZoomedPokemonAttempt> attempts) {}
 
   /** {@code zoomedPokemonActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record ZoomedPokemonAction(String pokemonId) {

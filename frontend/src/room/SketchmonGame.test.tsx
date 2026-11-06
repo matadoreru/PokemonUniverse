@@ -204,8 +204,8 @@ describe('Sketchmon: resultados y ajustes', () => {
 
   it('los ajustes usan los controles del catálogo con los valores del motor', () => {
     const html = renderToStaticMarkup(createElement(SketchmonConfigPanel, { config: defaultSketchmonConfig, disabled: false, onChange: async () => undefined }));
-    for (const text of ['Tiempo por dibujo', '60 s', '90 s', '120 s', 'Vueltas', 'Cada jugador dibuja una vez por vuelta, en un orden nuevo.', 'Memoria de 3 segundos', 'Pistas automáticas', 'Formas compatibles', 'El Pokémon secreto solo se envía a quien dibuja.']) expect(html).toContain(text);
+    for (const text of ['Tiempo por dibujo', '60 s', '90 s', '120 s', 'Vueltas', 'Cada jugador dibuja una vez por vuelta, en un orden nuevo.', 'Memoria de 3 segundos', 'Pistas automáticas', 'Formas compatibles', 'Intentos públicos', 'El Pokémon secreto solo se envía a quien dibuja.']) expect(html).toContain(text);
     expect(html).toContain('role="radiogroup"');
-    expect(html.match(/role="switch"/g)).toHaveLength(3);
+    expect(html.match(/role="switch"/g)).toHaveLength(4);
   });
 });

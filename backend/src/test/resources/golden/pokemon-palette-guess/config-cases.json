@@ -22,7 +22,8 @@
       "rounds": 3,
       "paletteSize": 8,
       "hintsEnabled": false,
-      "hintKinds": []
+      "hintKinds": [],
+      "publicAttempts": true
     }
   },
   {
@@ -45,7 +46,8 @@
       "rounds": 3,
       "paletteSize": 8,
       "hintsEnabled": false,
-      "hintKinds": []
+      "hintKinds": [],
+      "publicAttempts": true
     }
   },
   {
@@ -78,7 +80,8 @@
         "TYPE",
         "GENERATION",
         "CATEGORY"
-      ]
+      ],
+      "publicAttempts": true
     }
   },
   {
@@ -101,7 +104,8 @@
       "rounds": 1,
       "paletteSize": 5,
       "hintsEnabled": false,
-      "hintKinds": []
+      "hintKinds": [],
+      "publicAttempts": true
     }
   },
   {
@@ -124,7 +128,8 @@
       "rounds": 20,
       "paletteSize": 8,
       "hintsEnabled": false,
-      "hintKinds": []
+      "hintKinds": [],
+      "publicAttempts": true
     }
   },
   {
@@ -147,7 +152,8 @@
       "rounds": 3,
       "paletteSize": 8,
       "hintsEnabled": true,
-      "hintKinds": []
+      "hintKinds": [],
+      "publicAttempts": true
     }
   },
   {
@@ -351,6 +357,66 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "publicAttempts": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "publicAttempts": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "publicAttempts": "x"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "publicAttempts": null
+    },
     "valid": false
   }
 ]

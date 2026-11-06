@@ -8,6 +8,8 @@ export const pokemonCryQuizConfigSchema = z.object({
   rounds: z.number().int().min(1).max(20),
   cryVersion: z.enum(['LATEST', 'LEGACY', 'RANDOM']),
   includeRegionalForms: z.boolean(),
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict();
 
 export type PokemonCryQuizConfig = z.infer<typeof pokemonCryQuizConfigSchema>;
@@ -18,4 +20,5 @@ export const defaultPokemonCryQuizConfig: PokemonCryQuizConfig = {
   rounds: 10,
   cryVersion: 'LATEST',
   includeRegionalForms: false,
+  publicAttempts: true,
 };

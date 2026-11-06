@@ -299,7 +299,8 @@
       "laps": 2,
       "hintsEnabled": true,
       "memoryPreviewEnabled": true,
-      "includeForms": true
+      "includeForms": true,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

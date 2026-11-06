@@ -18,9 +18,11 @@ public record GuessFromStatsConfig(
     int rounds,
     GuessFromStatsFields stats,
     boolean hintsEnabled,
-    GuessFromStatsHints hints) {
+    GuessFromStatsHints hints,
+    boolean publicAttempts) {
 
-  private static final Set<String> KEYS = Set.of("generations", "roundSeconds", "rounds", "stats", "hintsEnabled", "hints");
+  private static final Set<String> KEYS = Set.of("generations", "roundSeconds", "rounds", "stats", "hintsEnabled", "hints",
+      "publicAttempts");
 
   public GuessFromStatsConfig {
     generations = List.copyOf(generations);
@@ -85,7 +87,7 @@ public record GuessFromStatsConfig(
     var generations = ConfigReader.allGenerations();
     return new GuessFromStatsConfig(generations, 30, 10,
         new GuessFromStatsFields(true, true, true, true, true, true, false), false,
-        new GuessFromStatsHints(true, true, false, true, false, false, false));
+        new GuessFromStatsHints(true, true, false, true, false, false, false), true);
   }
 
   /**
@@ -102,8 +104,9 @@ public record GuessFromStatsConfig(
     var stats = GuessFromStatsFields.parse(config.object("stats"));
     boolean hintsEnabled = config.bool("hintsEnabled");
     var hints = GuessFromStatsHints.parse(config.object("hints"));
+    var publicAttempts = config.boolOrDefault("publicAttempts", true);
     if (stats.enabledCount() < 2) throw config.invalidAt("stats", "Selecciona al menos 2 estadísticas");
     if (hintsEnabled && !hints.any()) throw config.invalidAt("hints", "Selecciona al menos una pista adicional");
-    return new GuessFromStatsConfig(generations, roundSeconds, rounds, stats, hintsEnabled, hints);
+    return new GuessFromStatsConfig(generations, roundSeconds, rounds, stats, hintsEnabled, hints, publicAttempts);
   }
 }

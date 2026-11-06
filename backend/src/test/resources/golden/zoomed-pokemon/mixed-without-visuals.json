@@ -875,7 +875,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": true
+      "includeForms": true,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

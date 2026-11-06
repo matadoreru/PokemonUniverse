@@ -385,7 +385,8 @@
         "EVOLUTION",
         "TYPE_COUNT"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

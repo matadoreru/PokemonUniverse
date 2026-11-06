@@ -1,6 +1,7 @@
 import type { GuessFromStatsConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Chip, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 export { validateGuessFromStatsConfig } from './validation';
@@ -44,5 +45,6 @@ export function GuessFromStatsConfigPanel({ config, disabled, onChange }: { conf
       <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => update({ hints: { ...value.hints, [hint.key]: on } })} />)}</div>
     </div>}
     <p className={s.note}>Las formas con ID y Base Stats propios participan. Si dos formas son indistinguibles por la información pública, ambas se aceptan.</p>
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

@@ -193,7 +193,8 @@
         "height": true,
         "weight": true,
         "category": true
-      }
+      },
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

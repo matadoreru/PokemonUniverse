@@ -543,7 +543,8 @@
         "TYPE",
         "TYPE_COUNT",
         "GENERATION"
-      ]
+      ],
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

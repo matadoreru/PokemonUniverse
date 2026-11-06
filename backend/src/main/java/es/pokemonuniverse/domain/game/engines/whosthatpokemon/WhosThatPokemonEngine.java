@@ -335,7 +335,8 @@ public final class WhosThatPokemonEngine implements
         .toList();
     return new WhosThatPokemonPublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
         active && target.isPresent() ? assetPath(state, context, "shadow") : null,
-        visibleHints, state.attempts(), solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
+        visibleHints, GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()),
+        solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
         state.nextTransitionAt(), publicRoundResult(state, context),
         state.phase() == GamePhase.GAME_RESULTS ? WhosThatPokemonRules.buildWhoPokemonResults(state) : null);
   }
@@ -356,7 +357,9 @@ public final class WhosThatPokemonEngine implements
         state.cooldownUntil().get(playerId),
         solve == null ? 0 : solve.points(),
         state.attemptCounts().getOrDefault(playerId, 0),
-        state.lastAttemptResult().get(playerId));
+        state.lastAttemptResult().get(playerId),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            WhosThatPokemonAttempt::playerId, playerId));
   }
 
   /**

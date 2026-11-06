@@ -1,6 +1,7 @@
 import type { PokedexEntryGuessConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
@@ -36,5 +37,6 @@ export function PokedexEntryGuessConfigPanel({ config, disabled, onChange }: { c
       <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => toggleHint(hint.key, on)} />)}</div>
     </div>}
     <p className={s.note}>Solo se usan formas base: el dataset actual no ofrece entradas españolas propias y distinguibles para regionales o Gigamax.</p>
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

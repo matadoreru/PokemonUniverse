@@ -14,6 +14,8 @@ export const sketchmonConfigSchema = z.object({
   hintsEnabled: z.boolean(),
   memoryPreviewEnabled: z.boolean(),
   includeForms: z.boolean(),
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict();
 
 export type SketchmonConfig = z.infer<typeof sketchmonConfigSchema>;
@@ -25,4 +27,5 @@ export const defaultSketchmonConfig: SketchmonConfig = {
   hintsEnabled: false,
   memoryPreviewEnabled: false,
   includeForms: false,
+  publicAttempts: true,
 };

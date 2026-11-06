@@ -20,7 +20,8 @@
       "roundSeconds": 20,
       "rounds": 3,
       "hintsEnabled": false,
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -41,7 +42,8 @@
       "roundSeconds": 20,
       "rounds": 3,
       "hintsEnabled": false,
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -62,7 +64,8 @@
       "roundSeconds": 10,
       "rounds": 1,
       "hintsEnabled": false,
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -83,7 +86,8 @@
       "roundSeconds": 60,
       "rounds": 20,
       "hintsEnabled": false,
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -104,7 +108,8 @@
       "roundSeconds": 10,
       "rounds": 3,
       "hintsEnabled": false,
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -125,7 +130,8 @@
       "roundSeconds": 20,
       "rounds": 3,
       "hintsEnabled": true,
-      "includeRegionalForms": true
+      "includeRegionalForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -286,6 +292,62 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "publicAttempts": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "publicAttempts": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "publicAttempts": "x"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "publicAttempts": null
+    },
     "valid": false
   }
 ]

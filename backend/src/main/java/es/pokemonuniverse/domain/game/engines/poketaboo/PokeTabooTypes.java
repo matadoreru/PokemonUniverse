@@ -358,10 +358,12 @@ public final class PokeTabooTypes {
 
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Guesser(String role, boolean canGuess, @Nullable Long cooldownUntil, int attemptCount)
+    record Guesser(String role, boolean canGuess, @Nullable Long cooldownUntil, int attemptCount,
+        @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokeTabooAttempt> attempts)
         implements PokeTabooPlayerState {
-      Guesser(boolean canGuess, @Nullable Long cooldownUntil, int attemptCount) {
-        this("GUESSER", canGuess, cooldownUntil, attemptCount);
+      Guesser(boolean canGuess, @Nullable Long cooldownUntil, int attemptCount,
+          @Nullable List<PokeTabooAttempt> attempts) {
+        this("GUESSER", canGuess, cooldownUntil, attemptCount, attempts);
       }
     }
 
