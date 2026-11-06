@@ -12,7 +12,7 @@ import java.util.Optional;
 
 /**
  * Perfil de otra cuenta registrada buscada por su nombre de usuario (sin distinguir mayúsculas). Aplica «Perfil visible
- * para»: si quien mira no puede verlo, solo salen el nombre, el avatar, la fecha de alta y la relación de amistad.
+ * para»: si quien mira no puede verlo, solo salen el nombre, el avatar y la relación de amistad.
  */
 @Singleton
 public class PublicProfileService {
@@ -39,13 +39,14 @@ public class PublicProfileService {
       var friendship = self ? Friendship.SELF : pair.map(row -> relation(row, viewerId)).orElse(Friendship.NONE);
       var requestId = pair.filter(row -> FriendshipEntity.PENDING.equals(row.getStatus()))
           .map(FriendshipEntity::getId).orElse(null);
-      var user = new PublicProfile.User(targetId, target.getUsername(),
-          UserIdentityMapper.avatarFromUser(target.getAvatarType(), target.getAvatarValue(), target.getAvatarVersion()),
-          IsoTimestamps.millis(target.getCreatedAt()));
+      var avatar = UserIdentityMapper.avatarFromUser(target.getAvatarType(), target.getAvatarValue(),
+          target.getAvatarVersion());
       var visibility = target.getProfileVisibility();
       if (!visibility.visibleTo(self, friendship == Friendship.FRIENDS)) {
-        return Optional.of(new PublicProfile(user, visibility, friendship, requestId, true, null, null, null));
+        var hidden = new PublicProfile.User(targetId, target.getUsername(), avatar, null);
+        return Optional.of(new PublicProfile(hidden, visibility, friendship, requestId, true, null, null, null));
       }
+      var user = new PublicProfile.User(targetId, target.getUsername(), avatar, IsoTimestamps.millis(target.getCreatedAt()));
       return profiles.profileOf(targetId).map(full -> {
         var list = achievements.listFor(targetId);
         var unlocked = list.stream().filter(a -> a.unlockedAt() != null).toList();

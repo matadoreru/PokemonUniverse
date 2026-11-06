@@ -96,10 +96,11 @@ class PublicProfileControllerTest {
     assertTrue(profile.containsKey("achievements"));
   }
 
-  /** Sin nivel, estadísticas ni logros: ni siquiera las claves. */
+  /** Sin nivel, estadísticas, logros ni fecha de alta: ni siquiera las claves. */
   private static void assertPrivate(String raw) {
     assertTrue(raw.contains("\"private\":true"), raw);
-    for (var leak : List.of("progress", "level", "\"xp\"", "stats", "globalStats", "games", "achievements", "unlocked")) {
+    for (var leak : List.of("progress", "level", "\"xp\"", "stats", "globalStats", "games", "achievements", "unlocked",
+        "createdAt")) {
       assertFalse(raw.contains(leak), leak + " en " + raw);
     }
   }

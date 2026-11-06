@@ -1372,12 +1372,12 @@ export interface components {
             globalStats: components["schemas"]["ProfileResponse.GlobalStats"];
             games: components["schemas"]["ProfileResponse.ProfileGame"][];
         };
-        /** @description Sin email: solo lo público de la cuenta. */
+        /** @description Sin email: solo lo público de la cuenta; sin `createdAt` si el perfil es privado. */
         "PublicProfileResponse.User": {
             id: string;
             username: string;
             avatar: components["schemas"]["AvatarRef"];
-            createdAt: string;
+            createdAt?: string | null;
         };
         RegisterRequest: {
             username: string;

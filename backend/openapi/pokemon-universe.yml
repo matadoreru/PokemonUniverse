@@ -3194,7 +3194,6 @@ components:
     PublicProfileResponse.User:
       required:
       - avatar
-      - createdAt
       - id
       - username
       type: object
@@ -3207,7 +3206,9 @@ components:
           $ref: "#/components/schemas/AvatarRef"
         createdAt:
           type: string
-      description: "Sin email: solo lo público de la cuenta."
+          nullable: true
+      description: "Sin email: solo lo público de la cuenta; sin `createdAt` si el\
+        \ perfil es privado."
     RegisterRequest:
       required:
       - email

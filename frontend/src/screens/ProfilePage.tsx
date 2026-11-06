@@ -10,6 +10,7 @@ import type { AchievementsResponse } from '../lib/api-contract';
 import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames, visibleStoredMetrics } from '../profile/profileStats';
 import { Bar, cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, TabPanel, Tabs, type StateBoxProps } from '../ui';
 import { GameArt } from '../games/GameArt';
+import { ProfilePrivacy } from '../profile/ProfilePrivacy';
 import tone from '../styles/tones.module.css';
 
 type ProfileGame = UserProfileResponse['games'][number];
@@ -74,14 +75,24 @@ export function tabFromParam(value: string | null): ProfileTab {
   return value === 'logros' ? 'logros' : 'estadisticas';
 }
 
+/** Pestaña del perfil en la URL (`?tab=logros`), sin añadir entradas al historial. */
+export function useProfileTab(): [ProfileTab, (tab: ProfileTab) => void] {
+  const [params, setParams] = useSearchParams();
+  const tab = tabFromParam(params.get('tab'));
+  return [tab, (next) => setParams(next === 'logros' ? { tab: 'logros' } : {}, { replace: true })];
+}
+
 /** Los logros de la cuenta: cargando, con su respuesta o fallidos (la pestaña «Estadísticas» no depende de ello). */
 export type AchievementsState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; data: AchievementsResponse };
 
 /**
  * Panel derecho del perfil: pestañas «Estadísticas» y «Logros» (esta con la insignia desbloqueados/total). Si los logros
- * fallan, solo su pestaña muestra el error con «Reintentar».
+ * fallan, solo su pestaña muestra el error con «Reintentar». `emptyAchievements` sustituye a la lista si no hay ninguno
+ * (el perfil de otra cuenta solo trae los desbloqueados).
  */
-export function ProfileDetail({ tab, onTab, achievements, onRetry, children }: { tab: ProfileTab; onTab: (tab: ProfileTab) => void; achievements: AchievementsState; onRetry: () => void; children: ReactNode }) {
+export function ProfileDetail({ tab, onTab, achievements, onRetry, emptyAchievements, children }: {
+  tab: ProfileTab; onTab: (tab: ProfileTab) => void; achievements: AchievementsState; onRetry: () => void; emptyAchievements?: ReactNode; children: ReactNode;
+}) {
   const badge = achievements.status === 'ready' ? `${achievements.data.unlocked}/${achievements.data.total}` : undefined;
   return (
     <Panel title={tab === 'logros' ? 'Logros' : 'Estadísticas por juego'} scroll className="lg:min-h-0">
@@ -94,7 +105,7 @@ export function ProfileDetail({ tab, onTab, achievements, onRetry, children }: {
       />
       <TabPanel idBase="perfil" tabKey={tab}>
         {tab === 'estadisticas' ? children
-          : achievements.status === 'ready' ? <AchievementsPanel data={achievements.data} />
+          : achievements.status === 'ready' ? (achievements.data.achievements.length === 0 && emptyAchievements ? emptyAchievements : <AchievementsPanel data={achievements.data} />)
           : achievements.status === 'error' ? <StateBox kind="error" onCream title="No se pudieron cargar tus logros" text="Comprueba la conexión y vuelve a intentarlo." action={{ label: 'Reintentar', onClick: onRetry }} />
           : <StateBox kind="loading" onCream title="Cargando logros" />}
       </TabPanel>
@@ -102,19 +113,103 @@ export function ProfileDetail({ tab, onTab, achievements, onRetry, children }: {
   );
 }
 
+/** Rejilla del perfil: la placa y el resumen a la izquierda (arriba en móvil) y el detalle a la derecha, que llena el alto. */
+export function ProfileLayout({ aside, children }: { aside: ReactNode; children: ReactNode }) {
+  return (
+    <Screen fill>
+      <div className="grid gap-5 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 2xl:gap-12">
+        {/* La placa y el resumen, centrados en el alto junto a la lista, que lo llena con su scroll. */}
+        <div className="flex min-w-0 flex-col gap-5 lg:min-h-0 lg:justify-center 2xl:gap-6">{aside}</div>
+        {children}
+      </div>
+    </Screen>
+  );
+}
+
+/** Nombre, antetítulo y fecha de alta de la placa del perfil (sin fecha en un perfil privado de otra cuenta). */
+export function ProfileName({ username, createdAt, children }: { username: string; createdAt: string | null; children?: ReactNode }) {
+  return (
+    <div className="min-w-0 flex-1">
+      <p className={cx('text-13 font-extrabold uppercase tracking-[.08em]', tone.textSky2)}>Perfil de entrenador</p>
+      <h1 className={cx('ol2 font-display text-26 font-extrabold [overflow-wrap:anywhere] sm:text-34 2xl:text-44', tone.textWhite)}>{username}</h1>
+      {createdAt && <p className={cx('mt-1 text-15 font-bold', tone.textSky2)}>Miembro desde el {memberSince.format(new Date(createdAt))}</p>}
+      {children}
+    </div>
+  );
+}
+
+/** Totales de la cuenta: partidas, victorias, winrate y puntos, con cuántos juegos ha probado. */
+export function ProfileSummary({ globalStats, games }: Pick<UserProfileResponse, 'globalStats' | 'games'>) {
+  const played = games.filter((game) => game.stats.gamesPlayed > 0).length;
+  return (
+    <Panel title="Resumen" variant="dark" right={`${played} de ${games.length} juegos`} bodyClassName="px-5 py-5">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+        <Stat label="Partidas" value={globalStats.gamesPlayed} />
+        <Stat label="Victorias" value={globalStats.gamesWon} />
+        <Stat label="Winrate" value={globalWinRate(globalStats, games)} />
+        <Stat label="Puntos" value={globalStats.totalPoints} />
+      </div>
+    </Panel>
+  );
+}
+
+/**
+ * Franjas de los minijuegos (las jugadas primero) que se abren para ver sus métricas; abre la primera jugada. `empty`
+ * va encima si aún no ha jugado ninguno.
+ */
+export function ProfileGames({ games, empty }: { games: readonly ProfileGame[]; empty?: ReactNode }) {
+  const sorted = useMemo(() => sortProfileGames(games), [games]);
+  const [openId, setOpenId] = useState<string | null>(() => sorted.find((game) => game.stats.gamesPlayed > 0)?.id ?? null);
+  const played = sorted.some((game) => game.stats.gamesPlayed > 0);
+  return (
+    <>
+      {!played && empty && <div className="mb-3">{empty}</div>}
+      <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1" aria-label="Minijuegos">
+        {sorted.map((game) => {
+          const hasStats = game.stats.gamesPlayed > 0;
+          const open = hasStats && openId === game.id;
+          const detailId = `perfil-juego-${game.id}`;
+          return (
+            <li key={game.id}>
+              <Row
+                avatar={<span className="grid h-9 w-9 place-items-center" aria-hidden="true"><GameArt gameId={game.id} size={32} /></span>}
+                name={game.name}
+                meta={hasStats ? `${game.stats.gamesPlayed} ${game.stats.gamesPlayed === 1 ? 'partida' : 'partidas'} · ${game.stats.gamesWon} ${game.stats.gamesWon === 1 ? 'victoria' : 'victorias'}` : 'Sin jugar'}
+                value={hasStats ? `${game.stats.points} pts` : undefined}
+              >
+                {hasStats && (
+                  <Pill
+                    size="round"
+                    variant="cream"
+                    icon={ChevronDown}
+                    aria-expanded={open}
+                    aria-controls={open ? detailId : undefined}
+                    aria-label={`${open ? 'Ocultar' : 'Ver'} estadísticas de ${game.name}`}
+                    className={cx('shrink-0 [&_svg]:transition-transform', open && '[&_svg]:rotate-180')}
+                    onClick={() => setOpenId(open ? null : game.id)}
+                  />
+                )}
+              </Row>
+              {open && <GameMetrics game={game} id={detailId} />}
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+}
+
 /**
  * Perfil (spec §2, página larga): a la izquierda (arriba en móvil) la placa con el avatar grande, su píldora de
- * cámara para el editor, el nombre y la fecha de alta, y el resumen global; a la derecha (abajo en móvil) las
- * estadísticas por juego en franjas que se abren para ver sus métricas, con scroll dentro del panel.
+ * cámara para el editor, el nombre, la fecha de alta y la privacidad, y el resumen global; a la derecha (abajo en
+ * móvil) las estadísticas por juego en franjas que se abren para ver sus métricas, con scroll dentro del panel.
  */
 export function ProfilePage() {
   const { user, updateUser, syncLevel } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
   const [failed, setFailed] = useState(false);
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [params, setParams] = useSearchParams();
-  const tab = tabFromParam(params.get('tab'));
+  const [tab, changeTab] = useProfileTab();
   const location = useLocation();
   const [achievements, setAchievements] = useState<AchievementsState>({ status: 'loading' });
 
@@ -124,7 +219,6 @@ export function ProfilePage() {
       .then((body) => {
         setProfile(body.profile);
         if (body.profile.progress) syncLevel(body.profile.progress.level);
-        setOpenId((current) => current ?? body.profile.games.find((game) => game.stats.gamesPlayed > 0)?.id ?? null);
       })
       .catch(() => setFailed(true));
   }, [syncLevel]);
@@ -143,8 +237,6 @@ export function ProfilePage() {
     if (firstVisit.current) { firstVisit.current = false; return; }
     if (tab === 'logros' && user?.kind === 'USER') loadAchievements(true);
   }, [tab, location.key, user?.kind, loadAchievements]);
-  const changeTab = (next: ProfileTab) => setParams(next === 'logros' ? { tab: 'logros' } : {}, { replace: true });
-  const games = useMemo(() => sortProfileGames(profile?.games ?? []), [profile]);
 
   if (user?.kind !== 'USER') return <Navigate to="/play" replace />;
 
@@ -162,76 +254,28 @@ export function ProfilePage() {
     );
   }
 
-  const { globalStats } = profile;
-  const played = games.filter((game) => game.stats.gamesPlayed > 0).length;
   return (
-    <Screen fill>
-      <div className="grid gap-5 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 2xl:gap-12">
-      {/* La placa y el resumen, centrados en el alto junto a la lista, que lo llena con su scroll. */}
-      <div className="flex min-w-0 flex-col gap-5 lg:min-h-0 lg:justify-center 2xl:gap-6">
-        <HudPlate className="w-full flex-wrap !gap-5 !p-5 lg:!p-6">
-          <AvatarEditor
-            name={profile.user.username}
-            avatar={profile.user.avatar}
-            level={profile.progress?.level}
-            onSaved={(nextUser) => { updateUser(nextUser); setProfile((current) => current ? { ...current, user: { ...current.user, avatar: nextUser.avatar } } : current); }}
-          />
-          <div className="min-w-0 flex-1">
-            <p className={cx('text-13 font-extrabold uppercase tracking-[.08em]', tone.textSky2)}>Perfil de entrenador</p>
-            <h1 className={cx('ol2 font-display text-26 font-extrabold [overflow-wrap:anywhere] sm:text-34 2xl:text-44', tone.textWhite)}>{profile.user.username}</h1>
-            <p className={cx('mt-1 text-15 font-bold', tone.textSky2)}>Miembro desde el {memberSince.format(new Date(profile.user.createdAt))}</p>
-          </div>
-          {profile.progress && <LevelMeter progress={profile.progress} />}
-        </HudPlate>
-        <Panel title="Resumen" variant="dark" right={`${played} de ${games.length} juegos`} bodyClassName="px-5 py-5">
-          <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-            <Stat label="Partidas" value={globalStats.gamesPlayed} />
-            <Stat label="Victorias" value={globalStats.gamesWon} />
-            <Stat label="Winrate" value={globalWinRate(globalStats, profile.games)} />
-            <Stat label="Puntos" value={globalStats.totalPoints} />
-          </div>
-        </Panel>
-      </div>
-
+    <ProfileLayout aside={<>
+      <HudPlate className="w-full flex-wrap !gap-5 !p-5 lg:!p-6">
+        <AvatarEditor
+          name={profile.user.username}
+          avatar={profile.user.avatar}
+          level={profile.progress?.level}
+          onSaved={(nextUser) => { updateUser(nextUser); setProfile((current) => current ? { ...current, user: { ...current.user, avatar: nextUser.avatar } } : current); }}
+        />
+        <ProfileName username={profile.user.username} createdAt={profile.user.createdAt}>
+          <ProfilePrivacy value={profile.profileVisibility ?? 'EVERYONE'} onSaved={(profileVisibility) => setProfile((current) => current ? { ...current, profileVisibility } : current)} />
+        </ProfileName>
+        {profile.progress && <LevelMeter progress={profile.progress} />}
+      </HudPlate>
+      <ProfileSummary globalStats={profile.globalStats} games={profile.games} />
+    </>}>
       <ProfileDetail tab={tab} onTab={changeTab} achievements={achievements} onRetry={() => loadAchievements()}>
-        {played === 0 && (
-          <div className="mb-3">
-            <StateBox kind="empty" onCream title="Todavía no has jugado ninguna partida" text="Crea una sala, invita a tus amigos y elige un minijuego: tus estadísticas aparecerán aquí." action={{ label: 'Ir a jugar', onClick: () => navigate('/play') }} />
-          </div>
-        )}
-        <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1" aria-label="Minijuegos">
-          {games.map((game) => {
-            const hasStats = game.stats.gamesPlayed > 0;
-            const open = hasStats && openId === game.id;
-            const detailId = `perfil-juego-${game.id}`;
-            return (
-              <li key={game.id}>
-                <Row
-                  avatar={<span className="grid h-9 w-9 place-items-center" aria-hidden="true"><GameArt gameId={game.id} size={32} /></span>}
-                  name={game.name}
-                  meta={hasStats ? `${game.stats.gamesPlayed} ${game.stats.gamesPlayed === 1 ? 'partida' : 'partidas'} · ${game.stats.gamesWon} ${game.stats.gamesWon === 1 ? 'victoria' : 'victorias'}` : 'Sin jugar'}
-                  value={hasStats ? `${game.stats.points} pts` : undefined}
-                >
-                  {hasStats && (
-                    <Pill
-                      size="round"
-                      variant="cream"
-                      icon={ChevronDown}
-                      aria-expanded={open}
-                      aria-controls={open ? detailId : undefined}
-                      aria-label={`${open ? 'Ocultar' : 'Ver'} estadísticas de ${game.name}`}
-                      className={cx('shrink-0 [&_svg]:transition-transform', open && '[&_svg]:rotate-180')}
-                      onClick={() => setOpenId(open ? null : game.id)}
-                    />
-                  )}
-                </Row>
-                {open && <GameMetrics game={game} id={detailId} />}
-              </li>
-            );
-          })}
-        </ul>
+        <ProfileGames
+          games={profile.games}
+          empty={<StateBox kind="empty" onCream title="Todavía no has jugado ninguna partida" text="Crea una sala, invita a tus amigos y elige un minijuego: tus estadísticas aparecerán aquí." action={{ label: 'Ir a jugar', onClick: () => navigate('/play') }} />}
+        />
       </ProfileDetail>
-      </div>
-    </Screen>
+    </ProfileLayout>
   );
 }

@@ -49,9 +49,10 @@ public record PublicProfileResponse(Profile profile) {
       @Nullable Stats stats,
       @Nullable AchievementsResponse achievements) {}
 
-  /** Sin email: solo lo público de la cuenta. */
+  /** Sin email: solo lo público de la cuenta; sin {@code createdAt} si el perfil es privado. */
   @Serdeable
-  public record User(String id, String username, AvatarRef avatar, String createdAt) {}
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  public record User(String id, String username, AvatarRef avatar, @Nullable String createdAt) {}
 
   @Serdeable
   public record Stats(ProfileResponse.GlobalStats globalStats, List<ProfileResponse.ProfileGame> games) {}

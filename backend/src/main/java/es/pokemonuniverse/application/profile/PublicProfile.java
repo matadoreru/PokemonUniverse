@@ -8,8 +8,8 @@ import io.micronaut.core.annotation.Nullable;
 import java.util.List;
 
 /**
- * Perfil de otra cuenta tal como lo ve quien mira. Si es privado para él, {@code progress}, {@code stats} y
- * {@code achievements} son {@code null}: no se leen siquiera. Nunca lleva el email.
+ * Perfil de otra cuenta tal como lo ve quien mira. Si es privado para él, {@code progress}, {@code stats},
+ * {@code achievements} y la fecha de alta son {@code null}: no se leen siquiera. Nunca lleva el email.
  */
 public record PublicProfile(
     User user,
@@ -21,7 +21,8 @@ public record PublicProfile(
     @Nullable Stats stats,
     @Nullable Achievements achievements) {
 
-  public record User(String id, String username, AvatarRef avatar, String createdAt) {}
+  /** {@code createdAt} es {@code null} en un perfil privado: solo se ven el nombre y el avatar. */
+  public record User(String id, String username, AvatarRef avatar, @Nullable String createdAt) {}
 
   public record Stats(UserProfile.GlobalStats globalStats, List<UserProfile.Game> games) {}
 
