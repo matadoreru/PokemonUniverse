@@ -186,6 +186,60 @@ class PokemonImpostorEngineTest {
     assertNull(outsider.secretPokemon());
   }
 
+
+  private PokemonImpostorState rolesPhase(GameContext context, int impostorCount, PokemonImpostorMode mode) {
+    var config = PokemonImpostorConfig.builder().generations(List.of(1)).impostorCount(impostorCount).clueSeconds(15)
+        .voteSeconds(20).mode(mode).build();
+    var startContext = context.withNow(1_000);
+    return engine.start(engine.createInitialState(config, startContext), startContext);
+  }
+
+  private String playerJson(PokemonImpostorState state, String playerId, GameContext context) throws IOException {
+    return ObjectMapper.getDefault().writeValueAsString(engine.getPlayerState(state, playerId, context));
+  }
+
+  private PokemonImpostorPlayerState playerView(PokemonImpostorState state, String playerId, GameContext context) {
+    return assertInstanceOf(PokemonImpostorPlayerState.class, engine.getPlayerState(state, playerId, context));
+  }
+
+  /** Con varios impostores, cada uno ve a los demás; nadie más recibe la clave. */
+  @Test
+  void fellowImpostorsSeeEachOtherInBothModes() throws IOException {
+    // Sin junit-jupiter-params en el proyecto: se recorren los modos a mano.
+    for (var mode : PokemonImpostorMode.values()) fellowImpostorsSeeEachOther(mode);
+  }
+
+  private void fellowImpostorsSeeEachOther(PokemonImpostorMode mode) throws IOException {
+    var context = context(5).withNow(7_000);
+    var state = rolesPhase(context, 2, mode);
+    var impostors = state.playerIds().stream().filter(id -> state.roles().get(id) == ImpostorRole.IMPOSTOR).toList();
+    assertEquals(2, impostors.size());
+    for (var id : impostors) {
+      var other = impostors.stream().filter(candidate -> !candidate.equals(id)).toList();
+      assertEquals(other, playerView(state, id, context).fellowImpostorIds());
+    }
+    for (var id : state.playerIds()) {
+      if (state.roles().get(id) == ImpostorRole.INNOCENT) {
+        assertFalse(playerJson(state, id, context).contains("\"fellowImpostorIds\""));
+      }
+    }
+    assertFalse(playerJson(state, "nadie", context).contains("\"fellowImpostorIds\""));
+    var spectator = state.toBuilder().spectatorIds(List.of("espectador")).build();
+    assertFalse(playerJson(spectator, "espectador", context).contains("\"fellowImpostorIds\""));
+    var first = impostors.get(0);
+    var second = impostors.get(1);
+    var expelled = state.toBuilder().aliveIds(state.aliveIds().stream().filter(id -> !id.equals(first)).toList())
+        .eliminatedIds(List.of(first)).build();
+    assertEquals(List.of(first), playerView(expelled, second, context).fellowImpostorIds());
+  }
+
+  @Test
+  void singleImpostorHasNoFellowKey() throws IOException {
+    var context = context(5).withNow(7_000);
+    var state = rolesPhase(context, 1, PokemonImpostorMode.CLASSIC);
+    for (var id : state.playerIds()) assertFalse(playerJson(state, id, context).contains("\"fellowImpostorIds\""));
+  }
+
   // --- Modo Una palabra ---
 
   private PokemonImpostorState oneWordCluePhase(GameContext context) {

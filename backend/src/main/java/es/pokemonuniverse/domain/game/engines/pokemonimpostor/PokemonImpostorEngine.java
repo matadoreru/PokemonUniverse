@@ -548,7 +548,9 @@ public final class PokemonImpostorEngine implements
 
   /**
    * El Pokémon secreto solo lo ven los inocentes, los expulsados y todos al terminar; los roles, los expulsados y
-   * todos al terminar. El impostor vivo recibe {@code secretPokemon: null}.
+   * todos al terminar. El impostor vivo recibe {@code secretPokemon: null}. {@code fellowImpostorIds} (los demás
+   * impostores, fijados en el reparto) solo llega a un impostor, vivo o expulsado, y solo si tiene compañeros; en el
+   * resto de jugadores, espectadores e ids ajenos la clave no existe. Es igual en {@code CLASSIC} y {@code ONE_WORD}.
    */
   @Override
   public Object getPlayerState(PokemonImpostorState state, String playerId, GameContext context) {
@@ -567,6 +569,7 @@ public final class PokemonImpostorEngine implements
         .role(role)
         .secretPokemon(pokemon.map(found -> new SecretPokemon(found.name(), found.sprite())).orElse(null))
         .revealedRoles(eliminated || finished ? state.roles() : null)
+        .fellowImpostorIds(PokemonImpostorRules.fellowImpostorIds(state, playerId))
         .alive(alive)
         .canSubmitClue(state.phase() == GamePhase.CLUE_PHASE && alive && required
             && playerId.equals(state.currentCluePlayerId()) && ownClue == null)

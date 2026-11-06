@@ -36,6 +36,17 @@ public final class PokemonImpostorRules {
   }
 
   /**
+   * Los demás impostores, en el orden de {@code playerIds}, o {@code null} si {@code playerId} no es impostor o no
+   * tiene compañeros. Depende solo de los roles repartidos: no cambia durante la partida.
+   */
+  public static @Nullable List<String> fellowImpostorIds(PokemonImpostorState state, String playerId) {
+    if (state.roles().get(playerId) != ImpostorRole.IMPOSTOR) return null;
+    var fellows = state.playerIds().stream()
+        .filter(id -> !id.equals(playerId) && state.roles().get(id) == ImpostorRole.IMPOSTOR).toList();
+    return fellows.isEmpty() ? null : fellows;
+  }
+
+  /**
    * Gana todo el equipo ganador (posición 1, un punto), incluidos los expulsados. El desempate de TS es
    * {@code playerId.localeCompare}; aquí {@link String#compareTo}, equivalente para los ids del servidor (ver el
    * README de motores). {@code winnerId} solo existe si el equipo ganador tiene un único jugador.

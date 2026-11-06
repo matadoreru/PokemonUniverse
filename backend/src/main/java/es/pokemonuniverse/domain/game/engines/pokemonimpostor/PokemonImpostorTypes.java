@@ -470,6 +470,7 @@ public final class PokemonImpostorTypes {
       @Nullable ImpostorRole role,
       @Nullable SecretPokemon secretPokemon,
       @Nullable Map<String, ImpostorRole> revealedRoles,
+      @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable List<String> fellowImpostorIds,
       boolean alive,
       boolean canSubmitClue,
       @Nullable ImpostorClue ownClue,
@@ -487,6 +488,7 @@ public final class PokemonImpostorTypes {
       private ImpostorRole role;
       private SecretPokemon secretPokemon;
       private Map<String, ImpostorRole> revealedRoles;
+      private List<String> fellowImpostorIds;
       private boolean alive;
       private boolean canSubmitClue;
       private ImpostorClue ownClue;
@@ -503,6 +505,8 @@ public final class PokemonImpostorTypes {
       public Builder secretPokemon(@Nullable SecretPokemon value) { secretPokemon = value; return this; }
 
       public Builder revealedRoles(@Nullable Map<String, ImpostorRole> value) { revealedRoles = value; return this; }
+
+      public Builder fellowImpostorIds(@Nullable List<String> value) { fellowImpostorIds = value; return this; }
 
       public Builder alive(boolean value) { alive = value; return this; }
 
@@ -522,7 +526,8 @@ public final class PokemonImpostorTypes {
 
       public PokemonImpostorPlayerState build() {
         return new PokemonImpostorPlayerState(role, secretPokemon,
-            revealedRoles == null ? null : frozenMap(revealedRoles), alive, canSubmitClue, ownClue, canGuessPokemon,
+            revealedRoles == null ? null : frozenMap(revealedRoles),
+            fellowImpostorIds == null ? null : frozenList(fellowImpostorIds), alive, canSubmitClue, ownClue, canGuessPokemon,
             guessUsed, guessCorrect, canVote, ownVote);
       }
     }

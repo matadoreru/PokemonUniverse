@@ -525,6 +525,9 @@
           "role": "IMPOSTOR",
           "secretPokemon": null,
           "revealedRoles": null,
+          "fellowImpostorIds": [
+            "p5"
+          ],
           "alive": true,
           "canSubmitClue": false,
           "ownClue": null,
@@ -538,6 +541,9 @@
           "role": "IMPOSTOR",
           "secretPokemon": null,
           "revealedRoles": null,
+          "fellowImpostorIds": [
+            "p4"
+          ],
           "alive": true,
           "canSubmitClue": false,
           "ownClue": null,
@@ -648,6 +654,9 @@
           "role": "IMPOSTOR",
           "secretPokemon": null,
           "revealedRoles": null,
+          "fellowImpostorIds": [
+            "p5"
+          ],
           "alive": true,
           "canSubmitClue": false,
           "ownClue": null,
@@ -661,6 +670,9 @@
           "role": "IMPOSTOR",
           "secretPokemon": null,
           "revealedRoles": null,
+          "fellowImpostorIds": [
+            "p4"
+          ],
           "alive": true,
           "canSubmitClue": false,
           "ownClue": null,
@@ -773,6 +785,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -786,6 +801,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -911,6 +929,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -924,6 +945,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1057,6 +1081,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1070,6 +1097,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1205,6 +1235,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1218,6 +1251,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1353,6 +1389,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1366,6 +1405,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1507,6 +1549,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1520,6 +1565,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1661,6 +1709,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1674,6 +1725,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1815,6 +1869,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1828,6 +1885,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1979,6 +2039,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -1992,6 +2055,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2157,6 +2223,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2170,6 +2239,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2335,6 +2407,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2348,6 +2423,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2519,6 +2597,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2532,6 +2613,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2707,6 +2791,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2720,6 +2807,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2899,6 +2989,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -2912,6 +3005,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3092,6 +3188,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3105,6 +3204,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3312,6 +3414,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3325,6 +3430,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3549,6 +3657,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": false,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3562,6 +3673,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3786,6 +3900,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": false,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3799,6 +3916,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3971,6 +4091,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": false,
               "canSubmitClue": false,
               "ownClue": null,
@@ -3984,6 +4107,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -4153,6 +4279,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": false,
               "canSubmitClue": false,
               "ownClue": null,
@@ -4166,6 +4295,9 @@
               "role": "IMPOSTOR",
               "secretPokemon": null,
               "revealedRoles": null,
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -4440,6 +4572,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": false,
               "canSubmitClue": false,
               "ownClue": null,
@@ -4462,6 +4597,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,
@@ -4746,6 +4884,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p5"
+              ],
               "alive": false,
               "canSubmitClue": false,
               "ownClue": null,
@@ -4768,6 +4909,9 @@
                 "p4": "IMPOSTOR",
                 "p5": "IMPOSTOR"
               },
+              "fellowImpostorIds": [
+                "p4"
+              ],
               "alive": true,
               "canSubmitClue": false,
               "ownClue": null,

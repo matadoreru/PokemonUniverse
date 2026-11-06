@@ -114,6 +114,8 @@ export interface PokemonImpostorPlayerState {
   role: ImpostorRole | null;
   secretPokemon: { name: string; sprite: string } | null;
   revealedRoles: Record<string, ImpostorRole> | null;
+  // Solo para un impostor con compañeros; ausente en el resto.
+  fellowImpostorIds?: string[];
   alive: boolean;
   canSubmitClue: boolean;
   ownClue: ImpostorClue | null;
