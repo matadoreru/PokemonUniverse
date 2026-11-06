@@ -827,6 +827,17 @@ class RoomCoordinatorTest {
   }
 
   @Test
+  @DisplayName("an unranked game leaves no winners in the session history; a ranked one keeps them")
+  void unrankedGameHasNoSessionWinners() {
+    var a = new es.pokemonuniverse.domain.game.engine.GameStanding("a", 1, 9, null, Map.of());
+    var b = new es.pokemonuniverse.domain.game.engine.GameStanding("b", 2, 3, null, Map.of());
+    assertEquals(List.of(), RoomCoordinator.winnerIds(
+        es.pokemonuniverse.domain.game.engine.GameResults.unranked(List.of(a, b))));
+    assertEquals(List.of("a"), RoomCoordinator.winnerIds(
+        new es.pokemonuniverse.domain.game.engine.GameResults("a", List.of(a, b))));
+  }
+
+  @Test
   @DisplayName("keeps public session history and departed players in the final standings until a new session")
   void keepsSessionHistoryAndDepartedStandings() {
     var kit = new RoomTestKit();

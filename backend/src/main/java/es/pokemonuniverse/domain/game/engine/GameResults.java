@@ -8,8 +8,9 @@ import java.util.List;
 
 /**
  * Resultados de una partida: ganador único o {@code null} si hay empate en cabeza. {@code ranked} solo sale cuando es
- * {@code false}: partida sin ganador ni perdedores (Type Duel · Cooperativo), que no cuenta como jugada ni ganada en
- * las estadísticas del perfil (sí da experiencia y suma sus métricas).
+ * {@code false}: partida sin ganador ni perdedores (Type Duel · Cooperativo), que cuenta como jugada pero nunca como
+ * ganada ni perdida en el perfil (el porcentaje de victorias la excluye con {@code unrankedGamesPlayed}); da
+ * experiencia y suma sus métricas.
  */
 @Serdeable
 @JsonInclude(JsonInclude.Include.ALWAYS)

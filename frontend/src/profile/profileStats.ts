@@ -15,6 +15,11 @@ export function winRate(won: number, played: number): string {
 /** Métrica por juego que el servidor suma en cada partida sin clasificación de victorias (cooperativa). */
 export const UNRANKED_GAMES_PLAYED = 'unrankedGamesPlayed';
 
+/** Métricas guardadas visibles en el perfil: {@code unrankedGamesPlayed} es interna (descuenta partidas del winrate). */
+export function visibleStoredMetrics<T extends { key: string }>(metrics: readonly T[]): T[] {
+  return metrics.filter((metric) => metric.key !== UNRANKED_GAMES_PLAYED);
+}
+
 function unranked(metrics: Record<string, number>): number {
   return metrics[UNRANKED_GAMES_PLAYED] ?? 0;
 }

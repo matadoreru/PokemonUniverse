@@ -1213,9 +1213,7 @@ public class RoomCoordinator {
     var rawPoints = new LinkedHashMap<String, Integer>();
     for (var standing : gameResults.standings()) rawPoints.put(standing.playerId(), standing.points());
     room.sessionHistory.add(new SessionGameSummary(room.gamesPlayed, game.gameId,
-        gameResults.standings().stream()
-            .filter(standing -> standing.won() != null ? standing.won() : standing.position() == 1)
-            .map(standing -> standing.playerId()).toList(),
+        winnerIds(gameResults),
         Scoring.SESSION_SCORING_VERSION, sessionPoints, rawPoints));
     if (room.sessionHistory.size() > MAX_SESSION_HISTORY) {
       room.sessionHistory.subList(0, room.sessionHistory.size() - MAX_SESSION_HISTORY).clear();
@@ -1230,6 +1228,14 @@ public class RoomCoordinator {
         .thenCompose(ignored -> results.persist(resultRoom, resultSnapshot, game.resultId, game.startedAt, game.gameId,
             game.configTree))
         .exceptionally(error -> logged("Failed to persist game results", error)));
+  }
+
+  /** Ganadores de la partida para el historial de la sesión; una partida sin clasificar (cooperativa) no tiene. */
+  static List<String> winnerIds(GameResults results) {
+    if (!results.isRanked()) return List.of();
+    return results.standings().stream()
+        .filter(standing -> standing.won() != null ? standing.won() : standing.position() == 1)
+        .map(standing -> standing.playerId()).toList();
   }
 
   // ------------------------------------------------------------------------------------------------ cursores

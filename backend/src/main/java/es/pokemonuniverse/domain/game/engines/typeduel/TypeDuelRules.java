@@ -94,8 +94,8 @@ public final class TypeDuelRules {
   /**
    * Clasificación final con {@code winRate} y {@code averageCorrectTimeMs} derivados. En {@code COOP}, los puntos son
    * la aportación, las estadísticas son solo {@code coopFinds} (la aportación), {@code coopGamesPlayed} (1) y
-   * {@code groupTotal}, y nadie gana: {@code winnerId} y {@code won} nulos y {@code ranked: false} (no cuenta como partida
-   * jugada ni perdida en el perfil). El desempate de TS es
+   * {@code groupTotal}, y nadie gana: {@code winnerId} y {@code won} nulos y {@code ranked: false} (cuenta como partida
+   * jugada, nunca como ganada ni perdida; el winrate la excluye con {@code unrankedGamesPlayed}). El desempate de TS es
    * {@code playerId.localeCompare}; aquí {@link String#compareTo} (equivalente sobre ids de jugador, ver el README de
    * motores, regla 21).
    */

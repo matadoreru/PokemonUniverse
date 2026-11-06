@@ -27,7 +27,11 @@ public class RoomHistoryWriter {
 
   /** Primera sentencia de la transacción de resultados; solo afecta a esa transacción. */
   static final String SERIALIZABLE = "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE";
-  /** Métrica genérica por juego: partidas sin clasificación de victorias, para descontarlas del porcentaje. */
+  /**
+   * Métrica genérica por juego: partidas sin clasificación de victorias, para descontarlas del porcentaje. Todo juego
+   * que pueda devolver resultados sin clasificar debe declarar {@code unrankedGamesPlayed} (SUM) en los
+   * {@code profileStats} de su registry.json; si no, MetricsMerge la descarta y su porcentaje de victorias sale mal.
+   */
   static final String UNRANKED_GAMES_PLAYED = "unrankedGamesPlayed";
 
   private final EntityManager entityManager;

@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
-import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames } from '../profile/profileStats';
+import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames, visibleStoredMetrics } from '../profile/profileStats';
 import { Bar, cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
 import { GameArt } from '../games/GameArt';
 import tone from '../styles/tones.module.css';
@@ -49,7 +49,7 @@ function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
   const items: [string, string][] = [
     ['Victorias', String(stats.gamesWon)],
     ['Winrate', gameWinRate(stats)],
-    ...profileStats.metrics.map((metric): [string, string] => [metric.label, formatStoredMetric(metric, stats.metrics[metric.key] ?? 0)]),
+    ...visibleStoredMetrics(profileStats.metrics).map((metric): [string, string] => [metric.label, formatStoredMetric(metric, stats.metrics[metric.key] ?? 0)]),
     ...(profileStats.derivedMetrics ?? []).map((metric): [string, string] => [metric.label, formatDerivedMetric(metric, stats.metrics)]),
   ];
   return (

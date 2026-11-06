@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames, winRate } from './profileStats';
+import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames, visibleStoredMetrics, winRate } from './profileStats';
 
 describe('profile stats', () => {
   it('rounds the win rate and shows 0 % with no games', () => {
@@ -25,6 +25,11 @@ describe('profile stats', () => {
     expect(globalWinRate({ gamesPlayed: 7, gamesWon: 2 }, games)).toBe('50 %');
     expect(globalWinRate({ gamesPlayed: 3, gamesWon: 0 }, games)).toBe('0 %');
     expect(globalWinRate({ gamesPlayed: 0, gamesWon: 0 }, [])).toBe('0 %');
+  });
+
+  it('hides the internal unranked games metric from the visible rows', () => {
+    const metrics = [{ key: 'coopGamesPlayed' }, { key: 'unrankedGamesPlayed' }, { key: 'coopFinds' }];
+    expect(visibleStoredMetrics(metrics).map((metric) => metric.key)).toEqual(['coopGamesPlayed', 'coopFinds']);
   });
 
   it('formats stored and derived metrics', () => {
