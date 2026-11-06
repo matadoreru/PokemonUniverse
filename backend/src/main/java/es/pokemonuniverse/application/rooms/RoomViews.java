@@ -62,7 +62,8 @@ final class RoomViews {
         .members(room.members.values().stream().map(member -> new RoomView.MemberView(member.identity.id(),
             member.identity.displayName(), member.identity.avatar(), member.connected, member.presence,
             member.roomRole, member.role, member.identity.id().equals(room.hostId), member.ready,
-            member.sessionPoints, member.xp == null ? null : Experience.levelFor(member.xp))).toList())
+            member.sessionPoints, member.xp == null ? null : Experience.levelFor(member.xp),
+            room.chat.isMuted(member.identity.id()))).toList())
         .availableGames(registry.manifests().stream().map(ManifestView::of).toList())
         .selectedGameId(room.selectedGameId)
         .selectedGameConfig(room.gameConfigs.get(room.selectedGameId))

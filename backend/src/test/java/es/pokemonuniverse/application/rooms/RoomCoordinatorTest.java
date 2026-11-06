@@ -1557,7 +1557,7 @@ class RoomCoordinatorTest {
     assertTrue(serialized.contains("\"isHost\":true"));
     assertTrue(serialized.contains("\"avatar\":{\"type\":\"DEFAULT\"}"));
     assertEquals(Set.of("id", "displayName", "avatar", "connected", "presence", "roomRole", "role", "isHost", "ready",
-        "sessionPoints", "level"), RoomTestKit.asMap(second.members().getFirst()).keySet());
+        "sessionPoints", "level", "chatMuted"), RoomTestKit.asMap(second.members().getFirst()).keySet());
     assertFalse(RoomTestKit.asMap(second.availableGames().getFirst()).containsKey("defaultConfig"));
 
     kit.selectHigherLower("host");

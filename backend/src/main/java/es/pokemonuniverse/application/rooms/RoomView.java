@@ -55,7 +55,7 @@ public record RoomView(
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record MemberView(String id, String displayName, AvatarRef avatar, boolean connected, PresenceStatus presence,
       RoomRole roomRole, MemberRole role, boolean isHost, boolean ready, int sessionPoints,
-      @Nullable Integer level) {}
+      @Nullable Integer level, boolean chatMuted) {}
 
   /** {@code SessionStandingView}. */
   @Serdeable
