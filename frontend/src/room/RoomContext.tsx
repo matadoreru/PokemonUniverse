@@ -1,10 +1,11 @@
-import type { GameSelectionMode, RoomView, ServerToClientEvents, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
+import type { ChatMessage, GameSelectionMode, RoomView, ServerToClientEvents, SessionMode, SetGameSkipVoteRequest } from '@pokemon-universe/shared/public';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import type { CommandEvent, CommandPayload, RealtimeClient } from '../lib/realtime';
 import { createRealtime } from '../lib/socket';
 import { commandRequest, gameActionPayload, requestCommand, roomErrorReporter, type GameActionOptions } from './room-command';
 import { roomActionErrorMessage } from './roomCode';
+import { applyDeleted, applyHistory, applyMessage, EMPTY_CHAT, syncInstance, type ChatState } from './chat/chat-state';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { SessionAttachment } from './session-attachment';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
@@ -54,6 +55,14 @@ interface RoomContextValue {
   holdRoomSession(): () => void;
   /** Con aviso global salvo `{ report: false }` (los borradores de Red Flag: teclear no borra el error de un envío). */
   gameAction(action: unknown, options?: GameActionOptions): Promise<void>;
+  /** Últimos mensajes del chat de la sala, por `seq`. Vive aquí (por encima del `Lobby`) para sobrevivir a las partidas. */
+  chat: ChatMessage[];
+  /** Sube con cada `room:chat:history` aplicado: el anunciador distingue así el historial de los mensajes en vivo. */
+  chatHistoryVersion: number;
+  /** Las tres órdenes del chat, con aviso global (las pantallas capturan con `ignoreFailure`). */
+  sendChat(text: string): Promise<void>;
+  deleteChatMessage(seq: number): Promise<void>;
+  setChatMute(playerId: string, muted: boolean): Promise<void>;
 }
 
 const RoomContext = createContext<RoomContextValue | null>(null);
@@ -68,16 +77,27 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
   const projectionRef = useRef(new OptimisticRoomProjection());
   const continuationRef = useRef<Promise<void> | null>(null);
   const [room, setRoom] = useState<RoomView | null>(null);
+  const [chat, setChat] = useState<ChatState>(EMPTY_CHAT);
+  const [chatHistoryVersion, setChatHistoryVersion] = useState(0);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const friendListenersRef = useRef(new Map<FriendSocketEvent, Set<FriendListener>>());
   const attachmentRef = useRef(new SessionAttachment());
 
+  /**
+   * Fija la instancia del chat en el mismo manejador que fija la sala (nunca desde un efecto): si el historial de la
+   * sala B llegara con el estado aún en A, se descartaría. Un snapshot sin instancia (antiguo) no toca el chat.
+   */
+  const syncChat = useCallback((view: RoomView | null) => {
+    if (view && view.roomInstanceId === undefined) return;
+    setChat((state) => syncInstance(state, view?.roomInstanceId ?? null));
+  }, []);
+
   useEffect(() => {
     const projection = projectionRef.current;
     const attachment = attachmentRef.current;
     // Sin socket (sesión cerrada o invitado fuera de las rutas de sala) no queda sala: su último error tampoco sigue.
-    if (!user || !active) { attachment.clear(); socketRef.current?.disconnect(); socketRef.current = null; setConnected(false); setRoom(projection.setAuthoritative(null, true)); setError(null); return; }
+    if (!user || !active) { attachment.clear(); socketRef.current?.disconnect(); socketRef.current = null; setConnected(false); setRoom(projection.setAuthoritative(null, true)); syncChat(null); setError(null); return; }
     const socket = createRealtime(); socketRef.current = socket;
     const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
     // `error` only comes with an authentication close of `/ws` (4401), never with a plain disconnect.
@@ -88,15 +108,18 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
       if (!isConnected) setRoom(projection.clearPending());
       if (connectionError !== undefined) setError(connectionError);
     });
-    socket.on('room:state', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom)));
-    socket.on('session:restored', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom, true)));
-    socket.on('room:kicked', (message) => { attachment.clear(); setRoom(projection.setAuthoritative(null, true)); setError(message); });
+    socket.on('room:state', (nextRoom) => { const view = projection.setAuthoritative(nextRoom); setRoom(view); syncChat(view); });
+    socket.on('session:restored', (nextRoom) => { const view = projection.setAuthoritative(nextRoom, true); setRoom(view); syncChat(view); });
+    socket.on('room:kicked', (message) => { attachment.clear(); setRoom(projection.setAuthoritative(null, true)); syncChat(null); setError(message); });
+    socket.on('room:chat:history', (payload) => { setChat((state) => applyHistory(state, payload)); setChatHistoryVersion((version) => version + 1); });
+    socket.on('room:chat:message', (payload) => setChat((state) => applyMessage(state, payload)));
+    socket.on('room:chat:deleted', (payload) => setChat((state) => applyDeleted(state, payload)));
     socket.on('error:message', setError);
     for (const event of FRIEND_SOCKET_EVENTS) {
       socket.on(event, ((payload: never) => { for (const listener of [...(friendListenersRef.current.get(event) ?? [])]) listener(payload); }) as ServerToClientEvents[typeof event]);
     }
-    return () => { attachment.closed(socket); detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
-  }, [user?.id, active]);
+    return () => { attachment.closed(socket); detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); syncChat(null); };
+  }, [user?.id, active, syncChat]);
 
   // El nivel propio llega en vivo en `room:state` (sube al terminar cada partida): la cabecera lo sigue.
   const selfLevel = room?.members.find((member) => member.id === user?.id)?.level;
@@ -131,10 +154,10 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
 
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
-    async createRoom() { const response = await emit('room:create', {}, false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
-    async joinRoom(code, options) { const response = await emit('room:join', { code }, options?.reportError ?? false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
+    async createRoom() { const response = await emit('room:create', {}, false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room; },
+    async joinRoom(code, options) { const response = await emit('room:join', { code }, options?.reportError ?? false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room; },
     // Fuera de la sala, su error ya no viene a cuento (con `reportError: false` el aviso no se limpió al empezar).
-    async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); attachmentRef.current.clear(); setRoom(projectionRef.current.setAuthoritative(null, true)); setError(null); },
+    async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); attachmentRef.current.clear(); setRoom(projectionRef.current.setAuthoritative(null, true)); syncChat(null); setError(null); },
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) {
       const gameId = projectionRef.current.view()?.selectedGameId;
@@ -167,7 +190,12 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     holdRoomSession,
     // Las guardas (sin minijuego activo, sin época) van dentro de la petición: su fallo también sale en el aviso global.
     async gameAction(action, options) { await emit('game:action', () => gameActionPayload(room, action), options?.report ?? true); },
-  }), [connected, emit, error, holdRoomSession, optimisticEmit, room, subscribe]);
+    chat: chat.messages,
+    chatHistoryVersion,
+    async sendChat(text) { await emit('room:chat:send', { text }); },
+    async deleteChatMessage(seq) { await emit('room:chat:delete', { seq }); },
+    async setChatMute(playerId, muted) { await emit('room:chat:mute', { playerId, muted }); },
+  }), [chat.messages, chatHistoryVersion, connected, emit, error, holdRoomSession, optimisticEmit, room, subscribe, syncChat]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }
 
