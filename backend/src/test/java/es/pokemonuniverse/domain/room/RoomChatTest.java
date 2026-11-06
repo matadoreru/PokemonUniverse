@@ -26,6 +26,27 @@ class RoomChatTest {
   }
 
   @Test
+  void rejectsMessagesThatAreEmptyOnceInvisibleCharsAreRemoved() {
+    RoomChat c = new RoomChat();
+    assertEquals("Message is empty", rejection(() -> post(c, "a", "\u200B\u200D\uFEFF \u2060", false, 0)));
+  }
+
+  @Test
+  void removesInvisibleCharsInsideText() {
+    assertEquals("hola", RoomChat.normalize("ho\u200Bla"));
+  }
+
+  @Test
+  void decomposedAccentsAreComposedBeforeFilterAndLengthCheck() {
+    RoomChat c = new RoomChat();
+    ChatFilter filter = new ChatFilter(List.of("canción"));
+    String decomposed = "cancio\u0301n";
+    assertEquals("***", c.post("a", "a", decomposed, false, 0, filter).text());
+    // 300 unidades descompuestas son 150 compuestas: el límite se mide tras normalizar.
+    assertEquals(150, post(c, "a", "e\u0301".repeat(150), false, 1).length());
+  }
+
+  @Test
   void rejectsEmptyAndNull() {
     RoomChat c = new RoomChat();
     assertEquals("Message is empty", rejection(() -> post(c, "a", null, false, 0)));

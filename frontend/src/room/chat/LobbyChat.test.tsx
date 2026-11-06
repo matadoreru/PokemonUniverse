@@ -2,7 +2,7 @@ import type { ChatMessage, RoomMemberView, RoomRole } from '@pokemon-universe/sh
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { canDeleteChatMessage, canMuteInChat, ChatModerationMenu, LobbyChat } from './LobbyChat';
+import { canDeleteChatMessage, draftAfterSend, canMuteInChat, ChatModerationMenu, LobbyChat } from './LobbyChat';
 
 function member(id: string, displayName: string, roomRole: RoomRole = 'MEMBER', extra: Partial<RoomMemberView> = {}): RoomMemberView {
   return { id, displayName, avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole, role: 'PLAYER', isHost: roomRole === 'HOST', ready: false, sessionPoints: 0, ...extra };
@@ -17,6 +17,11 @@ const render = (selfId: string, selfRole: RoomRole, extra: Partial<Parameters<ty
   renderToStaticMarkup(createElement(LobbyChat, { messages, members, selfId, selfRole, onSend: noop, onDelete: noop, onSetMute: noop, ...extra }));
 
 describe('LobbyChat', () => {
+  it('tras el ack solo vacía el campo si sigue con el texto enviado', () => {
+    expect(draftAfterSend('hola', 'hola')).toBe('');
+    expect(draftAfterSend('hola, qué tal', 'hola')).toBe('hola, qué tal');
+  });
+
   it('es el panel «Chat» con la lista y el campo de escribir', () => {
     const html = render('leo', 'MEMBER');
     expect(html).toContain('>Chat<');

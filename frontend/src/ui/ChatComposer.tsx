@@ -1,5 +1,5 @@
 import { SendHorizontal } from 'lucide-react';
-import { useId } from 'react';
+import { useId, useRef } from 'react';
 import type { FormEvent } from 'react';
 import { cx } from './cx';
 import { Field } from './Field';
@@ -32,16 +32,18 @@ export function submitChat(value: string, busy: boolean, onSubmit: () => void): 
 /** Campo de escribir del chat: Intro (o el botón) envía; el contador aparece al acercarse al límite. */
 export function ChatComposer({ value, onChange, onSubmit, label, maxLength, busy = false, disabledReason, counterFrom = 160, className }: ChatComposerProps) {
   const counterId = useId();
+  const formRef = useRef<HTMLFormElement>(null);
   if (disabledReason) {
     return <p className={cx(s.reason, className)}>{disabledReason}</p>;
   }
   const showCounter = value.length >= counterFrom;
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    submitChat(value, busy, onSubmit);
+    // Con el botón el foco se iría a él (y se perdería al deshabilitarse): se devuelve al campo para no cerrar el teclado.
+    if (submitChat(value, busy, onSubmit)) formRef.current?.querySelector('input')?.focus();
   };
   return (
-    <form className={cx(s.composer, className)} onSubmit={submit} noValidate>
+    <form ref={formRef} className={cx(s.composer, className)} onSubmit={submit} noValidate>
       <div className={s.field}>
         <Field
           label={label}

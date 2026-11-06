@@ -9,6 +9,11 @@ import s from './LobbyChat.module.css';
 const MAX_LENGTH = 200;
 const MUTED_REASON = 'Un moderador te ha silenciado en el chat de esta sala.';
 
+/** Tras el ack solo se vacía el campo si sigue con el texto enviado: lo escrito mientras tanto se conserva. */
+export function draftAfterSend(current: string, sent: string): string {
+  return current === sent ? '' : current;
+}
+
 /**
  * ¿Puede quien modera borrar un mensaje? El Host, cualquiera; el Co-host, todos salvo los del Host actual. `authorRole`
  * es `null` si el autor ya salió de la sala (no puede ser el Host).
@@ -107,7 +112,8 @@ export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelet
   const send = async () => {
     if (busy) return;
     setBusy(true);
-    try { await onSend(draft); setDraft(''); } catch { ignoreFailure(); }
+    const sent = draft;
+    try { await onSend(sent); setDraft((current) => draftAfterSend(current, sent)); } catch { ignoreFailure(); }
     finally { setBusy(false); }
   };
   const target = moderating === null ? undefined : messages.find((message) => message.seq === moderating);

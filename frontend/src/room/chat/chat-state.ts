@@ -29,8 +29,17 @@ function merge(state: ChatState, roomInstanceId: string, incoming: ChatMessage[]
   return { roomInstanceId, messages };
 }
 
+/**
+ * El historial manda hasta su `seq` más alto: lo local de esa franja que él no trae (borrado mientras no había
+ * conexión) se descarta; lo más nuevo, que llegó en vivo, se conserva. Otra instancia empieza de cero.
+ */
 export function applyHistory(state: ChatState, payload: { roomInstanceId: string; messages: ChatMessage[] }): ChatState {
-  return merge(state, payload.roomInstanceId, payload.messages);
+  if (state.roomInstanceId !== null && state.roomInstanceId !== payload.roomInstanceId) return state;
+  const max = payload.messages.reduce((top, message) => Math.max(top, message.seq), 0);
+  const kept = payload.messages.length === 0
+    ? state
+    : { ...state, messages: state.messages.filter((message) => message.seq > max) };
+  return merge(kept, payload.roomInstanceId, payload.messages);
 }
 
 export function applyMessage(state: ChatState, payload: { roomInstanceId: string; message: ChatMessage }): ChatState {

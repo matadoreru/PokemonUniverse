@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.text.Normalizer;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Estado del chat de una sala: últimos mensajes, límite de envío por jugador y silenciados.
@@ -103,8 +105,19 @@ public final class RoomChat {
     return List.copyOf(history);
   }
 
-  /** Cada carácter de control pasa a espacio, los espacios seguidos se funden y se recorta. */
+  private static final Pattern CONTROL = Pattern.compile("\\p{Cc}");
+  private static final Pattern INVISIBLE = Pattern.compile("\\p{Cf}");
+  private static final Pattern SPACES = Pattern.compile(" {2,}");
+
+  /**
+   * Pasa a NFC (las tildes descompuestas no evaden el filtro), quita los caracteres invisibles de
+   * formato (ancho cero, etc.), cada carácter de control pasa a espacio, los espacios seguidos se
+   * funden y se recorta.
+   */
   static String normalize(String raw) {
-    return raw.replaceAll("\\p{Cc}", " ").replaceAll(" {2,}", " ").trim();
+    String nfc = Normalizer.normalize(raw, Normalizer.Form.NFC);
+    String visible = INVISIBLE.matcher(nfc).replaceAll("");
+    String spaced = CONTROL.matcher(visible).replaceAll(" ");
+    return SPACES.matcher(spaced).replaceAll(" ").trim();
   }
 }

@@ -14,6 +14,19 @@ describe('chat-state', () => {
     expect(seqs(state.messages)).toEqual([1, 2, 3]);
   });
 
+  it('historyDropsLocalMessagesDeletedWhileDisconnected', () => {
+    let state = applyHistory(EMPTY_CHAT, { roomInstanceId: 'A', messages: [msg(1), msg(2), msg(3)] });
+    state = applyHistory(state, { roomInstanceId: 'A', messages: [msg(1), msg(3)] });
+    expect(seqs(state.messages)).toEqual([1, 3]);
+  });
+
+  it('historyKeepsLiveMessagesNewerThanItself', () => {
+    let state = applyHistory(EMPTY_CHAT, { roomInstanceId: 'A', messages: [msg(1), msg(2)] });
+    state = applyMessage(state, { roomInstanceId: 'A', message: msg(5) });
+    state = applyHistory(state, { roomInstanceId: 'A', messages: [msg(1), msg(3)] });
+    expect(seqs(state.messages)).toEqual([1, 3, 5]);
+  });
+
   it('otherInstanceIsIgnored', () => {
     const state = applyHistory(EMPTY_CHAT, { roomInstanceId: 'A', messages: [msg(1)] });
     expect(applyHistory(state, { roomInstanceId: 'B', messages: [msg(9)] })).toBe(state);
