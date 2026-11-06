@@ -31,7 +31,10 @@ interface RoomContextValue {
   updateGameConfig(gameId: string, config: unknown): Promise<void>;
   updateSession(mode: SessionMode): Promise<void>;
   updateGameSelection(mode: GameSelectionMode): Promise<void>;
-  voteNextGame(gameId: string): Promise<void>;
+  /** Los modos que pueden salir de `gameId` en una sesión al azar o por votación (al menos uno). */
+  updateAllowedModes(gameId: string, modes: string[]): Promise<void>;
+  /** `optionId`: el id de la opción de voto (un par juego y modo). */
+  voteNextGame(optionId: string): Promise<void>;
   setRoomRole(playerId: string, role: 'CO_HOST' | 'MEMBER'): Promise<void>;
   transferHost(playerId: string): Promise<void>;
   kick(playerId: string): Promise<void>;
@@ -169,7 +172,8 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     },
     async updateSession(mode) { await optimisticEmit('room:update-session', { mode }, { kind: 'session', mode }); },
     async updateGameSelection(mode) { await optimisticEmit('room:update-game-selection', { mode }, { kind: 'game-selection', mode }); },
-    async voteNextGame(gameId) { await emit('room:vote-next-game', { gameId }); },
+    async updateAllowedModes(gameId, modes) { await optimisticEmit('room:update-allowed-modes', { gameId, modes }, { kind: 'allowed-modes', gameId, modes }); },
+    async voteNextGame(optionId) { await emit('room:vote-next-game', { optionId }); },
     async setRoomRole(playerId, role) { await emit('room:set-role', { playerId, role }); },
     async transferHost(playerId) { await emit('room:transfer-host', { playerId }); },
     async kick(playerId) { await emit('room:kick', { playerId }); },

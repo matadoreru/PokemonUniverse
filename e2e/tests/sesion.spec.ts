@@ -1,16 +1,22 @@
 /**
  * Votación del siguiente minijuego y resultados de la sesión (`frontend/src/room/NextGameVote.tsx`,
  * `SessionResults.tsx`) contra el `/ws` de Java (`npm run test:e2e -- sesion`): una partida de Higher or Lower de una
- * ronda con la rotación por votación, la votación, el revelado del ganador y la clasificación final.
+ * ronda con la rotación por votación, la votación, el revelado del ganador y la clasificación final; y los modos que
+ * pueden salir de un juego al azar o por votación (cada modo marcado es una opción de voto).
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { anadirJuegos, capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
 
-/** Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más. */
+/**
+ * Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más.
+ * `sigue` (lo que la captura debe enseñar) se centra en la vista en cada tamaño.
+ */
 async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Promise<void> {
   for (const { w, h } of SIZES) {
     await page.setViewportSize({ width: w, height: h });
+    // Al centro: a 390 px la franja de acción fija tapa el borde inferior de la vista.
+    await sigue.evaluate((el) => el.scrollIntoView({ block: 'center' }));
     const { id, problems } = await layoutProblems(page, nombre, true);
     await expect(sigue, `${id}: la fase sigue en pantalla`).toBeVisible({ timeout: 1_000 });
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
@@ -129,6 +135,82 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     // «Volver al lobby»: el host vuelve al lobby con la clasificación a cero.
     await otra.click();
     await expect(host.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('sesión: modos que pueden salir y votación entre los modos de un juego', async ({ browser }) => {
+  test.setTimeout(150_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [invitado] = invitados as [Jugador];
+    const pages = jugadores.map((j) => j.page);
+
+    // Solo Higher or Lower, por votación: el «Modo» de sus ajustes pasa a ser «Modos que pueden salir».
+    await seleccionarJuego(host.page, 'Higher or Lower');
+    await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
+    const votacion = host.page.getByRole('button', { name: /^Votación/ });
+    await votacion.click();
+    await expect(votacion).toHaveAttribute('aria-pressed', 'true');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    const modos = host.page.getByRole('group', { name: 'Modos que pueden salir' });
+    const modo = (nombre: string) => modos.getByRole('button', { name: nombre, exact: true });
+    await expect(host.page.getByRole('radiogroup', { name: 'Modo' })).toHaveCount(0);
+    await expect(modo('Clásico')).toHaveAttribute('aria-pressed', 'true');
+    // El último marcado no se puede quitar.
+    await expect(modo('Clásico')).toBeDisabled();
+    await modo('Racha infinita').click();
+    await expect(modo('Racha infinita')).toHaveAttribute('aria-pressed', 'true');
+    await expect(modo('Clásico')).toBeEnabled();
+    const rondas = host.page.getByRole('slider', { name: 'Número de rondas' });
+    await rondas.focus();
+    await rondas.press('Home');
+    await rondas.blur();
+    await expect(rondas).toHaveValue('1');
+    await capturarPantalla(host.page, 'sesion-modos-ajustes', modo('Racha infinita'));
+
+    // La carta del juego dice cuántos modos tiene y cuántos pueden salir; el invitado lo ve igual.
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    const cartaHl = (page: Page) => page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText('Higher or Lower', { exact: true }) });
+    await expect(cartaHl(host.page).getByText('2 modos', { exact: true })).toBeVisible();
+    await expect(cartaHl(host.page).getByText('2 modos en juego', { exact: true })).toBeVisible();
+    await expect(cartaHl(invitado.page).getByText('2 modos en juego', { exact: true })).toBeVisible();
+    await capturarPantalla(host.page, 'sesion-modos-carta', cartaHl(host.page));
+
+    // El invitado (sin permiso) ve los mismos modos marcados, en solo lectura.
+    await invitado.page.getByRole('tab', { name: 'Configuración' }).click();
+    const modosInvitado = invitado.page.getByRole('group', { name: 'Modos que pueden salir' });
+    await expect(modosInvitado.getByRole('button', { pressed: true })).toHaveCount(2);
+    await expect(modosInvitado.getByRole('button', { name: 'Racha infinita', exact: true })).toBeDisabled();
+    await expect(invitado.page.getByRole('radiogroup', { name: 'Modo' })).toHaveCount(0);
+
+    await iniciarPartida(host.page, [invitado.page]);
+    await esperarPartida(pages);
+    for (const page of pages) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
+    await host.page.getByRole('button', { name: 'Continuar sesión' }).click({ timeout: 20_000 });
+
+    // Un solo juego con dos modos: la votación tiene dos opciones, una por modo.
+    for (const page of pages) await expect(page.getByRole('heading', { name: 'Elige el siguiente minijuego' })).toBeVisible({ timeout: 15_000 });
+    const opciones = (page: Page) => page.getByRole('list', { name: 'Opciones de voto' }).getByRole('button');
+    await expect(opciones(host.page)).toHaveCount(2);
+    const racha = (page: Page) => opciones(page).filter({ hasText: 'Higher or Lower · Racha infinita' });
+    await expect(opciones(host.page).filter({ hasText: 'Higher or Lower · Clásico' })).toHaveCount(1);
+    await racha(host.page).click();
+    await expect(host.page.getByText('Has elegido Higher or Lower · Racha infinita')).toBeVisible();
+    const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
+    await capturarPantalla(host.page, 'sesion-votacion-modos', confirmar(host.page));
+    await confirmar(host.page).click();
+    await racha(invitado.page).click();
+    await confirmar(invitado.page).click();
+    for (const page of pages) await expect(page.getByText('La sala ha elegido Higher or Lower · Racha infinita')).toBeVisible({ timeout: 10_000 });
+
+    // Arranca Higher or Lower en Racha infinita (la placa lo dice) sin tocar el modo de los ajustes del lobby.
+    await expect(host.page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByRole('heading', { name: 'Elige el siguiente minijuego' })).toHaveCount(0);
+    await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible();
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

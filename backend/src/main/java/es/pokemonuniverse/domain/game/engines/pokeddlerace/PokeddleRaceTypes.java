@@ -129,6 +129,7 @@ public final class PokeddleRaceTypes {
       PokeddleRaceConfig config,
       List<String> playerIds,
       List<String> poolIds,
+      Map<String, EvolutionValue> evolutions,
       Map<String, String> secretPokemonIds,
       int roundNumber,
       Map<String, PokeddleRoundGuess> currentGuesses,
@@ -143,6 +144,7 @@ public final class PokeddleRaceTypes {
     public PokeddleRaceState {
       playerIds = frozenList(playerIds);
       poolIds = frozenList(poolIds);
+      evolutions = frozenMap(evolutions);
       secretPokemonIds = frozenMap(secretPokemonIds);
       currentGuesses = frozenMap(currentGuesses);
       var frozenBoards = new LinkedHashMap<String, List<PokeddleBoardRow>>();
@@ -158,7 +160,7 @@ public final class PokeddleRaceTypes {
 
     public Builder toBuilder() {
       return new Builder().phase(phase).config(config).playerIds(playerIds).poolIds(poolIds)
-          .secretPokemonIds(secretPokemonIds).roundNumber(roundNumber).currentGuesses(currentGuesses).boards(boards)
+          .evolutions(evolutions).secretPokemonIds(secretPokemonIds).roundNumber(roundNumber).currentGuesses(currentGuesses).boards(boards)
           .solved(solved).playerStats(playerStats).gameStartedAt(gameStartedAt).roundStartedAt(roundStartedAt)
           .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt);
     }
@@ -174,6 +176,8 @@ public final class PokeddleRaceTypes {
       private PokeddleRaceConfig config;
       private List<String> playerIds = List.of();
       private List<String> poolIds = List.of();
+      /** Etapa evolutiva de cada Pokémon del pool, calculada una vez con las generaciones de la partida. */
+      private Map<String, EvolutionValue> evolutions = Map.of();
       private Map<String, String> secretPokemonIds = Map.of();
       private int roundNumber;
       private Map<String, PokeddleRoundGuess> currentGuesses = Map.of();
@@ -194,6 +198,8 @@ public final class PokeddleRaceTypes {
       public Builder playerIds(List<String> value) { playerIds = value; return this; }
 
       public Builder poolIds(List<String> value) { poolIds = value; return this; }
+
+      public Builder evolutions(Map<String, EvolutionValue> value) { evolutions = value; return this; }
 
       public Builder secretPokemonIds(Map<String, String> value) { secretPokemonIds = value; return this; }
 
@@ -217,7 +223,7 @@ public final class PokeddleRaceTypes {
 
       public PokeddleRaceState build() {
         return new PokeddleRaceState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
-            playerIds, poolIds, secretPokemonIds, roundNumber, currentGuesses, boards, solved, playerStats,
+            playerIds, poolIds, evolutions, secretPokemonIds, roundNumber, currentGuesses, boards, solved, playerStats,
             gameStartedAt, roundStartedAt, roundEndsAt, nextTransitionAt);
       }
     }

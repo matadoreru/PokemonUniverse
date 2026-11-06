@@ -41,6 +41,14 @@ export function guessPanelKind(phase: GamePhase, player: { participating: boolea
 }
 
 /** Clave del foco (ver `useFocusOnTransition`): al acertar y al revelar, el título de la placa inferior. */
+/**
+ * ¿El buscador toma el foco al empezar cada ronda? Solo con ratón o teclado (`pointer: fine`): en una pantalla táctil
+ * abriría el teclado y taparía la pista. Sin `matchMedia` (SSR, pruebas), no.
+ */
+export function guessSearchAutoFocus(matchMedia: ((query: string) => { matches: boolean }) | undefined = typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? (query) => window.matchMedia(query) : undefined): boolean {
+  return matchMedia?.('(pointer: fine)').matches ?? false;
+}
+
 export function guessFocusKey(kind: GuessPanelKind, roundNumber: number): string | null {
   return kind === 'solved' || kind === 'reveal' ? `${kind}-${roundNumber}` : null;
 }
@@ -152,3 +160,9 @@ export function guessAnnouncement({ kind, roundNumber, answer, solveOrder, round
   if (kind === 'guess' && lastWrong) return `Incorrecto${attemptCount ? ` (${attemptsText(attemptCount)})` : ''}: ${lastWrong} no era. Hay una breve espera antes del siguiente intento.`;
   return '';
 }
+
+/**
+ * `publicAttempts` de un juego de adivinar: si la pantalla pinta el panel «Intentos públicos». Una configuración
+ * guardada sin la clave los muestra. Apagado, el servidor ya no envía los fallos ajenos: esto solo quita el panel.
+ */
+export const guessPublicAttempts = (config: { publicAttempts?: boolean | undefined } | null | undefined): boolean => config?.publicAttempts !== false;

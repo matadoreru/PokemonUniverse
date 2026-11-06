@@ -103,13 +103,24 @@ export type GameSelectionType = GameSelectionMode['type'];
 /** Opciones como máximo de la votación del siguiente minijuego (con menos juegos, se vota entre los que haya). */
 export const NEXT_GAME_VOTE_OPTIONS = 3;
 
+/**
+ * Una opción de la votación del siguiente minijuego: el par juego y modo (`mode` nulo en un juego sin modos). Su `id`
+ * es el del juego si sale una sola vez entre las opciones y `juego:MODO` si sale con varios modos.
+ */
+export interface NextGameVoteOptionView {
+  id: string;
+  game: MiniGameManifest;
+  mode: string | null;
+}
+
+/** Los votos, el recuento (`tallies`) y el ganador van por id de opción. */
 export interface NextGameVoteView {
-  options: MiniGameManifest[];
+  options: NextGameVoteOptionView[];
   eligibleVoterIds: string[];
   votedPlayerIds: string[];
-  ownVoteGameId: string | null;
+  ownVoteOptionId: string | null;
   endsAt: number | null;
-  resolvedGameId: string | null;
+  resolvedOptionId: string | null;
   tallies: Record<string, number> | null;
   nextTransitionAt: number | null;
 }
@@ -148,6 +159,11 @@ export interface RoomView {
   customizedGameIds?: string[];
   sessionMode: SessionMode;
   gameSelectionMode: GameSelectionMode;
+  /**
+   * Modos que pueden salir de cada juego con modos cuando la sesión elige al azar o por votación (los marcados por el
+   * host o, sin marcar, el `mode` de su configuración). Ausente en vistas antiguas.
+   */
+  allowedModes?: Record<string, string[]>;
   nextGameVote: NextGameVoteView | null;
   /** Absent on legacy snapshots; clients wait for a current instance before sending game actions. */
   gameSkipState?: GameSkipStateView | null;
@@ -196,7 +212,8 @@ export interface ClientToServerEvents {
   'room:update-game-config': (payload: { gameId: string; config: unknown }, ack: SocketAck) => void;
   'room:update-session': (payload: { mode: SessionMode }, ack: SocketAck) => void;
   'room:update-game-selection': (payload: { mode: GameSelectionMode }, ack: SocketAck) => void;
-  'room:vote-next-game': (payload: { gameId: string }, ack: SocketAck) => void;
+  'room:update-allowed-modes': (payload: { gameId: string; modes: string[] }, ack: SocketAck) => void;
+  'room:vote-next-game': (payload: { optionId: string }, ack: SocketAck) => void;
   'room:set-role': (payload: { playerId: string; role: AssignableRoomRole }, ack: SocketAck) => void;
   'room:transfer-host': (payload: { playerId: string }, ack: SocketAck) => void;
   'room:kick': (payload: { playerId: string }, ack: SocketAck) => void;

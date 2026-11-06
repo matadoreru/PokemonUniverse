@@ -1,6 +1,6 @@
 import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState } from '@pokemon-universe/shared/public';
-import type { BidBlockInput, BidBlockReason } from '../../room/auction-kit';
-import { amountText } from '../../room/auction-kit';
+import type { BidBlockInput, BidBlockReason, TurnOrderEntry } from '../../room/auction-kit';
+import { amountText, turnOrderEntries, waitTexts } from '../../room/auction-kit';
 
 /**
  * Textos y cálculos de Pokémon Bluff Auction (puros, sin React). La subasta es de turnos: cada jugador sube cuántos
@@ -43,8 +43,25 @@ export function bluffBlockInput(game: PokemonBluffAuctionPublicState, player: Po
     max: game.maxBid,
     turnName,
     unit: UNIT,
-    texts: { ...BLUFF_BLOCK_TEXTS, open: { title: 'Tu turno', text: `Sube a ${game.minimumBid} o más, o pasa y quedas fuera de esta ronda.` } },
+    texts: {
+      ...BLUFF_BLOCK_TEXTS,
+      // Sin turno propio, a quién le toca y cómo va la puja (sin controles grises).
+      ...waitTexts({ turnName, currentBid: game.currentBid, leaderName: game.currentBidderId ? nameOf(game.currentBidderId) : null, unit: UNIT, passedText: 'Estás fuera de esta ronda: vuelves a pujar en la siguiente.', noBidsText: 'Aún no hay pujas en esta ronda.' }),
+      open: { title: 'Tu turno', text: `Sube a ${game.minimumBid} o más, o pasa y quedas fuera de esta ronda.` },
+    },
   };
+}
+
+/** Etiqueta del reloj de la subasta, el único sitio de la cabecera con el turno: «Tu turno», «Turno de Ana». */
+export function bluffTimerLabel(game: Pick<PokemonBluffAuctionPublicState, 'currentTurnPlayerId'>, selfId: string, nameOf: (id: string) => string): string {
+  if (!game.currentTurnPlayerId) return 'Turno de puja';
+  return game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`;
+}
+
+/** Fila del orden de turno de la subasta (vacía fuera de ella). */
+export function bluffTurnOrder(game: PokemonBluffAuctionPublicState, selfId: string, nameOf: (id: string) => string): TurnOrderEntry[] {
+  if (game.phase !== 'ROUND_ACTIVE' || !game.condition) return [];
+  return turnOrderEntries({ order: game.bidOrder.length > 0 ? game.bidOrder : game.playerIds, turnId: game.currentTurnPlayerId, passedIds: game.passedPlayerIds, leaderId: game.currentBidderId }, nameOf, selfId);
 }
 
 /** Etiqueta del plazo del resultado de la ronda: tras la última ronda llega la clasificación, no otra ronda. */
@@ -83,29 +100,31 @@ export function bluffResultReason(result: BluffAuctionRoundResult, nameOf: (id: 
   }
 }
 
-/** `h1` de la pantalla: «Tu turno», «Turno de Ana», «Demuestra tu apuesta», «Ana demuestra», el resultado. */
+/**
+ * `h1` de la pantalla: en la subasta, la ronda («Ronda 2 de 5»; la condición va en grande en la escena y el turno en
+ * el reloj); «Demuestra tu apuesta», «Ana demuestra» o el resultado.
+ */
 export function bluffHeading(game: PokemonBluffAuctionPublicState, selfId: string, nameOf: (id: string) => string): string {
   const result = bluffRoundResult(game);
   if (result) return bluffResultTitle(result, nameOf);
   if (game.phase === 'POKEMON_SEARCH' && game.bidderId) return game.bidderId === selfId ? 'Demuestra tu apuesta' : `${nameOf(game.bidderId)} demuestra`;
-  if (game.phase === 'ROUND_ACTIVE' && game.currentTurnPlayerId) return game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`;
+  if (game.phase === 'ROUND_ACTIVE' && game.condition) return `Ronda ${Math.min(Math.max(1, game.roundNumber), Math.max(1, game.totalRounds))} de ${game.totalRounds}`;
   if (game.phase === 'ROUND_ACTIVE' || game.phase === 'GAME_STARTING' || game.condition === null) return 'Preparando la ronda';
   return 'Subasta cerrada';
 }
 
 /** Estado de un jugador en la mesa de pujas (la columna lateral). */
-export type BluffSeatStatus = 'turn' | 'leading' | 'passed' | 'bidding' | 'demonstrating' | 'waiting';
+export type BluffSeatStatus = 'leading' | 'passed' | 'bidding' | 'demonstrating' | 'waiting';
 
 export function bluffSeatStatus(game: PokemonBluffAuctionPublicState, playerId: string): BluffSeatStatus {
   if (game.phase === 'POKEMON_SEARCH' || game.phase === 'ROUND_RESULTS') return game.bidderId === playerId ? 'demonstrating' : 'waiting';
   if (game.passedPlayerIds.includes(playerId)) return 'passed';
-  if (game.currentTurnPlayerId === playerId) return 'turn';
+  // El turno no se repite en la mesa: vive en el reloj y en el orden de turno.
   if (game.currentBidderId === playerId) return 'leading';
   return 'bidding';
 }
 
 export const SEAT_STATUS_TEXT: Record<BluffSeatStatus, string> = {
-  turn: 'Está pujando',
   leading: 'Va ganando',
   passed: 'Fuera de la ronda',
   bidding: 'En la subasta',

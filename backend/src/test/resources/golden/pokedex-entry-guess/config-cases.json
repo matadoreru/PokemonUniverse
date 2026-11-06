@@ -32,7 +32,8 @@
         "evolution": true,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -65,7 +66,8 @@
         "evolution": true,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -98,7 +100,8 @@
         "evolution": true,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -131,7 +134,8 @@
         "evolution": true,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -164,7 +168,8 @@
         "evolution": true,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -197,7 +202,8 @@
         "evolution": false,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -230,7 +236,8 @@
         "evolution": false,
         "typeCount": false,
         "category": true
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -516,6 +523,86 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      },
+      "publicAttempts": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      },
+      "publicAttempts": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      },
+      "publicAttempts": "x"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 25,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "hints": {
+        "generation": true,
+        "type": true,
+        "evolution": true,
+        "typeCount": false,
+        "category": false
+      },
+      "publicAttempts": null
+    },
     "valid": false
   }
 ]

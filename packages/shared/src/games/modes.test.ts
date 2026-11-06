@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { z } from 'zod';
-import { GAME_MODES, gameModeLabel } from './modes.js';
+import { GAME_MODES, gameModeCount, gameModeLabel, gameModeName } from './modes.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema } from './higher-lower/config.js';
 import { defaultLearnsetGuessConfig, learnsetGuessConfigSchema } from './learnset-guess/config.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema } from './pokedex-distance/config.js';
@@ -75,5 +75,16 @@ describe('gameModeLabel', () => {
     expect(gameModeLabel('higher-lower', null)).toBeNull();
     expect(gameModeLabel('higher-lower', 'ENDLESS')).toBeNull();
     expect(gameModeLabel('toString', { mode: 'CLASSIC' })).toBeNull();
+  });
+});
+
+describe('gameModeCount y gameModeName', () => {
+  it('cuenta los modos (1 sin modos) y nombra cualquier modo del juego, también Clásico', () => {
+    expect(gameModeCount('higher-lower')).toBe(2);
+    expect(gameModeCount('pokemon-bingo')).toBe(1);
+    expect(gameModeName('higher-lower', 'CLASSIC')).toBe('Clásico');
+    expect(gameModeName('higher-lower', 'ENDLESS')).toBe('Racha infinita');
+    expect(gameModeName('higher-lower', 'POINTS')).toBeNull();
+    expect(gameModeName('pokemon-bingo', 'CLASSIC')).toBeNull();
   });
 });

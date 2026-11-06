@@ -16,13 +16,14 @@ public record PokemonCryQuizConfig(
     int roundSeconds,
     int rounds,
     CryVersionMode cryVersion,
-    boolean includeRegionalForms) {
+    boolean includeRegionalForms,
+    boolean publicAttempts) {
 
   /** {@code z.enum(['LATEST', 'LEGACY', 'RANDOM'])}. */
   public enum CryVersionMode { LATEST, LEGACY, RANDOM }
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "rounds", "cryVersion", "includeRegionalForms");
+      Set.of("generations", "roundSeconds", "rounds", "cryVersion", "includeRegionalForms", "publicAttempts");
 
   public PokemonCryQuizConfig {
     generations = List.copyOf(generations);
@@ -31,7 +32,7 @@ public record PokemonCryQuizConfig(
   /** {@code defaultPokemonCryQuizConfig}. */
   public static PokemonCryQuizConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new PokemonCryQuizConfig(generations, 20, 10, CryVersionMode.LATEST, false);
+    return new PokemonCryQuizConfig(generations, 20, 10, CryVersionMode.LATEST, false, true);
   }
 
   /**
@@ -48,6 +49,8 @@ public record PokemonCryQuizConfig(
     var cryVersion =
         config.enumValue("cryVersion", CryVersionMode.class, "cryVersion debe ser LATEST, LEGACY o RANDOM");
     boolean includeRegionalForms = config.bool("includeRegionalForms");
-    return new PokemonCryQuizConfig(generations, roundSeconds, rounds, cryVersion, includeRegionalForms);
+    var publicAttempts = config.boolOrDefault("publicAttempts", true);
+    return new PokemonCryQuizConfig(generations, roundSeconds, rounds, cryVersion, includeRegionalForms,
+        publicAttempts);
   }
 }

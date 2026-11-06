@@ -2,6 +2,8 @@
 .sprite {
   width: 48px;
   height: 48px;
+  /* El sprite trae mucho margen transparente: no ensancha la franja del recuento. */
+  margin-block: -8px;
   object-fit: contain;
   image-rendering: pixelated;
 }
@@ -42,10 +44,6 @@
   }
 }
 @media (min-width: 1600px) and (min-height: 900px) {
-  .sprite {
-    width: 64px;
-    height: 64px;
-  }
   .points {
     font-size: var(--fs-68);
   }

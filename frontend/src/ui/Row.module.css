@@ -84,6 +84,24 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* En una línea desde 1024 px: nombre (se recorta, con `title`) y meta lado a lado. */
+@media (min-width: 1024px) {
+  .inline .text {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  /* El nombre no cede su sitio a la meta (una respuesta larga baja de línea): hasta 14rem y, después, recortado. */
+  .inline .name {
+    flex: 0 0 auto;
+    max-width: 14rem;
+  }
+  .inline .meta {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
 /* Franja enlace: sube 1 px al pasar y baja al pulsar (solo transform); el foco es el anillo común de los enlaces. */
 .link {
   display: block;

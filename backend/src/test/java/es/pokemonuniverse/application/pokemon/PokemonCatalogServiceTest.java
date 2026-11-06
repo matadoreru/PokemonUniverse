@@ -8,6 +8,8 @@ import es.pokemonuniverse.adapters.out.persistence.MoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokedexEntryEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokedexEntryRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
+import es.pokemonuniverse.adapters.out.persistence.PokemonEvolutionEntity;
+import es.pokemonuniverse.adapters.out.persistence.PokemonEvolutionRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
@@ -27,12 +29,14 @@ class PokemonCatalogServiceTest {
 
   private static final Instant NOW = Instant.parse("2026-01-01T00:00:00.123Z");
   private static final String POKEMON = "t2-bulbasaur";
+  private static final String EVOLVED = "t2-ivysaur";
   private static final String[] MOVES = {"t2-placaje", "t2-gruñido"};
 
   @Inject PokemonRepository pokemonRepo;
   @Inject MoveRepository moveRepo;
   @Inject PokemonLevelUpMoveRepository learnsetRepo;
   @Inject PokedexEntryRepository pokedexRepo;
+  @Inject PokemonEvolutionRepository evolutionRepo;
   @Inject PokemonCatalogService service;
 
   @BeforeEach
@@ -43,6 +47,11 @@ class PokemonCatalogServiceTest {
         new String[] {"grass", "poison"}, null, NOW);
     bulbasaur.setEvolution(1, 3);
     pokemonRepo.save(bulbasaur);
+    var ivysaur = PokemonEntity.create(EVOLVED, 9102, "ivysaur", 1, true, new String[] {"overgrow"},
+        new String[] {"grass", "poison"}, null, NOW);
+    ivysaur.setEvolution(2, 3);
+    pokemonRepo.save(ivysaur);
+    evolutionRepo.save(PokemonEvolutionEntity.create("t2-chain", 9101, POKEMON, EVOLVED, NOW));
     moveRepo.save(MoveEntity.create(MOVES[0], "Placaje", "normal", "physical", Map.of("es", "Placaje"), NOW));
     moveRepo.save(MoveEntity.create(MOVES[1], "Gruñido", "normal", "status", null, NOW));
     learnsetRepo.save(PokemonLevelUpMoveEntity.create(POKEMON, MOVES[0], 1, 1));
@@ -57,8 +66,9 @@ class PokemonCatalogServiceTest {
 
   @AfterEach
   void clean() {
-    // Borrar el Pokémon arrastra en cascada sus movimientos por nivel y sus entradas de Pokédex.
+    // Borrar el Pokémon arrastra en cascada sus movimientos por nivel, sus entradas de Pokédex y sus aristas.
     pokemonRepo.deleteById(POKEMON);
+    pokemonRepo.deleteById(EVOLVED);
     for (var id : MOVES) moveRepo.deleteById(id);
     service.refresh();
   }
@@ -83,6 +93,12 @@ class PokemonCatalogServiceTest {
     assertEquals("es", entries.get(0).language());
     assertEquals("Cristal", entries.get(0).versionLabel());
     assertEquals(Optional.of(new PokemonEvolutionInfo(1, 3)), service.catalog().evolutionInfo(POKEMON));
+  }
+
+  @Test
+  void loadsTheEvolutionLinks() {
+    assertEquals(Optional.of(POKEMON), service.catalog().preEvolutionId(EVOLVED));
+    assertEquals(List.of(EVOLVED), service.catalog().evolutionIds(POKEMON));
   }
 
   @Test

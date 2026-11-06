@@ -83,7 +83,8 @@
       "roundSeconds": 10,
       "rounds": 3,
       "hintsEnabled": false,
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

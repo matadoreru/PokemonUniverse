@@ -169,12 +169,17 @@ export interface LevelProgress {
   nextLevelXp: number;
 }
 
+/** «Perfil visible para»: quién ve el nivel, las estadísticas y los logros de la cuenta (el dueño siempre). */
+export type ProfileVisibility = 'EVERYONE' | 'FRIENDS' | 'NOBODY';
+
 export interface UserProfileResponse {
   user: { id: string; username: string; email: string; avatar: import('../avatar.js').AvatarRef; createdAt: string };
   globalStats: { gamesPlayed: number; gamesWon: number; totalPoints: number };
   /** Ausente en el oráculo Node, que no tiene experiencia. */
   progress?: LevelProgress;
   games: Array<MiniGameManifest & { stats: ProfileGameStats }>;
+  /** Ausente en respuestas anteriores al ajuste; sin él vale `EVERYONE`. */
+  profileVisibility?: ProfileVisibility;
 }
 
 export interface GameAssetRequest {

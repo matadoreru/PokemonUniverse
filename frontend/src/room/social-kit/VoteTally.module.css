@@ -8,9 +8,9 @@
   color: var(--sky-2);
 }
 .summary {
-  margin-block: var(--sp-1) var(--sp-3);
+  margin-block: var(--sp-1) var(--sp-2);
   overflow-wrap: anywhere;
-  font: 800 var(--fs-22) / 1.2 var(--font-display);
+  font: 800 var(--fs-18) / 1.25 var(--font-display);
   color: var(--white);
 }
 .tabs {
@@ -35,14 +35,10 @@
 .meta > span {
   max-width: 100%;
 }
-.detail,
-.voters {
+.detail {
   overflow-wrap: anywhere;
   white-space: normal;
   font: 700 var(--fs-13) / 1.25 var(--font-text);
-}
-.detail {
-  flex-basis: 100%;
 }
 /* Respuesta escrita: entera, en su propia línea. */
 .text {
@@ -52,69 +48,138 @@
   font: 800 var(--fs-15) / 1.3 var(--font-text);
   color: var(--ink);
 }
-/* La barra ocupa toda la línea (los chips van debajo): todas las barras miden lo mismo y se comparan a simple vista. */
+/* Barra y fichas de quien votó en una línea (las fichas bajan si no caben). Las barras se llenan respecto a la más votada. */
 .count {
   display: flex;
-  align-items: center;
-  gap: var(--sp-2);
   flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
   min-width: 0;
 }
 .bar {
-  flex: 1 1 auto;
-  min-width: 4rem;
+  flex: 1 1 8rem;
+  min-width: 0;
 }
+/* «N votos» a la derecha de la franja: el número grande, la palabra en pequeño. */
 .votes {
-  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25em;
   /* Ancho fijo («1 voto» y «12 votos» igual): las barras acaban en el mismo sitio. */
-  min-width: 8ch;
-  text-align: end;
+  min-width: 4.5em;
+  justify-content: flex-end;
   white-space: nowrap;
-  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+.votesNumber {
+  font: 800 var(--row-value-fs, var(--fs-26)) / 1 var(--font-display);
   font-variant-numeric: tabular-nums;
 }
-.chips {
+.votesWord {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  color: var(--ink-2);
+}
+/* Primera línea: el Pokémon elegido y las insignias (ganador, las del juego, empate, la propia). */
+.tags {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.tags > span {
+  white-space: normal;
+}
+.pick {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--navy);
+}
+/* Los sprites traen mucho margen transparente: 40 px que no ensanchan la línea (margen negativo). */
+.pickSprite {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  margin-block: -10px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+/* Quién la votó: una ficha (avatar) por voto, en fila; parte de línea si no caben. */
+.voters {
+  display: flex;
+  flex: none;
+  max-width: 100%;
+}
+.voterChips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-1);
 }
-.chips > span {
-  white-space: normal;
+.voter {
+  display: inline-flex;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
 }
-.points {
-  display: inline-block;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+/* Varias vueltas: cada una en su bloque con su título; la que decide, arriba. */
+.rounds {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
 }
-.voters {
-  flex-basis: 100%;
+.round {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.roundTitle {
+  font: 800 var(--fs-15) / 1.2 var(--font-display);
+  color: var(--yellow);
+}
+.roundNote {
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--sky-2);
+}
+.earlier .roundTitle {
+  color: var(--sky-2);
+}
+/* Escritorio: cada franja en una línea (`Row inline`): insignias, barra, fichas y «N votos» a la derecha del nombre, para
+   que todas las opciones de la vuelta que decide quepan sin desplazar. La respuesta escrita (Red Flag) baja a su línea. */
+@media (min-width: 1024px) {
+  .tags {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .count {
+    flex: 1 1 8rem;
+    flex-wrap: nowrap;
+  }
+  .text {
+    order: 1;
+  }
 }
 @media (min-width: 1600px) and (min-height: 900px) {
   .intro {
-    font-size: var(--fs-22);
+    font-size: var(--fs-18);
   }
   .summary {
-    font-size: var(--fs-34);
-  }
-  /* Escritorio grande: las franjas crecen (letra, barra y relleno) para llenar la pantalla de arriba en vez de dejar vacío. */
-  .rows {
-    gap: var(--sp-3);
-    --row-name-fs: var(--fs-22);
-    --row-meta-fs: var(--fs-15);
-    --row-value-fs: var(--fs-34);
-  }
-  .rows.rows > li > * {
-    padding-block: var(--sp-4);
-  }
-  .text {
-    font-size: var(--fs-26);
-  }
-  .votes {
     font-size: var(--fs-22);
   }
+  .rows {
+    --row-name-fs: var(--fs-18);
+  }
+  .text {
+    font-size: var(--fs-18);
+  }
   .detail,
-  .voters {
+  .pick {
     font-size: var(--fs-15);
+  }
+  .roundTitle {
+    font-size: var(--fs-18);
   }
 }
 /* Escritorio bajo (720 px): la pregunta ya está en la ronda; el resumen y las franjas ganan su sitio. */
@@ -123,12 +188,19 @@
     display: none;
   }
   .summary {
-    margin-top: 0;
-    font-size: var(--fs-18);
+    margin-block: 0 var(--sp-1);
   }
-}
-@media (max-width: 639px) {
-  .summary {
-    font-size: var(--fs-18);
+  /* Franjas más bajas para que quepan todas las opciones de la vuelta que decide sin desplazar. */
+  .rows {
+    gap: var(--sp-1);
+  }
+  .rows.rows > li > * {
+    padding-block: var(--sp-1);
+  }
+  .rounds {
+    gap: var(--sp-2);
+  }
+  .round {
+    gap: 2px;
   }
 }

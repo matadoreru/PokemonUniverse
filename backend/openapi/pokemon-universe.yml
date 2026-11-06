@@ -847,6 +847,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+    patch:
+      tags:
+      - auth
+      summary: "Cambiar quién puede ver el perfil (nivel, estadísticas y logros)"
+      operationId: updateProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileSettingsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileSettingsResponse"
+        "400":
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/auth/profile/avatar:
     delete:
       tags:
@@ -1521,6 +1551,38 @@ paths:
                 $ref: "#/components/schemas/TcgCardCatalog.FilterOptions"
         "500":
           description: Catálogo todavía no disponible
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /api/users/{username}/profile:
+    get:
+      tags:
+      - users
+      summary: "Perfil de otra cuenta por su nombre de usuario (sin distinguir mayú\
+        sculas), según su privacidad"
+      operationId: profile_1
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicProfileResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No hay ninguna cuenta con ese nombre
           content:
             application/json:
               schema:
@@ -2927,6 +2989,7 @@ components:
       required:
       - games
       - globalStats
+      - profileVisibility
       - progress
       - user
       type: object
@@ -2941,6 +3004,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ProfileResponse.ProfileGame"
+        profileVisibility:
+          $ref: "#/components/schemas/ProfileVisibility"
+      description: '`profileVisibility` es el ajuste \<\<Perfil visible para\>\>.'
     ProfileResponse.ProfileGame:
       required:
       - description
@@ -3020,6 +3086,38 @@ components:
           format: int32
       description: "Nivel y experiencia: `levelXp` y `nextLevelXp` son la experiencia\
         \ total donde empiezan este nivel y el siguiente."
+    ProfileSettingsRequest:
+      required:
+      - profileVisibility
+      type: object
+      properties:
+        profileVisibility:
+          pattern: ^(EVERYONE|FRIENDS|NOBODY)$
+          type: string
+          enum:
+          - EVERYONE
+          - FRIENDS
+          - NOBODY
+          x-pattern-message: Elige quién puede ver tu perfil
+          x-not-null-message: Elige quién puede ver tu perfil
+      description: "Cuerpo de `PATCH /api/auth/profile`: el ajuste \\<\\<Perfil visible\
+        \ para\\>\\>."
+    ProfileSettingsResponse:
+      required:
+      - profileVisibility
+      type: object
+      properties:
+        profileVisibility:
+          $ref: "#/components/schemas/ProfileVisibility"
+      description: "Respuesta de `PATCH /api/auth/profile`: el ajuste ya guardado."
+    ProfileVisibility:
+      type: string
+      description: "Ajuste \\<\\<Perfil visible para\\>\\> de una cuenta: quién ve\
+        \ su nivel, sus estadísticas y sus logros."
+      enum:
+      - EVERYONE
+      - FRIENDS
+      - NOBODY
     ProgressResponse:
       required:
       - progress
@@ -3029,6 +3127,88 @@ components:
           $ref: "#/components/schemas/ProfileResponse.Progress"
       description: "Respuesta `{\"progress\": ...}` de `GET /api/auth/progress` (ProgressResponse\
         \ en shared)."
+    PublicProfile.Friendship:
+      type: string
+      description: Relación de quien mira con el dueño del perfil.
+      enum:
+      - NONE
+      - PENDING_SENT
+      - PENDING_RECEIVED
+      - FRIENDS
+      - SELF
+    PublicProfileResponse:
+      required:
+      - profile
+      type: object
+      properties:
+        profile:
+          $ref: "#/components/schemas/PublicProfileResponse.Profile"
+      description: "Respuesta `{\"profile\": ...}` de `GET /api/users/{username}/profile`.\
+        \ Con `private: true` no salen `progress`, `stats` ni `achievements` (ni sus\
+        \ claves); `requestId` solo con una solicitud pendiente entre las dos cuentas.\
+        \ `stats` y `achievements` tienen la forma del perfil propio y de `GET /api/achievements`,\
+        \ pero los logros son solo los desbloqueados."
+    PublicProfileResponse.Profile:
+      required:
+      - friendship
+      - private
+      - user
+      - visibility
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/PublicProfileResponse.User"
+        visibility:
+          $ref: "#/components/schemas/ProfileVisibility"
+        friendship:
+          $ref: "#/components/schemas/PublicProfile.Friendship"
+        requestId:
+          type: string
+          nullable: true
+        private:
+          type: boolean
+        progress:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/ProfileResponse.Progress"
+        stats:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/PublicProfileResponse.Stats"
+        achievements:
+          nullable: true
+          allOf:
+          - $ref: "#/components/schemas/AchievementsResponse"
+    PublicProfileResponse.Stats:
+      required:
+      - games
+      - globalStats
+      type: object
+      properties:
+        globalStats:
+          $ref: "#/components/schemas/ProfileResponse.GlobalStats"
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfileResponse.ProfileGame"
+    PublicProfileResponse.User:
+      required:
+      - avatar
+      - id
+      - username
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        avatar:
+          $ref: "#/components/schemas/AvatarRef"
+        createdAt:
+          type: string
+          nullable: true
+      description: "Sin email: solo lo público de la cuenta; sin `createdAt` si el\
+        \ perfil es privado."
     RegisterRequest:
       required:
       - email

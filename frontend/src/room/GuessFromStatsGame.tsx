@@ -6,7 +6,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Bar, cx, TypeBadge } from '../ui';
 import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
-  guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+  guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
 import s from '../games/guess-from-stats/Stats.module.css';
 
@@ -71,7 +71,7 @@ export function GuessFromStatsGame({ room, selfId, onAction }: { room: RoomView;
       detail={({ solve }) => solve ? `Eligió ${solve.submittedPokemon.name}` : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
-      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+      {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
   const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME}

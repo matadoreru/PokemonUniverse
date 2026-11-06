@@ -53,8 +53,10 @@ export interface BidControlsProps {
  * ayuda: «Tu turno», «Ya vas ganando», «Sin presupuesto», «Puja cerrada»…), el presupuesto propio y, debajo, los
  * incrementos (`Pill`s con atajos 1–4 que nunca se disparan escribiendo), el campo numérico, «Pujar N» y «Pasar».
  *
- * Bloqueada, los controles siguen a la vista deshabilitados y «Pujar» dice por qué (el título del bloqueo); quien
- * observa solo ve la placa. Lo escrito se valida en texto bajo el campo (sin alerta: la única región viva es la de la
+ * Sin poder pujar ni pasar (no es tu turno, vas ganando, has pasado, sin presupuesto, puja cerrada) no hay controles
+ * grises: solo la placa con el mensaje en texto («Le toca a Ana. Tú vas ganando con 3») y el presupuesto, que sigue a la
+ * vista (`data-idle`). Si el servidor deja pasar pero no subir (Bluff en la puja máxima), solo queda «Pasar»: sin
+ * campo (su mínima sería imposible), sin incrementos ni «Pujar» grises. Quien observa solo ve la placa. Lo escrito se valida en texto bajo el campo (sin alerta: la única región viva es la de la
  * pantalla) y nunca envía `NaN`, negativos ni más del máximo. Tras un rechazo, el foco vuelve a «Pujar».
  * `data-testid`: `bid-controls`, `bid-submit`, `bid-pass`, `bid-step`.
  */
@@ -100,32 +102,35 @@ export function BidControls({ titleRef, block, min, max, unit = 'monedas', epoch
   }
 
   const participating = block.reason !== 'watching';
+  const idle = participating && !block.canRaise && !block.canPass;
   const tone = REASON_TONE[block.reason];
   return <Panel variant="cream" as="section" {...(className ? { className } : {})} bodyClassName={cx(g.plate, s.plate)} aria-labelledby="bid-controls-title">
-    <div className={g.plateRow} data-testid="bid-controls" data-reason={block.reason}>
+    <div className={g.plateRow} data-testid="bid-controls" data-reason={block.reason} data-idle={idle || undefined}>
       <span className={cx(g.plateIcon, g[`tone_${tone}`], s.icon)}><Icon icon={REASON_ICON[block.reason]} size={32} /></span>
       <div className={cx(g.plateText, s.text)}>
         <span className={g.kicker}>{kicker}</span>
         <h2 id="bid-controls-title" ref={titleRef} tabIndex={-1} className={g.plateTitle}>{block.title}</h2>
-        <p className={cx(g.help, s.help)}>{block.text}</p>
+        <p className={cx(g.help, idle ? s.message : s.help)}>{block.text}</p>
       </div>
       {budget != null && <div className={cx(g.plateAside, s.budget)} data-testid="bid-budget">
         <span className={s.budgetLabel}>Tu presupuesto</span>
         <span className={s.budgetValue}><strong>{safeAmount(budget)}</strong> <small>{unit === 'monedas' && safeAmount(budget) === 1 ? 'moneda' : unit}</small></span>
       </div>}
     </div>
-    {participating && <form className={s.controls} onSubmit={submit} aria-label="Controles de la puja">
-      {steps.length > 0 && <div className={s.steps} role="group" aria-label="Incrementos (atajos 1 a 4)">
+    {participating && !idle && <form className={s.controls} onSubmit={submit} aria-label="Controles de la puja">
+      {block.canRaise && steps.length > 0 && <div className={s.steps} role="group" aria-label="Incrementos (atajos 1 a 4)">
         {steps.map((step) => <Pill key={step.key} size="small" variant="blue" badge={step.shortcut} aria-keyshortcuts={step.shortcut} aria-pressed={amount === step.value}
           disabled={!raising} data-testid="bid-step" onClick={() => setDraft(String(step.value))}>{`${step.label}: ${step.value}`}</Pill>)}
       </div>}
       <div className={s.send}>
-        <Field label={`Tu puja (${unit})`} type="number" inputMode="numeric" min={low} max={Math.max(low, high)} step={1} value={draft} className={cx(s.field)}
-          disabled={!raising} aria-invalid={draftError ? true : undefined} {...(draftError ? { hint: draftError } : {})}
-          onChange={(event) => setDraft(event.target.value)} onBlur={() => { if (block.canRaise) setDraft(String(clampBid(draft, low, high))); }} />
-        <Pill ref={bidRef} type="submit" variant="yellow" icon={Gavel} loading={busy === 'bid'} disabled={!canSend} data-testid="bid-submit" className={cx(s.submit)}>
-          {block.canRaise ? (amount !== null && draftError === null ? `Pujar ${amount}` : 'Pujar') : block.title}
-        </Pill>
+        {block.canRaise && <>
+          <Field label={`Tu puja (${unit})`} type="number" inputMode="numeric" min={low} max={Math.max(low, high)} step={1} value={draft} className={cx(s.field)}
+            disabled={!raising} aria-invalid={draftError ? true : undefined} {...(draftError ? { hint: draftError } : {})}
+            onChange={(event) => setDraft(event.target.value)} onBlur={() => { if (block.canRaise) setDraft(String(clampBid(draft, low, high))); }} />
+          <Pill ref={bidRef} type="submit" variant="yellow" icon={Gavel} loading={busy === 'bid'} disabled={!canSend} data-testid="bid-submit" className={cx(s.submit)}>
+            {amount !== null && draftError === null ? `Pujar ${amount}` : 'Pujar'}
+          </Pill>
+        </>}
         {onPass && <Pill variant="blue" icon={SkipForward} loading={busy === 'pass'} disabled={!block.canPass || busy !== null} data-testid="bid-pass" onClick={pass}>{passLabel}</Pill>}
       </div>
     </form>}

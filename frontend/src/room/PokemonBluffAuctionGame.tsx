@@ -1,11 +1,11 @@
 import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionConfig, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { CheckCircle2, Clock3, Copy, Crown, Eye, Gavel, Hourglass, Mic2, Search, ShieldQuestion, SkipForward, X, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock3, Copy, Crown, Eye, Hourglass, Mic2, Search, ShieldQuestion, SkipForward, X, XCircle } from 'lucide-react';
 import { useMemo, useRef, type ReactNode } from 'react';
 import { Avatar } from '../components/Avatar';
 import {
   ATTEMPT_TEXT, bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffResultTitle, bluffRoundLabel, bluffRoundLines, bluffRoundResult,
-  bluffSeatStatus, bluffSelfVerdict, GAME_NAME, latestBids, PASS_RULE, SEAT_STATUS_TEXT, TIME_RULE, UNIT, type BluffSeatStatus,
+  bluffSeatStatus, bluffSelfVerdict, bluffTimerLabel, bluffTurnOrder, GAME_NAME, latestBids, PASS_RULE, SEAT_STATUS_TEXT, TIME_RULE, UNIT, type BluffSeatStatus,
 } from '../games/pokemon-bluff-auction/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useSfxCue } from '../hooks/useSfxCue';
@@ -17,8 +17,8 @@ import { GuessPanel } from './guess-kit';
 import { playerColor } from './player-color';
 import b from '../games/pokemon-bluff-auction/BluffAuction.module.css';
 
-const SEAT_ICON: Record<BluffSeatStatus, LucideIcon> = { turn: Gavel, leading: Crown, passed: SkipForward, bidding: Hourglass, demonstrating: Search, waiting: Eye };
-const SEAT_TONE: Record<BluffSeatStatus, NonNullable<ChipProps['tone']>> = { turn: 'warn', leading: 'ok', passed: 'neutral', bidding: 'neutral', demonstrating: 'warn', waiting: 'neutral' };
+const SEAT_ICON: Record<BluffSeatStatus, LucideIcon> = { leading: Crown, passed: SkipForward, bidding: Hourglass, demonstrating: Search, waiting: Eye };
+const SEAT_TONE: Record<BluffSeatStatus, NonNullable<ChipProps['tone']>> = { leading: 'ok', passed: 'neutral', bidding: 'neutral', demonstrating: 'warn', waiting: 'neutral' };
 const ATTEMPT_ICON: Record<BluffAuctionAttempt['result'], LucideIcon> = { CORRECT: CheckCircle2, INCORRECT: XCircle, DUPLICATE: Copy };
 const ATTEMPT_TONE: Record<BluffAuctionAttempt['result'], NonNullable<ChipProps['tone']>> = { CORRECT: 'ok', INCORRECT: 'bad', DUPLICATE: 'neutral' };
 
@@ -121,13 +121,12 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: Room
       </div>
     </Panel>;
   } else {
-    const turnText = game.currentTurnPlayerId ? (game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`) : null;
     stage = <AuctionLot kicker={`Ronda ${Math.max(1, game.roundNumber)} · condición`} className={b.lot} unit={UNIT} emptyText="Preparando la primera ronda…"
       item={game.condition && <Condition description={game.condition.description} clauses={game.condition.clauses} />}
       facts={game.condition && <span className={b.rule}>{PASS_RULE}</span>}
-      currentBid={game.currentBid} minimumBid={game.minimumBid}
+      currentBid={game.currentBid} minimumBid={game.minimumBid} maximumBid={game.maxBid}
       leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId, avatar: avatarOf(game.currentBidderId) } : null}
-      turn={turnText && <span className={b.turn}><Icon icon={Clock3} size={18} />{turnText}</span>} />;
+      order={bluffTurnOrder(game, selfId, nameOf)} />;
   }
 
   // --- Lateral ---
@@ -179,7 +178,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: Room
     ? { deadline: game.nextTransitionAt ?? null, serverOffset: offset, label: bluffResultTimerLabel(game) }
     : searching
       ? { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Tiempo restante' }
-      : { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Turno de puja', ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) };
+      : { deadline: game.roundEndsAt ?? null, serverOffset: offset, label: bluffTimerLabel(game, selfId, nameOf), ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) };
   return <AuctionScreen gameName={GAME_NAME} roundNumber={Math.max(1, game.roundNumber)} totalRounds={game.totalRounds} roundLabel={bluffRoundLabel(game)}
     heading={bluffHeading(game, selfId, nameOf)}
     meta={<><Chip tone="info" icon={<Icon icon={Mic2} size={18} />}>Bluff por voz externa</Chip>{!result && !searching && bidSeconds === 0 && <Chip tone="neutral">Sin límite de tiempo</Chip>}</>}

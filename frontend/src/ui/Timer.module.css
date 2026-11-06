@@ -12,6 +12,11 @@
   box-shadow: var(--sh-hard-4);
 }
 .label {
+  /* Una línea con tope de ancho: una etiqueta larga («Turno de Bartolomeo_1999») acaba en puntos suspensivos; entera va
+     en el `aria-label` del número. */
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font: 800 var(--fs-13) / 1.1 var(--font-text);
   text-align: center;
   white-space: nowrap;

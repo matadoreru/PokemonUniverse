@@ -200,3 +200,43 @@ export function bidLog(events: readonly BidEventLike[], nameOf: (id: string) => 
     fresh: index === events.length - 1,
   })).reverse();
 }
+
+/** Estado de un jugador en la fila del orden de turno. */
+export type TurnOrderState = 'turn' | 'leading' | 'passed' | 'waiting';
+
+/** Un puesto de la fila del orden de turno (`AuctionLot`): el estado va también en texto (`stateText`). */
+export interface TurnOrderEntry {
+  id: string;
+  name: string;
+  state: TurnOrderState;
+  /** «le toca», «va ganando», «pasó», «espera»: para lectores y como texto junto al icono. */
+  stateText: string;
+  self: boolean;
+}
+
+const TURN_ORDER_TEXT: Record<TurnOrderState, string> = { turn: 'le toca', leading: 'va ganando', passed: 'pasó', waiting: 'espera' };
+
+/**
+ * Fila del orden de turno de la puja en curso, en el orden del lote: quien tiene el turno, quien va ganando (aunque
+ * figure como pasado) y quien ya pasó.
+ */
+export function turnOrderEntries({ order, turnId, passedIds, leaderId }: { order: readonly string[]; turnId: string | null; passedIds: readonly string[]; leaderId: string | null }, nameOf: (id: string) => string, selfId?: string): TurnOrderEntry[] {
+  return order.map((id) => {
+    const state: TurnOrderState = id === leaderId ? 'leading' : id === turnId ? 'turn' : passedIds.includes(id) ? 'passed' : 'waiting';
+    return { id, name: nameOf(id), state, stateText: TURN_ORDER_TEXT[state], self: id === selfId };
+  });
+}
+
+/**
+ * Textos de la placa sin turno propio (para `BidBlockInput.texts`): a quién le toca y cómo va la puja, en vez de
+ * controles grises. Sin nadie con el turno, vacío (quedan los del kit).
+ */
+export function waitTexts({ turnName, currentBid, leaderName, unit = 'monedas', passedText, noBidsText = 'Aún no hay pujas.' }: { turnName: string | null; currentBid: number | null; leaderName: string | null; unit?: string; passedText: string; noBidsText?: string }): NonNullable<BidBlockInput['texts']> {
+  if (!turnName) return {};
+  const title = `Le toca a ${turnName}`;
+  return {
+    leading: { title, text: `Tú vas ganando con ${amountText(currentBid ?? 0, unit)}.` },
+    waiting: { title, text: currentBid !== null && leaderName ? `Puja actual: ${safeAmount(currentBid)} de ${leaderName}.` : noBidsText },
+    passed: { title: 'Has pasado', text: `${title}. ${passedText}` },
+  };
+}

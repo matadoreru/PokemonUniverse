@@ -339,7 +339,8 @@ public final class PokemonCryQuizEngine implements
             lastRound.cryVersion(), cryPath(state, context), lastRound.solves(), lastRound.attemptCounts())
         : null;
     return new PokemonCryQuizPublicState(ID, state.phase(), state.roundNumber(), state.config().rounds(),
-        state.phase() == GamePhase.ROUND_ACTIVE ? cryPath(state, context) : null, state.attempts(), solvedPlayers,
+        state.phase() == GamePhase.ROUND_ACTIVE ? cryPath(state, context) : null,
+        GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()), solvedPlayers,
         state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(), publicLastRound,
         state.phase() == GamePhase.GAME_RESULTS ? PokemonCryQuizRules.buildPokemonCryResults(state) : null);
   }
@@ -356,7 +357,9 @@ public final class PokemonCryQuizEngine implements
         state.cooldownUntil().get(playerId),
         solve == null ? 0 : solve.points(),
         state.attemptCounts().getOrDefault(playerId, 0),
-        state.lastAttemptResult().get(playerId));
+        state.lastAttemptResult().get(playerId),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            PokemonCryQuizAttempt::playerId, playerId));
   }
 
   /**

@@ -4,8 +4,11 @@
   flex-direction: column;
   gap: var(--sp-3);
 }
-.add {
-  align-self: flex-start;
+/* «Añadir amigo» y «Buscar jugador»: en una línea si caben; a 390 px, una bajo la otra. */
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
 }
 /* Las tres lengüetas caben en una línea también a 390 px: sin sangría lateral y con poco hueco entre ellas. */
 .stack .tabs {

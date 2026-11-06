@@ -13,6 +13,8 @@ export const zoomedPokemonConfigSchema = z.object({
   hintsEnabled: z.boolean(),
   hintKinds: z.array(z.enum(ZOOMED_POKEMON_HINT_KINDS)).transform((values) => [...new Set(values)]),
   includeForms: z.boolean(),
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict();
 
 export type ZoomedPokemonConfig = z.infer<typeof zoomedPokemonConfigSchema>;
@@ -27,4 +29,5 @@ export const defaultZoomedPokemonConfig: ZoomedPokemonConfig = {
   hintsEnabled: false,
   hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'],
   includeForms: true,
+  publicAttempts: true,
 };

@@ -6,11 +6,13 @@ import type { PokeddleClueKey, PokeddleRaceConfig } from './config.js';
 export type PokeddleNumericComparison = 'HIGHER' | 'LOWER' | 'MATCH';
 export type PokeddleTypeComparison = 'EXACT' | 'PARTIAL' | 'NONE';
 export type PokeddleCategoryComparison = 'MATCH' | 'NONE';
+/** Etapa evolutiva: `MATCH` exige etapa y total; misma etapa con otro total es `PARTIAL`; si no, mayor o menor. */
+export type PokeddleEvolutionComparison = PokeddleNumericComparison | 'PARTIAL';
 
 export type PokeddleFeedbackEntry =
   | { kind: 'NUMERIC'; value: number; result: PokeddleNumericComparison }
   | { kind: 'TYPES'; value: PokemonType[]; result: PokeddleTypeComparison }
-  | { kind: 'EVOLUTION'; value: { stage: number; stages: number }; result: PokeddleNumericComparison }
+  | { kind: 'EVOLUTION'; value: { stage: number; stages: number }; result: PokeddleEvolutionComparison }
   | { kind: 'CATEGORY'; value: string; result: PokeddleCategoryComparison }
   | { kind: 'ABILITIES'; value: string[]; result: 'PARTIAL' | 'NONE'; matches: number };
 

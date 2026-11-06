@@ -113,4 +113,16 @@ class PokemonTeamAuctionEngineTest {
     assertEquals("Tu equipo ya está completo.", result.error());
     assertSame(full, result.state());
   }
+
+  /** El BST del lote en subasta no sale en la vista pública (se juzga sin él); sí el de los equipos y los lotes cerrados. */
+  @Test
+  void theLotOnSaleHidesItsBaseStatTotal() throws IOException {
+    var context = context(2);
+    var started = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
+    var view = GoldenReplayer.tree(engine.getPublicState(started, context));
+    var current = view.get("currentPokemon");
+    assertEquals(started.lots().getFirst().id(), current.get("id").getStringValue());
+    assertTrue(current.get("baseStatTotal") == null, "currentPokemon sin baseStatTotal");
+    assertTrue(current.get("legendaryStatus") != null);
+  }
 }

@@ -16,10 +16,11 @@ public record WhosThatPokemonConfig(
     int roundSeconds,
     int rounds,
     boolean hintsEnabled,
-    boolean includeRegionalForms) {
+    boolean includeRegionalForms,
+    boolean publicAttempts) {
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "rounds", "hintsEnabled", "includeRegionalForms");
+      Set.of("generations", "roundSeconds", "rounds", "hintsEnabled", "includeRegionalForms", "publicAttempts");
 
   public WhosThatPokemonConfig {
     generations = List.copyOf(generations);
@@ -28,7 +29,7 @@ public record WhosThatPokemonConfig(
   /** {@code defaultWhosThatPokemonConfig}. */
   public static WhosThatPokemonConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new WhosThatPokemonConfig(generations, 20, 10, false, true);
+    return new WhosThatPokemonConfig(generations, 20, 10, false, true, true);
   }
 
   /**
@@ -43,6 +44,8 @@ public record WhosThatPokemonConfig(
     int rounds = config.integer("rounds", 1, 20);
     boolean hintsEnabled = config.bool("hintsEnabled");
     boolean includeRegionalForms = config.bool("includeRegionalForms");
-    return new WhosThatPokemonConfig(generations, roundSeconds, rounds, hintsEnabled, includeRegionalForms);
+    var publicAttempts = config.boolOrDefault("publicAttempts", true);
+    return new WhosThatPokemonConfig(generations, roundSeconds, rounds, hintsEnabled, includeRegionalForms,
+        publicAttempts);
   }
 }

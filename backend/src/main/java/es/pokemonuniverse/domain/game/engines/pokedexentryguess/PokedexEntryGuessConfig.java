@@ -17,9 +17,11 @@ public record PokedexEntryGuessConfig(
     int roundSeconds,
     int rounds,
     boolean hintsEnabled,
-    PokedexEntryHintConfig hints) {
+    PokedexEntryHintConfig hints,
+    boolean publicAttempts) {
 
-  private static final Set<String> KEYS = Set.of("generations", "roundSeconds", "rounds", "hintsEnabled", "hints");
+  private static final Set<String> KEYS = Set.of("generations", "roundSeconds", "rounds", "hintsEnabled", "hints",
+      "publicAttempts");
 
   public PokedexEntryGuessConfig {
     generations = List.copyOf(generations);
@@ -49,7 +51,7 @@ public record PokedexEntryGuessConfig(
   public static PokedexEntryGuessConfig defaults() {
     var generations = ConfigReader.allGenerations();
     return new PokedexEntryGuessConfig(generations, 25, 10, false,
-        new PokedexEntryHintConfig(true, true, true, false, false));
+        new PokedexEntryHintConfig(true, true, true, false, false), true);
   }
 
   /**
@@ -65,7 +67,8 @@ public record PokedexEntryGuessConfig(
     int rounds = config.integer("rounds", 1, 20);
     boolean hintsEnabled = config.bool("hintsEnabled");
     var hints = PokedexEntryHintConfig.parse(config.object("hints"));
+    var publicAttempts = config.boolOrDefault("publicAttempts", true);
     if (hintsEnabled && !hints.any()) throw config.invalidAt("hints", "Selecciona al menos una pista adicional");
-    return new PokedexEntryGuessConfig(generations, roundSeconds, rounds, hintsEnabled, hints);
+    return new PokedexEntryGuessConfig(generations, roundSeconds, rounds, hintsEnabled, hints, publicAttempts);
   }
 }

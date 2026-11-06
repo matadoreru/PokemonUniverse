@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal de {@code pokeddle-race/rules.ts}. */
+/** Reglas de Pokédle Race (origen: {@code pokeddle-race/rules.ts}; la etapa evolutiva ya no es traducción literal). */
 public final class PokeddleRaceRules {
 
   private PokeddleRaceRules() {}
@@ -20,6 +20,15 @@ public final class PokeddleRaceRules {
   /** {@code secret > guess ? 'HIGHER' : secret < guess ? 'LOWER' : 'MATCH'}. */
   public static String comparePokeddleNumber(int guess, int secret) {
     return secret > guess ? "HIGHER" : secret < guess ? "LOWER" : "MATCH";
+  }
+
+  /**
+   * Etapa evolutiva: verde ({@code MATCH}) solo si coinciden etapa y total; misma etapa con otro total es
+   * {@code PARTIAL}; si la etapa difiere, {@code HIGHER}/{@code LOWER} por la etapa.
+   */
+  public static String comparePokeddleEvolution(EvolutionValue guess, EvolutionValue secret) {
+    if (guess.stage() != secret.stage()) return comparePokeddleNumber(guess.stage(), secret.stage());
+    return guess.stages() == secret.stages() ? "MATCH" : "PARTIAL";
   }
 
   /** Comparación de conjuntos de tipos: igual → {@code EXACT}, alguno en común → {@code PARTIAL}. */
@@ -34,17 +43,16 @@ public final class PokeddleRaceRules {
     return new PokeddleFeedbackEntry.Numeric(value, comparePokeddleNumber(value, secret));
   }
 
-  private static int orOne(Integer value) {
-    return value == null ? 1 : value;
-  }
-
   private static List<String> abilities(Pokemon pokemon) {
     return pokemon.abilities() == null ? List.of() : pokemon.abilities();
   }
 
-  /** Las pistas se añaden en el orden de {@code POKEDDLE_CLUE_KEYS}, igual que la cadena de {@code if} de TS. */
+  /**
+   * Las pistas se añaden en el orden de {@code POKEDDLE_CLUE_KEYS}, igual que la cadena de {@code if} de TS. La etapa
+   * evolutiva sale de {@code evolutions}, la de la partida (solo con las generaciones elegidas).
+   */
   public static Map<String, PokeddleFeedbackEntry> buildPokeddleFeedback(Pokemon guess, Pokemon secret,
-      PokeddleRaceConfig config) {
+      PokeddleRaceConfig config, Map<String, EvolutionValue> evolutions) {
     var enabled = new HashSet<>(config.activeClues());
     var feedback = new LinkedHashMap<String, PokeddleFeedbackEntry>();
     if (enabled.contains("generation")) feedback.put("generation", numeric(guess.generation(), secret.generation()));
@@ -72,9 +80,9 @@ public final class PokeddleRaceRules {
     if (enabled.contains("height")) feedback.put("height", numeric(guess.heightDecimeters(), secret.heightDecimeters()));
     if (enabled.contains("weight")) feedback.put("weight", numeric(guess.weightHectograms(), secret.weightHectograms()));
     if (enabled.contains("evolutionStage")) {
-      feedback.put("evolutionStage", new PokeddleFeedbackEntry.Evolution(
-          new EvolutionValue(orOne(guess.evolutionStage()), orOne(guess.evolutionStageCount())),
-          comparePokeddleNumber(orOne(guess.evolutionStage()), orOne(secret.evolutionStage()))));
+      var guessed = evolution(evolutions, guess);
+      feedback.put("evolutionStage", new PokeddleFeedbackEntry.Evolution(guessed,
+          comparePokeddleEvolution(guessed, evolution(evolutions, secret))));
     }
     if (enabled.contains("legendaryStatus")) {
       var guessed = Objects.requireNonNullElse(guess.legendaryStatus(), "NORMAL");
@@ -93,6 +101,11 @@ public final class PokeddleRaceRules {
           matches != 0 ? "PARTIAL" : "NONE", matches));
     }
     return feedback;
+  }
+
+  /** Intento y secreto están siempre en el pool; fuera de él (no debería pasar) cuenta como 1/1. */
+  private static EvolutionValue evolution(Map<String, EvolutionValue> evolutions, Pokemon pokemon) {
+    return evolutions.getOrDefault(pokemon.id(), new EvolutionValue(1, 1));
   }
 
   /** Veracidad de JS: {@code 0}, {@code ''} y {@code null} cuentan como ausentes. */

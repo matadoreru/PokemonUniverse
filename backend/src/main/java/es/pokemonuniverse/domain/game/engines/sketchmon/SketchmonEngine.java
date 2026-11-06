@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -535,7 +536,7 @@ public final class SketchmonEngine
             Math.min(lapStart + playerCount, totalRounds)))
         .strokes(state.strokes())
         .visibleHints(state.visibleHints())
-        .attempts(state.attempts())
+        .attempts(GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()))
         .scores(state.scores())
         .roundStartedAt(state.roundStartedAt())
         .roundEndsAt(state.roundEndsAt())
@@ -560,12 +561,15 @@ public final class SketchmonEngine
           pokemon.name(),
           previewVisible ? pokemon.sprite() : null,
           previewEndsAt,
-          state.config().memoryPreviewEnabled() ? List.of() : pokemon.types())).orElse(null));
+          state.config().memoryPreviewEnabled() ? List.of() : pokemon.types())).orElse(null),
+          GuessingRound.guideAttempts(state.config().publicAttempts(), state.attempts()));
     }
     return new SketchmonPlayerState.Guesser(
         state.phase() == GamePhase.ROUND_ACTIVE && !playerId.equals(state.drawerId()),
         state.cooldownUntil().get(playerId),
-        state.attemptCounts().getOrDefault(playerId, 0));
+        state.attemptCounts().getOrDefault(playerId, 0),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            SketchmonAttempt::playerId, playerId));
   }
 
   @Override

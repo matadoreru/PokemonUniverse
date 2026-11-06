@@ -425,7 +425,8 @@
       "rounds": 3,
       "paletteSize": 8,
       "hintsEnabled": false,
-      "hintKinds": []
+      "hintKinds": [],
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

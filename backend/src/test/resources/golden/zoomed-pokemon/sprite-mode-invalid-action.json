@@ -173,7 +173,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

@@ -35,7 +35,8 @@
       "laps": 1,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -64,7 +65,8 @@
       "laps": 1,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -87,7 +89,8 @@
       "laps": 1,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -110,7 +113,8 @@
       "laps": 3,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -133,7 +137,8 @@
       "laps": 2,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -156,7 +161,8 @@
       "laps": 1,
       "hintsEnabled": true,
       "memoryPreviewEnabled": true,
-      "includeForms": true
+      "includeForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -179,7 +185,8 @@
       "laps": 1,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -418,6 +425,91 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 90,
+      "laps": 1,
+      "hintsEnabled": false,
+      "memoryPreviewEnabled": false,
+      "includeForms": false,
+      "publicAttempts": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 90,
+      "laps": 1,
+      "hintsEnabled": false,
+      "memoryPreviewEnabled": false,
+      "includeForms": false,
+      "publicAttempts": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 90,
+      "laps": 1,
+      "hintsEnabled": false,
+      "memoryPreviewEnabled": false,
+      "includeForms": false,
+      "publicAttempts": "x"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "roundSeconds": 90,
+      "laps": 1,
+      "hintsEnabled": false,
+      "memoryPreviewEnabled": false,
+      "includeForms": false,
+      "publicAttempts": null
+    },
     "valid": false
   }
 ]

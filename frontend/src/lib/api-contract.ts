@@ -1,4 +1,4 @@
-import type { AuthUser, ChangelogEntry, FeedbackItem, LevelProgress } from '@pokemon-universe/shared/public';
+import type { AuthUser, ChangelogEntry, FeedbackItem, LevelProgress, UserProfileResponse } from '@pokemon-universe/shared/public';
 import type { paths } from './api-types';
 
 /** Cuerpo JSON de una respuesta del contrato OpenAPI del backend (tipos generados en api-types.ts). */
@@ -28,6 +28,13 @@ export type ChangelogResponse = { entries: Bridge<JsonBody<'/api/changelog', 'ge
 export type FeedbackCreateResponse = { feedback: Bridge<JsonBody<'/api/feedback', 'post', 201>['feedback'], FeedbackItem> };
 export type AchievementsResponse = JsonBody<'/api/achievements', 'get', 200>;
 export type AchievementResponse = AchievementsResponse['achievements'][number];
+type PublicProfileWire = JsonBody<'/api/users/{username}/profile', 'get', 200>['profile'];
+/**
+ * Perfil de otra cuenta (`/u/:username`): sin `progress`, `stats` ni `achievements` si es privado para quien mira.
+ * `stats` con los tipos de shared del perfil propio (mismo motivo que `ProfileResponse`: arrays `readonly`).
+ */
+export type PublicProfileResponse = Omit<PublicProfileWire, 'stats'> & { stats?: Pick<UserProfileResponse, 'globalStats' | 'games'> | null };
+export type ProfileSettingsResponse = JsonBody<'/api/auth/profile', 'patch', 200>;
 export type FriendsResponse = JsonBody<'/api/friends', 'get', 200>;
 export type FriendRequestResponse = JsonBody<'/api/friends/requests', 'post', 201>['request'];
 export type FriendResponse = JsonBody<'/api/friends/requests/{id}/accept', 'post', 200>['friend'];

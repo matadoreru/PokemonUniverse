@@ -1,4 +1,4 @@
-import { NEXT_GAME_VOTE_OPTIONS, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type GameSelectionType, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
+import { gameModeCatalog, NEXT_GAME_VOTE_OPTIONS, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type GameSelectionType, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
 import { AlertCircle, Check, ListOrdered, LockKeyhole, Settings2, Shuffle, Vote } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { GameLoadingFallback } from '../components/LoadingFallback';
@@ -6,6 +6,7 @@ import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, StateBox } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { summarizeGameConfig } from './game-config-summary';
+import { SessionModesProvider } from './GameModeField';
 import g from './GameSelectionConfig.module.css';
 import { playerRangeLabel } from './lobby-state';
 
@@ -17,6 +18,19 @@ export function gameAvailabilityReason(game: MiniGameManifest, playerCount: numb
 
 export function rotationGameConfig(room: RoomView | undefined, gameId: string): unknown {
   return room?.gameConfigs?.[gameId] ?? (room?.selectedGameId === gameId ? room.selectedGameConfig : {});
+}
+
+/**
+ * Modos que pueden salir de `gameId` al azar o por votación: los de la vista o, en una vista sin ellos, el `mode` de su
+ * configuración (como el servidor). Vacía si el juego no tiene modos.
+ */
+export function allowedModesOf(room: RoomView, gameId: string): string[] {
+  const catalog = gameModeCatalog(gameId);
+  if (!catalog) return [];
+  const allowed = room.allowedModes?.[gameId]?.filter((mode) => catalog.modes.includes(mode)) ?? [];
+  if (allowed.length > 0) return allowed;
+  const mode = (rotationGameConfig(room, gameId) as { mode?: unknown } | null)?.mode;
+  return [typeof mode === 'string' && catalog.modes.includes(mode) ? mode : 'CLASSIC'];
 }
 
 export function rotationGameReadinessReason(room: RoomView, game: MiniGameManifest, playerCount: number): string | null {
@@ -48,10 +62,18 @@ const ORDER_CHOICES: { type: GameSelectionType; icon: typeof Shuffle; title: str
   { type: 'VOTE', icon: Vote, title: 'Votación' },
 ];
 
-/** Qué hará el modo elegido con los juegos compatibles de la selección. */
-export function gameOrderHint(type: GameSelectionType, compatibleCount: number, selectedCount: number): string {
+/**
+ * Qué hará el modo elegido con los juegos compatibles de la selección. `pairCount` cuenta las opciones al azar o por
+ * votación: cada modo marcado de un juego es una opción más.
+ */
+export function gameOrderHint(type: GameSelectionType, compatibleCount: number, selectedCount: number, pairCount = compatibleCount): string {
   if (selectedCount === 0) return 'Elige al menos un minijuego.';
   if (compatibleCount === 0) return 'Ninguno de los minijuegos elegidos admite a los jugadores de ahora.';
+  if (type !== 'ORDER' && pairCount > compatibleCount) {
+    return type === 'RANDOM'
+      ? `Cada partida sale al azar entre ${pairCount} opciones de minijuego y modo, sin repetir la anterior.`
+      : `Tras cada partida se vota entre ${Math.min(NEXT_GAME_VOTE_OPTIONS, pairCount)} de las ${pairCount} opciones de minijuego y modo.`;
+  }
   if (compatibleCount === 1) return 'Con un solo minijuego compatible, se juega siempre ese.';
   if (type === 'ORDER') return `Se juegan los ${compatibleCount} minijuegos en el orden en que los elegiste y se vuelve a empezar.`;
   if (type === 'RANDOM') return `Cada partida sale al azar entre los ${compatibleCount} minijuegos, sin repetir el anterior.`;
@@ -61,6 +83,8 @@ export function gameOrderHint(type: GameSelectionType, compatibleCount: number, 
 interface OrderProps {
   mode: GameSelectionMode;
   compatibleCount: number;
+  /** Opciones (juego y modo) entre los compatibles; por defecto, una por juego. */
+  pairCount?: number;
   disabled: boolean;
   /** Falso cuando el aviso ya se pinta en otro sitio (Lobby lo sube con la selección vacía). */
   showHint?: boolean;
@@ -68,12 +92,12 @@ interface OrderProps {
 }
 
 /** Frase de estado del modo de orden: la única región viva de la pestaña. */
-export function GameOrderHint({ mode, compatibleCount }: { mode: GameSelectionMode; compatibleCount: number }) {
-  return <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount, mode.gameIds.length)}</p>;
+export function GameOrderHint({ mode, compatibleCount, pairCount = compatibleCount }: { mode: GameSelectionMode; compatibleCount: number; pairCount?: number }) {
+  return <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount, mode.gameIds.length, pairCount)}</p>;
 }
 
 /** Pestaña «Modo y sesión»: en qué orden salen los minijuegos elegidos (por orden, al azar o por votación). */
-export function GameOrderChoice({ mode, compatibleCount, disabled, showHint = true, onChange }: OrderProps) {
+export function GameOrderChoice({ mode, compatibleCount, pairCount = compatibleCount, disabled, showHint = true, onChange }: OrderProps) {
   return <div>
     <div className={g.choices} role="group" aria-label="Orden de los minijuegos">
       {ORDER_CHOICES.map((choice) => (
@@ -81,7 +105,7 @@ export function GameOrderChoice({ mode, compatibleCount, disabled, showHint = tr
         <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={mode.type === choice.type ? 'selected' : 'idle'} {...(disabled ? {} : { onSelect: () => { if (choice.type !== mode.type) onChange({ type: choice.type, gameIds: mode.gameIds }); } })} />
       ))}
     </div>
-    {showHint && <GameOrderHint mode={mode} compatibleCount={compatibleCount} />}
+    {showHint && <GameOrderHint mode={mode} compatibleCount={compatibleCount} pairCount={pairCount} />}
   </div>;
 }
 
@@ -91,13 +115,15 @@ interface ConfigProps {
   playerCount: number;
   disabled: boolean;
   onConfig(gameId: string, config: unknown): Promise<void>;
+  /** Al azar o por votación: los modos marcados de un juego con modos. */
+  onAllowedModes?(gameId: string, modes: string[]): void;
 }
 
 /**
  * Pestaña «Configuración»: los ajustes de cada minijuego elegido. Con varios, una lista en el orden de la selección
  * (estado y resumen de cada uno) y el editor del que se ajusta; con uno, solo su editor.
  */
-export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onConfig }: ConfigProps) {
+export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onConfig, onAllowedModes }: ConfigProps) {
   const games = room.gameSelectionMode.gameIds
     .map((gameId) => room.availableGames.find((game) => game.id === gameId))
     .filter((game): game is MiniGameManifest => Boolean(game));
@@ -122,6 +148,10 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
   const editor = editingGame ? (() => {
     const client = clientGameRegistry.get(editingGame.id);
     const { skipReason, reason } = status(editingGame);
+    // Al azar o por votación, el «Modo» del juego pasa a ser «Modos que pueden salir» (varios a la vez).
+    const sessionModes = room.gameSelectionMode.type !== 'ORDER' && gameModeCatalog(editingGame.id) && onAllowedModes
+      ? { gameId: editingGame.id, allowed: allowedModesOf(room, editingGame.id), onChange: (modes: string[]) => onAllowedModes(editingGame.id, modes) }
+      : null;
     return <Panel key={editingGame.id} variant="cream" as="div">
       <div className={g.editorHead}>
         <h3 className={g.title}><GameArt gameId={editingGame.id} size={22} /> Ajustes de {editingGame.name}</h3>
@@ -137,7 +167,9 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
         : reason && <p className={cx(g.editorNote, g.editorNoteBad)} role="status">{reason}</p>}
       <div className={g.editorBody}>
         {disabled && <p className={g.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar estos ajustes.</p>}
-        <Suspense fallback={<GameLoadingFallback compact />}><client.ConfigPanel config={rotationGameConfig(room, editingGame.id)} disabled={disabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
+        <SessionModesProvider value={sessionModes}>
+          <Suspense fallback={<GameLoadingFallback compact />}><client.ConfigPanel config={rotationGameConfig(room, editingGame.id)} disabled={disabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
+        </SessionModesProvider>
       </div>
     </Panel>;
   })() : null;

@@ -42,7 +42,7 @@ class PokeTabooEngineTest {
   }
 
   private PokeTabooState started(GameContext context) {
-    var config = new PokeTabooConfig(List.of(1), 30, 1, true);
+    var config = new PokeTabooConfig(List.of(1), 30, 1, true, true);
     return engine.start(engine.createInitialState(config, context), context);
   }
 
@@ -107,7 +107,7 @@ class PokeTabooEngineTest {
   void needsTheManifestPlayersAndAPool() {
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(engine.defaultConfig(), context(1)));
     assertEquals("Se necesitan al menos " + engine.manifest().minPlayers() + " jugadores.", error.getMessage());
-    var emptyPool = new PokeTabooConfig(List.of(9), 30, 1, true);
+    var emptyPool = new PokeTabooConfig(List.of(9), 30, 1, true, true);
     error = assertThrows(EngineException.class, () -> engine.createInitialState(emptyPool, context(2)));
     assertEquals("No hay Pokémon disponibles para esa configuración.", error.getMessage());
   }

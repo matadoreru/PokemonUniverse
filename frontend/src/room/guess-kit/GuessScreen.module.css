@@ -135,14 +135,17 @@
   .side {
     height: 100%;
   }
-  /* El primero (marcador) mide lo que necesita con tope; el último (intentos) llena el resto. */
+  /*
+   * El primero (marcador) mide lo que necesita con tope; el último (intentos) llena solo lo que sobra y desplaza su
+   * contenido: con base 0 nunca crece a costa del marcador por largo que sea su lista.
+   */
   .side > :first-child:not(:last-child) {
     flex: 0 1 auto;
     min-height: 0;
     max-height: 60%;
   }
   .side > :last-child {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-height: 8rem;
     max-height: none;
   }

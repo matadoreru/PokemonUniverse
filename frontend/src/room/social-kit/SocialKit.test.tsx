@@ -103,18 +103,53 @@ describe('social-kit: recuento', () => {
   const tallyOptions = options.map(({ id, name, detail }) => ({ id, name, detail }));
   const voterName = (id: string) => members.find((entry) => entry.id === id)?.displayName ?? id;
 
-  it('con segunda vuelta: pestaña por vuelta (abierta la que decide), barras, votos en texto, quién votó y la ganadora', () => {
+  it('con segunda vuelta: cada vuelta en su bloque visible (primero la que decide), barras y «N votos» sin puntos', () => {
     const rounds = [{ number: 1, candidateIds: ['p1', 'p2', 'p3'], votes: { p1: 'p2', p2: 'p1' } }, { number: 2, candidateIds: ['p1', 'p2'], votes: { p1: 'p2', p3: 'p2', p2: 'p1' } }];
-    const html = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={['p2']} voterName={voterName} points={(id) => (id === 'p2' ? 3 : 0)} intro="¿Quién llegaría tarde?" />);
+    const html = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={['p2']} voterName={voterName} intro="¿Quién llegaría tarde?" />);
     expect(html).toContain('Gana Psyduck con 2 votos tras la segunda vuelta.');
-    expect(html).toContain('Primera vuelta');
-    expect(html).toMatch(/aria-selected="true"[^>]*>(<[^>]+>)*Segunda vuelta/);
-    expect(html.match(/data-testid="tally-row"/g)).toHaveLength(2);
-    expect(html).toContain('2 votos');
-    expect(html).toContain('Votos de Ana y Carla');
+    // Sin pestañas: las dos vueltas a la vista, cada una con su título; la que decide, arriba.
+    expect(html).not.toMatch(/role="tab"|aria-selected/);
+    expect(html.match(/data-tally-round=/g)).toHaveLength(2);
+    expect(html).toMatch(/data-tally-round="2"[^]*Segunda vuelta[^]*data-tally-round="1"[^]*Primera vuelta/);
+    expect(html.match(/data-testid="tally-row"/g)).toHaveLength(5);
+    expect(html).toMatch(/data-testid="tally-votes"[^>]*>(<[^>]+>)*2(<[^>]+>|\s)*votos/);
     expect(html).toContain('Ganadora');
-    expect(html).toContain('+3');
     expect(html).toContain('role="meter"');
+    // Cada franja en una línea en escritorio (`Row inline`), para que quepan sin desplazar.
+    expect(html.match(/class="[^"]*_inline_/g)).toHaveLength(5);
+    // Los puntos ya están en el lateral «Puntos de la ronda»: nada de «+N» en el recuento.
+    expect(html).not.toMatch(/>\+\d/);
+  });
+
+  it('la barra se llena respecto a la más votada de la vuelta', () => {
+    const rounds = [{ number: 1, candidateIds: ['p1', 'p2', 'p3'], votes: { p1: 'p2', p3: 'p2', p2: 'p1' } }];
+    const html = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={['p2']} voterName={voterName} />);
+    expect(html).toMatch(/aria-valuenow="2"[^>]*aria-valuemax="2"|aria-valuemax="2"[^>]*aria-valuenow="2"/);
+    expect(html).toMatch(/aria-valuenow="1"[^>]*aria-valuemax="2"|aria-valuemax="2"[^>]*aria-valuenow="1"/);
+  });
+
+  it('quién votó a quién: una ficha con avatar por voto, con el nombre en `title` y en texto para lectores', () => {
+    const rounds = [{ number: 1, candidateIds: ['p1', 'p2', 'p3'], votes: { p1: 'p2', p3: 'p2', p2: 'p1' } }];
+    const html = renderToStaticMarkup(<VoteTally idBase="t" options={tallyOptions} rounds={rounds} winnerIds={['p2']} voterName={voterName} voterAvatar={() => ({ type: 'DEFAULT' })} />);
+    const voters = [...html.matchAll(/data-testid="tally-voter"[^>]*title="([^"]+)"|title="([^"]+)"[^>]*data-testid="tally-voter"/g)].map((match) => match[1] ?? match[2]);
+    expect(voters).toEqual(['Ana', 'Carla', 'Bruno']);
+    expect(html).toContain('<span class="sr-only">Votos de Ana y Carla</span>');
+    expect(html).toContain('<span class="sr-only">Votos de Bruno</span>');
+    // Ya no hay línea de texto visible «Votos de …»: solo la de lectores.
+    expect(html.match(/Votos de Ana y Carla/g)).toHaveLength(1);
+  });
+
+  it('insignias propias del juego y el Pokémon elegido (sprite pequeño con su nombre)', () => {
+    const rounds = [{ number: 1, candidateIds: ['p1', 'p2'], votes: { p3: 'p2', p1: 'p2' } }];
+    const fake = [
+      { id: 'p1', name: 'Ana', pick: { name: 'Lapras', sprite: '/lapras.png' } },
+      { id: 'p2', name: 'Bruno', pick: { name: 'Snorlax', sprite: '/snorlax.png' }, tags: [{ key: 'fake', label: 'Fake' }] },
+    ];
+    const html = renderToStaticMarkup(<VoteTally idBase="t" options={fake} rounds={rounds} winnerIds={['p2']} voterName={voterName} winnerLabel="Más votado" />);
+    expect(html).toMatch(/data-tally-winner="true"[^]*Más votado[^]*Fake</);
+    expect(html).not.toContain('Fake ·');
+    expect(html).toMatch(/<img[^>]*src="\/lapras.png"[^>]*alt=""|<img[^>]*alt=""[^>]*src="\/lapras.png"/);
+    expect(html).toMatch(/data-testid="tally-pick"[^>]*>(<[^>]+>)*(<span class="sr-only">eligió <\/span>)?Lapras|data-testid="tally-pick"[^]*?Lapras/);
   });
 
   it('empate en la vuelta final: «Empate» explícito y victoria compartida', () => {

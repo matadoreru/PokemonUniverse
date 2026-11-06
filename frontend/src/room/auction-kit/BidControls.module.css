@@ -37,6 +37,10 @@
   font: 800 var(--fs-15) / 1 var(--font-text);
   color: var(--ink-2);
 }
+/* Sin poder pujar ni pasar, el mensaje es lo único que hay: siempre a la vista (también en el móvil y en escritorio bajo). */
+.message {
+  color: var(--ink);
+}
 .controls {
   display: flex;
   flex-wrap: wrap;

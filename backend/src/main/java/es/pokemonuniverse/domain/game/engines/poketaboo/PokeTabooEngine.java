@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
@@ -323,7 +324,8 @@ public final class PokeTabooEngine
         Math.max(0, state.roundNumber() - 1) / state.playerIds().size() + 1);
     return new PokeTabooPublicState(ID, state.phase(), state.roundNumber(), totalRounds, lapNumber,
         state.config().laps(), state.descriptorId(), nextDescriptorId, state.descriptorOrder(), state.hints(),
-        state.attempts(), state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
+        GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()),
+        state.scores(), state.roundStartedAt(), state.roundEndsAt(), state.nextTransitionAt(),
         state.phase() == GamePhase.ROUND_RESULTS ? state.lastRound() : null,
         state.phase() == GamePhase.GAME_RESULTS ? PokeTabooRules.buildPokeTabooResults(state) : null);
   }
@@ -335,12 +337,15 @@ public final class PokeTabooEngine
     if (state.phase() == GamePhase.ROUND_ACTIVE && playerId.equals(state.descriptorId())) {
       var target = byId(context, state.targetPokemonId());
       return new PokeTabooPlayerState.Descriptor(target != null,
-          target != null ? PokeTabooSecretPokemon.of(target) : null);
+          target != null ? PokeTabooSecretPokemon.of(target) : null,
+          GuessingRound.guideAttempts(state.config().publicAttempts(), state.attempts()));
     }
     return new PokeTabooPlayerState.Guesser(
         state.phase() == GamePhase.ROUND_ACTIVE && !playerId.equals(state.descriptorId()),
         state.cooldownUntil().get(playerId),
-        state.attemptCounts().getOrDefault(playerId, 0));
+        state.attemptCounts().getOrDefault(playerId, 0),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            PokeTabooAttempt::playerId, playerId));
   }
 
   @Override

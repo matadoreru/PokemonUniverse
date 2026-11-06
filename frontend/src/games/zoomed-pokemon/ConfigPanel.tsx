@@ -1,6 +1,7 @@
 import type { ZoomedPokemonConfig, ZoomedPokemonHintKind, ZoomedPokemonImageMode } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 export { validateZoomedPokemonConfig } from './validation';
@@ -47,5 +48,6 @@ export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { confi
       <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
     </div>}
     <p className={s.note}>Nunca se usa la altura ni el peso como pista.</p>
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

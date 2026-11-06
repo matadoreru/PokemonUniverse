@@ -123,8 +123,10 @@ export interface SketchmonPublicState {
 }
 
 export type SketchmonPlayerState =
-  | { role: 'DRAWER'; canDraw: boolean; secretPokemon: SketchmonDrawerPokemon | null }
-  | { role: 'GUESSER'; canGuess: boolean; cooldownUntil: number | null; attemptCount: number }
+  /** `attempts` del dibujante/descriptor: con `publicAttempts` apagado, los fallos de todos. */
+  | { role: 'DRAWER'; canDraw: boolean; secretPokemon: SketchmonDrawerPokemon | null; attempts?: SketchmonAttempt[] }
+  /** `attempts`: solo con `publicAttempts` apagado, los fallos propios de la ronda. */
+  | { role: 'GUESSER'; canGuess: boolean; cooldownUntil: number | null; attemptCount: number; attempts?: SketchmonAttempt[] }
   | { role: 'SPECTATOR' };
 
 const pointSchema = z.object({ x: z.number().min(0).max(1), y: z.number().min(0).max(1) }).strict();

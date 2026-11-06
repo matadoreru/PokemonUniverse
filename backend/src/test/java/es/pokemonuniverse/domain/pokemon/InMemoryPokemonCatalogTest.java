@@ -130,10 +130,24 @@ class InMemoryPokemonCatalogTest {
   }
 
   @Test
+  void evolutionLinksAreIndexedBothWaysAndDropUnknownPokemon() {
+    var catalog = new InMemoryPokemonCatalog(List.of(pokemon("a", 1, true), pokemon("b", 2, true),
+        pokemon("c", 3, true)), List.of(), List.of(), Map.of(), List.of(),
+        List.of(new PokemonEvolutionLink("a", "b"), new PokemonEvolutionLink("a", "c"),
+            new PokemonEvolutionLink("c", "missing"), new PokemonEvolutionLink("ghost", "b")));
+    assertEquals(Optional.of("a"), catalog.preEvolutionId("b"));
+    assertEquals(Optional.empty(), catalog.preEvolutionId("a"));
+    assertEquals(List.of("b", "c"), catalog.evolutionIds("a"));
+    assertEquals(List.of(), catalog.evolutionIds("c"));
+  }
+
+  @Test
   void implementsBothExtendedCatalogInterfaces() {
     PokemonCatalog plain = new InMemoryPokemonCatalog(List.of(pokemon("a", 1, true)));
     assertTrue(plain instanceof LearnsetPokemonCatalog);
     assertTrue(plain instanceof PokedexEntryPokemonCatalog);
+    assertTrue(plain instanceof EvolutionPokemonCatalog);
+    assertEquals(List.of(), ((EvolutionPokemonCatalog) plain).evolutionIds("a"));
     assertEquals(List.of(), ((LearnsetPokemonCatalog) plain).levelUpMoves("a", 1));
     assertEquals(Optional.empty(), ((LearnsetPokemonCatalog) plain).evolutionInfo("a"));
   }

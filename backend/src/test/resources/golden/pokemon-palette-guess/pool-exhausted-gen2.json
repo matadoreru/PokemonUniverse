@@ -156,7 +156,8 @@
       "hintsEnabled": false,
       "hintKinds": [
         "GENERATION"
-      ]
+      ],
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

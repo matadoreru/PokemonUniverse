@@ -58,7 +58,7 @@ class PokedexEntryGuessEngineTest {
 
   private static PokedexEntryGuessConfig config(List<Integer> generations, int rounds) {
     return new PokedexEntryGuessConfig(generations, 25, rounds, false,
-        new PokedexEntryHintConfig(true, true, true, false, false));
+        new PokedexEntryHintConfig(true, true, true, false, false), true);
   }
 
   private static Pokemon golden(String id) {

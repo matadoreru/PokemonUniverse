@@ -1,6 +1,7 @@
 import type { PokemonPaletteGuessConfig, PokemonPaletteHintKind } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
@@ -37,5 +38,6 @@ export function PokemonPaletteGuessConfigPanel({ config, disabled, onChange }: {
       <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
       <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
     </div>}
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

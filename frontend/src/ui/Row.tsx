@@ -19,14 +19,19 @@ export interface RowProps {
    */
   highlight?: boolean;
   disconnected?: boolean;
+  /**
+   * En una línea desde 1024 px: la meta va a la derecha del nombre en vez de debajo (listas que tienen que caber sin
+   * desplazar, como el recuento de votos). El nombre se recorta con `title`; en móvil, como siempre.
+   */
+  inline?: boolean;
   children?: ReactNode;
 }
 
 /** Franja de lista (jugador, marcador): banda de color a la izquierda; el color nunca va solo. */
-export function Row({ rank, avatar, name, meta, value, color, self, highlight, disconnected, children }: RowProps) {
+export function Row({ rank, avatar, name, meta, value, color, self, highlight, disconnected, inline, children }: RowProps) {
   const style = color ? ({ '--player': color } as CSSProperties) : undefined;
   return (
-    <div className={cx(s.row, self && s.self, highlight && !self && s.highlight, disconnected && s.off)} style={style} {...(highlight ? { 'data-highlight': 'true' } : {})}>
+    <div className={cx(s.row, inline && s.inline, self && s.self, highlight && !self && s.highlight, disconnected && s.off)} style={style} {...(highlight ? { 'data-highlight': 'true' } : {})}>
       {color && <span className={s.band} aria-hidden="true" />}
       {rank != null && <span className={s.rank}>{rank}</span>}
       {avatar && <span className={s.avatar}>{avatar}</span>}

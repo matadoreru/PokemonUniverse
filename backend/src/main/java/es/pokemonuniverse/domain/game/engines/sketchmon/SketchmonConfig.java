@@ -18,13 +18,15 @@ public record SketchmonConfig(
     int laps,
     boolean hintsEnabled,
     boolean memoryPreviewEnabled,
-    boolean includeForms) {
+    boolean includeForms,
+    boolean publicAttempts) {
 
   /** {@code sketchmonRoundSeconds}. */
   static final List<Integer> ROUND_SECONDS = List.of(60, 90, 120);
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "laps", "hintsEnabled", "memoryPreviewEnabled", "includeForms");
+      Set.of("generations", "roundSeconds", "laps", "hintsEnabled", "memoryPreviewEnabled", "includeForms",
+          "publicAttempts");
 
   public SketchmonConfig {
     generations = List.copyOf(generations);
@@ -49,6 +51,7 @@ public record SketchmonConfig(
     private boolean hintsEnabled;
     private boolean memoryPreviewEnabled;
     private boolean includeForms;
+    private boolean publicAttempts = true;
 
     private Builder() {}
 
@@ -64,8 +67,11 @@ public record SketchmonConfig(
 
     public Builder includeForms(boolean value) { includeForms = value; return this; }
 
+    public Builder publicAttempts(boolean value) { publicAttempts = value; return this; }
+
     public SketchmonConfig build() {
-      return new SketchmonConfig(generations, roundSeconds, laps, hintsEnabled, memoryPreviewEnabled, includeForms);
+      return new SketchmonConfig(generations, roundSeconds, laps, hintsEnabled, memoryPreviewEnabled, includeForms,
+          publicAttempts);
     }
   }
 
@@ -82,6 +88,6 @@ public record SketchmonConfig(
     int laps = config.integer("laps", 1, 3);
     return builder().generations(generations).roundSeconds(roundSeconds).laps(laps)
         .hintsEnabled(config.bool("hintsEnabled")).memoryPreviewEnabled(config.bool("memoryPreviewEnabled"))
-        .includeForms(config.bool("includeForms")).build();
+        .includeForms(config.bool("includeForms")).publicAttempts(config.boolOrDefault("publicAttempts", true)).build();
   }
 }

@@ -10,9 +10,12 @@ import es.pokemonuniverse.application.profile.UserProfile.GameStats;
 import es.pokemonuniverse.application.profile.UserProfile.GlobalStats;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
+import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import es.pokemonuniverse.domain.progression.Experience;
 import es.pokemonuniverse.domain.time.IsoTimestamps;
 import jakarta.inject.Singleton;
+import java.time.Clock;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,13 +28,20 @@ public class ProfileService {
   private final UserStatsRepository globalStats;
   private final UserGameStatsRepository gameStats;
   private final GameRegistry registry;
+  private final Clock clock;
 
   public ProfileService(UserRepository users, UserStatsRepository globalStats, UserGameStatsRepository gameStats,
-      GameRegistry registry) {
+      GameRegistry registry, Clock clock) {
     this.users = users;
     this.globalStats = globalStats;
     this.gameStats = gameStats;
     this.registry = registry;
+    this.clock = clock;
+  }
+
+  /** Cambia «Perfil visible para»; {@code false} si la cuenta ya no existe. */
+  public boolean changeVisibility(String userId, ProfileVisibility visibility) {
+    return users.updateProfileVisibility(userId, visibility, clock.instant().truncatedTo(ChronoUnit.MILLIS)) > 0;
   }
 
   /** Vacio si la cuenta ya no existe (el token puede sobrevivir al borrado de la fila). */
@@ -47,7 +57,7 @@ public class ProfileService {
       var avatar = UserIdentityMapper.avatarFromUser(user.getAvatarType(), user.getAvatarValue(), user.getAvatarVersion());
       var publicUser = new UserProfile.User(user.getId(), user.getUsername(), user.getEmail(), avatar,
           IsoTimestamps.millis(user.getCreatedAt()));
-      return new UserProfile(publicUser, totals, progress, games);
+      return new UserProfile(publicUser, totals, progress, games, user.getProfileVisibility());
     });
   }
 

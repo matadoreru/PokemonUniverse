@@ -284,7 +284,6 @@
           "id": "delibird",
           "name": "Delibird",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png",
-          "baseStatTotal": 330,
           "legendaryStatus": "NORMAL"
         },
         "currentBid": null,
@@ -355,7 +354,6 @@
               "id": "delibird",
               "name": "Delibird",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png",
-              "baseStatTotal": 330,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -427,7 +425,6 @@
               "id": "delibird",
               "name": "Delibird",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/225.png",
-              "baseStatTotal": 330,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 2,
@@ -506,7 +503,6 @@
               "id": "vaporeon",
               "name": "Vaporeon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png",
-              "baseStatTotal": 525,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -619,7 +615,6 @@
               "id": "vaporeon",
               "name": "Vaporeon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png",
-              "baseStatTotal": 525,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 3,
@@ -738,7 +733,6 @@
               "id": "skarmory",
               "name": "Skarmory",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png",
-              "baseStatTotal": 465,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -888,7 +882,6 @@
               "id": "skarmory",
               "name": "Skarmory",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/227.png",
-              "baseStatTotal": 465,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1045,7 +1038,6 @@
               "id": "goldeen",
               "name": "Goldeen",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/118.png",
-              "baseStatTotal": 320,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1232,7 +1224,6 @@
               "id": "goldeen",
               "name": "Goldeen",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/118.png",
-              "baseStatTotal": 320,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 2,
@@ -1425,7 +1416,6 @@
               "id": "slowking-galar",
               "name": "Slowking de Galar",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10172.png",
-              "baseStatTotal": 490,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1649,7 +1639,6 @@
               "id": "slowking-galar",
               "name": "Slowking de Galar",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10172.png",
-              "baseStatTotal": 490,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1880,7 +1869,6 @@
               "id": "ariados",
               "name": "Ariados",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
-              "baseStatTotal": 400,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -2141,7 +2129,6 @@
               "id": "ariados",
               "name": "Ariados",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
-              "baseStatTotal": 400,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -2409,7 +2396,6 @@
               "id": "skiploom",
               "name": "Skiploom",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/188.png",
-              "baseStatTotal": 340,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -2714,7 +2700,6 @@
               "id": "kingler",
               "name": "Kingler",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/99.png",
-              "baseStatTotal": 475,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -3051,7 +3036,6 @@
               "id": "wooper",
               "name": "Wooper",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
-              "baseStatTotal": 210,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -3432,7 +3416,6 @@
               "id": "weezing-galar",
               "name": "Weezing de Galar",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10167.png",
-              "baseStatTotal": 490,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -3850,7 +3833,6 @@
               "id": "typhlosion",
               "name": "Typhlosion",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/157.png",
-              "baseStatTotal": 534,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -4298,7 +4280,6 @@
               "id": "onix",
               "name": "Onix",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-              "baseStatTotal": 385,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -4783,7 +4764,6 @@
               "id": "onix",
               "name": "Onix",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-              "baseStatTotal": 385,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -5340,7 +5320,6 @@
               "id": "onix",
               "name": "Onix",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-              "baseStatTotal": 385,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -5895,7 +5874,6 @@
               "id": "onix",
               "name": "Onix",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png",
-              "baseStatTotal": 385,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,

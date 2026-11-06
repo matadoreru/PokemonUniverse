@@ -1,0 +1,115 @@
+{
+  "ajustes": {
+    "verificacion": 2,
+    "filtroContenido": 2,
+    "notificaciones": 1,
+    "idioma": "es-ES",
+    "canalReglas": "reglas",
+    "canalAvisosDiscord": "avisos-discord"
+  },
+  "everyone": [
+    "VIEW_CHANNEL", "SEND_MESSAGES", "SEND_MESSAGES_IN_THREADS", "CREATE_PUBLIC_THREADS", "READ_MESSAGE_HISTORY",
+    "ADD_REACTIONS", "EMBED_LINKS", "ATTACH_FILES", "USE_EXTERNAL_EMOJIS", "USE_APPLICATION_COMMANDS",
+    "CHANGE_NICKNAME", "CREATE_INSTANT_INVITE", "CONNECT", "SPEAK", "STREAM", "USE_VAD"
+  ],
+  "roles": [
+    { "nombre": "Admin", "color": "#E3350D", "separado": true, "mencionable": false, "permisos": ["ADMINISTRATOR"] },
+    {
+      "nombre": "Moderador", "color": "#3B4CCA", "separado": true, "mencionable": true,
+      "permisos": [
+        "KICK_MEMBERS", "BAN_MEMBERS", "MODERATE_MEMBERS", "MANAGE_MESSAGES", "MANAGE_THREADS", "MANAGE_NICKNAMES",
+        "VIEW_AUDIT_LOG", "MOVE_MEMBERS", "MUTE_MEMBERS", "DEAFEN_MEMBERS"
+      ]
+    },
+    { "nombre": "Avisos de novedades", "color": "#000000", "separado": false, "mencionable": true, "permisos": [] },
+    { "nombre": "Busco partida", "color": "#000000", "separado": false, "mencionable": true, "permisos": [] }
+  ],
+  "categorias": [
+    {
+      "nombre": "📌 INFORMACIÓN",
+      "permisos": {
+        "@everyone": { "denegar": ["SEND_MESSAGES", "CREATE_PUBLIC_THREADS", "CREATE_PRIVATE_THREADS", "SEND_MESSAGES_IN_THREADS"] },
+        "Moderador": { "permitir": ["SEND_MESSAGES"] }
+      },
+      "canales": [
+        { "nombre": "bienvenida", "tipo": "texto", "tema": "Qué es Pokémon Universe y cómo empezar." },
+        { "nombre": "reglas", "tipo": "texto", "tema": "Las normas del servidor. Al entrar aceptas cumplirlas." },
+        { "nombre": "novedades", "tipo": "anuncios", "tema": "Notas de parche de Pokémon Universe. Síguelo para recibirlas en tu servidor." }
+      ]
+    },
+    {
+      "nombre": "💬 COMUNIDAD",
+      "canales": [
+        { "nombre": "general", "tipo": "texto", "tema": "Charla general sobre Pokémon Universe." },
+        { "nombre": "busco-partida", "tipo": "texto", "tema": "Pega el enlace de tu sala y menciona a @Busco partida.", "lento": 30 },
+        { "nombre": "capturas", "tipo": "texto", "tema": "Tus mejores momentos: capturas y clips de partidas." },
+        { "nombre": "off-topic", "tipo": "texto", "tema": "De todo lo que no sea Pokémon Universe." }
+      ]
+    },
+    {
+      "nombre": "🎮 PARTIDAS",
+      "canales": [
+        { "nombre": "Sala 1", "tipo": "voz" },
+        { "nombre": "Sala 2", "tipo": "voz" },
+        { "nombre": "Sala 3", "tipo": "voz" }
+      ]
+    },
+    {
+      "nombre": "🛠️ AYUDA",
+      "canales": [
+        {
+          "nombre": "soporte", "tipo": "foro",
+          "tema": "¿Algo no funciona? Abre una publicación con lo que pasó, en qué juego y desde qué dispositivo.",
+          "etiquetas": [
+            { "nombre": "Bug" }, { "nombre": "Cuenta" }, { "nombre": "Pregunta" },
+            { "nombre": "Resuelto", "soloModeradores": true }
+          ]
+        },
+        {
+          "nombre": "sugerencias", "tipo": "foro",
+          "tema": "Ideas para la web: una publicación por idea. Vota con reacciones las que te gusten.",
+          "etiquetas": [
+            { "nombre": "Juego nuevo" }, { "nombre": "Mejora" },
+            { "nombre": "Aceptada", "soloModeradores": true }, { "nombre": "Descartada", "soloModeradores": true }
+          ]
+        }
+      ]
+    },
+    {
+      "nombre": "🔒 MODERACIÓN",
+      "permisos": {
+        "@everyone": { "denegar": ["VIEW_CHANNEL"] },
+        "Moderador": { "permitir": ["VIEW_CHANNEL"] }
+      },
+      "canales": [
+        { "nombre": "mod-chat", "tipo": "texto", "tema": "Coordinación del staff." },
+        { "nombre": "mod-log", "tipo": "texto", "tema": "Registro de sanciones: quién, qué, por qué." },
+        { "nombre": "avisos-discord", "tipo": "texto", "tema": "Avisos que Discord envía a los servidores de Comunidad." }
+      ]
+    }
+  ],
+  "mensajes": {
+    "bienvenida": [
+      "# ¡Te damos la bienvenida a Pokémon Universe!\n\nPokémon Universe es una colección de minijuegos de Pokémon para jugar con amigos desde el navegador: adivinar Pokémon, subastas, impostores, trivia, bingo y muchos más.\n\n🎮 **Jugar:** {web}\n📜 **Antes de nada:** lee <#reglas>.\n📣 **Novedades:** cada actualización se publica en <#novedades>.\n🤝 **Buscar gente:** pega el enlace de tu sala en <#busco-partida>.\n🛠️ **Algo falla:** abre una publicación en <#soporte>.\n💡 **Ideas:** compártelas en <#sugerencias>.\n\nPuedes cambiar tus avisos cuando quieras en **Canales y roles**, arriba del todo de la lista de canales."
+    ]
+  },
+  "reglas": [
+    "Respeto ante todo: nada de insultos, acoso, discriminación ni discursos de odio.",
+    "Nada de contenido NSFW, violento o ilegal, tampoco en nombres, avatares o estados.",
+    "Sin spam ni publicidad: no anuncies otros servidores, webs o redes sin permiso del staff.",
+    "Cada cosa en su sitio: partidas en <#busco-partida>, fallos en <#soporte> e ideas en <#sugerencias>.",
+    "Juega limpio: no destripes las respuestas de una partida en curso ni compartas trampas. Si encuentras un fallo que da ventaja, avísanos en <#soporte> sin explicar cómo se hace.",
+    "Escribe en español para que todo el mundo pueda seguir la conversación.",
+    "Haz caso al staff y cumple las normas de Discord: https://discord.com/guidelines"
+  ],
+  "sanciones": "Según la gravedad: aviso, silencio temporal, expulsión o baneo. Si no estás de acuerdo con una sanción, escribe a un moderador por privado.",
+  "onboarding": {
+    "canalesPorDefecto": ["bienvenida", "reglas", "novedades", "general", "busco-partida", "capturas", "off-topic", "soporte", "sugerencias"],
+    "pregunta": "¿Qué te interesa?",
+    "opciones": [
+      { "titulo": "Enterarme de las novedades", "descripcion": "Te mencionamos cuando sale una actualización.", "emoji": "📣", "rol": "Avisos de novedades" },
+      { "titulo": "Buscar gente para jugar", "descripcion": "Te mencionan cuando alguien abre una sala.", "emoji": "🎮", "rol": "Busco partida" }
+    ]
+  },
+  "novedades": { "canal": "novedades", "color": "#FFCB05" }
+}

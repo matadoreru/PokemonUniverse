@@ -1,13 +1,18 @@
-import type { TeamAuctionPokemon } from '@pokemon-universe/shared/public';
+import type { TeamAuctionLotPokemon, TeamAuctionPokemon } from '@pokemon-universe/shared/public';
 import { Badge, Card, Chip, Dialog, StateBox } from '../../ui';
 import { amountText } from '../../room/auction-kit';
 import { legendaryLabel, TEAM_SIZE, teamBst } from './presentation';
 import s from './TeamAuction.module.css';
 
-/** Chips de un Pokémon del lote o del equipo: BST y, si lo es, «Legendario»/«Mítico» (en texto). */
-export function PokemonFacts({ pokemon }: { pokemon: TeamAuctionPokemon }) {
+/**
+ * Chips de un Pokémon: el BST si lo trae (los equipos; el lote en subasta llega sin él) y, si lo es,
+ * «Legendario»/«Mítico» (en texto). Sin nada que mostrar, nada.
+ */
+export function PokemonFacts({ pokemon }: { pokemon: TeamAuctionPokemon | TeamAuctionLotPokemon }) {
   const legend = legendaryLabel(pokemon.legendaryStatus);
-  return <span className={s.facts}><Chip tone="info">BST {pokemon.baseStatTotal}</Chip>{legend && <Badge>{legend}</Badge>}</span>;
+  const bst = 'baseStatTotal' in pokemon ? pokemon.baseStatTotal : null;
+  if (bst === null && !legend) return null;
+  return <span className={s.facts}>{bst !== null && <Chip tone="info">BST {bst}</Chip>}{legend && <Badge>{legend}</Badge>}</span>;
 }
 
 /** Sprites pequeños (decorativos) de un equipo, para la franja de los presupuestos; los nombres van en el diálogo. */

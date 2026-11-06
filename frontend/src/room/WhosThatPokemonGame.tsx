@@ -5,7 +5,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Chip, Icon } from '../ui';
 import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
-  guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
+  guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
 } from './guess-kit';
 import s from '../games/whos-that-pokemon/WhosThat.module.css';
 
@@ -48,7 +48,7 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: { room: RoomView
       detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, solved)} selfId={selfId} />
-      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+      {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
   const bottom = <GuessPanel {...round.panel} question={GAME_NAME} guessText={whoPokemonScoringLabel()} gameName={GAME_NAME}

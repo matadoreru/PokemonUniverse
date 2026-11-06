@@ -14,6 +14,8 @@ export const guessFromStatsConfigSchema = z.object({
   generations: pokemonGenerationsSchema,
   roundSeconds: z.number().int().min(15).max(60), rounds: z.number().int().min(1).max(20),
   stats: guessFromStatsFieldsSchema, hintsEnabled: z.boolean(), hints: guessFromStatsHintsSchema,
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict().superRefine((value, context) => {
   if (Object.values(value.stats).filter(Boolean).length < 2) context.addIssue({ code: 'custom', path: ['stats'], message: 'Selecciona al menos 2 estadísticas.' });
   if (value.hintsEnabled && !Object.values(value.hints).some(Boolean)) context.addIssue({ code: 'custom', path: ['hints'], message: 'Selecciona al menos una pista adicional.' });
@@ -28,4 +30,5 @@ export const defaultGuessFromStatsConfig: GuessFromStatsConfig = {
   stats: { hp: true, attack: true, defense: true, specialAttack: true, specialDefense: true, speed: true, bst: false },
   hintsEnabled: false,
   hints: { generation: true, types: true, typeCount: false, evolution: true, height: false, weight: false, category: false },
+  publicAttempts: true,
 };

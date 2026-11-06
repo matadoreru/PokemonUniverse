@@ -245,7 +245,8 @@
       ],
       "roundSeconds": 30,
       "laps": 1,
-      "includeRegionalForms": true
+      "includeRegionalForms": true,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

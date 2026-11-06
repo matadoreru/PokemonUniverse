@@ -1,6 +1,7 @@
 import type { PokeTabooConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
@@ -26,5 +27,6 @@ export function PokeTabooConfigPanel({ config, disabled, onChange }: { config: u
     </div>
     <Toggle label="Formas regionales" hint="La forma exacta será obligatoria al responder." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => void onChange({ ...value, includeRegionalForms })} />
     <p className={s.note}>El catálogo actual admite de forma fiable las formas regionales. Mega, Gigamax y otras variantes no se incluyen hasta que el repositorio las normalice.</p>
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

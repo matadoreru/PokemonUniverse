@@ -57,7 +57,7 @@ class ZoomedPokemonEngineTest {
   }
 
   private static ZoomedPokemonConfig config(List<Integer> generations, ImageMode mode) {
-    return new ZoomedPokemonConfig(generations, mode, 20, 3, false, List.of(HintKind.GENERATION), false);
+    return new ZoomedPokemonConfig(generations, mode, 20, 3, false, List.of(HintKind.GENERATION), false, true);
   }
 
   @Test

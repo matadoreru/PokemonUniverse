@@ -343,7 +343,8 @@
       "roundSeconds": 20,
       "rounds": 5,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

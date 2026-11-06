@@ -96,6 +96,8 @@ export interface PokedexEntryGuessPlayerState {
   roundPoints: number;
   attemptCount: number;
   lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null;
+  /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
+  attempts?: PokedexEntryGuessAttempt[];
 }
 
 export const pokedexEntryGuessActionSchema = z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict();

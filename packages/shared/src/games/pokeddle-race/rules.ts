@@ -1,9 +1,15 @@
 import type { Pokemon } from '../../pokemon/types.js';
 import { activePokeddleClues, type PokeddleRaceConfig } from './config.js';
-import type { PokeddleFeedback, PokeddleNumericComparison, PokeddleTypeComparison } from './types.js';
+import type { PokeddleEvolutionComparison, PokeddleFeedback, PokeddleNumericComparison, PokeddleTypeComparison } from './types.js';
 
 export function comparePokeddleNumber(guess: number, secret: number): PokeddleNumericComparison {
   return secret > guess ? 'HIGHER' : secret < guess ? 'LOWER' : 'MATCH';
+}
+
+/** Como el motor Java: verde solo con la misma etapa y el mismo total; misma etapa y otro total, parcial. */
+export function comparePokeddleEvolution(guess: { stage: number; stages: number }, secret: { stage: number; stages: number }): PokeddleEvolutionComparison {
+  if (guess.stage !== secret.stage) return comparePokeddleNumber(guess.stage, secret.stage);
+  return guess.stages === secret.stages ? 'MATCH' : 'PARTIAL';
 }
 
 export function comparePokeddleTypes(guess: readonly string[], secret: readonly string[]): PokeddleTypeComparison {
@@ -32,7 +38,10 @@ export function buildPokeddleFeedback(guess: Pokemon, secret: Pokemon, config: P
   if (enabled.has('evolutionStage')) feedback.evolutionStage = {
     kind: 'EVOLUTION',
     value: { stage: guess.evolutionStage ?? 1, stages: guess.evolutionStageCount ?? 1 },
-    result: comparePokeddleNumber(guess.evolutionStage ?? 1, secret.evolutionStage ?? 1),
+    result: comparePokeddleEvolution(
+      { stage: guess.evolutionStage ?? 1, stages: guess.evolutionStageCount ?? 1 },
+      { stage: secret.evolutionStage ?? 1, stages: secret.evolutionStageCount ?? 1 },
+    ),
   };
   if (enabled.has('legendaryStatus')) feedback.legendaryStatus = { kind: 'CATEGORY', value: guess.legendaryStatus ?? 'NORMAL', result: (guess.legendaryStatus ?? 'NORMAL') === (secret.legendaryStatus ?? 'NORMAL') ? 'MATCH' : 'NONE' };
   if (enabled.has('color')) feedback.color = { kind: 'CATEGORY', value: guess.color ?? 'unknown', result: guess.color === secret.color ? 'MATCH' : 'NONE' };

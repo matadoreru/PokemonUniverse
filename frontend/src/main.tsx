@@ -13,6 +13,7 @@ import './styles.css';
 const AuthPage = lazy(() => import('./screens/AuthPage').then((module) => ({ default: module.AuthPage })));
 const PlayPage = lazy(() => import('./screens/PlayPage').then((module) => ({ default: module.PlayPage })));
 const ProfilePage = lazy(() => import('./screens/ProfilePage').then((module) => ({ default: module.ProfilePage })));
+const PublicProfilePage = lazy(() => import('./screens/PublicProfilePage').then((module) => ({ default: module.PublicProfilePage })));
 const RoomPage = lazy(() => import('./screens/RoomPage').then((module) => ({ default: module.RoomPage })));
 const RoomSessionLayout = lazy(() => import('./room/RoomSessionLayout').then((module) => ({ default: module.RoomSessionLayout })));
 const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ default: module.AdminPage })));
@@ -32,6 +33,7 @@ const router = createBrowserRouter([{ element: <SessionRoot />, children: [
   { path: '/changelog', element: <ChangelogPage /> },
   { path: '/rotation-preview', element: <RotationPreview /> },
   { path: '/profile', element: protectedPage(<ProfilePage />) },
+  { path: '/u/:username', element: protectedPage(<PublicProfilePage />) },
   { path: '/feedback', element: protectedPage(<FeedbackPage />) },
   { path: '/admin', element: <RequireAdmin><AdminPage /></RequireAdmin> },
   { element: protectedPage(<RoomSessionLayout />), children: [

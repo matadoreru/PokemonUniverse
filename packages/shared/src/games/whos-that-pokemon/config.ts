@@ -8,6 +8,8 @@ export const whosThatPokemonConfigSchema = z.object({
   rounds: z.number().int().min(1).max(20),
   hintsEnabled: z.boolean(),
   includeRegionalForms: z.boolean(),
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict();
 
 export type WhosThatPokemonConfig = z.infer<typeof whosThatPokemonConfigSchema>;
@@ -18,4 +20,5 @@ export const defaultWhosThatPokemonConfig: WhosThatPokemonConfig = {
   rounds: 10,
   hintsEnabled: false,
   includeRegionalForms: true,
+  publicAttempts: true,
 };

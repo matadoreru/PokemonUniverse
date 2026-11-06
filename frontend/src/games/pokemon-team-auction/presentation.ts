@@ -1,6 +1,6 @@
 import type { PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, TeamAuctionLotResult, TeamAuctionPokemon } from '@pokemon-universe/shared/public';
-import type { AuctionAwardProps, BidBlockInput, BidEventLike } from '../../room/auction-kit';
-import { amountText } from '../../room/auction-kit';
+import type { AuctionPreviousProps, BidBlockInput, BidEventLike, TurnOrderEntry } from '../../room/auction-kit';
+import { amountText, turnOrderEntries, waitTexts } from '../../room/auction-kit';
 
 /**
  * Textos y cálculos de Pokémon Team Auction (puros, sin React). El motor no tiene fase de adjudicación: cierra el lote y
@@ -37,18 +37,24 @@ export function lotResultText(lot: TeamAuctionLotResult, nameOf: (id: string) =>
   return lot.winnerId ? `${lot.pokemon.name} para ${nameOf(lot.winnerId)} por ${amountText(lot.bid)}` : `${lot.pokemon.name}, sin dueño`;
 }
 
-/** Banda de la adjudicación del último lote cerrado. `fresh` mientras el lote nuevo no tiene pujas. */
-export function teamAward(game: Pick<PokemonTeamAuctionPublicState, 'lotHistory' | 'currentBid'>, nameOf: (id: string) => string): AuctionAwardProps | null {
+/** Línea del lote anterior sobre el estado de la puja («Lote 1 · Vulpix → Ana · 2 monedas»); `null` en el primero. */
+export function teamPrevious(game: Pick<PokemonTeamAuctionPublicState, 'lotHistory'>, nameOf: (id: string) => string): AuctionPreviousProps | null {
   const lot = lastLot(game);
   if (!lot) return null;
-  const fresh = game.currentBid === null;
-  return lot.winnerId
-    ? { tone: 'won', kicker: `Lote ${lot.lotNumber} adjudicado`, title: `${lot.pokemon.name} para ${nameOf(lot.winnerId)}`, detail: `por ${amountText(lot.bid)}`, sprite: lot.pokemon.sprite, fresh }
-    : { tone: 'unsold', kicker: `Lote ${lot.lotNumber} sin dueño`, title: lot.pokemon.name, detail: 'Nadie pujó', sprite: lot.pokemon.sprite, fresh };
+  return { kicker: `Lote ${lot.lotNumber}`, item: lot.pokemon.name, winner: lot.winnerId ? nameOf(lot.winnerId) : null, detail: lot.winnerId ? amountText(lot.bid) : 'sin dueño', sprite: lot.pokemon.sprite };
 }
 
-/** Estado de un jugador en el lote, en texto (la franja de los presupuestos). */
-export type TeamStatus = 'turn' | 'leading' | 'passed' | 'full' | 'noBudget' | 'bidding' | 'closed';
+/** Fila del orden de turno del lote en juego (vacía con la subasta cerrada). */
+export function teamTurnOrder(game: PokemonTeamAuctionPublicState, selfId: string, nameOf: (id: string) => string): TurnOrderEntry[] {
+  if (game.phase !== 'ROUND_ACTIVE' || !game.currentPokemon) return [];
+  return turnOrderEntries({ order: game.turnOrder, turnId: game.currentTurnPlayerId, passedIds: game.passedPlayerIds, leaderId: game.currentBidderId }, nameOf, selfId);
+}
+
+/**
+ * Estado de un jugador en el lote, en texto (la franja de los presupuestos). El turno no va aquí: vive en el reloj y en
+ * la fila del orden de turno.
+ */
+export type TeamStatus = 'leading' | 'passed' | 'full' | 'noBudget' | 'bidding' | 'closed';
 
 export function teamStatus(game: PokemonTeamAuctionPublicState, playerId: string): TeamStatus {
   const participant = game.participants[playerId];
@@ -57,12 +63,10 @@ export function teamStatus(game: PokemonTeamAuctionPublicState, playerId: string
   if (game.currentBidderId === playerId) return 'leading';
   if (participant && participant.coins < game.minimumBid) return 'noBudget';
   if (game.passedPlayerIds.includes(playerId)) return 'passed';
-  if (game.currentTurnPlayerId === playerId) return 'turn';
   return 'bidding';
 }
 
 export const TEAM_STATUS_TEXT: Record<TeamStatus, string> = {
-  turn: 'Su turno',
   leading: 'Va ganando',
   passed: 'Pasó',
   full: 'Equipo completo',
@@ -76,6 +80,8 @@ export function teamBlockInput(game: PokemonTeamAuctionPublicState, player: Poke
   const participating = player?.role === 'PLAYER';
   const team = player?.team ?? game.participants[selfId]?.team ?? [];
   const turnName = game.currentTurnPlayerId && game.currentTurnPlayerId !== selfId ? nameOf(game.currentTurnPlayerId) : null;
+  // Sin turno propio, a quién le toca y cómo va la puja (sin controles grises: `BidControls` solo pinta la placa).
+  const texts = waitTexts({ turnName, currentBid: game.currentBid, leaderName: game.currentBidderId ? nameOf(game.currentBidderId) : null, passedText: 'Vuelves a pujar en el siguiente lote.', noBidsText: 'Aún no hay pujas en este lote.' });
   return {
     participating,
     open: game.phase === 'ROUND_ACTIVE' && game.currentPokemon !== null,
@@ -87,12 +93,19 @@ export function teamBlockInput(game: PokemonTeamAuctionPublicState, player: Poke
     min: game.minimumBid,
     max: player?.coins ?? 0,
     turnName,
+    texts,
   };
 }
 
-/** Título (`h1`) de la pantalla: «Tu turno», «Turno de Ana» o «Subasta cerrada». */
-export function teamHeading(game: PokemonTeamAuctionPublicState, selfId: string, nameOf: (id: string) => string): string {
-  if (game.phase !== 'ROUND_ACTIVE' || !game.currentTurnPlayerId) return 'Subasta cerrada';
+/** Título (`h1`) de la pantalla: el lote («Lote 2 de 18 · Liepard») o «Subasta cerrada». */
+export function teamHeading(game: Pick<PokemonTeamAuctionPublicState, 'phase' | 'currentPokemon' | 'lotNumber' | 'totalLots'>): string {
+  if (game.phase !== 'ROUND_ACTIVE' || !game.currentPokemon) return 'Subasta cerrada';
+  return `Lote ${game.lotNumber} de ${game.totalLots} · ${game.currentPokemon.name}`;
+}
+
+/** Etiqueta del reloj, el único sitio de la cabecera con el turno: «Tu turno», «Turno de Ana» o «Turno de puja». */
+export function teamTimerLabel(game: Pick<PokemonTeamAuctionPublicState, 'currentTurnPlayerId'>, selfId: string, nameOf: (id: string) => string): string {
+  if (!game.currentTurnPlayerId) return 'Turno de puja';
   return game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`;
 }
 

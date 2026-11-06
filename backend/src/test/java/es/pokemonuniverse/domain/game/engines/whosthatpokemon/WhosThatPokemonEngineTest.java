@@ -41,7 +41,7 @@ class WhosThatPokemonEngineTest {
   }
 
   private static WhosThatPokemonConfig config(List<Integer> generations) {
-    return new WhosThatPokemonConfig(generations, 20, 3, false, false);
+    return new WhosThatPokemonConfig(generations, 20, 3, false, false, true);
   }
 
   private static Pokemon withSprite(Pokemon pokemon, String sprite) {

@@ -336,10 +336,12 @@ public final class GuessFromStatsTypes {
       @Nullable GuessFromStatsRoundResult lastRound,
       @Nullable GameResults results) {}
 
+  /** {@code attempts}: con {@code publicAttempts} apagado, solo los fallos propios de la ronda; si no, no se envía. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record GuessFromStatsPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
-      @Nullable Long cooldownUntil, int roundPoints, int attemptCount, @Nullable GuessFromStatsLastAttempt lastAttempt) {}
+      @Nullable Long cooldownUntil, int roundPoints, int attemptCount, @Nullable GuessFromStatsLastAttempt lastAttempt,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<GuessFromStatsAttempt> attempts) {}
 
   /** {@code guessFromStatsActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record GuessFromStatsAction(String pokemonId) {

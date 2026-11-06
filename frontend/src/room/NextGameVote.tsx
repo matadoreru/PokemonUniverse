@@ -1,4 +1,4 @@
-import { supportsPlayerCount, type RoomView } from '@pokemon-universe/shared/public';
+import { gameModeCatalog, supportsPlayerCount, type RoomView } from '@pokemon-universe/shared/public';
 import { Check, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -8,30 +8,34 @@ import { Badge, Card, Chip, Cutin, cx, Icon, Panel, Pill, Row, ScreenSplit } fro
 import { GameArt } from '../games/GameArt';
 import { gameAvailabilityReason } from './GameSelectionConfig';
 import { summarizeGameConfig } from './game-config-summary';
-import { voteActionStatus, votesLabel } from './next-game-vote';
+import { voteActionStatus, voteOptionName, votesLabel } from './next-game-vote';
 import { sessionPodium } from './session-results';
 import s from './NextGameVote.module.css';
 
-export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; selfId: string; onVote(gameId: string): Promise<void>; onEnd(): void }) {
+export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; selfId: string; onVote(optionId: string): Promise<void>; onEnd(): void }) {
   const vote = room.nextGameVote!;
   const active = room.phase === 'NEXT_GAME_VOTE';
-  const [draft, setDraft] = useState<string | null>(vote.ownVoteGameId);
+  const [draft, setDraft] = useState<string | null>(vote.ownVoteOptionId);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const serverOffset = useServerOffset(room.serverNow);
   const revealRemainingMs = useRemainingMs(vote.nextTransitionAt, serverOffset, 250);
   const host = room.hostId === selfId;
   const eligible = vote.eligibleVoterIds.includes(selfId);
-  const canVote = active && eligible && !vote.ownVoteGameId;
+  const canVote = active && eligible && !vote.ownVoteOptionId;
   const playerCount = room.members.filter((member) => member.presence === 'CONNECTED').length;
   const standings = sessionPodium(room, selfId).standings;
-  const gameName = (id: string | null) => (id ? vote.options.find((game) => game.id === id)?.name ?? null : null);
-  const resolvedName = gameName(vote.resolvedGameId);
-  const status = voteActionStatus({ active, eligible, ownVote: gameName(vote.ownVoteGameId), draftName: gameName(draft), resolvedName, revealSeconds: Math.ceil(revealRemainingMs / 1_000) });
+  // Cada opción es un par juego y modo: los votos, el recuento y el ganador van por id de opción.
+  const optionName = (id: string | null) => {
+    const option = id ? vote.options.find((candidate) => candidate.id === id) : undefined;
+    return option ? voteOptionName(option, vote.options) : null;
+  };
+  const resolvedName = optionName(vote.resolvedOptionId);
+  const status = voteActionStatus({ active, eligible, ownVote: optionName(vote.ownVoteOptionId), draftName: optionName(draft), resolvedName, revealSeconds: Math.ceil(revealRemainingMs / 1_000) });
 
   async function confirmVote() {
     if (!draft || !canVote || submitting) return;
-    const selectedGame = vote.options.find((game) => game.id === draft);
+    const selectedGame = vote.options.find((option) => option.id === draft)?.game;
     if (!selectedGame || !supportsPlayerCount(selectedGame, playerCount)) { setError('Ese minijuego ya no admite el número actual de jugadores.'); return; }
     setSubmitting(true); setError('');
     // Un rechazo del servidor sale, traducido, en el aviso global de la sala; en línea solo la validación de arriba.
@@ -53,15 +57,18 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
       </div>
     </header>
     <ul className={s.grid} aria-label="Opciones de voto">
-      {vote.options.map((game) => {
-        const selected = (vote.ownVoteGameId ?? draft) === game.id;
-        const winner = vote.resolvedGameId === game.id;
-        const tally = vote.tallies?.[game.id] ?? 0;
+      {vote.options.map((option) => {
+        const { game } = option;
+        const selected = (vote.ownVoteOptionId ?? draft) === option.id;
+        const winner = vote.resolvedOptionId === option.id;
+        const tally = vote.tallies?.[option.id] ?? 0;
         const unavailableReason = active ? gameAvailabilityReason(game, playerCount) : null;
+        // Un modo que no es Clásico explica sus reglas en lugar del resumen de ajustes (que son los del lobby).
+        const modeText = option.mode ? gameModeCatalog(game.id)?.texts[option.mode] : undefined;
         // Votando: la carta es el conmutador; votado o revelado, carta sin botón (el ganador se resalta en amarillo).
-        const choice = canVote ? { onSelect: () => setDraft(game.id), disabled: submitting || Boolean(unavailableReason) } : {};
-        return <li key={game.id} className={cx(s.cell, !active && !winner && s.lost)}>
-          <Card art={<GameArt gameId={game.id} size={32} />} name={game.name} state={(active ? selected : winner) ? 'selected' : 'idle'} {...choice}>
+        const choice = canVote ? { onSelect: () => setDraft(option.id), disabled: submitting || Boolean(unavailableReason) } : {};
+        return <li key={option.id} className={cx(s.cell, !active && !winner && s.lost)}>
+          <Card art={<GameArt gameId={game.id} size={32} />} name={voteOptionName(option, vote.options)} state={(active ? selected : winner) ? 'selected' : 'idle'} {...choice}>
             {(winner || selected || game.recommended || game.experimental) && <span className={s.badges}>
               {winner && <Badge tone="navy"><Icon icon={Trophy} size={18} />Ganador</Badge>}
               {selected && <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Tu voto</Chip>}
@@ -69,7 +76,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
               {game.experimental && <Badge tone="red">BETA</Badge>}
             </span>}
             <span className={cx(s.desc, unavailableReason && s.bad)}>{unavailableReason ?? game.description}</span>
-            {!unavailableReason && <span className={s.config}>{summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
+            {!unavailableReason && <span className={s.config}>{modeText ?? summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
             {!active && <span className={s.tally}><Badge tone={winner ? 'yellow' : 'cream'}><Icon icon={Vote} size={18} />{votesLabel(tally)}</Badge></span>}
           </Card>
         </li>;
@@ -102,7 +109,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
   </Panel>;
 
   return <div className={cx('content-row', s.screen)}>
-    {!active && resolvedName && <Cutin key={vote.resolvedGameId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" />}
+    {!active && resolvedName && <Cutin key={vote.resolvedOptionId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" />}
     <ScreenSplit fill top={top} side={side} bottom={action} />
   </div>;
 }

@@ -198,7 +198,10 @@ public class RoomWebSocket {
       case "room:update-session" -> current(connection, () -> coordinator.updateSession(playerId, field(payload, "mode")));
       case "room:update-game-selection" -> current(connection,
           () -> coordinator.updateGameSelection(playerId, field(payload, "mode")));
-      case "room:vote-next-game" -> current(connection, () -> coordinator.voteNextGame(playerId, text(payload, "gameId")));
+      case "room:update-allowed-modes" -> current(connection,
+          () -> coordinator.updateAllowedModes(playerId, text(payload, "gameId"), field(payload, "modes")));
+      case "room:vote-next-game" -> current(connection,
+          () -> coordinator.voteNextGame(playerId, text(payload, "optionId")));
       case "room:set-role" -> current(connection,
           () -> coordinator.setRoomRole(playerId, text(payload, "playerId"), field(payload, "role")));
       case "room:transfer-host" -> current(connection, () -> coordinator.transferHost(playerId, text(payload, "playerId")));

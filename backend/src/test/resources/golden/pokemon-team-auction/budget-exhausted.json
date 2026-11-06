@@ -164,7 +164,6 @@
           "id": "celebi",
           "name": "Celebi",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png",
-          "baseStatTotal": 600,
           "legendaryStatus": "MYTHICAL"
         },
         "currentBid": null,
@@ -251,7 +250,6 @@
               "id": "porygon",
               "name": "Porygon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
-              "baseStatTotal": 395,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -386,7 +384,6 @@
               "id": "porygon",
               "name": "Porygon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png",
-              "baseStatTotal": 395,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -527,7 +524,6 @@
               "id": "koffing",
               "name": "Koffing",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png",
-              "baseStatTotal": 340,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -712,7 +708,6 @@
               "id": "sneasel",
               "name": "Sneasel",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/215.png",
-              "baseStatTotal": 430,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,

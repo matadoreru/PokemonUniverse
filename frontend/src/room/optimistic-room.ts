@@ -3,7 +3,8 @@ import type { GameSelectionMode, RoomView, SessionMode } from '@pokemon-universe
 export type OptimisticLobbyUpdate =
   | { kind: 'config'; gameId: string; config: unknown }
   | { kind: 'session'; mode: SessionMode }
-  | { kind: 'game-selection'; mode: GameSelectionMode };
+  | { kind: 'game-selection'; mode: GameSelectionMode }
+  | { kind: 'allowed-modes'; gameId: string; modes: string[] };
 
 interface PendingUpdate {
   id: number;
@@ -20,6 +21,7 @@ function applyUpdate(room: RoomView, update: OptimisticLobbyUpdate): RoomView {
       : { ...room, gameConfigs, customizedGameIds };
   }
   if (update.kind === 'session') return { ...room, sessionMode: update.mode };
+  if (update.kind === 'allowed-modes') return { ...room, allowedModes: { ...room.allowedModes, [update.gameId]: update.modes } };
   // Como el servidor: el primero de la lista pasa a ser el minijuego elegido de la sala.
   const selectedGameId = update.mode.gameIds[0] ?? room.selectedGameId;
   return selectedGameId === room.selectedGameId

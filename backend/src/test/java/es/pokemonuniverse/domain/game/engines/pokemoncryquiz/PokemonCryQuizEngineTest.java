@@ -53,7 +53,7 @@ class PokemonCryQuizEngineTest {
   }
 
   private static PokemonCryQuizConfig config(List<Integer> generations, CryVersionMode version) {
-    return new PokemonCryQuizConfig(generations, 20, 3, version, false);
+    return new PokemonCryQuizConfig(generations, 20, 3, version, false, true);
   }
 
   private static final Cries PIKACHU = new Cries(Map.of("pikachu", List.of("latest/25.ogg", "legacy/25.ogg")));
@@ -135,5 +135,38 @@ class PokemonCryQuizEngineTest {
     var started = engine.start(engine.createInitialState(config(List.of(1), CryVersionMode.RANDOM), context), context);
     assertEquals("/api/rooms/opaque/games/" + started.assetToken() + "/rounds/1/options/cry/audio",
         engine.getPublicState(started, context).cryUrl());
+  }
+
+  /**
+   * {@code publicAttempts=false}: el servidor no manda los fallos de nadie en la vista pública y cada jugador recibe
+   * solo los suyos en su vista; con {@code true} todo sigue como antes (sin {@code attempts} en la vista propia).
+   */
+  @Test
+  void hiddenPublicAttemptsOnlyReachTheirOwnPlayer() {
+    var cries = new Cries(Map.of("pikachu", List.of("latest/25.ogg", "legacy/25.ogg"),
+        "bulbasaur", List.of("latest/1.ogg", "legacy/1.ogg")));
+    var context = context(cries).toBuilder()
+        .players(List.of(new GamePlayer("p1", "Ana"), new GamePlayer("p2", "Bruno"))).build();
+    for (boolean visible : List.of(true, false)) {
+      var config = new PokemonCryQuizConfig(List.of(1), 20, 3, CryVersionMode.LATEST, false, visible);
+      var started = engine.start(engine.createInitialState(config, context), context);
+      var wrong = "pikachu".equals(started.targetPokemonId()) ? "bulbasaur" : "pikachu";
+      var state = engine.handleAction(started, "p2", new PokemonCryQuizTypes.PokemonCryQuizAction(wrong),
+          context.withNow(2_000)).state();
+      var publicState = engine.getPublicState(state, context);
+      var own = engine.getPlayerState(state, "p2", context);
+      var other = engine.getPlayerState(state, "p1", context);
+      if (visible) {
+        assertEquals(List.of("p2"), publicState.attempts().stream().map(a -> a.playerId()).toList());
+        assertEquals(null, own.attempts());
+        assertEquals(null, other.attempts());
+      } else {
+        assertEquals(List.of(), publicState.attempts());
+        assertEquals(List.of(wrong), own.attempts().stream().map(a -> a.guessedPokemon().id()).toList());
+        assertEquals(List.of(), other.attempts());
+        // La revelación sigue contando los intentos de cada uno.
+        assertEquals(1, own.attemptCount());
+      }
+    }
   }
 }

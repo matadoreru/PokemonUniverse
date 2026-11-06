@@ -35,8 +35,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Lo que las fixtures doradas no cubren: manifiesto, parseo, errores inalcanzables por la API y la rama curada de
  * {@code generateConnectionsPuzzle}, que con {@code gen1-2} nunca tiene candidatas (todas las plantillas piden algún
- * Pokémon de gen 3+). Los valores esperados de la rama curada salen de {@code generateConnectionsPuzzle} del dist de
- * shared con el mismo catálogo sintético y la misma fuente de azar.
+ * Pokémon de gen 3+). La curada ya no se prefiere: solo sale cuando el puzle dinámico no encuentra uno nuevo.
  */
 class PokemonConnectionsEngineTest {
 
@@ -160,10 +159,25 @@ class PokemonConnectionsEngineTest {
   }
 
   @Test
-  void prefersTheCompleteCuratedTemplate() {
-    DoubleSupplier random = () -> 0.1;
-    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random),
+  void theDynamicPuzzleComesFirstEvenWhenATemplateFits() {
+    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(() -> 0.1),
         options(16, List.of(), List.of()));
+    assertEquals("DYNAMIC", puzzle.source());
+  }
+
+  /** Con todas las combinaciones dinámicas ya vistas, la plantilla curada es el último recurso. */
+  @Test
+  void aCuratedTemplateIsTheLastResort() {
+    var random = new Mulberry32(9);
+    var used = new ArrayList<String>();
+    PokemonConnectionsCatalog.GeneratedConnectionsPuzzle puzzle = null;
+    for (int round = 0; round < 200; round++) {
+      puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random), options(16, used, List.of()));
+      if (puzzle.source().equals("CURATED")) break;
+      assertEquals("DYNAMIC", puzzle.source());
+      used.add(puzzle.key());
+    }
+    assertFalse(used.isEmpty());
     assertEquals("CURATED classic-connections-eevee-family-fossils-dogs-food | "
         + "group-1:vaporeon,jolteon,flareon,espeon group-2:omanyte,kabuto,aerodactyl,lileep "
         + "group-3:growlithe,houndour,electrike,lillipup group-4:vanillite,slurpuff,appletun,alcremie",
@@ -173,49 +187,9 @@ class PokemonConnectionsEngineTest {
 
   @Test
   void rotatesTheTemplateOnTwelvePokemonBoards() {
-    var random = new Mulberry32(7);
-    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random),
-        options(12, List.of(), List.of()));
-    assertEquals("CURATED classic-connections-eevee-family-fossils-dogs | "
-        + "group-1:vaporeon,jolteon,flareon,espeon group-2:omanyte,kabuto,aerodactyl,lileep "
-        + "group-3:growlithe,houndour,electrike,lillipup", describe(puzzle));
-    assertEquals(0.97690763277933, random.getAsDouble());
-  }
-
-  @Test
-  void skipsRotationsWithExcludedCategories() {
-    var random = new Mulberry32(8);
-    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random),
-        options(12, List.of(), List.of("eevee-family")));
-    assertEquals("CURATED classic-connections-fossils-dogs-food | "
-        + "group-1:omanyte,kabuto,aerodactyl,lileep group-2:growlithe,houndour,electrike,lillipup "
-        + "group-3:vanillite,slurpuff,appletun,alcremie", describe(puzzle));
-    assertEquals(0.3006645820569247, random.getAsDouble());
-  }
-
-  @Test
-  void aUsedCuratedKeyFallsBackToADynamicPuzzle() {
-    var random = new Mulberry32(9);
-    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random),
-        options(16, List.of("classic-connections-eevee-family-fossils-dogs-food"), List.of()));
-    // Sin ambigüedad: single-stage, single-type o type-water cubren a Pokémon de otras categorías y se descartan.
-    assertEquals("DYNAMIC dynamic-dogs:electrike,growlithe,houndour,lillipup|eevee-family:espeon,flareon,jolteon,"
-        + "vaporeon|food:alcremie,appletun,slurpuff,vanillite|fossils:aerodactyl,kabuto,lileep,omanyte | "
-        + "group-1:flareon,jolteon,vaporeon,espeon group-2:omanyte,lileep,aerodactyl,kabuto "
-        + "group-3:slurpuff,appletun,alcremie,vanillite group-4:lillipup,electrike,houndour,growlithe",
-        describe(puzzle));
-    assertEquals(0.8281138679012656, random.getAsDouble());
-  }
-
-  @Test
-  void withoutCuratedPreferenceTheDynamicPuzzleWins() {
-    DoubleSupplier random = () -> 0.9;
-    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context(random),
-        options(16, List.of(), List.of()));
-    assertEquals("DYNAMIC dynamic-dogs:electrike,growlithe,houndour,lillipup|eevee-family:espeon,flareon,jolteon,"
-        + "vaporeon|food:alcremie,appletun,slurpuff,vanillite|fossils:aerodactyl,kabuto,lileep,omanyte | "
-        + "group-1:vaporeon,jolteon,flareon,espeon group-2:kabuto,aerodactyl,lileep,omanyte "
-        + "group-3:electrike,lillipup,growlithe,houndour group-4:alcremie,vanillite,slurpuff,appletun",
-        describe(puzzle));
+    var candidates = PokemonConnectionsCatalog.curatedCandidates(classicCatalog().all(), 3);
+    assertEquals(List.of("classic-connections-eevee-family-fossils-dogs", "classic-connections-fossils-dogs-food",
+        "classic-connections-dogs-food-eevee-family", "classic-connections-food-eevee-family-fossils"),
+        candidates.stream().map(PokemonConnectionsCatalog.GeneratedConnectionsPuzzle::key).toList());
   }
 }

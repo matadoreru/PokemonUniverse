@@ -85,4 +85,15 @@ describe('ProfileDetail', () => {
     expect(logros).toContain('Reintentar');
     expect(logros).not.toContain('LISTA DE JUEGOS');
   });
+
+  it('sin logros, el vacío de quien llama en lugar de los grupos', () => {
+    const none = { ...data, unlocked: 0, achievements: [] };
+    const html = renderToStaticMarkup(createElement(ProfileDetail, {
+      tab: 'logros', onTab: () => undefined, achievements: { status: 'ready', data: none }, onRetry: () => undefined,
+      emptyAchievements: createElement('p', null, 'NINGUNO'), children: null,
+    }));
+    expect(html).toContain('NINGUNO');
+    expect(html).toContain('0/3');
+    expect(html).not.toContain('Generales');
+  });
 });

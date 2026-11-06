@@ -9,6 +9,10 @@ for (const { w, h } of SIZES) {
     await page.goto('/');
     const empezar = page.getByRole('link', { name: 'Empezar a jugar' });
     await expect(empezar).toBeVisible();
+    const discord = page.getByRole('link', { name: /Únete al Discord/ });
+    await expect(discord).toBeVisible();
+    await expect(discord).toHaveAttribute('href', 'https://discord.gg/8x2qfaDF4');
+    await expect(discord).toHaveAttribute('target', '_blank');
     await capture(page, 'portada');
 
     await empezar.click();

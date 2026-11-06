@@ -1,3 +1,5 @@
+import { gameModeName, type NextGameVoteOptionView } from '@pokemon-universe/shared/public';
+
 export interface VoteActionStatus {
   kicker: string;
   title: string;
@@ -39,4 +41,16 @@ export function voteActionStatus({ active, eligible, ownVote, draftName, resolve
 
 export function votesLabel(count: number): string {
   return `${count} ${count === 1 ? 'voto' : 'votos'}`;
+}
+
+/**
+ * Nombre de una opción de voto: «Juego · Modo» o solo «Juego» si sale en Clásico y es su única opción (o el juego no
+ * tiene modos).
+ */
+export function voteOptionName(option: NextGameVoteOptionView, options: readonly NextGameVoteOptionView[]): string {
+  if (!option.mode) return option.game.name;
+  const alone = options.filter((other) => other.game.id === option.game.id).length === 1;
+  if (alone && option.mode === 'CLASSIC') return option.game.name;
+  const mode = gameModeName(option.game.id, option.mode);
+  return mode ? `${option.game.name} · ${mode}` : option.game.name;
 }

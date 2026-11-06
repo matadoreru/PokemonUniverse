@@ -12,6 +12,8 @@ export const pokeTabooConfigSchema = z.object({
   ),
   laps: z.number().int().min(1).max(5),
   includeRegionalForms: z.boolean(),
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict();
 
 export type PokeTabooConfig = z.infer<typeof pokeTabooConfigSchema>;
@@ -21,4 +23,5 @@ export const defaultPokeTabooConfig: PokeTabooConfig = {
   roundSeconds: 60,
   laps: 1,
   includeRegionalForms: true,
+  publicAttempts: true,
 };

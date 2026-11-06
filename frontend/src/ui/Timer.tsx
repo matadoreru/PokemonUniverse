@@ -51,7 +51,7 @@ export function Timer({ endsAt, now, totalMs, label = 'Tiempo restante', showLab
   return (
     <div className={cx(s.timer, urgent && s.urgent)}>
       {showLabel && (
-        <span className={s.label} aria-hidden="true">
+        <span className={s.label} aria-hidden="true" title={label}>
           {label}
         </span>
       )}

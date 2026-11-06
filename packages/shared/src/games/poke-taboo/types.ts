@@ -105,8 +105,10 @@ export interface PokeTabooPublicState {
 }
 
 export type PokeTabooPlayerState =
-  | { role: 'DESCRIPTOR'; canSendHint: boolean; secretPokemon: PokeTabooSecretPokemon | null }
-  | { role: 'GUESSER'; canGuess: boolean; cooldownUntil: number | null; attemptCount: number }
+  /** `attempts` del descriptor: con `publicAttempts` apagado, los fallos de todos. */
+  | { role: 'DESCRIPTOR'; canSendHint: boolean; secretPokemon: PokeTabooSecretPokemon | null; attempts?: PokeTabooAttempt[] }
+  /** `attempts`: solo con `publicAttempts` apagado, los fallos propios de la ronda. */
+  | { role: 'GUESSER'; canGuess: boolean; cooldownUntil: number | null; attemptCount: number; attempts?: PokeTabooAttempt[] }
   | { role: 'SPECTATOR' };
 
 export const pokeTabooActionSchema = z.discriminatedUnion('type', [

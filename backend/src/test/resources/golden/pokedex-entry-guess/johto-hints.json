@@ -118,7 +118,8 @@
         "evolution": true,
         "typeCount": true,
         "category": true
-      }
+      },
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

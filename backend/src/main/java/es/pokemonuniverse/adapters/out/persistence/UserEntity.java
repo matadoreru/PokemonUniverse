@@ -1,6 +1,7 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
 import es.pokemonuniverse.domain.identity.UserRole;
+import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,6 +47,11 @@ public class UserEntity {
   @JdbcTypeCode(SqlTypes.NAMED_ENUM)
   @Column(name = "role", columnDefinition = "\"UserRole\"")
   private UserRole role = UserRole.USER;
+
+  /** Texto con un CHECK en la tabla; el valor por defecto también aquí, porque el INSERT lleva todas las columnas. */
+  @Enumerated(EnumType.STRING)
+  @Column(name = "profileVisibility")
+  private ProfileVisibility profileVisibility = ProfileVisibility.EVERYONE;
 
   @Column(name = "createdAt")
   private Instant createdAt;
@@ -105,6 +111,10 @@ public class UserEntity {
 
   public Instant getCreatedAt() {
     return createdAt;
+  }
+
+  public ProfileVisibility getProfileVisibility() {
+    return profileVisibility;
   }
 
   /** Cambia el hash de la contraseña (recuperación de cuenta). */

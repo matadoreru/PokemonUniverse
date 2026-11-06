@@ -1,6 +1,7 @@
 import type { SketchmonConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
@@ -28,5 +29,6 @@ export function SketchmonConfigPanel({ config, disabled, onChange }: { config: u
     <Toggle label="Pistas automáticas" hint="Revela generación, tipos y evolución durante la ronda. Desactivadas por defecto." checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => void onChange({ ...value, hintsEnabled })} />
     <Toggle label="Formas compatibles" hint="Incluye formas regionales; hay que acertar la forma exacta." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => void onChange({ ...value, includeForms })} />
     <p className={s.note}>El Pokémon secreto solo se envía a quien dibuja. Con el modo memoria, el servidor retira el sprite tras 3 segundos; los demás nunca reciben su identidad.</p>
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

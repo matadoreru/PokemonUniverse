@@ -771,7 +771,8 @@
       "roundSeconds": 20,
       "rounds": 10,
       "hintsEnabled": false,
-      "includeRegionalForms": true
+      "includeRegionalForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -879,7 +880,8 @@
         "evolution": true,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -1061,7 +1063,8 @@
         "height": false,
         "weight": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     }
   },
   {
@@ -1180,7 +1183,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "includeForms": true
+      "includeForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -1265,7 +1269,8 @@
       ],
       "roundSeconds": 60,
       "laps": 1,
-      "includeRegionalForms": true
+      "includeRegionalForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -1514,7 +1519,8 @@
       "laps": 1,
       "hintsEnabled": false,
       "memoryPreviewEnabled": false,
-      "includeForms": false
+      "includeForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -2159,7 +2165,8 @@
       "roundSeconds": 20,
       "rounds": 10,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -2479,7 +2486,8 @@
         "GENERATION",
         "TYPE",
         "EVOLUTION"
-      ]
+      ],
+      "publicAttempts": true
     }
   },
   {

@@ -6,6 +6,7 @@ import es.pokemonuniverse.domain.pokemon.Move;
 import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
+import es.pokemonuniverse.domain.pokemon.PokemonEvolutionLink;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.json.tree.JsonNode;
@@ -40,7 +41,10 @@ public final class GoldenCatalogs {
           mapper.readValueFromTree(root.get("learnsets"), Argument.listOf(LearnsetEntry.class)),
           mapper.readValueFromTree(root.get("evolution"),
               Argument.mapOf(Argument.STRING, Argument.of(PokemonEvolutionInfo.class))),
-          mapper.readValueFromTree(root.get("pokedexEntries"), Argument.listOf(PokedexEntry.class)));
+          mapper.readValueFromTree(root.get("pokedexEntries"), Argument.listOf(PokedexEntry.class)),
+          // Aristas de la tabla "PokemonEvolution" entre Pokémon de la fixture (añadidas a mano desde la BD sembrada).
+          root.get("evolutionLinks") == null ? List.of()
+              : mapper.readValueFromTree(root.get("evolutionLinks"), Argument.listOf(PokemonEvolutionLink.class)));
     } catch (IOException e) {
       throw new UncheckedIOException("No se pudo interpretar la fixture " + fixtureId, e);
     }

@@ -306,11 +306,13 @@ public final class PokedexEntryGuessTypes {
       @Nullable PokedexEntryGuessRoundPublicResult lastRound,
       @Nullable GameResults results) {}
 
+  /** {@code attempts}: con {@code publicAttempts} apagado, solo los fallos propios de la ronda; si no, no se envía. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokedexEntryGuessPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
       @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable PokedexEntryGuessLastAttempt lastAttempt) {}
+      @Nullable PokedexEntryGuessLastAttempt lastAttempt,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokedexEntryGuessAttempt> attempts) {}
 
   /** {@code pokedexEntryGuessActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record PokedexEntryGuessAction(String pokemonId) {

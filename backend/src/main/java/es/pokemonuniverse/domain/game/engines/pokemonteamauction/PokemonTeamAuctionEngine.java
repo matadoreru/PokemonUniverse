@@ -17,6 +17,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuct
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.PokemonTeamAuctionState;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionBidEvent;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionLotResult;
+import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionLotPokemon;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionParticipant;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionPlayerStats;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionPokemon;
@@ -351,8 +352,9 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
     if (state.phase() == GamePhase.GAME_RESULTS) {
       results = state.results() != null ? state.results() : PokemonTeamAuctionRules.buildTeamAuctionResults(state);
     }
+    var lot = currentLot(state);
     return new PokemonTeamAuctionPublicState(state.roundEndsAt(), ID, state.phase(), state.currentLotIndex() + 1,
-        state.lots().size(), currentLot(state), state.currentBid(), requiredBid(state), state.currentBidderId(),
+        state.lots().size(), lot == null ? null : TeamAuctionLotPokemon.of(lot), state.currentBid(), requiredBid(state), state.currentBidderId(),
         currentTurnPlayerId(state), state.turnOrder(), state.passedPlayerIds(), state.bidHistory(),
         state.lotHistory(), state.participants(), scores, results);
   }

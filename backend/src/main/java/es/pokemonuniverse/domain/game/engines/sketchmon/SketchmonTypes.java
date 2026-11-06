@@ -665,19 +665,23 @@ public final class SketchmonTypes {
 
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Drawer(String role, boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon)
+    record Drawer(String role, boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon,
+        @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<SketchmonAttempt> attempts)
         implements SketchmonPlayerState {
-      Drawer(boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon) {
-        this("DRAWER", canDraw, secretPokemon);
+      Drawer(boolean canDraw, @Nullable SketchmonDrawerPokemon secretPokemon,
+          @Nullable List<SketchmonAttempt> attempts) {
+        this("DRAWER", canDraw, secretPokemon, attempts);
       }
     }
 
     @Serdeable
     @JsonInclude(JsonInclude.Include.ALWAYS)
-    record Guesser(String role, boolean canGuess, @Nullable Long cooldownUntil, int attemptCount)
+    record Guesser(String role, boolean canGuess, @Nullable Long cooldownUntil, int attemptCount,
+        @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<SketchmonAttempt> attempts)
         implements SketchmonPlayerState {
-      Guesser(boolean canGuess, @Nullable Long cooldownUntil, int attemptCount) {
-        this("GUESSER", canGuess, cooldownUntil, attemptCount);
+      Guesser(boolean canGuess, @Nullable Long cooldownUntil, int attemptCount,
+          @Nullable List<SketchmonAttempt> attempts) {
+        this("GUESSER", canGuess, cooldownUntil, attemptCount, attempts);
       }
     }
 

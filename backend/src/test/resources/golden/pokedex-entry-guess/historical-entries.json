@@ -190,7 +190,8 @@
         "evolution": false,
         "typeCount": false,
         "category": false
-      }
+      },
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

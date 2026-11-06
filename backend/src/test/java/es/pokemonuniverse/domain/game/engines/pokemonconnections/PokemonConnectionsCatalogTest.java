@@ -2,23 +2,35 @@ package es.pokemonuniverse.domain.game.engines.pokemonconnections;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsCatalog.CategoryDefinition;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsCatalog.CuratedTemplate;
+import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsCatalog.PuzzleOptions;
+import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePlayer;
+import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
+import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAnswerGroup;
+import es.pokemonuniverse.golden.GoldenCatalogs;
+import es.pokemonuniverse.domain.pokemon.Pokemon;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 
 /**
- * El catálogo literal frente al TS: los ids y su orden se exportaron una vez de {@code connectionCategoryCatalog} del
- * dist de shared ({@code npx tsx -e}). El orden alimenta {@code shuffled}, así que un cambio aquí rompe las fixtures.
+ * El catálogo curado conserva los ids y el orden que se exportaron una vez de {@code connectionCategoryCatalog} del
+ * dist de shared ({@code npx tsx -e}); el orden alimenta {@code shuffled}, así que un cambio aquí rompe las fixtures.
+ * Las categorías dinámicas ya divergen a propósito del TS: sin colores, con monotipos, dobles tipos, habilidades,
+ * iniciales del nombre y altura mínima, y con familias para que un tablero no repita la misma idea.
  */
 class PokemonConnectionsCatalogTest {
 
@@ -106,5 +118,125 @@ class PokemonConnectionsCatalogTest {
     var lastGroup = templates.getLast().groups().getLast();
     assertEquals("ducks", lastGroup.categoryId());
     assertEquals(List.of("psyduck", "farfetchd", "ducklett", "quaxly"), lastGroup.pokemonIds());
+  }
+
+  /** Las categorías dinámicas nuevas (sin contar las que ya traía el TS), en el orden del generador. */
+  private static final List<String> NEW_DYNAMIC_IDS = List.of(
+      "mono-normal", "mono-fire", "mono-water", "mono-electric", "mono-grass", "mono-ice", "mono-fighting",
+      "mono-poison", "mono-ground", "mono-flying", "mono-psychic", "mono-bug", "mono-rock", "mono-ghost",
+      "mono-dragon", "mono-dark", "mono-steel", "mono-fairy",
+      "dual-normal-flying", "dual-grass-poison", "dual-bug-flying", "dual-bug-poison", "dual-water-rock",
+      "dual-ground-rock", "dual-water-ground", "dual-water-ice",
+      "ability-espesura", "ability-mar-llamas", "ability-torrente", "ability-enjambre", "ability-levitacion",
+      "ability-intimidacion", "ability-robustez", "ability-sincronia", "ability-nado-rapido", "ability-clorofila",
+      "ability-absorbe-agua", "ability-electricidad-estatica",
+      "letter-a", "letter-b", "letter-c", "letter-d", "letter-g", "letter-m", "letter-p", "letter-t",
+      "tiny");
+
+  /** Las nuevas que en gen 1–2 no llegan a 4 miembros: el generador las descarta solas. */
+  private static final Set<String> SHORT_IN_GEN_1_2 = Set.of("mono-ice", "mono-flying", "mono-rock", "mono-ghost",
+      "mono-dragon", "mono-dark", "mono-steel", "dual-water-ground", "dual-water-ice");
+
+  private static List<Pokemon> gen12Pool() {
+    return GoldenCatalogs.load("gen1-2").forGenerations(List.of(1, 2), false).stream()
+        .filter(pokemon -> pokemon.isDefault() && pokemon.sprite() != null && !pokemon.sprite().isEmpty())
+        .toList();
+  }
+
+  @Test
+  void colorCategoriesAreGone() {
+    var ids = PokemonConnectionsCatalog.resolvedCategoryDefinitions(gen12Pool()).stream()
+        .map(CategoryDefinition::id).toList();
+    assertEquals(List.of(), ids.stream().filter(id -> id.startsWith("color-")).toList());
+  }
+
+  @Test
+  void addsAtLeastThirtyNewDynamicCategoriesWithEnoughMembersInGenOneAndTwo() {
+    var pool = gen12Pool();
+    var resolved = PokemonConnectionsCatalog.resolvedCategoryDefinitions(pool);
+    var byId = new java.util.HashMap<String, CategoryDefinition>();
+    for (var definition : resolved) byId.put(definition.id(), definition);
+    var shortOnes = new TreeSet<String>();
+    for (var id : NEW_DYNAMIC_IDS) {
+      var definition = byId.get(id);
+      assertNotNull(definition, id);
+      assertTrue(!definition.label().isBlank() && !definition.explanation().isBlank(), id);
+      if (PokemonConnectionsCatalog.membersFor(definition, pool).size() < 4) shortOnes.add(id);
+    }
+    assertTrue(NEW_DYNAMIC_IDS.size() - shortOnes.size() >= 30, shortOnes.toString());
+    assertEquals(new TreeSet<>(SHORT_IN_GEN_1_2), shortOnes);
+  }
+
+  @Test
+  void newCategoriesMatchTheVisibleData() {
+    var pool = gen12Pool();
+    var byId = new java.util.HashMap<String, CategoryDefinition>();
+    for (var definition : PokemonConnectionsCatalog.resolvedCategoryDefinitions(pool)) {
+      byId.put(definition.id(), definition);
+    }
+    var members = (java.util.function.Function<String, Set<String>>) id -> new HashSet<>(
+        PokemonConnectionsCatalog.membersFor(byId.get(id), pool).stream().map(Pokemon::id).toList());
+    assertTrue(members.apply("mono-fire").contains("charmander"));
+    assertFalse(members.apply("mono-fire").contains("charizard"));
+    assertTrue(members.apply("dual-normal-flying").containsAll(List.of("pidgey", "spearow", "hoothoot")));
+    assertTrue(members.apply("dual-grass-poison").contains("bulbasaur"));
+    assertEquals(Set.of("bulbasaur", "ivysaur", "venusaur", "chikorita", "bayleef", "meganium"),
+        members.apply("ability-espesura"));
+    assertTrue(members.apply("ability-levitacion").contains("gastly"));
+    assertTrue(members.apply("letter-p").containsAll(List.of("pikachu", "psyduck", "pidgey")));
+    assertFalse(members.apply("letter-p").contains("bulbasaur"));
+    assertTrue(members.apply("tiny").contains("diglett"));
+  }
+
+  @Test
+  void familiesGroupRelatedCategories() {
+    var types = PokemonConnectionsCatalog.categoryFamily("type-fire");
+    for (var id : List.of("type-water", "mono-fire", "dual-normal-flying", "single-type", "dual-type")) {
+      assertEquals(types, PokemonConnectionsCatalog.categoryFamily(id), id);
+    }
+    var starters = PokemonConnectionsCatalog.categoryFamily("grass-partners");
+    for (var id : List.of("fire-partners", "water-partners", "final-starters", "ability-espesura",
+        "ability-mar-llamas", "ability-torrente")) {
+      assertEquals(starters, PokemonConnectionsCatalog.categoryFamily(id), id);
+    }
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("ability-levitacion"),
+        PokemonConnectionsCatalog.categoryFamily("ability-robustez"));
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("letter-a"),
+        PokemonConnectionsCatalog.categoryFamily("letter-t"));
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("generation-1"),
+        PokemonConnectionsCatalog.categoryFamily("generation-2"));
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("evolution-first"),
+        PokemonConnectionsCatalog.categoryFamily("single-stage"));
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("trade-evolution"),
+        PokemonConnectionsCatalog.categoryFamily("stone-evolution"));
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("legendary"),
+        PokemonConnectionsCatalog.categoryFamily("mythical"));
+    assertEquals(PokemonConnectionsCatalog.categoryFamily("giants"),
+        PokemonConnectionsCatalog.categoryFamily("tiny"));
+    assertEquals("dogs", PokemonConnectionsCatalog.categoryFamily("dogs"));
+    assertTrue(!PokemonConnectionsCatalog.categoryFamily("dogs")
+        .equals(PokemonConnectionsCatalog.categoryFamily("cats")));
+  }
+
+  /** Veinte puzles seguidos con el catálogo de la fixture: siempre dinámicos y sin repetir familia en un tablero. */
+  @Test
+  void consecutivePuzzlesAreDynamicAndMixFamilies() {
+    for (var generations : List.of(List.of(1), List.of(1, 2))) {
+      var context = GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(42))
+          .players(List.of(new GamePlayer("p1", "Ana"))).now(1000).build();
+      var used = new ArrayList<String>();
+      var categoriesSeen = new HashSet<String>();
+      for (int round = 0; round < 20; round++) {
+        var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context,
+            new PuzzleOptions(4, 16, generations, List.copyOf(used), List.of()));
+        assertEquals("DYNAMIC", puzzle.source());
+        var families = puzzle.groups().stream()
+            .map(group -> PokemonConnectionsCatalog.categoryFamily(group.categoryId())).toList();
+        assertEquals(families.size(), new HashSet<>(families).size(), puzzle.key());
+        puzzle.groups().stream().map(ConnectionAnswerGroup::categoryId).forEach(categoriesSeen::add);
+        used.add(puzzle.key());
+      }
+      assertTrue(categoriesSeen.size() >= 30, generations + ": " + categoriesSeen);
+    }
   }
 }

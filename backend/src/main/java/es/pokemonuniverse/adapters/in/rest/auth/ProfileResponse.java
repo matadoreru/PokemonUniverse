@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.application.profile.UserProfile;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import es.pokemonuniverse.domain.progression.Experience;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
@@ -17,21 +18,29 @@ public record ProfileResponse(Profile profile) {
   public static ProfileResponse from(UserProfile p) {
     var u = p.user();
     var g = p.globalStats();
-    var games = p.games().stream().map(game -> {
+    var games = games(p.games());
+    return new ProfileResponse(new Profile(
+        new ProfileUser(u.id(), u.username(), u.email(), u.avatar(), u.createdAt()),
+        new GlobalStats(g.gamesPlayed(), g.gamesWon(), g.totalPoints()),
+        Progress.from(p.progress()),
+        games,
+        p.visibility()));
+  }
+
+  /** Los minijuegos con las estadísticas de la cuenta (también los usa el perfil de otra cuenta). */
+  public static List<ProfileGame> games(List<UserProfile.Game> games) {
+    return games.stream().map(game -> {
       var s = game.stats();
       return new ProfileGame(game.id(), game.name(), game.icon(), game.description(), game.experimental(),
           game.recommended(), game.minPlayers(), game.maxPlayers(), game.profileStats(),
           new GameStats(s.gameId(), s.gamesPlayed(), s.gamesWon(), s.points(), s.metrics()));
     }).toList();
-    return new ProfileResponse(new Profile(
-        new ProfileUser(u.id(), u.username(), u.email(), u.avatar(), u.createdAt()),
-        new GlobalStats(g.gamesPlayed(), g.gamesWon(), g.totalPoints()),
-        Progress.from(p.progress()),
-        games));
   }
 
+  /** {@code profileVisibility} es el ajuste «Perfil visible para». */
   @Serdeable
-  public record Profile(ProfileUser user, GlobalStats globalStats, Progress progress, List<ProfileGame> games) {}
+  public record Profile(ProfileUser user, GlobalStats globalStats, Progress progress, List<ProfileGame> games,
+      ProfileVisibility profileVisibility) {}
 
   /** Nivel y experiencia: {@code levelXp} y {@code nextLevelXp} son la experiencia total donde empiezan este nivel y el siguiente. */
   @Serdeable

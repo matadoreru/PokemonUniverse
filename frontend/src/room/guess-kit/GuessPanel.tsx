@@ -5,7 +5,7 @@ import { ScorePop } from '../../components/ScorePop';
 import { Badge, Chip, cx, Icon, Panel } from '../../ui';
 import { PokemonSelector } from '../PokemonSelector';
 import type { PokemonSearchOption } from '../pokemon-search';
-import { attemptsText, guessSeconds, ordinal, pointsWord, type GuessPanelKind, type GuessVerdict } from './presentation';
+import { attemptsText, guessSearchAutoFocus, guessSeconds, ordinal, pointsWord, type GuessPanelKind, type GuessVerdict } from './presentation';
 import s from './GuessPanel.module.css';
 
 const EMPTY_LOCKED = new Set<string>();
@@ -99,7 +99,7 @@ export function GuessPanel(props: GuessPanelProps) {
     </div>
     {kind === 'guess' && selector && <div className={s.search}>
       <PokemonSelector key={selector.roundKey} pokemon={selector.pokemon} loading={selector.loading} loadError={selector.loadError} onRetry={selector.onRetry}
-        locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={selector.autoFocus ?? false} inputLabel={selector.inputLabel} {...(selector.maxResults ? { maxResults: selector.maxResults } : {})}
+        locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={selector.autoFocus ?? guessSearchAutoFocus()} inputLabel={selector.inputLabel} {...(selector.maxResults ? { maxResults: selector.maxResults } : {})}
         onSelect={(pokemonId) => selector.onGuess(pokemonId).catch(ignoreFailure)} />
     </div>}
   </Panel>;

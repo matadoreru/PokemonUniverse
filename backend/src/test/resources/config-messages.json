@@ -51,7 +51,9 @@
     "hints.weight ausente": "Configuración de Guess from Stats no válida: falta weight.",
     "hints.weight tipo erróneo": "Configuración de Guess from Stats no válida: weight debe ser booleano.",
     "hints.category ausente": "Configuración de Guess from Stats no válida: falta category.",
-    "hints.category tipo erróneo": "Configuración de Guess from Stats no válida: category debe ser booleano."
+    "hints.category tipo erróneo": "Configuración de Guess from Stats no válida: category debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de Guess from Stats no válida: publicAttempts debe ser booleano."
   },
   "higher-lower": {
     "<raíz null>": "Configuración de Higher or Lower no válida: la configuración debe ser un objeto.",
@@ -192,7 +194,9 @@
     "laps 1e20": "Configuración de PokéTaboo no válida: laps debe estar entre 1 y 5.",
     "laps -1": "Configuración de PokéTaboo no válida: laps debe estar entre 1 y 5.",
     "includeRegionalForms ausente": "Configuración de PokéTaboo no válida: falta includeRegionalForms.",
-    "includeRegionalForms tipo erróneo": "Configuración de PokéTaboo no válida: includeRegionalForms debe ser booleano."
+    "includeRegionalForms tipo erróneo": "Configuración de PokéTaboo no válida: includeRegionalForms debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de PokéTaboo no válida: publicAttempts debe ser booleano."
   },
   "pokeddle-race": {
     "<raíz null>": "Configuración de Pokédle Race no válida: la configuración debe ser un objeto.",
@@ -306,7 +310,9 @@
     "hints.typeCount ausente": "Configuración de Pokédex Entry Guess no válida: falta typeCount.",
     "hints.typeCount tipo erróneo": "Configuración de Pokédex Entry Guess no válida: typeCount debe ser booleano.",
     "hints.category ausente": "Configuración de Pokédex Entry Guess no válida: falta category.",
-    "hints.category tipo erróneo": "Configuración de Pokédex Entry Guess no válida: category debe ser booleano."
+    "hints.category tipo erróneo": "Configuración de Pokédex Entry Guess no válida: category debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de Pokédex Entry Guess no válida: publicAttempts debe ser booleano."
   },
   "pokemon-bingo": {
     "<raíz null>": "Configuración de Pokémon Bingo no válida: la configuración debe ser un objeto.",
@@ -458,7 +464,9 @@
     "cryVersion ausente": "Configuración de Adivina el Grito no válida: falta cryVersion.",
     "cryVersion tipo erróneo": "Configuración de Adivina el Grito no válida: cryVersion debe ser LATEST, LEGACY o RANDOM.",
     "includeRegionalForms ausente": "Configuración de Adivina el Grito no válida: falta includeRegionalForms.",
-    "includeRegionalForms tipo erróneo": "Configuración de Adivina el Grito no válida: includeRegionalForms debe ser booleano."
+    "includeRegionalForms tipo erróneo": "Configuración de Adivina el Grito no válida: includeRegionalForms debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de Adivina el Grito no válida: publicAttempts debe ser booleano."
   },
   "pokemon-impostor": {
     "<raíz null>": "Configuración de Pokémon Impostor no válida: la configuración debe ser un objeto.",
@@ -517,7 +525,9 @@
     "hintKinds tipo erróneo": "Configuración de Adivina por la Paleta no válida: hintKinds debe ser una lista.",
     "hintKinds [10.5]": "Configuración de Adivina por la Paleta no válida: hintKinds tiene un valor no válido.",
     "hintKinds [1e20]": "Configuración de Adivina por la Paleta no válida: hintKinds tiene un valor no válido.",
-    "hintKinds [-1]": "Configuración de Adivina por la Paleta no válida: hintKinds tiene un valor no válido."
+    "hintKinds [-1]": "Configuración de Adivina por la Paleta no válida: hintKinds tiene un valor no válido.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de Adivina por la Paleta no válida: publicAttempts debe ser booleano."
   },
   "pokemon-red-flag": {
     "<raíz null>": "Configuración de Pokémon Red Flag no válida: la configuración debe ser un objeto.",
@@ -681,7 +691,9 @@
     "memoryPreviewEnabled ausente": "Configuración de Sketchmon no válida: falta memoryPreviewEnabled.",
     "memoryPreviewEnabled tipo erróneo": "Configuración de Sketchmon no válida: memoryPreviewEnabled debe ser booleano.",
     "includeForms ausente": "Configuración de Sketchmon no válida: falta includeForms.",
-    "includeForms tipo erróneo": "Configuración de Sketchmon no válida: includeForms debe ser booleano."
+    "includeForms tipo erróneo": "Configuración de Sketchmon no válida: includeForms debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de Sketchmon no válida: publicAttempts debe ser booleano."
   },
   "tcg-higher-lower": {
     "<raíz null>": "Configuración de Higher or Lower: Cartas no válida: la configuración debe ser un objeto.",
@@ -822,7 +834,9 @@
     "hintsEnabled ausente": "Configuración de ¿Quién es ese Pokémon? no válida: falta hintsEnabled.",
     "hintsEnabled tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: hintsEnabled debe ser booleano.",
     "includeRegionalForms ausente": "Configuración de ¿Quién es ese Pokémon? no válida: falta includeRegionalForms.",
-    "includeRegionalForms tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: includeRegionalForms debe ser booleano."
+    "includeRegionalForms tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: includeRegionalForms debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: publicAttempts debe ser booleano."
   },
   "would-you-rather": {
     "<raíz null>": "Configuración de Would You Rather no válida: la configuración debe ser un objeto.",
@@ -870,6 +884,8 @@
     "hintKinds [1e20]": "Configuración de Zoomed Pokémon no válida: hintKinds no admite ese valor.",
     "hintKinds [-1]": "Configuración de Zoomed Pokémon no válida: hintKinds no admite ese valor.",
     "includeForms ausente": "Configuración de Zoomed Pokémon no válida: falta includeForms.",
-    "includeForms tipo erróneo": "Configuración de Zoomed Pokémon no válida: includeForms debe ser booleano."
+    "includeForms tipo erróneo": "Configuración de Zoomed Pokémon no válida: includeForms debe ser booleano.",
+    "publicAttempts ausente": "valid",
+    "publicAttempts tipo erróneo": "Configuración de Zoomed Pokémon no válida: publicAttempts debe ser booleano."
   }
 }

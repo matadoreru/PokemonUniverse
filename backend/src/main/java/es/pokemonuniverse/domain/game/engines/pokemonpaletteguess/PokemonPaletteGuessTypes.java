@@ -327,11 +327,13 @@ public final class PokemonPaletteGuessTypes {
       @Nullable PokemonPalettePublicRoundResult lastRound,
       @Nullable GameResults results) {}
 
+  /** {@code attempts}: con {@code publicAttempts} apagado, solo los fallos propios de la ronda; si no, no se envía. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokemonPaletteGuessPlayerState(PokemonPaletteRole role, boolean canGuess, boolean solved,
       @Nullable Integer solveOrder, @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable PokemonPaletteLastAttempt lastAttempt) {}
+      @Nullable PokemonPaletteLastAttempt lastAttempt,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonPaletteAttempt> attempts) {}
 
   /** {@code pokemonPaletteGuessActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record PokemonPaletteGuessAction(String pokemonId) {

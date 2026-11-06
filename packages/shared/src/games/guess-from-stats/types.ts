@@ -44,6 +44,8 @@ export interface GuessFromStatsPublicState {
 }
 export interface GuessFromStatsPlayerState {
   canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null;
+  /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
+  attempts?: GuessFromStatsAttempt[];
 }
 
 export const guessFromStatsActionSchema = z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict();

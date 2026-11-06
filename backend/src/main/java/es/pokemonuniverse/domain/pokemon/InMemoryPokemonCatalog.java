@@ -18,7 +18,8 @@ import java.util.Set;
  * descendente y después por versión, ambas con {@link Collations#names()} en lugar de {@code localeCompare} y con
  * ordenación estable como {@code Array.prototype.sort}.
  */
-public final class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, PokedexEntryPokemonCatalog {
+public final class InMemoryPokemonCatalog
+    implements LearnsetPokemonCatalog, PokedexEntryPokemonCatalog, EvolutionPokemonCatalog {
 
   private static final Comparator<ResolvedLevelUpMove> LEARNSET_ORDER = Comparator
       .comparingInt(ResolvedLevelUpMove::level)
@@ -33,6 +34,8 @@ public final class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, Pok
   private final Map<String, List<ResolvedLevelUpMove>> learnsetIndex;
   private final Map<String, PokemonEvolutionInfo> evolutionIndex;
   private final Map<String, List<PokedexEntry>> pokedexEntryIndex;
+  private final Map<String, String> preEvolutionIndex;
+  private final Map<String, List<String>> evolutionsIndex;
 
   public InMemoryPokemonCatalog(List<Pokemon> entries) {
     this(entries, List.of(), List.of(), Map.of(), List.of());
@@ -40,6 +43,13 @@ public final class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, Pok
 
   public InMemoryPokemonCatalog(List<Pokemon> entries, List<Move> moves, List<LearnsetEntry> learnsets,
       Map<String, PokemonEvolutionInfo> evolution, List<PokedexEntry> pokedexEntries) {
+    this(entries, moves, learnsets, evolution, pokedexEntries, List.of());
+  }
+
+  /** Con las aristas de las cadenas evolutivas; las que nombran un Pokémon fuera del catálogo se descartan. */
+  public InMemoryPokemonCatalog(List<Pokemon> entries, List<Move> moves, List<LearnsetEntry> learnsets,
+      Map<String, PokemonEvolutionInfo> evolution, List<PokedexEntry> pokedexEntries,
+      List<PokemonEvolutionLink> evolutionLinks) {
     var defaultDexNumbers = new HashSet<Integer>();
     var kept = new ArrayList<Pokemon>();
     for (var pokemon : entries) {
@@ -67,6 +77,17 @@ public final class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, Pok
     var pokedexLists = new HashMap<String, List<PokedexEntry>>();
     for (var entry : pokedexEntries) pokedexLists.computeIfAbsent(entry.pokemonId(), k -> new ArrayList<>()).add(entry);
     this.pokedexEntryIndex = sortedCopies(pokedexLists, POKEDEX_ORDER);
+    var parents = new HashMap<String, String>();
+    var children = new HashMap<String, List<String>>();
+    for (var link : evolutionLinks) {
+      if (!idIndex.containsKey(link.fromPokemonId()) || !idIndex.containsKey(link.toPokemonId())) continue;
+      parents.put(link.toPokemonId(), link.fromPokemonId());
+      children.computeIfAbsent(link.fromPokemonId(), k -> new ArrayList<>()).add(link.toPokemonId());
+    }
+    this.preEvolutionIndex = Map.copyOf(parents);
+    var frozenChildren = new HashMap<String, List<String>>();
+    children.forEach((id, list) -> frozenChildren.put(id, List.copyOf(list)));
+    this.evolutionsIndex = Map.copyOf(frozenChildren);
   }
 
   private static String learnsetKey(String pokemonId, int referenceGeneration) {
@@ -119,5 +140,15 @@ public final class InMemoryPokemonCatalog implements LearnsetPokemonCatalog, Pok
   @Override
   public List<PokedexEntry> pokedexEntries(String pokemonId) {
     return pokedexEntryIndex.getOrDefault(pokemonId, List.of());
+  }
+
+  @Override
+  public Optional<String> preEvolutionId(String pokemonId) {
+    return Optional.ofNullable(preEvolutionIndex.get(pokemonId));
+  }
+
+  @Override
+  public List<String> evolutionIds(String pokemonId) {
+    return evolutionsIndex.getOrDefault(pokemonId, List.of());
   }
 }

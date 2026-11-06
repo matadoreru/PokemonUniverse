@@ -340,7 +340,8 @@ public final class PokemonPaletteGuessEngine implements
         active ? palette.weights() : lastRound != null ? lastRound.paletteWeights() : List.of(),
         active && state.config().hintsEnabled() && target.isPresent()
             ? buildHints(target.get(), state.config().hintKinds()) : List.of(),
-        state.attempts(), solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
+        GuessingRound.publicAttempts(state.config().publicAttempts(), state.attempts()),
+        solvedPlayers, state.scores(), state.roundStartedAt(), state.roundEndsAt(),
         state.nextTransitionAt(),
         lastRound != null && reveal ? PokemonPalettePublicRoundResult.of(lastRound) : null,
         state.phase() == GamePhase.GAME_RESULTS ? PokemonPaletteGuessRules.buildPokemonPaletteResults(state) : null);
@@ -358,7 +359,9 @@ public final class PokemonPaletteGuessEngine implements
         state.cooldownUntil().get(playerId),
         solve == null ? 0 : solve.points(),
         state.attemptCounts().getOrDefault(playerId, 0),
-        state.lastAttemptResult().get(playerId));
+        state.lastAttemptResult().get(playerId),
+        GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
+            PokemonPaletteAttempt::playerId, playerId));
   }
 
   @Override

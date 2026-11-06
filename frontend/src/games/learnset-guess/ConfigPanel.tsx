@@ -2,7 +2,7 @@ import { GENERATION_LEARNSET_SOURCES, type LearnsetGuessConfig } from '@pokemon-
 import { BookOpenCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField } from '../../room/GameModeField';
+import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { Badge, Icon, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
@@ -13,6 +13,7 @@ import s from './ConfigPanel.module.css';
  */
 export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as LearnsetGuessConfig; const reference = Math.max(...value.generations) as keyof typeof GENERATION_LEARNSET_SOURCES;
+  const shown = useModeShown('learnset-guess', value.mode);
   return <fieldset disabled={disabled} className={s.panel}>
     <GameModeField gameId="learnset-guess" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" onChange={(generations) => void onChange({ ...value, generations })} />
@@ -29,7 +30,7 @@ export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { confi
       <Toggle label="Información evolutiva" hint="Muestra únicamente la etapa, nunca nombres." checked={value.showEvolution} disabled={disabled} onChange={(showEvolution) => void onChange({ ...value, showEvolution })} />
     </div>
     <div className={s.ranges}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint={value.mode === 'MANUAL_REVEAL' ? 'Tope de la ronda · cada fallo enseña un grupo más · 1 segundo de espera tras un fallo.' : 'Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo.'} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint={shown('MANUAL_REVEAL') && !shown('CLASSIC') ? 'Tope de la ronda · cada fallo enseña un grupo más · 1 segundo de espera tras un fallo.' : 'Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo.'} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
   </fieldset>;

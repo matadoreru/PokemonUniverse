@@ -24,8 +24,8 @@ function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
     ],
     sessionHistory: [{ gameNumber: 1, gameId: 'one', winnerIds: ['p1'], points: { p1: 5, p2: 2, p3: 0 } }],
     nextGameVote: {
-      options: games, eligibleVoterIds: ['p1', 'p2', 'p3'], votedPlayerIds: resolved ? ['p1', 'p2', 'p3'] : [], ownVoteGameId: null,
-      endsAt: resolved ? null : Date.now() + 15_000, resolvedGameId: resolved ? 'two' : null,
+      options: games.map((game) => ({ id: game.id, game, mode: null })), eligibleVoterIds: ['p1', 'p2', 'p3'], votedPlayerIds: resolved ? ['p1', 'p2', 'p3'] : [], ownVoteOptionId: null,
+      endsAt: resolved ? null : Date.now() + 15_000, resolvedOptionId: resolved ? 'two' : null,
       tallies: resolved ? { one: 0, two: 3, three: 0 } : null, nextTransitionAt: resolved ? Date.now() + 3_000 : null,
     },
     game: { gameId: 'one', results: { winnerId: 'p1', standings: [{ playerId: 'p1', position: 1, points: 5, stats: {} }, { playerId: 'p2', position: 2, points: 2, stats: {} }] } },
@@ -81,6 +81,10 @@ describe('game selection UI', () => {
     expect(gameOrderHint('ORDER', 0, 0)).toBe('Elige al menos un minijuego.');
     expect(gameOrderHint('VOTE', 0, 2)).toBe('Ninguno de los minijuegos elegidos admite a los jugadores de ahora.');
     expect(gameOrderHint('RANDOM', 1, 3)).toBe('Con un solo minijuego compatible, se juega siempre ese.');
+    // Al azar o por votación, cada modo marcado es una opción más; en orden no cuenta.
+    expect(gameOrderHint('RANDOM', 1, 1, 2)).toBe('Cada partida sale al azar entre 2 opciones de minijuego y modo, sin repetir la anterior.');
+    expect(gameOrderHint('VOTE', 2, 2, 4)).toBe('Tras cada partida se vota entre 3 de las 4 opciones de minijuego y modo.');
+    expect(gameOrderHint('ORDER', 2, 2, 4)).toBe('Se juegan los 2 minijuegos en el orden en que los elegiste y se vuelve a empezar.');
     const vacio = renderToStaticMarkup(createElement(GameOrderChoice, {
       mode: { type: 'ORDER', gameIds: [] }, compatibleCount: 0, disabled: false, onChange: () => undefined,
     }));
@@ -150,5 +154,22 @@ describe('game selection UI', () => {
     expect(active).toMatch(/role="status" aria-live="polite">Elige una carta</);
     expect(result).toMatch(/role="status" aria-live="polite">La sala ha elegido Juego dos</);
     expect(result).not.toMatch(/aria-live="polite">[^<]*empieza en/);
+  });
+
+  it('shows each allowed mode of a game as its own vote option, keyed by option id', () => {
+    const higherLower = realGames[1]!;
+    const base = room('NEXT_GAME_VOTE_RESULTS');
+    const vote = { ...base.nextGameVote!, options: [
+      { id: 'higher-lower:CLASSIC', game: higherLower, mode: 'CLASSIC' },
+      { id: 'higher-lower:ENDLESS', game: higherLower, mode: 'ENDLESS' },
+      { id: 'one', game: games[0]!, mode: null },
+    ], resolvedOptionId: 'higher-lower:ENDLESS', tallies: { 'higher-lower:CLASSIC': 1, 'higher-lower:ENDLESS': 2, one: 0 } };
+    const result = renderToStaticMarkup(createElement(NextGameVote, { room: { ...base, nextGameVote: vote }, selfId: 'p1', onVote: async () => undefined, onEnd: () => undefined }));
+    expect(result).toContain('Higher or Lower · Clásico');
+    expect(result).toContain('Higher or Lower · Racha infinita');
+    expect(result).toContain('La sala ha elegido Higher or Lower · Racha infinita');
+    expect(result).toContain('Un fallo y estás fuera. Gana quien encadene más aciertos.');
+    expect(result).toContain('2 votos');
+    expect(result).toContain('>Juego uno<');
   });
 });

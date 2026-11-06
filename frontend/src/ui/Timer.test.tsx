@@ -6,7 +6,7 @@ import { countdownCue, Timer, timerSeconds, timerUrgent } from './Timer';
 describe('Timer con etiqueta', () => {
   it('showLabel pinta la etiqueta en la placa (decorativa: ya va en el aria-label)', () => {
     const html = renderToStaticMarkup(createElement(Timer, { endsAt: 20_000, now: 0, totalMs: 30_000, label: 'Para votar', showLabel: true }));
-    expect(html).toContain('aria-hidden="true">Para votar</span>');
+    expect(html).toMatch(/aria-hidden="true"[^>]*>Para votar<\/span>/);
     expect(renderToStaticMarkup(createElement(Timer, { endsAt: 20_000, now: 0, totalMs: 30_000, label: 'Para votar' }))).not.toContain('>Para votar<');
   });
 });

@@ -11,6 +11,8 @@ export const pokemonPaletteGuessConfigSchema = z.object({
   paletteSize: z.number().int().min(5).max(8),
   hintsEnabled: z.boolean(),
   hintKinds: z.array(z.enum(POKEMON_PALETTE_HINT_KINDS)).transform((values) => [...new Set(values)]),
+  /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
+  publicAttempts: z.boolean().default(true),
 }).strict();
 
 export type PokemonPaletteGuessConfig = z.infer<typeof pokemonPaletteGuessConfigSchema>;
@@ -23,4 +25,5 @@ export const defaultPokemonPaletteGuessConfig: PokemonPaletteGuessConfig = {
   paletteSize: 8,
   hintsEnabled: false,
   hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'],
+  publicAttempts: true,
 };

@@ -4,14 +4,16 @@
  * `<figure data-gallery="<componente>-<estado>">` que el E2E captura uno a uno. Con `?static` en la URL se añade la
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
-import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
 import { Avatar } from '../../components/Avatar';
 import { AvatarStack } from '../../components/AvatarStack';
 import { GenerationSelector } from '../../components/GenerationSelector';
+import { GameModeField, SessionModesProvider } from '../../room/GameModeField';
 import { ServerTimer } from '../../components/ServerTimer';
+import { AuctionLot, AuctionPrevious, BidControls, bidBlock, turnOrderEntries, type BidBlockInput } from '../../room/auction-kit';
 import { ConfigRange } from '../../room/ConfigRange';
 import { playerColor } from '../../room/player-color';
 import { PokemonSelector } from '../../room/PokemonSelector';
@@ -39,7 +41,7 @@ import { Icon } from '../Icon';
 import { Panel } from '../Panel';
 import { HighlightCard, PatchHero, SectionRule, Timeline, TimelineLink } from '../Patch';
 import type { PatchTone } from '../Patch';
-import { Pill, PillLink } from '../Pill';
+import { Pill, PillAnchor, PillLink } from '../Pill';
 import { Row, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
 import { AchievementTile } from '../AchievementTile';
@@ -184,6 +186,11 @@ function PillSection() {
           </PillLink>
         </Fig>
       ))}
+      <Fig id="pill-anchor" caption="Enlace externo (otra pestaña)">
+        <PillAnchor href="https://discord.gg/8x2qfaDF4" icon={MessagesSquare}>
+          Únete al Discord
+        </PillAnchor>
+      </Fig>
       <Fig id="pill-link-round" caption="Enlace redondo (solo icono)">
         <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades" />
       </Fig>
@@ -570,6 +577,11 @@ function TimerSection() {
           <Timer endsAt={NOW + 3_000} now={NOW} totalMs={30_000} />
         </span>
       </Fig>
+      <Fig id="timer-long-label" caption="Etiqueta larga (el turno de la subasta): puntos suspensivos">
+        <span className={s.barBox}>
+          <Timer endsAt={NOW + 13_000} now={NOW} totalMs={20_000} label="Turno de Bartolomeo_Entrenador" showLabel />
+        </span>
+      </Fig>
       <Fig id="timer-idle" caption="Sin temporizador">
         <span className={s.barBox}>
           <Timer endsAt={null} now={NOW} totalMs={30_000} />
@@ -593,6 +605,9 @@ function RowSection() {
       </Fig>
       <Fig id="row-disconnected" caption="Desconectada" wide>
         <Row rank={3} name="Brock" value="4 pts" color="var(--ok)" disconnected />
+      </Fig>
+      <Fig id="row-inline" caption="En una línea desde 1024 px (recuento: nombre, meta y valor)" wide>
+        <Row inline name="Misty" meta={<><Badge>Más votada</Badge><span>Respuesta de Ana</span></>} value="2 votos" color="var(--info)" highlight />
       </Fig>
       <Fig id="row-long" caption="Nombre largo recortado" wide>
         <Row rank={4} name="Entrenadora con un nombre larguísimo de verdad" value="0 pts" color="var(--red)" />
@@ -1064,6 +1079,40 @@ function GenerationSelectorDemo() {
   return <GenerationSelector selected={generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={setGenerations} />;
 }
 
+/** «Modos que pueden salir» (sesión al azar o por votación) que cambia de verdad: el último marcado no se puede quitar. */
+function SessionModesDemo({ initial }: { initial: string[] }) {
+  const [allowed, setAllowed] = useState<string[]>(initial);
+  return <SessionModesProvider value={{ gameId: 'higher-lower', allowed, onChange: setAllowed }}>
+    <GameModeField gameId="higher-lower" value="CLASSIC" onChange={noop} disabled={false} />
+  </SessionModesProvider>;
+}
+
+const AUCTION_NAMES: Record<string, string> = { a: 'JejeGOz', b: 'Sitogc19', c: 'eru' };
+const auctionName = (id: string) => AUCTION_NAMES[id] ?? 'Entrenador';
+const AUCTION_WAIT: BidBlockInput = { participating: true, open: true, canRaise: false, canPass: false, leading: true, min: 4, max: 17, turnName: 'JejeGOz',
+  texts: { leading: { title: 'Le toca a JejeGOz', text: 'Tú vas ganando con 3 monedas.' } } };
+
+/** Kit de subasta: el estado de la puja en una tarjeta (con el orden de turno y el lote anterior) y la placa sin tu turno. */
+function AuctionSection() {
+  return (
+    <Section name="auction" title="Kit de subasta">
+      <Fig id="auction-lot-status" caption="Estado de la puja · va ganando eru (Tú), le toca a Sitogc19, JejeGOz pasó; lote anterior encima" wide cream>
+        <AuctionLot kicker="En subasta" item={<Card size="fill" name="Liepard" number={510} />} currentBid={3} minimumBid={4}
+          leader={{ name: 'eru', self: true }} order={turnOrderEntries({ order: ['a', 'b', 'c'], turnId: 'b', passedIds: ['a'], leaderId: 'c' }, auctionName, 'c')}
+          previous={<AuctionPrevious kicker="Lote 1" item="Vulpix" winner="Sitogc19" detail="2 monedas" />} />
+      </Fig>
+      <Fig id="auction-lot-empty" caption="Estado de la puja · sin pujas (puja mínima) y lote anterior sin dueño" wide cream>
+        <AuctionLot kicker="En subasta" item={<Card size="fill" name="Liepard" number={510} />} currentBid={null} minimumBid={1} leader={null}
+          order={turnOrderEntries({ order: ['a', 'b', 'c'], turnId: 'a', passedIds: [], leaderId: null }, auctionName, 'c')}
+          previous={<AuctionPrevious kicker="Lote 1" item="Mewtwo" winner={null} detail="sin dueño" />} />
+      </Fig>
+      <Fig id="auction-controls-idle" caption="Placa de la puja · sin tu turno: el mensaje y el presupuesto, sin controles grises" wide>
+        <BidControls titleRef={{ current: null }} block={bidBlock(AUCTION_WAIT)} min={4} max={17} epoch={1} budget={17} onBid={asyncNoop} onPass={asyncNoop} />
+      </Fig>
+    </Section>
+  );
+}
+
 function GamePiecesSection() {
   // Plazo fijo al montar: el número corre, pero no depende de cuándo se capture.
   const [deadline] = useState(() => Date.now() + 45_000);
@@ -1076,6 +1125,12 @@ function GamePiecesSection() {
         <fieldset disabled>
           <GenerationSelector selected={[1, 9]} label="Generaciones del pool" onChange={noop} />
         </fieldset>
+      </Fig>
+      <Fig id="session-modes-both" caption="Modos que pueden salir · los dos marcados (sesión al azar o por votación)" wide cream>
+        <SessionModesDemo initial={['CLASSIC', 'ENDLESS']} />
+      </Fig>
+      <Fig id="session-modes-last" caption="Modos que pueden salir · el último marcado, deshabilitado (siempre queda uno)" wide cream>
+        <SessionModesDemo initial={['ENDLESS']} />
       </Fig>
       <Fig id="selector-prompt" caption="Buscador · sin búsqueda (panel)" wide>
         <PokemonSelector pokemon={SELECTOR_POKEMON} locked={new Set()} disabled={false} autoFocus={false} onSelect={asyncNoop} />
@@ -1187,6 +1242,7 @@ export function Gallery() {
       <ConfettiSection />
       <ScreenTransitionSection />
       <ScreenSplitSection />
+      <AuctionSection />
       <GamePiecesSection />
       <ToastStack toasts={toasts} onClose={close} />
     </main>

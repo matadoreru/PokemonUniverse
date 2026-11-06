@@ -5,7 +5,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { cx } from '../ui';
 import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
-  guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+  guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
 import s from '../games/pokemon-palette-guess/Palette.module.css';
 
@@ -69,7 +69,7 @@ export function PokemonPaletteGuessGame({ room, selfId, onAction }: { room: Room
       detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
-      <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />
+      {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
   const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME} solvedTitle="¡Paleta acertada!"

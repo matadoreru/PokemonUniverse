@@ -1,6 +1,7 @@
 import type { WhosThatPokemonConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
+import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
 
@@ -21,5 +22,6 @@ export function WhosThatPokemonConfigPanel({ config, disabled, onChange }: { con
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <p className={s.note}>Las formas Gigamax y otras variantes no se activan: el catálogo solo normaliza de forma fiable las formas regionales.</p>
+    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

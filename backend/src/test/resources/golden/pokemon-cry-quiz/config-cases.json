@@ -20,7 +20,8 @@
       "roundSeconds": 20,
       "rounds": 5,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -41,7 +42,8 @@
       "roundSeconds": 20,
       "rounds": 5,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -62,7 +64,8 @@
       "roundSeconds": 10,
       "rounds": 1,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -83,7 +86,8 @@
       "roundSeconds": 60,
       "rounds": 20,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -104,7 +108,8 @@
       "roundSeconds": 10,
       "rounds": 5,
       "cryVersion": "LATEST",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -125,7 +130,8 @@
       "roundSeconds": 20,
       "rounds": 5,
       "cryVersion": "LEGACY",
-      "includeRegionalForms": true
+      "includeRegionalForms": true,
+      "publicAttempts": true
     }
   },
   {
@@ -146,7 +152,8 @@
       "roundSeconds": 20,
       "rounds": 5,
       "cryVersion": "RANDOM",
-      "includeRegionalForms": false
+      "includeRegionalForms": false,
+      "publicAttempts": true
     }
   },
   {
@@ -309,6 +316,62 @@
   },
   {
     "input": null,
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "publicAttempts": false
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "publicAttempts": false
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "publicAttempts": "x"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "publicAttempts": null
+    },
     "valid": false
   }
 ]

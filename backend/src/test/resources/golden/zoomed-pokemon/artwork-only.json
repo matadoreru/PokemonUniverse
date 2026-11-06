@@ -227,7 +227,8 @@
         "EVOLUTION",
         "CATEGORY"
       ],
-      "includeForms": true
+      "includeForms": true,
+      "publicAttempts": true
     },
     "initial": {
       "lifecycle": {

@@ -11,7 +11,7 @@ vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null 
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
 const pokemon = (id: string, bst: number): TeamAuctionPokemon => ({ id, name: id, sprite: `/${id}.png`, baseStatTotal: bst, legendaryStatus: 'NORMAL' });
-const current = pokemon('pikachu', 320); const won = pokemon('charizard', 534); const unowned = pokemon('mewtwo', 680);
+const current = { id: 'pikachu', name: 'pikachu', sprite: '/pikachu.png', legendaryStatus: 'NORMAL' as const }; const won = pokemon('charizard', 534); const unowned = pokemon('mewtwo', 680);
 
 function publicGame(phase: 'ROUND_ACTIVE' | 'GAME_RESULTS' = 'ROUND_ACTIVE'): PokemonTeamAuctionPublicState {
   const participants = { p1: { playerId: 'p1', coins: 14, team: [won] }, p2: { playerId: 'p2', coins: 20, team: [] } };
@@ -33,7 +33,7 @@ const visible = (html: string) => [html.replace(/<[^>]+>/g, ' '), ...[...html.ma
 describe('Pokémon Team Auction client', () => {
   it('renders visible current bids, all team balances and ascending controls', () => {
     const markup = play(publicGame(), player);
-    expect(markup).toContain('Subasta ascendente visible'); expect(markup).toContain('Puja actual'); expect(markup).toContain('pikachu');
+    expect(markup).toContain('Pujas a la vista'); expect(markup).toContain('Estado de la puja'); expect(markup).toContain('pikachu');
     expect(markup).toContain('14'); expect(markup).toContain('20'); expect(markup).toContain('Equipo 1/6'); expect(markup).toContain('Pujar'); expect(markup).toContain('Pasar este Pokémon');
   });
 
@@ -41,15 +41,23 @@ describe('Pokémon Team Auction client', () => {
     const markup = play(publicGame(), player);
     expect(markup).toContain('data-testid="auction-screen"');
     expect(markup.match(/aria-live/g)).toHaveLength(1);
-    expect(markup).toContain('Lote 3 de 12');
+    // El título es el lote; el turno va solo en el reloj (y marcado en el orden de turno).
+    expect(markup).toContain('>Lote 3 de 12 · pikachu</h1>');
+    expect(markup).not.toContain('Subasta ascendente visible');
     expect(markup).toContain('data-testid="auction-pokemon"');
-    expect(markup).toContain('BST 320');
-    // La puja actual (4) de Ana y la siguiente mínima (5).
+    // El BST del lote en subasta no se pinta; el de los equipos, sí.
+    expect(markup).not.toContain('BST 320');
+    expect(markup).toContain('Equipo 1/6 · BST 534');
+    // Una sola tarjeta con la puja actual (4) de Ana y el mínimo para superarla (5).
+    expect(markup.match(/data-testid="auction-status"/g)).toHaveLength(1);
     expect(markup).toMatch(/data-testid="auction-current-bid"><span[^>]*><strong>4<\/strong>/);
-    expect(markup).toMatch(/data-testid="auction-leader">.*Ana/);
-    expect(markup).toContain('5 monedas');
-    // Turno propio: el título, los incrementos y «Pujar 5».
-    expect(markup).toContain('>Tu turno</h1>');
+    expect(markup).toMatch(/data-testid="auction-leader">.*va ganando.*Ana/);
+    expect(markup).toMatch(/Mínimo para superarla.*<strong>5<\/strong>/);
+    // Orden de turno: Eru (turno) → Ana (va ganando).
+    expect(markup).toMatch(/data-state="turn"[^>]*>.*Eru \(Tú\)/);
+    expect(markup).toMatch(/data-state="leading"[^>]*>.*Ana/);
+    // «Tu turno» no está en el título ni en la franja lateral: en la placa de abajo y en la etiqueta del reloj.
+    expect(markup).not.toContain('Su turno');
     expect(markup).toContain('Pujar 5');
     expect(markup.match(/data-testid="budget-row"/g)).toHaveLength(2);
     expect(markup).toContain('Va ganando');
@@ -58,27 +66,40 @@ describe('Pokémon Team Auction client', () => {
     // Historial: la puja de Ana en este lote y los lotes cerrados (2/12).
     expect(markup).toContain('Pujó 4 monedas');
     expect(markup).toContain('2/12');
-    // La banda del último lote (sin dueño) y el anuncio.
-    expect(markup).toContain('data-testid="auction-award"');
-    expect(markup).toContain('Lote 2 sin dueño');
+    // La línea del lote anterior (sin dueño), sin banda, y el anuncio.
+    expect(markup).not.toContain('data-testid="auction-award"');
+    expect(markup).toMatch(/data-testid="auction-previous"[^>]*>.*Lote 2.*mewtwo.*sin dueño/);
     expect(markup).toContain('Ana puja 4 monedas por pikachu. Es tu turno.');
   });
 
-  it('bloquea con texto claro: va ganando, sin presupuesto y esperando', () => {
+  it('el turno va en la etiqueta del reloj', () => {
+    const game = { ...publicGame(), roundEndsAt: 21_000 };
+    expect(play(game, player)).toContain('aria-label="Tu turno: ');
+    expect(play(game, { ...player, canRaise: false, canPass: false }, 'p2')).toContain('aria-label="Turno de Eru: ');
+  });
+
+  it('sin tu turno, un mensaje claro y sin botones grises: vas ganando, sin presupuesto y esperando', () => {
     const leading = play(publicGame(), { ...player, canRaise: false, canPass: false }, 'p2');
-    expect(leading).toContain('Ya vas ganando');
+    expect(leading).toContain('>Le toca a Eru</h2>');
+    expect(leading).toContain('Tú vas ganando con 4 monedas.');
+    expect(leading).not.toContain('bid-submit');
+    expect(leading).toContain('Tu presupuesto');
     const poor = play(publicGame(), { ...player, coins: 3, canRaise: false, canPass: true });
     expect(poor).toContain('Sin presupuesto');
     expect(poor).not.toContain('NaN');
     const game = publicGame(); game.currentTurnPlayerId = 'p2'; game.currentBidderId = null; game.currentBid = null;
     const waiting = play(game, { ...player, canRaise: false, canPass: false });
-    expect(waiting).toContain('Esperando tu turno');
-    expect(waiting).toContain('Turno de Ana');
+    expect(waiting).toContain('>Le toca a Ana</h2>');
+    expect(waiting).toContain('Aún no hay pujas en este lote.');
+    expect(waiting).not.toContain('bid-submit');
+    const other = publicGame(); other.currentTurnPlayerId = 'p2'; other.currentBidderId = 'p3' as string; other.currentBid = 4;
+    expect(play(other, { ...player, canRaise: false, canPass: false })).toContain('Puja actual: 4 de Entrenador.');
   });
 
   it('privacidad: la subasta es pública; quien observa ve lo mismo que los jugadores, sin controles', () => {
     const watching = visible(play(publicGame(), spectator, 'watcher'));
-    for (const text of ['pikachu', 'Equipo 1/6', 'Pujó 4 monedas', 'Lote 2 sin dueño', 'Ver equipo de Eru', 'Ver equipo de Ana']) expect(watching).toContain(text);
+    for (const text of ['pikachu', 'Equipo 1/6', 'Pujó 4 monedas', 'sin dueño', 'Ver equipo de Eru', 'Ver equipo de Ana']) expect(watching).toContain(text);
+    expect(watching).not.toContain('BST 320');
     expect(watching).not.toContain('Pasar este Pokémon');
   });
 

@@ -24,7 +24,8 @@ public record ZoomedPokemonConfig(
     int rounds,
     boolean hintsEnabled,
     List<HintKind> hintKinds,
-    boolean includeForms) {
+    boolean includeForms,
+    boolean publicAttempts) {
 
   /** {@code ZOOMED_POKEMON_IMAGE_MODES}. */
   public enum ImageMode { MIXED, SPRITE, ARTWORK }
@@ -33,7 +34,7 @@ public record ZoomedPokemonConfig(
   public enum HintKind { GENERATION, TYPE, TYPE_COUNT, EVOLUTION, CATEGORY }
 
   private static final Set<String> KEYS = Set.of("generations", "imageMode", "roundSeconds", "rounds",
-      "hintsEnabled", "hintKinds", "includeForms");
+      "hintsEnabled", "hintKinds", "includeForms", "publicAttempts");
 
   public ZoomedPokemonConfig {
     generations = List.copyOf(generations);
@@ -44,7 +45,7 @@ public record ZoomedPokemonConfig(
   public static ZoomedPokemonConfig defaults() {
     var generations = ConfigReader.allGenerations();
     return new ZoomedPokemonConfig(generations, ImageMode.MIXED, 30, 10, false,
-        List.of(HintKind.GENERATION, HintKind.TYPE, HintKind.EVOLUTION), true);
+        List.of(HintKind.GENERATION, HintKind.TYPE, HintKind.EVOLUTION), true, true);
   }
 
   /**
@@ -68,8 +69,9 @@ public record ZoomedPokemonConfig(
       for (var value : hintKindsNode.values()) hintKinds.add(enumValue(config, value, HintKind.class, "hintKinds"));
     }
     boolean includeForms = config.bool("includeForms");
+    var publicAttempts = config.boolOrDefault("publicAttempts", true);
     return new ZoomedPokemonConfig(generations, imageMode, roundSeconds, rounds, hintsEnabled,
-        new ArrayList<>(hintKinds), includeForms);
+        new ArrayList<>(hintKinds), includeForms, publicAttempts);
   }
 
   /** {@code z.enum([...])}; se queda local porque su mensaje es «no admite ese valor», no el común. */
