@@ -4,7 +4,7 @@ import type { PokemonSearchOption } from '../room/pokemon-search';
 const api = vi.hoisted(() => vi.fn());
 vi.mock('../lib/api', () => ({ api }));
 
-const { fetchPokemonPool, poolErrorMessage, pokemonPoolPath } = await import('./usePokemonPool');
+const { cachedPokemonPool, clearPokemonPoolCache, fetchPokemonPool, POOL_CACHE_MS, poolErrorMessage, pokemonPoolPath, rememberPokemonPool } = await import('./usePokemonPool');
 
 const pool: PokemonSearchOption[] = [
   { id: 'abra', name: 'Abra', sprite: '/api/pokemon/abra/sprite' },
@@ -12,7 +12,16 @@ const pool: PokemonSearchOption[] = [
 ];
 
 describe('usePokemonPool', () => {
-  beforeEach(() => { api.mockReset(); });
+  beforeEach(() => { api.mockReset(); clearPokemonPoolCache(); });
+
+  it('guarda el catálogo en memoria 10 minutos por ruta (un turno nuevo no lo vuelve a pedir)', () => {
+    const path = pokemonPoolPath([1], false);
+    expect(cachedPokemonPool(path, 1_000)).toBeNull();
+    rememberPokemonPool(path, pool, 1_000);
+    expect(cachedPokemonPool(path, 1_000 + POOL_CACHE_MS)).toEqual(pool);
+    expect(cachedPokemonPool(pokemonPoolPath([2], false), 1_000)).toBeNull();
+    expect(cachedPokemonPool(path, 1_001 + POOL_CACHE_MS)).toBeNull();
+  });
 
   it('pide el catálogo reducido del buscador, no /pokemon', () => {
     expect(pokemonPoolPath([1, 2], false)).toBe('/pokemon/selector?generations=1%2C2');

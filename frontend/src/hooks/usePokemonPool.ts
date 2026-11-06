@@ -48,6 +48,30 @@ export async function fetchPokemonPool(path: string, signal: AbortSignal): Promi
   return body.pokemon;
 }
 
+/**
+ * Copia en memoria del catálogo del buscador por ruta, 10 minutos: en juegos con turnos (Sketchmon, PokéTaboo) el
+ * buscador se desmonta y vuelve a montar en cada turno, y sin ella cada jugador lo pediría otra vez cada turno.
+ */
+export const POOL_CACHE_MS = 10 * 60_000;
+const poolCache = new Map<string, { at: number; entries: PokemonSearchOption[] }>();
+
+/** Entradas en caché si siguen frescas; si no, `null`. */
+export function cachedPokemonPool(path: string, now: number = Date.now()): PokemonSearchOption[] | null {
+  const hit = poolCache.get(path);
+  if (!hit) return null;
+  if (now - hit.at > POOL_CACHE_MS) { poolCache.delete(path); return null; }
+  return hit.entries;
+}
+
+export function rememberPokemonPool(path: string, entries: PokemonSearchOption[], now: number = Date.now()): void {
+  poolCache.set(path, { at: now, entries });
+}
+
+/** Solo pruebas. */
+export function clearPokemonPoolCache(): void {
+  poolCache.clear();
+}
+
 /** One cancellable, consistently error-handled client repository query for every game. */
 export function usePokemonPool({ generations, includeForms = false, enabled = true }: PokemonPoolQuery): PokemonPoolResult {
   const generationKey = generations.join(',');
@@ -63,12 +87,14 @@ export function usePokemonPool({ generations, includeForms = false, enabled = tr
 
   useEffect(() => {
     if (!enabled) { setLoading(false); return undefined; }
+    const cached = cachedPokemonPool(query);
+    if (cached) { setPokemon(cached); setError(''); setLoading(false); return undefined; }
     let active = true;
     const controller = new AbortController();
     setError('');
     setLoading(true);
     void fetchPokemonPool(query, controller.signal)
-      .then((entries) => { if (active) setPokemon(entries); })
+      .then((entries) => { rememberPokemonPool(query, entries); if (active) setPokemon(entries); })
       .catch((caught: unknown) => { if (!active) return; console.warn('[usePokemonPool]', caught); setError(poolErrorMessage(caught)); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; controller.abort(); };
