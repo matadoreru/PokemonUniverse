@@ -26,14 +26,18 @@ type Seat = { member: RoomMemberView; index: number };
 /**
  * Las elecciones del grupo (escena de la revelación, del debate y de la segunda vuelta): una `Card` por jugador con su
  * Pokémon y su nombre. En la revelación, las que faltan salen tapadas («Por revelar») y cada una gira al descubrirse.
- * Encima, la categoría propia para debatir (o, a quien observa, que siguen en secreto).
+ * `flip` sigue puesto en el debate: el motor descubre la última elección en el mismo paso en que abre el debate, así
+ * que esa carta (a menudo la tuya, la que miras) llega ya en `DISCUSSION` y también tiene que girar; las ya giradas
+ * conservan la clase y no repiten la animación. Encima, la categoría propia para debatir (o, a quien observa, que siguen en secreto).
  */
-function ChoiceBoard({ playerIds, picked, choices, revealing, category, seats }: {
+function ChoiceBoard({ playerIds, picked, choices, revealing, flip, category, seats }: {
   playerIds: readonly string[];
   /** Quién eligió (`selectionCompletedIds`, público): quien no eligió sale «Sin elección» desde el principio. */
   picked: ReadonlySet<string>;
   choices: ReadonlyMap<string, FakePokemonChoice>;
   revealing: boolean;
+  /** Las cartas destapadas giran (revelación y debate). */
+  flip: boolean;
   category: string | null;
   seats: ReadonlyMap<string, Seat>;
 }) {
@@ -49,7 +53,7 @@ function ChoiceBoard({ playerIds, picked, choices, revealing, category, seats }:
       const owner = <span className={s.owner} title={name} style={{ ['--seat' as string]: playerColor(seats.get(id)?.index ?? 0) }}>{name}</span>;
       return <li key={id} className={s.cell} data-fake-choice={id}>
         {pokemon
-          ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="fill" flip={revealing}>{owner}</Card>
+          ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="fill" flip={flip}>{owner}</Card>
           : revealing && picked.has(id)
             ? <Card name="Por revelar" size="fill" art={<Icon icon={HelpCircle} size={32} />}>{owner}</Card>
             : <Card name="Sin elección" size="fill" art={<Icon icon={X} size={32} />}>{owner}</Card>}
@@ -150,7 +154,7 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; 
         help={informedFake ? 'Tienes una categoría diferente al resto y no conoces la principal. Elige algo que puedas defender.' : 'No hay respuesta correcta: elige un Pokémon que puedas justificar después. Uno del grupo tiene otra categoría.'} />
       : <SocialPrompt kicker="Categorías secretas" text="Cada jugador elige un Pokémon para su categoría" help="Uno recibió una categoría diferente. Verás las elecciones al revelarse." />;
   } else {
-    stage = <ChoiceBoard playerIds={game.playerIds} picked={picked} choices={choices} revealing={revealing} category={ownCategory} seats={seats} />;
+    stage = <ChoiceBoard playerIds={game.playerIds} picked={picked} choices={choices} revealing={revealing} flip={revealing || voting} category={ownCategory} seats={seats} />;
   }
 
   const side = result

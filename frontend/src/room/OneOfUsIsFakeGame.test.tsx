@@ -141,6 +141,20 @@ describe('One of Us Is Fake: pantalla', () => {
     expect(html).not.toMatch(LEGACY);
   });
 
+  it('destape: la última carta del orden (p. ej. la tuya) también gira, aunque llegue ya con el debate', () => {
+    // El motor descubre la última elección en el mismo paso en que abre el debate (`advanceReveal`): esa carta nunca
+    // estuvo destapada en `CHOICE_REVEAL`, así que tiene que girar en `DISCUSSION`. Aquí la última es la propia (p3).
+    const cell = (html: string, id: string) => html.match(new RegExp(`data-fake-choice="${id}">((?:(?!</li>).)*)`))?.[1] ?? '';
+    const reveal = render(publicGame('CHOICE_REVEAL', null, 2), normal({ canSelect: false }), 'p3');
+    expect(cell(reveal, 'p3')).toContain('Por revelar');
+    expect(cell(reveal, 'p2')).toMatch(/class="[^"]*_flip_/);
+    const debate = render(publicGame('DISCUSSION'), normal({ canSelect: false, canVote: true }), 'p3');
+    expect(cell(debate, 'p3')).toContain('Snorlax');
+    expect(cell(debate, 'p3')).toMatch(/class="[^"]*_flip_/);
+    // Las ya giradas conservan la clase (no vuelven a girar) también en la segunda vuelta.
+    for (const id of ['p1', 'p2']) expect(cell(render(publicGame('REVOTE'), normal({ canSelect: false, canVote: true }), 'p3'), id)).toMatch(/class="[^"]*_flip_/);
+  });
+
   it('segunda vuelta: su paso en las fases y la papeleta solo con los empatados', () => {
     const game = { ...publicGame('REVOTE'), voteCandidates: ['p2', 'p3'] };
     const html = render(game, normal({ canSelect: false, canVote: true }));
