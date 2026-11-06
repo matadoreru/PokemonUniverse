@@ -363,25 +363,36 @@ test('lobby con 8 jugadores a 390×844: la lista tiene tope y las pestañas sigu
 async function salaSinConexion(page: Page, perdida: boolean): Promise<void> {
   await page.addInitScript((perderLaPrimera) => {
     const Native = window.WebSocket;
-    let intentos = 0;
+    // React (StrictMode en desarrollo) monta, desmonta y vuelve a montar el proveedor: el primer `/ws` se cierra al
+    // momento. Solo abre y cae el primero que la aplicación sigue usando; los demás se quedan CONNECTING.
+    let yaAbrio = false;
     class Pending extends EventTarget {
       readyState: number = Native.CONNECTING;
       onopen: ((event: Event) => void) | null = null;
       onmessage = null;
       onclose: ((event: CloseEvent) => void) | null = null;
       onerror = null;
+      private cerradoPorLaApp = false;
       constructor(readonly url: string, abreYCae: boolean) {
         super();
         if (!abreYCae) return;
-        setTimeout(() => { this.readyState = Native.OPEN; this.onopen?.(new Event('open')); }, 50);
-        setTimeout(() => { this.readyState = Native.CLOSED; this.onclose?.(new CloseEvent('close', { code: 1006 })); }, 150);
+        // El `/ws` ya está abierto en toda página, antes de que monte la sala: la conexión solo «se pierde» cuando el
+        // aviso de la sala está en pantalla (si cae antes de montarlo, el aviso no la vio nunca abierta).
+        const espera = setInterval(() => {
+          if (this.cerradoPorLaApp || yaAbrio) { clearInterval(espera); return; }
+          if (!document.querySelector('.connection-notice-region')) return;
+          clearInterval(espera);
+          yaAbrio = true;
+          this.readyState = Native.OPEN; this.onopen?.(new Event('open'));
+          setTimeout(() => { this.readyState = Native.CLOSED; this.onclose?.(new CloseEvent('close', { code: 1006 })); }, 300);
+        }, 50);
       }
       send(): void {}
-      close(): void {}
+      close(): void { this.cerradoPorLaApp = true; }
     }
     class Pendiente extends Native {
       constructor(url: string | URL, protocols?: string | string[]) {
-        if (new URL(String(url), location.href).pathname === '/ws') return new Pending(String(url), perderLaPrimera && intentos++ === 0) as unknown as Pendiente;
+        if (new URL(String(url), location.href).pathname === '/ws') return new Pending(String(url), perderLaPrimera) as unknown as Pendiente;
         super(url, protocols);
       }
     }

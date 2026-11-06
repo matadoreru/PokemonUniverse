@@ -3300,9 +3300,12 @@ test('pokemon-bingo: casillas con el buscador, un fallo, mover con diálogo, un 
     }
     test.info().annotations.push({ type: 'bingo', description: `mover ${movido} de la casilla ${origen + 1} a la ${destino + 1} (${valido ? 'válido' : 'no vale: fallo'})` });
     await colocarEnBingo(host.page, origen, movido);
-    // Tras colocar, el buscador se vacía y el foco va a la placa (no cae al `body`).
-    await expect(host.page.locator('#guess-plate-title'), 'el foco no cae al body tras colocar').toBeFocused();
-    await expect(host.page.getByRole('textbox', { name: `Buscar Pokémon para la casilla ${origen + 1}` })).toHaveValue('');
+    // Tras colocar, el buscador se vuelve a montar vacío y, con ratón o teclado (`pointer: fine`), toma el foco: el
+    // jugador sigue escribiendo sin que caiga al `body`. En táctil no lo toma (abriría el teclado) y el foco va al
+    // título de la placa (`bingoFocusKey`, cubierto en `PokemonBingoGame.test.tsx`).
+    const buscador = host.page.getByRole('textbox', { name: `Buscar Pokémon para la casilla ${origen + 1}` });
+    await expect(buscador, 'el foco no cae al body tras colocar').toBeFocused();
+    await expect(buscador).toHaveValue('');
     await elegirEnBingo(host.page, destino, movido);
     const mover = host.page.getByRole('dialog', { name: `¿Mover a ${movido}?` });
     await expect(mover).toBeVisible();
