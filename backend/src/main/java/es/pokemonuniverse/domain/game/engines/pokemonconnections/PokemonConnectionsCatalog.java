@@ -15,7 +15,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.text.Normalizer;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -23,9 +25,11 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
 /**
- * Traducción literal de {@code pokemon-connections/catalog.ts}: las categorías curadas
- * ({@code connectionCategoryCatalog}) y las plantillas ({@code connectionCuratedTemplates}) en el mismo orden que el TS, las
- * categorías dinámicas y la generación del puzle. El orden importa: alimenta {@code shuffled} y las rotaciones.
+ * Nació como traducción de {@code pokemon-connections/catalog.ts}: las categorías curadas
+ * ({@code connectionCategoryCatalog}) y las plantillas ({@code connectionCuratedTemplates}) siguen en el orden del TS.
+ * Las categorías dinámicas y la generación del puzle ya divergen a propósito: sin colores, con más categorías sacadas de
+ * los datos del catálogo, sin preferir las plantillas y con familias para variar cada tablero. El orden importa:
+ * alimenta {@code shuffled} y las rotaciones.
  */
 public final class PokemonConnectionsCatalog {
 
@@ -36,10 +40,40 @@ public final class PokemonConnectionsCatalog {
       "psychic", "Psíquico", "bug", "Bicho", "rock", "Roca", "ghost", "Fantasma", "dragon", "Dragón",
       "dark", "Siniestro", "steel", "Acero", "fairy", "Hada");
 
-  /** {@code colorLabels}, en el orden de {@code Object.entries}. */
-  private static final Map<String, String> COLOR_LABELS = orderedLabels(
-      "black", "negro", "blue", "azul", "brown", "marrón", "gray", "gris", "green", "verde", "pink", "rosa",
-      "purple", "morado", "red", "rojo", "white", "blanco", "yellow", "amarillo");
+  /** Combinaciones de dos tipos frecuentes (en cualquier orden), con su id: {@code dual-<tipo>-<tipo>}. */
+  private static final List<List<String>> DUAL_TYPES = List.of(
+      List.of("normal", "flying"), List.of("grass", "poison"), List.of("bug", "flying"), List.of("bug", "poison"),
+      List.of("water", "rock"), List.of("ground", "rock"), List.of("water", "ground"), List.of("water", "ice"));
+
+  /**
+   * Habilidades conocidas, por su id y su nombre en español (el catálogo guarda {@code abilities} con ese nombre,
+   * ocultas incluidas).
+   */
+  private static final Map<String, String> ABILITY_LABELS = orderedLabels(
+      "espesura", "Espesura", "mar-llamas", "Mar Llamas", "torrente", "Torrente", "enjambre", "Enjambre",
+      "levitacion", "Levitación", "intimidacion", "Intimidación", "robustez", "Robustez", "sincronia", "Sincronía",
+      "nado-rapido", "Nado Rápido", "clorofila", "Clorofila", "absorbe-agua", "Absorbe Agua",
+      "electricidad-estatica", "Electricidad Estática", "pararrayos", "Pararrayos", "presion", "Presión");
+
+  /** Iniciales del nombre mostrado con bastantes Pokémon en todas las generaciones. */
+  private static final List<String> NAME_INITIALS = List.of("A", "B", "C", "D", "G", "M", "P", "T");
+
+  /**
+   * Familias de categorías que expresan la misma idea: un tablero no repite familia si puede evitarlo. Lo que no está
+   * aquí ni encaja en un prefijo de {@link #categoryFamily} es su propia familia.
+   */
+  private static final Map<String, String> FAMILY_BY_ID = Map.ofEntries(
+      Map.entry("single-type", "types"), Map.entry("dual-type", "types"),
+      Map.entry("grass-partners", "starters"), Map.entry("fire-partners", "starters"),
+      Map.entry("water-partners", "starters"), Map.entry("final-starters", "starters"),
+      Map.entry("ability-espesura", "starters"), Map.entry("ability-mar-llamas", "starters"),
+      Map.entry("ability-torrente", "starters"),
+      Map.entry("evolution-first", "evolution-stage"), Map.entry("evolution-final", "evolution-stage"),
+      Map.entry("single-stage", "evolution-stage"),
+      Map.entry("legendary", "rarity"), Map.entry("mythical", "rarity"), Map.entry("ordinary", "rarity"),
+      Map.entry("heavyweights", "size"), Map.entry("featherweights", "size"), Map.entry("giants", "size"),
+      Map.entry("tiny", "size"),
+      Map.entry("bst-600-plus", "stats"), Map.entry("speed-100-plus", "stats"), Map.entry("same-defenses", "stats"));
 
   private PokemonConnectionsCatalog() {}
 
@@ -676,8 +710,35 @@ public final class PokemonConnectionsCatalog {
   }
 
   /**
-   * {@code resolvedCategoryDefinitions}: las curadas y después las dinámicas (tipos, colores, evolución, rareza,
-   * número de tipos, estadísticas y, si el pool trae más de una generación, la generación de debut), sin repetir id.
+   * Familia de una categoría: todo lo que sale de los tipos es {@code types}; las de iniciales (y sus habilidades),
+   * {@code starters}; cada grupo de prefijo ({@code ability-}, {@code letter-}, {@code generation-}) o de sufijo
+   * ({@code -evolution}) comparte familia; el resto, la de {@link #FAMILY_BY_ID} o su propio id.
+   */
+  static String categoryFamily(String categoryId) {
+    var family = FAMILY_BY_ID.get(categoryId);
+    if (family != null) return family;
+    if (categoryId.startsWith("type-") || categoryId.startsWith("mono-") || categoryId.startsWith("dual-")) {
+      return "types";
+    }
+    for (var prefix : List.of("ability-", "letter-", "generation-")) {
+      if (categoryId.startsWith(prefix)) return prefix.substring(0, prefix.length() - 1);
+    }
+    if (categoryId.endsWith("-evolution")) return "evolution-method";
+    return categoryId;
+  }
+
+  /** Inicial del nombre mostrado, en mayúscula y sin tildes. */
+  private static String nameInitial(Pokemon pokemon) {
+    var name = pokemon.name();
+    if (name == null || name.isEmpty()) return "";
+    var plain = Normalizer.normalize(name.substring(0, 1), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+    return plain.toUpperCase(Locale.ROOT);
+  }
+
+  /**
+   * {@code resolvedCategoryDefinitions}: las curadas y después las dinámicas (tipos, monotipos, dobles tipos,
+   * evolución, rareza, número de tipos, estadísticas, habilidades, inicial del nombre, altura y, si el pool trae más de
+   * una generación, la generación de debut), sin repetir id.
    */
   static List<CategoryDefinition> resolvedCategoryDefinitions(List<Pokemon> pool) {
     var availableGenerations = new HashSet<Integer>();
@@ -687,10 +748,18 @@ public final class PokemonConnectionsCatalog {
         .label("Comparten el tipo " + label)
         .explanation("Todos incluyen el tipo " + label + " entre sus tipos.")
         .matches(pokemon -> pokemon.types().contains(type))));
-    COLOR_LABELS.forEach((color, label) -> dynamic.add(category("color-" + color)
-        .label("Color oficial " + label)
-        .explanation("La Pokédex clasifica oficialmente su color como " + label + ".")
-        .matches(pokemon -> color.equals(pokemon.color()))));
+    TYPE_LABELS.forEach((type, label) -> dynamic.add(category("mono-" + type)
+        .label("Solo son de tipo " + label)
+        .explanation("Tienen un único tipo: " + label + ".")
+        .matches(pokemon -> pokemon.types().size() == 1 && pokemon.types().contains(type))));
+    for (var pair : DUAL_TYPES) {
+      var first = TYPE_LABELS.get(pair.get(0));
+      var second = TYPE_LABELS.get(pair.get(1));
+      dynamic.add(category("dual-" + pair.get(0) + "-" + pair.get(1))
+          .label("Son de tipo " + first + " y " + second)
+          .explanation("Combinan exactamente los tipos " + first + " y " + second + ".")
+          .matches(pokemon -> pokemon.types().size() == 2 && pokemon.types().containsAll(pair)));
+    }
     dynamic.add(category("evolution-first")
         .label("Primera fase evolutiva")
         .explanation("Ocupan la primera fase de una familia con varias etapas.")
@@ -736,6 +805,20 @@ public final class PokemonConnectionsCatalog {
         .label("Defensas base idénticas")
         .explanation("Su Defensa y su Defensa Especial tienen exactamente el mismo valor base.")
         .matches(pokemon -> pokemon.defense() == pokemon.specialDefense()));
+    ABILITY_LABELS.forEach((id, ability) -> dynamic.add(category("ability-" + id)
+        .label("Pueden tener la habilidad " + ability)
+        .explanation(ability + " está entre sus habilidades posibles, contando la oculta.")
+        .matches(pokemon -> pokemon.abilities() != null && pokemon.abilities().contains(ability))));
+    for (var initial : NAME_INITIALS) {
+      dynamic.add(category("letter-" + initial.toLowerCase(Locale.ROOT))
+          .label("Su nombre empieza por " + initial)
+          .explanation("El nombre de todos empieza por la letra " + initial + ".")
+          .matches(pokemon -> initial.equals(nameInitial(pokemon))));
+    }
+    dynamic.add(category("tiny")
+        .label("Miden 30 cm o menos")
+        .explanation("Su altura oficial no pasa de 30 cm.")
+        .matches(pokemon -> pokemon.heightDecimeters() > 0 && pokemon.heightDecimeters() <= 3));
     if (availableGenerations.size() > 1) {
       for (int generation = 1; generation <= 9; generation++) {
         int debut = generation;
@@ -812,7 +895,8 @@ public final class PokemonConnectionsCatalog {
 
   /**
    * {@code dynamicPuzzle}: baraja los miembros de cada categoría (también los de las que luego no llegan a
-   * {@code groupSize}), después las candidatas no excluidas y las excluidas, y prueba rotaciones sin consumir azar.
+   * {@code groupSize}), después las candidatas no excluidas y las excluidas, y prueba rotaciones sin consumir azar:
+   * primero sin repetir familia ({@link #categoryFamily}) en el tablero y, si así no sale ninguno, sin esa regla.
    * Cada Pokémon del tablero encaja en una sola de las categorías elegidas: se salta la categoría en la que ya encaja
    * un Pokémon del tablero, y no se eligen Pokémon de una categoría ya elegida.
    */
@@ -827,11 +911,21 @@ public final class PokemonConnectionsCatalog {
         .filter(candidate -> !excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
     randomized.addAll(Randoms.shuffled(candidates.stream()
         .filter(candidate -> excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
+    var varied = searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, true);
+    return varied != null ? varied : searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, false);
+  }
+
+  /** Las rotaciones de {@code dynamicPuzzle}; con {@code distinctFamilies}, una sola categoría por familia. */
+  private static @Nullable GeneratedConnectionsPuzzle searchPuzzle(List<Candidate> randomized, int groupSize,
+      int groupCount, Set<String> usedPuzzleKeys, boolean distinctFamilies) {
     for (int attempt = 0; attempt < Math.max(1, randomized.size() * 4); attempt += 1) {
       var used = new HashSet<String>();
       var chosen = new ArrayList<Set<String>>();
+      var families = new HashSet<String>();
       var groups = new ArrayList<ConnectionAnswerGroup>();
       for (var candidate : rotate(randomized, attempt)) {
+        var family = categoryFamily(candidate.definition().id());
+        if (distinctFamilies && families.contains(family)) continue;
         if (used.stream().anyMatch(candidate.memberIds()::contains)) continue;
         var available = rotate(candidate.members(), attempt + groups.size()).stream()
             .filter(pokemon -> chosen.stream().noneMatch(memberIds -> memberIds.contains(pokemon.id())))
@@ -840,6 +934,7 @@ public final class PokemonConnectionsCatalog {
         var selected = available.subList(0, groupSize);
         selected.forEach(pokemon -> used.add(pokemon.id()));
         chosen.add(candidate.memberIds());
+        families.add(family);
         groups.add(answerGroup(candidate.definition(), selected, groups.size()));
         if (groups.size() == groupCount) {
           // .sort() de JS sin comparador: orden de unidades UTF-16, el de String.compareTo.
@@ -862,8 +957,9 @@ public final class PokemonConnectionsCatalog {
       List<String> excludedCategoryIds) {}
 
   /**
-   * {@code generateConnectionsPuzzle}: una extracción decide si se prefiere una plantilla curada (solo con grupos de 4
-   * y tableros de 12 o 16); si no, un puzle dinámico y, como último recurso, una curada ya vista.
+   * {@code generateConnectionsPuzzle}: siempre se intenta primero un puzle dinámico, para que cada partida mezcle
+   * categorías distintas. Solo si no sale ninguno nuevo se recurre a una plantilla curada (con grupos de 4 y tableros
+   * de 12 o 16): una no vista si queda, o cualquiera. Sin plantilla posible, error.
    */
   static GeneratedConnectionsPuzzle generateConnectionsPuzzle(GameContext context, PuzzleOptions options) {
     var pool = context.pokemon().forGenerations(options.generations()).stream()
@@ -876,22 +972,14 @@ public final class PokemonConnectionsCatalog {
     Set<String> used = new HashSet<>(options.usedPuzzleKeys());
     Set<String> excludedCategoryIds = new HashSet<>(options.excludedCategoryIds());
     var random = context.random();
-    boolean preferCurated = random.getAsDouble() < 0.5;
+    var generated = dynamicPuzzle(pool, options.groupSize(), groupCount, random, excludedCategoryIds, used);
+    if (generated != null) return generated;
     List<GeneratedConnectionsPuzzle> curatedFallback = List.of();
     if (options.groupSize() == 4 && (options.pokemonCount() == 12 || options.pokemonCount() == 16)) {
       var curated = curatedCandidates(pool, groupCount);
       var fresh = curated.stream().filter(puzzle -> !used.contains(puzzle.key())).toList();
-      var candidates = fresh.stream()
-          .filter(puzzle -> puzzle.groups().stream()
-              .noneMatch(group -> excludedCategoryIds.contains(group.categoryId())))
-          .toList();
-      if (preferCurated && !candidates.isEmpty()) {
-        return candidates.get((int) Math.floor(random.getAsDouble() * candidates.size()));
-      }
       curatedFallback = !fresh.isEmpty() ? fresh : curated;
     }
-    var generated = dynamicPuzzle(pool, options.groupSize(), groupCount, random, excludedCategoryIds, used);
-    if (generated != null) return generated;
     if (!curatedFallback.isEmpty()) {
       return curatedFallback.get((int) Math.floor(random.getAsDouble() * curatedFallback.size()));
     }

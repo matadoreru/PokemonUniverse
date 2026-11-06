@@ -148,64 +148,64 @@
         "groupCount": 3,
         "board": [
           {
-            "id": "horsea",
-            "name": "Horsea",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
+            "id": "tauros",
+            "name": "Tauros",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
           },
           {
-            "id": "politoed",
-            "name": "Politoed",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+            "id": "paras",
+            "name": "Paras",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
           },
           {
-            "id": "corsola",
-            "name": "Corsola",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
+            "id": "noctowl",
+            "name": "Noctowl",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
           },
           {
-            "id": "vulpix",
-            "name": "Vulpix",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+            "id": "caterpie",
+            "name": "Caterpie",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
           },
           {
-            "id": "electabuzz",
-            "name": "Electabuzz",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
+            "id": "raichu",
+            "name": "Raichu",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
           },
           {
-            "id": "poliwhirl",
-            "name": "Poliwhirl",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
+            "id": "raticate",
+            "name": "Raticate",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
           },
           {
-            "id": "machoke",
-            "name": "Machoke",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
+            "id": "marill",
+            "name": "Marill",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
           },
           {
-            "id": "sudowoodo",
-            "name": "Sudowoodo",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
+            "id": "sunkern",
+            "name": "Sunkern",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
           },
           {
-            "id": "magmar",
-            "name": "Magmar",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+            "id": "togepi",
+            "name": "Togepi",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
           },
           {
-            "id": "geodude",
-            "name": "Geodude",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+            "id": "sentret",
+            "name": "Sentret",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
           },
           {
-            "id": "psyduck",
-            "name": "Psyduck",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+            "id": "totodile",
+            "name": "Totodile",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
           },
           {
-            "id": "forretress",
-            "name": "Forretress",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
+            "id": "snorlax",
+            "name": "Snorlax",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
           }
         ],
         "playerProgress": {
@@ -254,64 +254,64 @@
         "groupCount": 3,
         "board": [
           {
-            "id": "horsea",
-            "name": "Horsea",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
+            "id": "tauros",
+            "name": "Tauros",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
           },
           {
-            "id": "politoed",
-            "name": "Politoed",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+            "id": "paras",
+            "name": "Paras",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
           },
           {
-            "id": "corsola",
-            "name": "Corsola",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
+            "id": "noctowl",
+            "name": "Noctowl",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
           },
           {
-            "id": "vulpix",
-            "name": "Vulpix",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+            "id": "caterpie",
+            "name": "Caterpie",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
           },
           {
-            "id": "electabuzz",
-            "name": "Electabuzz",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
+            "id": "raichu",
+            "name": "Raichu",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
           },
           {
-            "id": "poliwhirl",
-            "name": "Poliwhirl",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
+            "id": "raticate",
+            "name": "Raticate",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
           },
           {
-            "id": "machoke",
-            "name": "Machoke",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
+            "id": "marill",
+            "name": "Marill",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
           },
           {
-            "id": "sudowoodo",
-            "name": "Sudowoodo",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
+            "id": "sunkern",
+            "name": "Sunkern",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
           },
           {
-            "id": "magmar",
-            "name": "Magmar",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+            "id": "togepi",
+            "name": "Togepi",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
           },
           {
-            "id": "geodude",
-            "name": "Geodude",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+            "id": "sentret",
+            "name": "Sentret",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
           },
           {
-            "id": "psyduck",
-            "name": "Psyduck",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+            "id": "totodile",
+            "name": "Totodile",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
           },
           {
-            "id": "forretress",
-            "name": "Forretress",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
+            "id": "snorlax",
+            "name": "Snorlax",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
           }
         ],
         "playerProgress": {
@@ -346,7 +346,8 @@
     },
     "afterSteps": [
       {
-        "accepted": true,
+        "accepted": false,
+        "error": "La selección contiene un Pokémon ajeno al tablero.",
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_ACTIVE",
@@ -363,694 +364,64 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "horsea",
-                "name": "Horsea",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
               },
               {
-                "id": "politoed",
-                "name": "Politoed",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
+                "id": "paras",
+                "name": "Paras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
               },
               {
-                "id": "corsola",
-                "name": "Corsola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
+                "id": "noctowl",
+                "name": "Noctowl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
               },
               {
-                "id": "vulpix",
-                "name": "Vulpix",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
               },
               {
-                "id": "electabuzz",
-                "name": "Electabuzz",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
+                "id": "raichu",
+                "name": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               {
-                "id": "poliwhirl",
-                "name": "Poliwhirl",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
               },
               {
-                "id": "machoke",
-                "name": "Machoke",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
               },
               {
-                "id": "sudowoodo",
-                "name": "Sudowoodo",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
               },
               {
-                "id": "magmar",
-                "name": "Magmar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
               },
               {
-                "id": "geodude",
-                "name": "Geodude",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
               },
               {
-                "id": "psyduck",
-                "name": "Psyduck",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
+                "id": "totodile",
+                "name": "Totodile",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
               },
               {
-                "id": "forretress",
-                "name": "Forretress",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
-              }
-            ],
-            "playerProgress": {
-              "p1": {
-                "foundGroups": 1,
-                "status": "PLAYING"
-              }
-            },
-            "scores": {
-              "p1": 1
-            },
-            "roundStartedAt": 1000,
-            "roundEndsAt": 31000,
-            "nextTransitionAt": null,
-            "lastRound": null,
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [
-                {
-                  "id": "group-1",
-                  "categoryId": "trade-evolution",
-                  "label": "Evolucionan al intercambiarlos",
-                  "explanation": "Su método de evolución exige un intercambio, a veces con un objeto equipado o por otro Pokémon concreto.",
-                  "pokemon": [
-                    {
-                      "id": "magmar",
-                      "name": "Magmar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-                    },
-                    {
-                      "id": "electabuzz",
-                      "name": "Electabuzz",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
-                    },
-                    {
-                      "id": "machoke",
-                      "name": "Machoke",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
-                    },
-                    {
-                      "id": "poliwhirl",
-                      "name": "Poliwhirl",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
-                    }
-                  ]
-                }
-              ],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 2,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 1,
-              "lastAttempt": {
-                "kind": "CORRECT",
-                "attemptedPokemonIds": [
-                  "magmar",
-                  "electabuzz",
-                  "machoke",
-                  "poliwhirl"
-                ],
-                "nearMiss": false,
-                "attemptedAt": 2000
-              }
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "lifecycle": {
-            "phase": "ROUND_ACTIVE",
-            "nextDeadline": 31000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "pokemon-connections",
-            "phase": "ROUND_ACTIVE",
-            "roundNumber": 1,
-            "totalRounds": 3,
-            "groupSize": 4,
-            "groupCount": 3,
-            "board": [
-              {
-                "id": "horsea",
-                "name": "Horsea",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
-              },
-              {
-                "id": "politoed",
-                "name": "Politoed",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
-              },
-              {
-                "id": "corsola",
-                "name": "Corsola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
-              },
-              {
-                "id": "vulpix",
-                "name": "Vulpix",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
-              },
-              {
-                "id": "electabuzz",
-                "name": "Electabuzz",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
-              },
-              {
-                "id": "poliwhirl",
-                "name": "Poliwhirl",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
-              },
-              {
-                "id": "machoke",
-                "name": "Machoke",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
-              },
-              {
-                "id": "sudowoodo",
-                "name": "Sudowoodo",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
-              },
-              {
-                "id": "magmar",
-                "name": "Magmar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-              },
-              {
-                "id": "geodude",
-                "name": "Geodude",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
-              },
-              {
-                "id": "psyduck",
-                "name": "Psyduck",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              {
-                "id": "forretress",
-                "name": "Forretress",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
-              }
-            ],
-            "playerProgress": {
-              "p1": {
-                "foundGroups": 2,
-                "status": "PLAYING"
-              }
-            },
-            "scores": {
-              "p1": 2
-            },
-            "roundStartedAt": 1000,
-            "roundEndsAt": 31000,
-            "nextTransitionAt": null,
-            "lastRound": null,
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [
-                {
-                  "id": "group-1",
-                  "categoryId": "trade-evolution",
-                  "label": "Evolucionan al intercambiarlos",
-                  "explanation": "Su método de evolución exige un intercambio, a veces con un objeto equipado o por otro Pokémon concreto.",
-                  "pokemon": [
-                    {
-                      "id": "magmar",
-                      "name": "Magmar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-                    },
-                    {
-                      "id": "electabuzz",
-                      "name": "Electabuzz",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
-                    },
-                    {
-                      "id": "machoke",
-                      "name": "Machoke",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
-                    },
-                    {
-                      "id": "poliwhirl",
-                      "name": "Poliwhirl",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-2",
-                  "categoryId": "misty-team",
-                  "label": "Pokémon de Misty",
-                  "explanation": "Formaron parte del equipo de Misty en el anime.",
-                  "pokemon": [
-                    {
-                      "id": "horsea",
-                      "name": "Horsea",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
-                    },
-                    {
-                      "id": "corsola",
-                      "name": "Corsola",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
-                    },
-                    {
-                      "id": "politoed",
-                      "name": "Politoed",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
-                    },
-                    {
-                      "id": "psyduck",
-                      "name": "Psyduck",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-                    }
-                  ]
-                }
-              ],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 2,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 2,
-              "lastAttempt": {
-                "kind": "CORRECT",
-                "attemptedPokemonIds": [
-                  "horsea",
-                  "corsola",
-                  "politoed",
-                  "psyduck"
-                ],
-                "nearMiss": false,
-                "attemptedAt": 3000
-              }
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "accepted": true,
-        "snapshot": {
-          "lifecycle": {
-            "phase": "ROUND_RESULTS",
-            "nextDeadline": 34000,
-            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "pokemon-connections",
-            "phase": "ROUND_RESULTS",
-            "roundNumber": 1,
-            "totalRounds": 3,
-            "groupSize": 4,
-            "groupCount": 3,
-            "board": [
-              {
-                "id": "horsea",
-                "name": "Horsea",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
-              },
-              {
-                "id": "politoed",
-                "name": "Politoed",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
-              },
-              {
-                "id": "corsola",
-                "name": "Corsola",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
-              },
-              {
-                "id": "vulpix",
-                "name": "Vulpix",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
-              },
-              {
-                "id": "electabuzz",
-                "name": "Electabuzz",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
-              },
-              {
-                "id": "poliwhirl",
-                "name": "Poliwhirl",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
-              },
-              {
-                "id": "machoke",
-                "name": "Machoke",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
-              },
-              {
-                "id": "sudowoodo",
-                "name": "Sudowoodo",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
-              },
-              {
-                "id": "magmar",
-                "name": "Magmar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-              },
-              {
-                "id": "geodude",
-                "name": "Geodude",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
-              },
-              {
-                "id": "psyduck",
-                "name": "Psyduck",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-              },
-              {
-                "id": "forretress",
-                "name": "Forretress",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
-              }
-            ],
-            "playerProgress": {
-              "p1": {
-                "foundGroups": 3,
-                "status": "SOLVED"
-              }
-            },
-            "scores": {
-              "p1": 6
-            },
-            "roundStartedAt": 1000,
-            "roundEndsAt": null,
-            "nextTransitionAt": 34000,
-            "lastRound": {
-              "source": "DYNAMIC",
-              "groups": [
-                {
-                  "id": "group-1",
-                  "categoryId": "trade-evolution",
-                  "label": "Evolucionan al intercambiarlos",
-                  "explanation": "Su método de evolución exige un intercambio, a veces con un objeto equipado o por otro Pokémon concreto.",
-                  "pokemon": [
-                    {
-                      "id": "magmar",
-                      "name": "Magmar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-                    },
-                    {
-                      "id": "electabuzz",
-                      "name": "Electabuzz",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
-                    },
-                    {
-                      "id": "machoke",
-                      "name": "Machoke",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
-                    },
-                    {
-                      "id": "poliwhirl",
-                      "name": "Poliwhirl",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-2",
-                  "categoryId": "misty-team",
-                  "label": "Pokémon de Misty",
-                  "explanation": "Formaron parte del equipo de Misty en el anime.",
-                  "pokemon": [
-                    {
-                      "id": "horsea",
-                      "name": "Horsea",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
-                    },
-                    {
-                      "id": "corsola",
-                      "name": "Corsola",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
-                    },
-                    {
-                      "id": "politoed",
-                      "name": "Politoed",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
-                    },
-                    {
-                      "id": "psyduck",
-                      "name": "Psyduck",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-3",
-                  "categoryId": "brock-team",
-                  "label": "Pokémon de Brock",
-                  "explanation": "Formaron parte del equipo de Brock en el anime.",
-                  "pokemon": [
-                    {
-                      "id": "sudowoodo",
-                      "name": "Sudowoodo",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
-                    },
-                    {
-                      "id": "geodude",
-                      "name": "Geodude",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
-                    },
-                    {
-                      "id": "forretress",
-                      "name": "Forretress",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
-                    },
-                    {
-                      "id": "vulpix",
-                      "name": "Vulpix",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
-                    }
-                  ]
-                }
-              ],
-              "players": {
-                "p1": {
-                  "status": "SOLVED",
-                  "foundGroups": 3,
-                  "foundGroupIds": [
-                    "group-1",
-                    "group-2",
-                    "group-3"
-                  ],
-                  "mistakesUsed": 0,
-                  "completionRank": 1,
-                  "elapsedMs": 3000,
-                  "pointsAwarded": 6
-                }
-              }
-            },
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "PLAYER",
-              "canSubmit": false,
-              "foundGroups": [
-                {
-                  "id": "group-1",
-                  "categoryId": "trade-evolution",
-                  "label": "Evolucionan al intercambiarlos",
-                  "explanation": "Su método de evolución exige un intercambio, a veces con un objeto equipado o por otro Pokémon concreto.",
-                  "pokemon": [
-                    {
-                      "id": "magmar",
-                      "name": "Magmar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-                    },
-                    {
-                      "id": "electabuzz",
-                      "name": "Electabuzz",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
-                    },
-                    {
-                      "id": "machoke",
-                      "name": "Machoke",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
-                    },
-                    {
-                      "id": "poliwhirl",
-                      "name": "Poliwhirl",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-2",
-                  "categoryId": "misty-team",
-                  "label": "Pokémon de Misty",
-                  "explanation": "Formaron parte del equipo de Misty en el anime.",
-                  "pokemon": [
-                    {
-                      "id": "horsea",
-                      "name": "Horsea",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png"
-                    },
-                    {
-                      "id": "corsola",
-                      "name": "Corsola",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/222.png"
-                    },
-                    {
-                      "id": "politoed",
-                      "name": "Politoed",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
-                    },
-                    {
-                      "id": "psyduck",
-                      "name": "Psyduck",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-3",
-                  "categoryId": "brock-team",
-                  "label": "Pokémon de Brock",
-                  "explanation": "Formaron parte del equipo de Brock en el anime.",
-                  "pokemon": [
-                    {
-                      "id": "sudowoodo",
-                      "name": "Sudowoodo",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/185.png"
-                    },
-                    {
-                      "id": "geodude",
-                      "name": "Geodude",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
-                    },
-                    {
-                      "id": "forretress",
-                      "name": "Forretress",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/205.png"
-                    },
-                    {
-                      "id": "vulpix",
-                      "name": "Vulpix",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
-                    }
-                  ]
-                }
-              ],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 2,
-              "status": "SOLVED",
-              "completionRank": 1,
-              "roundPoints": 6,
-              "lastAttempt": {
-                "kind": "CORRECT",
-                "attemptedPokemonIds": [
-                  "sudowoodo",
-                  "geodude",
-                  "forretress",
-                  "vulpix"
-                ],
-                "nearMiss": false,
-                "attemptedAt": 4000
-              }
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "snapshot": {
-          "lifecycle": {
-            "phase": "ROUND_ACTIVE",
-            "nextDeadline": 64000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,34000,null,null,null,null,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "pokemon-connections",
-            "phase": "ROUND_ACTIVE",
-            "roundNumber": 2,
-            "totalRounds": 3,
-            "groupSize": 4,
-            "groupCount": 3,
-            "board": [
-              {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
-              },
-              {
-                "id": "growlithe",
-                "name": "Growlithe",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
-              },
-              {
-                "id": "houndour",
-                "name": "Houndour",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png"
-              },
-              {
-                "id": "haunter",
-                "name": "Haunter",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
-              },
-              {
-                "id": "dratini",
-                "name": "Dratini",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
-              },
-              {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
-              },
-              {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "houndoom",
-                "name": "Houndoom",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/229.png"
-              },
-              {
-                "id": "arcanine",
-                "name": "Arcanine",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png"
-              },
-              {
-                "id": "gastly",
-                "name": "Gastly",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
-              },
-              {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
-              },
-              {
-                "id": "misdreavus",
-                "name": "Misdreavus",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
               }
             ],
             "playerProgress": {
@@ -1060,10 +431,10 @@
               }
             },
             "scores": {
-              "p1": 6
+              "p1": 0
             },
-            "roundStartedAt": 34000,
-            "roundEndsAt": 64000,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
             "nextTransitionAt": null,
             "lastRound": null,
             "results": null
@@ -1085,81 +456,82 @@
         }
       },
       {
-        "accepted": true,
+        "accepted": false,
+        "error": "La selección contiene un Pokémon ajeno al tablero.",
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_ACTIVE",
-            "nextDeadline": 64000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,34000,null,null,null,null,null]",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
             "gameId": "pokemon-connections",
             "phase": "ROUND_ACTIVE",
-            "roundNumber": 2,
+            "roundNumber": 1,
             "totalRounds": 3,
             "groupSize": 4,
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
               },
               {
-                "id": "growlithe",
-                "name": "Growlithe",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                "id": "paras",
+                "name": "Paras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
               },
               {
-                "id": "houndour",
-                "name": "Houndour",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png"
+                "id": "noctowl",
+                "name": "Noctowl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
               },
               {
-                "id": "haunter",
-                "name": "Haunter",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
               },
               {
-                "id": "dratini",
-                "name": "Dratini",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                "id": "raichu",
+                "name": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
               },
               {
-                "id": "houndoom",
-                "name": "Houndoom",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/229.png"
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
               },
               {
-                "id": "arcanine",
-                "name": "Arcanine",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png"
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
               },
               {
-                "id": "gastly",
-                "name": "Gastly",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
               },
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "totodile",
+                "name": "Totodile",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
               },
               {
-                "id": "misdreavus",
-                "name": "Misdreavus",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
               }
             ],
             "playerProgress": {
@@ -1169,10 +541,10 @@
               }
             },
             "scores": {
-              "p1": 6
+              "p1": 0
             },
-            "roundStartedAt": 34000,
-            "roundEndsAt": 64000,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
             "nextTransitionAt": null,
             "lastRound": null,
             "results": null
@@ -1182,211 +554,310 @@
               "role": "PLAYER",
               "canSubmit": true,
               "foundGroups": [],
-              "mistakesUsed": 1,
+              "mistakesUsed": 0,
               "mistakesAllowed": 2,
               "status": "PLAYING",
               "completionRank": null,
               "roundPoints": 0,
-              "lastAttempt": {
-                "kind": "INCORRECT",
-                "attemptedPokemonIds": [
-                  "arcanine",
-                  "houndour",
-                  "dragonair",
-                  "gengar"
-                ],
-                "nearMiss": false,
-                "attemptedAt": 35000
-              }
+              "lastAttempt": null
             }
           },
           "finished": false
         }
       },
       {
-        "accepted": true,
+        "accepted": false,
+        "error": "La selección contiene un Pokémon ajeno al tablero.",
         "snapshot": {
           "lifecycle": {
-            "phase": "ROUND_RESULTS",
-            "nextDeadline": 66000,
-            "actionEpoch": "[\"ROUND_RESULTS\",2,34000,null,null,null,null,null]",
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 31000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
             "gameId": "pokemon-connections",
-            "phase": "ROUND_RESULTS",
-            "roundNumber": 2,
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
             "totalRounds": 3,
             "groupSize": 4,
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
               },
               {
-                "id": "growlithe",
-                "name": "Growlithe",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                "id": "paras",
+                "name": "Paras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
               },
               {
-                "id": "houndour",
-                "name": "Houndour",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png"
+                "id": "noctowl",
+                "name": "Noctowl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
               },
               {
-                "id": "haunter",
-                "name": "Haunter",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
               },
               {
-                "id": "dratini",
-                "name": "Dratini",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                "id": "raichu",
+                "name": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
               },
               {
-                "id": "houndoom",
-                "name": "Houndoom",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/229.png"
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
               },
               {
-                "id": "arcanine",
-                "name": "Arcanine",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png"
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
               },
               {
-                "id": "gastly",
-                "name": "Gastly",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
               },
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "totodile",
+                "name": "Totodile",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
               },
               {
-                "id": "misdreavus",
-                "name": "Misdreavus",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
               }
             ],
             "playerProgress": {
               "p1": {
                 "foundGroups": 0,
-                "status": "ELIMINATED"
+                "status": "PLAYING"
               }
             },
             "scores": {
-              "p1": 6
+              "p1": 0
             },
-            "roundStartedAt": 34000,
+            "roundStartedAt": 1000,
+            "roundEndsAt": 31000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 2,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 64000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-connections",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "groupSize": 4,
+            "groupCount": 3,
+            "board": [
+              {
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+              },
+              {
+                "id": "paras",
+                "name": "Paras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
+              },
+              {
+                "id": "noctowl",
+                "name": "Noctowl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
+              },
+              {
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "raichu",
+                "name": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
+              },
+              {
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+              },
+              {
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "totodile",
+                "name": "Totodile",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              }
+            ],
+            "playerProgress": {
+              "p1": {
+                "foundGroups": 0,
+                "status": "TIMED_OUT"
+              }
+            },
+            "scores": {
+              "p1": 0
+            },
+            "roundStartedAt": 1000,
             "roundEndsAt": null,
-            "nextTransitionAt": 66000,
+            "nextTransitionAt": 64000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
                 {
                   "id": "group-1",
-                  "categoryId": "dogs",
-                  "label": "Pokémon con aspecto canino",
-                  "explanation": "Su diseño está inspirado en perros o cánidos.",
+                  "categoryId": "ash-team",
+                  "label": "Pokémon de Ash",
+                  "explanation": "Formaron parte del equipo de Ash en el anime, en la fase en que los tuvo.",
                   "pokemon": [
                     {
-                      "id": "arcanine",
-                      "name": "Arcanine",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png"
+                      "id": "noctowl",
+                      "name": "Noctowl",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
                     },
                     {
-                      "id": "houndour",
-                      "name": "Houndour",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png"
+                      "id": "snorlax",
+                      "name": "Snorlax",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
                     },
                     {
-                      "id": "houndoom",
-                      "name": "Houndoom",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/229.png"
+                      "id": "tauros",
+                      "name": "Tauros",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
                     },
                     {
-                      "id": "growlithe",
-                      "name": "Growlithe",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+                      "id": "totodile",
+                      "name": "Totodile",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
                     }
                   ]
                 },
                 {
                   "id": "group-2",
-                  "categoryId": "type-dragon",
-                  "label": "Comparten el tipo Dragón",
-                  "explanation": "Todos incluyen el tipo Dragón entre sus tipos.",
+                  "categoryId": "tiny",
+                  "label": "Miden 30 cm o menos",
+                  "explanation": "Su altura oficial no pasa de 30 cm.",
                   "pokemon": [
                     {
-                      "id": "dragonair",
-                      "name": "Dragonair",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                      "id": "caterpie",
+                      "name": "Caterpie",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
                     },
                     {
-                      "id": "dragonite",
-                      "name": "Dragonite",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                      "id": "togepi",
+                      "name": "Togepi",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
                     },
                     {
-                      "id": "kingdra",
-                      "name": "Kingdra",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                      "id": "paras",
+                      "name": "Paras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
                     },
                     {
-                      "id": "dratini",
-                      "name": "Dratini",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
+                      "id": "sunkern",
+                      "name": "Sunkern",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
                     }
                   ]
                 },
                 {
                   "id": "group-3",
-                  "categoryId": "type-ghost",
-                  "label": "Comparten el tipo Fantasma",
-                  "explanation": "Todos incluyen el tipo Fantasma entre sus tipos.",
+                  "categoryId": "rodents",
+                  "label": "Pokémon con aspecto de roedor",
+                  "explanation": "Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.",
                   "pokemon": [
                     {
-                      "id": "gengar",
-                      "name": "Gengar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+                      "id": "raticate",
+                      "name": "Raticate",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
                     },
                     {
-                      "id": "gastly",
-                      "name": "Gastly",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
                     },
                     {
-                      "id": "misdreavus",
-                      "name": "Misdreavus",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png"
+                      "id": "marill",
+                      "name": "Marill",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
                     },
                     {
-                      "id": "haunter",
-                      "name": "Haunter",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                      "id": "raichu",
+                      "name": "Raichu",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
                     }
                   ]
                 }
               ],
               "players": {
                 "p1": {
-                  "status": "ELIMINATED",
+                  "status": "TIMED_OUT",
                   "foundGroups": 0,
                   "foundGroupIds": [],
-                  "mistakesUsed": 2,
+                  "mistakesUsed": 0,
                   "completionRank": null,
                   "elapsedMs": null,
                   "pointsAwarded": 0
@@ -1400,22 +871,430 @@
               "role": "PLAYER",
               "canSubmit": false,
               "foundGroups": [],
-              "mistakesUsed": 2,
+              "mistakesUsed": 0,
               "mistakesAllowed": 2,
-              "status": "ELIMINATED",
+              "status": "TIMED_OUT",
               "completionRank": null,
               "roundPoints": 0,
-              "lastAttempt": {
-                "kind": "INCORRECT",
-                "attemptedPokemonIds": [
-                  "dragonite",
-                  "kingdra",
-                  "gastly",
-                  "growlithe"
-                ],
-                "nearMiss": false,
-                "attemptedAt": 36000
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La ronda no está activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 64000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-connections",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "groupSize": 4,
+            "groupCount": 3,
+            "board": [
+              {
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+              },
+              {
+                "id": "paras",
+                "name": "Paras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
+              },
+              {
+                "id": "noctowl",
+                "name": "Noctowl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
+              },
+              {
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "raichu",
+                "name": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
+              },
+              {
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+              },
+              {
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "totodile",
+                "name": "Totodile",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
               }
+            ],
+            "playerProgress": {
+              "p1": {
+                "foundGroups": 0,
+                "status": "TIMED_OUT"
+              }
+            },
+            "scores": {
+              "p1": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 64000,
+            "lastRound": {
+              "source": "DYNAMIC",
+              "groups": [
+                {
+                  "id": "group-1",
+                  "categoryId": "ash-team",
+                  "label": "Pokémon de Ash",
+                  "explanation": "Formaron parte del equipo de Ash en el anime, en la fase en que los tuvo.",
+                  "pokemon": [
+                    {
+                      "id": "noctowl",
+                      "name": "Noctowl",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
+                    },
+                    {
+                      "id": "snorlax",
+                      "name": "Snorlax",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                    },
+                    {
+                      "id": "tauros",
+                      "name": "Tauros",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+                    },
+                    {
+                      "id": "totodile",
+                      "name": "Totodile",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
+                    }
+                  ]
+                },
+                {
+                  "id": "group-2",
+                  "categoryId": "tiny",
+                  "label": "Miden 30 cm o menos",
+                  "explanation": "Su altura oficial no pasa de 30 cm.",
+                  "pokemon": [
+                    {
+                      "id": "caterpie",
+                      "name": "Caterpie",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+                    },
+                    {
+                      "id": "togepi",
+                      "name": "Togepi",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                    },
+                    {
+                      "id": "paras",
+                      "name": "Paras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
+                    },
+                    {
+                      "id": "sunkern",
+                      "name": "Sunkern",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                    }
+                  ]
+                },
+                {
+                  "id": "group-3",
+                  "categoryId": "rodents",
+                  "label": "Pokémon con aspecto de roedor",
+                  "explanation": "Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.",
+                  "pokemon": [
+                    {
+                      "id": "raticate",
+                      "name": "Raticate",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+                    },
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "marill",
+                      "name": "Marill",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
+                    },
+                    {
+                      "id": "raichu",
+                      "name": "Raichu",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
+                    }
+                  ]
+                }
+              ],
+              "players": {
+                "p1": {
+                  "status": "TIMED_OUT",
+                  "foundGroups": 0,
+                  "foundGroupIds": [],
+                  "mistakesUsed": 0,
+                  "completionRank": null,
+                  "elapsedMs": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 2,
+              "status": "TIMED_OUT",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La ronda no está activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 64000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-connections",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "groupSize": 4,
+            "groupCount": 3,
+            "board": [
+              {
+                "id": "tauros",
+                "name": "Tauros",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+              },
+              {
+                "id": "paras",
+                "name": "Paras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
+              },
+              {
+                "id": "noctowl",
+                "name": "Noctowl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
+              },
+              {
+                "id": "caterpie",
+                "name": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "raichu",
+                "name": "Raichu",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
+              },
+              {
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+              },
+              {
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
+              },
+              {
+                "id": "sunkern",
+                "name": "Sunkern",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+              },
+              {
+                "id": "togepi",
+                "name": "Togepi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+              },
+              {
+                "id": "sentret",
+                "name": "Sentret",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+              },
+              {
+                "id": "totodile",
+                "name": "Totodile",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              }
+            ],
+            "playerProgress": {
+              "p1": {
+                "foundGroups": 0,
+                "status": "TIMED_OUT"
+              }
+            },
+            "scores": {
+              "p1": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 64000,
+            "lastRound": {
+              "source": "DYNAMIC",
+              "groups": [
+                {
+                  "id": "group-1",
+                  "categoryId": "ash-team",
+                  "label": "Pokémon de Ash",
+                  "explanation": "Formaron parte del equipo de Ash en el anime, en la fase en que los tuvo.",
+                  "pokemon": [
+                    {
+                      "id": "noctowl",
+                      "name": "Noctowl",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
+                    },
+                    {
+                      "id": "snorlax",
+                      "name": "Snorlax",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                    },
+                    {
+                      "id": "tauros",
+                      "name": "Tauros",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/128.png"
+                    },
+                    {
+                      "id": "totodile",
+                      "name": "Totodile",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png"
+                    }
+                  ]
+                },
+                {
+                  "id": "group-2",
+                  "categoryId": "tiny",
+                  "label": "Miden 30 cm o menos",
+                  "explanation": "Su altura oficial no pasa de 30 cm.",
+                  "pokemon": [
+                    {
+                      "id": "caterpie",
+                      "name": "Caterpie",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+                    },
+                    {
+                      "id": "togepi",
+                      "name": "Togepi",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                    },
+                    {
+                      "id": "paras",
+                      "name": "Paras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
+                    },
+                    {
+                      "id": "sunkern",
+                      "name": "Sunkern",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                    }
+                  ]
+                },
+                {
+                  "id": "group-3",
+                  "categoryId": "rodents",
+                  "label": "Pokémon con aspecto de roedor",
+                  "explanation": "Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.",
+                  "pokemon": [
+                    {
+                      "id": "raticate",
+                      "name": "Raticate",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+                    },
+                    {
+                      "id": "sentret",
+                      "name": "Sentret",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                    },
+                    {
+                      "id": "marill",
+                      "name": "Marill",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
+                    },
+                    {
+                      "id": "raichu",
+                      "name": "Raichu",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
+                    }
+                  ]
+                }
+              ],
+              "players": {
+                "p1": {
+                  "status": "TIMED_OUT",
+                  "foundGroups": 0,
+                  "foundGroupIds": [],
+                  "mistakesUsed": 0,
+                  "completionRank": null,
+                  "elapsedMs": null,
+                  "pointsAwarded": 0
+                }
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 2,
+              "status": "TIMED_OUT",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
             }
           },
           "finished": false
@@ -1426,76 +1305,76 @@
           "lifecycle": {
             "phase": "ROUND_ACTIVE",
             "nextDeadline": 96000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",3,66000,null,null,null,null,null]",
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,66000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
             "gameId": "pokemon-connections",
             "phase": "ROUND_ACTIVE",
-            "roundNumber": 3,
+            "roundNumber": 2,
             "totalRounds": 3,
             "groupSize": 4,
             "groupCount": 3,
             "board": [
               {
-                "id": "sandslash",
-                "name": "Sandslash",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               },
               {
-                "id": "gastly",
-                "name": "Gastly",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "omastar",
-                "name": "Omastar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png"
+                "id": "vulpix",
+                "name": "Vulpix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
               },
               {
-                "id": "tentacool",
-                "name": "Tentacool",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "furret",
-                "name": "Furret",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/162.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "omanyte",
-                "name": "Omanyte",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "haunter",
-                "name": "Haunter",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                "id": "rattata",
+                "name": "Rattata",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/19.png"
               },
               {
-                "id": "octillery",
-                "name": "Octillery",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                "id": "muk",
+                "name": "Muk",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
               },
               {
-                "id": "diglett",
-                "name": "Diglett",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"
+                "id": "mantine",
+                "name": "Mantine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/226.png"
               },
               {
-                "id": "sentret",
-                "name": "Sentret",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                "id": "exeggutor",
+                "name": "Exeggutor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
               },
               {
-                "id": "hoppip",
-                "name": "Hoppip",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/187.png"
+                "id": "blastoise",
+                "name": "Blastoise",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png"
               }
             ],
             "playerProgress": {
@@ -1505,7 +1384,7 @@
               }
             },
             "scores": {
-              "p1": 6
+              "p1": 0
             },
             "roundStartedAt": 66000,
             "roundEndsAt": 96000,
@@ -1534,76 +1413,76 @@
           "lifecycle": {
             "phase": "ROUND_RESULTS",
             "nextDeadline": 126000,
-            "actionEpoch": "[\"ROUND_RESULTS\",3,66000,null,null,null,null,null]",
+            "actionEpoch": "[\"ROUND_RESULTS\",2,66000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
             "gameId": "pokemon-connections",
             "phase": "ROUND_RESULTS",
-            "roundNumber": 3,
+            "roundNumber": 2,
             "totalRounds": 3,
             "groupSize": 4,
             "groupCount": 3,
             "board": [
               {
-                "id": "sandslash",
-                "name": "Sandslash",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               },
               {
-                "id": "gastly",
-                "name": "Gastly",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "omastar",
-                "name": "Omastar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png"
+                "id": "vulpix",
+                "name": "Vulpix",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
               },
               {
-                "id": "tentacool",
-                "name": "Tentacool",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "furret",
-                "name": "Furret",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/162.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "omanyte",
-                "name": "Omanyte",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "haunter",
-                "name": "Haunter",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                "id": "rattata",
+                "name": "Rattata",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/19.png"
               },
               {
-                "id": "octillery",
-                "name": "Octillery",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                "id": "muk",
+                "name": "Muk",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
               },
               {
-                "id": "diglett",
-                "name": "Diglett",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"
+                "id": "mantine",
+                "name": "Mantine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/226.png"
               },
               {
-                "id": "sentret",
-                "name": "Sentret",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                "id": "exeggutor",
+                "name": "Exeggutor",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
               },
               {
-                "id": "hoppip",
-                "name": "Hoppip",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/187.png"
+                "id": "blastoise",
+                "name": "Blastoise",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png"
               }
             ],
             "playerProgress": {
@@ -1613,7 +1492,7 @@
               }
             },
             "scores": {
-              "p1": 6
+              "p1": 0
             },
             "roundStartedAt": 66000,
             "roundEndsAt": null,
@@ -1623,85 +1502,85 @@
               "groups": [
                 {
                   "id": "group-1",
-                  "categoryId": "rodents",
-                  "label": "Pokémon con aspecto de roedor",
-                  "explanation": "Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.",
+                  "categoryId": "regional-forms",
+                  "label": "Tienen forma regional",
+                  "explanation": "Tienen una variante regional de Alola, Galar, Hisui o Paldea.",
                   "pokemon": [
                     {
-                      "id": "sandslash",
-                      "name": "Sandslash",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                      "id": "rattata",
+                      "name": "Rattata",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/19.png"
                     },
                     {
-                      "id": "raticate",
-                      "name": "Raticate",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+                      "id": "vulpix",
+                      "name": "Vulpix",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
                     },
                     {
-                      "id": "furret",
-                      "name": "Furret",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/162.png"
+                      "id": "muk",
+                      "name": "Muk",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
                     },
                     {
-                      "id": "sentret",
-                      "name": "Sentret",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                      "id": "exeggutor",
+                      "name": "Exeggutor",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
                     }
                   ]
                 },
                 {
                   "id": "group-2",
-                  "categoryId": "featherweights",
-                  "label": "Pesan menos de 1 kg",
-                  "explanation": "Su peso oficial no llega a 1 kg.",
+                  "categoryId": "final-starters",
+                  "label": "Evoluciones finales de iniciales",
+                  "explanation": "Son la última fase de un Pokémon inicial de los juegos principales.",
                   "pokemon": [
                     {
-                      "id": "gastly",
-                      "name": "Gastly",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
                     },
                     {
-                      "id": "haunter",
-                      "name": "Haunter",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                      "id": "venusaur",
+                      "name": "Venusaur",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
                     },
                     {
-                      "id": "hoppip",
-                      "name": "Hoppip",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/187.png"
+                      "id": "blastoise",
+                      "name": "Blastoise",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png"
                     },
                     {
-                      "id": "diglett",
-                      "name": "Diglett",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"
+                      "id": "charizard",
+                      "name": "Charizard",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
                     }
                   ]
                 },
                 {
                   "id": "group-3",
-                  "categoryId": "shape-tentacles",
-                  "label": "Forma corporal con tentáculos",
-                  "explanation": "La Pokédex clasifica oficialmente su forma corporal como tentáculos.",
+                  "categoryId": "heavyweights",
+                  "label": "Pesan 200 kg o más",
+                  "explanation": "Su peso oficial alcanza al menos 200 kg.",
                   "pokemon": [
                     {
-                      "id": "omastar",
-                      "name": "Omastar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png"
+                      "id": "lapras",
+                      "name": "Lapras",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
                     },
                     {
-                      "id": "tentacool",
-                      "name": "Tentacool",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png"
+                      "id": "gyarados",
+                      "name": "Gyarados",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
                     },
                     {
-                      "id": "octillery",
-                      "name": "Octillery",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                      "id": "lugia",
+                      "name": "Lugia",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
                     },
                     {
-                      "id": "omanyte",
-                      "name": "Omanyte",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                      "id": "mantine",
+                      "name": "Mantine",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/226.png"
                     }
                   ]
                 }
@@ -1739,228 +1618,109 @@
       {
         "snapshot": {
           "lifecycle": {
-            "phase": "GAME_RESULTS",
-            "nextDeadline": null,
-            "actionEpoch": "[\"GAME_RESULTS\",3,66000,null,null,null,null,null]",
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 156000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,126000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
             "gameId": "pokemon-connections",
-            "phase": "GAME_RESULTS",
+            "phase": "ROUND_ACTIVE",
             "roundNumber": 3,
             "totalRounds": 3,
             "groupSize": 4,
             "groupCount": 3,
             "board": [
               {
-                "id": "sandslash",
-                "name": "Sandslash",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
+                "id": "mantine",
+                "name": "Mantine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/226.png"
               },
               {
-                "id": "gastly",
-                "name": "Gastly",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+                "id": "kingdra",
+                "name": "Kingdra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
               },
               {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
+                "id": "politoed",
+                "name": "Politoed",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/186.png"
               },
               {
-                "id": "omastar",
-                "name": "Omastar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png"
+                "id": "dratini",
+                "name": "Dratini",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/147.png"
               },
               {
-                "id": "tentacool",
-                "name": "Tentacool",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png"
+                "id": "entei",
+                "name": "Entei",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/244.png"
               },
               {
-                "id": "furret",
-                "name": "Furret",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/162.png"
+                "id": "lanturn",
+                "name": "Lanturn",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/171.png"
               },
               {
-                "id": "omanyte",
-                "name": "Omanyte",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
+                "id": "poliwag",
+                "name": "Poliwag",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png"
               },
               {
-                "id": "haunter",
-                "name": "Haunter",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+                "id": "pinsir",
+                "name": "Pinsir",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
               },
               {
-                "id": "octillery",
-                "name": "Octillery",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
               },
               {
-                "id": "diglett",
-                "name": "Diglett",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"
+                "id": "kangaskhan",
+                "name": "Kangaskhan",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/115.png"
               },
               {
-                "id": "sentret",
-                "name": "Sentret",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
+                "id": "dragonite",
+                "name": "Dragonite",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
               },
               {
-                "id": "hoppip",
-                "name": "Hoppip",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/187.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               }
             ],
             "playerProgress": {
               "p1": {
                 "foundGroups": 0,
-                "status": "TIMED_OUT"
+                "status": "PLAYING"
               }
             },
             "scores": {
-              "p1": 6
+              "p1": 0
             },
-            "roundStartedAt": 66000,
-            "roundEndsAt": null,
+            "roundStartedAt": 126000,
+            "roundEndsAt": 156000,
             "nextTransitionAt": null,
-            "lastRound": {
-              "source": "DYNAMIC",
-              "groups": [
-                {
-                  "id": "group-1",
-                  "categoryId": "rodents",
-                  "label": "Pokémon con aspecto de roedor",
-                  "explanation": "Su diseño está inspirado en ratones, ratas, ardillas u otros roedores.",
-                  "pokemon": [
-                    {
-                      "id": "sandslash",
-                      "name": "Sandslash",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png"
-                    },
-                    {
-                      "id": "raticate",
-                      "name": "Raticate",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-                    },
-                    {
-                      "id": "furret",
-                      "name": "Furret",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/162.png"
-                    },
-                    {
-                      "id": "sentret",
-                      "name": "Sentret",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-2",
-                  "categoryId": "featherweights",
-                  "label": "Pesan menos de 1 kg",
-                  "explanation": "Su peso oficial no llega a 1 kg.",
-                  "pokemon": [
-                    {
-                      "id": "gastly",
-                      "name": "Gastly",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
-                    },
-                    {
-                      "id": "haunter",
-                      "name": "Haunter",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
-                    },
-                    {
-                      "id": "hoppip",
-                      "name": "Hoppip",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/187.png"
-                    },
-                    {
-                      "id": "diglett",
-                      "name": "Diglett",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-3",
-                  "categoryId": "shape-tentacles",
-                  "label": "Forma corporal con tentáculos",
-                  "explanation": "La Pokédex clasifica oficialmente su forma corporal como tentáculos.",
-                  "pokemon": [
-                    {
-                      "id": "omastar",
-                      "name": "Omastar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/139.png"
-                    },
-                    {
-                      "id": "tentacool",
-                      "name": "Tentacool",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png"
-                    },
-                    {
-                      "id": "octillery",
-                      "name": "Octillery",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/224.png"
-                    },
-                    {
-                      "id": "omanyte",
-                      "name": "Omanyte",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/138.png"
-                    }
-                  ]
-                }
-              ],
-              "players": {
-                "p1": {
-                  "status": "TIMED_OUT",
-                  "foundGroups": 0,
-                  "foundGroupIds": [],
-                  "mistakesUsed": 0,
-                  "completionRank": null,
-                  "elapsedMs": null,
-                  "pointsAwarded": 0
-                }
-              }
-            },
-            "results": {
-              "winnerId": "p1",
-              "standings": [
-                {
-                  "playerId": "p1",
-                  "position": 1,
-                  "points": 6,
-                  "won": true,
-                  "stats": {
-                    "roundsPlayed": 3,
-                    "groupsFound": 3,
-                    "boardsSolved": 1,
-                    "mistakes": 2,
-                    "nearMisses": 0,
-                    "podiumFinishes": 1,
-                    "solveTimeTotalMs": 3000,
-                    "bestSolveTimeMs": 3000
-                  }
-                }
-              ]
-            }
+            "lastRound": null,
+            "results": null
           },
           "playerStates": {
             "p1": {
               "role": "PLAYER",
-              "canSubmit": false,
+              "canSubmit": true,
               "foundGroups": [],
               "mistakesUsed": 0,
               "mistakesAllowed": 2,
-              "status": "TIMED_OUT",
+              "status": "PLAYING",
               "completionRank": null,
               "roundPoints": 0,
               "lastAttempt": null
             }
           },
-          "finished": true
+          "finished": false
         }
       },
       {
