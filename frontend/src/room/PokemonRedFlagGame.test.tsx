@@ -51,7 +51,7 @@ function room(game: PokemonRedFlagPublicState, player: PokemonRedFlagPlayerState
     const off = disconnected.includes(id);
     return { id, displayName, avatar: { type: 'DEFAULT' as const }, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' as const : 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: game.scores[id] ?? 0 };
   });
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'pokemon-red-flag', name: 'Pokémon Red Flag', icon: '🚩', description: 'Red flags', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-red-flag', selectedGameConfig: defaultPokemonRedFlagConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-red-flag'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: player, members };
+  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'pokemon-red-flag', name: 'La Frase Pokémon', icon: '💬', description: 'Frases', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-red-flag', selectedGameConfig: defaultPokemonRedFlagConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-red-flag'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: player, members };
 }
 
 const WRITING: PokemonRedFlagPlayerState = { role: 'PLAYER', canSubmit: true, ownDraft: '', ownAnswer: null, canVote: false, ownVoteAnswerId: null, ownAnswerId: 'rf-1-x' };
@@ -70,9 +70,9 @@ describe('Pokémon Red Flag: pantalla', () => {
     const html = render(publicGame(), WRITING);
     expect(html).toContain('Gengar');
     expect(html).toContain('¿Qué detalle negativo de Gengar haría que salieras corriendo?');
-    expect(html).toContain('Red Flag de esta ronda');
-    expect(html).toContain('Escribe su mayor red flag');
-    expect(html).toContain('Tu red flag para Gengar');
+    expect(html).toContain('Lo peor de esta ronda');
+    expect(html).toContain('Escribe su peor frase');
+    expect(html).toContain('Tu frase para Gengar');
     expect(html).toContain('maxLength="100"');
     expect(html).toContain('0 / 100');
     expect(html).toContain('Bloquear respuesta');
@@ -90,8 +90,8 @@ describe('Pokémon Red Flag: pantalla', () => {
     const game = publicGame();
     game.flagMode = 'GREEN';
     const html = render(game, { ...WRITING, ownDraft: 'Siempre escucha.' });
-    expect(html).toContain('Green Flag');
-    expect(html).toContain('Escribe su mejor green flag');
+    expect(html).toContain('Lo mejor');
+    expect(html).toContain('Escribe su mejor frase');
     expect(html).toContain('¿Qué detalle positivo de Gengar te conquistaría?');
     expect(html).toContain('Siempre escucha.');
     expect(html).toContain('16 / 100');
@@ -126,7 +126,7 @@ describe('Pokémon Red Flag: pantalla', () => {
 
   it('votar: «Respuesta N» con el texto entero (la propia no se vota), confirmación y progreso', () => {
     const html = render(publicGame('VOTING'), VOTER, 'p1', ['p3']);
-    expect(html).toContain('Vota la mejor red flag');
+    expect(html).toContain('Vota la frase que mejor lo representa');
     expect(html).toContain('>Votación<');
     expect(html).toContain('aria-label="Respuesta 2: Comparte ubicación con Hypno."');
     expect(html).toContain(LONG.slice(0, 100));
@@ -164,12 +164,12 @@ describe('Pokémon Red Flag: pantalla', () => {
   it('revelar: autores, las dos vueltas, quién votó a quién, la ganadora y los puntos; «Sin respuesta» para quien no escribió', () => {
     const missing: PokemonRedFlagRoundResult = { ...revoteResult, answers: answers.slice(0, 2), missingPlayerIds: ['p3'] };
     const html = render(publicGame('ROUND_RESULTS', missing), { ...LOCKED, ownVoteAnswerId: 'rf-1-y' });
-    expect(html).toContain('La red flag de la ronda');
+    expect(html).toContain('La frase de la ronda');
     expect(html).toContain('Autores revelados');
     expect(html).toContain('Gana Ana con 2 votos tras la segunda vuelta.');
     expect(html).toContain('Primera vuelta');
     expect(html).toContain('Votos de Eru y Leo');
-    expect(html).toContain('Red flag ganadora');
+    expect(html).toContain('Frase ganadora');
     expect(html).toContain('Comparte ubicación con Hypno.');
     expect(html).toContain('Sin respuesta');
     expect(html).toContain('+3');
@@ -188,7 +188,7 @@ describe('Pokémon Red Flag: pantalla', () => {
     const html = render(publicGame('ROUND_RESULTS', noVotes), SPECTATOR, 's1');
     expect(html).toContain('Victoria compartida');
     expect(html).toContain('Empate sin votos');
-    expect(html).not.toContain('Red flag ganadora');
+    expect(html).not.toContain('Frase ganadora');
   });
 });
 
@@ -202,16 +202,16 @@ describe('Pokémon Red Flag: borrador', () => {
 
 describe('Pokémon Red Flag: textos', () => {
   it('títulos, región viva (sin autores antes de revelar) y veredicto', () => {
-    expect(redFlagHeading('ROUND_RESULTS', 'RED', { ...revoteResult, winningAnswerIds: [] })).toBe('Sin red flag ganadora');
-    expect(redFlagHeading('ROUND_RESULTS', 'RED', { ...revoteResult, flagMode: 'GREEN' })).toBe('La green flag de la ronda');
-    expect(redFlagHeading('ROUND_ACTIVE', 'GREEN', null)).toBe('Escribe su green flag');
+    expect(redFlagHeading('ROUND_RESULTS', 'RED', { ...revoteResult, winningAnswerIds: [] })).toBe('Sin frase ganadora');
+    expect(redFlagHeading('ROUND_RESULTS', 'RED', { ...revoteResult, flagMode: 'GREEN' })).toBe('La frase de la ronda');
+    expect(redFlagHeading('ROUND_ACTIVE', 'GREEN', null)).toBe('Escribe su mejor frase');
     const nameOf = (id: string) => ({ 'rf-1-x': 'Eru', 'rf-1-y': 'Ana' })[id] ?? id;
     const base = { roundNumber: 2, answerLocked: false, voteLocked: false, tiedCount: 2, result: null, nameOf };
     expect(redFlagAnnouncement({ ...base, phase: 'REVOTE' })).toBe('Empate: segunda vuelta entre 2 respuestas.');
     expect(redFlagAnnouncement({ ...base, phase: 'VOTING', voteLocked: true })).toContain('Voto bloqueado');
     expect(redFlagAnnouncement({ ...base, phase: 'ROUND_ACTIVE', answerLocked: true })).toContain('Respuesta bloqueada');
     expect(redFlagAnnouncement({ ...base, phase: 'ROUND_RESULTS', result: revoteResult })).toBe('Ronda 2 terminada. Gana Ana con 2 votos tras la segunda vuelta.');
-    expect(redFlagVerdict(revoteResult, 'p2', true)).toEqual({ tone: 'ok', text: '¡Tu red flag ganó!', points: 3 });
+    expect(redFlagVerdict(revoteResult, 'p2', true)).toEqual({ tone: 'ok', text: '¡Tu frase ganó!', points: 3 });
     expect(redFlagVerdict(revoteResult, 'p3', true).text).toBe('Tu respuesta no pasó a la segunda vuelta');
     expect(redFlagVerdict({ ...revoteResult, answers: [] }, 'p3', true).text).toBe('No enviaste respuesta');
   });
@@ -220,7 +220,7 @@ describe('Pokémon Red Flag: textos', () => {
 describe('Pokémon Red Flag: resultados y ajustes', () => {
   it('clasificación del catálogo con métricas en texto, récords, la regla de los 3 puntos y la acción del host', () => {
     const html = renderToStaticMarkup(createElement(PokemonRedFlagResults, { room: room(publicGame('GAME_RESULTS'), SPECTATOR), selfId: 'p1', onLobby: () => undefined, onEnd: () => undefined }));
-    expect(html).toContain('Las señales más votadas');
+    expect(html).toContain('Las frases más votadas');
     expect(html).toContain('1 victoria · 1 en solitario · 0 compartidas · 2 votos recibidos · 1/1 respuestas');
     expect(html).toContain('Más votos recibidos');
     expect(html).toContain('Cada victoria vale 3 puntos, también cuando el empate persiste tras la segunda vuelta.');
@@ -232,13 +232,13 @@ describe('Pokémon Red Flag: resultados y ajustes', () => {
 
   it('ajustes con controles del catálogo (sin botones heredados)', () => {
     const html = renderToStaticMarkup(createElement(PokemonRedFlagConfigPanel, { config: defaultPokemonRedFlagConfig, disabled: false, onChange: async () => undefined }));
-    expect(html).toContain('Modo de respuestas');
-    expect(html).toContain('Algo negativo sobre el Pokémon.');
+    expect(html).toContain('Tono de las frases');
+    expect(html).toContain('La frase muestra su lado malo.');
     expect(html).toContain('Número de rondas');
     expect(html).toContain('Tiempo por fase');
     expect(html).toContain('Se aplica por separado a escribir, votar y, si hace falta, revotar.');
     expect(html).toContain('role="radiogroup"');
     expect(html).toContain('role="switch"');
-    expect(html.slice(html.indexOf('Modo de respuestas'))).not.toMatch(LEGACY);
+    expect(html.slice(html.indexOf('Tono de las frases'))).not.toMatch(LEGACY);
   });
 });

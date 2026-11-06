@@ -42,7 +42,7 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 | 👉 Most Likely To | 3+ | Elige qué Pokémon encaja mejor con una situación. |
 | 🕵️ One of Us Is Fake | 3+ | Descubrid quién recibió una categoría secreta diferente. |
 | 🕵️ Pokémon Impostor | 3+ | Da pistas y desenmascara a los impostores. |
-| 🚩 Pokémon Red Flag / Green Flag | 3+ | Escribe la flag más divertida y gana la votación anónima. |
+| 💬 La Frase Pokémon | 3+ | Escribe la frase que mejor representa al Pokémon y gana la votación anónima. |
 | 📋 Secret Ranking | 3+ | Ordena cinco Pokémon pensando como el resto del grupo. |
 | ⚖️ Would You Rather Pokémon | 3+ | Elige entre dos situaciones y predice qué preferirá la mayoría. |
 

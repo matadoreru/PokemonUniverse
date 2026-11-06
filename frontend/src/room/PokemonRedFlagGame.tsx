@@ -1,8 +1,8 @@
 import type { PokemonRedFlagConfig, PokemonRedFlagPlayerState, PokemonRedFlagPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Clock3, Eye, Flag, Heart, PenLine, Trophy, X } from 'lucide-react';
+import { CheckCircle2, Clock3, Eye, PenLine, ThumbsDown, ThumbsUp, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
-import { flagLabel, redFlagAnnouncement, sendRedFlagDraft, redFlagCurrentStep, redFlagHeading, redFlagQuestion, redFlagSteps, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
+import { redFlagAnnouncement, sendRedFlagDraft, redFlagCurrentStep, redFlagHeading, redFlagQuestion, redFlagSteps, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
 import { RedFlagWriter } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon } from '../ui';
@@ -16,10 +16,10 @@ import {
 } from './social-kit';
 import s from '../games/pokemon-red-flag/PokemonRedFlag.module.css';
 
-const GAME_NAME = 'Pokémon Red Flag / Green Flag';
+const GAME_NAME = 'La Frase Pokémon';
 
 /**
- * Pokémon Red Flag / Green Flag con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda (con el modo en
+ * La Frase Pokémon con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda (con el modo en
  * un chip), las fases y la consigna con la carta del Pokémon de la ronda (al revelar, el recuento con los autores). Abajo,
  * la acción: el campo de escritura con su contador, la papeleta anónima (con segunda vuelta solo entre las empatadas) o
  * el veredicto. Al lado, quién ha escrito o votado (en texto, nunca el qué) o, al revelar, los puntos de la ronda.
@@ -39,7 +39,6 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
   // La revelación (autores y votos) solo en su fase: un `lastRound` sobrante nunca llega al DOM.
   const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
   const mode = result?.flagMode ?? game.flagMode;
-  const label = flagLabel(mode);
   const green = mode === 'GREEN';
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
@@ -70,8 +69,8 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
   });
 
   const pokemon = result?.pokemon ?? game.pokemon;
-  const modeChip = <Chip tone={green ? 'ok' : 'bad'} icon={<Icon icon={green ? Heart : Flag} size={18} />}>{green ? 'Green Flag' : 'Red Flag'}</Chip>;
-  const prompt = <SocialPrompt kicker={green ? 'Green Flag de esta ronda' : 'Red Flag de esta ronda'} className={cx(s.prompt, voting && s.promptVoting)}
+  const modeChip = <Chip tone={green ? 'ok' : 'bad'} icon={<Icon icon={green ? ThumbsUp : ThumbsDown} size={18} />}>{green ? 'Lo mejor' : 'Lo peor'}</Chip>;
+  const prompt = <SocialPrompt kicker={green ? 'Lo mejor de esta ronda' : 'Lo peor de esta ronda'} className={cx(s.prompt, voting && s.promptVoting)}
     text={pokemon ? redFlagQuestion(mode, pokemon.name) : 'Preparando el Pokémon de la ronda…'}
     help={writing ? 'Escribe en secreto. Nadie verá quién escribió qué hasta el resultado.' : voting ? 'Las respuestas están barajadas y sin autor.' : undefined}
     {...(pokemon ? { media: <span className={cx(s.pokemon, voting && s.pokemonVoting)}><Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="sm" eager /></span> } : {})} />;
@@ -82,7 +81,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
   }));
   const stage = result
     ? <VoteTally idBase="red-flag-tally" title="Autores revelados" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winningAnswerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.member.avatar}
-      winnerLabel={green ? 'Green flag ganadora' : 'Red flag ganadora'} intro={pokemon ? redFlagQuestion(mode, pokemon.name) : undefined}
+      winnerLabel={'Frase ganadora'} intro={pokemon ? redFlagQuestion(mode, pokemon.name) : undefined}
       emptyText="Nadie escribió una respuesta a tiempo." className={s.tally} />
     : prompt;
 
@@ -111,7 +110,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
       options={ballotOptions} candidateIds={game.voteCandidateIds} runoff={runoff} ownId={participating ? player.ownAnswerId : null} ownVote={ownVote}
       canVote={participating && player.canVote} participating={participating} ownLabel="Tu respuesta"
       onVote={(answerId) => onAction({ type: 'VOTE_RED_FLAG', answerId })}
-      className={s.ballot} title={`Vota la mejor ${label}`} runoffTitle="Vota entre las empatadas"
+      className={s.ballot} title={'Vota la frase que mejor lo representa'} runoffTitle="Vota entre las empatadas"
       help="No puedes votar la tuya. Los autores se revelarán después." runoffHelp="Hubo empate: solo se vota entre las respuestas empatadas." />;
   } else if (writing && participating && ownAnswer) {
     bottom = <SocialPlate titleRef={titleRef} content={{
@@ -121,10 +120,10 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
     }} textClassName={s.lockedText} />;
   } else if (writing && participating) {
     bottom = <SocialPlate titleRef={titleRef} content={{
-      icon: PenLine, tone: 'info', kicker: 'Tu respuesta secreta', title: green ? 'Escribe su mejor green flag' : 'Escribe su mayor red flag',
+      icon: PenLine, tone: 'info', kicker: 'Tu respuesta secreta', title: green ? 'Escribe su mejor frase' : 'Escribe su peor frase',
       text: 'Se enviará automáticamente al terminar el tiempo si contiene texto. Máximo 100 caracteres.',
     }} textClassName={s.writeHelp}>
-      <RedFlagWriter key={game.roundNumber} label={green ? `Tu green flag para ${pokemon?.name ?? 'el Pokémon'}` : `Tu red flag para ${pokemon?.name ?? 'el Pokémon'}`}
+      <RedFlagWriter key={game.roundNumber} label={`Tu frase para ${pokemon?.name ?? 'el Pokémon'}`}
         initialDraft={player.ownDraft} canSubmit={player.canSubmit} roundEndsAt={game.roundEndsAt} serverOffset={offset} fieldRef={fieldRef}
         onDraft={(text) => sendRedFlagDraft(onAction, text)} onSubmit={(text) => onAction({ type: 'SUBMIT_RED_FLAG', text })} />
     </SocialPlate>;

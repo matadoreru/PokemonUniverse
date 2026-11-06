@@ -2,11 +2,11 @@ import type { GamePhase, PokemonFlagMode, PokemonRedFlagRoundResult } from '@pok
 import { tallySummary, votesText, type PhaseStep } from '../../room/social-kit';
 
 /**
- * Textos de la pantalla de Pokémon Red Flag / Green Flag: fases, título de cada una, consigna, región viva y veredicto
+ * Textos de la pantalla de La Frase Pokémon: fases, título de cada una, consigna, región viva y veredicto
  * propio de la revelación. Es un juego anónimo: nada de aquí nombra a un autor antes de `ROUND_RESULTS`.
  */
 
-/** «red flag» o «green flag» (en minúsculas, para las frases). */
+/** «peor frase» o «mejor frase» (en minúsculas, para las frases). */
 /**
  * Envía el borrador (a cada pulsación) sin pasar por el aviso global: teclear para corregir no borra el error de un
  * «Bloquear respuesta» rechazado (ni ningún otro aviso de la sala).
@@ -15,7 +15,7 @@ export function sendRedFlagDraft(onAction: (action: unknown, options?: { report?
   return onAction({ type: 'UPDATE_RED_FLAG_DRAFT', text }, { report: false });
 }
 
-export const flagLabel = (mode: PokemonFlagMode) => (mode === 'GREEN' ? 'green flag' : 'red flag');
+export const flagLabel = (mode: PokemonFlagMode) => (mode === 'GREEN' ? 'mejor frase' : 'peor frase');
 
 /** Fases de la ronda: escribir, votar (o la segunda vuelta) y el resultado. */
 export function redFlagSteps(phase: GamePhase): PhaseStep[] {
@@ -47,8 +47,8 @@ export function redFlagHeading(phase: GamePhase, mode: PokemonFlagMode, result: 
   if (phase === 'VOTING') return 'Votación';
   if (phase === 'REVOTE') return 'Segunda vuelta';
   if (phase === 'ROUND_RESULTS' && result) {
-    if (result.winningAnswerIds.length === 0) return `Sin ${label} ganadora`;
-    return result.winningAnswerIds.length === 1 ? `La ${label} de la ronda` : 'Victoria compartida';
+    if (result.winningAnswerIds.length === 0) return 'Sin frase ganadora';
+    return result.winningAnswerIds.length === 1 ? 'La frase de la ronda' : 'Victoria compartida';
   }
   return 'Preparando el resultado…';
 }
@@ -82,11 +82,10 @@ export function redFlagVerdict(result: PokemonRedFlagRoundResult, selfId: string
   if (!participating) return { tone: 'info', text: 'Estás observando', points: 0 };
   const own = result.answers.find((answer) => answer.authorId === selfId);
   const points = result.pointsAwarded[selfId] ?? 0;
-  const label = flagLabel(result.flagMode);
   if (!own) return { tone: 'bad', text: 'No enviaste respuesta', points };
   const last = result.voteRounds.at(-1);
   if (result.voteRounds.length > 1 && last && !last.candidateIds.includes(own.id)) return { tone: 'info', text: 'Tu respuesta no pasó a la segunda vuelta', points };
-  if (own.won) return { tone: 'ok', text: result.winningAnswerIds.length > 1 ? 'Tu respuesta comparte la victoria' : `¡Tu ${label} ganó!`, points };
+  if (own.won) return { tone: 'ok', text: result.winningAnswerIds.length > 1 ? 'Tu respuesta comparte la victoria' : '¡Tu frase ganó!', points };
   return { tone: 'info', text: `Tu respuesta: ${votesText(own.votesReceived)}`, points };
 }
 

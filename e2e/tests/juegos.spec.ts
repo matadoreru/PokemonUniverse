@@ -3568,7 +3568,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
   try {
     const { host, invitados, jugadores } = sala;
     const [a, b] = invitados as [Jugador, Jugador];
-    await seleccionarJuego(host.page, 'Pokémon Red Flag / Green Flag');
+    await seleccionarJuego(host.page, 'La Frase Pokémon');
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     for (const [nombre, teclas, valor] of [['Número de rondas', ['Home'], '1'], ['Tiempo por fase', ['Home', ...Array<string>(30).fill('ArrowRight')], '45']] as const) {
       const rango = host.page.getByRole('slider', { name: nombre });
@@ -3577,7 +3577,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
       await rango.blur();
       await expect(rango).toHaveValue(valor);
     }
-    await expect(host.page.getByRole('radio', { name: 'Red Flag' })).toHaveAttribute('aria-checked', 'true');
+    await expect(host.page.getByRole('radio', { name: 'Lo peor' })).toHaveAttribute('aria-checked', 'true');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await esperarPartida(jugadores.map((j) => j.page));
@@ -3590,7 +3590,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     ]);
     const nombres = jugadores.map((j) => j.name);
     const titulo = (page: Page) => page.getByRole('heading', { level: 1 });
-    const campo = (page: Page) => page.getByRole('textbox', { name: /^Tu red flag para / });
+    const campo = (page: Page) => page.getByRole('textbox', { name: /^Tu frase para / });
     const enviar = (page: Page) => page.getByTestId('red-flag-send');
     const papeleta = (page: Page) => page.getByTestId('ballot-options');
     const confirmar = (page: Page) => page.getByTestId('ballot-confirm');
@@ -3613,7 +3613,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     };
 
     // Escribir: A envía primero; el host ve que A está listo, pero no qué escribió.
-    await expect(titulo(host.page)).toHaveText('Escribe su red flag', { timeout: 20_000 });
+    await expect(titulo(host.page)).toHaveText('Escribe su peor frase', { timeout: 20_000 });
     await expect(host.page.getByTestId('social-prompt')).toContainText('¿Qué detalle negativo de');
     await expect(host.page.getByText('0 / 100')).toBeVisible();
     await escribir(a);
@@ -3623,7 +3623,7 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await campo(host.page).fill(textos.get(host)!);
     await expect(host.page.getByText(`${textos.get(host)!.length} / 100`)).toBeVisible();
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarTamanos(host.page, 'juego-pokemon-red-flag-escribir', { sigue: titulo(host.page).filter({ hasText: 'Escribe su red flag' }) });
+    await capturarTamanos(host.page, 'juego-pokemon-red-flag-escribir', { sigue: titulo(host.page).filter({ hasText: 'Escribe su peor frase' }) });
     // A 390×844 con el campo enfocado (como con el teclado abierto): el campo y «Bloquear respuesta» siguen a la vista.
     await b.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await campo(b.page).focus();
@@ -3691,15 +3691,15 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await confirmar(a.page).click();
 
     // Revelación: gana la de A con 2 votos tras la segunda vuelta; ahora sí, con los autores.
-    await expect(titulo(host.page)).toHaveText('La red flag de la ronda', { timeout: 15_000 });
+    await expect(titulo(host.page)).toHaveText('La frase de la ronda', { timeout: 15_000 });
     await expect(host.page.getByTestId('tally-summary')).toHaveText(`Gana ${a.name} con 2 votos tras la segunda vuelta.`);
     await expect(host.page.locator('[data-tally-round]').first()).toHaveAttribute('data-tally-round', '2');
     await expect(host.page.locator('[data-tally-round="2"]').getByTestId('tally-row')).toHaveCount(2);
-    await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Red flag ganadora' })).toContainText(textos.get(a)!);
+    await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Frase ganadora' })).toContainText(textos.get(a)!);
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
-    await capturarAnotando(host.page, 'juego-pokemon-red-flag-revelacion', titulo(host.page).filter({ hasText: 'La red flag de la ronda' }));
+    await capturarAnotando(host.page, 'juego-pokemon-red-flag-revelacion', titulo(host.page).filter({ hasText: 'La frase de la ronda' }));
 
-    await expect(host.page.getByRole('heading', { name: 'Las señales más votadas' })).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByRole('heading', { name: 'Las frases más votadas' })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByText(/^1 victoria · 1 en solitario · 0 compartidas · 2 votos recibidos · 1\/1 respuestas$/)).toHaveCount(1);
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-pokemon-red-flag-clasificacion');

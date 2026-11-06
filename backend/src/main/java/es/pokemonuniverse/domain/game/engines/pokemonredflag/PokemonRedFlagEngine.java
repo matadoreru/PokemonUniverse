@@ -254,7 +254,7 @@ public final class PokemonRedFlagEngine
   @Override
   public PokemonRedFlagState createInitialState(PokemonRedFlagConfig config, GameContext context) {
     if (context.players().size() < manifest.minPlayers()) {
-      throw new EngineException("Pokémon Red Flag necesita al menos 3 jugadores.");
+      throw new EngineException("La Frase Pokémon necesita al menos 3 jugadores.");
     }
     var pool = context.pokemon().forGenerations(config.generations(), config.includeForms()).stream()
         .filter(pokemon -> truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))

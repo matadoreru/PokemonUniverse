@@ -31,7 +31,7 @@ public record PokemonRedFlagConfig(List<Integer> generations, int rounds, int ph
    * enteros admiten {@code 3.0} (JS tiene un único tipo numérico) y rechazan {@code 3.5}.
    */
   public static PokemonRedFlagConfig parse(JsonNode raw) {
-    var config = ConfigReader.of(raw, "Pokémon Red Flag");
+    var config = ConfigReader.of(raw, "La Frase Pokémon");
     config.strict(KEYS);
     var generations = config.generations("generations");
     int rounds = config.integer("rounds", 1, 10);

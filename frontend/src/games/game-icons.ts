@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  ArrowUpDown, Ban, BookOpen, BookText, Brain, Brush, ChartColumn, CircleHelp, Coins, Flag, Gamepad2, Gavel, Grid3x3,
-  Link, ListOrdered, Palette, Pointer, Puzzle, Rows3, Scale, Spade, Sparkles, Swords, Target, UserRoundSearch, UserX,
+  ArrowUpDown, Ban, BookOpen, BookText, Brain, Brush, ChartColumn, CircleHelp, Coins, Gamepad2, Gavel, Grid3x3,
+  Link, ListOrdered, MessageSquareQuote, Palette, Pointer, Puzzle, Rows3, Scale, Spade, Sparkles, Swords, Target, UserRoundSearch, UserX,
   VenetianMask, Volume2, ZoomIn,
 } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export const GAME_ICONS: Readonly<Record<string, LucideIcon>> = {
   'type-duel': Swords,
   'zoomed-pokemon': ZoomIn,
   'pokemon-team-auction': Coins,
-  'pokemon-red-flag': Flag,
+  'pokemon-red-flag': MessageSquareQuote,
   'tcg-higher-lower': Spade,
   'pokemon-cry-quiz': Volume2,
   'pokemon-trivia': Brain,

@@ -297,7 +297,7 @@ public final class PokemonRedFlagTypes {
     }
 
     private static ConfigValidationException invalid() {
-      return new ConfigValidationException("Acción de Pokémon Red Flag no válida.");
+      return new ConfigValidationException("Acción de La Frase Pokémon no válida.");
     }
   }
 

@@ -26,7 +26,7 @@ export function redFlagStatsLine(stats: Stats): string {
 }
 
 /**
- * Resultados de Red Flag / Green Flag: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
+ * Resultados de La Frase Pokémon: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
  * insignia y «+N» y, en texto, victorias en solitario y compartidas, votos recibidos y respuestas enviadas), la regla de
  * los 3 puntos y, al lado, los récords (más victorias, más votos recibidos y victorias en solitario; empates juntos).
  * Abajo, la acción del host. Un empate a cero no corona.
@@ -58,7 +58,7 @@ export function PokemonRedFlagResults({ room, selfId, onLobby, onEnd }: { room: 
     { key: 'votes', title: 'Más votos recibidos', icon: Vote, names: votes?.names ?? null, value: String(votes?.value ?? ''), unit: votes?.value === 1 ? 'voto decisivo' : 'votos decisivos' },
     { key: 'solo', title: 'Victorias en solitario', icon: MessageSquareHeart, names: solo?.names ?? null, value: String(solo?.value ?? ''), unit: solo?.value === 1 ? 'ronda sin empate' : 'rondas sin empate' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las señales más votadas" subtitle={`Pokémon Red Flag / Green Flag · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las frases más votadas" subtitle={`La Frase Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Cada victoria vale 3 puntos, también cuando el empate persiste tras la segunda vuelta.</p>
   </ResultsShell>;

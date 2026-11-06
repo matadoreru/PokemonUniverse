@@ -74,7 +74,7 @@ class PokemonRedFlagEngineTest {
   @Test
   void needsThreePlayersAndAPool() {
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(engine.defaultConfig(), context(2)));
-    assertEquals("Pokémon Red Flag necesita al menos 3 jugadores.", error.getMessage());
+    assertEquals("La Frase Pokémon necesita al menos 3 jugadores.", error.getMessage());
     var emptyPool = new PokemonRedFlagConfig(List.of(9), 3, 30, false, PokemonRedFlagMode.RED);
     error = assertThrows(EngineException.class, () -> engine.createInitialState(emptyPool, context(3)));
     assertEquals("No hay Pokémon disponibles con esta configuración.", error.getMessage());

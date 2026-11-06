@@ -1920,10 +1920,10 @@
   },
   {
     "id": "pokemon-red-flag",
-    "name": "Pokémon Red Flag / Green Flag",
+    "name": "La Frase Pokémon",
     "recommended": true,
-    "icon": "🚩",
-    "description": "Escribe la red o green flag más divertida de un Pokémon y gana la votación anónima.",
+    "icon": "💬",
+    "description": "Escribe la frase que mejor representa al Pokémon de la ronda y gana la votación anónima.",
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
