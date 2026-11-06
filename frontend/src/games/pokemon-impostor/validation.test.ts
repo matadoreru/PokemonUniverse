@@ -1,6 +1,6 @@
 import type { RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { validatePokemonImpostorConfig } from './validation';
+import { validateImpostorClue, validatePokemonImpostorConfig } from './validation';
 
 function member(id: string, presence: RoomMemberView['presence'] = 'CONNECTED'): RoomMemberView {
   return {
@@ -36,5 +36,21 @@ describe('validatePokemonImpostorConfig', () => {
 
   it('skips the check without a room', () => {
     expect(validatePokemonImpostorConfig({ impostorCount: 2 })).toBeNull();
+  });
+});
+
+describe('validateImpostorClue', () => {
+  it('en Una palabra rechaza una pista con espacios tras recortar', () => {
+    expect(validateImpostorClue('dos palabras', 'ONE_WORD')).toBe('La pista debe ser una sola palabra.');
+    expect(validateImpostorClue('uno\tdos', 'ONE_WORD')).toBe('La pista debe ser una sola palabra.');
+  });
+
+  it('en Una palabra acepta una palabra, también con espacios alrededor', () => {
+    expect(validateImpostorClue('  Bola \u00a0', 'ONE_WORD')).toBeNull();
+  });
+
+  it('en Clásico no mira los espacios', () => {
+    expect(validateImpostorClue('dos palabras', 'CLASSIC')).toBeNull();
+    expect(validateImpostorClue('dos palabras', undefined)).toBeNull();
   });
 });

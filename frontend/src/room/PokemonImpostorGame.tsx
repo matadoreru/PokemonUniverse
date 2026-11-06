@@ -6,6 +6,7 @@ import { CUT_IN_DELAYED_LINE_MS, RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from '../games/pokemon-impostor/ImpostorParts';
 import { impostorAnnouncement, impostorFocusKey, impostorPhaseTitle, impostorTimerLabel } from '../games/pokemon-impostor/presentation';
+import { validateImpostorClue } from '../games/pokemon-impostor/validation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useServerOffset } from '../hooks/useServerTime';
@@ -43,6 +44,8 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   const [showGuess, setShowGuess] = useState(false);
   const serverOffset = useServerOffset(room.serverNow);
   const clueLength = impostorClueLength(clueText);
+  // El campo es el único dueño del error de la pista (también la rechaza el servidor).
+  const clueError = validateImpostorClue(clueText, game.mode);
   const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config.generations, enabled: player.canGuessPokemon });
 
   const elimination = game.phase === 'ELIMINATION' ? game.eliminationReveal : null;
@@ -61,7 +64,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   useFocusOnTransition(impostorFocusKey(game, player), player.canSubmitClue ? inputRef : titleRef);
 
   async function submitClue() {
-    if (!player.canSubmitClue || !clueText.trim() || clueLength > IMPOSTOR_CLUE_MAX_CODE_POINTS || submitting) return;
+    if (!player.canSubmitClue || !clueText.trim() || clueError || clueLength > IMPOSTOR_CLUE_MAX_CODE_POINTS || submitting) return;
     setSubmitting(true);
     try { await onAction({ type: 'SUBMIT_CLUE', text: clueText }).catch(ignoreFailure); }
     finally { setSubmitting(false); }
@@ -115,10 +118,11 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   const bottom = game.phase === 'CLUE_PHASE' && player.canSubmitClue
     ? <Panel variant="cream" as="section" aria-label="Tu pista" bodyClassName={cx(s.clueForm)}>
       <Field ref={inputRef} className={cx(s.clueField)} label="Tu pista" value={clueText} placeholder="Escribe algo relacionado…" autoComplete="off" maxLength={200}
-        hint={`${clueLength}/${IMPOSTOR_CLUE_MAX_CODE_POINTS} caracteres`}
+        error={clueError}
+        hint={`${game.mode === 'ONE_WORD' ? 'Una sola palabra · ' : ''}${clueLength}/${IMPOSTOR_CLUE_MAX_CODE_POINTS} caracteres`}
         onChange={(event) => setClueText(clampImpostorClue(event.target.value))}
         onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void submitClue(); } }} />
-      <Pill variant="yellow" size="main" icon={Send} disabled={!clueText.trim()} loading={submitting} onClick={() => void submitClue()}>Enviar pista</Pill>
+      <Pill variant="yellow" size="main" icon={Send} disabled={!clueText.trim() || clueError !== null} loading={submitting} onClick={() => void submitClue()}>Enviar pista</Pill>
     </Panel>
     : game.phase === 'CLUE_PHASE' && showGuess && player.canGuessPokemon
       ? <div className={s.selector}><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={submitting} inputLabel="Adivinar el Pokémon" onSelect={guessPokemon} /></div>

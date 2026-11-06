@@ -56,6 +56,8 @@ public final class PokemonImpostorEngine implements
   public static final long ELIMINATION_MS = 4_000;
   /** {@code [...text].length > IMPOSTOR_CLUE_MAX_CODE_POINTS}: puntos de código, no unidades UTF-16. */
   static final int MAX_CLUE_CODE_POINTS = PokemonImpostorRules.IMPOSTOR_CLUE_MAX_CODE_POINTS;
+  /** Vueltas de pistas antes de cada votación en {@code ONE_WORD}. */
+  static final int ONE_WORD_CLUE_LAPS = 2;
 
   private final GameManifest manifest;
 
@@ -123,8 +125,22 @@ public final class PokemonImpostorEngine implements
     return true;
   }
 
-  /** Baraja a los vivos conectados (una extracción por jugador); si repite el orden anterior, lo rota uno. */
+  /** {@code ONE_WORD}: pistas de una sola palabra y {@link #ONE_WORD_CLUE_LAPS} vueltas de pistas antes de votar. */
+  private static boolean oneWord(PokemonImpostorState state) {
+    return state.config().mode() == PokemonImpostorMode.ONE_WORD;
+  }
+
+  /** Primera vuelta de pistas de una ronda (en Clásico, la única). */
   private static PokemonImpostorState beginCluePhase(PokemonImpostorState state, GameContext context) {
+    return beginClueLap(state, context, oneWord(state) ? 1 : 0);
+  }
+
+  /**
+   * Baraja a los vivos conectados (una extracción por jugador); si repite el orden anterior, lo rota uno. Cada vuelta
+   * es una ronda de pistas propia ({@code roundNumber} + 1): así las pistas de las dos vueltas quedan en {@code clues}.
+   * {@code lap} es 0 en Clásico.
+   */
+  private static PokemonImpostorState beginClueLap(PokemonImpostorState state, GameContext context, int lap) {
     int roundNumber = state.roundNumber() + 1;
     var connectedAliveIds = context.connectedRequiredPlayerIds(state.aliveIds());
     var clueOrder = takeRandom(connectedAliveIds, connectedAliveIds.size(), context.random());
@@ -135,6 +151,7 @@ public final class PokemonImpostorEngine implements
     }
     return state.toBuilder()
         .phase(GamePhase.CLUE_PHASE)
+        .clueLap(lap)
         .roundNumber(roundNumber)
         .clues(withRoundClues(state, roundNumber, Map.of()))
         .clueOrder(clueOrder)
@@ -173,7 +190,10 @@ public final class PokemonImpostorEngine implements
         .clues(withRoundClues(state, state.roundNumber(), roundClues))
         .currentClueTurnIndex(nextIndex)
         .build();
-    if (nextIndex >= state.clueOrder().size()) return beginVoting(next, context, next.aliveIds());
+    if (nextIndex >= state.clueOrder().size()) {
+      if (oneWord(next) && next.clueLap() < ONE_WORD_CLUE_LAPS) return beginClueLap(next, context, next.clueLap() + 1);
+      return beginVoting(next, context, next.aliveIds());
+    }
     return next.toBuilder()
         .roundStartedAt(context.now())
         .roundEndsAt(context.now() + state.config().clueSeconds() * 1_000L)
@@ -395,6 +415,9 @@ public final class PokemonImpostorEngine implements
     if (roundClues.containsKey(playerId)) return GameActionResult.reject(state, "Tu pista ya está bloqueada.");
     var text = normalizedClue(rawText);
     if (text.isEmpty()) return GameActionResult.reject(state, "Escribe una pista.");
+    if (oneWord(state) && text.chars().anyMatch(code -> JsStrings.isJsWhitespace((char) code))) {
+      return GameActionResult.reject(state, "La pista debe ser una sola palabra.");
+    }
     if (text.codePointCount(0, text.length()) > MAX_CLUE_CODE_POINTS) {
       return GameActionResult.reject(state, "La pista no puede superar 25 caracteres.");
     }
@@ -496,6 +519,8 @@ public final class PokemonImpostorEngine implements
     return PokemonImpostorPublicState.builder()
         .gameId(ID)
         .phase(state.phase())
+        .mode(state.config().mode())
+        .clueLap(oneWord(state) && state.clueLap() > 0 ? state.clueLap() : null)
         .playerIds(state.playerIds())
         .aliveIds(state.aliveIds())
         .eliminatedIds(state.eliminatedIds())

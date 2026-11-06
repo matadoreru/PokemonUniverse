@@ -185,4 +185,76 @@ class PokemonImpostorEngineTest {
     assertNull(outsider.role());
     assertNull(outsider.secretPokemon());
   }
+
+  // --- Modo Una palabra ---
+
+  private PokemonImpostorState oneWordCluePhase(GameContext context) {
+    var oneWord = PokemonImpostorConfig.builder().generations(List.of(1)).impostorCount(1).clueSeconds(15)
+        .voteSeconds(20).mode(PokemonImpostorMode.ONE_WORD).build();
+    var startContext = context.withNow(1_000);
+    var state = engine.start(engine.createInitialState(oneWord, startContext), startContext);
+    return engine.handleTimeout(state, context.withNow(6_000));
+  }
+
+  @Test
+  void multiWordClueRejected() {
+    var context = context(3).withNow(7_000);
+    var state = oneWordCluePhase(context);
+    var current = state.currentCluePlayerId();
+    var result = engine.handleAction(state, current, new PokemonImpostorAction.SubmitClue("dos palabras"), context);
+    assertFalse(result.accepted());
+    assertEquals("La pista debe ser una sola palabra.", result.error());
+    assertSame(state, result.state());
+    var tab = engine.handleAction(state, current, new PokemonImpostorAction.SubmitClue("uno\tdos"), context);
+    assertEquals("La pista debe ser una sola palabra.", tab.error());
+  }
+
+  @Test
+  void trimmedSingleWordAccepted() {
+    var context = context(3).withNow(7_000);
+    var state = oneWordCluePhase(context);
+    var current = state.currentCluePlayerId();
+    var result = engine.handleAction(state, current, new PokemonImpostorAction.SubmitClue("  Bola \u00a0"), context);
+    assertTrue(result.accepted());
+    assertEquals("Bola", result.state().roundClues().get(current).text());
+  }
+
+  @Test
+  void twoClueRoundsBeforeVote() {
+    var context = context(3).withNow(7_000);
+    var state = oneWordCluePhase(context);
+    assertEquals(PokemonImpostorMode.ONE_WORD, engine.getPublicState(state, context).mode());
+    for (int lap = 1; lap <= 2; lap++) {
+      assertEquals(GamePhase.CLUE_PHASE, state.phase());
+      assertEquals(lap, engine.getPublicState(state, context).clueLap());
+      assertEquals(lap, state.roundNumber());
+      for (int turn = 0; turn < 3; turn++) {
+        assertEquals(GamePhase.CLUE_PHASE, state.phase());
+        state = engine.handleAction(state, state.currentCluePlayerId(),
+            new PokemonImpostorAction.SubmitClue("L" + lap + "T" + turn), context).state();
+      }
+    }
+    assertEquals(GamePhase.VOTING, state.phase());
+    assertEquals(2, state.clues().size());
+    assertEquals(1, state.votingRound());
+  }
+
+  @Test
+  void classicUnchanged() {
+    var context = context(3).withNow(7_000);
+    var state = cluePhase(context);
+    var view = engine.getPublicState(state, context);
+    assertEquals(PokemonImpostorMode.CLASSIC, view.mode());
+    assertNull(view.clueLap());
+    var multi = engine.handleAction(state, state.currentCluePlayerId(),
+        new PokemonImpostorAction.SubmitClue("dos palabras"), context);
+    assertTrue(multi.accepted());
+    state = multi.state();
+    for (int turn = 1; turn < 3; turn++) {
+      state = engine.handleAction(state, state.currentCluePlayerId(), new PokemonImpostorAction.SubmitClue("x"),
+          context).state();
+    }
+    assertEquals(GamePhase.VOTING, state.phase());
+    assertEquals(1, state.clues().size());
+  }
 }

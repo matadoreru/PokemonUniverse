@@ -131,7 +131,8 @@ public final class PokemonImpostorTypes {
       @Nullable ImpostorEliminationReveal eliminationReveal,
       @Nullable ImpostorWinner winnerTeam,
       @Nullable ImpostorFinishReason finishReason,
-      Map<String, ImpostorPlayerStats> playerStats) implements TimedGameState {
+      Map<String, ImpostorPlayerStats> playerStats,
+      int clueLap) implements TimedGameState {
 
     public PokemonImpostorState {
       playerIds = frozenList(playerIds);
@@ -175,7 +176,7 @@ public final class PokemonImpostorTypes {
           .roundsWithoutElimination(roundsWithoutElimination).roundStartedAt(roundStartedAt)
           .roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).lastVoteResult(lastVoteResult)
           .eliminationReveal(eliminationReveal).winnerTeam(winnerTeam).finishReason(finishReason)
-          .playerStats(playerStats);
+          .playerStats(playerStats).clueLap(clueLap);
     }
 
     /** Listas y mapas vacíos por defecto; el resto de campos obligatorios los valida {@link #build()}. */
@@ -205,6 +206,7 @@ public final class PokemonImpostorTypes {
       private ImpostorWinner winnerTeam;
       private ImpostorFinishReason finishReason;
       private Map<String, ImpostorPlayerStats> playerStats = Map.of();
+      private int clueLap;
 
       private Builder() {}
 
@@ -261,13 +263,16 @@ public final class PokemonImpostorTypes {
 
       public Builder playerStats(Map<String, ImpostorPlayerStats> value) { playerStats = value; return this; }
 
+      /** Vuelta de pistas en curso (1 o 2) en {@code ONE_WORD}; 0 en Clásico, donde cada ronda tiene una sola. */
+      public Builder clueLap(int value) { clueLap = value; return this; }
+
       public PokemonImpostorState build() {
         return new PokemonImpostorState(Objects.requireNonNull(phase, "phase"),
             Objects.requireNonNull(config, "config"), playerIds, roles,
             Objects.requireNonNull(secretPokemonId, "secretPokemonId"), aliveIds, eliminatedIds, spectatorIds,
             roundNumber, new TreeMap<>(clues), clueOrder, currentClueTurnIndex, guessAttempts, votes,
             voteCandidateIds, votingRound, roundsWithoutElimination, roundStartedAt, roundEndsAt, nextTransitionAt,
-            lastVoteResult, eliminationReveal, winnerTeam, finishReason, playerStats);
+            lastVoteResult, eliminationReveal, winnerTeam, finishReason, playerStats, clueLap);
       }
     }
   }
@@ -334,6 +339,7 @@ public final class PokemonImpostorTypes {
   public record PokemonImpostorPublicState(
       String gameId,
       GamePhase phase,
+      PokemonImpostorMode mode,
       List<String> playerIds,
       List<String> aliveIds,
       List<String> eliminatedIds,
@@ -354,7 +360,8 @@ public final class PokemonImpostorTypes {
       @Nullable ImpostorEliminationReveal eliminationReveal,
       @Nullable ImpostorWinner winnerTeam,
       @Nullable ImpostorFinishReason finishReason,
-      @Nullable GameResults results) {
+      @Nullable GameResults results,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer clueLap) {
 
     public static Builder builder() {
       return new Builder();
@@ -363,6 +370,7 @@ public final class PokemonImpostorTypes {
     public static final class Builder {
       private String gameId;
       private GamePhase phase;
+      private PokemonImpostorMode mode = PokemonImpostorMode.CLASSIC;
       private List<String> playerIds = List.of();
       private List<String> aliveIds = List.of();
       private List<String> eliminatedIds = List.of();
@@ -384,6 +392,7 @@ public final class PokemonImpostorTypes {
       private ImpostorWinner winnerTeam;
       private ImpostorFinishReason finishReason;
       private GameResults results;
+      private Integer clueLap;
 
       private Builder() {}
 
@@ -436,12 +445,17 @@ public final class PokemonImpostorTypes {
 
       public Builder results(@Nullable GameResults value) { results = value; return this; }
 
+      public Builder mode(PokemonImpostorMode value) { mode = value; return this; }
+
+      /** Solo en {@code ONE_WORD}: la vuelta de pistas (1 o 2); ausente en Clásico. */
+      public Builder clueLap(@Nullable Integer value) { clueLap = value; return this; }
+
       public PokemonImpostorPublicState build() {
         return new PokemonImpostorPublicState(Objects.requireNonNull(gameId, "gameId"),
-            Objects.requireNonNull(phase, "phase"), playerIds, aliveIds, eliminatedIds, spectatorIds, roundNumber,
-            clues, clueOrder, currentClueTurnIndex, currentCluePlayerId, cluePendingIds, voteCompletedIds,
-            voteCandidateIds, votingRound, roundStartedAt, roundEndsAt, nextTransitionAt, lastVoteResult,
-            eliminationReveal, winnerTeam, finishReason, results);
+            Objects.requireNonNull(phase, "phase"), mode, playerIds, aliveIds, eliminatedIds, spectatorIds,
+            roundNumber, clues, clueOrder, currentClueTurnIndex, currentCluePlayerId, cluePendingIds,
+            voteCompletedIds, voteCandidateIds, votingRound, roundStartedAt, roundEndsAt, nextTransitionAt,
+            lastVoteResult, eliminationReveal, winnerTeam, finishReason, results, clueLap);
       }
     }
   }

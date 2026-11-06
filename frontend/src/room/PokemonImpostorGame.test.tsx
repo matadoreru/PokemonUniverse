@@ -33,6 +33,7 @@ function publicGame(overrides: Partial<PokemonImpostorPublicState> = {}): Pokemo
   return {
     gameId: 'pokemon-impostor',
     phase: 'CLUE_PHASE',
+    mode: 'CLASSIC',
     playerIds: ids,
     aliveIds: ids,
     eliminatedIds: [],
@@ -181,6 +182,13 @@ describe('Pokémon Impostor: pantalla', () => {
     expect(html).toContain('Enviar pista');
     expect(html).toContain('Tu turno');
     expect(html).not.toContain('Ronda 1</h');
+  });
+
+  it('Una palabra: indica «Una sola palabra» bajo el campo y Clásico no', () => {
+    const oneWord = render(publicGame({ mode: 'ONE_WORD', clueLap: 1 }), innocent({ canSubmitClue: true }));
+    expect(oneWord).toContain('Una sola palabra');
+    expect(oneWord).toContain('0/25 caracteres');
+    expect(render(publicGame(), innocent({ canSubmitClue: true }))).not.toContain('Una sola palabra');
   });
 
   it('el impostor puede abrir su único intento de adivinar', () => {

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { PokemonImpostorConfig } from './config.js';
+import type { PokemonImpostorConfig, PokemonImpostorMode } from './config.js';
 
 export type ImpostorRole = 'INNOCENT' | 'IMPOSTOR';
 export type ImpostorWinner = 'INNOCENTS' | 'IMPOSTORS';
@@ -84,6 +84,7 @@ export type PokemonImpostorAction = z.infer<typeof pokemonImpostorActionSchema>;
 export interface PokemonImpostorPublicState {
   gameId: 'pokemon-impostor';
   phase: GamePhase;
+  mode: PokemonImpostorMode;
   playerIds: string[];
   aliveIds: string[];
   eliminatedIds: string[];
@@ -105,6 +106,8 @@ export interface PokemonImpostorPublicState {
   winnerTeam: ImpostorWinner | null;
   finishReason: ImpostorFinishReason | null;
   results: GameResults | null;
+  /** Solo en `ONE_WORD`: la vuelta de pistas en curso (1 o 2); ausente en Clásico. */
+  clueLap?: number;
 }
 
 export interface PokemonImpostorPlayerState {

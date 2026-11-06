@@ -63,9 +63,9 @@ describe('room plate', () => {
     const base = { phase: 'GAME_STARTING', selectedGameId: 'pokedex-distance', availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }, { id: 'pokemon-impostor', name: 'Pokémon Impostor' }] };
     const fromState = { ...base, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, selectedGameConfig: { mode: 'CLASSIC' } } as unknown as RoomView;
     expect(roomPlateHeading(fromState).title).toBe('Pokédex Distance · Por puntos');
-    // Pokémon Impostor todavía no publica `mode` en su estado: el título lo toma de la configuración elegida.
-    const fromConfig = { ...base, selectedGameId: 'pokemon-impostor', game: { gameId: 'pokemon-impostor' }, selectedGameConfig: { mode: 'ONE_WORD' } } as unknown as RoomView;
-    expect(roomPlateHeading(fromConfig).title).toBe('Pokémon Impostor · Una palabra');
+    // Un estado sin `mode` (de antes del modo): el título lo toma de la configuración elegida. Prueba pura de `roomPlateHeading`.
+    const fromConfig = { ...base, selectedGameId: 'type-duel', game: { gameId: 'type-duel' }, availableGames: [{ id: 'type-duel', name: 'Type Duel' }], selectedGameConfig: { mode: 'COOP' } } as unknown as RoomView;
+    expect(roomPlateHeading(fromConfig).title).toBe('Type Duel · Cooperativo');
     const classic = { ...base, game: { gameId: 'pokedex-distance', mode: 'CLASSIC' }, selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;
     expect(roomPlateHeading(classic).title).toBe('Pokédex Distance');
     const noModes = { ...base, selectedGameId: 'type-chain', game: { gameId: 'type-chain' }, availableGames: [{ id: 'type-chain', name: 'Type Chain' }], selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;

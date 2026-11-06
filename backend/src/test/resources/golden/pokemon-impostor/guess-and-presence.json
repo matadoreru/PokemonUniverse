@@ -437,6 +437,7 @@
       "publicState": {
         "gameId": "pokemon-impostor",
         "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2",
@@ -559,6 +560,7 @@
       "publicState": {
         "gameId": "pokemon-impostor",
         "phase": "ROLE_REVEAL",
+        "mode": "CLASSIC",
         "playerIds": [
           "p1",
           "p2",
@@ -683,6 +685,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "ROLE_REVEAL",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -820,6 +823,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "ROLE_REVEAL",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -957,6 +961,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1104,6 +1109,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1251,6 +1257,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1396,6 +1403,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1549,6 +1557,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1702,6 +1711,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -1856,6 +1866,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2018,6 +2029,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTING",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2195,6 +2207,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTING",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2373,6 +2386,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTING",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2556,6 +2570,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTING",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2743,6 +2758,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTING",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -2934,6 +2950,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTING",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3128,6 +3145,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "VOTE_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3349,6 +3367,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "ELIMINATION",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3585,6 +3604,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "ELIMINATION",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -3821,6 +3841,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -4002,6 +4023,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "CLUE_PHASE",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -4184,6 +4206,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
@@ -4489,6 +4512,7 @@
           "publicState": {
             "gameId": "pokemon-impostor",
             "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
             "playerIds": [
               "p1",
               "p2",
