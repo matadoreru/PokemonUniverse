@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page, type Response, type Route } from '@playwright/test';
-import { anadirJuegos, animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, layoutProblems, psql, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { anadirJuegos, animacionDe, conMovimiento, crearSalaConJugadores, capture, iniciarPartida, layoutProblems, psql, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 
 interface Manifest {
   id: string;
@@ -2122,8 +2122,16 @@ test('pokemon-cry-quiz: con los intentos públicos apagados, cada uno solo ve su
     await expect(ajuste).toHaveAccessibleDescription('Si lo apagas, nadie ve los fallos de los demás.');
     await ajuste.click();
     await expect(ajuste).toHaveAttribute('aria-checked', 'false');
-    await ajuste.scrollIntoViewIfNeeded();
-    await capturarAnotando(host.page, 'lobby-pokemon-cry-quiz-intentos-publicos', ajuste);
+    // El ajuste a la vista en cada tamaño (en el móvil, por encima de la barra «Iniciar partida») y la comprobación
+    // de encaje con sus valores por defecto.
+    for (const { w, h } of SIZES) {
+      await host.page.setViewportSize({ width: w, height: h });
+      await ajuste.evaluate((el) => el.scrollIntoView({ block: 'center' }));
+      await expect(ajuste).toBeInViewport({ ratio: 1 });
+      expect(await sinTapar(ajuste), `${w}x${h}: el interruptor no queda tapado`).toBe(true);
+      await capture(host.page, 'lobby-pokemon-cry-quiz-intentos-publicos');
+    }
+    await host.page.setViewportSize({ width: 1280, height: 720 });
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
