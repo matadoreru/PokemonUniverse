@@ -20,6 +20,7 @@ const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ d
 const ChangelogPage = lazy(() => import('./screens/ChangelogPage').then((module) => ({ default: module.ChangelogPage })));
 const ForgotPasswordPage = lazy(() => import('./screens/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
 const ResetPasswordPage = lazy(() => import('./screens/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
+const DailyPage = lazy(() => import('./daily/DailyPage').then((module) => ({ default: module.DailyPage })));
 const FeedbackPage = lazy(() => import('./screens/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 
 // Galería del catálogo (solo desarrollo): el `import()` va dentro de la rama DEV para que no entre en el bundle.
@@ -35,6 +36,7 @@ const router = createBrowserRouter([{ element: <SessionRoot />, children: [
   { path: '/profile', element: protectedPage(<ProfilePage />) },
   { path: '/u/:username', element: protectedPage(<PublicProfilePage />) },
   { path: '/feedback', element: protectedPage(<FeedbackPage />) },
+  { path: '/daily', element: protectedPage(<DailyPage />) },
   { path: '/admin', element: <RequireAdmin><AdminPage /></RequireAdmin> },
   { element: protectedPage(<RoomSessionLayout />), children: [
     { path: '/play', element: <PlayPage /> }, { path: '/room', element: <RoomPage /> },

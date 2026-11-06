@@ -7,6 +7,7 @@ import { useAuth } from '../auth/AuthContext';
 import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { useFeedbackTarget } from '../components/feedback-target';
+import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
 import { cx, Dialog, Icon } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import n from './ConnectionNotice.module.css';
@@ -71,18 +72,20 @@ function RoomSessionContent() {
   useSfxCue('game.win', gameWinCue(room, user?.id));
   // Si falla, el error ya sale en el aviso de la sala y se sigue en ella.
   const leave = () => void leaveRoom().then(() => navigate('/play')).catch(() => undefined);
-  // En el lobby se sale sin preguntar; en partida (o votación, resultados…) se confirma antes.
+  // En el lobby se sale sin preguntar; en partida (o votación, resultados…) se confirma antes. En el reto, ya con su
+  // resultado (`GAME_RESULTS`) tampoco: salir entonces no cuesta nada.
   const [confirmLeave, setConfirmLeave] = useState(false);
-  const askLeave = () => { if (room?.phase === 'LOBBY') leave(); else setConfirmLeave(true); };
+  const daily = Boolean(room?.daily);
+  const askLeave = () => { if (room?.phase === 'LOBBY' || (daily && room?.phase === 'GAME_RESULTS')) leave(); else setConfirmLeave(true); };
   return <>
     {/* La placa de la sala (código y «Salir») va a la cabecera solo en `/room`: en `/play` la pantalla ya ofrece volver o salir. */}
     {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={askLeave} />}
-    <Dialog open={confirmLeave} title="¿Salir de la partida?" onClose={() => setConfirmLeave(false)} width={420}
+    <Dialog open={confirmLeave} title={daily ? '¿Abandonar el reto?' : '¿Salir de la partida?'} onClose={() => setConfirmLeave(false)} width={420}
       actions={[
         { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
-        { label: 'Salir', variant: 'danger', onClick: leave },
+        { label: daily ? 'Abandonar el reto' : 'Salir', variant: 'danger', onClick: leave },
       ]}>
-      <p>Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.</p>
+      <p>{daily ? ABANDON_DAILY_TEXT : 'Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.'}</p>
     </Dialog>
     {/* En la intro y en los juegos rediseñados el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
     {room?.gameSkipState && skipRowInLayout(room) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">

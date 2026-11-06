@@ -73,6 +73,23 @@ describe('room plate', () => {
   });
 });
 
+describe('daily room plate', () => {
+  const daily = { gameId: 'pokedex-distance', date: '2026-11-07', roundCount: 5, result: null };
+  const room = (phase: RoomView['phase']) => ({ code: 'DAILY1', phase, selectedGameId: 'pokedex-distance', selectedGameConfig: { mode: 'POINTS' }, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }], daily } as unknown as RoomView);
+
+  it.each(['ROUND_ACTIVE', 'GAME_RESULTS'] as const)('lleva «Reto diario», el juego y su modo en %s', (phase) => {
+    expect(roomPlateHeading(room(phase))).toEqual({ kicker: 'Reto diario', title: 'Pokédex Distance · Por puntos' });
+  });
+
+  it('no enseña el código ni su botón de copiar, pero sí «Salir»', () => {
+    const markup = renderToStaticMarkup(createElement(RoomPlate, { room: room('ROUND_ACTIVE'), onLeave: vi.fn() }));
+    expect(markup).not.toContain('DAILY1');
+    expect(markup).not.toContain('Copiar código');
+    expect(markup).not.toContain('aria-live');
+    expect(markup.match(/aria-label="Salir de la sala"/g)).toHaveLength(2);
+  });
+});
+
 describe('room connection notice', () => {
   it('renders nothing on the first paint while still connecting (the notice waits for its delay)', () => {
     context.connected = false;

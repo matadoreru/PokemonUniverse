@@ -30,8 +30,8 @@ export function formatDailyDate(date: string): string {
   return `${day}/${month}/${year}`;
 }
 
-// Intl no agrupa los miles de 4 cifras en es-ES, así que se agrupa a mano.
-function formatPoints(value: number): string {
+/** Puntos con los miles agrupados por `.` (Intl no agrupa los de 4 cifras en es-ES, así que se agrupa a mano). */
+export function formatDailyPoints(value: number): string {
   return String(Math.trunc(value)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
@@ -51,7 +51,7 @@ function symbols(rounds: readonly number[], hit: string, miss: string, none: str
 
 export function dailyShareText(input: DailyShareInput): string {
   const { gameId, score, correct, roundCount, rounds } = input;
-  const pts = `${formatPoints(score)} pts`;
+  const pts = `${formatDailyPoints(score)} pts`;
   let summary: string;
   let detail: string;
   switch (gameId) {

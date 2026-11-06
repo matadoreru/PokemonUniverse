@@ -7,26 +7,33 @@ import { HudPlate, Pill } from '../ui';
 import s from './RoomPlate.module.css';
 
 /**
- * Antetítulo y título de la placa según la fase de la sala. En partida, el título añade « · <modo>» si el juego corre en
- * un modo que no es Clásico: lo lee del estado público (`mode`) y, si este aún no lo trae, de la configuración elegida.
+ * Nombre del juego en curso; añade « · <modo>» si corre en un modo que no es Clásico: lo lee del estado público (`mode`)
+ * y, si este aún no lo trae, de la configuración elegida.
  */
-export function roomPlateHeading(room: RoomView): { kicker: string; title: string } {
-  if (room.phase === 'LOBBY') return { kicker: 'Prepara la partida', title: 'Lobby de la sala' };
-  if (room.phase === 'NEXT_GAME_VOTE' || room.phase === 'NEXT_GAME_VOTE_RESULTS') return { kicker: 'Sala', title: 'Siguiente minijuego' };
-  if (room.phase === 'SESSION_RESULTS') return { kicker: 'Sala', title: 'Resultados de la sesión' };
+function gameTitle(room: RoomView): string {
   const game = room.game as { gameId?: string; mode?: unknown } | null;
-  const gameId = game?.gameId ?? room.selectedGameId;
+  const gameId = game?.gameId ?? room.daily?.gameId ?? room.selectedGameId;
   const name = room.availableGames?.find((manifest) => manifest.id === gameId)?.name ?? 'Partida';
   const config = typeof game?.mode === 'string' ? game : gameId === room.selectedGameId ? room.selectedGameConfig : null;
   const mode = gameModeLabel(gameId, config);
-  return { kicker: 'Sala', title: mode ? `${name} · ${mode}` : name };
+  return mode ? `${name} · ${mode}` : name;
+}
+
+/** Antetítulo y título de la placa según la fase de la sala; la del reto diario lleva siempre «Reto diario» y el juego. */
+export function roomPlateHeading(room: RoomView): { kicker: string; title: string } {
+  if (room.daily) return { kicker: 'Reto diario', title: gameTitle(room) };
+  if (room.phase === 'LOBBY') return { kicker: 'Prepara la partida', title: 'Lobby de la sala' };
+  if (room.phase === 'NEXT_GAME_VOTE' || room.phase === 'NEXT_GAME_VOTE_RESULTS') return { kicker: 'Sala', title: 'Siguiente minijuego' };
+  if (room.phase === 'SESSION_RESULTS') return { kicker: 'Sala', title: 'Resultados de la sesión' };
+  return { kicker: 'Sala', title: gameTitle(room) };
 }
 
 /**
  * Placa de la sala (antes la barra del lobby): antetítulo, título, el código con su botón de copiar y «Salir». El título
  * es texto, no `h1`: el encabezado de cada pantalla sigue en el `main`, que es donde lo busca el foco de ruta.
  * A menos de 1024 px «Salir» es una píldora redonda; a menos de 640 px se oculta además el texto (antetítulo y título) y
- * solo quedan el código y «Salir». Fuera del lobby, «Salir» pide confirmación (lo decide `onLeave`, en la sesión).
+ * solo quedan el código y «Salir». Fuera del lobby, «Salir» pide confirmación (lo decide `onLeave`, en la sesión). La
+ * sala del reto diario es privada: sin código ni botón de copiar.
  */
 export function RoomPlate({ room, onLeave }: { room: RoomView; onLeave(): void }) {
   const [copied, setCopied] = useState(false);
@@ -45,10 +52,12 @@ export function RoomPlate({ room, onLeave }: { room: RoomView; onLeave(): void }
         <span className={s.title}>{title}</span>
       </span>
       <span className={s.actions}>
-        <Pill variant="cream" icon={copied ? Check : Copy} onClick={copyCode} aria-label={`Copiar código de sala ${room.code}`} title="Copiar código">
-          <span className={s.code}>{room.code}</span>
-        </Pill>
-        <span className="sr-only" aria-live="polite">{copied ? 'Código copiado' : ''}</span>
+        {!room.daily && <>
+          <Pill variant="cream" icon={copied ? Check : Copy} onClick={copyCode} aria-label={`Copiar código de sala ${room.code}`} title="Copiar código">
+            <span className={s.code}>{room.code}</span>
+          </Pill>
+          <span className="sr-only" aria-live="polite">{copied ? 'Código copiado' : ''}</span>
+        </>}
         <span className="contents lg:hidden">
           <Pill size="round" variant="ghost" icon={DoorOpen} aria-label="Salir de la sala" title="Salir de la sala" onClick={onLeave} />
         </span>

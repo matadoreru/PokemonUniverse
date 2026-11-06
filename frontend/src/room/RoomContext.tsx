@@ -10,9 +10,9 @@ import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLo
 import { SessionAttachment } from './session-attachment';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
-/** Avisos del `/ws` de la cuenta (no son de la sala): los escuchan los proveedores con `subscribe`. */
-export type FriendSocketEvent = 'friends:presence' | 'friends:changed' | 'friends:invite' | 'achievements:unlocked';
-const FRIEND_SOCKET_EVENTS: readonly FriendSocketEvent[] = ['friends:presence', 'friends:changed', 'friends:invite', 'achievements:unlocked'];
+/** Avisos del `/ws` de la cuenta (no son de la sala): los escuchan los proveedores y pantallas con `subscribe`. */
+export type FriendSocketEvent = 'friends:presence' | 'friends:changed' | 'friends:invite' | 'achievements:unlocked' | 'daily:recorded';
+const FRIEND_SOCKET_EVENTS: readonly FriendSocketEvent[] = ['friends:presence', 'friends:changed', 'friends:invite', 'achievements:unlocked', 'daily:recorded'];
 type FriendListener = (payload: never) => void;
 
 interface RoomContextValue {
@@ -26,6 +26,11 @@ interface RoomContextValue {
   joinRoom(code: string, options?: { reportError?: boolean }): Promise<RoomView>;
   /** Con aviso global salvo `{ reportError: false }` (Jugar, que enseña el error en su panel). */
   leaveRoom(options?: { reportError?: boolean }): Promise<void>;
+  /**
+   * `daily:start`: crea la sala del reto de hoy y arranca la partida (el servidor sabe qué juego toca). Sin aviso global:
+   * Jugar enseña el error en el panel del reto. Si la sala actual es un reto ya en resultados, antes la cierra sin aviso.
+   */
+  startDaily(): Promise<RoomView>;
   selectGame(gameId: string): Promise<void>;
   updateConfig(config: unknown): Promise<void>;
   updateGameConfig(gameId: string, config: unknown): Promise<void>;
@@ -155,12 +160,21 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
 
   const holdRoomSession = useCallback(() => attachmentRef.current.hold(), []);
 
+  const leave = useCallback(async (report: boolean) => {
+    await emit('room:leave', {}, report); attachmentRef.current.clear(); setRoom(projectionRef.current.setAuthoritative(null, true)); syncChat(null); setError(null);
+  }, [emit, syncChat]);
+
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
     async createRoom() { const response = await emit('room:create', {}, false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room; },
     async joinRoom(code, options) { const response = await emit('room:join', { code }, options?.reportError ?? false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room; },
     // Fuera de la sala, su error ya no viene a cuento (con `reportError: false` el aviso no se limpió al empezar).
-    async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); attachmentRef.current.clear(); setRoom(projectionRef.current.setAuthoritative(null, true)); syncChat(null); setError(null); },
+    async leaveRoom(options) { await leave(options?.reportError ?? true); },
+    async startDaily() {
+      const current = projectionRef.current.view();
+      if (current?.daily && current.phase === 'GAME_RESULTS') await leave(false);
+      const response = await emit('daily:start', {}, false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room;
+    },
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) {
       const gameId = projectionRef.current.view()?.selectedGameId;
@@ -199,7 +213,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     async sendChat(text) { await emit('room:chat:send', { text }); },
     async deleteChatMessage(seq) { await emit('room:chat:delete', { seq }); },
     async setChatMute(playerId, muted) { await emit('room:chat:mute', { playerId, muted }); },
-  }), [chat.messages, chatHistoryVersion, connected, emit, error, holdRoomSession, optimisticEmit, room, subscribe, syncChat]);
+  }), [chat.messages, chatHistoryVersion, connected, emit, error, holdRoomSession, leave, optimisticEmit, room, subscribe, syncChat]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }
 
