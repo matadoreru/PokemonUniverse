@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { setUiSoundSink } from '../audio/uiSound';
-import { Pill, PillLink, pillClickHandler } from './Pill';
+import { Pill, PillAnchor, PillLink, pillClickHandler } from './Pill';
 
 afterEach(() => setUiSoundSink(null));
 
@@ -67,6 +67,16 @@ describe('Pill', () => {
     expect(html).not.toContain('<button');
     expect(html).toMatch(/class="[^"]*pill[^"]*link/);
     expect(html).toMatch(/<span class="[^"]*\bol\b[^"]*">Novedades<\/span>/);
+  });
+
+  it('PillAnchor es un enlace externo que se abre en otra pestaña y lo dice a los lectores', () => {
+    const html = renderToStaticMarkup(createElement(PillAnchor, { href: 'https://discord.gg/x', variant: 'cream' }, 'Únete al Discord'));
+    expect(html).toMatch(/^<a [^>]*href="https:\/\/discord.gg\/x"/);
+    expect(html).toContain('target="_blank"');
+    expect(html).toContain('rel="noopener noreferrer"');
+    expect(html).toMatch(/class="[^"]*pill[^"]*link/);
+    expect(html).toContain('Únete al Discord');
+    expect(html).toMatch(/<span class="sr-only">[^<]*se abre en otra pestaña[^<]*<\/span>/);
   });
 
   it('PillLink nav marca la página actual con aria-current y el estado elegido; fuera de ella, nada', () => {

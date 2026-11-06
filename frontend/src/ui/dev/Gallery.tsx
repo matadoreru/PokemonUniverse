@@ -4,7 +4,7 @@
  * `<figure data-gallery="<componente>-<estado>">` que el E2E captura uno a uno. Con `?static` en la URL se añade la
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
-import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -36,7 +36,7 @@ import { Icon } from '../Icon';
 import { Panel } from '../Panel';
 import { HighlightCard, PatchHero, SectionRule, Timeline, TimelineLink } from '../Patch';
 import type { PatchTone } from '../Patch';
-import { Pill, PillLink } from '../Pill';
+import { Pill, PillAnchor, PillLink } from '../Pill';
 import { Row, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
 import { AchievementTile } from '../AchievementTile';
@@ -181,6 +181,11 @@ function PillSection() {
           </PillLink>
         </Fig>
       ))}
+      <Fig id="pill-anchor" caption="Enlace externo (otra pestaña)">
+        <PillAnchor href="https://discord.gg/8x2qfaDF4" icon={MessagesSquare}>
+          Únete al Discord
+        </PillAnchor>
+      </Fig>
       <Fig id="pill-link-round" caption="Enlace redondo (solo icono)">
         <PillLink to="/dev/ui" size="round" icon={Newspaper} aria-label="Novedades" />
       </Fig>

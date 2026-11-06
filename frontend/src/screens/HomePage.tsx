@@ -1,11 +1,14 @@
 import type { ChangelogEntry } from '@pokemon-universe/shared/public';
-import { Play, UserRound } from 'lucide-react';
+import { MessagesSquare, Play, UserRound } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext';
 import { PatchPreview } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
 import { LegalLine } from '../components/LegalLine';
-import { cx, Panel, PillLink, Screen, type StateBoxProps } from '../ui';
+import { cx, Panel, PillAnchor, PillLink, Screen, type StateBoxProps } from '../ui';
 import tone from '../styles/tones.module.css';
+
+/** Servidor oficial de Discord de la comunidad. */
+export const DISCORD_URL = 'https://discord.gg/8x2qfaDF4';
 
 /** Cambios de la última versión que caben en la portada; el resto está en Novedades. */
 const PREVIEW_CHANGES = 8;
@@ -57,7 +60,7 @@ export function HomePage() {
     <Screen footer={<LegalLine />}>
       <div className="grid gap-8 lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-12 2xl:gap-20">
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="relative aspect-[910/520] w-full max-w-[min(30rem,calc(22dvh*1.75))] overflow-hidden lg:max-w-[min(40rem,calc(34dvh*1.75))]" aria-hidden="true">
+          <div className="relative aspect-[910/520] w-full max-w-[min(30rem,calc(22dvh*1.75))] shrink-0 overflow-hidden lg:max-w-[min(40rem,calc(29dvh*1.75))]" aria-hidden="true">
             <img
               src="/logoText.png"
               alt=""
@@ -74,6 +77,7 @@ export function HomePage() {
           <nav className="mt-6 flex w-full max-w-[22rem] flex-col gap-3 2xl:mt-8 2xl:max-w-[26rem] 2xl:gap-4" aria-label="Empezar">
             <PillLink to={user ? '/play' : '/auth'} variant="yellow" size="main" icon={Play} block>Empezar a jugar</PillLink>
             {!user && <PillLink to="/auth?mode=guest" variant="cream" icon={UserRound} block>Entrar como invitado</PillLink>}
+            <PillAnchor href={DISCORD_URL} variant="blue" icon={MessagesSquare} block>Únete al Discord</PillAnchor>
           </nav>
         </div>
         <HomeNews entries={entries} loading={loading} error={error} onRetry={() => void refresh()} className="lg:min-h-0" />

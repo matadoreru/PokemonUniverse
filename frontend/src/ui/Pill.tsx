@@ -94,6 +94,29 @@ export type PillLinkProps = PillLinkBase &
     | { variant?: 'blue' | 'danger' | 'ghost' | 'cream'; size?: Exclude<PillSize, 'main'> }
   );
 
+/** Píldora que abre una web externa (p. ej. Discord): mismas reglas de tono y tamaño que `Pill`. */
+export type PillAnchorProps = Omit<PillLinkBase, 'to' | 'nav'> & { href: string } & (
+  | { variant: 'yellow'; size?: PillSize }
+  | { variant?: 'blue' | 'danger' | 'ghost' | 'cream'; size?: Exclude<PillSize, 'main'> }
+);
+
+/** Enlace externo con aspecto de píldora: se abre en otra pestaña y lo dice a los lectores de pantalla. */
+export function PillAnchor(props: PillAnchorProps) {
+  const { href, variant = 'blue', size = 'std', icon, block, forced, className, children, onClick, ...rest } = props;
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    uiSound(variant === 'ghost' || variant === 'cream' ? 'tap' : 'confirm');
+    onClick?.(e);
+  };
+  return (
+    <a {...rest} href={href} target="_blank" rel="noopener noreferrer" onClick={handleClick}
+      className={cx(s.pill, s.link, s[variant], size !== 'std' && s[size], block && s.block, forced && s[forced], className)}>
+      {icon && <Icon icon={icon} size={size === 'small' ? 18 : size === 'round' ? 22 : 24} className={s.icon} />}
+      {children != null && children !== false && <span className={cx(s.label, WHITE_INK_PILLS.includes(variant) && 'ol')}>{children}</span>}
+      <span className="sr-only"> (se abre en otra pestaña)</span>
+    </a>
+  );
+}
+
 /** Píldora que navega: el mismo relieve y sonido que `Pill`, pero es un enlace (se abre en otra pestaña, se anuncia como enlace). */
 export function PillLink(props: PillLinkProps) {
   const { to, variant = 'blue', size = 'std', icon, block, nav, forced, className, children, onClick, ...rest } = props;
