@@ -14,11 +14,12 @@ public enum RoomPermission {
   END_SESSION,
   MANAGE_ROLES,
   KICK_MEMBER,
-  TRANSFER_HOST;
+  TRANSFER_HOST,
+  MODERATE_CHAT;
 
   private static final Map<RoomRole, Set<RoomPermission>> ROLE_PERMISSIONS = Map.of(
       RoomRole.HOST, EnumSet.allOf(RoomPermission.class),
-      RoomRole.CO_HOST, EnumSet.of(CHANGE_GAME, EDIT_GAME_CONFIG, EDIT_SESSION, EDIT_GAME_SELECTION),
+      RoomRole.CO_HOST, EnumSet.of(CHANGE_GAME, EDIT_GAME_CONFIG, EDIT_SESSION, EDIT_GAME_SELECTION, MODERATE_CHAT),
       RoomRole.MEMBER, EnumSet.noneOf(RoomPermission.class));
 
   /** {@code hasRoomPermission(role, permission)}. */

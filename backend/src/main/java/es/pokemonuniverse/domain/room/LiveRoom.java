@@ -15,6 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class LiveRoom {
 
   public final ReentrantLock lock = new ReentrantLock();
+  /** Chat de la sala: historial, límite de envío y silencios. Solo se toca con {@link #lock}. */
+  public final RoomChat chat = new RoomChat();
   public long revision;
   public final String historyId;
   public final String code;
