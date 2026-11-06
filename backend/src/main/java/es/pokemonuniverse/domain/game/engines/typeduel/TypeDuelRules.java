@@ -93,8 +93,9 @@ public final class TypeDuelRules {
 
   /**
    * Clasificación final con {@code winRate} y {@code averageCorrectTimeMs} derivados. En {@code COOP}, los puntos son
-   * la aportación, las estadísticas suman {@code contribution} y {@code groupTotal}, y nadie gana ({@code winnerId} y
-   * {@code won} nulos). El desempate de TS es
+   * la aportación, las estadísticas son solo {@code coopFinds} (la aportación), {@code coopGamesPlayed} (1) y
+   * {@code groupTotal}, y nadie gana: {@code winnerId} y {@code won} nulos y {@code ranked: false} (no cuenta como partida
+   * jugada ni perdida en el perfil). El desempate de TS es
    * {@code playerId.localeCompare}; aquí {@link String#compareTo} (equivalente sobre ids de jugador, ver el README de
    * motores, regla 21).
    */
@@ -115,6 +116,13 @@ public final class TypeDuelRules {
     var results = Scoring.buildRankedResults(entries, compare, Scoring.ScoreEntry::points, entry -> {
       var stats = entry.stats();
       var mapped = new LinkedHashMap<String, Number>();
+      if (coop) {
+        // Solo métricas cooperativas: las de duelo (y su winrate) no se mezclan con esta partida.
+        mapped.put("coopFinds", entry.points());
+        mapped.put("coopGamesPlayed", 1);
+        mapped.put("groupTotal", groupTotal);
+        return mapped;
+      }
       mapped.put("duelsPlayed", stats.duelsPlayed());
       mapped.put("duelsWon", stats.duelsWon());
       mapped.put("correctAttempts", stats.correctAttempts());
@@ -124,14 +132,10 @@ public final class TypeDuelRules {
           ? Math.round((double) stats.duelsWon() / stats.duelsPlayed() * 100) : 0);
       mapped.put("averageCorrectTimeMs", stats.correctAttempts() != 0
           ? Math.round((double) stats.correctTimeTotalMs() / stats.correctAttempts()) : 0);
-      if (coop) {
-        mapped.put("contribution", entry.points());
-        mapped.put("groupTotal", groupTotal);
-      }
       return mapped;
     });
     if (!coop) return results;
-    return new GameResults(null, results.standings().stream()
+    return GameResults.unranked(results.standings().stream()
         .map(standing -> new GameStanding(standing.playerId(), standing.position(), standing.points(), null,
             standing.stats()))
         .toList());

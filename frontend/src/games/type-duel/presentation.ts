@@ -233,7 +233,7 @@ export function typeDuelCoopAnnouncement({ phase, roundNumber, combination, foun
 
 /** `COOP`: línea de un jugador en los resultados (su aportación al total del grupo). */
 export function typeDuelCoopStatsLine(stats: Readonly<Record<string, number | undefined>>): string {
-  const contribution = stats.contribution ?? 0;
+  const contribution = stats.coopFinds ?? 0;
   const total = stats.groupTotal ?? 0;
   if (contribution === 0) return 'No aportó ningún Pokémon';
   return `Aportó ${contribution} de ${total}${total > 0 ? ` · ${Math.round((contribution / total) * 100)}%` : ''}`;

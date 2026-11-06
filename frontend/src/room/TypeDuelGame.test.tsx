@@ -216,16 +216,16 @@ describe('TypeDuelGame: Cooperativo', () => {
     ]);
     expect(typeDuelCoopAnnouncement({ phase: 'POKEMON_SEARCH', roundNumber: 2, combination: ['psychic'], found: 0, total: 12, lastAttempt: null, player: true })).toBe('Ronda 2: buscad juntos Pokémon de tipo Psíquico. Hay 12.');
     expect(typeDuelCoopAnnouncement({ phase: 'POKEMON_SEARCH', roundNumber: 2, combination: ['psychic'], found: 1, total: 12, lastAttempt: attempt('p1', 'Abra', true, 1), player: true })).toBe('Abra suma para el grupo: 1 de 12.');
-    expect(typeDuelCoopStatsLine({ contribution: 3, groupTotal: 7 })).toBe('Aportó 3 de 7 · 43%');
-    expect(typeDuelCoopStatsLine({ contribution: 0, groupTotal: 7 })).toBe('No aportó ningún Pokémon');
+    expect(typeDuelCoopStatsLine({ coopFinds: 3, coopGamesPlayed: 1, groupTotal: 7 })).toBe('Aportó 3 de 7 · 43%');
+    expect(typeDuelCoopStatsLine({ coopFinds: 0, coopGamesPlayed: 1, groupTotal: 7 })).toBe('No aportó ningún Pokémon');
   });
   it('results show the group total and each contribution, with no winner', () => {
     const standings = [
-      { playerId: 'p1', position: 1, points: 3, stats: { contribution: 3, groupTotal: 7 } },
-      { playerId: 'p3', position: 1, points: 3, stats: { contribution: 3, groupTotal: 7 } },
-      { playerId: 'p2', position: 3, points: 1, stats: { contribution: 1, groupTotal: 7 } },
+      { playerId: 'p1', position: 1, points: 3, stats: { coopFinds: 3, coopGamesPlayed: 1, groupTotal: 7 } },
+      { playerId: 'p3', position: 1, points: 3, stats: { coopFinds: 3, coopGamesPlayed: 1, groupTotal: 7 } },
+      { playerId: 'p2', position: 3, points: 1, stats: { coopFinds: 1, coopGamesPlayed: 1, groupTotal: 7 } },
     ];
-    const view = coop('GAME_RESULTS', { results: { winnerId: null, standings } as never, completedRounds: 3, roundEndsAt: null });
+    const view = coop('GAME_RESULTS', { results: { winnerId: null, standings, ranked: false } as never, completedRounds: 3, roundEndsAt: null });
     const html = renderToStaticMarkup(<TypeDuelResults room={view} selfId="p1" onLobby={() => undefined} onEnd={() => undefined} />);
     expect(html).toContain('Resultado del grupo');
     expect(html).toContain('Type Duel · Cooperativo · 3 rondas');

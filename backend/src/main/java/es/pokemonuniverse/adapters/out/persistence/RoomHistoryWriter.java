@@ -116,25 +116,32 @@ public class RoomHistoryWriter {
           row.identity().displayName(), standing.position(), standing.points(), new LinkedHashMap<>(standing.stats())));
       if (userId == null) continue;
       boolean won = standing.won() != null ? standing.won() : standing.playerId().equals(results.winnerId());
+      // Una partida sin clasificación de victorias (cooperativa) no cuenta como jugada ni como derrota.
+      boolean ranked = results.isRanked();
       int xp = Experience.xpForGame(standing.position(), standings.size());
       var userStats = entityManager.find(UserStatsEntity.class, userId);
       if (userStats == null) {
         userStats = new UserStatsEntity(userId);
-        userStats.addGame(won, standing.points());
+        if (ranked) userStats.addGame(won, standing.points());
+        else userStats.addUnrankedGame(standing.points());
         userStats.addXp(xp);
         entityManager.persist(userStats);
       } else {
-        userStats.addGame(won, standing.points());
+        if (ranked) userStats.addGame(won, standing.points());
+        else userStats.addUnrankedGame(standing.points());
         userStats.addXp(xp);
       }
       var gameStats = entityManager.createQuery("select s from UserGameStatsEntity s where s.userId = :userId "
               + "and s.gameId = :gameId", UserGameStatsEntity.class)
           .setParameter("userId", userId).setParameter("gameId", gameId).getResultStream().findFirst().orElse(null);
       if (gameStats == null) {
-        entityManager.persist(UserGameStatsEntity.create(newId(), userId, gameId, 1, won ? 1 : 0, standing.points(),
+        entityManager.persist(UserGameStatsEntity.create(newId(), userId, gameId, ranked ? 1 : 0, ranked && won ? 1 : 0,
+            standing.points(),
             MetricsMerge.merge(null, standing.stats(), metrics)));
       } else {
-        gameStats.addGame(won, standing.points(), MetricsMerge.merge(gameStats.getMetrics(), standing.stats(), metrics));
+        var merged = MetricsMerge.merge(gameStats.getMetrics(), standing.stats(), metrics);
+        if (ranked) gameStats.addGame(won, standing.points(), merged);
+        else gameStats.addUnrankedGame(standing.points(), merged);
       }
     }
     entityManager.flush();

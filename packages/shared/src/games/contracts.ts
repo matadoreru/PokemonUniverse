@@ -212,4 +212,6 @@ export interface GameStanding {
 export interface GameResults {
   winnerId: string | null;
   standings: GameStanding[];
+  /** Solo `false` (si no, no sale): partida sin ganador ni derrota (Type Duel · Cooperativo), fuera de jugadas y ganadas del perfil. */
+  ranked?: false;
 }

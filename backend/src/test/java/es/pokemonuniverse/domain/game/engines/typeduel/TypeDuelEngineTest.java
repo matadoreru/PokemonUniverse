@@ -16,6 +16,7 @@ import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelAction;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelRoundReason;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelState;
+import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelStats;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
@@ -345,10 +346,17 @@ class TypeDuelEngineTest {
     for (var standing : results.standings()) {
       assertNull(standing.won());
       assertEquals(contributions.get(standing.playerId()), standing.points());
-      assertEquals(contributions.get(standing.playerId()), standing.stats().get("contribution").intValue());
+      // Solo métricas cooperativas: nada de duelos, intentos ni winrate.
+      assertEquals(List.of("coopFinds", "coopGamesPlayed", "groupTotal"), List.copyOf(standing.stats().keySet()));
+      assertEquals(contributions.get(standing.playerId()), standing.stats().get("coopFinds").intValue());
+      assertEquals(1, standing.stats().get("coopGamesPlayed").intValue());
       assertEquals(total, standing.stats().get("groupTotal").intValue());
-      assertTrue(standing.stats().containsKey("correctAttempts"));
     }
+    // Sin clasificación de victorias: el perfil no la cuenta como jugada ni perdida.
+    assertEquals(Boolean.FALSE, results.ranked());
+    assertFalse(results.isRanked());
+    // Las estadísticas de duelo no se tocan en COOP.
+    for (var stats : state.playerStats().values()) assertEquals(TypeDuelStats.ZERO, stats);
     assertEquals(results, engine.getPublicState(state, context).results());
   }
 

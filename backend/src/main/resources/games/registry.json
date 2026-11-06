@@ -305,6 +305,16 @@
           "label": "Tiempo total al acertar",
           "aggregation": "SUM",
           "format": "DURATION_MS"
+        },
+        {
+          "key": "coopFinds",
+          "label": "Pokémon encontrados en cooperativo",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "coopGamesPlayed",
+          "label": "Partidas cooperativas",
+          "aggregation": "SUM"
         }
       ],
       "derivedMetrics": [

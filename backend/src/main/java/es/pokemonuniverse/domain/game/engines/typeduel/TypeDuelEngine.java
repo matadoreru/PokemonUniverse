@@ -266,11 +266,8 @@ public final class TypeDuelEngine
     boolean correct = state.validPokemonIds().contains(pokemon.id());
     var attempts = new ArrayList<>(state.attempts());
     attempts.add(new TypeDuelAttempt(playerId, pokemon.id(), pokemon.name(), pokemon.sprite(), correct, context.now()));
-    var playerStats = new LinkedHashMap<>(state.playerStats());
-    long elapsed = context.now() - (state.roundStartedAt() == null ? context.now() : state.roundStartedAt());
-    playerStats.put(playerId,
-        Objects.requireNonNull(state.playerStats().get(playerId), "playerStats").afterAttempt(correct, elapsed));
-    var next = state.toBuilder().attempts(attempts).playerStats(playerStats);
+    // Las estadísticas de duelo (`playerStats`) no se tocan en COOP: lo que cuenta es la aportación.
+    var next = state.toBuilder().attempts(attempts);
     if (!correct) {
       return GameActionResult.accept(next
           .cooldownUntil(Timing.setPlayerCooldown(state.cooldownUntil(), playerId, context.now(),

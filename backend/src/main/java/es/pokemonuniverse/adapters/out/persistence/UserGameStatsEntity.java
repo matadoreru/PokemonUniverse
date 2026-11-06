@@ -80,6 +80,12 @@ public class UserGameStatsEntity {
   }
 
   /** Suma una partida ({@code increment} de Prisma) y sustituye las métricas ya fusionadas. */
+  /** Partida sin clasificación de victorias (cooperativa): puntos y métricas, no partida jugada ni ganada. */
+  public void addUnrankedGame(int gamePoints, Map<String, Object> mergedMetrics) {
+    points += gamePoints;
+    metrics = mergedMetrics;
+  }
+
   public void addGame(boolean won, int gamePoints, Map<String, Object> mergedMetrics) {
     gamesPlayed += 1;
     gamesWon += won ? 1 : 0;

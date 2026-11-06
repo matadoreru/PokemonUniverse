@@ -60,6 +60,11 @@ public class UserStatsEntity {
   }
 
   /** Suma una partida ({@code increment} de Prisma). */
+  /** Partida sin clasificación de victorias (cooperativa): suma puntos, no partida jugada ni ganada. */
+  public void addUnrankedGame(int points) {
+    totalPoints += points;
+  }
+
   public void addGame(boolean won, int points) {
     gamesPlayed += 1;
     gamesWon += won ? 1 : 0;

@@ -1,5 +1,5 @@
 import { gameModeLabel, type RoomView, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
-import { Equal, Percent, Swords, Timer, Users } from 'lucide-react';
+import { Equal, HandHeart, Percent, Swords, Timer, Users } from 'lucide-react';
 import { sharesPosition } from './results-ties';
 import { typeDuelCoopStatsLine, typeDuelRecords, typeDuelStatsLine } from '../games/type-duel/presentation';
 import { Chip, Icon } from '../ui';
@@ -65,7 +65,7 @@ function TypeDuelCoopResults({ room, selfId, onLobby, onEnd }: { room: RoomView;
   });
   const aside = <ResultsRecords id="type-duel-records-title" title="El grupo" records={[
     { key: 'group', title: 'Total del grupo', icon: Users, names: groupTotal > 0 ? ['Entre todos'] : null, value: String(groupTotal), unit: groupTotal === 1 ? 'Pokémon distinto encontrado' : 'Pokémon distintos encontrados' },
-    { key: 'best', title: 'Mayor aportación', icon: Swords, names: best > 0 ? standings.filter((standing) => standing.points === best).map((standing) => nameOf(standing.playerId)) : null, value: String(best), unit: 'Pokémon aportados' },
+    { key: 'best', title: 'Mayor aportación', icon: HandHeart, names: best > 0 ? standings.filter((standing) => standing.points === best).map((standing) => nameOf(standing.playerId)) : null, value: String(best), unit: 'Pokémon aportados' },
   ]} />;
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   const modeLabel = gameModeLabel('type-duel', game);

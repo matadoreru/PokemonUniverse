@@ -1551,7 +1551,7 @@ public class RoomCoordinator {
   private static GameResults copyResults(GameResults source) {
     return new GameResults(source.winnerId(), source.standings().stream().map(standing -> new GameStanding(
         standing.playerId(), standing.position(), standing.points(), standing.won(),
-        new LinkedHashMap<String, Number>(standing.stats()))).toList());
+        new LinkedHashMap<String, Number>(standing.stats()))).toList(), source.ranked());
   }
 
   private Optional<ErasedEngine> engine(@Nullable String gameId) {

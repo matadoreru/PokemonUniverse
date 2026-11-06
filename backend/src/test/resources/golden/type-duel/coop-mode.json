@@ -3910,14 +3910,8 @@
                   "position": 1,
                   "points": 3,
                   "stats": {
-                    "duelsPlayed": 0,
-                    "duelsWon": 0,
-                    "correctAttempts": 3,
-                    "incorrectAttempts": 0,
-                    "correctTimeTotalMs": 4000,
-                    "winRate": 0,
-                    "averageCorrectTimeMs": 1333,
-                    "contribution": 3,
+                    "coopFinds": 3,
+                    "coopGamesPlayed": 1,
                     "groupTotal": 7
                   }
                 },
@@ -3926,14 +3920,8 @@
                   "position": 1,
                   "points": 3,
                   "stats": {
-                    "duelsPlayed": 0,
-                    "duelsWon": 0,
-                    "correctAttempts": 3,
-                    "incorrectAttempts": 1,
-                    "correctTimeTotalMs": 10500,
-                    "winRate": 0,
-                    "averageCorrectTimeMs": 3500,
-                    "contribution": 3,
+                    "coopFinds": 3,
+                    "coopGamesPlayed": 1,
                     "groupTotal": 7
                   }
                 },
@@ -3942,18 +3930,13 @@
                   "position": 3,
                   "points": 1,
                   "stats": {
-                    "duelsPlayed": 0,
-                    "duelsWon": 0,
-                    "correctAttempts": 1,
-                    "incorrectAttempts": 0,
-                    "correctTimeTotalMs": 1000,
-                    "winRate": 0,
-                    "averageCorrectTimeMs": 1000,
-                    "contribution": 1,
+                    "coopFinds": 1,
+                    "coopGamesPlayed": 1,
                     "groupTotal": 7
                   }
                 }
-              ]
+              ],
+              "ranked": false
             },
             "combination": [
               "bug",
