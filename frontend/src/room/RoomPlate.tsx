@@ -1,4 +1,4 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type RoomView } from '@pokemon-universe/shared/public';
 import { Check, Copy, DoorOpen } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -6,13 +6,20 @@ import { HEADER_ROOM_ID } from '../components/Layout';
 import { HudPlate, Pill } from '../ui';
 import s from './RoomPlate.module.css';
 
-/** Antetítulo y título de la placa según la fase de la sala. */
+/**
+ * Antetítulo y título de la placa según la fase de la sala. En partida, el título añade « · <modo>» si el juego corre en
+ * un modo que no es Clásico: lo lee del estado público (`mode`) y, si este aún no lo trae, de la configuración elegida.
+ */
 export function roomPlateHeading(room: RoomView): { kicker: string; title: string } {
   if (room.phase === 'LOBBY') return { kicker: 'Prepara la partida', title: 'Lobby de la sala' };
   if (room.phase === 'NEXT_GAME_VOTE' || room.phase === 'NEXT_GAME_VOTE_RESULTS') return { kicker: 'Sala', title: 'Siguiente minijuego' };
   if (room.phase === 'SESSION_RESULTS') return { kicker: 'Sala', title: 'Resultados de la sesión' };
-  const gameId = (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId;
-  return { kicker: 'Sala', title: room.availableGames?.find((game) => game.id === gameId)?.name ?? 'Partida' };
+  const game = room.game as { gameId?: string; mode?: unknown } | null;
+  const gameId = game?.gameId ?? room.selectedGameId;
+  const name = room.availableGames?.find((manifest) => manifest.id === gameId)?.name ?? 'Partida';
+  const config = typeof game?.mode === 'string' ? game : gameId === room.selectedGameId ? room.selectedGameConfig : null;
+  const mode = gameModeLabel(gameId, config);
+  return { kicker: 'Sala', title: mode ? `${name} · ${mode}` : name };
 }
 
 /**

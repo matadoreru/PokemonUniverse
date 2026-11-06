@@ -65,9 +65,11 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     exactHit: Boolean(playerState?.exactHit), ownPickName: ownPick?.name ?? null, lastRound, selfId,
   });
 
+  // En GAME_STARTING la ronda es aún la 0: la placa ya anuncia la primera.
+  const pointsRoundText = `Ronda ${Math.max(1, game.pointsRound ?? game.roundNumber)} de ${game.pointsRounds ?? config.pointsRounds}`;
   const hud = <Panel variant="dark" as="div" className={cx(s.hudPanel)} bodyClassName={cx(s.hud)}>
     <div className={s.round}>
-      <Badge>{pointsMode ? `Ronda ${game.pointsRound ?? game.roundNumber} de ${game.pointsRounds ?? config.pointsRounds}` : `Ronda ${game.roundNumber}`}</Badge>
+      <Badge>{pointsMode ? pointsRoundText : `Ronda ${game.roundNumber}`}</Badge>
       {game.tiebreakDepth > 0 && <Chip tone="warn">Desempate {game.tiebreakDepth}</Chip>}
       {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
       <span className={s.points}><Icon icon={Trophy} size={18} />{member?.sessionPoints ?? 0} pts</span>
@@ -157,7 +159,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   const side = <div className={s.side}>{panel}<GameSkipSlot className={s.skip} /></div>;
 
   const bottom = revealing
-    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={pointsMode ? `Ronda ${game.pointsRound ?? game.roundNumber} de ${game.pointsRounds ?? config.pointsRounds}` : `Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note && !pointsMode ? 'warn' : 'info'} titleRef={titleRef} />
+    ? <ActionStatus icon={lastRound.reason === 'NO_RESPONSE' ? TimerOff : lastRound.tiedIds.length > 0 ? Swords : Ruler} kicker={pointsMode ? pointsRoundText : `Ronda ${game.roundNumber}${game.tiebreakDepth > 0 ? ` · desempate ${game.tiebreakDepth}` : ''}`} title={outcome!.title} text={outcome!.note ?? 'Cae quien quedó más lejos del objetivo.'} tone={outcome!.note && !pointsMode ? 'warn' : 'info'} titleRef={titleRef} />
     : activePhase && eligible && !hasSelection
       ? <div className={s.selector}><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set(game.lockedPokemonIds)} disabled={false} onSelect={(pokemonId) => onAction({ type: 'SELECT_POKEMON', pokemonId }).catch(ignoreFailure)} /></div>
       : member?.role === 'SPECTATOR' || !eligible

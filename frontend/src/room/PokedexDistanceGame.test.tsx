@@ -52,9 +52,12 @@ describe('PokedexDistanceGame: foco y avisos', () => {
 describe('PokedexDistanceGame: modo Por puntos', () => {
   const points = { mode: 'POINTS' as const, pointsRound: 2, pointsRounds: 5, scores: { p1: 70, p2: 150 } };
   it('el título lleva el modo, la placa dice la ronda «N de M» y nadie cae', () => {
-    const html = render(room({ ...points, phase: 'GAME_STARTING', roundNumber: 0, eligibleIds: [], roundStartedAt: null, roundEndsAt: null }, { canSelect: false }, { mode: 'POINTS', pointsRounds: 5 }));
+    // En GAME_STARTING el servidor manda la ronda 0: la placa anuncia ya la primera, nunca «Ronda 0».
+    const html = render(room({ ...points, pointsRound: 0, phase: 'GAME_STARTING', roundNumber: 0, eligibleIds: [], roundStartedAt: null, roundEndsAt: null }, { canSelect: false }, { mode: 'POINTS', pointsRounds: 5 }));
     // La placa de la ronda lleva el nombre del modo, en todas las fases.
-    expect(html).toMatch(/Ronda 2 de 5<\/span>.*Por puntos/);
+    expect(html).toMatch(/Ronda 1 de 5<\/span>.*Por puntos/);
+    expect(html).not.toContain('Ronda 0');
+    expect(render(room(points))).toMatch(/Ronda 2 de 5<\/span>/);
     expect(html).toContain('nadie cae, cada ronda suma puntos');
     expect(html).not.toContain('cae quien quede más lejos');
   });

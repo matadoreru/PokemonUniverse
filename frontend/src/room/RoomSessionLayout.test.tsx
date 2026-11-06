@@ -58,6 +58,18 @@ describe('room plate', () => {
     const room = { phase: 'ROUND_ACTIVE', selectedGameId: 'higher-lower', game: { gameId: 'higher-lower' }, availableGames: [{ id: 'higher-lower', name: 'Más o menos' }] } as unknown as RoomView;
     expect(roomPlateHeading(room)).toEqual({ kicker: 'Sala', title: 'Más o menos' });
   });
+
+  it('adds the mode to the title when the running game is not Classic', () => {
+    const base = { phase: 'GAME_STARTING', selectedGameId: 'pokedex-distance', availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }, { id: 'shiny-vote', name: 'Shiny Quiz' }] };
+    const fromState = { ...base, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, selectedGameConfig: { mode: 'CLASSIC' } } as unknown as RoomView;
+    expect(roomPlateHeading(fromState).title).toBe('Pokédex Distance · Por puntos');
+    const fromConfig = { ...base, selectedGameId: 'shiny-vote', game: { gameId: 'shiny-vote' }, selectedGameConfig: { mode: 'SURVIVAL' } } as unknown as RoomView;
+    expect(roomPlateHeading(fromConfig).title).toBe('Shiny Quiz · Supervivencia');
+    const classic = { ...base, game: { gameId: 'pokedex-distance', mode: 'CLASSIC' }, selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;
+    expect(roomPlateHeading(classic).title).toBe('Pokédex Distance');
+    const noModes = { ...base, selectedGameId: 'type-chain', game: { gameId: 'type-chain' }, availableGames: [{ id: 'type-chain', name: 'Type Chain' }], selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;
+    expect(roomPlateHeading(noModes).title).toBe('Type Chain');
+  });
 });
 
 describe('room connection notice', () => {
