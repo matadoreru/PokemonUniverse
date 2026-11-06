@@ -76,6 +76,12 @@ export function queueTitle(queue: AchievementsQueue): string {
   return queue.achievements.length === 0 ? '¡Nuevo récord personal!' : noticeTitle(queue.achievements.length);
 }
 
+/** Texto del aviso flotante: los nombres de los logros o, si solo hay récords, sus líneas. */
+export function toastText(queue: AchievementsQueue): string {
+  if (queue.achievements.length > 0) return queue.achievements.map((achievement) => achievement.name).join(', ');
+  return queue.records.map(recordLine).join('. ');
+}
+
 export function recordLine(record: PersonalRecord): string {
   return `Nuevo récord personal en ${record.label}: ${record.value} (antes ${record.previous})`;
 }

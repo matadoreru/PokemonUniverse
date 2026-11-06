@@ -1,8 +1,8 @@
 import type { FriendInvite } from '@pokemon-universe/shared/public';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
-import { ActionToast, ActionToastStack, Dialog } from '../ui';
+import { ActionToast, Dialog } from '../ui';
 import { useFriends } from './FriendsContext';
 
 /** Texto secundario del aviso: el minijuego elegido, si lo hay, y el código de la sala. */
@@ -14,8 +14,11 @@ export function inviteText(invite: Pick<FriendInvite, 'roomCode' | 'gameName'>):
  * Invitaciones recibidas (spec §Invitaciones): un `ActionToast` por amigo con «Unirse» y «Ahora no», discreto durante una
  * partida. «Unirse» entra con `room:join`; si ya estás en otra sala, antes pregunta y sale de ella. Un fallo lo enseña el
  * aviso de la sala (un solo dueño) y la invitación se quita igual, salga bien o mal. Caducada, desaparece.
+ *
+ * Devuelve los avisos sueltos (con su `key`) para la única pila de `Layout`, que comparten con los logros, y el diálogo
+ * «¿Cambiar de sala?», que se monta aparte.
  */
-export function InviteToasts() {
+export function useInviteToasts(): { toasts: ReactElement[]; dialog: ReactElement } {
   const { invites, dismissInvite } = useFriends();
   const { room, joinRoom, leaveRoom } = useRoom();
   const navigate = useNavigate();
@@ -44,22 +47,18 @@ export function InviteToasts() {
 
   const visible = invites.filter((invite) => invite.roomCode !== ownCode);
   const quiet = Boolean(room && room.phase !== 'LOBBY' && room.game);
-  return <>
-    {/* En la capa superior: sigue pulsable con el panel «Amigos» o un diálogo abiertos. */}
-    <ActionToastStack label="Invitaciones">
-      {visible.map((invite) => (
-        <ActionToast key={invite.inviteId} quiet={quiet} title={`${invite.from.username} te invita a su sala`} text={inviteText(invite)}
-          expiresAt={Date.parse(invite.expiresAt)} onExpire={() => dismissInvite(invite.inviteId)}
-          primary={{ label: 'Unirse', onClick: () => accept(invite) }}
-          secondary={{ label: 'Ahora no', onClick: () => dismissInvite(invite.inviteId) }} />
-      ))}
-    </ActionToastStack>
-    <Dialog open={confirm !== null} title="¿Cambiar de sala?" onClose={() => setConfirm(null)} width={420}
-      actions={[
-        { label: 'Quedarme', variant: 'blue', autoFocus: true, onClick: () => undefined },
-        { label: 'Unirme', variant: 'yellow', onClick: () => { if (confirm) enter(confirm, true); } },
-      ]}>
-      <p>{confirm ? `Saldrás de tu sala actual. ¿Unirte a la sala de ${confirm.from.username}?` : ''}</p>
-    </Dialog>
-  </>;
+  const toasts = visible.map((invite) => (
+    <ActionToast key={`invite:${invite.inviteId}`} quiet={quiet} title={`${invite.from.username} te invita a su sala`} text={inviteText(invite)}
+      expiresAt={Date.parse(invite.expiresAt)} onExpire={() => dismissInvite(invite.inviteId)}
+      primary={{ label: 'Unirse', onClick: () => accept(invite) }}
+      secondary={{ label: 'Ahora no', onClick: () => dismissInvite(invite.inviteId) }} />
+  ));
+  const dialog = <Dialog open={confirm !== null} title="¿Cambiar de sala?" onClose={() => setConfirm(null)} width={420}
+    actions={[
+      { label: 'Quedarme', variant: 'blue', autoFocus: true, onClick: () => undefined },
+      { label: 'Unirme', variant: 'yellow', onClick: () => { if (confirm) enter(confirm, true); } },
+    ]}>
+    <p>{confirm ? `Saldrás de tu sala actual. ¿Unirte a la sala de ${confirm.from.username}?` : ''}</p>
+  </Dialog>;
+  return { toasts, dialog };
 }

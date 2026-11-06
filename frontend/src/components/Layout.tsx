@@ -3,14 +3,14 @@ import { House, LogOut, MessageSquareWarning, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
+import { ActionToastStack, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
 import { AudioButton } from './AudioButton';
-import { AchievementToasts } from '../achievements/AchievementToasts';
+import { useAchievementToasts } from '../achievements/AchievementToasts';
 import { FriendsButton } from '../friends/FriendsButton';
 import { FriendsDrawer } from '../friends/FriendsDrawer';
-import { InviteToasts } from '../friends/InviteToasts';
+import { useInviteToasts } from '../friends/InviteToasts';
 import { RoomNotice } from '../room/RoomNotice';
 import { RouteLoadingFallback } from './LoadingFallback';
 import s from './Layout.module.css';
@@ -99,6 +99,20 @@ export function AppHeader({ user, level = null, onLogout }: { user: AuthUser | n
 }
 
 /**
+ * La única pila de avisos con acciones de la página: las invitaciones de amigos y los logros fuera de partida. Una sola
+ * pila, porque dos `popover` en la misma esquina se tapaban. En la capa superior: sigue pulsable con el panel «Amigos» o
+ * un diálogo abiertos.
+ */
+function AppToasts() {
+  const invites = useInviteToasts();
+  const achievements = useAchievementToasts();
+  return <>
+    <ActionToastStack label="Avisos">{[...invites.toasts, ...achievements]}</ActionToastStack>
+    {invites.dialog}
+  </>;
+}
+
+/**
  * Armazón de pantalla completa (spec §2): rejilla de `100dvh` con la cabecera arriba y el `main` debajo. El `main` se
  * desplaza por dentro solo en el móvil; en escritorio el E2E exige que no se desborde. Cada ruta nueva entra con
  * `ScreenTransition`.
@@ -128,8 +142,7 @@ export function Layout() {
       {/* En toda página (dentro de `SessionRoot`): el panel «Amigos», las invitaciones recibidas y el único aviso de
           errores de la sala, que también enseña un «Unirse» fallido desde Inicio o Perfil; y los logros fuera de partida. */}
       <FriendsDrawer />
-      <InviteToasts />
-      <AchievementToasts />
+      <AppToasts />
       <RoomNotice />
     </FeedbackTargetProvider>
   );

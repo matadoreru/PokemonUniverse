@@ -24,6 +24,13 @@ describe('ActionToast', () => {
     expect(quiet).toContain('Ash te invita');
   });
 
+  it('con live="status" es región viva educada (avisos fuera de partida)', () => {
+    const polite = render({ live: 'status' });
+    expect(polite).toContain('role="status"');
+    expect(polite).toContain('aria-live="polite"');
+    expect(polite).not.toContain('role="alert"');
+  });
+
   it('no pinta nada si expiresAt ya pasó', () => {
     expect(render({ expiresAt: Date.now() - 1000 })).toBe('');
     expect(render({ expiresAt: Date.now() + 60_000 })).toContain('Unirme');

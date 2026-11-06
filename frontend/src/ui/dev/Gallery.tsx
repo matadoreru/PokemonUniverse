@@ -850,6 +850,9 @@ function ActionToastSection() {
       <Fig id="action-toast-quiet" caption="Aviso discreto (sin región viva, para partidas)">
         <ActionToast quiet title="Misty se ha conectado" primary={{ label: 'Invitar', onClick: noop }} secondary={{ label: 'Cerrar', onClick: noop }} />
       </Fig>
+      <Fig id="action-toast-status" caption="Aviso educado (role=status, fuera de partida: logros)">
+        <ActionToast live="status" title="¡Logro desbloqueado!" text="Primera partida" primary={{ label: 'Ver mis logros', onClick: noop }} secondary={{ label: 'Cerrar', onClick: noop }} />
+      </Fig>
       <Fig id="action-toast-stack" caption="Pila fija abajo a la derecha, en la capa superior (encima de un diálogo o un drawer)">
         <Pill variant="yellow" onClick={() => setStacked((v) => !v)}>
           {stacked ? 'Ocultar pila' : 'Mostrar pila'}

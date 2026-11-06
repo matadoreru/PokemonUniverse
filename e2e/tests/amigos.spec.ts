@@ -36,7 +36,7 @@ async function persona(browser: Browser, prefijo: string, w: number, h: number):
   return { cuenta, context, page, errors };
 }
 
-const aviso = (page: Page) => page.getByRole('group', { name: 'Invitaciones' });
+const aviso = (page: Page) => page.getByRole('group', { name: 'Avisos' });
 /** Pestaña del panel «Amigos» por su nombre exacto (la de solicitudes lleva el número: «Solicitudes (1 pendiente)»). */
 const pestana = (panel: Locator, nombre: string) => panel.getByRole('tab', { name: nombre, exact: true });
 

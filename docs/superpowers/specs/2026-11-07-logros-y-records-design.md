@@ -270,7 +270,9 @@ record AchievementFacts(
      - Muestra hasta 3 logros con su arte, nombre y descripción, y «y N más» si hay más.
      - Debajo, si hay récord: «Nuevo récord personal en Racha infinita: N (antes M)».
      - Incluye un enlace «Ver mis logros» a `/profile?tab=logros`.
-   - En `LOBBY`, en `SESSION_RESULTS` y sin sala, sale un `ActionToast` `quiet` con «Ver mis logros» y «Cerrar».
+   - En `LOBBY`, en `SESSION_RESULTS` y sin sala, sale un `ActionToast` con `live="status"` (región viva educada) con
+     «Ver mis logros» y «Cerrar». Si solo hay récords, su texto es la línea del récord. Va en la misma pila que las
+     invitaciones de amigos (una sola pila en `Layout`).
    - La cola se vacía al pasar a una fase distinta de aquella en la que se mostró (una transición del reductor) o al
      cerrar el aviso. Nunca se vacía al desmontar un componente, porque `StrictMode` desmonta y vuelve a montar en
      desarrollo, y eso perdería el aviso.
@@ -294,7 +296,8 @@ record AchievementFacts(
   - `ResultsShell` monta siempre un `<p className="sr-only" role="status" aria-live="polite">`, que anuncia «Logro
     desbloqueado: <nombres>». El recuadro visible no es región viva.
   - Las pantallas de resultados no tienen hoy ninguna región viva, así que queda una.
-  - En el lobby, el `ActionToast` `quiet` usa `role="status"`, como las invitaciones de amigos.
+  - Fuera de partida, el `ActionToast` de logros usa `live="status"`: `role="status"` y `aria-live="polite"`. Nunca sale
+    a mitad de partida, así que no compite con la región viva de la pantalla de juego.
 - Texto ≥ 13 px, objetivos táctiles ≥ 44 px y nada de scroll de documento en las capturas.
 
 ## Rutas REST

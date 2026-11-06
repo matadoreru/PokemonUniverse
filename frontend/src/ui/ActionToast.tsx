@@ -19,6 +19,11 @@ export interface ActionToastProps {
    * la pantalla de juego. Sin `quiet` es `alert`.
    */
   quiet?: boolean;
+  /**
+   * `status`: región viva educada (`role="status"`, `aria-live="polite"`) en vez de `alert`, para avisos que no urgen
+   * fuera de una partida (los logros). `quiet` manda sobre él.
+   */
+  live?: 'status';
   /** Se llama al llegar `expiresAt`. */
   onExpire?(): void;
   /** Instante (ms desde epoch) en que caduca; si ya pasó, no se pinta. */
@@ -26,7 +31,7 @@ export interface ActionToastProps {
 }
 
 /** Aviso con dos acciones (por ejemplo, una invitación). Va en su sitio: quien lo usa lo coloca. */
-export function ActionToast({ title, text, primary, secondary, quiet, onExpire, expiresAt }: ActionToastProps) {
+export function ActionToast({ title, text, primary, secondary, quiet, live, onExpire, expiresAt }: ActionToastProps) {
   const [expired, setExpired] = useState(false);
   const onExpireRef = useRef(onExpire);
   useEffect(() => {
@@ -50,7 +55,7 @@ export function ActionToast({ title, text, primary, secondary, quiet, onExpire, 
 
   if (expired || (expiresAt !== undefined && expiresAt <= Date.now())) return null;
   return (
-    <div className={s.toast} {...(quiet ? {} : { role: 'alert' })}>
+    <div className={s.toast} {...(quiet ? {} : live === 'status' ? { role: 'status', 'aria-live': 'polite' as const } : { role: 'alert' })}>
       <div className={s.copy}>
         <p className={s.title}>{title}</p>
         {text && <p className={s.text}>{text}</p>}
