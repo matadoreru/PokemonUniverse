@@ -3,7 +3,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FriendsResponse } from '../lib/api-contract';
 import type { FriendsContextValue } from './FriendsContext';
-import { AddFriendDialog, FriendsDrawer, sentText } from './FriendsDrawer';
+import { AddFriendDialog, FriendsDrawer } from './FriendsDrawer';
+import { sentText } from './friends-state';
 
 const avatar = { type: 'DEFAULT' } as const;
 const party = (id: string) => ({ id, username: id, avatar });

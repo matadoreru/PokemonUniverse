@@ -5,7 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { useRoom } from '../room/RoomContext';
 import { Dialog, Drawer, Field, Pill, Row, TabPanel, Tabs, type TabItem } from '../ui';
 import { useFriends, type FriendsContextValue } from './FriendsContext';
-import { FRIEND_STATUS_LABEL, friendErrorMessage, type FriendEntry } from './friends-state';
+import { FRIEND_STATUS_LABEL, friendErrorMessage, sentText, type FriendEntry } from './friends-state';
 import s from './FriendsDrawer.module.css';
 
 /** Se puede invitar desde el lobby a un amigo conectado (fuera de sala o en otra sin partida) que no esté ya en la tuya. */
@@ -13,11 +13,6 @@ export function canInviteFriend(room: RoomView | null, friend: Pick<FriendEntry,
   if (!room || room.phase !== 'LOBBY') return false;
   if (friend.status !== 'ONLINE' && friend.status !== 'IN_ROOM') return false;
   return !room.members.some((member) => member.id === friend.id);
-}
-
-/** Éxito de «Enviar solicitud»: si el otro ya te la había mandado, el servidor os hace amigos directamente. */
-export function sentText(kind: 'request' | 'friend', name: string): string {
-  return kind === 'friend' ? `Ya sois amigos: ${name} te había enviado una solicitud.` : `Solicitud enviada a ${name}.`;
 }
 
 /** Línea de estado del formulario «Añadir amigo». */

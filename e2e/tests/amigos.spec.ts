@@ -1,11 +1,11 @@
 import { expect, test, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import {
   abrirAmigos, anadirJuegos, borrarCuentas, capture, cartaDeJuego, cerrarAmigos, collectErrors, comprobarBdE2E, conmutarJuego,
-  createRoom, hacerAmigosPorApi, nuevaCuenta, registrarPorApi, SIZES, type CuentaE2E,
+  createRoom, hacerAmigosPorApi, joinRoom, nuevaCuenta, registrarPorApi, SIZES, type CuentaE2E,
 } from '../src/helpers.js';
 
 // Amigos e invitaciones de punta a punta con cuentas registradas, cada una en su contexto de navegador: panel con
-// pestañas, solicitud por nombre en mayúsculas desde el diálogo «Añadir amigo», aceptación, presencia, invitación desde el lobby, aviso con «Unirse» (también desde otra sala) y
+// pestañas, solicitud por nombre en mayúsculas desde el diálogo «Añadir amigo», otra desde «Gestionar a…» en el lobby, aceptación, presencia, invitación desde el lobby, aviso con «Unirse» (también desde otra sala) y
 // una invitación a una sala que ya no existe; además, otra página de la misma cuenta fuera de la sala no le quita el asiento. Cada pareja solo admite una invitación cada 30 s: cuentas nuevas por tamaño.
 const cuentas: CuentaE2E[] = [];
 
@@ -39,6 +39,20 @@ async function persona(browser: Browser, prefijo: string, w: number, h: number):
 const aviso = (page: Page) => page.getByRole('group', { name: 'Invitaciones' });
 /** Pestaña del panel «Amigos» por su nombre exacto (la de solicitudes lleva el número: «Solicitudes (1 pendiente)»). */
 const pestana = (panel: Locator, nombre: string) => panel.getByRole('tab', { name: nombre, exact: true });
+
+/** Abre «Gestionar a <nombre>» desde su franja del lobby. */
+async function gestionar(page: Page, nombre: string): Promise<Locator> {
+  await page.getByRole('button', { name: `Gestionar a ${nombre}` }).click();
+  const menu = page.getByRole('dialog', { name: `Gestionar a ${nombre}` });
+  await expect(menu).toBeVisible();
+  return menu;
+}
+
+async function cerrarGestionar(page: Page, nombre: string): Promise<void> {
+  const menu = page.getByRole('dialog', { name: `Gestionar a ${nombre}` });
+  await menu.getByRole('button', { name: 'Cerrar', exact: true }).click();
+  await expect(menu).toBeHidden();
+}
 
 /** Abre el diálogo «Añadir amigo» desde el panel «Amigos» ya abierto. */
 async function abrirAnadirAmigo(page: Page): Promise<Locator> {
@@ -136,8 +150,36 @@ for (const { w, h } of SIZES) {
       await expect(b.page.getByRole('button', { name: new RegExp(`Copiar código de sala.*${codigo}$`) })).toBeVisible();
       await expect(aviso(b.page)).toHaveCount(0);
 
-      // 6. Variante: B ya está en la sala de A; C (su amigo) lo invita a otra y B confirma salir de la suya.
-      await hacerAmigosPorApi({ page: c.page, cuenta: c.cuenta }, { page: b.page, cuenta: b.cuenta });
+      // 5b. En el lobby, «Gestionar a A» de B (no es host) solo trae la amistad: ya lo son.
+      const menuA = await gestionar(b.page, a.cuenta.username);
+      await expect(menuA.getByRole('button', { name: 'Ya sois amigos' })).toBeDisabled();
+      await expect(menuA.getByRole('button', { name: 'Expulsar de la sala' })).toHaveCount(0);
+      await cerrarGestionar(b.page, a.cuenta.username);
+
+      // 6. C entra por código en la sala de A y pide la amistad a B desde «Gestionar a B»; B la acepta desde
+      // «Gestionar a C». El host A ve, además de sus acciones, la de amistad.
+      await c.page.goto('/play');
+      await joinRoom(c.page, codigo);
+      const menuB = await gestionar(c.page, b.cuenta.username);
+      await menuB.getByRole('button', { name: 'Enviar solicitud de amistad' }).click();
+      await expect(menuB.getByText(`Solicitud enviada a ${b.cuenta.username}.`)).toBeVisible();
+      await expect(menuB.getByRole('button', { name: 'Solicitud enviada' })).toBeDisabled();
+      await capture(c.page, 'lobby-gestionar-amistad');
+      await cerrarGestionar(c.page, b.cuenta.username);
+      const menuC = await gestionar(b.page, c.cuenta.username);
+      await menuC.getByRole('button', { name: 'Aceptar solicitud de amistad' }).click();
+      await expect(menuC.getByText(`${c.cuenta.username} y tú ya sois amigos.`)).toBeVisible();
+      await expect(menuC.getByRole('button', { name: 'Ya sois amigos' })).toBeDisabled();
+      await cerrarGestionar(b.page, c.cuenta.username);
+      const menuHost = await gestionar(a.page, c.cuenta.username);
+      await expect(menuHost.getByRole('button', { name: 'Expulsar de la sala' })).toBeVisible();
+      await expect(menuHost.getByRole('button', { name: 'Enviar solicitud de amistad' })).toBeVisible();
+      await capture(a.page, 'lobby-gestionar-host');
+      await cerrarGestionar(a.page, c.cuenta.username);
+
+      // 6b. C sale y crea su sala; B sigue en la de A: C lo invita y B confirma salir de la suya.
+      await c.page.getByRole('button', { name: 'Salir de la sala' }).click();
+      await expect(c.page).toHaveURL(/\/play$/);
       const codigoC = await createRoom(c.page);
       await c.page.getByRole('button', { name: /^Invitar amigos/ }).click();
       await c.page.getByRole('dialog', { name: 'Amigos' }).getByRole('button', { name: `Invitar a ${b.cuenta.username}` }).click();

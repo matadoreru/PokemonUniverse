@@ -63,6 +63,11 @@ export function pendingCount(overview: FriendsResponse | null): number {
   return overview?.incoming.length ?? 0;
 }
 
+/** Éxito de «Enviar solicitud»: si el otro ya te la había mandado, el servidor os hace amigos directamente. */
+export function sentText(kind: 'request' | 'friend', name: string): string {
+  return kind === 'friend' ? `Ya sois amigos: ${name} te había enviado una solicitud.` : `Solicitud enviada a ${name}.`;
+}
+
 const GENERIC = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';
 
 /**
@@ -81,4 +86,25 @@ export const FRIEND_ERROR_TRANSLATIONS: Record<string, string> = {
 export function friendErrorMessage(error: unknown): string {
   const raw = (typeof error === 'string' ? error : error instanceof Error ? error.message : '').trim();
   return Object.hasOwn(FRIEND_ERROR_TRANSLATIONS, raw) ? FRIEND_ERROR_TRANSLATIONS[raw]! : GENERIC;
+}
+
+/** Relación con otra cuenta según la lista: amigos, solicitud recibida (para aceptarla), enviada o ninguna. */
+export type FriendRelation = { kind: 'none' } | { kind: 'outgoing' } | { kind: 'incoming'; requestId: string } | { kind: 'friend' };
+
+/** Sin la lista cargada se trata como «ninguna»: el servidor decide al enviar (y si ya os la habíais mandado, os hace amigos). */
+export function friendRelation(overview: FriendsResponse | null, userId: string): FriendRelation {
+  if (!overview) return { kind: 'none' };
+  if (overview.friends.some((friend) => friend.id === userId)) return { kind: 'friend' };
+  const incoming = overview.incoming.find((request) => request.from?.id === userId);
+  if (incoming) return { kind: 'incoming', requestId: incoming.id };
+  if (overview.outgoing.some((request) => request.to?.id === userId)) return { kind: 'outgoing' };
+  return { kind: 'none' };
+}
+
+/**
+ * Los invitados llevan id `guest_<uuid>` (`AuthService.guestIdentity`); las cuentas, el id de la fila. Más fiable que
+ * `level == null`, que también es `null` en una cuenta sin experiencia todavía.
+ */
+export function isGuestId(id: string): boolean {
+  return id.startsWith('guest_');
 }

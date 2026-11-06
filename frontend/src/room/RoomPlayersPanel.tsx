@@ -20,7 +20,8 @@ interface Props {
 /**
  * Placa de jugadores de la sala: las franjas de `PlayerList` en un panel con su contador de conectados; la lista se
  * desplaza dentro. Tras confirmar una expulsión o un traspaso del Host el foco pasa al título del panel: el diálogo lo
- * devuelve a una fila (o a un botón) que está a punto de desaparecer.
+ * devuelve a una fila (o a un botón) que está a punto de desaparecer. Con una cuenta registrada, «Gestionar a…» también
+ * sirve para pedir la amistad a otra cuenta de la sala.
  */
 export function RoomPlayersPanel({ members, maxPlayers, className, bodyClassName, ...list }: Props) {
   const connected = connectedCount(members);
@@ -29,7 +30,7 @@ export function RoomPlayersPanel({ members, maxPlayers, className, bodyClassName
   const focusTitle = useCallback(() => { window.setTimeout(() => titleRef.current?.focus(), 0); }, []);
   return (
     <Panel title="Jugadores" titleRef={titleRef} aria-label="Jugadores" scroll scrollLabel="Lista de jugadores" className={className ?? ''} bodyClassName={bodyClassName ?? ''} right={<><Badge tone="yellow">{`${connected} / ${maxPlayers}`}</Badge><span className="sr-only">conectados</span></>}>
-      <PlayerList members={members} onConfirmed={focusTitle} {...list} />
+      <PlayerList members={members} onConfirmed={focusTitle} friendActions {...list} />
     </Panel>
   );
 }

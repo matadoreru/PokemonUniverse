@@ -45,3 +45,15 @@
   flex-direction: column;
   gap: var(--sp-3);
 }
+/* Resultado de la acción de amistad del menú: dos regiones vivas siempre montadas (vacías miden 0 px). */
+.friendOk,
+.friendError {
+  margin: 0;
+  font: 800 var(--fs-15) / var(--lh-text) var(--font-text);
+}
+.friendOk {
+  color: var(--navy);
+}
+.friendError {
+  color: var(--red-text);
+}

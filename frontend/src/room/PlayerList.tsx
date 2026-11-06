@@ -1,8 +1,10 @@
 import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
-import { ArrowRightLeft, CheckCircle2, Crown, Eye, MoreVertical, Star, UserMinus, UserRoundCog } from 'lucide-react';
+import { ArrowRightLeft, Check, CheckCircle2, Clock, Crown, Eye, MoreVertical, Star, UserCheck, UserMinus, UserPlus, UserRoundCog } from 'lucide-react';
 import { memo, useEffect, useRef, useState } from 'react';
 import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
+import { useOptionalFriends, type FriendsContextValue } from '../friends/FriendsContext';
+import { friendErrorMessage, friendRelation, isGuestId, sentText } from '../friends/friends-state';
 import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
 import { playerColor } from './player-color';
 import { distanceMemberStatus, distanceMemberStatusLabels } from './pokedex-distance-selection';
@@ -13,6 +15,11 @@ interface Props {
   game?: PokedexDistancePublicState | null;
   selfId: string;
   canManage?: boolean;
+  /**
+   * Lobby: una cuenta registrada puede pedir la amistad (o aceptarla) desde «Gestionar a…» a otra cuenta de la sala. Sin
+   * él (la lista de Pokédex Distance en partida), solo las acciones del host.
+   */
+  friendActions?: boolean;
   onSetRoomRole?(id: string, role: 'CO_HOST' | 'MEMBER'): void;
   onTransferHost?(id: string): void;
   onKick?(id: string): void;
@@ -62,9 +69,74 @@ const confirmCopy = {
   transfer: { title: (name: string) => `¿Transferir el Host a ${name}?`, body: 'Tú pasarás a ser Co-host.', action: 'Transferir Host' },
 } as const;
 
-export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, onSetRoomRole, onTransferHost, onKick, onConfirmed }: Props) {
+/** Resultado de la acción de amistad del menú, que es su único dueño. */
+type FriendResult = { ok: boolean; text: string } | null;
+
+/**
+ * Acción de amistad del menú según la relación: enviar la solicitud (por el nombre visible, que en una cuenta es su
+ * nombre de usuario), «Solicitud enviada», aceptar la que te mandó o «Ya sois amigos». El resultado va aquí mismo.
+ */
+function FriendAction({ member, friends }: { member: RoomMemberView; friends: FriendsContextValue }) {
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<FriendResult>(null);
+  const relation = friendRelation(friends.overview, member.id);
+  const name = member.displayName;
+  const run = (action: () => Promise<string>) => {
+    setBusy(true);
+    setResult(null);
+    void action().then((text) => setResult({ ok: true, text }))
+      .catch((error: unknown) => setResult({ ok: false, text: friendErrorMessage(error) })).finally(() => setBusy(false));
+  };
+  return (
+    <>
+      {relation.kind === 'none' && <Pill variant="yellow" block icon={UserPlus} loading={busy} onClick={() => run(async () => sentText(await friends.send(name), name))}>Enviar solicitud de amistad</Pill>}
+      {relation.kind === 'outgoing' && <Pill variant="cream" block icon={Clock} disabled>Solicitud enviada</Pill>}
+      {relation.kind === 'incoming' && <Pill variant="yellow" block icon={Check} loading={busy} onClick={() => run(async () => { await friends.accept(relation.requestId); return `${name} y tú ya sois amigos.`; })}>Aceptar solicitud de amistad</Pill>}
+      {relation.kind === 'friend' && <Pill variant="cream" block icon={UserCheck} disabled>Ya sois amigos</Pill>}
+      <div>
+        <p className={s.friendOk} role="status">{result?.ok ? result.text : ''}</p>
+        <p className={s.friendError} role="alert">{result && !result.ok ? result.text : ''}</p>
+      </div>
+    </>
+  );
+}
+
+interface MemberMenuProps {
+  member: RoomMemberView;
+  /** El host (con `MANAGE_ROLES`) sobre otro que no es el Host: Co-host, Transferir Host y Expulsar. */
+  hostActions: boolean;
+  /** Amigos de quien mira; sin cuenta registrada (o sobre un invitado) no hay acción de amistad. */
+  friends: FriendsContextValue | null;
+  onSetRoomRole?: ((id: string, role: 'CO_HOST' | 'MEMBER') => void) | undefined;
+  onAsk?(kind: 'kick' | 'transfer'): void;
+  onClose?(): void;
+}
+
+/** Cuerpo del diálogo «Gestionar a…»: se monta al abrirlo, así que el resultado de la amistad empieza vacío cada vez. */
+export function MemberMenu({ member, hostActions, friends, onSetRoomRole, onAsk, onClose }: MemberMenuProps) {
+  const befriend = Boolean(friends?.enabled) && !isGuestId(member.id);
+  return (
+    <div className={s.menu}>
+      {hostActions && <>
+        <Pill variant="cream" block icon={UserRoundCog} onClick={() => { onClose?.(); onSetRoomRole?.(member.id, member.roomRole === 'CO_HOST' ? 'MEMBER' : 'CO_HOST'); }}>
+          {member.roomRole === 'CO_HOST' ? 'Quitar Co-host' : 'Hacer Co-host'}
+        </Pill>
+        {member.presence === 'CONNECTED' && <Pill variant="cream" block icon={ArrowRightLeft} onClick={() => onAsk?.('transfer')}>Transferir Host</Pill>}
+      </>}
+      {befriend && friends && <FriendAction member={member} friends={friends} />}
+      {hostActions && <Pill variant="danger" block icon={UserMinus} onClick={() => onAsk?.('kick')}>Expulsar de la sala</Pill>}
+    </div>
+  );
+}
+
+export const PlayerList = memo(function PlayerList({ members, game, selfId, canManage = false, friendActions = false, onSetRoomRole, onTransferHost, onKick, onConfirmed }: Props) {
+  const friends = useOptionalFriends();
+  // Amistad desde el menú: solo en el lobby y con una cuenta registrada, sobre otra cuenta (nunca sobre un invitado).
+  const befriend = friendActions && Boolean(friends?.enabled);
+  const hostManages = (member: RoomMemberView) => canManage && member.roomRole !== 'HOST' && member.id !== selfId;
+  const friendManages = (member: RoomMemberView) => befriend && member.id !== selfId && !isGuestId(member.id);
   const previousMembers = useRef(members);
-  // Menú del host para un jugador y, aparte, la confirmación: dos diálogos para que cada uno tenga su Esc y su foco.
+  // Menú «Gestionar a…» (del host, o de amistad) y, aparte, la confirmación del host: dos diálogos con su Esc y su foco.
   const [menuFor, setMenuFor] = useState<string | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   useEffect(() => {
@@ -80,7 +152,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
     <>
       <ul className={s.list}>
         {members.map((member, index) => {
-          const manageable = canManage && member.roomRole !== 'HOST' && member.id !== selfId;
+          const manageable = hostManages(member) || friendManages(member);
           const status = game ? distanceMemberStatus(game, member.id) : null;
           const selection = status?.kind === 'picked' ? status : null;
           const readiness = memberReadiness(member);
@@ -118,17 +190,12 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
           );
         })}
       </ul>
+      {(canManage || befriend) && <Dialog open={Boolean(menuMember)} title={menuMember ? `Gestionar a ${menuMember.displayName}` : 'Gestionar jugador'} onClose={closeMenu} width={420}
+        actions={[{ label: 'Cerrar', variant: 'blue', onClick: closeMenu }]}>
+        {menuMember && <MemberMenu key={menuMember.id} member={menuMember} hostActions={hostManages(menuMember)} friends={befriend ? friends : null}
+          onSetRoomRole={onSetRoomRole} onAsk={(kind) => ask(kind, menuMember)} onClose={closeMenu} />}
+      </Dialog>}
       {canManage && <>
-        <Dialog open={Boolean(menuMember)} title={menuMember ? `Gestionar a ${menuMember.displayName}` : 'Gestionar jugador'} onClose={closeMenu} width={420}
-          actions={[{ label: 'Cerrar', variant: 'blue', onClick: closeMenu }]}>
-          {menuMember && <div className={s.menu}>
-            <Pill variant="cream" block icon={UserRoundCog} onClick={() => { closeMenu(); onSetRoomRole?.(menuMember.id, menuMember.roomRole === 'CO_HOST' ? 'MEMBER' : 'CO_HOST'); }}>
-              {menuMember.roomRole === 'CO_HOST' ? 'Quitar Co-host' : 'Hacer Co-host'}
-            </Pill>
-            {menuMember.presence === 'CONNECTED' && <Pill variant="cream" block icon={ArrowRightLeft} onClick={() => ask('transfer', menuMember)}>Transferir Host</Pill>}
-            <Pill variant="danger" block icon={UserMinus} onClick={() => ask('kick', menuMember)}>Expulsar de la sala</Pill>
-          </div>}
-        </Dialog>
         <Dialog open={Boolean(pending)} title={pending && confirm ? confirm.title(pending.member.displayName) : 'Confirmar'} onClose={() => setPending(null)} width={420}
           actions={pending && confirm ? [
             { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
@@ -139,4 +206,4 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
       </>}
     </>
   );
-}, (previous, next) => previous.selfId === next.selfId && previous.canManage === next.canManage && previous.game === next.game && sameMembers(previous.members, next.members));
+}, (previous, next) => previous.selfId === next.selfId && previous.canManage === next.canManage && previous.friendActions === next.friendActions && previous.game === next.game && sameMembers(previous.members, next.members));

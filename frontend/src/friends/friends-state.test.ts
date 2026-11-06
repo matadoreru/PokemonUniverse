@@ -1,7 +1,7 @@
 import type { FriendInvite } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import type { FriendsResponse } from '../lib/api-contract';
-import { addInvite, applyPresence, emptyFriendsState, friendErrorMessage, pendingCount, pruneInvites, removeInvite, setOverview, sortFriends, type FriendEntry } from './friends-state';
+import { addInvite, applyPresence, emptyFriendsState, friendErrorMessage, friendRelation, isGuestId, pendingCount, pruneInvites, removeInvite, setOverview, sortFriends, type FriendEntry } from './friends-state';
 
 const avatar: FriendEntry['avatar'] = { type: 'DEFAULT' };
 const friend = (id: string, username: string, status: FriendEntry['status']): FriendEntry => ({ id, username, avatar, level: null, status });
@@ -74,5 +74,26 @@ describe('friendErrorMessage', () => {
 
   it('lo desconocido queda en el genérico', () => {
     expect(friendErrorMessage(new Error('Boom'))).toBe('No se pudo completar. Inténtalo de nuevo en unos segundos.');
+  });
+});
+
+describe('friendRelation', () => {
+  const data = overview([friend('dani', 'dani', 'ONLINE')]);
+  it('dice qué hay con otra cuenta: amigos, solicitud recibida (con su id), enviada o nada', () => {
+    expect(friendRelation(data, 'dani')).toEqual({ kind: 'friend' });
+    expect(friendRelation(data, 'beto')).toEqual({ kind: 'incoming', requestId: 'r2' });
+    expect(friendRelation(data, 'cris')).toEqual({ kind: 'outgoing' });
+    expect(friendRelation(data, 'eva')).toEqual({ kind: 'none' });
+  });
+
+  it('sin la lista cargada, nada', () => {
+    expect(friendRelation(null, 'dani')).toEqual({ kind: 'none' });
+  });
+});
+
+describe('isGuestId', () => {
+  it('los invitados tienen id guest_<uuid>; las cuentas, no', () => {
+    expect(isGuestId('guest_4f2a7c1e-0b9d-4c8e-9a3b-2d5e6f7a8b9c')).toBe(true);
+    expect(isGuestId('clx0abc123')).toBe(false);
   });
 });
