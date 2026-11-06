@@ -163,7 +163,7 @@ class RoomCoordinatorTest {
     kit.manager.create(host, "host-old", JsonNode.createNumberNode(8));
     var room = kit.manager.store.roomForPlayer(host.id());
 
-    assertTrue(kit.manager.connect(host, "host-current"));
+    assertTrue(kit.manager.attach(host, "host-current"));
     assertEquals("host-current", room.members.get(host.id()).connectionId);
     assertEquals(1, kit.events.named("session:restored").size());
 
@@ -194,7 +194,7 @@ class RoomCoordinatorTest {
     assertEquals(host.id(), room.hostId);
     assertEquals(PresenceStatus.TEMPORARILY_DISCONNECTED, room.members.get(host.id()).presence);
 
-    kit.manager.connect(host, "host-2");
+    kit.manager.attach(host, "host-2");
     var restored = room.members.get(host.id());
     assertTrue(restored.connected);
     assertEquals(PresenceStatus.CONNECTED, restored.presence);
@@ -287,7 +287,7 @@ class RoomCoordinatorTest {
     select(kit, "p2", "charmander");
     assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
     kit.time.advance(5_000);
-    assertTrue(kit.manager.connect(guest("p3", "Tres"), "socket-p3-b"));
+    assertTrue(kit.manager.attach(guest("p3", "Tres"), "socket-p3-b"));
     assertNull(room.members.get("p3").presenceGraceTimer);
     assertEquals(0, room.members.get("p3").disconnectedAt);
     select(kit, "p3", "squirtle");
@@ -409,7 +409,7 @@ class RoomCoordinatorTest {
     // Elección de tipos: se cae y vuelve a los 7 s.
     kit.manager.disconnect("p2", "socket-p2");
     kit.time.advance(7_000);
-    assertTrue(kit.manager.connect(guest("p2", "Dos"), "socket-p2-b"));
+    assertTrue(kit.manager.attach(guest("p2", "Dos"), "socket-p2-b"));
     kit.time.advance(5_000);
     assertDuelAlive(kit, room, "SELECTING_TYPES");
     // Búsqueda: lo mismo con la carrera en marcha.
@@ -419,7 +419,7 @@ class RoomCoordinatorTest {
     assertDuelAlive(kit, room, "POKEMON_SEARCH");
     kit.manager.disconnect("p2", "socket-p2-b");
     kit.time.advance(7_000);
-    assertTrue(kit.manager.connect(guest("p2", "Dos"), "socket-p2-c"));
+    assertTrue(kit.manager.attach(guest("p2", "Dos"), "socket-p2-c"));
     kit.time.advance(5_000);
     assertDuelAlive(kit, room, "POKEMON_SEARCH");
   }
@@ -496,7 +496,7 @@ class RoomCoordinatorTest {
     assertSame(game, room.game);
     assertNull(game.finishReason);
     kit.time.advance(2_000);
-    assertTrue(kit.manager.connect(guest("skip-p3", "Player 3"), "skip-socket-3b"));
+    assertTrue(kit.manager.attach(guest("skip-p3", "Player 3"), "skip-socket-3b"));
     assertSame(game, room.game);
     assertNull(game.finishReason);
     kit.manager.disconnect("skip-p3", "skip-socket-3b");
@@ -689,7 +689,7 @@ class RoomCoordinatorTest {
     assertEquals(RoomRole.CO_HOST, room.members.get(oldHost.id()).roomRole);
 
     kit.manager.disconnect(oldHost.id(), "old-socket");
-    kit.manager.connect(oldHost, "old-restored");
+    kit.manager.attach(oldHost, "old-restored");
     var restored = room.members.get(oldHost.id());
     assertEquals(RoomRole.CO_HOST, restored.roomRole);
     assertEquals(PresenceStatus.CONNECTED, restored.presence);
@@ -1366,7 +1366,7 @@ class RoomCoordinatorTest {
     assertNull(hidden.tallies());
     assertEquals(List.of("host"), hidden.votedPlayerIds());
     kit.manager.disconnect("host", "socket-host");
-    kit.manager.connect(guest("host", "Host"), "host-restored");
+    kit.manager.attach(guest("host", "Host"), "host-restored");
     var restored = (RoomView) kit.events.named("session:restored").getLast().payload();
     assertEquals(hostChoice, restored.nextGameVote().ownVoteGameId());
     kit.manager.voteNextGame("guest", guestChoice);
@@ -1878,7 +1878,7 @@ class RoomCoordinatorTest {
       var state = kit.manager.view(f.room(), "skip-p2").gameSkipState();
       assertEquals(1, state.votes());
       assertEquals(2, state.requiredVotes());
-      kit.manager.connect(f.people().getFirst(), "skip-restored");
+      kit.manager.attach(f.people().getFirst(), "skip-restored");
       var restored = (RoomView) kit.events.named("session:restored").getLast().payload();
       assertEquals(1, restored.gameSkipState().votes());
       assertEquals(2, restored.gameSkipState().requiredVotes());
@@ -2024,7 +2024,7 @@ class RoomCoordinatorTest {
     assertEquals(3, kit.time.activeTimers());
     kit.manager.stop();
     assertEquals(0, kit.time.activeTimers());
-    assertFalse(kit.manager.connect(fixture.people().get(1), "late"));
+    assertFalse(kit.manager.attach(fixture.people().get(1), "late"));
     assertMessage("El servidor se está cerrando", kit.manager::assertAcceptingCommands);
     var phase = fixture.room().phase;
     kit.time.advance(120_000);

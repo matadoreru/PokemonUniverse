@@ -299,10 +299,19 @@ public class RoomCoordinator {
   // ---------------------------------------------------------------------------------------------- conexión (bind)
 
   /**
-   * {@code bind(socket)}: devuelve {@code false} si el servidor se cierra (el transporte desconecta). Si la identidad
-   * ya pertenece a una sala, la restaura y emite {@code session:restored} a esta conexión.
+   * Apertura de una conexión: devuelve {@code false} si el servidor se cierra (el transporte desconecta). No toca la
+   * sala: una cuenta registrada abre el {@code /ws} en toda página (amigos), y solo {@link #attach} ocupa el asiento.
    */
   public boolean connect(AuthUser identity, String connectionId) {
+    return !stopping;
+  }
+
+  /**
+   * {@code session:attach}, el {@code bind(socket)} de Node: la conexión entra en la sesión de sala (la página está en
+   * {@code /play} o {@code /room}). Si la identidad ya pertenece a una sala, esta pasa a ser su conexión vigente (gana la
+   * última) y recibe {@code session:restored}. Devuelve {@code false} si el servidor se cierra.
+   */
+  public boolean attach(AuthUser identity, String connectionId) {
     if (stopping) return false;
     restore(identity, connectionId);
     return true;

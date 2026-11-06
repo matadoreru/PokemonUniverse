@@ -1,12 +1,12 @@
 import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import {
-  abrirAmigos, borrarCuentas, capture, cerrarAmigos, collectErrors, comprobarBdE2E, createRoom, hacerAmigosPorApi, nuevaCuenta,
-  registrarPorApi, SIZES, type CuentaE2E,
+  abrirAmigos, anadirJuegos, borrarCuentas, capture, cartaDeJuego, cerrarAmigos, collectErrors, comprobarBdE2E, conmutarJuego,
+  createRoom, hacerAmigosPorApi, nuevaCuenta, registrarPorApi, SIZES, type CuentaE2E,
 } from '../src/helpers.js';
 
 // Amigos e invitaciones de punta a punta con cuentas registradas, cada una en su contexto de navegador: solicitud por
 // nombre en mayúsculas, aceptación, presencia, invitación desde el lobby, aviso con «Unirse» (también desde otra sala) y
-// una invitación a una sala que ya no existe. Cada pareja solo admite una invitación cada 30 s: cuentas nuevas por tamaño.
+// una invitación a una sala que ya no existe; además, otra página de la misma cuenta fuera de la sala no le quita el asiento. Cada pareja solo admite una invitación cada 30 s: cuentas nuevas por tamaño.
 const cuentas: CuentaE2E[] = [];
 
 test.beforeAll(() => {
@@ -75,6 +75,24 @@ for (const { w, h } of SIZES) {
 
       // 4. A crea una sala; en el lobby, B aparece con «Invitar».
       const codigo = await createRoom(a.page);
+
+      // 4b. Otra página de A en Inicio (mismo contexto) abre el `/ws` por los amigos sin quitarle el asiento a la pestaña
+      // de la sala: no recibe la sala, y la pestaña de la sala sigue mandando mientras está abierta y después de cerrarla.
+      const otra = await a.context.newPage();
+      const socketOtra = otra.waitForEvent('websocket');
+      await otra.goto('/');
+      const wsOtra = await socketOtra;
+      const tramasOtra: string[] = [];
+      wsOtra.on('framereceived', ({ payload }) => { tramasOtra.push(String(payload)); });
+      const panelOtra = await abrirAmigos(otra);
+      await expect(panelOtra.getByRole('listitem').filter({ hasText: b.cuenta.username })).toContainText('Conectado');
+      await anadirJuegos(a.page, ['Shiny Quiz']);
+      await otra.close();
+      // Dos órdenes tras el cierre (cada una espera su estado): la segunda llega con el cierre ya procesado.
+      await conmutarJuego(cartaDeJuego(a.page, 'Shiny Quiz'), false);
+      await conmutarJuego(cartaDeJuego(a.page, 'Shiny Quiz'), true);
+      await expect(a.page.getByText(/dos pestañas/)).toHaveCount(0);
+      expect(tramasOtra.filter((trama) => trama.includes('session:restored') || trama.includes('room:state'))).toEqual([]);
       await a.page.getByRole('button', { name: /^Invitar amigos/ }).click();
       const panelLobby = a.page.getByRole('dialog', { name: 'Amigos' });
       await expect(panelLobby.getByRole('button', { name: `Invitar a ${b.cuenta.username}` })).toBeEnabled();

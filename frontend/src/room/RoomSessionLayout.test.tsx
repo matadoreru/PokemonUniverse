@@ -7,7 +7,7 @@ import { RoomPlate, roomPlateHeading } from './RoomPlate';
 import { RoomNotice } from './RoomNotice';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 
-const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn() }));
+const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn(), holdRoomSession: vi.fn(() => () => undefined) }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'self' } }) }));
 

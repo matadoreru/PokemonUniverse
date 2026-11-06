@@ -30,6 +30,8 @@ import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,6 +71,7 @@ class RoomWebSocketTest {
   @Inject @Client("/") WebSocketClient client;
   @Inject IdentityTokens tokens;
   @Inject ManualWsClock clock;
+  @Inject WsSessions sessions;
 
   private WsTestClients clients;
 
@@ -134,6 +137,7 @@ class RoomWebSocketTest {
 
     // Review Focus 3: una pestaña nueva del mismo usuario reemplaza a la conexión antigua, que sigue abierta.
     var newerHost = connect(user("ws_host", "Host"));
+    assertOk(newerHost.command("session:attach", null));
     var restored = newerHost.awaitPush("session:restored", view -> true);
     assertEquals(code, text(restored, "code"));
     var stale = host.command("room:set-ready", "{\"ready\":true}");
@@ -145,8 +149,69 @@ class RoomWebSocketTest {
 
     // Dentro de la gracia, el mismo usuario vuelve con una conexión nueva y recupera su sala.
     var returningGuest = connect(user("ws_guest", "Guest"));
+    assertOk(returningGuest.command("session:attach", null));
     assertEquals(code, text(returningGuest.awaitPush("session:restored", view -> true), "code"));
     newerHost.awaitPush("room:state", view -> presenceOf(view, "ws_guest").equals("CONNECTED"));
+  }
+
+  /**
+   * Una conexión que no se ha enganchado a la sesión de sala (otra página abierta para amigos) no toca el asiento: el
+   * jugador sigue recibiendo la sala y mandando en la conexión enganchada, y su cierre no lo desconecta.
+   */
+  @Test
+  void aConnectionThatNeverAttachesLeavesTheSeatAlone() {
+    var host = connect(user("ws_seat", "Seat"));
+    var guest = connect(user("ws_seat_guest", "Guest"));
+    var code = host.command("room:create", "{}").get("data").get("room").get("code").getStringValue();
+    assertOk(guest.command("room:join", "{\"code\":\"" + code + "\"}"));
+    var hostConnection = sessions.connectionsOf("ws_seat").getFirst();
+
+    var otherPage = connect(user("ws_seat", "Seat"));
+    // Un comando con ack: su apertura ya se procesó (va antes en la misma cola).
+    assertError("Evento desconocido", otherPage.command("barrier", null));
+    assertTrue(otherPage.received.stream().noneMatch(message -> message.get("event") != null
+        && "session:restored".equals(message.get("event").getStringValue())), "sin engancharse no se restaura la sala");
+    assertOk(host.command("room:select-game", "{\"gameId\":\"higher-lower\"}"));
+    host.awaitPush("room:state", view -> "higher-lower".equals(text(view, "selectedGameId")));
+
+    var otherConnection = sessions.connectionsOf("ws_seat").stream()
+        .filter(connection -> !connection.id().equals(hostConnection.id())).findFirst().orElseThrow();
+    WsTestClients.closeQuietly(otherPage);
+    awaitRemoved(otherConnection);
+    var drained = new CompletableFuture<Void>();
+    otherConnection.enqueue(() -> drained.complete(null)); // detrás del cierre en la cola de esa conexión
+    drained.orTimeout(TestSocket.WAIT.toMillis(), TimeUnit.MILLISECONDS).join();
+
+    assertOk(host.command("room:select-game", "{\"gameId\":\"type-duel\"}"));
+    var seen = guest.awaitPush("room:state", view -> "type-duel".equals(text(view, "selectedGameId")));
+    assertEquals("CONNECTED", presenceOf(seen, "ws_seat"));
+    host.awaitPush("room:state", view -> "type-duel".equals(text(view, "selectedGameId")));
+  }
+
+  /** Engancharse desde otra conexión sí toma el asiento (gana la última) y le manda {@code session:restored}. */
+  @Test
+  void attachingFromAnotherConnectionTakesTheSeat() {
+    var host = connect(user("ws_attach", "Attach"));
+    var code = host.command("room:create", "{}").get("data").get("room").get("code").getStringValue();
+
+    var roomTab = connect(user("ws_attach", "Attach"));
+    assertOk(roomTab.command("session:attach", null));
+    assertEquals(code, text(roomTab.awaitPush("session:restored", view -> true), "code"));
+    assertError("Estás jugando en dos pestañas o dispositivos con esta cuenta. Recarga esta página para seguir jugando aquí.",
+        host.command("room:select-game", "{\"gameId\":\"higher-lower\"}"));
+    assertOk(roomTab.command("room:select-game", "{\"gameId\":\"higher-lower\"}"));
+
+    // Engancharse sin sala es inocuo.
+    var lonely = connect(user("ws_attach_none", "None"));
+    assertOk(lonely.command("session:attach", null));
+  }
+
+  private void awaitRemoved(WsSessions.Connection connection) {
+    long deadline = System.nanoTime() + TestSocket.WAIT.toNanos();
+    while (sessions.get(connection.id()) != null) {
+      if (System.nanoTime() > deadline) throw new AssertionError("La conexión no se cerró");
+      Thread.onSpinWait();
+    }
   }
 
   @Test

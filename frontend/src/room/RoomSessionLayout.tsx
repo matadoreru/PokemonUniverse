@@ -56,7 +56,9 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
 }
 
 function RoomSessionContent() {
-  const { connected, room, setGameSkipVote, leaveRoom } = useRoom();
+  const { connected, room, setGameSkipVote, leaveRoom, holdRoomSession } = useRoom();
+  // Estas rutas enganchan la pestaña a la sesión de sala; al salir de ellas el asiento sigue con esta conexión.
+  useEffect(() => holdRoomSession(), [holdRoomSession]);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -95,7 +97,8 @@ function RoomSessionContent() {
 
 /**
  * Sesión de sala de `/play` y `/room`. `RoomProvider` y `FriendsProvider` viven en la raíz (`SessionRoot`): el `/ws` de
- * una cuenta registrada sigue abierto en toda página. El aviso de conexión es solo de estas rutas (habla de la sala).
+ * una cuenta registrada sigue abierto en toda página, pero solo estas rutas lo enganchan a la sala (`holdRoomSession`).
+ * El aviso de conexión es solo de estas rutas (habla de la sala).
  */
 export function RoomSessionLayout() {
   return <RoomSessionContent />;

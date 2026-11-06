@@ -171,6 +171,8 @@ export const gameSelectionModeSchema = z.discriminatedUnion('type', [
 ]);
 
 export interface ClientToServerEvents {
+  /** La conexión entra en la sesión de sala (`/play` y `/room`): solo una conexión enganchada ocupa el asiento. */
+  'session:attach': (_: unknown, ack: SocketAck) => void;
   'room:create': (payload: { maxPlayers?: number }, ack: SocketAck<{ room: RoomView }>) => void;
   'room:join': (payload: { code: string }, ack: SocketAck<{ room: RoomView }>) => void;
   'room:leave': (_: unknown, ack: SocketAck) => void;

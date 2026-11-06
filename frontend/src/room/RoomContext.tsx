@@ -6,6 +6,7 @@ import { createRealtime } from '../lib/socket';
 import { commandRequest, gameActionPayload, requestCommand, roomErrorReporter, type GameActionOptions } from './room-command';
 import { roomActionErrorMessage } from './roomCode';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
+import { SessionAttachment } from './session-attachment';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
 /** Avisos del `/ws` que no son de la sala: los escucha `FriendsProvider` con `subscribe`. */
@@ -46,6 +47,11 @@ interface RoomContextValue {
    * proveedor, que reenvía desde el socket actual. Devuelve la función para dejar de escuchar.
    */
   subscribe<E extends FriendSocketEvent>(event: E, listener: ServerToClientEvents[E]): () => void;
+  /**
+   * Engancha esta pestaña a la sesión de sala (`session:attach`) ahora y en cada reconexión, hasta llamar a la función
+   * devuelta. Lo usa solo `RoomSessionLayout`: otra página con el `/ws` abierto no le quita el asiento a la de la sala.
+   */
+  holdRoomSession(): () => void;
   /** Con aviso global salvo `{ report: false }` (los borradores de Red Flag: teclear no borra el error de un envío). */
   gameAction(action: unknown, options?: GameActionOptions): Promise<void>;
 }
@@ -65,14 +71,18 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const friendListenersRef = useRef(new Map<FriendSocketEvent, Set<FriendListener>>());
+  const attachmentRef = useRef(new SessionAttachment());
 
   useEffect(() => {
     const projection = projectionRef.current;
+    const attachment = attachmentRef.current;
     if (!user || !active) { socketRef.current?.disconnect(); socketRef.current = null; setConnected(false); setRoom(projection.setAuthoritative(null, true)); return; }
     const socket = createRealtime(); socketRef.current = socket;
     const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
     // `error` only comes with an authentication close of `/ws` (4401), never with a plain disconnect.
     socket.onConnection((isConnected, connectionError) => {
+      // Antes de publicar `connected`: el enganche sale el primero por la conexión nueva, antes que cualquier comando.
+      if (isConnected) attachment.opened(socket); else attachment.closed(socket);
       setConnected(isConnected);
       if (!isConnected) setRoom(projection.clearPending());
       if (connectionError !== undefined) setError(connectionError);
@@ -84,7 +94,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     for (const event of FRIEND_SOCKET_EVENTS) {
       socket.on(event, ((payload: never) => { for (const listener of [...(friendListenersRef.current.get(event) ?? [])]) listener(payload); }) as ServerToClientEvents[typeof event]);
     }
-    return () => { detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
+    return () => { attachment.closed(socket); detachCursorChannel(); socket.disconnect(); socketRef.current = null; projection.setAuthoritative(null, true); };
   }, [user?.id, active]);
 
   // El nivel propio llega en vivo en `room:state` (sube al terminar cada partida): la cabecera lo sigue.
@@ -115,6 +125,8 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     set.add(entry);
     return () => { set.delete(entry); };
   }, []);
+
+  const holdRoomSession = useCallback(() => attachmentRef.current.hold(), []);
 
   const value = useMemo<RoomContextValue>(() => ({
     room, connected, error, clearError: () => setError(null),
@@ -150,9 +162,10 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
     async inviteFriend(userId) { await emit('room:invite', { userId }); },
     subscribe,
+    holdRoomSession,
     // Las guardas (sin minijuego activo, sin época) van dentro de la petición: su fallo también sale en el aviso global.
     async gameAction(action, options) { await emit('game:action', () => gameActionPayload(room, action), options?.report ?? true); },
-  }), [connected, emit, error, optimisticEmit, room, subscribe]);
+  }), [connected, emit, error, holdRoomSession, optimisticEmit, room, subscribe]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }
 

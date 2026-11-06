@@ -33,6 +33,10 @@ import org.slf4j.LoggerFactory;
  * y el coordinador toma ahí el lock de la sala. Un mensaje rechazado por el límite no llega a la cola.
  * Mensajes de más de {@value #MAX_FRAME_BYTES} bytes ({@code maxHttpBufferSize} de Node) cierran con 1009.
  *
+ * <p>Abrir la conexión no toca la sala: la cuenta registrada tiene el {@code /ws} abierto en toda página (amigos). Solo
+ * {@code session:attach} (que el cliente envía en {@code /play} y {@code /room}), {@code room:create} y {@code room:join}
+ * hacen de esta conexión la vigente del jugador; cerrar una que nunca lo fue no cambia nada.
+ *
  * <p>Con {@code pu.rooms.enabled=false} (producción hasta el corte 2D; hoy solo arranques sin esa configuración) toda conexión se cierra con 4403 al abrirse,
  * antes de registrar la sesión: el coordinador nunca la ve.
  */
@@ -179,6 +183,11 @@ public class RoomWebSocket {
     var connectionId = connection.id();
     var payload = message.payload();
     return switch (message.event()) {
+      // Sin current(): engancharse es justo lo que convierte a esta conexión en la vigente.
+      case "session:attach" -> {
+        coordinator.attach(identity, connectionId);
+        yield empty();
+      }
       case "room:create" -> roomData(coordinator.create(identity, connectionId, field(payload, "maxPlayers")));
       case "room:join" -> roomData(coordinator.join(identity, connectionId, field(payload, "code")));
       case "room:leave" -> current(connection, () -> coordinator.leave(playerId));
