@@ -69,8 +69,8 @@ describe('Pokémon Bluff Auction: subasta', () => {
     expect(html).toMatch(/data-testid="auction-current-bid"><span[^>]*><strong>5<\/strong> <small>Pokémon<\/small>/);
     expect(html).toMatch(/data-testid="auction-leader">.*Carlos/);
     expect(html).toMatch(/Mínimo para superarla.*<strong>6<\/strong>/);
-    // El título es lo que se subasta (la condición); el turno, solo en el reloj, el orden de turno y la placa de abajo.
-    expect(html).toContain('>Tipo Agua + Velocidad &gt; 80</h1>');
+    // El título es la ronda (la condición va en grande en la escena); el turno, solo en el reloj, el orden de turno y la placa.
+    expect(html).toContain('>Ronda 2 de 10</h1>');
     expect(html).toContain('aria-label="Orden de turno"');
     expect(html).toMatch(/data-state="passed"[^>]*>.*Pedro/);
     expect(html).toMatch(/data-state="turn"[^>]*>.*Ana \(Tú\)/);
@@ -112,6 +112,8 @@ describe('Pokémon Bluff Auction: subasta', () => {
     expect(html).toContain('>Puja máxima</h2>');
     // Con la puja en el máximo no hay «mínimo para superarla» imposible (1026 con un máximo de 1025).
     expect(html).toContain('Puja máxima alcanzada');
+    expect(html).not.toContain('bid-submit');
+    expect(html).not.toContain('value="1026"');
     expect(html).not.toContain('Mínimo para superarla');
     expect(html).toMatch(/<button[^>]*data-testid="bid-pass"[^>]*>/);
     expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-pass"|data-testid="bid-pass"[^>]*disabled=""/);
@@ -145,7 +147,7 @@ describe('Pokémon Bluff Auction: subasta', () => {
   it('la región viva dice la última puja y el turno', () => {
     expect(bluffAnnouncement(game(), 'p1', nameOf)).toBe('Carlos puja 5 Pokémon. Es tu turno.');
     expect(bluffAnnouncement({ ...game(), bidHistory: [] }, 'p2', nameOf)).toBe('Ronda 2 de 10: Tipo Agua + Velocidad > 80. Turno de Ana.');
-    expect(bluffHeading(game(), 'p2', nameOf)).toBe('Tipo Agua + Velocidad > 80');
+    expect(bluffHeading(game(), 'p2', nameOf)).toBe('Ronda 2 de 10');
   });
 });
 

@@ -4826,8 +4826,8 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
       await expect(page.getByTestId('bluff-condition')).toBeVisible();
     }
     const p1 = await activa(pujar);
-    // El título es la condición; el turno va en el reloj, el orden de turno y la placa de abajo.
-    await expect(titulo(p1)).toHaveText((await p1.getByTestId('bluff-condition').locator('p').first().textContent())!);
+    // El título es la ronda; el turno va en el reloj, el orden de turno y la placa de abajo.
+    await expect(titulo(p1)).toHaveText('Ronda 1 de 5');
     await expect(p1.getByRole('timer')).toHaveAccessibleName(/^Tu turno: \d+ s$/);
     await expect(p1.locator('[data-testid="turn-order-entry"][data-state="turn"]')).toContainText(`${nombreDe(p1)} (Tú)`);
     await expect(placa(p1)).toHaveText('Tu turno');
@@ -4934,8 +4934,10 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
     await expect(placa(q2)).toHaveText('Puja máxima');
     await expect(q2.getByTestId('auction-status')).toContainText('Puja máxima alcanzada');
     await expect(q2.getByTestId('auction-status')).not.toContainText('Mínimo para superarla');
-    await expect(pujar(q2)).toBeDisabled();
-    await expect(pujar(q2)).toHaveText('Puja máxima');
+    // Solo «Pasar esta ronda»: sin campo con un valor imposible ni «Pujar» gris.
+    await expect(pujar(q2)).toHaveCount(0);
+    await expect(campo(q2)).toHaveCount(0);
+    await expect(pasar(q2)).toBeEnabled();
     await capturarTamanos(q2, 'juego-pokemon-bluff-auction-puja-maxima', { sigue: placa(q2).filter({ hasText: 'Puja máxima' }) });
     await pasarConfirmando(q2);
     const q3 = await activa(pasar, paginas.filter((page) => page !== q1 && page !== q2));

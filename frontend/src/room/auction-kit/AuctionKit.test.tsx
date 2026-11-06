@@ -54,7 +54,11 @@ describe('auction-kit: controles de la puja', () => {
   it('sin llegar a la mínima pero con permiso del servidor para pasar, «Pasar» sigue activo (Bluff en el máximo)', () => {
     const html = controls({ min: 1026, max: 1025, budget: null, allIn: false }, { min: 1026, max: 1025, texts: { noBudget: { title: 'Puja máxima', text: 'Nadie puede subir más.' } } });
     expect(html).toContain('>Puja máxima</h2>');
-    expect(html).toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-submit"|<button[^>]*data-testid="bid-submit"[^>]*disabled=""/);
+    // Solo «Pasar» a la vista: ni campo con un valor imposible (1026 > 1025), ni incrementos ni «Pujar» grises.
+    expect(html).not.toContain('bid-submit');
+    expect(html).not.toContain('type="number"');
+    expect(html).not.toContain('bid-step');
+    expect(html).not.toContain('1026');
     expect(html).not.toMatch(/<button[^>]*disabled=""[^>]*data-testid="bid-pass"|data-testid="bid-pass"[^>]*disabled=""/);
     // Team Auction (el motor no da `canPass` a quien no llega): solo el mensaje.
     expect(controls({ max: 2 }, { max: 2, canRaise: false, canPass: false })).not.toContain('bid-pass');

@@ -422,6 +422,11 @@
   .bid {
     font-size: var(--fs-26);
   }
+  /* Cifras de cuatro dígitos («1025 Pokémon»): la unidad baja de línea antes que tocar el borde. */
+  .amount {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
   .amount small,
   .leaderLabel,
   .leaderName,

@@ -101,14 +101,14 @@ export function bluffResultReason(result: BluffAuctionRoundResult, nameOf: (id: 
 }
 
 /**
- * `h1` de la pantalla: en la subasta, lo que se subasta (la condición; el turno va en el reloj); «Demuestra tu
- * apuesta», «Ana demuestra» o el resultado.
+ * `h1` de la pantalla: en la subasta, la ronda («Ronda 2 de 5»; la condición va en grande en la escena y el turno en
+ * el reloj); «Demuestra tu apuesta», «Ana demuestra» o el resultado.
  */
 export function bluffHeading(game: PokemonBluffAuctionPublicState, selfId: string, nameOf: (id: string) => string): string {
   const result = bluffRoundResult(game);
   if (result) return bluffResultTitle(result, nameOf);
   if (game.phase === 'POKEMON_SEARCH' && game.bidderId) return game.bidderId === selfId ? 'Demuestra tu apuesta' : `${nameOf(game.bidderId)} demuestra`;
-  if (game.phase === 'ROUND_ACTIVE' && game.condition) return game.condition.description;
+  if (game.phase === 'ROUND_ACTIVE' && game.condition) return `Ronda ${Math.min(Math.max(1, game.roundNumber), Math.max(1, game.totalRounds))} de ${game.totalRounds}`;
   if (game.phase === 'ROUND_ACTIVE' || game.phase === 'GAME_STARTING' || game.condition === null) return 'Preparando la ronda';
   return 'Subasta cerrada';
 }
