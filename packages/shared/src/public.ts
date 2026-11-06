@@ -3,6 +3,7 @@ export * from './auth.js';
 export * from './admin.js';
 export * from './avatar.js';
 export * from './changelog.js';
+export * from './daily.js';
 export * from './custom-category.js';
 export * from './custom-would-you-rather.js';
 export * from './feedback.js';
