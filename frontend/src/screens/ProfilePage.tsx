@@ -1,7 +1,7 @@
 import type { LevelProgress, UserProfileResponse } from '@pokemon-universe/shared/public';
 import { ChevronDown } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { AchievementsPanel } from '../achievements/AchievementsPanel';
 import { AvatarEditor } from '../components/AvatarEditor';
@@ -115,6 +115,7 @@ export function ProfilePage() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [params, setParams] = useSearchParams();
   const tab = tabFromParam(params.get('tab'));
+  const location = useLocation();
   const [achievements, setAchievements] = useState<AchievementsState>({ status: 'loading' });
 
   const load = useCallback(() => {
@@ -128,13 +129,20 @@ export function ProfilePage() {
       .catch(() => setFailed(true));
   }, [syncLevel]);
   // Los logros se piden a la vez que el perfil: un fallo suyo no tumba las estadísticas.
-  const loadAchievements = useCallback(() => {
-    setAchievements({ status: 'loading' });
+  const loadAchievements = useCallback((silent = false) => {
+    if (!silent) setAchievements({ status: 'loading' });
     void api<AchievementsResponse>('/achievements')
       .then((data) => setAchievements({ status: 'ready', data }))
       .catch(() => setAchievements({ status: 'error' }));
   }, []);
   useEffect(() => { if (user?.kind === 'USER') { load(); loadAchievements(); } }, [user?.id, user?.kind, load, loadAchievements]);
+  // «Ver mis logros» estando ya en el perfil no remonta la página: al entrar en la pestaña (o al repetir la navegación) se
+  // vuelven a pedir en silencio, o no saldría el logro recién desbloqueado.
+  const firstVisit = useRef(true);
+  useEffect(() => {
+    if (firstVisit.current) { firstVisit.current = false; return; }
+    if (tab === 'logros' && user?.kind === 'USER') loadAchievements(true);
+  }, [tab, location.key, user?.kind, loadAchievements]);
   const changeTab = (next: ProfileTab) => setParams(next === 'logros' ? { tab: 'logros' } : {}, { replace: true });
   const games = useMemo(() => sortProfileGames(profile?.games ?? []), [profile]);
 
@@ -185,7 +193,7 @@ export function ProfilePage() {
         </Panel>
       </div>
 
-      <ProfileDetail tab={tab} onTab={changeTab} achievements={achievements} onRetry={loadAchievements}>
+      <ProfileDetail tab={tab} onTab={changeTab} achievements={achievements} onRetry={() => loadAchievements()}>
         {played === 0 && (
           <div className="mb-3">
             <StateBox kind="empty" onCream title="Todavía no has jugado ninguna partida" text="Crea una sala, invita a tus amigos y elige un minijuego: tus estadísticas aparecerán aquí." action={{ label: 'Ir a jugar', onClick: () => navigate('/play') }} />

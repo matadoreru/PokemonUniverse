@@ -86,7 +86,11 @@ for (const { w, h } of SIZES) {
       await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 30_000 });
       await expect(page.getByRole('button', { name: /Continuar sesión|Ver clasificación final/ })).toBeVisible({ timeout: 30_000 });
+      // El aviso llega por el socket tras el commit, un poco después de los resultados: se le da margen antes de afirmar
+      // que no hay recuadro con «Primera partida» (si no, la comprobación pasaría aunque el aviso llegara tarde).
+      await page.waitForTimeout(2_000);
       await expect(page.getByText('Primera partida', { exact: true })).toHaveCount(0);
+      await expect(page.getByRole('status').filter({ hasText: /Primera partida/ })).toHaveCount(0);
       expect(errors).toEqual([]);
     } finally {
       await context.close();

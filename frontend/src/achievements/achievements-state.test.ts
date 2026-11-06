@@ -1,6 +1,6 @@
 import type { AchievementUnlock, PersonalRecord } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { acknowledge, announcement, canShow, emptyAchievementsQueue, enqueue, isVisible, noticeTitle, phaseChanged, recordLine } from './achievements-state';
+import { acknowledge, announcement, canShow, emptyAchievementsQueue, enqueue, isVisible, noticeTitle, phaseChanged, recordLine, toastText } from './achievements-state';
 
 const unlock = (id: string, name = id): AchievementUnlock => ({ id, family: 'GENERAL', gameId: null, name, description: `Descripción de ${name}` });
 const streak: PersonalRecord = { gameId: 'higher-or-lower', key: 'endless-streak', label: 'Racha infinita', value: 14, previous: 9 };
@@ -60,6 +60,14 @@ describe('achievements-state', () => {
   it('noticeTitle', () => {
     expect(noticeTitle(1)).toBe('¡Logro desbloqueado!');
     expect(noticeTitle(3)).toBe('¡Logros desbloqueados!');
+  });
+
+  it('announcementAndToastCapNamesWithManyUnlocks', () => {
+    const many = enqueue(emptyAchievementsQueue, { achievements: ['A', 'B', 'C', 'D', 'E', 'F'].map((n) => unlock(n.toLowerCase(), n)), records: [] });
+    expect(announcement(many)).toBe('Logro desbloqueado: A, B, C y 3 más');
+    expect(toastText(many)).toBe('A, B, C y 3 más');
+    const three = enqueue(emptyAchievementsQueue, { achievements: ['A', 'B', 'C'].map((n) => unlock(n.toLowerCase(), n)), records: [] });
+    expect(toastText(three)).toBe('A, B, C');
   });
 
   it('announcementJoinsNames', () => {

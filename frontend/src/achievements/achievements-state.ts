@@ -76,9 +76,19 @@ export function queueTitle(queue: AchievementsQueue): string {
   return queue.achievements.length === 0 ? '¡Nuevo récord personal!' : noticeTitle(queue.achievements.length);
 }
 
+/** Cuántos logros se nombran o se pintan a la vez; el resto va en «y N más» (recuadro, aviso flotante y región viva). */
+export const MAX_SHOWN = 3;
+
+/** Primeros nombres y «y N más»: con un desbloqueo masivo (cuenta antigua) el texto no se desborda. */
+export function namesSummary(achievements: AchievementUnlock[]): string {
+  const names = achievements.slice(0, MAX_SHOWN).map((achievement) => achievement.name).join(', ');
+  const more = achievements.length - MAX_SHOWN;
+  return more > 0 ? `${names} y ${more} más` : names;
+}
+
 /** Texto del aviso flotante: los nombres de los logros o, si solo hay récords, sus líneas. */
 export function toastText(queue: AchievementsQueue): string {
-  if (queue.achievements.length > 0) return queue.achievements.map((achievement) => achievement.name).join(', ');
+  if (queue.achievements.length > 0) return namesSummary(queue.achievements);
   return queue.records.map(recordLine).join('. ');
 }
 
@@ -89,7 +99,7 @@ export function recordLine(record: PersonalRecord): string {
 /** Texto de la región viva de los resultados: «Logro desbloqueado: A, B», luego los récords; vacío sin nada. */
 export function announcement(queue: AchievementsQueue): string {
   const parts: string[] = [];
-  if (queue.achievements.length > 0) parts.push(`Logro desbloqueado: ${queue.achievements.map((achievement) => achievement.name).join(', ')}`);
+  if (queue.achievements.length > 0) parts.push(`Logro desbloqueado: ${namesSummary(queue.achievements)}`);
   for (const record of queue.records) parts.push(recordLine(record));
   return parts.join('. ');
 }

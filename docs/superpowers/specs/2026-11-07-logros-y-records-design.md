@@ -59,9 +59,10 @@ Racha infinita de Higher or Lower.
   | Type Duel | `groupTotal` | En `COOP`, Pokémon que encontró el grupo en la partida |
   | Pokémon Impostor | `wonAsImpostor` | Ganar como impostor |
 
-## Datos (Flyway `V8__logros.sql`)
+## Datos (Flyway `V8__logros.sql` y `V9__racha_mismo_juego.sql`)
 
-Las migraciones existentes llegan hasta `V7__amigos.sql`, y la rama `modos` no añade ninguna.
+Las migraciones existentes llegan hasta `V7__amigos.sql`, y la rama `modos` no añade ninguna. La V8 crea la tabla de logros
+y la V9 añade a `UserStats` el contador de «Fiel» (más abajo).
 
 ```sql
 CREATE TABLE public."UserAchievement" (
@@ -79,8 +80,9 @@ CREATE TABLE public."UserAchievement" (
   `RETURNING` da exactamente los logros nuevos.
 - **Bloqueos de la transacción `SERIALIZABLE`:** las lecturas nuevas usan índices que ya existen, así que la V8 no
   añade ninguno.
-  - `PlayerGameResult_userId_idx` sirve para «Fiel».
-  - `GameHistory_pkey` sirve para el `JOIN`.
+  - «Fiel» no lee el historial: usa el contador `UserStats.sameGameStreak` (V9), que se actualiza en la misma fila de
+    `UserStats` que ya se escribe.
+  - La clave primaria de `UserAchievement` sirve para leer los ids ya desbloqueados.
   - `UserGameStats_userId_gameId_key` sirve para `winsByGame`.
 
   Sin estos índices, un recorrido secuencial bloquearía la tabla entera y haría fallar con `40001` los resultados de
@@ -92,8 +94,11 @@ CREATE TABLE public."UserAchievement" (
   - En `CLASSIC` no la emite, así que las fixtures doradas del Clásico no cambian.
   - `registry.json` declara `{"key": "endlessBestStreak", "label": "Récord en Racha infinita", "aggregation": "MAX"}`
     en `profileStats.metrics` de `higher-lower`, así que `MetricsMerge` la conserva como máximo histórico.
-  - Una partida Clásica no la toca: un valor ausente cuenta como 0 y `MAX` deja el anterior.
-  - El perfil la muestra sin código nuevo.
+  - Una partida Clásica no la toca: un valor ausente cuenta como 0 y `MAX` deja el anterior. `MetricsMerge` recorre las
+    métricas declaradas del manifiesto, así que escribe la clave en cada partida de Higher or Lower (con 0 en el Clásico
+    o con racha 0).
+  - El perfil la muestra con el mecanismo de métricas existente, pero la oculta mientras vale 0 (`profileStats.ts`): quien
+    nunca jugó la Racha infinita no ve «0».
 - **Decisión tomada (revisable):** sin relleno SQL de logros antiguos. Las condiciones acumuladas (partidas, victorias,
   nivel y «Gana una partida de X») se evalúan contra **todas** las estadísticas de la cuenta en cada partida. Una cuenta
   con historial las recibe todas al terminar su siguiente partida, y el aviso las agrupa («y N más»). Así la regla está
@@ -181,7 +186,7 @@ logro mientras está bloqueado.
 | id | Nombre | Descripción | Condición (de esta partida) |
 |---|---|---|---|
 | `secret.1` | Foto finish | Termina empatado en el primer puesto. | Ver abajo |
-| `secret.2` | Fiel | Juega 10 partidas seguidas del mismo minijuego. | Las 10 últimas partidas `COMPLETED` de la cuenta, esta incluida, son del mismo `gameId` |
+| `secret.2` | Fiel | Juega 10 partidas seguidas del mismo minijuego. | `UserStats.sameGameStreak ≥ 10`: las partidas seguidas de la cuenta del mismo `gameId`, esta incluida |
 | `secret.3` | Búho nocturno | Termina una partida entre las 3:00 y las 5:00. | La hora de fin, en `Europe/Madrid`, está en [03:00, 05:00) |
 | `secret.4` | Lo importante es participar | Queda último con 0 puntos en una partida de 4 o más jugadores. | Ver abajo |
 
@@ -190,15 +195,9 @@ logro mientras está bloqueado.
   `playerCount ≥ 4`.
 - **Juegos excluidos de Foto finish y de Lo importante es participar:** Pokémon Impostor, porque su posición es el
   bando y no un ranking, y Type Duel en `COOP`, donde no hay ganador individual.
-- **Fiel:** se calcula con una consulta en la misma transacción, después de guardar el `PlayerGameResult` de esta
-  partida:
-
-  ```sql
-  SELECT h."gameId" FROM "PlayerGameResult" p JOIN "GameHistory" h ON h.id = p."historyId"
-  WHERE p."userId" = ? AND h.status = 'COMPLETED' ORDER BY h."endedAt" DESC LIMIT 10
-  ```
-
-  Se cumple si devuelve 10 filas, todas del `gameId` actual.
+- **Fiel:** contador en `UserStats` (V9, `lastGameId` y `sameGameStreak`), sin leer el historial de partidas. Al guardar
+  los resultados, `recordGameOf(gameId)` suma 1 si el juego es el mismo que el anterior de la cuenta y, si no, lo deja
+  en 1. Cuentan las partidas clasificadas o no, y los invitados se saltan. Las cuentas existentes empiezan en 0.
 
 ## Evaluación
 
@@ -208,7 +207,7 @@ logro mientras está bloqueado.
 record AchievementFacts(
     String gameId, String mode, GameStanding standing, List<GameStanding> standings, boolean won,
     int gamesPlayed, int gamesWon, int level, Map<String, Integer> winsByGame,
-    List<String> recentGameIds, ZonedDateTime endedAt)
+    int sameGameStreak, ZonedDateTime endedAt)
 ```
 
 `playerCount` es `standings.size()`.
@@ -228,7 +227,7 @@ record AchievementFacts(
 
 1. **En la transacción de resultados** (`RoomHistoryWriter.persistResults`), justo después de actualizar `UserStats` y
    `UserGameStats` de cada jugador `USER`:
-   - se leen todas sus `UserGameStats` (`winsByGame`) y, para «Fiel», sus 10 últimas partidas;
+   - se leen todas sus `UserGameStats` (`winsByGame`) y, para «Fiel», su `sameGameStreak` ya actualizado;
    - se construye `AchievementFacts` y se evalúa el catálogo;
    - se insertan los cumplidos con `ON CONFLICT DO NOTHING RETURNING`.
 
@@ -296,6 +295,8 @@ record AchievementFacts(
   - `ResultsShell` monta siempre un `<p className="sr-only" role="status" aria-live="polite">`, que anuncia «Logro
     desbloqueado: <nombres>». El recuadro visible no es región viva.
   - Las pantallas de resultados no tienen hoy ninguna región viva, así que queda una.
+  - Recuadro, aviso flotante y región viva nombran como mucho 3 logros y añaden «y N más» (`namesSummary`), para que un
+    desbloqueo masivo no desborde el texto ni la lectura.
   - Fuera de partida, el `ActionToast` de logros usa `live="status"`: `role="status"` y `aria-live="polite"`. Nunca sale
     a mitad de partida, así que no compite con la región viva de la pantalla de juego.
 - Texto ≥ 13 px, objetivos táctiles ≥ 44 px y nada de scroll de documento en las capturas.
@@ -333,8 +334,10 @@ a `OpenApiSpecTest` y `api-types.test.ts`. Ya pasa por los proxys de Vite y ngin
   - reproducir el mismo `resultId` no envía otro evento;
   - un intento revertido no envía nada;
   - el récord solo sube, y una partida Clásica no lo toca;
-  - «Fiel» con 9 y con 10 partidas.
-- **Migración:** `FlywayMigrationsTest` y `SchemaBaselineTest` con la V8.
+  - «Fiel» con 9 y con 10 partidas seguidas (`RoomHistoryWriterAchievementsTest`: `sameGameStreakCountsConsecutiveGamesOfOneGame`,
+    `loyalAfterTenSameGame`, `loyalBrokenByAnotherGame`).
+- **Migración:** `FlywayMigrationsTest` (`freshAndPrismaDatabasesConvergeAfterLaterMigrations` aplica la V8 y la V9 a una BD
+  vacía y a una de Prisma y compara los esquemas; `schemaVersionIsTheLatestSuccessfulFlywayMigration`).
 - **Motor:** `HigherLowerEngineTest` (`endlessBestStreak` solo en `ENDLESS`) y la fixture `endless-mode.json`
   regrabada.
 - **REST** (`AchievementsControllerTest`): 401 al invitado, el orden, y que el JSON de un secreto bloqueado no contiene

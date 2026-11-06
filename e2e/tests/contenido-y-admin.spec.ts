@@ -124,7 +124,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await expect(page.getByRole('button', { name: /^Ocultar estadísticas de / })).toHaveCount(0);
     await page.unroute('**/api/auth/profile');
 
-    // Pestaña «Logros» (`?tab=logros`): la respuesta real con dos logros desbloqueados (uno general y un secreto) para ver los tres estados.
+    // Pestaña «Logros» (`?tab=logros`): la respuesta real con dos logros desbloqueados (uno general y uno de «Gana en X»; los secretos siguen bloqueados) para ver los tres estados.
     await page.route('**/api/achievements', async (route) => {
       const respuesta = await route.fetch();
       const json = (await respuesta.json()) as { unlocked: number; achievements: { family: string; unlockedAt: string | null }[] };

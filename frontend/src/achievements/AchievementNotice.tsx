@@ -1,12 +1,10 @@
 import { Medal } from 'lucide-react';
 import { AchievementTile, cx, Panel, PillLink } from '../ui';
 import { achievementArt } from './achievement-art';
-import { queueTitle, recordLine } from './achievements-state';
+import { MAX_SHOWN, queueTitle, recordLine } from './achievements-state';
 import { useAchievements } from './AchievementsContext';
 import s from './AchievementNotice.module.css';
 
-/** Cuántos logros enseña el recuadro; el resto va en «y N más». */
-const MAX_TILES = 3;
 export const ACHIEVEMENTS_HREF = '/profile?tab=logros';
 
 /**
@@ -18,7 +16,7 @@ export const ACHIEVEMENTS_HREF = '/profile?tab=logros';
 export function AchievementNotice() {
   const { queue, visible, acknowledge } = useAchievements();
   if (!visible || queue.shownIn !== 'GAME_RESULTS') return null;
-  const shown = queue.achievements.slice(0, MAX_TILES);
+  const shown = queue.achievements.slice(0, MAX_SHOWN);
   const more = queue.achievements.length - shown.length;
   return (
     <Panel variant="cream" as="div" title={queueTitle(queue)} className={cx(s.notice)}>
