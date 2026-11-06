@@ -16,7 +16,7 @@ public record AchievementResponse(
     String description,
     @JsonInclude(JsonInclude.Include.ALWAYS) @Nullable String unlockedAt) {
 
-  static AchievementResponse of(AchievementView view) {
+  public static AchievementResponse of(AchievementView view) {
     return new AchievementResponse(view.id(), view.family().name(), view.gameId(), view.name(), view.description(),
         view.unlockedAt() == null ? null : IsoTimestamps.millis(view.unlockedAt()));
   }

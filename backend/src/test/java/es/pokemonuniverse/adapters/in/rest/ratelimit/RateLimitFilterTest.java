@@ -98,6 +98,19 @@ class RateLimitFilterTest {
   }
 
   @Test
+  void publicProfilesLimitIs60PerIp() {
+    HttpResponse<String> last = null;
+    for (int i = 0; i < 61; i++) {
+      last = call(HttpRequest.GET("/api/users/nadie/profile").header("X-Forwarded-For", "203.0.113.31"));
+      if (i < 60) {
+        assertNotEquals(HttpStatus.TOO_MANY_REQUESTS, last.status());
+      }
+    }
+    assertEquals(HttpStatus.TOO_MANY_REQUESTS, last.status());
+    assertEquals("60", last.header("RateLimit-Limit"));
+  }
+
+  @Test
   void feedbackLimitIs10() {
     HttpResponse<String> last = null;
     for (int i = 0; i < 11; i++) {

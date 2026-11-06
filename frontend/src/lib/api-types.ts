@@ -360,7 +360,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Cambiar quién puede ver el perfil (nivel, estadísticas y logros) */
+        patch: operations["updateProfile"];
         trace?: never;
     };
     "/api/auth/profile/avatar": {
@@ -714,6 +715,23 @@ export interface paths {
         };
         /** Opciones de filtro del catálogo TCG */
         get: operations["tcgOptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/{username}/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Perfil de otra cuenta por su nombre de usuario (sin distinguir mayúsculas), según su privacidad */
+        get: operations["profile_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1272,11 +1290,13 @@ export interface components {
             /** Format: int32 */
             totalPoints: number;
         };
+        /** @description `profileVisibility` es el ajuste \<\<Perfil visible para\>\>. */
         "ProfileResponse.Profile": {
             user: components["schemas"]["ProfileResponse.ProfileUser"];
             globalStats: components["schemas"]["ProfileResponse.GlobalStats"];
             progress: components["schemas"]["ProfileResponse.Progress"];
             games: components["schemas"]["ProfileResponse.ProfileGame"][];
+            profileVisibility: components["schemas"]["ProfileVisibility"];
         };
         /** @description Manifiesto sin `defaultConfig`, con las estadisticas del usuario en ese minijuego. */
         "ProfileResponse.ProfileGame": {
@@ -1311,9 +1331,53 @@ export interface components {
             /** Format: int32 */
             nextLevelXp: number;
         };
+        /** @description Cuerpo de `PATCH /api/auth/profile`: el ajuste \<\<Perfil visible para\>\>. */
+        ProfileSettingsRequest: {
+            /** @enum {string} */
+            profileVisibility: "EVERYONE" | "FRIENDS" | "NOBODY";
+        };
+        /** @description Respuesta de `PATCH /api/auth/profile`: el ajuste ya guardado. */
+        ProfileSettingsResponse: {
+            profileVisibility: components["schemas"]["ProfileVisibility"];
+        };
+        /**
+         * @description Ajuste \<\<Perfil visible para\>\> de una cuenta: quién ve su nivel, sus estadísticas y sus logros.
+         * @enum {string}
+         */
+        ProfileVisibility: "EVERYONE" | "FRIENDS" | "NOBODY";
         /** @description Respuesta `{"progress": ...}` de `GET /api/auth/progress` (ProgressResponse en shared). */
         ProgressResponse: {
             progress: components["schemas"]["ProfileResponse.Progress"];
+        };
+        /**
+         * @description Relación de quien mira con el dueño del perfil.
+         * @enum {string}
+         */
+        "PublicProfile.Friendship": "NONE" | "PENDING_SENT" | "PENDING_RECEIVED" | "FRIENDS" | "SELF";
+        /** @description Respuesta `{"profile": ...}` de `GET /api/users/{username}/profile`. Con `private: true` no salen `progress`, `stats` ni `achievements` (ni sus claves); `requestId` solo con una solicitud pendiente entre las dos cuentas. `stats` y `achievements` tienen la forma del perfil propio y de `GET /api/achievements`, pero los logros son solo los desbloqueados. */
+        PublicProfileResponse: {
+            profile: components["schemas"]["PublicProfileResponse.Profile"];
+        };
+        "PublicProfileResponse.Profile": {
+            user: components["schemas"]["PublicProfileResponse.User"];
+            visibility: components["schemas"]["ProfileVisibility"];
+            friendship: components["schemas"]["PublicProfile.Friendship"];
+            requestId?: string | null;
+            private: boolean;
+            progress?: components["schemas"]["ProfileResponse.Progress"] | null;
+            stats?: components["schemas"]["PublicProfileResponse.Stats"] | null;
+            achievements?: components["schemas"]["AchievementsResponse"] | null;
+        };
+        "PublicProfileResponse.Stats": {
+            globalStats: components["schemas"]["ProfileResponse.GlobalStats"];
+            games: components["schemas"]["ProfileResponse.ProfileGame"][];
+        };
+        /** @description Sin email: solo lo público de la cuenta. */
+        "PublicProfileResponse.User": {
+            id: string;
+            username: string;
+            avatar: components["schemas"]["AvatarRef"];
+            createdAt: string;
         };
         RegisterRequest: {
             username: string;
@@ -2510,6 +2574,48 @@ export interface operations {
             };
         };
     };
+    updateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileSettingsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileSettingsResponse"];
+                };
+            };
+            /** @description Datos inválidos */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     resetAvatar: {
         parameters: {
             query?: never;
@@ -3405,6 +3511,46 @@ export interface operations {
             };
             /** @description Catálogo todavía no disponible */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    profile_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfileResponse"];
+                };
+            };
+            /** @description Cuenta registrada requerida */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description No hay ninguna cuenta con ese nombre */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

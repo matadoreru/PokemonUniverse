@@ -12,6 +12,7 @@ import es.pokemonuniverse.application.ports.AvatarStorage;
 import es.pokemonuniverse.application.profile.ProfileService;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
@@ -19,6 +20,7 @@ import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Patch;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
@@ -150,6 +152,20 @@ public class AuthController {
     var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
         .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
     return profiles.profileOf(user.id()).map(ProfileResponse::from).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+  }
+
+  @Operation(summary = "Cambiar quién puede ver el perfil (nivel, estadísticas y logros)")
+  @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = ProfileSettingsResponse.class)))
+  @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
+  @Patch("/profile")
+  public ProfileSettingsResponse updateProfile(@Body ProfileSettingsRequest body,
+      @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
+    var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
+        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    var visibility = ProfileVisibility.valueOf(valid(body).profileVisibility());
+    if (!profiles.changeVisibility(user.id(), visibility)) throw new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED);
+    return new ProfileSettingsResponse(visibility);
   }
 
   @Operation(summary = "Nivel y experiencia de la cuenta registrada")

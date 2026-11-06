@@ -19,6 +19,8 @@ record RateLimitPolicy(String name, Predicate<HttpRequest<?>> matcher, int limit
   /** Imágenes y gritos de ronda: fuera del límite global, con el suyo ({@code gameImageRateLimit} de Node). */
   static final Pattern GAME_ASSETS = Pattern.compile("^/api/rooms/[^/]+/games/");
 
+  static final Pattern PUBLIC_PROFILE = Pattern.compile("^/api/users/[^/]+/profile/?$");
+
   RateLimitPolicy(String name, Predicate<HttpRequest<?>> matcher, int limit, Duration window) {
     this(name, matcher, limit, window, false);
   }
@@ -38,6 +40,10 @@ record RateLimitPolicy(String name, Predicate<HttpRequest<?>> matcher, int limit
         new RateLimitPolicy("friendRequests",
             r -> r.getMethod() == HttpMethod.POST && r.getPath().equals("/api/friends/requests"),
             20, Duration.ofMinutes(15)),
+        // La ruta dice si existe una cuenta con ese nombre: con su propio límite, para no recorrer nombres a ciegas.
+        new RateLimitPolicy("publicProfiles",
+            r -> r.getMethod() == HttpMethod.GET && PUBLIC_PROFILE.matcher(r.getPath()).matches(),
+            60, Duration.ofMinutes(15)),
         new RateLimitPolicy("feedback",
             r -> r.getMethod() == HttpMethod.POST && r.getPath().equals("/api/feedback"),
             10, Duration.ofMinutes(15)),
