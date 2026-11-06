@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -58,6 +59,7 @@ public class RoomInvitations {
   private final UserConnections connections;
   private final BiPredicate<String, String> areFriends;
   private final Function<String, Optional<RoomSummary>> roomOf;
+  private final Predicate<String> inDailyRun;
   private final Clock clock;
   private final Supplier<String> ids;
 
@@ -70,15 +72,23 @@ public class RoomInvitations {
   @Inject
   public RoomInvitations(UserConnections connections, BeanProvider<FriendService> friends, RoomCoordinator rooms,
       Clock clock) {
-    this(connections, (a, b) -> friends.isPresent() && friends.get().areFriends(a, b), rooms::roomOf, clock,
-        () -> UUID.randomUUID().toString());
+    this(connections, (a, b) -> friends.isPresent() && friends.get().areFriends(a, b), rooms::roomOf,
+        userId -> rooms.dailyRunOf(userId).isPresent(), clock, () -> UUID.randomUUID().toString());
   }
 
   RoomInvitations(UserConnections connections, BiPredicate<String, String> areFriends,
       Function<String, Optional<RoomSummary>> roomOf, Clock clock, Supplier<String> ids) {
+    this(connections, areFriends, roomOf, userId -> false, clock, ids);
+  }
+
+  /** {@code inDailyRun}: la cuenta está en la sala del reto diario, que es privada. */
+  RoomInvitations(UserConnections connections, BiPredicate<String, String> areFriends,
+      Function<String, Optional<RoomSummary>> roomOf, Predicate<String> inDailyRun, Clock clock,
+      Supplier<String> ids) {
     this.connections = connections;
     this.areFriends = areFriends;
     this.roomOf = roomOf;
+    this.inDailyRun = inDailyRun;
     this.clock = clock;
     this.ids = ids;
   }
@@ -88,6 +98,8 @@ public class RoomInvitations {
     if (userId == null || userId.equals(from.id()) || !areFriends.test(from.id(), userId)) {
       throw new RoomException("Not a friend");
     }
+    // roomOf no devuelve la sala del reto: sin esto se respondería «You are not in a room».
+    if (inDailyRun.test(from.id())) throw new RoomException(RoomCoordinator.DAILY_UNAVAILABLE);
     var room = roomOf.apply(from.id()).orElseThrow(() -> new RoomException("You are not in a room"));
     // Como el botón «Invitar amigos», que solo está en el lobby: no se invita a mitad de partida.
     if (!room.inLobby()) throw new RoomException("Invitations are only available in the lobby");

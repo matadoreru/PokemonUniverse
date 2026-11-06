@@ -1673,11 +1673,12 @@ class RoomCoordinatorTest {
         "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "allowedModes",
         "nextGameVote", "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
         "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "hostCustomCategoryCount",
-        "hostWouldYouRatherPromptCount"), keys);
+        "hostWouldYouRatherPromptCount", "daily"), keys);
     var serialized = serialize(second);
     assertTrue(serialized.contains("\"gameCatalogVersion\":null"));
     assertTrue(serialized.contains("\"game\":null"));
     assertTrue(serialized.contains("\"gameSkipState\":null"));
+    assertTrue(serialized.contains("\"daily\":null"));
     assertTrue(serialized.contains("\"sessionMode\":{\"type\":\"INFINITE\"}"));
     assertTrue(serialized.contains("\"gameSelectionMode\":{\"type\":\"ORDER\",\"gameIds\":[\"pokedex-distance\"]}"));
     assertTrue(serialized.contains("\"isHost\":true"));
@@ -1736,7 +1737,7 @@ class RoomCoordinatorTest {
     assertSame(previous.pokemon(), kit.manager.context(room).pokemon());
     assertNull(kit.manager.context(room).pokemonAudio());
     assertEquals(previous.version(), room.game.catalog.version());
-    kit.manager.launchGame(room);
+    kit.manager.launchGame(room, null);
     assertSame(nextCatalog, room.game.catalog.pokemon());
     assertSame(nextAudio, kit.manager.context(room).pokemonAudio());
     assertNotNull(kit.manager.context(room).preloadImage());

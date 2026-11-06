@@ -6,6 +6,7 @@ import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.progression.Experience;
+import es.pokemonuniverse.domain.room.DailyRoom;
 import es.pokemonuniverse.domain.room.GameModes;
 import es.pokemonuniverse.domain.room.GameSkip;
 import es.pokemonuniverse.domain.room.LiveRoom;
@@ -53,6 +54,7 @@ final class RoomViews {
         List.copyOf(eligibleVoterIds), acceptedVoterIds, null, vote.endsAt, vote.resolvedOptionId,
         vote.tallies == null ? null : new LinkedHashMap<>(vote.tallies), vote.nextTransitionAt);
     var game = room.game;
+    var daily = room.daily;
     return RoomView.builder()
         .roomInstanceId(room.historyId)
         .revision(room.revision)
@@ -73,10 +75,11 @@ final class RoomViews {
             : room.gameConfigs.get(room.selectedGameId))
         .sessionMode(room.sessionMode)
         .gameConfigs(new LinkedHashMap<>(room.gameConfigs))
-        .customizedGameIds(registry.list().stream().map(GameManifest::id)
+        // La sala del reto solo tiene la configuración fija de su juego: nada que personalizar ni modos que elegir.
+        .customizedGameIds(daily != null ? List.of() : registry.list().stream().map(GameManifest::id)
             .filter(id -> !configEquals(room.gameConfigs.get(id), defaultConfigs.get(id))).toList())
         .gameSelectionMode(room.gameSelectionMode)
-        .allowedModes(allowedModes(room))
+        .allowedModes(daily != null ? Map.of() : allowedModes(room))
         .nextGameVote(nextGameVote)
         .gameSkipState(null)
         .gamesPlayed(room.gamesPlayed)
@@ -90,7 +93,14 @@ final class RoomViews {
         .serverNow(clock.now())
         .hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount)
+        .daily(daily == null ? null : dailyView(daily))
         .build();
+  }
+
+  private static RoomView.DailyView dailyView(DailyRoom daily) {
+    var outcome = daily.outcome;
+    return new RoomView.DailyView(daily.gameId, daily.date.toString(), daily.roundCount, outcome == null ? null
+        : new RoomView.DailyOutcomeView(outcome.score(), outcome.correct(), outcome.rounds()));
   }
 
   /** Los modos que pueden salir de cada juego con modos registrado (los elegidos o el de su configuración). */
@@ -113,7 +123,8 @@ final class RoomViews {
 
   RoomView view(LiveRoom room, String playerId, RoomView shared, GameContext context) {
     var vote = room.nextGameVote;
-    return shared.forMember(GameSkip.stateView(room, playerId),
+    // En el reto no se salta la partida: sin estado de salto.
+    return shared.forMember(room.daily != null ? null : GameSkip.stateView(room, playerId),
         shared.nextGameVote() == null ? null
             : shared.nextGameVote().withOwnVote(vote == null ? null : vote.votes.get(playerId)),
         room.game != null ? toTree.apply(room.game.engine.getPlayerState(room.game.state, playerId, context)) : null);

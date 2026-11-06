@@ -42,6 +42,8 @@ public final class LiveRoom {
   public List<SessionGameSummary> sessionHistory = new ArrayList<>();
   public @Nullable GameRuntime game;
   public @Nullable RoomTimer transitionTimer;
+  /** Sala del reto diario: privada, de una cuenta y sin lobby; {@code null} en las salas normales. */
+  public @Nullable DailyRoom daily;
   public final long createdAt;
   public long updatedAt;
 

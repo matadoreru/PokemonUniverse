@@ -25,7 +25,9 @@ import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.progression.Experience;
+import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.domain.room.ChatFilter;
+import es.pokemonuniverse.domain.room.DailyRoom;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
 import es.pokemonuniverse.domain.room.GameFinishReason;
@@ -70,6 +72,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
@@ -92,6 +95,8 @@ public class RoomCoordinator {
 
   /** Juego registrado cuyo motor aún no existe en Java (etapa 2). */
   public static final String NOT_PORTED = "Este minijuego todavía no está disponible en el servidor Java.";
+  /** Comandos de lobby y de sesión en una sala del reto diario. */
+  public static final String DAILY_UNAVAILABLE = "Not available in the daily challenge";
   static final long NEXT_GAME_VOTE_MS = 15_000;
   /** {@code NEXT_GAME_VOTE_OPTIONS} de {@code room.ts}: opciones como máximo de la votación del siguiente juego. */
   static final int NEXT_GAME_VOTE_OPTIONS = 3;
@@ -131,6 +136,8 @@ public class RoomCoordinator {
   private ChatFilter chatFilter = ChatFilter.NONE;
   /** Presencia de amigos; sin ella, nadie escucha. */
   private RoomActivity activity = RoomActivity.NONE;
+  /** Partidas del reto diario; sin él, nadie las registra. */
+  private DailyRunListener dailyRuns = DailyRunListener.NONE;
 
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
@@ -190,6 +197,17 @@ public class RoomCoordinator {
     this.activity = activity;
   }
 
+  /** Inyección por método, como la presencia: quien registra las partidas del reto diario (opcional). */
+  @Inject
+  void useDailyRuns(@Nullable DailyRunListener listener) {
+    this.dailyRuns = listener != null ? listener : DailyRunListener.NONE;
+  }
+
+  /** Catálogo de Pokémon vigente (el que usará la siguiente partida); de solo lectura. */
+  public PokemonCatalog currentPokemonCatalog() {
+    return currentCatalog.pokemon();
+  }
+
   /**
    * Dónde está {@code playerId}. Toma el lock de la sala: quien avisó a {@link RoomActivity} lo hizo con el lock tomado,
    * así que esta lectura espera a que termine el cambio y ve el estado final. Una partida terminada (resultados de la
@@ -223,6 +241,7 @@ public class RoomCoordinator {
       room.lock.lock();
       try {
         if (store.roomForPlayer(playerId) != room) continue; // cambió de sala mientras esperaba el lock
+        if (room.daily != null) return Optional.empty(); // la sala del reto es privada: no se invita a ella
         var present = new HashSet<String>();
         room.members.forEach((id, member) -> {
           if (member.presence != PresenceStatus.LEFT) present.add(id);
@@ -231,6 +250,27 @@ public class RoomCoordinator {
             : registry.get(room.selectedGameId).map(GameManifest::name).orElse(null);
         return Optional.of(new RoomSummary(room.code, present, room.members.keySet(), room.maxPlayers, gameName,
             room.phase == RoomPhase.LOBBY));
+      } finally {
+        room.lock.unlock();
+      }
+    }
+  }
+
+  /**
+   * La partida del reto que tiene viva {@code userId}, si está en una sala del reto. Como {@link #roomOf}, toma el lock
+   * de la sala solo para copiar campos; no llamar con el lock de otra sala tomado.
+   */
+  public Optional<DailyRunRef> dailyRunOf(String userId) {
+    while (true) {
+      var room = store.roomForPlayer(userId);
+      if (room == null) return Optional.empty();
+      room.lock.lock();
+      try {
+        if (store.roomForPlayer(userId) != room) continue; // cambió de sala mientras esperaba el lock
+        var daily = room.daily;
+        if (daily == null) return Optional.empty();
+        var game = room.game;
+        return Optional.of(new DailyRunRef(daily.date, daily.gameId, game == null || game.finishReason != null));
       } finally {
         room.lock.unlock();
       }
@@ -423,6 +463,8 @@ public class RoomCoordinator {
         try {
           if (store.get(code) != room) continue;
           var current = room.members.get(identity.id());
+          // La sala del reto no existe para otras cuentas; su jugador sí vuelve a entrar para reconectarse.
+          if (room.daily != null && current == null) throw new RoomException("Room not found");
           if (current == null && room.members.size() >= room.maxPlayers) throw new RoomException("Room is full");
           if (!store.attachUnlessInOtherRoom(identity.id(), room.code)) {
             throw new RoomException("Leave your current room first");
@@ -455,6 +497,50 @@ public class RoomCoordinator {
   /** Atajo para pruebas y transporte: código ya extraído como texto. */
   public RoomView join(AuthUser identity, String connectionId, String code) {
     return join(identity, connectionId, JsonNode.createStringNode(code));
+  }
+
+  /**
+   * Reto diario: crea una sala privada de un jugador ({@code maxPlayers} 1, sesión de una partida) con el juego y la
+   * configuración fija de {@code launch} y arranca la partida al momento, sin lobby. No audita la sala ni la partida.
+   * Si el arranque falla, la sala desaparece sin avisar de abandono y la cuenta queda libre para reintentar.
+   */
+  public RoomView startDaily(AuthUser identity, String connectionId, DailyLaunch launch) {
+    return engineErrors(() -> {
+      if (store.roomForPlayer(identity.id()) != null) throw new RoomException("Leave your current room first");
+      var daily = launch.daily();
+      var xp = experienceOf(identity);
+      while (true) {
+        var code = roomCode();
+        while (store.get(code) != null) code = roomCode();
+        var room = new LiveRoom(random.uuid(), code, identity.id(), 1, daily.gameId,
+            Map.of(daily.gameId, launch.config()), clock.now());
+        room.daily = daily;
+        room.sessionMode = new SessionMode.GameCount(1);
+        room.lock.lock();
+        try {
+          room.members.put(identity.id(), member(identity, connectionId, MemberRole.PLAYER, RoomRole.HOST));
+          room.members.get(identity.id()).xp = xp;
+          room.sessionParticipants.put(identity.id(), new SessionParticipant(identity, 0));
+          if (!store.saveIfAbsent(room)) continue; // otra sala ocupó el código entre la comprobación y el guardado
+          if (!store.attachUnlessInOtherRoom(identity.id(), code)) {
+            store.delete(code);
+            throw new RoomException("Leave your current room first");
+          }
+          try {
+            launchGame(room, launch);
+          } catch (RuntimeException error) {
+            room.game = null;
+            store.detachPlayer(identity.id(), code);
+            store.delete(code);
+            throw error;
+          }
+          roomActivity(identity);
+          return view(room, identity.id());
+        } finally {
+          room.lock.unlock();
+        }
+      }
+    });
   }
 
   private RoomMember member(AuthUser identity, String connectionId, MemberRole role, RoomRole roomRole) {
@@ -542,6 +628,10 @@ public class RoomCoordinator {
     var member = room.members.get(playerId);
     if (member == null) return;
     if (!explicit && member.connected) return;
+    if (room.daily != null) {
+      closeDailyRoom(room, member);
+      return;
+    }
     clearWhoIsWhoCursor(room, playerId);
     Presence.markLeft(member);
     var game = room.game;
@@ -565,6 +655,27 @@ public class RoomCoordinator {
     applyPresenceChange(room);
   }
 
+  /**
+   * El jugador del reto sale (o vence su gracia): la sala se cierra sin auditoría. Con la partida a medias se avisa del
+   * abandono; tras los resultados, no.
+   */
+  private void closeDailyRoom(LiveRoom room, RoomMember member) {
+    var playerId = member.identity.id();
+    clearWhoIsWhoCursor(room, playerId);
+    Presence.markLeft(member);
+    room.members.remove(playerId);
+    store.detachPlayer(playerId, room.code);
+    room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    store.delete(room.code);
+    roomActivity(member.identity);
+    var game = room.game;
+    if (game != null && claimGameFinish(room, game, GameFinishReason.ABANDONED)) {
+      var daily = room.daily;
+      pending.track(dailyRuns.abandoned(daily).exceptionally(error -> logged("Failed to record abandoned daily run",
+          error)));
+    }
+  }
+
   private void transferHost(LiveRoom room) {
     var next = Presence.oldestConnectedMember(room).orElse(null);
     if (next == null) return;
@@ -578,7 +689,8 @@ public class RoomCoordinator {
   // ---------------------------------------------------------------------------------------------- lobby
 
   public void selectGame(String playerId, @Nullable String gameId) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.CHANGE_GAME);
       assertLobby(room);
       var module = registry.get(gameId).orElseThrow(() -> new RoomException("Unknown game"));
@@ -593,13 +705,15 @@ public class RoomCoordinator {
 
   public void updateConfig(String playerId, @Nullable JsonNode config) {
     inRequiredRoom(playerId, room -> {
+      assertNotDaily(room);
       updateGameConfig(playerId, room.selectedGameId, config);
       return null;
     });
   }
 
   public void updateGameConfig(String playerId, @Nullable String gameId, @Nullable JsonNode config) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_CONFIG);
       assertLobby(room);
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
@@ -620,7 +734,8 @@ public class RoomCoordinator {
   }
 
   public void updateSession(String playerId, @Nullable JsonNode mode) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.EDIT_SESSION);
       assertLobby(room);
       room.sessionMode = RoomCommandParsers.sessionMode(mode);
@@ -630,7 +745,8 @@ public class RoomCoordinator {
   }
 
   public void updateGameSelection(String playerId, @Nullable JsonNode mode) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_SELECTION);
       assertLobby(room);
       var parsed = RoomCommandParsers.gameSelectionMode(mode, room.selectedGameId);
@@ -657,7 +773,8 @@ public class RoomCoordinator {
    * por votación (al menos uno, todos del juego). Se guardan en el orden del catálogo.
    */
   public void updateAllowedModes(String playerId, @Nullable String gameId, @Nullable JsonNode modes) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_CONFIG);
       assertLobby(room);
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
@@ -674,7 +791,8 @@ public class RoomCoordinator {
   }
 
   public void setRoomRole(String actorId, @Nullable String playerId, @Nullable JsonNode requestedRole) {
-    inRequiredRoom(actorId, ignored -> {
+    inRequiredRoom(actorId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(actorId, RoomPermission.MANAGE_ROLES);
       assertLobby(room);
       var role = RoomCommandParsers.assignableRole(requestedRole);
@@ -689,7 +807,8 @@ public class RoomCoordinator {
 
   /** {@code room:transfer-host} ({@code transferHostManually}). */
   public void transferHost(String actorId, @Nullable String playerId) {
-    inRequiredRoom(actorId, ignored -> {
+    inRequiredRoom(actorId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(actorId, RoomPermission.TRANSFER_HOST);
       assertLobby(room);
       if (actorId.equals(playerId)) throw new RoomException("Ya eres el Host.");
@@ -719,6 +838,7 @@ public class RoomCoordinator {
   /** {@code room:chat:send}; un {@code text} que no sea cadena cuenta como ausente. */
   public void sendChat(String playerId, @Nullable JsonNode text) {
     inRequiredRoom(playerId, room -> {
+      assertNotDaily(room);
       assertChatLobby(room);
       var member = room.members.get(playerId);
       if (member == null) throw new RoomException("Not in a room");
@@ -732,7 +852,8 @@ public class RoomCoordinator {
 
   /** {@code room:chat:delete}: Host y Co-host; un Co-host no borra mensajes del Host. */
   public void deleteChatMessage(String actorId, @Nullable JsonNode seq) {
-    inRequiredRoom(actorId, ignored -> {
+    inRequiredRoom(actorId, current -> {
+      assertNotDaily(current);
       var room = requiredRoom(actorId);
       assertChatLobby(room);
       permissionRoom(actorId, RoomPermission.MODERATE_CHAT);
@@ -753,7 +874,8 @@ public class RoomCoordinator {
 
   /** {@code room:chat:mute}: el silencio dura la sala; solo el Host silencia a un Co-host y nadie al Host. */
   public void setChatMute(String actorId, @Nullable String playerId, @Nullable JsonNode muted) {
-    inRequiredRoom(actorId, ignored -> {
+    inRequiredRoom(actorId, current -> {
+      assertNotDaily(current);
       var room = requiredRoom(actorId);
       assertChatLobby(room);
       permissionRoom(actorId, RoomPermission.MODERATE_CHAT);
@@ -805,7 +927,8 @@ public class RoomCoordinator {
   }
 
   public void kick(String actorId, @Nullable String playerId) {
-    inRequiredRoom(actorId, ignored -> {
+    inRequiredRoom(actorId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(actorId, RoomPermission.KICK_MEMBER);
       assertLobby(room);
       if (actorId.equals(playerId) || room.hostId.equals(playerId)) {
@@ -827,6 +950,7 @@ public class RoomCoordinator {
   /** {@code room:set-ready}; {@code requestedReady} crudo: solo un booleano es válido. */
   public void setReady(String playerId, @Nullable JsonNode requestedReady) {
     inRequiredRoom(playerId, room -> {
+      assertNotDaily(room);
       assertLobby(room);
       var member = room.members.get(playerId);
       if (member == null || member.presence != PresenceStatus.CONNECTED) {
@@ -1002,7 +1126,8 @@ public class RoomCoordinator {
   }
 
   public void startGame(String playerId) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.START_GAME);
       assertLobby(room);
       // Sin minijuegos elegidos no hay nada que empezar (tiene prioridad sobre la confirmación de los invitados).
@@ -1018,16 +1143,18 @@ public class RoomCoordinator {
       var pick = firstPick(room);
       room.selectedGameId = pick.gameId();
       room.selectedMode = pick.mode();
-      launchGame(room);
+      launchGame(room, null);
       return null;
     });
   }
 
   /**
    * Arranca {@code room.selectedGameId}. El modo sorteado o votado ({@code room.selectedMode}) se aplica solo a esta
-   * partida y se consume: la configuración del lobby no cambia.
+   * partida y se consume: la configuración del lobby no cambia. Con {@code launch} (reto diario) la partida usa su
+   * catálogo fijado y su azar, no se audita y no se exige el {@code minPlayers} del manifiesto (el motor comprueba el
+   * suyo para la configuración del reto).
    */
-  void launchGame(LiveRoom room) {
+  void launchGame(LiveRoom room, @Nullable DailyLaunch launch) {
     var pick = new GamePick(room.selectedGameId, room.selectedMode);
     room.selectedMode = null;
     var players = room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED)
@@ -1035,14 +1162,17 @@ public class RoomCoordinator {
     var module = registry.get(room.selectedGameId).orElseThrow(() -> new RoomException("Unknown game"));
     var engine = engine(room.selectedGameId)
         .orElseThrow(() -> new RoomException(NOT_PORTED));
-    if (players.size() < module.minPlayers()) {
+    if (launch == null && players.size() < module.minPlayers()) {
       throw new RoomException("Se necesitan al menos " + module.minPlayers() + " jugadores.");
     }
     if (module.maxPlayers() != null && players.size() > module.maxPlayers()) {
       throw new RoomException("Este juego admite un máximo de " + module.maxPlayers() + " jugadores.");
     }
-    var catalog = catalogSnapshot();
-    var context = contextBuilder(catalog)
+    var current = catalogSnapshot();
+    var catalog = launch == null ? current
+        : new GameCatalogSnapshot(random.uuid(), launch.pokemon(), current.visuals(), current.audio());
+    var gameRandom = launch == null ? null : launch.random();
+    var context = contextBuilder(catalog, gameRandom)
         .players(players)
         .now(clock.now())
         .roomCode(room.code)
@@ -1064,11 +1194,12 @@ public class RoomCoordinator {
       member.ready = false;
     }
     var resultId = random.uuid();
-    var auditReady = track(audit.gameStarted(new GameStarted(resultId, room.historyId, room.code, module.id(),
-        players.size(), configTree, context.now())), null);
+    var auditReady = launch != null ? CompletableFuture.<Void>completedFuture(null)
+        : track(audit.gameStarted(new GameStarted(resultId, room.historyId, room.code, module.id(),
+            players.size(), configTree, context.now())), null);
     cancelPresenceGraces(room);
     room.game = new GameRuntime(catalog, resultId, module.id(), players.stream().map(GamePlayer::id).toList(), engine,
-        config, configTree, state, context.now(), auditReady);
+        config, configTree, state, context.now(), auditReady, gameRandom);
     resetWhoIsWhoCursors(room);
     room.phase = RoomPhase.of(engine.getLifecycle(state).phase());
     syncAndBroadcast(room);
@@ -1137,6 +1268,7 @@ public class RoomCoordinator {
   public void setGameSkipVote(String playerId, @Nullable JsonNode payload) {
     var request = RoomCommandParsers.setGameSkipVoteRequest(payload);
     inRequiredRoom(playerId, room -> {
+      assertNotDaily(room);
       var game = room.game;
       if (game == null || game.finishReason != null || room.phase == RoomPhase.GAME_RESULTS) {
         throw new RoomException("No hay un minijuego activo que se pueda saltar.");
@@ -1159,7 +1291,10 @@ public class RoomCoordinator {
   }
 
   private boolean resolveUnanimousGameSkip(LiveRoom room, GameRuntime game, List<String> eligibleIds) {
-    if (room.game != game || game.finishReason != null || !GameSkip.hasUnanimousSkip(room, eligibleIds)) return false;
+    if (room.daily != null || room.game != game || game.finishReason != null
+        || !GameSkip.hasUnanimousSkip(room, eligibleIds)) {
+      return false;
+    }
     return skipGame(room, game);
   }
 
@@ -1265,6 +1400,7 @@ public class RoomCoordinator {
   /** {@code optionId}: el id de la opción (el del juego si sale con un solo modo, {@code juego:MODO} si no). */
   public void voteNextGame(String playerId, @Nullable String optionId) {
     inRequiredRoom(playerId, room -> {
+      assertNotDaily(room);
       var vote = room.nextGameVote;
       if (vote == null || room.phase != RoomPhase.NEXT_GAME_VOTE) {
         throw new RoomException("No hay una votación de minijuegos activa.");
@@ -1305,7 +1441,7 @@ public class RoomCoordinator {
     if (room.phase == RoomPhase.NEXT_GAME_VOTE_RESULTS) {
       resetToLobby(room, false);
       try {
-        launchGame(room);
+        launchGame(room, null);
       } catch (RuntimeException error) {
         broadcast(room);
         schedule(room);
@@ -1370,7 +1506,24 @@ public class RoomCoordinator {
     schedule(room);
   }
 
+  /**
+   * Solo memoria, con el lock tomado: el oyente apunta las rondas cerradas del estado público. Un fallo del oyente se
+   * registra y no rompe la difusión ni la partida.
+   */
+  private void observeDaily(LiveRoom room, DailyRoom daily, GameRuntime game) {
+    var publicState = game.engine.getPublicState(game.state, context(room));
+    try {
+      dailyRuns.observe(daily, publicState);
+    } catch (RuntimeException error) {
+      LOG.error("Failed to observe daily run", error);
+    }
+  }
+
   private void finishGame(LiveRoom room, GameRuntime game) {
+    if (room.daily != null) {
+      finishDailyGame(room, room.daily, game);
+      return;
+    }
     if (!claimGameFinish(room, game, GameFinishReason.COMPLETED)) return;
     resetWhoIsWhoCursors(room);
     game.skipVoterIds.clear();
@@ -1412,6 +1565,29 @@ public class RoomCoordinator {
         .thenCompose(ignored -> results.persist(resultRoom, resultSnapshot, game.resultId, game.startedAt, game.gameId,
             game.configTree))
         .exceptionally(error -> logged("Failed to persist game results", error)));
+  }
+
+  /**
+   * Final de una partida del reto: sin puntos de sesión, XP, auditoría ni {@link GameResultsPersister}. Se observa el
+   * estado final (la última ronda y el historial de Distance) antes de que el oyente fije {@code daily.outcome}, que la
+   * difusión siguiente ya publica; la escritura del resultado va en segundo plano, fuera del lock.
+   */
+  private void finishDailyGame(LiveRoom room, DailyRoom daily, GameRuntime game) {
+    if (!claimGameFinish(room, game, GameFinishReason.COMPLETED)) return;
+    resetWhoIsWhoCursors(room);
+    game.skipVoterIds.clear();
+    game.resultsApplied = true;
+    room.gamesPlayed += 1;
+    room.phase = RoomPhase.GAME_RESULTS;
+    observeDaily(room, daily, game);
+    var gameResults = copyResults(game.engine.getResults(game.state));
+    CompletableFuture<Void> recorded;
+    try {
+      recorded = dailyRuns.finished(daily, gameResults);
+    } catch (RuntimeException error) {
+      recorded = CompletableFuture.failedFuture(error);
+    }
+    pending.track(recorded.exceptionally(error -> logged("Failed to record daily run", error)));
   }
 
   /** Ganadores de la partida para el historial de la sesión; una partida sin clasificar (cooperativa) no tiene. */
@@ -1489,7 +1665,8 @@ public class RoomCoordinator {
   }
 
   public void returnLobby(String playerId) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.START_GAME);
       if (room.phase != RoomPhase.GAME_RESULTS && room.phase != RoomPhase.SESSION_RESULTS) {
         throw new RoomException("Game has not finished");
@@ -1502,7 +1679,8 @@ public class RoomCoordinator {
   }
 
   public void continueSession(String playerId) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.START_GAME);
       if (room.phase != RoomPhase.GAME_RESULTS) throw new RoomException("La partida todavía no ha terminado.");
       try {
@@ -1564,7 +1742,7 @@ public class RoomCoordinator {
       room.selectedGameId = pick.gameId();
       room.selectedMode = pick.mode();
       try {
-        launchGame(room);
+        launchGame(room, null);
         return;
       } catch (RuntimeException error) {
         LOG.warn("Game {} could not start; trying the next one", pick.gameId(), error);
@@ -1588,7 +1766,8 @@ public class RoomCoordinator {
   }
 
   public void endSession(String playerId) {
-    inRequiredRoom(playerId, ignored -> {
+    inRequiredRoom(playerId, current -> {
+      assertNotDaily(current);
       var room = permissionRoom(playerId, RoomPermission.END_SESSION);
       if (room.phase != RoomPhase.LOBBY && room.phase != RoomPhase.GAME_RESULTS
           && room.phase != RoomPhase.NEXT_GAME_VOTE && room.phase != RoomPhase.NEXT_GAME_VOTE_RESULTS) {
@@ -1635,6 +1814,7 @@ public class RoomCoordinator {
     return context(room, room.game != null ? room.game.catalog : catalogSnapshot());
   }
 
+  /** Con partida, su azar propio si lo tiene (el reto diario): cada contexto consume la misma fuente. */
   private GameContext context(LiveRoom room, GameCatalogSnapshot catalog) {
     long now = clock.now();
     var graceMs = livePresenceGraceMs(room);
@@ -1642,7 +1822,7 @@ public class RoomCoordinator {
         member.identity.displayName(),
         member.presence == PresenceStatus.CONNECTED || withinPresenceGrace(graceMs, member, now),
         member.role == MemberRole.PLAYER && member.presence != PresenceStatus.LEFT)).toList();
-    return contextBuilder(catalog)
+    return contextBuilder(catalog, room.game != null ? room.game.random : null)
         .players(players)
         .now(now)
         .roomCode(room.code)
@@ -1653,8 +1833,8 @@ public class RoomCoordinator {
   }
 
   /** Catálogos fijados y precargas: la imagen original ({@code preloadGameImage} de Node) y la transformada. */
-  private GameContext.Builder contextBuilder(GameCatalogSnapshot catalog) {
-    return GameContext.builder(catalog.pokemon(), random::next)
+  private GameContext.Builder contextBuilder(GameCatalogSnapshot catalog, @Nullable DoubleSupplier gameRandom) {
+    return GameContext.builder(catalog.pokemon(), gameRandom != null ? gameRandom : random::next)
         .pokemonVisuals(catalog.visuals())
         .pokemonAudio(catalog.audio())
         .tcgCards(tcgCards)
@@ -1716,6 +1896,10 @@ public class RoomCoordinator {
   }
 
   void broadcast(LiveRoom room) {
+    // Reto: cada difusión de la partida viva se observa (Learnset solo publica la última ronda en ROUND_RESULTS); el
+    // estado final lo observa finishDailyGame antes de fijar el resultado.
+    var game = room.game;
+    if (room.daily != null && game != null && game.finishReason == null) observeDaily(room, room.daily, game);
     room.revision += 1;
     room.updatedAt = clock.now();
     views.broadcast(room, context(room), hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size());
@@ -1735,6 +1919,11 @@ public class RoomCoordinator {
       throw new RoomException("No tienes permiso para realizar esta acción.");
     }
     return room;
+  }
+
+  /** Guarda única de los comandos de lobby y de sesión: en la sala del reto no existen. */
+  private static void assertNotDaily(LiveRoom room) {
+    if (room.daily != null) throw new RoomException(DAILY_UNAVAILABLE);
   }
 
   private static void assertLobby(LiveRoom room) {

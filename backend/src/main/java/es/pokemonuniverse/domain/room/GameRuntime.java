@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.DoubleSupplier;
 
 /** {@code GameRuntime} de {@code rooms/types.ts}: una instancia de minijuego dentro de la sala. */
 public final class GameRuntime {
@@ -29,10 +30,18 @@ public final class GameRuntime {
   public final Set<String> departedParticipantIds = new LinkedHashSet<>();
   public boolean resultsApplied;
   public CompletableFuture<Void> auditReady;
+  /** Azar propio de la partida (el reto diario); {@code null} usa el de la sala. */
+  public final @Nullable DoubleSupplier random;
 
   public GameRuntime(GameCatalogSnapshot catalog, String resultId, String gameId, List<String> participantIds,
       ErasedEngine engine, Object config, JsonNode configTree, Object state, long startedAt,
       CompletableFuture<Void> auditReady) {
+    this(catalog, resultId, gameId, participantIds, engine, config, configTree, state, startedAt, auditReady, null);
+  }
+
+  public GameRuntime(GameCatalogSnapshot catalog, String resultId, String gameId, List<String> participantIds,
+      ErasedEngine engine, Object config, JsonNode configTree, Object state, long startedAt,
+      CompletableFuture<Void> auditReady, @Nullable DoubleSupplier random) {
     this.catalog = catalog;
     this.resultId = resultId;
     this.gameId = gameId;
@@ -43,5 +52,6 @@ public final class GameRuntime {
     this.state = state;
     this.startedAt = startedAt;
     this.auditReady = auditReady;
+    this.random = random;
   }
 }

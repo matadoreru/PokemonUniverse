@@ -44,9 +44,10 @@ class RoomInvitationsTest {
   private final Map<String, RoomSummary> rooms = new HashMap<>();
   private long now = 1_000_000;
   private final AtomicInteger ids = new AtomicInteger();
+  private final Set<String> inDailyRun = new HashSet<>();
   private final RoomInvitations invitations = new RoomInvitations(multiTab,
       (a, b) -> a.equals("host") && friendsOfHost.contains(b),
-      id -> Optional.ofNullable(rooms.get(id)), () -> now, () -> "invite-" + ids.incrementAndGet());
+      id -> Optional.ofNullable(rooms.get(id)), inDailyRun::contains, () -> now, () -> "invite-" + ids.incrementAndGet());
 
   private void hostInRoom(Set<String> members, int maxPlayers) {
     rooms.put("host", new RoomSummary("PIKA42", members, members, maxPlayers, "Higher or Lower", true));
@@ -86,6 +87,14 @@ class RoomInvitationsTest {
   void rejectsWhenHostIsNotInARoom() {
     friend("misty");
     assertRejects("You are not in a room", () -> invitations.invite(HOST, "misty"));
+  }
+
+  @Test
+  void rejectsFromTheDailyChallengeRoom() {
+    friend("misty");
+    inDailyRun.add("host"); // roomOf no devuelve la sala del reto
+    assertRejects("Not available in the daily challenge", () -> invitations.invite(HOST, "misty"));
+    assertTrue(invitesTo("misty").isEmpty());
   }
 
   @Test

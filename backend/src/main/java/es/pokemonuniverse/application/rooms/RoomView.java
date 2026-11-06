@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * {@code RoomView} de {@code room.ts} con exactamente sus claves; las opcionales de TS siempre están presentes, como
- * las envía Node. Se construye con {@link Builder}: son 28 campos.
+ * las envía Node. Se construye con {@link Builder}: son 29 campos.
  */
 @Serdeable
 @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -49,7 +49,18 @@ public record RoomView(
     @Nullable JsonNode gamePlayerState,
     long serverNow,
     int hostCustomCategoryCount,
-    int hostWouldYouRatherPromptCount) {
+    int hostWouldYouRatherPromptCount,
+    @Nullable DailyView daily) {
+
+  /** {@code DailyRoomInfo}: la sala es del reto diario; {@code result} llega al terminar la partida. */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record DailyView(String gameId, String date, int roundCount, @Nullable DailyOutcomeView result) {}
+
+  /** Resultado del reto en la vista de la sala: puntos, aciertos y el valor de cada ronda. */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record DailyOutcomeView(int score, int correct, List<Integer> rounds) {}
 
   /** {@code RoomMemberView}. */
   @Serdeable
@@ -103,7 +114,7 @@ public record RoomView(
         .allowedModes(allowedModes).nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
         .sessionStandings(sessionStandings).sessionHistory(sessionHistory).gameActionEpoch(gameActionEpoch).game(game)
         .gamePlayerState(gamePlayerState).serverNow(serverNow).hostCustomCategoryCount(hostCustomCategoryCount)
-        .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount);
+        .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount).daily(daily);
   }
 
   public static final class Builder {
@@ -134,6 +145,7 @@ public record RoomView(
     private long serverNow;
     private int hostCustomCategoryCount;
     private int hostWouldYouRatherPromptCount;
+    private DailyView daily;
 
     private Builder() {}
 
@@ -192,11 +204,14 @@ public record RoomView(
 
     public Builder hostWouldYouRatherPromptCount(int v) { hostWouldYouRatherPromptCount = v; return this; }
 
+    public Builder daily(@Nullable DailyView v) { daily = v; return this; }
+
     public RoomView build() {
       return new RoomView(roomInstanceId, revision, gameCatalogVersion, code, phase, hostId, maxPlayers, members,
           availableGames, selectedGameId, selectedGameConfig, sessionMode, gameConfigs, customizedGameIds,
           gameSelectionMode, allowedModes, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
-          gameActionEpoch, game, gamePlayerState, serverNow, hostCustomCategoryCount, hostWouldYouRatherPromptCount);
+          gameActionEpoch, game, gamePlayerState, serverNow, hostCustomCategoryCount, hostWouldYouRatherPromptCount,
+          daily);
     }
   }
 }
