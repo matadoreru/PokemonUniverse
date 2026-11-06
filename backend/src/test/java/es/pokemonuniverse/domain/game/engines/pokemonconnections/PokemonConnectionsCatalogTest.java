@@ -46,8 +46,7 @@ class PokemonConnectionsCatalogTest {
     "ash-team", "misty-team", "brock-team", "team-rocket", "champion-aces", "box-art", "final-starters",
     "regional-forms", "kalos-hoenn-megas", "gigantamax", "fusions", "ability-forms", "move-evolution", "cocoons",
     "human-made", "space", "japanese-folklore", "object-ghosts", "dinosaurs", "lizards", "crocodiles", "beetles",
-    "bees", "snails-slugs", "deer", "fruits-vegetables", "royalty", "female-only", "male-only", "shape-head-only",
-    "shape-multiple-bodies", "shape-tentacles", "heavyweights", "featherweights", "giants",
+    "bees", "snails-slugs", "deer", "fruits-vegetables", "royalty", "female-only", "male-only", "heavyweights", "featherweights", "giants",
   };
 
   private static final String[] TEMPLATE_IDS = {
@@ -58,8 +57,16 @@ class PokemonConnectionsCatalogTest {
   @Test
   void categoriesKeepTheTsCountAndOrder() {
     var catalog = PokemonConnectionsCatalog.CONNECTION_CATEGORY_CATALOG;
-    assertEquals(93, catalog.size());
+    assertEquals(90, catalog.size());
     assertArrayEquals(CATEGORY_IDS, catalog.stream().map(CategoryDefinition::id).toArray(String[]::new));
+  }
+
+  /** La forma corporal de la Pokédex no es evidente para un jugador: no hay categorías {@code shape-*}. */
+  @Test
+  void noBodyShapeCategoryRemains() {
+    for (var category : PokemonConnectionsCatalog.CONNECTION_CATEGORY_CATALOG) {
+      assertFalse(category.id().startsWith("shape-"), category.id());
+    }
   }
 
   @Test

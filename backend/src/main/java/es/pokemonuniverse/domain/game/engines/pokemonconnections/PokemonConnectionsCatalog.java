@@ -612,29 +612,6 @@ public final class PokemonConnectionsCatalog {
               "volbeat", "latios", "mothim", "gallade", "throh", "sawk", "rufflet", "braviary", "tornadus-incarnate",
               "thundurus-incarnate", "landorus-incarnate", "impidimp", "morgrem", "grimmsnarl", "oinkologne-male",
               "okidogi", "munkidori", "fezandipiti"),
-      category("shape-head-only")
-          .label("Solo tienen cabeza")
-          .explanation("La Pokédex clasifica oficialmente su forma corporal como solo cabeza.")
-          .pokemonIds("shellder", "cloyster", "gastly", "voltorb", "electrode", "koffing", "ditto", "sunkern",
-              "misdreavus", "unown", "pineco", "forretress", "silcoon", "cascoon", "lunatone", "solrock", "castform",
-              "shuppet", "glalie", "clamperl", "mismagius", "bronzor", "rotom", "whirlipede", "cottonee", "solosis",
-              "duosion", "ferroseed", "cryogonal", "shelmet", "carbink", "klefki", "pumpkaboo-average", "comfey",
-              "minior-red-meteor", "cosmog", "cosmoem", "meltan", "rolycoly", "sinistea", "polteageist", "milcery",
-              "nacli", "tadbulb", "bramblin", "brambleghast", "glimmet", "glimmora", "poltchageist", "sinistcha",
-              "pecharunt"),
-      category("shape-multiple-bodies")
-          .label("Formados por varios cuerpos")
-          .explanation("La Pokédex clasifica oficialmente su forma corporal como varios cuerpos.")
-          .pokemonIds("dugtrio", "magneton", "exeggcute", "weezing", "metagross", "combee", "cherubi", "probopass",
-              "vanilluxe", "klink", "klang", "klinklang", "doublade", "binacle", "barbaracle", "falinks", "tandemaus",
-              "maushold-family-of-four", "dipplin", "hydrapple"),
-      category("shape-tentacles")
-          .label("Forma corporal con tentáculos")
-          .explanation("La Pokédex clasifica oficialmente su forma corporal como tentáculos.")
-          .pokemonIds("tentacool", "tentacruel", "omanyte", "omastar", "octillery", "carnivine", "giratina-altered",
-              "boldore", "gigalith", "frillish-male", "jellicent-male", "ferrothorn", "inkay", "trevenant", "toxapex",
-              "wimpod", "nihilego", "buzzwole", "sizzlipede", "centiskorch", "clobbopus", "grapploct", "pincurchin",
-              "toedscruel"),
       category("heavyweights")
           .label("Pesan 200 kg o más")
           .explanation("Su peso oficial alcanza al menos 200 kg.")
