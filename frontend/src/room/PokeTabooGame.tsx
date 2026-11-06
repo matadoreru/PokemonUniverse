@@ -140,5 +140,5 @@ export function PokeTabooGame({ room, selfId, onAction }: { room: RoomView; self
   }
 
   return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} roundLabel={tabooRoundLabel(game)} heading={heading} meta={meta} timer={timer}
-    announcement={announcement} phases={<PhaseRail steps={TABOO_STEPS} current={tabooCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} />;
+    announcement={announcement} phases={<PhaseRail steps={TABOO_STEPS} current={tabooCurrentStep(game.phase)} className={s.phases} />} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} />;
 }

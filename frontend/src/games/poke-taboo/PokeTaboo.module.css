@@ -30,6 +30,29 @@
   .pair > * {
     min-height: 0;
   }
+  /* Quien describe: la ficha del secreto entera, sin desplazar; sus pistas llenan el resto del alto. */
+  .pair:has(> .secret) {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+}
+/* Escritorio bajo: la pista principal mide lo que necesita (entera, sin desplazar) y las pistas llenan el resto. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .pair {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  /*
+   * Las fases de la ronda ceden su franja: el título de la placa ya dice la fase («Describe tu Pokémon», «¡Era X!») y
+   * el alto va a la ficha y a las pistas. Menos margen arriba y abajo de la pantalla por lo mismo.
+   */
+  ol.phases {
+    display: none;
+  }
+  .pair {
+    gap: var(--sp-2);
+  }
+  div.screen {
+    padding-block: var(--sp-3);
+  }
 }
 
 /* El Pokémon secreto: la carta a la izquierda; las palabras prohibidas, los datos y las estadísticas a la derecha. */
@@ -139,6 +162,18 @@
 .abilities strong {
   color: var(--ink);
 }
+@media (min-width: 1024px) {
+  .secretInfo {
+    gap: var(--sp-2);
+  }
+  /* Estadísticas en dos filas de cuatro (el total ocupa dos): la ficha no crece en alto. */
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .total {
+    grid-column: span 2;
+  }
+}
 @media (min-width: 1600px) and (min-height: 900px) {
   .secretCard {
     width: 14rem;
@@ -165,16 +200,87 @@
   }
 }
 /*
- * Escritorio bajo (720 px): carta algo menor y lo prohibido a su lado, a la vista; la ficha se desplaza por dentro
- * (comparte el alto con las pistas, debajo).
+ * Escritorio bajo (720 px): la ficha entera sin desplazar, en tres columnas compactas: la carta en horizontal (sprite a
+ * la izquierda; el nombre entero, partido si hace falta, y los tipos a la derecha) con los datos debajo, lo prohibido
+ * y las estadísticas en dos filas de cuatro. Las pistas se llevan el resto del alto, debajo.
  */
 @media (min-width: 1024px) and (max-height: 800px) {
+  .secretGrid {
+    grid-template-columns: minmax(16.5rem, 1.15fr) minmax(0, 0.9fr) minmax(0, 1.6fr);
+    gap: var(--sp-2) var(--sp-3);
+  }
   .secretCard {
-    width: 8.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    width: auto;
+    min-width: 0;
+  }
+  .secretCard > * {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: center;
+    justify-items: start;
+    gap: var(--sp-1) var(--sp-2);
+    padding: var(--sp-1) var(--sp-2);
   }
   .secretCard [data-part='art'] {
-    width: 72px;
-    height: 72px;
+    grid-row: 1 / span 2;
+    width: 40px;
+    height: 40px;
+  }
+  /* Menos relleno en los paneles de la ficha y de las pistas: el alto va a las pistas. */
+  .secret .secretBody,
+  .hints .hintsBody {
+    padding-block: var(--sp-2);
+  }
+  .secretCard [data-part='name'] {
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+  /* Los tipos, alineados con el nombre (no centrados) y en una fila si caben. */
+  .secretCard [data-part='name'] ~ * {
+    justify-self: start;
+    justify-content: flex-start;
+  }
+  /* Lo prohibido y la ficha son hermanos de la carta en la rejilla de tres columnas. */
+  .secretInfo {
+    display: contents;
+  }
+  .facts {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: var(--fs-13);
+    gap: var(--sp-1) var(--sp-2);
+  }
+  .forbidden {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+  .forbiddenList > li > span {
+    font-size: var(--fs-15);
+    min-height: 30px;
+  }
+  .stats {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--sp-1) var(--sp-2);
+  }
+  .stat dt {
+    white-space: nowrap;
+  }
+  .stat dd {
+    font-size: var(--fs-15);
+  }
+  .total {
+    grid-column: span 2;
+  }
+  .abilities {
+    grid-column: 3;
+    grid-row: 2;
   }
 }
 @media (max-width: 1023px) {
@@ -237,6 +343,9 @@
 @media (min-width: 1024px) and (max-height: 800px) {
   .hintsHelp {
     display: none;
+  }
+  .hintText {
+    font-size: var(--fs-15);
   }
   /* Escritorio bajo: la regla de lo prohibido y la ayuda normal del campo ceden su alto (la placa y el título lo dicen). */
   .rule,
