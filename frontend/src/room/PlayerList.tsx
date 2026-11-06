@@ -89,7 +89,7 @@ function FriendAction({ member, friends }: { member: RoomMemberView; friends: Fr
   };
   return (
     <>
-      {relation.kind === 'none' && <Pill variant="yellow" block icon={UserPlus} loading={busy} onClick={() => run(async () => sentText(await friends.send(name), name))}>Enviar solicitud de amistad</Pill>}
+      {relation.kind === 'none' && <Pill variant="yellow" block icon={UserPlus} loading={busy} onClick={() => run(async () => sentText(await friends.send(name)))}>Enviar solicitud de amistad</Pill>}
       {relation.kind === 'outgoing' && <Pill variant="cream" block icon={Clock} disabled>Solicitud enviada</Pill>}
       {relation.kind === 'incoming' && <Pill variant="yellow" block icon={Check} loading={busy} onClick={() => run(async () => { await friends.accept(relation.requestId); return `${name} y tú ya sois amigos.`; })}>Aceptar solicitud de amistad</Pill>}
       {relation.kind === 'friend' && <Pill variant="cream" block icon={UserCheck} disabled>Ya sois amigos</Pill>}

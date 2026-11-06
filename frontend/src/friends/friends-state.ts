@@ -63,9 +63,24 @@ export function pendingCount(overview: FriendsResponse | null): number {
   return overview?.incoming.length ?? 0;
 }
 
+/** Resultado de `POST /api/friends/requests`: solicitud nueva o amistad directa, con el nombre de usuario canónico. */
+export interface SentRequest {
+  kind: 'request' | 'friend';
+  username: string;
+}
+
+/**
+ * Lee la respuesta de `POST /api/friends/requests`: `{ request }` (con `to`) o `{ friend }` si el otro ya te la había
+ * mandado. El nombre es el que devuelve el servidor (con sus mayúsculas), no el que se escribió; sin él, el escrito.
+ */
+export function sentRequest(body: { request?: { to?: { username: string } | null } | null; friend?: { username: string } | null }, typed: string): SentRequest {
+  if (body.friend) return { kind: 'friend', username: body.friend.username };
+  return { kind: 'request', username: body.request?.to?.username ?? typed };
+}
+
 /** Éxito de «Enviar solicitud»: si el otro ya te la había mandado, el servidor os hace amigos directamente. */
-export function sentText(kind: 'request' | 'friend', name: string): string {
-  return kind === 'friend' ? `Ya sois amigos: ${name} te había enviado una solicitud.` : `Solicitud enviada a ${name}.`;
+export function sentText({ kind, username }: SentRequest): string {
+  return kind === 'friend' ? `Ya sois amigos: ${username} te había enviado una solicitud.` : `Solicitud enviada a ${username}.`;
 }
 
 const GENERIC = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';

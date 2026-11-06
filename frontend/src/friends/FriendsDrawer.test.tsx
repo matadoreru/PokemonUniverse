@@ -17,7 +17,7 @@ const noop = () => Promise.resolve();
 function context(overview: FriendsResponse | null): FriendsContextValue {
   return {
     overview, pendingCount: overview?.incoming.length ?? 0, invites: [], invited: new Set(), enabled: true, drawerOpen: true,
-    openDrawer: () => undefined, closeDrawer: () => undefined, send: () => Promise.resolve('request'), accept: noop, decline: noop,
+    openDrawer: () => undefined, closeDrawer: () => undefined, send: (username) => Promise.resolve({ kind: 'request' as const, username }), accept: noop, decline: noop,
     remove: noop, invite: noop, dismissInvite: () => undefined,
   };
 }
@@ -75,7 +75,7 @@ describe('FriendsDrawer', () => {
 
 describe('AddFriendDialog', () => {
   it('pide el nombre de usuario con «Enviar solicitud» y «Cerrar»; el resultado va dentro', () => {
-    const markup = renderToStaticMarkup(createElement(AddFriendDialog, { open: true, onClose: () => undefined, send: () => Promise.resolve('request' as const) }));
+    const markup = renderToStaticMarkup(createElement(AddFriendDialog, { open: true, onClose: () => undefined, send: (username: string) => Promise.resolve({ kind: 'request' as const, username }) }));
     expect(markup).toContain('Añadir amigo');
     expect(markup).toContain('Nombre de usuario');
     expect(markup).toContain('Enviar solicitud');
@@ -84,7 +84,7 @@ describe('AddFriendDialog', () => {
   });
 
   it('textos del éxito', () => {
-    expect(sentText('request', 'ana')).toBe('Solicitud enviada a ana.');
-    expect(sentText('friend', 'ana')).toBe('Ya sois amigos: ana te había enviado una solicitud.');
+    expect(sentText({ kind: 'request', username: 'ana' })).toBe('Solicitud enviada a ana.');
+    expect(sentText({ kind: 'friend', username: 'ana' })).toBe('Ya sois amigos: ana te había enviado una solicitud.');
   });
 });

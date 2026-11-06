@@ -23,7 +23,7 @@ const noop = () => Promise.resolve();
 function friendsOf(overview: FriendsResponse | null, enabled = true): FriendsContextValue {
   return {
     overview, pendingCount: 0, invites: [], invited: new Set(), enabled, drawerOpen: false, openDrawer: () => undefined,
-    closeDrawer: () => undefined, send: () => Promise.resolve('request' as const), accept: noop, decline: noop, remove: noop, invite: noop,
+    closeDrawer: () => undefined, send: (username) => Promise.resolve({ kind: 'request' as const, username }), accept: noop, decline: noop, remove: noop, invite: noop,
     dismissInvite: () => undefined,
   };
 }

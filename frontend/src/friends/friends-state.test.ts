@@ -1,7 +1,7 @@
 import type { FriendInvite } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import type { FriendsResponse } from '../lib/api-contract';
-import { addInvite, applyPresence, emptyFriendsState, friendErrorMessage, friendRelation, isGuestId, pendingCount, pruneInvites, removeInvite, setOverview, sortFriends, type FriendEntry } from './friends-state';
+import { addInvite, applyPresence, emptyFriendsState, friendErrorMessage, friendRelation, isGuestId, sentRequest, pendingCount, pruneInvites, removeInvite, setOverview, sortFriends, type FriendEntry } from './friends-state';
 
 const avatar: FriendEntry['avatar'] = { type: 'DEFAULT' };
 const friend = (id: string, username: string, status: FriendEntry['status']): FriendEntry => ({ id, username, avatar, level: null, status });
@@ -95,5 +95,17 @@ describe('isGuestId', () => {
   it('los invitados tienen id guest_<uuid>; las cuentas, no', () => {
     expect(isGuestId('guest_4f2a7c1e-0b9d-4c8e-9a3b-2d5e6f7a8b9c')).toBe(true);
     expect(isGuestId('clx0abc123')).toBe(false);
+  });
+});
+
+describe('sentRequest', () => {
+  it('usa el nombre de usuario canónico que devuelve el servidor, no el escrito', () => {
+    expect(sentRequest({ request: { to: party('Ana_92') } }, 'ANA_92')).toEqual({ kind: 'request', username: 'Ana_92' });
+    expect(sentRequest({ friend: friend('1', 'Ana_92', 'ONLINE') }, 'ana_92')).toEqual({ kind: 'friend', username: 'Ana_92' });
+  });
+
+  it('sin el nombre en la respuesta, el escrito', () => {
+    expect(sentRequest({ request: { to: null } }, 'ana')).toEqual({ kind: 'request', username: 'ana' });
+    expect(sentRequest({}, 'ana')).toEqual({ kind: 'request', username: 'ana' });
   });
 });

@@ -79,7 +79,8 @@ for (const { w, h } of SIZES) {
       const anadir = await abrirAnadirAmigo(a.page);
       await anadir.getByLabel('Nombre de usuario').fill(b.cuenta.username.toUpperCase());
       await anadir.getByRole('button', { name: 'Enviar solicitud' }).click();
-      await expect(anadir.getByText(`Solicitud enviada a ${b.cuenta.username}.`)).toBeVisible();
+      // El nombre canónico (en minúsculas) que devuelve el servidor, no el escrito en mayúsculas.
+      await expect(anadir.getByRole('status')).toHaveText(`Solicitud enviada a ${b.cuenta.username}.`);
       await expect(anadir.getByLabel('Nombre de usuario')).toHaveValue('');
       await capture(a.page, 'amigos-anadir');
       await anadir.getByRole('button', { name: 'Cerrar', exact: true }).click();
@@ -162,7 +163,7 @@ for (const { w, h } of SIZES) {
       await joinRoom(c.page, codigo);
       const menuB = await gestionar(c.page, b.cuenta.username);
       await menuB.getByRole('button', { name: 'Enviar solicitud de amistad' }).click();
-      await expect(menuB.getByText(`Solicitud enviada a ${b.cuenta.username}.`)).toBeVisible();
+      await expect(menuB.getByRole('status')).toHaveText(`Solicitud enviada a ${b.cuenta.username}.`);
       await expect(menuB.getByRole('button', { name: 'Solicitud enviada' })).toBeDisabled();
       await capture(c.page, 'lobby-gestionar-amistad');
       await cerrarGestionar(c.page, b.cuenta.username);

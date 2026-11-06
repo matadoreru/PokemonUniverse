@@ -4,7 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { api } from '../lib/api';
 import type { FriendsResponse } from '../lib/api-contract';
 import { useRoom } from '../room/RoomContext';
-import { addInvite, applyPresence, emptyFriendsState, pendingCount, pruneInvites, removeInvite, setOverview, type FriendsState } from './friends-state';
+import { addInvite, applyPresence, emptyFriendsState, pendingCount, pruneInvites, removeInvite, sentRequest, setOverview, type FriendsState, type SentRequest } from './friends-state';
 
 /** Tras invitar, el botón dice «Invitado» este tiempo (el servidor rechaza repetir antes de 30 s). */
 export const INVITED_MS = 30_000;
@@ -26,7 +26,8 @@ export interface FriendsContextValue {
   openDrawer(): void;
   closeDrawer(): void;
   /** Las cuatro acciones REST lanzan el error del servidor en inglés: el panel lo traduce en línea (`friendErrorMessage`). */
-  send(username: string): Promise<'request' | 'friend'>;
+  /** Devuelve si fue solicitud o amistad directa y el nombre de usuario canónico (el servidor no distingue mayúsculas). */
+  send(username: string): Promise<SentRequest>;
   accept(requestId: string): Promise<void>;
   decline(requestId: string): Promise<void>;
   remove(userId: string): Promise<void>;
@@ -110,9 +111,9 @@ export function FriendsProvider({ children }: PropsWithChildren) {
     openDrawer: () => setDrawerOpen(true),
     closeDrawer: () => setDrawerOpen(false),
     async send(username) {
-      const body = await api<{ request?: unknown; friend?: unknown }>('/friends/requests', { method: 'POST', body: JSON.stringify({ username }) });
+      const body = await api<Parameters<typeof sentRequest>[0]>('/friends/requests', { method: 'POST', body: JSON.stringify({ username }) });
       reload();
-      return body.friend ? 'friend' : 'request';
+      return sentRequest(body, username);
     },
     async accept(requestId) { await api(`/friends/requests/${encodeURIComponent(requestId)}/accept`, { method: 'POST' }); reload(); },
     async decline(requestId) { await api(`/friends/requests/${encodeURIComponent(requestId)}`, { method: 'DELETE' }); reload(); },

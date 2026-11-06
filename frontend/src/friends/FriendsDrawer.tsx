@@ -29,9 +29,9 @@ function AddFriendForm({ send }: Pick<FriendsContextValue, 'send'>) {
     if (!name) { setResult({ ok: false, text: 'Escribe un nombre de usuario.' }); return; }
     setBusy(true);
     setResult(null);
-    void send(name).then((kind) => {
+    void send(name).then((sent) => {
       setUsername('');
-      setResult({ ok: true, text: sentText(kind, name) });
+      setResult({ ok: true, text: sentText(sent) });
     }).catch((error: unknown) => setResult({ ok: false, text: friendErrorMessage(error) })).finally(() => setBusy(false));
   };
   return (
