@@ -8,6 +8,7 @@ import es.pokemonuniverse.application.auth.AccountLookup;
 import es.pokemonuniverse.application.auth.UserIdentityMapper;
 import es.pokemonuniverse.application.rooms.UserExperienceReader;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import es.pokemonuniverse.domain.progression.Experience;
 import io.micronaut.transaction.TransactionOperations;
 import jakarta.inject.Singleton;
@@ -242,10 +243,11 @@ public class FriendService {
 
   /**
    * Vista de amigo dentro de la transacción, todavía sin presencia ({@code OFFLINE}): quien llama la completa con
-   * {@link #withPresence} cuando ya no tiene conexión del pool.
+   * {@link #withPresence} cuando ya no tiene conexión del pool. Sin nivel si su perfil es visible para nadie.
    */
   private FriendView friendView(UserEntity user) {
-    var xp = experience.xpOf(user.getId());
+    // «Perfil visible para: Nadie» oculta el nivel también a los amigos (spec de perfiles).
+    var xp = user.getProfileVisibility() == ProfileVisibility.NOBODY ? null : experience.xpOf(user.getId());
     return new FriendView(user.getId(), user.getUsername(), avatarOf(user),
         xp == null ? null : Experience.levelFor(xp), FriendStatus.OFFLINE);
   }

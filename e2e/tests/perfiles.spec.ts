@@ -106,7 +106,8 @@ for (const { w, h } of SIZES) {
       // «Añadir amigo» desde el perfil: pasa a «Solicitud enviada»; Beto la acepta desde el suyo (Ana no es privada).
       await ana.page.getByRole('button', { name: 'Añadir amigo' }).click();
       await expect(ana.page.getByRole('button', { name: 'Solicitud enviada' })).toBeDisabled();
-      await expect(ana.page.getByRole('status').filter({ hasText: `Solicitud enviada a ${beto.cuenta.username}.` })).toBeVisible();
+      // La píldora pulsada desaparece: el foco pasa al resultado, no se pierde en el `body`.
+      await expect(ana.page.getByRole('status').filter({ hasText: `Solicitud enviada a ${beto.cuenta.username}.` })).toBeFocused();
       await beto.page.goto(`/u/${ana.cuenta.username}`);
       await beto.page.getByRole('button', { name: 'Aceptar solicitud' }).click();
       await expect(beto.page.getByRole('button', { name: 'Ya sois amigos' })).toBeVisible();
@@ -127,6 +128,8 @@ for (const { w, h } of SIZES) {
       await ana.page.goto('/play');
       const lista = await abrirAmigos(ana.page);
       await expect(lista.getByRole('link', { name: `Ver perfil de ${beto.cuenta.username}` })).toBeVisible();
+      // Con «Nadie», tampoco la lista de amigos enseña su nivel.
+      await expect(lista.getByLabel(`Avatar de ${beto.cuenta.username}`, { exact: true })).toBeVisible();
       await capture(ana.page, 'perfiles-amigos');
       await lista.getByRole('link', { name: `Ver perfil de ${beto.cuenta.username}` }).click();
       await expect(ana.page).toHaveURL(new RegExp(`/u/${beto.cuenta.username}$`));

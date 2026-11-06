@@ -32,6 +32,10 @@ export function FriendshipAction({ profile, onChanged }: { profile: PublicProfil
   const friends = useFriends();
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  // Tras el éxito la píldora pulsada desaparece (pasa a otra deshabilitada): el foco va al resultado, no al `body`. Ya
+  // pintado, porque vacío está oculto y no admite el foco.
+  useEffect(() => { if (result?.ok) statusRef.current?.focus(); }, [result]);
   const name = profile.user.username;
   const run = (action: () => Promise<string>) => {
     setBusy(true);
@@ -49,7 +53,7 @@ export function FriendshipAction({ profile, onChanged }: { profile: PublicProfil
         {profile.friendship === 'FRIENDS' && <Pill variant="cream" icon={UserCheck} disabled>Ya sois amigos</Pill>}
       </div>
       {/* Como en «Gestionar a…» de la sala: el éxito en `status` y el fallo en `alert`, siempre montados (vacíos no ocupan). */}
-      <p className={cx('text-15 font-bold empty:hidden', tone.textSky2)} role="status">{result?.ok ? result.text : ''}</p>
+      <p ref={statusRef} tabIndex={-1} className={cx('text-15 font-bold empty:hidden', tone.textSky2)} role="status">{result?.ok ? result.text : ''}</p>
       <p className={cx('text-15 font-extrabold empty:hidden', tone.textYellow)} role="alert">{result && !result.ok ? result.text : ''}</p>
     </div>
   );
@@ -117,13 +121,13 @@ export function PublicProfilePage() {
     </HudPlate>
   );
 
+  // La placa va siempre en la misma posición del árbol: si el perfil se abre al hacerse amigos, no se remonta (ni pierde
+  // el foco ni el resultado de la acción de amistad).
   if (profile.private || !profile.stats || !profile.achievements) {
     return (
-      <ProfileLayout aside={plate}>
+      <ProfileLayout aside={<>{plate}{null}</>}>
         <Panel title="Estadísticas y logros" className="lg:min-h-0" bodyClassName="flex flex-col items-center gap-4 px-5 py-8 text-center lg:justify-center">
-          <span className={cx('grid h-16 w-16 place-items-center rounded-full border-[2.5px]', tone.borderNavy, tone.bgCream2)} aria-hidden="true">
-            <Icon icon={Lock} size={32} />
-          </span>
+          <Icon icon={Lock} size={32} />
           <h2 className="font-display text-26 font-extrabold">Este perfil es privado</h2>
           <p className="max-w-[36ch] text-15 font-bold">{privateText(profile)}</p>
         </Panel>

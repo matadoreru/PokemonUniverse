@@ -77,6 +77,24 @@ class FriendsControllerTest {
     }
   }
 
+  /** «Perfil visible para: Nadie» quita el nivel de la lista de amigos; «Solo amigos» lo deja. */
+  @Test
+  void nobodyVisibilityHidesTheLevelFromFriends() {
+    var a = register();
+    var b = register();
+    var sent = call(HttpRequest.POST("/api/friends/requests", Map.of("username", b.username())), a);
+    var requestId = (String) map(sent.body().get("request")).get("id");
+    call(HttpRequest.POST("/api/friends/requests/" + requestId + "/accept", Map.of()), b);
+    java.util.function.Supplier<Object> levelOfB = () ->
+        list(call(HttpRequest.GET("/api/friends"), a).body().get("friends")).get(0).get("level");
+
+    assertEquals(1, levelOfB.get());
+    call(HttpRequest.PATCH("/api/auth/profile", Map.of("profileVisibility", "FRIENDS")), b);
+    assertEquals(1, levelOfB.get());
+    call(HttpRequest.PATCH("/api/auth/profile", Map.of("profileVisibility", "NOBODY")), b);
+    assertEquals(null, levelOfB.get());
+  }
+
   @Test
   void fullFlowOverHttp() {
     var a = register();
