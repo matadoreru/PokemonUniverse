@@ -18,7 +18,7 @@ export function PokemonConnectionsConfigPanel({ config, disabled, onChange }: { 
   const value = config as PokemonConnectionsConfig;
   const groupCount = Math.min(5, Math.max(3, Math.round(value.pokemonCount / value.groupSize)));
   return <fieldset disabled={disabled} className={s.panel}>
-    <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="Los puzles curados se usan cuando encajan; el generador completa el resto usando únicamente este pool." onChange={(generations) => void onChange({ ...value, generations })} />
+    <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="Cada puzle se genera al azar solo con Pokémon de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
       <div className={s.field}>
         <span className={s.label}>Pokémon por grupo</span>
