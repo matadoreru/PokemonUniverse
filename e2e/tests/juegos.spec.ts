@@ -364,6 +364,7 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
     const campo = (page: Page) => page.getByPlaceholder('Escribe algo relacionado…');
     const saltar = (page: Page) => page.getByRole('button', { name: 'Saltar', exact: true });
     const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
+    let nombreProbado = false;
     for (let ronda = 1; ronda <= 3; ronda++) {
       if (ronda === 2) {
         // En el móvil el rol (y el Pokémon del inocente) se ve sin desplazar durante las pistas.
@@ -386,10 +387,23 @@ test('pokemon-impostor: roles, pistas, votación con Saltar y victoria por tres 
           await capturarTamanos(page, 'juego-pokemon-impostor-pistas', { sigue: campo(page) });
           await ajustar();
         }
+        // Un inocente escribe el nombre del Pokémon: el campo es el dueño del error y no deja enviar. En la ronda 2,
+        // fuera del turno 1 (que ya captura en la 1): de los turnos 0 y 2, al menos uno es de un inocente.
+        const secreto = page.locator('[data-impostor-secret]');
+        if (ronda === 2 && turno !== 1 && !nombreProbado && await secreto.count()) {
+          nombreProbado = true;
+          await campo(page).fill(`${(await secreto.first().getAttribute('data-impostor-secret'))!}uuu`);
+          await expect(page.getByText('No puedes decir el nombre del Pokémon.')).toBeVisible();
+          await expect(page.getByRole('button', { name: 'Enviar pista' })).toBeDisabled();
+          await capturarTamanos(page, 'juego-pokemon-impostor-pista-nombre', { sigue: campo(page) });
+          await ajustar();
+          await campo(page).fill('');
+        }
         await campo(page).fill(`pista ${ronda}`);
         await campo(page).press('Enter');
         await expect(campo(page)).toBeHidden();
       }
+      if (ronda === 2) expect(nombreProbado, 'un inocente probó el nombre del Pokémon').toBe(true);
 
       for (const page of pages) await expect(saltar(page)).toBeVisible({ timeout: 15_000 });
       if (ronda === 1) {

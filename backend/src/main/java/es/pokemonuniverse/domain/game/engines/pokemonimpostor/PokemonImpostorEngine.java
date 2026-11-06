@@ -421,6 +421,12 @@ public final class PokemonImpostorEngine implements
     if (text.codePointCount(0, text.length()) > MAX_CLUE_CODE_POINTS) {
       return GameActionResult.reject(state, "La pista no puede superar 25 caracteres.");
     }
+    // Solo los inocentes, que conocen el Pokémon. Con el impostor, el rechazo sería un oráculo: no gasta el turno, así
+    // que podría probar nombres de candidatos hasta que uno se rechazara y después adivinar con GUESS_POKEMON.
+    if (state.roles().get(playerId) == ImpostorRole.INNOCENT && context.pokemon().byId(state.secretPokemonId())
+        .filter(secret -> PokemonImpostorRules.mentionsSecret(text, secret)).isPresent()) {
+      return GameActionResult.reject(state, "No puedes decir el nombre del Pokémon.");
+    }
     var nextRoundClues = new LinkedHashMap<>(roundClues);
     nextRoundClues.put(playerId, ImpostorClue.submitted(text, context.now()));
     var playerStats = new LinkedHashMap<>(state.playerStats());

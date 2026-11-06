@@ -8,11 +8,16 @@ import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTyp
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorRole;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.ImpostorWinner;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.PokemonImpostorState;
+import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
+import java.text.Normalizer;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /** Traducción literal de {@code pokemon-impostor/rules.ts}. */
 public final class PokemonImpostorRules {
@@ -24,7 +29,34 @@ public final class PokemonImpostorRules {
   /** {@code IMPOSTOR_CLUE_MAX_CODE_POINTS}: longitud máxima de una pista en puntos de código. */
   public static final int IMPOSTOR_CLUE_MAX_CODE_POINTS = 25;
 
+  private static final Pattern MARKS = Pattern.compile("\\p{M}");
+  private static final Pattern NON_LETTERS = Pattern.compile("[^\\p{L}]");
+
   private PokemonImpostorRules() {}
+
+  /**
+   * Solo las letras, sin tildes y en minúsculas: NFD, sin marcas combinantes ({@code \\p{M}}), {@link Locale#ROOT} y
+   * fuera todo lo que no es {@code \\p{L}}. La misma normalización que {@code validateImpostorClue} del cliente.
+   */
+  public static String lettersOnly(String value) {
+    var decomposed = MARKS.matcher(Normalizer.normalize(value, Normalizer.Form.NFD)).replaceAll("");
+    return NON_LETTERS.matcher(decomposed.toLowerCase(Locale.ROOT)).replaceAll("");
+  }
+
+  /**
+   * La pista contiene, como subcadena sobre solo letras, el nombre del secreto: {@code name} y los {@code names} es y
+   * en que sean texto (en las formas regionales {@code name} es «Raichu de Alola» y {@code names}, «Raichu»). Los
+   * nombres que quedan vacíos se descartan: la cadena vacía está contenida en cualquier pista. Un nombre corto bloquea
+   * palabras que lo contienen («cabra» con Abra): falso positivo aceptado, el jugador reformula.
+   */
+  public static boolean mentionsSecret(String clue, Pokemon secret) {
+    var letters = lettersOnly(clue);
+    var names = secret.names();
+    return Stream.of(secret.name(), names == null ? null : names.get("es"), names == null ? null : names.get("en"))
+        .filter(String.class::isInstance)
+        .map(name -> lettersOnly((String) name))
+        .anyMatch(name -> !name.isEmpty() && letters.contains(name));
+  }
 
   /** Sin impostores vivos ganan los inocentes; con tantos impostores como inocentes, los impostores. */
   public static @Nullable ImpostorWinner impostorWinner(List<String> aliveIds, Map<String, ImpostorRole> roles) {

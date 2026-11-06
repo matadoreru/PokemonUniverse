@@ -45,7 +45,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
   const serverOffset = useServerOffset(room.serverNow);
   const clueLength = impostorClueLength(clueText);
   // El campo es el único dueño del error de la pista (también la rechaza el servidor).
-  const clueError = validateImpostorClue(clueText, game.mode);
+  const clueError = validateImpostorClue(clueText, game.mode, player.secretPokemon?.name);
   const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config.generations, enabled: player.canGuessPokemon });
 
   const elimination = game.phase === 'ELIMINATION' ? game.eliminationReveal : null;

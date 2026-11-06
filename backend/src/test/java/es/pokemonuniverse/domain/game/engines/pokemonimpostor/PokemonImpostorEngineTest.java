@@ -21,6 +21,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTyp
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.PokemonImpostorPlayerState;
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorTypes.PokemonImpostorState;
 import es.pokemonuniverse.domain.json.JsonTree;
+import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
@@ -28,6 +29,7 @@ import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -310,5 +312,106 @@ class PokemonImpostorEngineTest {
     }
     assertEquals(GamePhase.VOTING, state.phase());
     assertEquals(1, state.clues().size());
+  }
+
+  // --- El nombre del Pokémon en la pista ---
+
+  private static final String SECRET_NAME_ERROR = "No puedes decir el nombre del Pokémon.";
+
+  /** Fase de pistas con el secreto y el rol del jugador en turno fijados a mano (hay siempre un impostor). */
+  private PokemonImpostorState clueTurn(GameContext context, PokemonImpostorMode mode, String secretId,
+      ImpostorRole currentRole) {
+    var start = rolesPhase(context, 1, mode);
+    var state = engine.handleTimeout(start, context.withNow(6_000));
+    var current = state.currentCluePlayerId();
+    var roles = new LinkedHashMap<String, ImpostorRole>();
+    for (var id : state.playerIds()) roles.put(id, ImpostorRole.INNOCENT);
+    var impostor = currentRole == ImpostorRole.IMPOSTOR ? current
+        : state.playerIds().stream().filter(id -> !id.equals(current)).findFirst().orElseThrow();
+    roles.put(impostor, ImpostorRole.IMPOSTOR);
+    return state.toBuilder().secretPokemonId(secretId).roles(roles).build();
+  }
+
+  private static Pokemon catalogPokemon(String id) {
+    return GoldenCatalogs.load("gen1-2").byId(id).orElseThrow();
+  }
+
+  /** Copia con otros nombres; solo para el test (el catálogo no trae nombres vacíos). */
+  private static Pokemon renamed(Pokemon base, String name, Map<String, Object> names) {
+    return new Pokemon(base.id(), base.nationalDexNumber(), name, base.generation(), base.isDefault(), base.sprite(),
+        base.shinySprite(), base.palette(), base.paletteWeights(), base.hp(), base.attack(), base.defense(),
+        base.specialAttack(), base.specialDefense(), base.speed(), base.baseStatTotal(), base.heightDecimeters(),
+        base.weightHectograms(), base.evolutionStage(), base.evolutionStageCount(), base.legendaryStatus(),
+        base.color(), base.abilities(), names, base.types());
+  }
+
+  /** Mayúsculas, tildes, letras repetidas o guiones no cuelan; el rechazo no gasta el turno. */
+  @Test
+  void innocentClueWithSecretNameIsRejectedInBothModes() {
+    // Sin junit-jupiter-params en el proyecto: se recorren los modos a mano.
+    for (var mode : PokemonImpostorMode.values()) innocentClueWithSecretNameIsRejected(mode);
+  }
+
+  private void innocentClueWithSecretNameIsRejected(PokemonImpostorMode mode) {
+    var context = context(4).withNow(7_000);
+    var state = clueTurn(context, mode, "pikachu", ImpostorRole.INNOCENT);
+    var current = state.currentCluePlayerId();
+    for (var clue : List.of("PIKACHU", "Píkachú", "pikachuuu", "pi-ka-chu")) {
+      var result = engine.handleAction(state, current, new PokemonImpostorAction.SubmitClue(clue), context);
+      assertFalse(result.accepted(), mode + " " + clue);
+      assertEquals(SECRET_NAME_ERROR, result.error(), mode + " " + clue);
+      assertSame(state, result.state());
+      assertEquals(current, result.state().currentCluePlayerId());
+    }
+    var valid = engine.handleAction(state, current, new PokemonImpostorAction.SubmitClue("Eléctrico"), context);
+    assertTrue(valid.accepted(), mode.toString());
+  }
+
+  /** {@code name} es «Raichu de Alola»; «raichu» se rechaza por {@code names.es}. */
+  @Test
+  void regionalFormBlocksTheBaseName() {
+    var context = context(4).withNow(7_000);
+    var state = clueTurn(context, PokemonImpostorMode.CLASSIC, "raichu-alola", ImpostorRole.INNOCENT);
+    var result = engine.handleAction(state, state.currentCluePlayerId(), new PokemonImpostorAction.SubmitClue("raichu"),
+        context);
+    assertEquals(SECRET_NAME_ERROR, result.error());
+    assertTrue(PokemonImpostorRules.mentionsSecret("Raichu", catalogPokemon("raichu-alola")));
+    assertTrue(PokemonImpostorRules.mentionsSecret("nidoran", catalogPokemon("nidoran-f")));
+    assertTrue(PokemonImpostorRules.mentionsSecret("Mr. Mime", catalogPokemon("mr-mime")));
+  }
+
+  /** Comprobarla con el impostor sería un oráculo: el rechazo no gasta el turno y podría probar candidatos. */
+  @Test
+  void impostorClueIsNeverComparedWithTheSecret() {
+    for (var mode : PokemonImpostorMode.values()) {
+      var context = context(4).withNow(7_000);
+      var state = clueTurn(context, mode, "pikachu", ImpostorRole.IMPOSTOR);
+      var current = state.currentCluePlayerId();
+      var result = engine.handleAction(state, current, new PokemonImpostorAction.SubmitClue("Pikachu"), context);
+      assertTrue(result.accepted(), mode.toString());
+      assertEquals("Pikachu", result.state().clues().get(state.roundNumber()).get(current).text());
+    }
+  }
+
+  /** Falso positivo aceptado (spec §3): subcadena sobre solo letras, no palabra entera. */
+  @Test
+  void shortNamesBlockWordsThatContainThem() {
+    var abra = catalogPokemon("abra");
+    assertTrue(PokemonImpostorRules.mentionsSecret("cabra", abra));
+    assertFalse(PokemonImpostorRules.mentionsSecret("cabeza", abra));
+    assertEquals("pikachu", PokemonImpostorRules.lettersOnly("PIKACHÚ"));
+    assertEquals("nidoran", PokemonImpostorRules.lettersOnly("Nidoran♀"));
+    assertEquals("porygon", PokemonImpostorRules.lettersOnly("Porygon2"));
+  }
+
+  /** {@code "x".contains("")} es verdadero: un nombre vacío tras normalizar no cuenta. */
+  @Test
+  void emptyNormalizedNameBlocksNothing() {
+    var names = new LinkedHashMap<String, Object>();
+    names.put("es", "123");
+    names.put("en", 7);
+    var nameless = renamed(catalogPokemon("abra"), "♀ 2", names);
+    assertFalse(PokemonImpostorRules.mentionsSecret("cabra", nameless));
+    assertFalse(PokemonImpostorRules.mentionsSecret("cualquier pista", nameless));
   }
 }
