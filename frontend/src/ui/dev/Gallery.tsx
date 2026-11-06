@@ -23,6 +23,9 @@ import { typeColors } from '../../styles/tokens';
 import { Badge, Chip, TypeBadge, TypeOption } from '../Badge';
 import { Bar } from '../Bar';
 import { Card } from '../Card';
+import { ChatComposer } from '../ChatComposer';
+import { ChatLog } from '../ChatLog';
+import type { ChatLogItem } from '../ChatLog';
 import { TextCard } from '../TextCard';
 import type { CardState } from '../Card';
 import { Confetti } from '../Confetti';
@@ -606,6 +609,53 @@ function RowSection() {
   );
 }
 
+const CHAT_ITEMS: ChatLogItem[] = [
+  { id: 'c1', author: 'Misty', authorTone: 'var(--info)', time: '18:03', text: 'Hola a todos, ¿empezamos?', own: false },
+  { id: 'c2', author: 'Ash', authorTone: 'var(--yellow)', time: '18:04', text: 'Listo para jugar', own: true },
+  { id: 'c3', author: 'Entrenadora con un nombre larguísimo de verdad', authorTone: 'var(--red)', time: '18:05', text: 'Soy un nombre largo recortado con title', own: false },
+  { id: 'c4', author: 'Brock', authorTone: 'var(--ok)', time: '18:06', text: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', own: false },
+  { id: 'c5', author: 'Misty', authorTone: 'var(--info)', time: '18:07', text: 'Eso es una *** y no se dice', own: false },
+];
+
+function ChatComposerDemo({ initial, busy, disabledReason }: { initial: string; busy?: boolean; disabledReason?: string }) {
+  const [value, setValue] = useState(initial);
+  return <ChatComposer value={value} onChange={setValue} onSubmit={noop} label="Escribe un mensaje" maxLength={200} busy={Boolean(busy)} disabledReason={disabledReason ?? null} />;
+}
+
+/** Chat del lobby: la lista de mensajes y el campo de escribir. */
+function ChatSection() {
+  const empty = <StateBox kind="empty" title="Aún no hay mensajes" text="Escribe el primero." live={false} onCream />;
+  const moderateLabel = (i: ChatLogItem) => `Moderar el mensaje de ${i.author}`;
+  return (
+    <Section name="chat" title="ChatLog y ChatComposer">
+      <Fig id="chatlog-empty" caption="ChatLog vacío" wide cream>
+        <ChatLog items={[]} label="Mensajes del chat" empty={empty} />
+      </Fig>
+      <Fig id="chatlog-messages" caption="ChatLog con mensajes (propio, ajeno, nombre largo, palabra larga, ***)" wide cream>
+        <ChatLog items={CHAT_ITEMS} label="Mensajes del chat" empty={empty} />
+      </Fig>
+      <Fig id="chatlog-moderate" caption="ChatLog con botones de moderar" wide cream>
+        <ChatLog items={CHAT_ITEMS.slice(0, 3)} label="Mensajes del chat" empty={empty} onModerate={noop} moderateLabel={moderateLabel} />
+      </Fig>
+      <Fig id="chatlog-unseen" caption="ChatLog con «Ver mensajes nuevos»" wide cream>
+        <ChatLog items={CHAT_ITEMS.slice(0, 2)} label="Mensajes del chat" empty={empty} forceUnseen />
+      </Fig>
+      <Fig id="chatcomposer-normal" caption="ChatComposer normal" wide cream>
+        <ChatComposerDemo initial="Hola" />
+      </Fig>
+      <Fig id="chatcomposer-limit" caption="ChatComposer cerca del límite (contador)" wide cream>
+        <ChatComposerDemo initial={'Un mensaje muy largo '.repeat(9).slice(0, 183)} />
+      </Fig>
+      <Fig id="chatcomposer-busy" caption="ChatComposer esperando el ack (busy)" wide cream>
+        <ChatComposerDemo initial="Enviando esto" busy />
+      </Fig>
+      <Fig id="chatcomposer-muted" caption="ChatComposer silenciado" wide cream>
+        <ChatComposerDemo initial="" disabledReason="Un moderador te ha silenciado en el chat de esta sala." />
+      </Fig>
+    </Section>
+  );
+}
+
 const PATCH_TONES: { tone: PatchTone; label: string; icon: typeof Sparkles }[] = [
   { tone: 'ok', label: 'Nuevo', icon: Sparkles },
   { tone: 'yellow', label: 'Minijuegos', icon: Gamepad2 },
@@ -1123,6 +1173,7 @@ export function Gallery() {
       <BarSection />
       <TimerSection />
       <RowSection />
+      <ChatSection />
       <PatchSection />
       <CardSection />
       <HudSection />

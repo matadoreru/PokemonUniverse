@@ -1,0 +1,96 @@
+/* Lista de mensajes: crece con su hueco y se desplaza por dentro; «Ver mensajes nuevos» va justo debajo. */
+.log {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.list {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .list {
+    scroll-behavior: smooth;
+  }
+}
+.msg {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  flex: none;
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) calc(var(--sp-3) + 6px);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-franja);
+  background: var(--cream);
+  color: var(--navy);
+  overflow: hidden;
+}
+.own {
+  background: var(--yellow);
+}
+.band {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--player);
+  box-shadow: inset -2px 0 0 var(--navy);
+}
+.body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.author {
+  min-width: 0;
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.me {
+  flex: none;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+}
+.time {
+  flex: none;
+  margin-left: auto;
+  font: 700 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.own .time {
+  color: var(--ink);
+}
+.text {
+  margin: 0;
+  font: 600 var(--fs-15) / 1.35 var(--font-text);
+  overflow-wrap: anywhere;
+}
+/* Bajo la lista, en el flujo (no flota sobre los mensajes): la lista cede su alto y el último mensaje sigue entero. */
+.unseen {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  padding-top: var(--sp-2);
+}

@@ -63,7 +63,7 @@ export function Field({ label, error, hint, hideLabel, code, icon, large, classN
   const auto = useId();
   const fid = id ?? auto;
   const codeProps = code ? { autoCapitalize: 'characters', autoComplete: 'off', autoCorrect: 'off', spellCheck: false } : {};
-  const input = <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, large && s.lg, icon && s.withIcon, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : rest['aria-invalid']} aria-describedby={describedBy(fid, error, hint)} />;
+  const input = <input {...codeProps} {...rest} id={fid} className={cx(s.input, code && s.code, large && s.lg, icon && s.withIcon, error && s.invalid, forced && s[forced])} aria-invalid={error ? true : rest['aria-invalid']} aria-describedby={[describedBy(fid, error, hint), rest['aria-describedby']].filter(Boolean).join(' ') || undefined} />;
   return (
     <Shell id={fid} label={label} hideLabel={hideLabel} error={error} hint={hint} className={className}>
       {icon ? (
