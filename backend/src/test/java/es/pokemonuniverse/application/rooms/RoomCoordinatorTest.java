@@ -79,6 +79,7 @@ class RoomCoordinatorTest {
     assertEquals(Set.of("host", "ana"), summary.seatHolders());
     assertEquals(3, summary.maxPlayers());
     assertEquals("Higher or Lower", summary.gameName());
+    assertTrue(summary.inLobby());
 
     kit.manager.leave("ana");
     assertTrue(kit.manager.roomOf("ana").isEmpty());

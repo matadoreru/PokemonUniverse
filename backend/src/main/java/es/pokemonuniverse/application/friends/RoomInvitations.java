@@ -89,6 +89,8 @@ public class RoomInvitations {
       throw new RoomException("Not a friend");
     }
     var room = roomOf.apply(from.id()).orElseThrow(() -> new RoomException("You are not in a room"));
+    // Como el botón «Invitar amigos», que solo está en el lobby: no se invita a mitad de partida.
+    if (!room.inLobby()) throw new RoomException("Invitations are only available in the lobby");
     if (!connections.isOnline(userId)) throw new RoomException("Friend is offline");
     if (room.memberIds().contains(userId)) throw new RoomException("Already in this room");
     if (!room.seatHolders().contains(userId) && room.seatHolders().size() >= room.maxPlayers()) {

@@ -10,9 +10,10 @@ import java.util.Set;
  * @param seatHolders quienes ocupan plaza: los de {@code memberIds} y los que salieron durante una partida, que pueden
  *     volver aunque esté llena (la misma cuenta que {@code join})
  * @param gameName nombre del minijuego seleccionado; {@code null} si el registro no lo conoce
+ * @param inLobby la sala está en el lobby (fase {@code LOBBY}): solo entonces se invita
  */
 public record RoomSummary(String code, Set<String> memberIds, Set<String> seatHolders, int maxPlayers,
-    @Nullable String gameName) {
+    @Nullable String gameName, boolean inLobby) {
 
   public RoomSummary {
     memberIds = Set.copyOf(memberIds);

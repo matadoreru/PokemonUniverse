@@ -49,7 +49,7 @@ class RoomInvitationsTest {
       id -> Optional.ofNullable(rooms.get(id)), () -> now, () -> "invite-" + ids.incrementAndGet());
 
   private void hostInRoom(Set<String> members, int maxPlayers) {
-    rooms.put("host", new RoomSummary("PIKA42", members, members, maxPlayers, "Higher or Lower"));
+    rooms.put("host", new RoomSummary("PIKA42", members, members, maxPlayers, "Higher or Lower", true));
   }
 
   private void friend(String id) {
@@ -118,6 +118,14 @@ class RoomInvitationsTest {
   }
 
   @Test
+  void rejectsWhileTheRoomIsNotInTheLobby() {
+    rooms.put("host", new RoomSummary("PIKA42", Set.of("host"), Set.of("host"), 4, "Higher or Lower", false));
+    friend("misty");
+    assertRejects("Invitations are only available in the lobby", () -> invitations.invite(HOST, "misty"));
+    assertTrue(connections.sent.isEmpty());
+  }
+
+  @Test
   void rejectsFullRoom() {
     hostInRoom(Set.of("host", "brock"), 2);
     friend("misty");
@@ -127,7 +135,7 @@ class RoomInvitationsTest {
   @Test
   void seatOfAFriendWhoLeftMidGameIsNotFullNorAlreadyIn() {
     // Misty salió durante la partida: conserva su plaza (puede volver aunque la sala esté llena) pero ya no está.
-    rooms.put("host", new RoomSummary("PIKA42", Set.of("host"), Set.of("host", "misty"), 2, null));
+    rooms.put("host", new RoomSummary("PIKA42", Set.of("host"), Set.of("host", "misty"), 2, null, true));
     friend("misty");
     invitations.invite(HOST, "misty");
     assertEquals(1, invitesTo("misty").size());

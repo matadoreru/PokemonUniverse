@@ -218,7 +218,8 @@ public class RoomCoordinator {
         });
         var gameName = room.selectedGameId == null ? null
             : registry.get(room.selectedGameId).map(GameManifest::name).orElse(null);
-        return Optional.of(new RoomSummary(room.code, present, room.members.keySet(), room.maxPlayers, gameName));
+        return Optional.of(new RoomSummary(room.code, present, room.members.keySet(), room.maxPlayers, gameName,
+            room.phase == RoomPhase.LOBBY));
       } finally {
         room.lock.unlock();
       }
