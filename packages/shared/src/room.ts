@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { AchievementsUnlocked } from './achievements.js';
 import type { AvatarRef } from './avatar.js';
 import type { GamePhase, MiniGameManifest } from './games/contracts.js';
 
@@ -220,6 +221,7 @@ export interface ServerToClientEvents {
   'friends:presence': (payload: { userId: string; status: FriendStatus }) => void;
   'friends:changed': (payload: Record<string, never>) => void;
   'friends:invite': (payload: FriendInvite) => void;
+  'achievements:unlocked': (payload: AchievementsUnlocked) => void;
 }
 
 export type SocketAck<T = Record<string, never>> = (response: ({ ok: true } & T) | { ok: false; error: string }) => void;

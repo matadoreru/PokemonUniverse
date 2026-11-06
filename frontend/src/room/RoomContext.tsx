@@ -9,9 +9,9 @@ import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLo
 import { SessionAttachment } from './session-attachment';
 import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
 
-/** Avisos del `/ws` que no son de la sala: los escucha `FriendsProvider` con `subscribe`. */
-export type FriendSocketEvent = 'friends:presence' | 'friends:changed' | 'friends:invite';
-const FRIEND_SOCKET_EVENTS: readonly FriendSocketEvent[] = ['friends:presence', 'friends:changed', 'friends:invite'];
+/** Avisos del `/ws` de la cuenta (no son de la sala): los escuchan los proveedores con `subscribe`. */
+export type FriendSocketEvent = 'friends:presence' | 'friends:changed' | 'friends:invite' | 'achievements:unlocked';
+const FRIEND_SOCKET_EVENTS: readonly FriendSocketEvent[] = ['friends:presence', 'friends:changed', 'friends:invite', 'achievements:unlocked'];
 type FriendListener = (payload: never) => void;
 
 interface RoomContextValue {
