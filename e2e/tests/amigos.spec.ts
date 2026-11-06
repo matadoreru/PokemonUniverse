@@ -79,7 +79,8 @@ for (const { w, h } of SIZES) {
       // 4b. Otra página de A en Inicio (mismo contexto) abre el `/ws` por los amigos sin quitarle el asiento a la pestaña
       // de la sala: no recibe la sala, y la pestaña de la sala sigue mandando mientras está abierta y después de cerrarla.
       const otra = await a.context.newPage();
-      const socketOtra = otra.waitForEvent('websocket');
+      // El `/ws` del backend, no el socket de recarga en caliente de Vite.
+      const socketOtra = otra.waitForEvent('websocket', { predicate: (ws) => new URL(ws.url()).pathname === '/ws' });
       await otra.goto('/');
       const wsOtra = await socketOtra;
       const tramasOtra: string[] = [];
@@ -88,9 +89,11 @@ for (const { w, h } of SIZES) {
       await expect(panelOtra.getByRole('listitem').filter({ hasText: b.cuenta.username })).toContainText('Conectado');
       await anadirJuegos(a.page, ['Shiny Quiz']);
       await otra.close();
-      // Dos órdenes tras el cierre (cada una espera su estado): la segunda llega con el cierre ya procesado.
+      // Órdenes tras el cierre (cada una espera su estado): la segunda ya llega con el cierre procesado; la última deja
+      // la selección como estaba.
       await conmutarJuego(cartaDeJuego(a.page, 'Shiny Quiz'), false);
       await conmutarJuego(cartaDeJuego(a.page, 'Shiny Quiz'), true);
+      await conmutarJuego(cartaDeJuego(a.page, 'Shiny Quiz'), false);
       await expect(a.page.getByText(/dos pestañas/)).toHaveCount(0);
       expect(tramasOtra.filter((trama) => trama.includes('session:restored') || trama.includes('room:state'))).toEqual([]);
       await a.page.getByRole('button', { name: /^Invitar amigos/ }).click();
