@@ -54,3 +54,5 @@ export { HighlightCard, PatchHero, SectionRule, Timeline, TimelineLink } from '.
 export type { HighlightCardProps, PatchHeroProps, PatchTone, SectionRuleProps, TimelineLinkProps, TimelineProps } from './Patch';
 export { Confetti, confettiPieces } from './Confetti';
 export type { ConfettiPiece } from './Confetti';
+export { AchievementTile } from './AchievementTile';
+export type { AchievementTileProps } from './AchievementTile';

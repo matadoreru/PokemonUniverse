@@ -1,0 +1,79 @@
+/* Casilla de logro: franja crema con ilustración a la izquierda; bloqueada, gris y con candado. */
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 44px;
+  padding: var(--sp-3);
+  border: var(--ol-2-5) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream);
+  color: var(--navy);
+  box-shadow: var(--sh-hard-3);
+  list-style: none;
+}
+.locked {
+  background: var(--cream-2);
+  color: var(--ink-2);
+  border-color: var(--ink-2);
+  box-shadow: none;
+}
+.secret {
+  border-style: dashed;
+}
+.art {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-franja);
+  background: var(--yellow);
+  font-size: var(--fs-26);
+}
+.locked .art {
+  background: var(--cream);
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+.body {
+  min-width: 0;
+  flex: 1;
+}
+.name {
+  margin: 0;
+  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
+  overflow-wrap: anywhere;
+}
+.desc,
+.date {
+  margin: var(--sp-1) 0 0;
+  font: 600 var(--fs-13) / var(--lh-text) var(--font-text);
+}
+.date {
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.lock {
+  flex: none;
+}
+/* Entrada de un logro recién conseguido: solo transform y opacity, una vez. */
+.fresh {
+  animation: arrive 500ms var(--ease) both;
+}
+@keyframes arrive {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fresh {
+    animation: none;
+  }
+}

@@ -39,6 +39,7 @@ import type { PatchTone } from '../Patch';
 import { Pill, PillLink } from '../Pill';
 import { Row, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
+import { AchievementTile } from '../AchievementTile';
 import { ScreenSplit } from '../ScreenSplit';
 import { ScreenTransition } from '../ScreenTransition';
 import { Segmented } from '../Segmented';
@@ -900,6 +901,34 @@ function ScorePopSection() {
   );
 }
 
+function AchievementTileSection() {
+  const art = <Icon icon={Trophy} size={32} />;
+  return (
+    <Section name="achievement-tile" title="AchievementTile">
+      <Fig id="achievement-tile-unlocked" caption="desbloqueado">
+        <ul className={s.tileList}>
+          <AchievementTile name="Primera victoria" description="Gana tu primera partida." state="unlocked" art={art} date="7 nov 2026" />
+        </ul>
+      </Fig>
+      <Fig id="achievement-tile-locked" caption="bloqueado">
+        <ul className={s.tileList}>
+          <AchievementTile name="Racha de cinco" description="Gana cinco partidas seguidas." state="locked" art={art} />
+        </ul>
+      </Fig>
+      <Fig id="achievement-tile-secret" caption="secreto">
+        <ul className={s.tileList}>
+          <AchievementTile name="???" description="Logro secreto." state="secret" art={art} />
+        </ul>
+      </Fig>
+      <Fig id="achievement-tile-fresh" caption="recién desbloqueado (anima una vez)">
+        <ul className={s.tileList}>
+          <AchievementTile name="Veterano" description="Juega cien partidas." state="unlocked" art={art} date="Hoy" fresh />
+        </ul>
+      </Fig>
+    </Section>
+  );
+}
+
 function ConfettiSection() {
   const [n, setN] = useState(0);
   return (
@@ -1100,6 +1129,7 @@ export function Gallery() {
       <ActionToastSection />
       <CutinSection />
       <ScorePopSection />
+      <AchievementTileSection />
       <ConfettiSection />
       <ScreenTransitionSection />
       <ScreenSplitSection />

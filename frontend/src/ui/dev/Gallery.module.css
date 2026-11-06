@@ -115,3 +115,8 @@
     height: calc(var(--sp-6) * 12);
   }
 }
+.tileList {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
