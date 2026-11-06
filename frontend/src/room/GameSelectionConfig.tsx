@@ -49,8 +49,10 @@ const ORDER_CHOICES: { type: GameSelectionType; icon: typeof Shuffle; title: str
 ];
 
 /** Qué hará el modo elegido con los juegos compatibles de la selección. */
-export function gameOrderHint(type: GameSelectionType, compatibleCount: number): string {
-  if (compatibleCount <= 1) return 'Con un solo minijuego compatible, se juega siempre ese.';
+export function gameOrderHint(type: GameSelectionType, compatibleCount: number, selectedCount: number): string {
+  if (selectedCount === 0) return 'Elige al menos un minijuego.';
+  if (compatibleCount === 0) return 'Ninguno de los minijuegos elegidos admite a los jugadores de ahora.';
+  if (compatibleCount === 1) return 'Con un solo minijuego compatible, se juega siempre ese.';
   if (type === 'ORDER') return `Se juegan los ${compatibleCount} minijuegos en el orden en que los elegiste y se vuelve a empezar.`;
   if (type === 'RANDOM') return `Cada partida sale al azar entre los ${compatibleCount} minijuegos, sin repetir el anterior.`;
   return `Tras cada partida se vota entre ${Math.min(NEXT_GAME_VOTE_OPTIONS, compatibleCount)} de los ${compatibleCount} minijuegos.`;
@@ -72,7 +74,7 @@ export function GameOrderChoice({ mode, compatibleCount, disabled, onChange }: O
         <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={mode.type === choice.type ? 'selected' : 'idle'} {...(disabled ? {} : { onSelect: () => { if (choice.type !== mode.type) onChange({ type: choice.type, gameIds: mode.gameIds }); } })} />
       ))}
     </div>
-    <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount)}</p>
+    <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount, mode.gameIds.length)}</p>
   </div>;
 }
 
