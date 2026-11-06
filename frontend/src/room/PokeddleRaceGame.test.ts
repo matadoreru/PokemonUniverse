@@ -75,6 +75,13 @@ describe('Pokédle: presentación de las pistas', () => {
     expect(formatPokeddleFeedback('evolutionStage', { kind: 'EVOLUTION', value: { stage: 2, stages: 3 }, result: 'LOWER' })).toMatchObject({ value: 'Etapa 2/3', short: '2/3' });
   });
 
+  it('la etapa evolutiva es parcial si coincide la etapa pero no el total, y lo dice a los lectores', () => {
+    expect(formatPokeddleFeedback('evolutionStage', { kind: 'EVOLUTION', value: { stage: 1, stages: 2 }, result: 'PARTIAL' })).toMatchObject({
+      value: 'Etapa 1/2', short: '1/2', result: 'Parcial', semantic: 'partial', tone: 'warn',
+      accessibleResult: 'Parcial: misma etapa, distinto número de etapas',
+    });
+  });
+
   it('formatea altura, peso y número de Pokédex', () => {
     expect(formatPokeddleFeedback('height', { kind: 'NUMERIC', value: 12, result: 'MATCH' }).value).toBe('1.2 m');
     expect(formatPokeddleFeedback('weight', { kind: 'NUMERIC', value: 540, result: 'MATCH' })).toMatchObject({ value: '54.0 kg', short: '54.0' });

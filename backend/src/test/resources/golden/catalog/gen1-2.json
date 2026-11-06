@@ -1005,6 +1005,496 @@
       "stages": 3
     }
   },
+  "evolutionLinks": [
+    {
+      "fromPokemonId": "abra",
+      "toPokemonId": "kadabra"
+    },
+    {
+      "fromPokemonId": "bayleef",
+      "toPokemonId": "meganium"
+    },
+    {
+      "fromPokemonId": "bellsprout",
+      "toPokemonId": "weepinbell"
+    },
+    {
+      "fromPokemonId": "bulbasaur",
+      "toPokemonId": "ivysaur"
+    },
+    {
+      "fromPokemonId": "caterpie",
+      "toPokemonId": "metapod"
+    },
+    {
+      "fromPokemonId": "chansey",
+      "toPokemonId": "blissey"
+    },
+    {
+      "fromPokemonId": "charmander",
+      "toPokemonId": "charmeleon"
+    },
+    {
+      "fromPokemonId": "charmeleon",
+      "toPokemonId": "charizard"
+    },
+    {
+      "fromPokemonId": "chikorita",
+      "toPokemonId": "bayleef"
+    },
+    {
+      "fromPokemonId": "chinchou",
+      "toPokemonId": "lanturn"
+    },
+    {
+      "fromPokemonId": "clefairy",
+      "toPokemonId": "clefable"
+    },
+    {
+      "fromPokemonId": "cleffa",
+      "toPokemonId": "clefairy"
+    },
+    {
+      "fromPokemonId": "croconaw",
+      "toPokemonId": "feraligatr"
+    },
+    {
+      "fromPokemonId": "cubone",
+      "toPokemonId": "marowak"
+    },
+    {
+      "fromPokemonId": "cyndaquil",
+      "toPokemonId": "quilava"
+    },
+    {
+      "fromPokemonId": "diglett",
+      "toPokemonId": "dugtrio"
+    },
+    {
+      "fromPokemonId": "doduo",
+      "toPokemonId": "dodrio"
+    },
+    {
+      "fromPokemonId": "dragonair",
+      "toPokemonId": "dragonite"
+    },
+    {
+      "fromPokemonId": "dratini",
+      "toPokemonId": "dragonair"
+    },
+    {
+      "fromPokemonId": "drowzee",
+      "toPokemonId": "hypno"
+    },
+    {
+      "fromPokemonId": "eevee",
+      "toPokemonId": "espeon"
+    },
+    {
+      "fromPokemonId": "eevee",
+      "toPokemonId": "flareon"
+    },
+    {
+      "fromPokemonId": "eevee",
+      "toPokemonId": "jolteon"
+    },
+    {
+      "fromPokemonId": "eevee",
+      "toPokemonId": "umbreon"
+    },
+    {
+      "fromPokemonId": "eevee",
+      "toPokemonId": "vaporeon"
+    },
+    {
+      "fromPokemonId": "ekans",
+      "toPokemonId": "arbok"
+    },
+    {
+      "fromPokemonId": "elekid",
+      "toPokemonId": "electabuzz"
+    },
+    {
+      "fromPokemonId": "exeggcute",
+      "toPokemonId": "exeggutor"
+    },
+    {
+      "fromPokemonId": "flaaffy",
+      "toPokemonId": "ampharos"
+    },
+    {
+      "fromPokemonId": "gastly",
+      "toPokemonId": "haunter"
+    },
+    {
+      "fromPokemonId": "geodude",
+      "toPokemonId": "graveler"
+    },
+    {
+      "fromPokemonId": "gloom",
+      "toPokemonId": "bellossom"
+    },
+    {
+      "fromPokemonId": "gloom",
+      "toPokemonId": "vileplume"
+    },
+    {
+      "fromPokemonId": "golbat",
+      "toPokemonId": "crobat"
+    },
+    {
+      "fromPokemonId": "goldeen",
+      "toPokemonId": "seaking"
+    },
+    {
+      "fromPokemonId": "graveler",
+      "toPokemonId": "golem"
+    },
+    {
+      "fromPokemonId": "grimer",
+      "toPokemonId": "muk"
+    },
+    {
+      "fromPokemonId": "growlithe",
+      "toPokemonId": "arcanine"
+    },
+    {
+      "fromPokemonId": "haunter",
+      "toPokemonId": "gengar"
+    },
+    {
+      "fromPokemonId": "hoothoot",
+      "toPokemonId": "noctowl"
+    },
+    {
+      "fromPokemonId": "hoppip",
+      "toPokemonId": "skiploom"
+    },
+    {
+      "fromPokemonId": "horsea",
+      "toPokemonId": "seadra"
+    },
+    {
+      "fromPokemonId": "houndour",
+      "toPokemonId": "houndoom"
+    },
+    {
+      "fromPokemonId": "igglybuff",
+      "toPokemonId": "jigglypuff"
+    },
+    {
+      "fromPokemonId": "ivysaur",
+      "toPokemonId": "venusaur"
+    },
+    {
+      "fromPokemonId": "jigglypuff",
+      "toPokemonId": "wigglytuff"
+    },
+    {
+      "fromPokemonId": "kabuto",
+      "toPokemonId": "kabutops"
+    },
+    {
+      "fromPokemonId": "kadabra",
+      "toPokemonId": "alakazam"
+    },
+    {
+      "fromPokemonId": "kakuna",
+      "toPokemonId": "beedrill"
+    },
+    {
+      "fromPokemonId": "koffing",
+      "toPokemonId": "weezing"
+    },
+    {
+      "fromPokemonId": "krabby",
+      "toPokemonId": "kingler"
+    },
+    {
+      "fromPokemonId": "larvitar",
+      "toPokemonId": "pupitar"
+    },
+    {
+      "fromPokemonId": "ledyba",
+      "toPokemonId": "ledian"
+    },
+    {
+      "fromPokemonId": "machoke",
+      "toPokemonId": "machamp"
+    },
+    {
+      "fromPokemonId": "machop",
+      "toPokemonId": "machoke"
+    },
+    {
+      "fromPokemonId": "magby",
+      "toPokemonId": "magmar"
+    },
+    {
+      "fromPokemonId": "magikarp",
+      "toPokemonId": "gyarados"
+    },
+    {
+      "fromPokemonId": "magnemite",
+      "toPokemonId": "magneton"
+    },
+    {
+      "fromPokemonId": "mankey",
+      "toPokemonId": "primeape"
+    },
+    {
+      "fromPokemonId": "mareep",
+      "toPokemonId": "flaaffy"
+    },
+    {
+      "fromPokemonId": "marill",
+      "toPokemonId": "azumarill"
+    },
+    {
+      "fromPokemonId": "meowth",
+      "toPokemonId": "persian"
+    },
+    {
+      "fromPokemonId": "metapod",
+      "toPokemonId": "butterfree"
+    },
+    {
+      "fromPokemonId": "natu",
+      "toPokemonId": "xatu"
+    },
+    {
+      "fromPokemonId": "nidoran-f",
+      "toPokemonId": "nidorina"
+    },
+    {
+      "fromPokemonId": "nidoran-m",
+      "toPokemonId": "nidorino"
+    },
+    {
+      "fromPokemonId": "nidorina",
+      "toPokemonId": "nidoqueen"
+    },
+    {
+      "fromPokemonId": "nidorino",
+      "toPokemonId": "nidoking"
+    },
+    {
+      "fromPokemonId": "oddish",
+      "toPokemonId": "gloom"
+    },
+    {
+      "fromPokemonId": "omanyte",
+      "toPokemonId": "omastar"
+    },
+    {
+      "fromPokemonId": "onix",
+      "toPokemonId": "steelix"
+    },
+    {
+      "fromPokemonId": "paras",
+      "toPokemonId": "parasect"
+    },
+    {
+      "fromPokemonId": "phanpy",
+      "toPokemonId": "donphan"
+    },
+    {
+      "fromPokemonId": "pichu",
+      "toPokemonId": "pikachu"
+    },
+    {
+      "fromPokemonId": "pidgeotto",
+      "toPokemonId": "pidgeot"
+    },
+    {
+      "fromPokemonId": "pidgey",
+      "toPokemonId": "pidgeotto"
+    },
+    {
+      "fromPokemonId": "pikachu",
+      "toPokemonId": "raichu"
+    },
+    {
+      "fromPokemonId": "pineco",
+      "toPokemonId": "forretress"
+    },
+    {
+      "fromPokemonId": "poliwag",
+      "toPokemonId": "poliwhirl"
+    },
+    {
+      "fromPokemonId": "poliwhirl",
+      "toPokemonId": "politoed"
+    },
+    {
+      "fromPokemonId": "poliwhirl",
+      "toPokemonId": "poliwrath"
+    },
+    {
+      "fromPokemonId": "ponyta",
+      "toPokemonId": "rapidash"
+    },
+    {
+      "fromPokemonId": "porygon",
+      "toPokemonId": "porygon2"
+    },
+    {
+      "fromPokemonId": "psyduck",
+      "toPokemonId": "golduck"
+    },
+    {
+      "fromPokemonId": "pupitar",
+      "toPokemonId": "tyranitar"
+    },
+    {
+      "fromPokemonId": "quilava",
+      "toPokemonId": "typhlosion"
+    },
+    {
+      "fromPokemonId": "rattata",
+      "toPokemonId": "raticate"
+    },
+    {
+      "fromPokemonId": "remoraid",
+      "toPokemonId": "octillery"
+    },
+    {
+      "fromPokemonId": "rhyhorn",
+      "toPokemonId": "rhydon"
+    },
+    {
+      "fromPokemonId": "sandshrew",
+      "toPokemonId": "sandslash"
+    },
+    {
+      "fromPokemonId": "scyther",
+      "toPokemonId": "scizor"
+    },
+    {
+      "fromPokemonId": "seadra",
+      "toPokemonId": "kingdra"
+    },
+    {
+      "fromPokemonId": "seel",
+      "toPokemonId": "dewgong"
+    },
+    {
+      "fromPokemonId": "sentret",
+      "toPokemonId": "furret"
+    },
+    {
+      "fromPokemonId": "shellder",
+      "toPokemonId": "cloyster"
+    },
+    {
+      "fromPokemonId": "skiploom",
+      "toPokemonId": "jumpluff"
+    },
+    {
+      "fromPokemonId": "slowpoke",
+      "toPokemonId": "slowbro"
+    },
+    {
+      "fromPokemonId": "slowpoke",
+      "toPokemonId": "slowking"
+    },
+    {
+      "fromPokemonId": "slugma",
+      "toPokemonId": "magcargo"
+    },
+    {
+      "fromPokemonId": "smoochum",
+      "toPokemonId": "jynx"
+    },
+    {
+      "fromPokemonId": "snubbull",
+      "toPokemonId": "granbull"
+    },
+    {
+      "fromPokemonId": "spearow",
+      "toPokemonId": "fearow"
+    },
+    {
+      "fromPokemonId": "spinarak",
+      "toPokemonId": "ariados"
+    },
+    {
+      "fromPokemonId": "squirtle",
+      "toPokemonId": "wartortle"
+    },
+    {
+      "fromPokemonId": "staryu",
+      "toPokemonId": "starmie"
+    },
+    {
+      "fromPokemonId": "sunkern",
+      "toPokemonId": "sunflora"
+    },
+    {
+      "fromPokemonId": "swinub",
+      "toPokemonId": "piloswine"
+    },
+    {
+      "fromPokemonId": "teddiursa",
+      "toPokemonId": "ursaring"
+    },
+    {
+      "fromPokemonId": "tentacool",
+      "toPokemonId": "tentacruel"
+    },
+    {
+      "fromPokemonId": "togepi",
+      "toPokemonId": "togetic"
+    },
+    {
+      "fromPokemonId": "totodile",
+      "toPokemonId": "croconaw"
+    },
+    {
+      "fromPokemonId": "tyrogue",
+      "toPokemonId": "hitmonchan"
+    },
+    {
+      "fromPokemonId": "tyrogue",
+      "toPokemonId": "hitmonlee"
+    },
+    {
+      "fromPokemonId": "tyrogue",
+      "toPokemonId": "hitmontop"
+    },
+    {
+      "fromPokemonId": "venonat",
+      "toPokemonId": "venomoth"
+    },
+    {
+      "fromPokemonId": "voltorb",
+      "toPokemonId": "electrode"
+    },
+    {
+      "fromPokemonId": "vulpix",
+      "toPokemonId": "ninetales"
+    },
+    {
+      "fromPokemonId": "wartortle",
+      "toPokemonId": "blastoise"
+    },
+    {
+      "fromPokemonId": "weedle",
+      "toPokemonId": "kakuna"
+    },
+    {
+      "fromPokemonId": "weepinbell",
+      "toPokemonId": "victreebel"
+    },
+    {
+      "fromPokemonId": "wooper",
+      "toPokemonId": "quagsire"
+    },
+    {
+      "fromPokemonId": "zubat",
+      "toPokemonId": "golbat"
+    }
+  ],
   "fixtureId": "gen1-2",
   "learnsets": [
     {

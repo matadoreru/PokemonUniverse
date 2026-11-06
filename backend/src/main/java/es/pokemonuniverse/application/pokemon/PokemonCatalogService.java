@@ -6,6 +6,7 @@ import es.pokemonuniverse.adapters.out.persistence.MoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokedexEntryEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokedexEntryRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
+import es.pokemonuniverse.adapters.out.persistence.PokemonEvolutionRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
@@ -19,6 +20,7 @@ import es.pokemonuniverse.domain.pokemon.Move;
 import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
+import es.pokemonuniverse.domain.pokemon.PokemonEvolutionLink;
 import es.pokemonuniverse.domain.text.Collations;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.data.model.Sort;
@@ -38,7 +40,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
- * Catálogo público y de partidas: carga Pokémon, movimientos, movimientos por nivel y entradas de Pokédex como
+ * Catálogo público y de partidas: carga Pokémon, movimientos, movimientos por nivel, entradas de Pokédex y aristas
+ * evolutivas como
  * {@code loadPokemonCatalog} de Node, aplica el filtro de formas del catálogo y cachea el resultado una hora. La
  * recarga al caducar es de un solo vuelo ({@link CatalogSnapshotCache}): las lecturas no toman cerrojo y N peticiones
  * concurrentes al caducar comparten una única carga.
@@ -54,6 +57,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
       Sort.Order.asc("pokemonId"), Sort.Order.asc("referenceGeneration"), Sort.Order.asc("level"));
   private static final Sort POKEDEX_ORDER = Sort.of(
       Sort.Order.asc("pokemonId"), Sort.Order.desc("generation"), Sort.Order.asc("version"));
+  private static final Sort EVOLUTION_ORDER = Sort.of(Sort.Order.asc("id"));
   /** El cargador de Node etiqueta todas las entradas como españolas. */
   private static final String POKEDEX_LANGUAGE = "es";
 
@@ -61,18 +65,21 @@ public class PokemonCatalogService implements GameCatalogProvider {
   private final MoveRepository moves;
   private final PokemonLevelUpMoveRepository learnsets;
   private final PokedexEntryRepository pokedexEntries;
+  private final PokemonEvolutionRepository evolutionLinks;
   private final JpaPokemonAudioCatalog audio;
   private final Path artworkDir;
   private final CatalogSnapshotCache<InMemoryPokemonCatalog> cache =
       new CatalogSnapshotCache<>(this::load, TTL, Instant::now);
 
   public PokemonCatalogService(PokemonRepository repository, MoveRepository moves,
-      PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries, JpaPokemonAudioCatalog audio,
+      PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries,
+      PokemonEvolutionRepository evolutionLinks, JpaPokemonAudioCatalog audio,
       @Property(name = "pu.artwork-dir") String artworkDir) {
     this.repository = repository;
     this.moves = moves;
     this.learnsets = learnsets;
     this.pokedexEntries = pokedexEntries;
+    this.evolutionLinks = evolutionLinks;
     this.audio = audio;
     this.artworkDir = Path.of(artworkDir);
   }
@@ -161,7 +168,11 @@ public class PokemonCatalogService implements GameCatalogProvider {
     for (var row : learnsets.findAll(LEARNSET_ORDER)) learnsetList.add(toLearnset(row));
     var entryList = new ArrayList<PokedexEntry>();
     for (var row : pokedexEntries.findAll(POKEDEX_ORDER)) entryList.add(toPokedexEntry(row));
-    return new InMemoryPokemonCatalog(pokemon, moveList, learnsetList, evolution, entryList);
+    var linkList = new ArrayList<PokemonEvolutionLink>();
+    for (var row : evolutionLinks.findAll(EVOLUTION_ORDER)) {
+      linkList.add(new PokemonEvolutionLink(row.getFromPokemonId(), row.getToPokemonId()));
+    }
+    return new InMemoryPokemonCatalog(pokemon, moveList, learnsetList, evolution, entryList, linkList);
   }
 
   private static Pokemon toPokemon(PokemonEntity r) {

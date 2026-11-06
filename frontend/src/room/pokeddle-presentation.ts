@@ -96,6 +96,7 @@ export function formatPokeddleFeedback(key: PokeddleClueKey, entry: PokeddleFeed
   let value: string;
   let short: string | null = null;
   let result = text.result;
+  let accessibleResult = text.accessibleResult;
 
   if (entry.kind === 'NUMERIC') {
     value = numericValue(key, entry.value);
@@ -107,6 +108,7 @@ export function formatPokeddleFeedback(key: PokeddleClueKey, entry: PokeddleFeed
     const single = entry.value.stages <= 1;
     value = single ? 'Sin evolución · No tiene etapas evolutivas' : `Etapa ${entry.value.stage}/${entry.value.stages}`;
     short = single ? 'Única' : `${entry.value.stage}/${entry.value.stages}`;
+    if (semantic === 'partial') accessibleResult = 'Parcial: misma etapa, distinto número de etapas';
   } else if (entry.kind === 'ABILITIES') {
     value = entry.value.map(formatPokemonWords).join(', ');
     result = entry.matches ? `${entry.matches} en común` : 'Distinto';
@@ -114,7 +116,7 @@ export function formatPokeddleFeedback(key: PokeddleClueKey, entry: PokeddleFeed
     value = key === 'legendaryStatus' ? legendaryLabels[entry.value] ?? entry.value : formatPokemonWords(entry.value);
   }
 
-  return { value, short: short ?? value, result, accessibleResult: text.accessibleResult, semantic, tone: text.tone };
+  return { value, short: short ?? value, result, accessibleResult, semantic, tone: text.tone };
 }
 
 /** Pistas que coinciden del todo en un intento (para el anuncio de la ronda). */

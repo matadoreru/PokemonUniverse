@@ -141,7 +141,7 @@ public final class PokeddleRaceEngine
         stats = prior.afterGuess();
         boolean correct = guess.id().equals(secret.id());
         row = new PokeddleBoardRow(state.roundNumber(), "GUESS", reveal(guess),
-            PokeddleRaceRules.buildPokeddleFeedback(guess, secret, state.config()), correct, answer.submittedAt());
+            PokeddleRaceRules.buildPokeddleFeedback(guess, secret, state.config(), state.evolutions()), correct, answer.submittedAt());
         if (correct) {
           solved.put(playerId, new PokeddleSolve(state.roundNumber(), stats.validGuesses(), answer.submittedAt()));
         }
@@ -251,6 +251,7 @@ public final class PokeddleRaceEngine
         .config(config)
         .playerIds(playerIds)
         .poolIds(pool.stream().map(Pokemon::id).toList())
+        .evolutions(PokeddleEvolutions.forPool(context.pokemon(), pool, config.generations()))
         .secretPokemonIds(secrets)
         .roundNumber(0)
         .boards(boards)
