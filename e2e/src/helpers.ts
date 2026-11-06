@@ -459,3 +459,24 @@ export async function hacerAmigosPorApi(quien: { page: Page; cuenta: CuentaE2E }
   const acepta = await pedida.page.request.post(`/api/friends/requests/${id}/accept`);
   expect(acepta.status(), `aceptar de ${pedida.cuenta.username}`).toBeLessThan(300);
 }
+
+/** Abre el chat del lobby: por debajo de 1024 px es la pestaña «Chat» (con su contador de sin leer); en escritorio ya está en la columna. */
+export async function abrirChat(page: Page, { conCampo = true } = {}): Promise<Locator> {
+  const ancho = page.viewportSize()?.width ?? 1280;
+  if (ancho < 1024) {
+    const pestana = page.getByRole('tab', { name: /^Chat/ });
+    if ((await pestana.getAttribute('aria-selected')) !== 'true') await pestana.click();
+    await expect(pestana).toHaveAttribute('aria-selected', 'true');
+  }
+  const campo = page.getByLabel('Escribe un mensaje');
+  if (conCampo) await expect(campo).toBeVisible();
+  return campo;
+}
+
+/** Escribe un mensaje en el chat del lobby (Intro) y espera a que el servidor lo confirme: el campo se vacía. */
+export async function escribirEnChat(page: Page, texto: string): Promise<void> {
+  const campo = await abrirChat(page);
+  await campo.fill(texto);
+  await campo.press('Enter');
+  await expect(campo).toHaveValue('');
+}
