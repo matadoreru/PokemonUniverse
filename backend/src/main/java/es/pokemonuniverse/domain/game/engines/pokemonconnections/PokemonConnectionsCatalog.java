@@ -71,9 +71,31 @@ public final class PokemonConnectionsCatalog {
       Map.entry("evolution-first", "evolution-stage"), Map.entry("evolution-final", "evolution-stage"),
       Map.entry("single-stage", "evolution-stage"),
       Map.entry("legendary", "rarity"), Map.entry("mythical", "rarity"), Map.entry("ordinary", "rarity"),
-      Map.entry("heavyweights", "size"), Map.entry("featherweights", "size"), Map.entry("giants", "size"),
-      Map.entry("tiny", "size"),
-      Map.entry("bst-600-plus", "stats"), Map.entry("speed-100-plus", "stats"), Map.entry("same-defenses", "stats"));
+      Map.entry("giants", "size"), Map.entry("tiny", "size"),
+      Map.entry("champion-aces", "boss-aces"), Map.entry("villain-aces", "boss-aces"),
+      Map.entry("blue-champion-team", "gym-aces"),
+      Map.entry("ash-team", "ash"), Map.entry("ash-kanto-team", "ash"),
+      Map.entry("regional-birds", "early-routes"), Map.entry("route-one-normals", "early-routes"),
+      Map.entry("early-forest-bugs", "early-routes"),
+      Map.entry("pseudo-final", "pseudo"), Map.entry("pseudo-first", "pseudo"),
+      Map.entry("trees", "plant-lookalikes"),
+      Map.entry("pokeball-lookalikes", "mimicry"), Map.entry("disguises", "mimicry"),
+      Map.entry("headwear", "on-head"), Map.entry("leaf-heads", "on-head"),
+      Map.entry("warriors", "fighters"), Map.entry("martial-artists", "fighters"),
+      Map.entry("slimy", "goo"), Map.entry("pollution", "goo"),
+      Map.entry("name-hides-number", "name-puns"), Map.entry("name-hides-animal", "name-puns"),
+      Map.entry("food", "food"), Map.entry("fruits-vegetables", "food"),
+      Map.entry("musical", "music-dance"), Map.entry("dancers", "music-dance"));
+
+  /**
+   * Categorías «de datos» (tipos, habilidades, letra inicial, fase evolutiva, rareza, generación, tamaño): un tablero
+   * lleva como mucho una; el resto son curadas y curiosas.
+   */
+  private static final Set<String> DATA_CATEGORY_IDS = Set.of("single-type", "dual-type", "evolution-first",
+      "evolution-final", "single-stage", "legendary", "mythical", "ordinary", "giants", "tiny");
+
+  private static final List<String> DATA_CATEGORY_PREFIXES = List.of("type-", "mono-", "dual-", "ability-", "letter-",
+      "generation-");
 
   private PokemonConnectionsCatalog() {}
 
@@ -612,14 +634,204 @@ public final class PokemonConnectionsCatalog {
               "volbeat", "latios", "mothim", "gallade", "throh", "sawk", "rufflet", "braviary", "tornadus-incarnate",
               "thundurus-incarnate", "landorus-incarnate", "impidimp", "morgrem", "grimmsnarl", "oinkologne-male",
               "okidogi", "munkidori", "fezandipiti"),
-      category("heavyweights")
-          .label("Pesan 200 kg o más")
-          .explanation("Su peso oficial alcanza al menos 200 kg.")
-          .matches(pokemon -> pokemon.weightHectograms() >= 2_000),
-      category("featherweights")
-          .label("Pesan menos de 1 kg")
-          .explanation("Su peso oficial no llega a 1 kg.")
-          .matches(pokemon -> pokemon.weightHectograms() > 0 && pokemon.weightHectograms() < 10),
+      category("kanto-gym-aces")
+          .label("Ases de los líderes de Kanto")
+          .explanation("Son el Pokémon estrella de un líder de gimnasio de Kanto: Brock, Misty, Surge, Erika, Koga, "
+              + "Sabrina, Blaine y Giovanni.")
+          .pokemonIds("onix", "starmie", "raichu", "vileplume", "weezing", "alakazam", "arcanine", "rhydon"),
+      category("johto-gym-aces")
+          .label("Ases de los líderes de Johto")
+          .explanation("Son el último Pokémon de Pegaso, Antón, Blanca, Morti, Aníbal, Yasmina, Fredo y Débora.")
+          .pokemonIds("pidgeotto", "scyther", "miltank", "gengar", "poliwrath", "steelix", "piloswine", "kingdra"),
+      category("hoenn-gym-aces")
+          .label("Ases de los líderes de Hoenn")
+          .explanation("Son el último Pokémon de un líder de Hoenn: el Nosepass de Petra, el Torkoal de Candela, el "
+              + "Slaking de Norman, el Altaria de Alana, el Lunatone y el Solrock de Vito y Leti o el Milotic de Plubio.")
+          .pokemonIds("nosepass", "torkoal", "slaking", "altaria", "lunatone", "solrock", "milotic"),
+      category("sinnoh-gym-aces")
+          .label("Ases de los líderes de Sinnoh")
+          .explanation("Son el último Pokémon de un líder de Sinnoh en Diamante y Perla, del Cranidos de Roco al "
+              + "Luxray de Lectro.")
+          .pokemonIds("cranidos", "roserade", "lucario", "floatzel", "mismagius", "bastiodon", "abomasnow", "luxray"),
+      category("unova-gym-aces")
+          .label("Ases de los líderes de Teselia")
+          .explanation("Son el último Pokémon de un líder de Teselia en Negro y Blanco, de los monos de Millo, Maíz y "
+              + "Zeo al Haxorus de Lirio.")
+          .pokemonIds("pansage", "pansear", "panpour", "watchog", "leavanny", "zebstrika", "excadrill", "swanna",
+              "beartic", "haxorus"),
+      category("kalos-gym-aces")
+          .label("Ases de los líderes de Kalos")
+          .explanation("Son el último Pokémon de un líder de Kalos, del Vivillon de Violeta al Avalugg de Édel.")
+          .pokemonIds("vivillon", "tyrunt", "hawlucha", "gogoat", "heliolisk", "sylveon", "meowstic-male", "avalugg"),
+      category("galar-gym-aces")
+          .label("Ases de los líderes de Galar")
+          .explanation("Son el Pokémon estrella de un líder de Galar, del Eldegoss de Percy al Duraludon de Roy.")
+          .pokemonIds("eldegoss", "drednaw", "centiskorch", "machamp", "gengar", "alcremie", "coalossal", "lapras",
+              "obstagoon", "duraludon"),
+      category("paldea-gym-aces")
+          .label("Ases de los líderes de Paldea")
+          .explanation("Son el Pokémon que teracristaliza un líder de Paldea, del Teddiursa de Araceli al Altaria de "
+              + "Grusha.")
+          .pokemonIds("teddiursa", "sudowoodo", "mismagius", "crabominable", "staraptor", "toxtricity-amped",
+              "florges", "altaria"),
+      category("blue-champion-team")
+          .label("Equipo de Azul, el rival de Kanto")
+          .explanation("Los usa Azul cuando lo encuentras como Campeón en Rojo y Azul.")
+          .pokemonIds("pidgeot", "alakazam", "rhydon", "exeggutor", "gyarados", "arcanine"),
+      category("villain-aces")
+          .label("Ases de los jefes villanos")
+          .explanation("Son el Pokémon emblema de un jefe malvado: el Persian de Giovanni en el anime, el Camerupt de "
+              + "Magno, el Sharpedo de Aquiles, el Weavile o el Honchkrow de Helio, el Hydreigon de Ghechis, el Pyroar "
+              + "de Lysson o el Golisopod de Guzmán.")
+          .pokemonIds("persian", "camerupt", "sharpedo", "weavile", "honchkrow", "hydreigon", "pyroar-male",
+              "golisopod"),
+      category("ash-kanto-team")
+          .label("El equipo de Ash en Kanto")
+          .explanation("Los capturó Ash en su primer viaje por Kanto y las Islas Naranja.")
+          .pokemonIds("pikachu", "bulbasaur", "charmander", "squirtle", "caterpie", "butterfree", "pidgeotto",
+              "krabby", "kingler", "primeape", "muk", "tauros", "lapras"),
+      category("trade-item-evolution")
+          .label("Evolucionan con intercambio llevando un objeto")
+          .explanation("Hay que intercambiarlos mientras llevan un objeto concreto, como el Revestimiento Metálico, la "
+              + "Roca del Rey o el Disco Extraño.")
+          .pokemonIds("onix", "scyther", "seadra", "poliwhirl", "slowpoke", "porygon", "rhydon", "electabuzz", "magmar",
+              "porygon2", "dusclops", "feebas", "clamperl", "spritzee", "swirlix"),
+      category("quirky-evolution")
+          .label("Evolucionan de la forma más rara")
+          .explanation("Su evolución pide algo insólito: poner la consola del revés, girar sobre sí mismo, que llueva, "
+              + "caminar mil pasos o juntar 999 monedas.")
+          .pokemonIds("inkay", "milcery", "sliggoo", "pancham", "mantyke", "nincada", "pawmo", "gimmighoul",
+              "bramblin", "rellor"),
+      category("name-hides-number")
+          .label("Su nombre esconde un número")
+          .explanation("Hay un número dentro del nombre: Mewtwo (two), Ninetales (nine), Tentacool (ten), Doduo (dúo), "
+              + "Dugtrio (trío)…")
+          .pokemonIds("mewtwo", "ninetales", "tentacool", "tentacruel", "porygon2", "doduo", "dugtrio", "duosion"),
+      category("name-hides-animal")
+          .label("Su nombre esconde un animal en inglés")
+          .explanation("Dentro del nombre se lee un animal en inglés: Rattata (rat), Horsea (horse), Zubat (bat), "
+              + "Rowlet (owl)…")
+          .pokemonIds("rattata", "horsea", "ponyta", "ducklett", "pidove", "wingull", "lillipup", "sandshrew", "zubat",
+              "tepig", "emboar", "beartic", "mothim", "combee", "rowlet", "cubchoo"),
+      category("mustaches")
+          .label("Tienen bigote")
+          .explanation("Lucen un bigote o unos bigotes bien visibles.")
+          .pokemonIds("alakazam", "kadabra", "mr-rime", "samurott", "whiscash", "barboach"),
+      category("headwear")
+          .label("Llevan algo en la cabeza")
+          .explanation("Llevan puesto un sombrero, una corona o un casco: el cráneo de Cubone, el Shellder de "
+              + "Slowking, la chistera de Mr. Rime…")
+          .pokemonIds("cubone", "marowak", "murkrow", "honchkrow", "mismagius", "hatterene", "mr-rime", "slowking"),
+      category("leaf-heads")
+          .label("Les brota una hoja en la cabeza")
+          .explanation("Llevan una hoja, un brote o un nenúfar en lo alto de la cabeza.")
+          .pokemonIds("chikorita", "bayleef", "oddish", "lotad", "lombre", "ludicolo", "turtwig", "nuzleaf", "pansage",
+              "petilil"),
+      category("held-objects")
+          .label("Siempre llevan algo en la mano")
+          .explanation("No sueltan su objeto: el puerro de Farfetch'd, las cucharas de Alakazam, el péndulo de Hypno, "
+              + "las vigas de Timburr o el martillo de Tinkatink.")
+          .pokemonIds("farfetchd", "sirfetchd", "cubone", "marowak", "kadabra", "alakazam", "hypno", "timburr",
+              "gurdurr", "conkeldurr", "tinkatink", "tinkatuff", "tinkaton"),
+      category("single-horn")
+          .label("Tienen un solo cuerno")
+          .explanation("Un único cuerno destaca en su cabeza, como el de un unicornio o un rinoceronte.")
+          .pokemonIds("rapidash", "goldeen", "seaking", "heracross", "rhyhorn", "nidorino", "nidoking", "absol"),
+      category("one-eye")
+          .label("Tienen un solo ojo")
+          .explanation("Miran el mundo con un único ojo.")
+          .pokemonIds("unown", "beldum", "magnemite", "duskull", "dusclops", "dusknoir"),
+      category("fire-tails")
+          .label("Les arde la cola")
+          .explanation("Su cola es o termina en una llama.")
+          .pokemonIds("charmander", "charmeleon", "charizard", "chimchar", "monferno", "ponyta", "rapidash", "magmar"),
+      category("own-light")
+          .label("Llevan su propia luz")
+          .explanation("Una parte de su cuerpo brilla como una lámpara, una vela o una bombilla.")
+          .pokemonIds("chinchou", "lanturn", "ampharos", "volbeat", "litwick", "lampent", "chandelure", "tadbulb"),
+      category("route-one-normals")
+          .label("El Normal de la primera ruta")
+          .explanation("Es el Pokémon común que sale en las primeras hierbas de su región: Rattata, Sentret, "
+              + "Zigzagoon, Bidoof…")
+          .pokemonIds("rattata", "sentret", "zigzagoon", "bidoof", "patrat", "bunnelby", "yungoos", "skwovet",
+              "lechonk"),
+      category("early-forest-bugs")
+          .label("Bichos de las primeras rutas")
+          .explanation("Son el insecto que encuentras nada más empezar la aventura en su región.")
+          .pokemonIds("caterpie", "weedle", "ledyba", "spinarak", "wurmple", "kricketot", "sewaddle", "scatterbug",
+              "grubbin", "blipbug", "tarountula", "nymble"),
+      category("pseudo-first")
+          .label("Crías de pseudolegendario")
+          .explanation("Son la primera fase de una familia pseudolegendaria.")
+          .pokemonIds("dratini", "larvitar", "bagon", "beldum", "gible", "deino", "goomy", "jangmo-o", "dreepy",
+              "frigibax"),
+      category("disguises")
+          .label("Maestros del disfraz")
+          .explanation("Engañan con su aspecto: se transforman, crean ilusiones, se camuflan o se hacen pasar por otra "
+              + "cosa.")
+          .pokemonIds("ditto", "mimikyu-disguised", "zorua", "zoroark", "sudowoodo", "bonsly", "kecleon", "foongus",
+              "amoonguss"),
+      category("plant-lookalikes")
+          .label("Parecen plantas pero no son tipo Planta")
+          .explanation("Parecen árboles o flores, pero no tienen el tipo Planta.")
+          .pokemonIds("sudowoodo", "bonsly", "flabebe", "floette", "florges", "comfey", "burmy"),
+      category("trees")
+          .label("Árboles con patas")
+          .explanation("Su diseño está inspirado en un árbol o un tronco.")
+          .pokemonIds("sudowoodo", "bonsly", "exeggutor", "phantump", "trevenant", "snover", "abomasnow", "torterra",
+              "arboliva"),
+      category("rocks-with-face")
+          .label("Rocas con cara")
+          .explanation("Parecen una piedra a la que le han salido ojos.")
+          .pokemonIds("geodude", "nosepass", "carbink", "rolycoly", "nacli", "lunatone", "solrock"),
+      category("dolls")
+          .label("Muñecos y peluches")
+          .explanation("Su diseño parte de un muñeco, una figura de barro o un peluche.")
+          .pokemonIds("shuppet", "banette", "baltoy", "claydol", "mimikyu-disguised", "teddiursa", "stufful"),
+      category("warriors")
+          .label("Ninjas, samuráis y caballeros")
+          .explanation("Están inspirados en guerreros: ninjas, samuráis, caballeros o arqueros.")
+          .pokemonIds("greninja", "ninjask", "accelgor", "samurott", "escavalier", "sirfetchd", "gallade",
+              "decidueye", "ceruledge"),
+      category("martial-artists")
+          .label("Luchadores de ring y tatami")
+          .explanation("Están inspirados en un deporte de combate: boxeo, sumo, lucha libre, judo, kárate o kung-fu.")
+          .pokemonIds("hitmonlee", "hitmonchan", "makuhita", "hariyama", "hawlucha", "throh", "sawk", "incineroar",
+              "mienfoo", "mienshao"),
+      category("dancers")
+          .label("Bailarines")
+          .explanation("El baile forma parte de su carácter o de su movimiento estrella.")
+          .pokemonIds("bellossom", "ludicolo", "spinda", "hitmontop", "oricorio-baile", "quaquaval"),
+      category("sleep-dreams")
+          .label("Dormilones y comesueños")
+          .explanation("Se pasan el día durmiendo, duermen a los demás o se alimentan de sueños.")
+          .pokemonIds("snorlax", "abra", "drowzee", "hypno", "slakoth", "munna", "musharna", "komala", "darkrai",
+              "cresselia", "jigglypuff"),
+      category("gluttons")
+          .label("Glotones sin fondo")
+          .explanation("Comen todo lo que encuentran y nunca se llenan.")
+          .pokemonIds("snorlax", "munchlax", "gulpin", "swalot", "skwovet", "greedent", "guzzlord"),
+      category("slimy")
+          .label("Viscosos")
+          .explanation("Están hechos de baba, lodo o una masa blanda.")
+          .pokemonIds("grimer", "muk", "ditto", "goomy", "sliggoo", "goodra"),
+      category("pollution")
+          .label("Basura y contaminación")
+          .explanation("Nacieron de la basura, los residuos o el gas contaminante.")
+          .pokemonIds("grimer", "muk", "koffing", "weezing", "trubbish", "garbodor"),
+      category("pairs")
+          .label("Siempre van en pareja")
+          .explanation("Tienen un compañero o un rival eterno: Zangoose y Seviper, Plusle y Minun, Latias y Latios…")
+          .pokemonIds("zangoose", "seviper", "heatmor", "durant", "throh", "sawk", "plusle", "minun", "volbeat",
+              "illumise", "solrock", "lunatone", "latias", "latios"),
+      category("alola-rides")
+          .label("Monturas de Alola")
+          .explanation("Te llevan a lomos por Alola con el Poké Montura de Sol y Luna.")
+          .pokemonIds("tauros", "lapras", "sharpedo", "stoutland", "machamp", "mudsdale", "charizard"),
+      category("whales-dolphins")
+          .label("Ballenas y delfines")
+          .explanation("Su diseño está inspirado en ballenas o delfines.")
+          .pokemonIds("wailmer", "wailord", "cetoddle", "cetitan", "finizen", "palafin-zero"),
       category("giants")
           .label("Miden 3 metros o más")
           .explanation("Su altura oficial alcanza al menos 3 metros.")
@@ -689,7 +901,7 @@ public final class PokemonConnectionsCatalog {
   /**
    * Familia de una categoría: todo lo que sale de los tipos es {@code types}; las de iniciales (y sus habilidades),
    * {@code starters}; cada grupo de prefijo ({@code ability-}, {@code letter-}, {@code generation-}) o de sufijo
-   * ({@code -evolution}) comparte familia; el resto, la de {@link #FAMILY_BY_ID} o su propio id.
+   * ({@code -evolution}, {@code -gym-aces}) comparte familia; el resto, la de {@link #FAMILY_BY_ID} o su propio id.
    */
   static String categoryFamily(String categoryId) {
     var family = FAMILY_BY_ID.get(categoryId);
@@ -701,7 +913,14 @@ public final class PokemonConnectionsCatalog {
       if (categoryId.startsWith(prefix)) return prefix.substring(0, prefix.length() - 1);
     }
     if (categoryId.endsWith("-evolution")) return "evolution-method";
+    if (categoryId.endsWith("-gym-aces")) return "gym-aces";
     return categoryId;
+  }
+
+  /** Si la categoría sale de datos puros del catálogo en vez de una idea curada (ver {@link #DATA_CATEGORY_IDS}). */
+  static boolean isDataCategory(String categoryId) {
+    return DATA_CATEGORY_IDS.contains(categoryId)
+        || DATA_CATEGORY_PREFIXES.stream().anyMatch(categoryId::startsWith);
   }
 
   /** Inicial del nombre mostrado, en mayúscula y sin tildes. */
@@ -714,7 +933,7 @@ public final class PokemonConnectionsCatalog {
 
   /**
    * {@code resolvedCategoryDefinitions}: las curadas y después las dinámicas (tipos, monotipos, dobles tipos,
-   * evolución, rareza, número de tipos, estadísticas, habilidades, inicial del nombre, altura y, si el pool trae más de
+   * evolución, rareza, número de tipos, habilidades, inicial del nombre, altura y, si el pool trae más de
    * una generación, la generación de debut), sin repetir id.
    */
   static List<CategoryDefinition> resolvedCategoryDefinitions(List<Pokemon> pool) {
@@ -770,18 +989,6 @@ public final class PokemonConnectionsCatalog {
         .label("Tienen dos tipos")
         .explanation("Poseen exactamente dos tipos elementales en su forma mostrada.")
         .matches(pokemon -> pokemon.types().size() == 2));
-    dynamic.add(category("bst-600-plus")
-        .label("Suma de estadísticas de 600 o más")
-        .explanation("La suma de sus seis estadísticas base alcanza al menos 600 puntos.")
-        .matches(pokemon -> pokemon.baseStatTotal() >= 600));
-    dynamic.add(category("speed-100-plus")
-        .label("Velocidad base de 100 o más")
-        .explanation("Su estadística base de Velocidad alcanza al menos 100 puntos.")
-        .matches(pokemon -> pokemon.speed() >= 100));
-    dynamic.add(category("same-defenses")
-        .label("Defensas base idénticas")
-        .explanation("Su Defensa y su Defensa Especial tienen exactamente el mismo valor base.")
-        .matches(pokemon -> pokemon.defense() == pokemon.specialDefense()));
     ABILITY_LABELS.forEach((id, ability) -> dynamic.add(category("ability-" + id)
         .label("Pueden tener la habilidad " + ability)
         .explanation(ability + " está entre sus habilidades posibles, contando la oculta.")
@@ -873,7 +1080,8 @@ public final class PokemonConnectionsCatalog {
   /**
    * {@code dynamicPuzzle}: baraja los miembros de cada categoría (también los de las que luego no llegan a
    * {@code groupSize}), después las candidatas no excluidas y las excluidas, y prueba rotaciones sin consumir azar:
-   * primero sin repetir familia ({@link #categoryFamily}) en el tablero y, si así no sale ninguno, sin esa regla.
+   * primero con una sola categoría de datos y sin repetir familia ({@link #categoryFamily}) en el tablero; después
+   * relajando la familia y, como último recurso, el tope de datos.
    * Cada Pokémon del tablero encaja en una sola de las categorías elegidas: se salta la categoría en la que ya encaja
    * un Pokémon del tablero, y no se eligen Pokémon de una categoría ya elegida.
    */
@@ -888,20 +1096,33 @@ public final class PokemonConnectionsCatalog {
         .filter(candidate -> !excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
     randomized.addAll(Randoms.shuffled(candidates.stream()
         .filter(candidate -> excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
-    var varied = searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, true);
-    return varied != null ? varied : searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, false);
+    // Primero con el tope de una categoría de datos; sin él solo si el pool no tiene curadas suficientes (una
+    // generación suelta con un tablero grande), para no quedarse sin tablero.
+    for (boolean capData : List.of(true, false)) {
+      for (boolean distinctFamilies : List.of(true, false)) {
+        var puzzle = searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, distinctFamilies, capData);
+        if (puzzle != null) return puzzle;
+      }
+    }
+    return null;
   }
 
-  /** Las rotaciones de {@code dynamicPuzzle}; con {@code distinctFamilies}, una sola categoría por familia. */
+  /**
+   * Las rotaciones de {@code dynamicPuzzle}; con {@code distinctFamilies}, una sola categoría por familia, y con
+   * {@code capData}, como mucho una categoría de datos ({@link #isDataCategory}) por tablero.
+   */
   private static @Nullable GeneratedConnectionsPuzzle searchPuzzle(List<Candidate> randomized, int groupSize,
-      int groupCount, Set<String> usedPuzzleKeys, boolean distinctFamilies) {
+      int groupCount, Set<String> usedPuzzleKeys, boolean distinctFamilies, boolean capData) {
     for (int attempt = 0; attempt < Math.max(1, randomized.size() * 4); attempt += 1) {
       var used = new HashSet<String>();
       var chosen = new ArrayList<Set<String>>();
       var families = new HashSet<String>();
       var groups = new ArrayList<ConnectionAnswerGroup>();
+      boolean dataChosen = false;
       for (var candidate : rotate(randomized, attempt)) {
         var family = categoryFamily(candidate.definition().id());
+        boolean data = isDataCategory(candidate.definition().id());
+        if (capData && data && dataChosen) continue;
         if (distinctFamilies && families.contains(family)) continue;
         if (used.stream().anyMatch(candidate.memberIds()::contains)) continue;
         var available = rotate(candidate.members(), attempt + groups.size()).stream()
@@ -912,6 +1133,7 @@ public final class PokemonConnectionsCatalog {
         selected.forEach(pokemon -> used.add(pokemon.id()));
         chosen.add(candidate.memberIds());
         families.add(family);
+        dataChosen |= data;
         groups.add(answerGroup(candidate.definition(), selected, groups.size()));
         if (groups.size() == groupCount) {
           // .sort() de JS sin comparador: orden de unidades UTF-16, el de String.compareTo.

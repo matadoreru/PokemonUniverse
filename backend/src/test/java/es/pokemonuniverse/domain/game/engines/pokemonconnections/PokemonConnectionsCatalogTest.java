@@ -15,6 +15,7 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAnswerGroup;
 import es.pokemonuniverse.golden.GoldenCatalogs;
+import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,8 +47,23 @@ class PokemonConnectionsCatalogTest {
     "ash-team", "misty-team", "brock-team", "team-rocket", "champion-aces", "box-art", "final-starters",
     "regional-forms", "kalos-hoenn-megas", "gigantamax", "fusions", "ability-forms", "move-evolution", "cocoons",
     "human-made", "space", "japanese-folklore", "object-ghosts", "dinosaurs", "lizards", "crocodiles", "beetles",
-    "bees", "snails-slugs", "deer", "fruits-vegetables", "royalty", "female-only", "male-only", "heavyweights", "featherweights", "giants",
+    "bees", "snails-slugs", "deer", "fruits-vegetables", "royalty", "female-only", "male-only",
+    "kanto-gym-aces", "johto-gym-aces", "hoenn-gym-aces", "sinnoh-gym-aces", "unova-gym-aces", "kalos-gym-aces",
+    "galar-gym-aces", "paldea-gym-aces", "blue-champion-team", "villain-aces", "ash-kanto-team", "trade-item-evolution",
+    "quirky-evolution", "name-hides-number", "name-hides-animal", "mustaches", "headwear", "leaf-heads", "held-objects",
+    "single-horn", "one-eye", "fire-tails", "own-light", "route-one-normals", "early-forest-bugs", "pseudo-first",
+    "disguises", "plant-lookalikes", "trees", "rocks-with-face", "dolls", "warriors", "martial-artists", "dancers",
+    "sleep-dreams", "gluttons", "slimy", "pollution", "pairs", "alola-rides", "whales-dolphins", "giants",
   };
+
+  /** Las categorías curiosas nuevas: cada una con lista explícita de al menos 6 miembros. */
+  private static final List<String> NEW_CURATED_IDS = List.of(
+    "kanto-gym-aces", "johto-gym-aces", "hoenn-gym-aces", "sinnoh-gym-aces", "unova-gym-aces", "kalos-gym-aces",
+    "galar-gym-aces", "paldea-gym-aces", "blue-champion-team", "villain-aces", "ash-kanto-team", "trade-item-evolution",
+    "quirky-evolution", "name-hides-number", "name-hides-animal", "mustaches", "headwear", "leaf-heads", "held-objects",
+    "single-horn", "one-eye", "fire-tails", "own-light", "route-one-normals", "early-forest-bugs", "pseudo-first",
+    "disguises", "plant-lookalikes", "trees", "rocks-with-face", "dolls", "warriors", "martial-artists", "dancers",
+    "sleep-dreams", "gluttons", "slimy", "pollution", "pairs", "alola-rides", "whales-dolphins");
 
   private static final String[] TEMPLATE_IDS = {
     "classic-connections", "companions-connections", "first-partners-connections", "evolution-methods-connections",
@@ -57,8 +73,86 @@ class PokemonConnectionsCatalogTest {
   @Test
   void categoriesKeepTheTsCountAndOrder() {
     var catalog = PokemonConnectionsCatalog.CONNECTION_CATEGORY_CATALOG;
-    assertEquals(90, catalog.size());
+    assertEquals(129, catalog.size());
     assertArrayEquals(CATEGORY_IDS, catalog.stream().map(CategoryDefinition::id).toArray(String[]::new));
+  }
+
+  @Test
+  void newCuratedCategoriesHaveAtLeastSixDistinctMembers() {
+    assertTrue(NEW_CURATED_IDS.size() >= 40);
+    var byId = new java.util.HashMap<String, CategoryDefinition>();
+    for (var definition : PokemonConnectionsCatalog.CONNECTION_CATEGORY_CATALOG) byId.put(definition.id(), definition);
+    for (var id : NEW_CURATED_IDS) {
+      var definition = byId.get(id);
+      assertNotNull(definition, id);
+      assertNotNull(definition.pokemonIds(), id);
+      assertNull(definition.matches(), id);
+      assertTrue(definition.pokemonIds().size() >= 6, id);
+      assertEquals(definition.pokemonIds().size(), new HashSet<>(definition.pokemonIds()).size(), id);
+      assertFalse(PokemonConnectionsCatalog.isDataCategory(id), id);
+    }
+  }
+
+  /** Los umbrales que nadie sabe de memoria ya no son categorías. */
+  @Test
+  void obscureThresholdCategoriesAreGone() {
+    var ids = new HashSet<String>();
+    for (var definition : PokemonConnectionsCatalog.resolvedCategoryDefinitions(gen12Pool())) ids.add(definition.id());
+    for (var id : List.of("same-defenses", "bst-600-plus", "speed-100-plus", "heavyweights", "featherweights")) {
+      assertFalse(ids.contains(id), id);
+    }
+  }
+
+  @Test
+  void dataCategoriesAreMarked() {
+    for (var id : List.of("type-fire", "mono-water", "dual-grass-poison", "single-type", "dual-type", "ability-espesura",
+        "ability-mar-llamas", "ability-torrente", "ability-levitacion", "letter-p", "generation-1", "evolution-first",
+        "evolution-final", "single-stage", "legendary", "mythical", "ordinary", "giants", "tiny")) {
+      assertTrue(PokemonConnectionsCatalog.isDataCategory(id), id);
+    }
+    for (var id : List.of("eevee-family", "grass-partners", "dogs", "trade-evolution", "kanto-gym-aces")) {
+      assertFalse(PokemonConnectionsCatalog.isDataCategory(id), id);
+    }
+  }
+
+  /** Treinta tableros seguidos con semilla fija: como mucho una categoría de datos en cada uno. */
+  @Test
+  void atMostOneDataCategoryPerBoard() {
+    for (var generations : List.of(List.of(1), List.of(1, 2))) {
+      var context = GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(7))
+          .players(List.of(new GamePlayer("p1", "Ana"))).now(1000).build();
+      var used = new ArrayList<String>();
+      for (int round = 0; round < 30; round++) {
+        var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context,
+            new PuzzleOptions(4, 16, generations, List.copyOf(used), List.of()));
+        long data = puzzle.groups().stream()
+            .filter(group -> PokemonConnectionsCatalog.isDataCategory(group.categoryId())).count();
+        assertTrue(data <= 1, puzzle.key());
+        puzzle.groups().forEach(group -> assertFalse(group.categoryId().equals("same-defenses"), puzzle.key()));
+        used.add(puzzle.key());
+      }
+    }
+  }
+
+  /**
+   * Un pool sin curadas que lleguen a un grupo (como una generación suelta con el tablero grande): el último recurso
+   * admite más de una categoría de datos antes de rendirse.
+   */
+  @Test
+  void poolsWithoutCuratedGroupsStillBuildABoard() {
+    var curated = new HashSet<String>();
+    for (var definition : PokemonConnectionsCatalog.CONNECTION_CATEGORY_CATALOG) {
+      if (definition.pokemonIds() != null) curated.addAll(definition.pokemonIds());
+    }
+    var rows = GoldenCatalogs.load("gen1-2").forGenerations(List.of(1, 2), false).stream()
+        .filter(pokemon -> !curated.contains(pokemon.id())).toList();
+    var context = GameContext.builder(new InMemoryPokemonCatalog(rows), new Mulberry32(3))
+        .players(List.of(new GamePlayer("p1", "Ana"))).now(1000).build();
+    var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context,
+        new PuzzleOptions(4, 16, List.of(1, 2), List.of(), List.of()));
+    assertEquals("DYNAMIC", puzzle.source());
+    assertTrue(puzzle.groups().stream()
+        .allMatch(group -> PokemonConnectionsCatalog.isDataCategory(group.categoryId())), puzzle.key());
   }
 
   /** La forma corporal de la Pokédex no es evidente para un jugador: no hay categorías {@code shape-*}. */
@@ -220,6 +314,25 @@ class PokemonConnectionsCatalogTest {
         PokemonConnectionsCatalog.categoryFamily("mythical"));
     assertEquals(PokemonConnectionsCatalog.categoryFamily("giants"),
         PokemonConnectionsCatalog.categoryFamily("tiny"));
+    for (var group : List.of(
+        List.of("kanto-gym-aces", "johto-gym-aces", "hoenn-gym-aces", "sinnoh-gym-aces", "unova-gym-aces",
+            "kalos-gym-aces", "galar-gym-aces", "paldea-gym-aces", "blue-champion-team"),
+        List.of("champion-aces", "villain-aces"),
+        List.of("ash-team", "ash-kanto-team"),
+        List.of("regional-birds", "route-one-normals", "early-forest-bugs"),
+        List.of("pseudo-final", "pseudo-first"),
+        List.of("trees", "plant-lookalikes"),
+        List.of("disguises", "pokeball-lookalikes"),
+        List.of("headwear", "leaf-heads"),
+        List.of("warriors", "martial-artists"),
+        List.of("slimy", "pollution"),
+        List.of("name-hides-number", "name-hides-animal"),
+        List.of("trade-item-evolution", "quirky-evolution", "trade-evolution"))) {
+      for (var id : group) {
+        assertEquals(PokemonConnectionsCatalog.categoryFamily(group.getFirst()),
+            PokemonConnectionsCatalog.categoryFamily(id), id);
+      }
+    }
     assertEquals("dogs", PokemonConnectionsCatalog.categoryFamily("dogs"));
     assertTrue(!PokemonConnectionsCatalog.categoryFamily("dogs")
         .equals(PokemonConnectionsCatalog.categoryFamily("cats")));

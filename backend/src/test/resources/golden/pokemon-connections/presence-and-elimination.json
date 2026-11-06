@@ -385,49 +385,49 @@
         "groupCount": 3,
         "board": [
           {
-            "id": "dragonite",
-            "name": "Dragonite",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+            "id": "vaporeon",
+            "name": "Vaporeon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
           },
           {
-            "id": "togepi",
-            "name": "Togepi",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+            "id": "mewtwo",
+            "name": "Mewtwo",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
           },
           {
-            "id": "igglybuff",
-            "name": "Igglybuff",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+            "id": "ivysaur",
+            "name": "Ivysaur",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
           },
           {
-            "id": "jumpluff",
-            "name": "Jumpluff",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+            "id": "espeon",
+            "name": "Espeon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
           },
           {
-            "id": "oddish",
-            "name": "Oddish",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+            "id": "celebi",
+            "name": "Celebi",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
           },
           {
-            "id": "kingdra",
-            "name": "Kingdra",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+            "id": "meganium",
+            "name": "Meganium",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
           },
           {
-            "id": "dragonair",
-            "name": "Dragonair",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+            "id": "umbreon",
+            "name": "Umbreon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
           },
           {
-            "id": "sunkern",
-            "name": "Sunkern",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+            "id": "venusaur",
+            "name": "Venusaur",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
           },
           {
-            "id": "pichu",
-            "name": "Pichu",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+            "id": "lugia",
+            "name": "Lugia",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
           }
         ],
         "playerProgress": {
@@ -508,49 +508,49 @@
         "groupCount": 3,
         "board": [
           {
-            "id": "dragonite",
-            "name": "Dragonite",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+            "id": "vaporeon",
+            "name": "Vaporeon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
           },
           {
-            "id": "togepi",
-            "name": "Togepi",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+            "id": "mewtwo",
+            "name": "Mewtwo",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
           },
           {
-            "id": "igglybuff",
-            "name": "Igglybuff",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+            "id": "ivysaur",
+            "name": "Ivysaur",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
           },
           {
-            "id": "jumpluff",
-            "name": "Jumpluff",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+            "id": "espeon",
+            "name": "Espeon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
           },
           {
-            "id": "oddish",
-            "name": "Oddish",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+            "id": "celebi",
+            "name": "Celebi",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
           },
           {
-            "id": "kingdra",
-            "name": "Kingdra",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+            "id": "meganium",
+            "name": "Meganium",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
           },
           {
-            "id": "dragonair",
-            "name": "Dragonair",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+            "id": "umbreon",
+            "name": "Umbreon",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
           },
           {
-            "id": "sunkern",
-            "name": "Sunkern",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+            "id": "venusaur",
+            "name": "Venusaur",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
           },
           {
-            "id": "pichu",
-            "name": "Pichu",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+            "id": "lugia",
+            "name": "Lugia",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
           }
         ],
         "playerProgress": {
@@ -635,49 +635,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -762,49 +762,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -889,49 +889,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1014,49 +1014,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1141,49 +1141,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1266,49 +1266,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1396,49 +1396,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1524,49 +1524,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1652,49 +1652,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -1780,179 +1780,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
-              }
-            ],
-            "playerProgress": {
-              "p1": {
-                "foundGroups": 0,
-                "status": "PLAYING"
-              },
-              "p2": {
-                "foundGroups": 0,
-                "status": "PLAYING"
-              },
-              "p3": {
-                "foundGroups": 0,
-                "status": "PLAYING"
-              }
-            },
-            "scores": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "roundStartedAt": 1000,
-            "roundEndsAt": 61000,
-            "nextTransitionAt": null,
-            "lastRound": null,
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 1,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 0,
-              "lastAttempt": null
-            },
-            "p2": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 1,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 0,
-              "lastAttempt": null
-            },
-            "p3": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 1,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 0,
-              "lastAttempt": null
-            },
-            "p4": {
-              "role": "SPECTATOR"
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "accepted": false,
-        "error": "La selección contiene un Pokémon ajeno al tablero.",
-        "snapshot": {
-          "lifecycle": {
-            "phase": "ROUND_ACTIVE",
-            "nextDeadline": 61000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "pokemon-connections",
-            "phase": "ROUND_ACTIVE",
-            "roundNumber": 1,
-            "totalRounds": 3,
-            "groupSize": 3,
-            "groupCount": 3,
-            "board": [
-              {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
-              },
-              {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
-              },
-              {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
-              },
-              {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
-              },
-              {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
-              },
-              {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
-              },
-              {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
-              },
-              {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
-              },
-              {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -2040,49 +1910,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -2170,49 +2040,179 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+              }
+            ],
+            "playerProgress": {
+              "p1": {
+                "foundGroups": 0,
+                "status": "PLAYING"
+              },
+              "p2": {
+                "foundGroups": 0,
+                "status": "PLAYING"
+              },
+              "p3": {
+                "foundGroups": 0,
+                "status": "PLAYING"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 61000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 1,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 1,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 1,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            },
+            "p4": {
+              "role": "SPECTATOR"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La selección contiene un Pokémon ajeno al tablero.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 61000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-connections",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "groupSize": 3,
+            "groupCount": 3,
+            "board": [
+              {
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+              },
+              {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              {
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
+              },
+              {
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
+              },
+              {
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
+              },
+              {
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
+              },
+              {
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
+              },
+              {
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
+              },
+              {
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -2298,49 +2298,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -2370,70 +2370,70 @@
               "groups": [
                 {
                   "id": "group-1",
-                  "categoryId": "ability-clorofila",
-                  "label": "Pueden tener la habilidad Clorofila",
-                  "explanation": "Clorofila está entre sus habilidades posibles, contando la oculta.",
+                  "categoryId": "ability-espesura",
+                  "label": "Pueden tener la habilidad Espesura",
+                  "explanation": "Espesura está entre sus habilidades posibles, contando la oculta.",
                   "pokemon": [
                     {
-                      "id": "jumpluff",
-                      "name": "Jumpluff",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                      "id": "venusaur",
+                      "name": "Venusaur",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
                     },
                     {
-                      "id": "oddish",
-                      "name": "Oddish",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                      "id": "ivysaur",
+                      "name": "Ivysaur",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
                     },
                     {
-                      "id": "sunkern",
-                      "name": "Sunkern",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
                     }
                   ]
                 },
                 {
                   "id": "group-2",
-                  "categoryId": "type-dragon",
-                  "label": "Comparten el tipo Dragón",
-                  "explanation": "Todos incluyen el tipo Dragón entre sus tipos.",
+                  "categoryId": "eevee-family",
+                  "label": "Evoluciones de Eevee",
+                  "explanation": "Todas son evoluciones posibles de Eevee.",
                   "pokemon": [
                     {
-                      "id": "kingdra",
-                      "name": "Kingdra",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                      "id": "vaporeon",
+                      "name": "Vaporeon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
                     },
                     {
-                      "id": "dragonair",
-                      "name": "Dragonair",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
                     },
                     {
-                      "id": "dragonite",
-                      "name": "Dragonite",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                      "id": "espeon",
+                      "name": "Espeon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
                     }
                   ]
                 },
                 {
                   "id": "group-3",
-                  "categoryId": "friendship-evolution",
-                  "label": "Evolucionan con amistad",
-                  "explanation": "Una amistad alta forma parte de su método de evolución.",
+                  "categoryId": "movie-stars",
+                  "label": "Protagonistas de películas",
+                  "explanation": "Cada uno es el Pokémon invitado central de alguna película de Pokémon.",
                   "pokemon": [
                     {
-                      "id": "pichu",
-                      "name": "Pichu",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                      "id": "lugia",
+                      "name": "Lugia",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
                     },
                     {
-                      "id": "igglybuff",
-                      "name": "Igglybuff",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                      "id": "mewtwo",
+                      "name": "Mewtwo",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
                     },
                     {
-                      "id": "togepi",
-                      "name": "Togepi",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                      "id": "celebi",
+                      "name": "Celebi",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
                     }
                   ]
                 }
@@ -2528,49 +2528,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "dragonite",
-                "name": "Dragonite",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                "id": "vaporeon",
+                "name": "Vaporeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
               },
               {
-                "id": "togepi",
-                "name": "Togepi",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "igglybuff",
-                "name": "Igglybuff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                "id": "ivysaur",
+                "name": "Ivysaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
               },
               {
-                "id": "jumpluff",
-                "name": "Jumpluff",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                "id": "espeon",
+                "name": "Espeon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
               },
               {
-                "id": "oddish",
-                "name": "Oddish",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                "id": "celebi",
+                "name": "Celebi",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
               },
               {
-                "id": "kingdra",
-                "name": "Kingdra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                "id": "meganium",
+                "name": "Meganium",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
               },
               {
-                "id": "dragonair",
-                "name": "Dragonair",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                "id": "umbreon",
+                "name": "Umbreon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
               },
               {
-                "id": "sunkern",
-                "name": "Sunkern",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                "id": "venusaur",
+                "name": "Venusaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "pichu",
-                "name": "Pichu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                "id": "lugia",
+                "name": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
               }
             ],
             "playerProgress": {
@@ -2600,70 +2600,70 @@
               "groups": [
                 {
                   "id": "group-1",
-                  "categoryId": "ability-clorofila",
-                  "label": "Pueden tener la habilidad Clorofila",
-                  "explanation": "Clorofila está entre sus habilidades posibles, contando la oculta.",
+                  "categoryId": "ability-espesura",
+                  "label": "Pueden tener la habilidad Espesura",
+                  "explanation": "Espesura está entre sus habilidades posibles, contando la oculta.",
                   "pokemon": [
                     {
-                      "id": "jumpluff",
-                      "name": "Jumpluff",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/189.png"
+                      "id": "venusaur",
+                      "name": "Venusaur",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
                     },
                     {
-                      "id": "oddish",
-                      "name": "Oddish",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+                      "id": "ivysaur",
+                      "name": "Ivysaur",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
                     },
                     {
-                      "id": "sunkern",
-                      "name": "Sunkern",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png"
+                      "id": "meganium",
+                      "name": "Meganium",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/154.png"
                     }
                   ]
                 },
                 {
                   "id": "group-2",
-                  "categoryId": "type-dragon",
-                  "label": "Comparten el tipo Dragón",
-                  "explanation": "Todos incluyen el tipo Dragón entre sus tipos.",
+                  "categoryId": "eevee-family",
+                  "label": "Evoluciones de Eevee",
+                  "explanation": "Todas son evoluciones posibles de Eevee.",
                   "pokemon": [
                     {
-                      "id": "kingdra",
-                      "name": "Kingdra",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/230.png"
+                      "id": "vaporeon",
+                      "name": "Vaporeon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
                     },
                     {
-                      "id": "dragonair",
-                      "name": "Dragonair",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+                      "id": "umbreon",
+                      "name": "Umbreon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/197.png"
                     },
                     {
-                      "id": "dragonite",
-                      "name": "Dragonite",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png"
+                      "id": "espeon",
+                      "name": "Espeon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/196.png"
                     }
                   ]
                 },
                 {
                   "id": "group-3",
-                  "categoryId": "friendship-evolution",
-                  "label": "Evolucionan con amistad",
-                  "explanation": "Una amistad alta forma parte de su método de evolución.",
+                  "categoryId": "movie-stars",
+                  "label": "Protagonistas de películas",
+                  "explanation": "Cada uno es el Pokémon invitado central de alguna película de Pokémon.",
                   "pokemon": [
                     {
-                      "id": "pichu",
-                      "name": "Pichu",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+                      "id": "lugia",
+                      "name": "Lugia",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
                     },
                     {
-                      "id": "igglybuff",
-                      "name": "Igglybuff",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/174.png"
+                      "id": "mewtwo",
+                      "name": "Mewtwo",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
                     },
                     {
-                      "id": "togepi",
-                      "name": "Togepi",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png"
+                      "id": "celebi",
+                      "name": "Celebi",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/251.png"
                     }
                   ]
                 }
@@ -2755,49 +2755,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
@@ -2880,176 +2880,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
-              }
-            ],
-            "playerProgress": {
-              "p1": {
-                "foundGroups": 0,
-                "status": "PLAYING"
-              },
-              "p2": {
-                "foundGroups": 0,
-                "status": "PLAYING"
-              },
-              "p3": {
-                "foundGroups": 0,
-                "status": "PLAYING"
-              }
-            },
-            "scores": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0
-            },
-            "roundStartedAt": 70000,
-            "roundEndsAt": 130000,
-            "nextTransitionAt": null,
-            "lastRound": null,
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 1,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 0,
-              "lastAttempt": null
-            },
-            "p2": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 1,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 0,
-              "lastAttempt": null
-            },
-            "p3": {
-              "role": "PLAYER",
-              "canSubmit": true,
-              "foundGroups": [],
-              "mistakesUsed": 0,
-              "mistakesAllowed": 1,
-              "status": "PLAYING",
-              "completionRank": null,
-              "roundPoints": 0,
-              "lastAttempt": null
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "accepted": false,
-        "error": "La selección contiene un Pokémon ajeno al tablero.",
-        "snapshot": {
-          "lifecycle": {
-            "phase": "ROUND_ACTIVE",
-            "nextDeadline": 130000,
-            "actionEpoch": "[\"ROUND_ACTIVE\",2,70000,null,null,null,null,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "pokemon-connections",
-            "phase": "ROUND_ACTIVE",
-            "roundNumber": 2,
-            "totalRounds": 3,
-            "groupSize": 3,
-            "groupCount": 3,
-            "board": [
-              {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
-              },
-              {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
-              },
-              {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
-              },
-              {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
-              },
-              {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
-              },
-              {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
-              },
-              {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
-              },
-              {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
-              },
-              {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
@@ -3134,49 +3007,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
@@ -3261,49 +3134,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
@@ -3388,49 +3261,176 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
+              }
+            ],
+            "playerProgress": {
+              "p1": {
+                "foundGroups": 0,
+                "status": "PLAYING"
+              },
+              "p2": {
+                "foundGroups": 0,
+                "status": "PLAYING"
+              },
+              "p3": {
+                "foundGroups": 0,
+                "status": "PLAYING"
+              }
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 70000,
+            "roundEndsAt": 130000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 1,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 1,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "foundGroups": [],
+              "mistakesUsed": 0,
+              "mistakesAllowed": 1,
+              "status": "PLAYING",
+              "completionRank": null,
+              "roundPoints": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La selección contiene un Pokémon ajeno al tablero.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 130000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,70000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokemon-connections",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "groupSize": 3,
+            "groupCount": 3,
+            "board": [
+              {
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+              },
+              {
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              },
+              {
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+              },
+              {
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
+              },
+              {
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
+              },
+              {
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
+              },
+              {
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
+              },
+              {
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
+              },
+              {
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
@@ -3513,49 +3513,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
@@ -3640,49 +3640,49 @@
             "groupCount": 3,
             "board": [
               {
-                "id": "exeggutor",
-                "name": "Exeggutor",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/103.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "nidorina",
+                "name": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
               },
               {
-                "id": "abra",
-                "name": "Abra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "pinsir",
-                "name": "Pinsir",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+                "id": "porygon",
+                "name": "Porygon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/137.png"
               },
               {
-                "id": "pineco",
-                "name": "Pineco",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png"
+                "id": "porygon2",
+                "name": "Porygon2",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/233.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "xatu",
-                "name": "Xatu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/178.png"
+                "id": "smoochum",
+                "name": "Smoochum",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png"
               },
               {
-                "id": "kadabra",
-                "name": "Kadabra",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/64.png"
+                "id": "nidoran-f",
+                "name": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
               },
               {
-                "id": "metapod",
-                "name": "Metapod",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+                "id": "machamp",
+                "name": "Machamp",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
               }
             ],
             "playerProgress": {
