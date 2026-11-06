@@ -1,9 +1,9 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
 import { Check, Send, UserMinus, UserPlus, X } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
+import { useId, useState, type FormEvent } from 'react';
 import { Avatar } from '../components/Avatar';
 import { useRoom } from '../room/RoomContext';
-import { Dialog, Drawer, Field, Pill, Row } from '../ui';
+import { Dialog, Drawer, Field, Pill, Row, TabPanel, Tabs, type TabItem } from '../ui';
 import { useFriends, type FriendsContextValue } from './FriendsContext';
 import { FRIEND_STATUS_LABEL, friendErrorMessage, type FriendEntry } from './friends-state';
 import s from './FriendsDrawer.module.css';
@@ -15,10 +15,16 @@ export function canInviteFriend(room: RoomView | null, friend: Pick<FriendEntry,
   return !room.members.some((member) => member.id === friend.id);
 }
 
+/** Éxito de «Enviar solicitud»: si el otro ya te la había mandado, el servidor os hace amigos directamente. */
+export function sentText(kind: 'request' | 'friend', name: string): string {
+  return kind === 'friend' ? `Ya sois amigos: ${name} te había enviado una solicitud.` : `Solicitud enviada a ${name}.`;
+}
+
 /** Línea de estado del formulario «Añadir amigo». */
 type AddResult = { ok: true; text: string } | { ok: false; text: string } | null;
 
-function AddFriend({ send }: Pick<FriendsContextValue, 'send'>) {
+/** Cuerpo del diálogo: se monta al abrirlo, así que cada apertura empieza con el campo vacío y sin resultado. */
+function AddFriendForm({ send }: Pick<FriendsContextValue, 'send'>) {
   const [username, setUsername] = useState('');
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<AddResult>(null);
@@ -30,31 +36,42 @@ function AddFriend({ send }: Pick<FriendsContextValue, 'send'>) {
     setResult(null);
     void send(name).then((kind) => {
       setUsername('');
-      setResult({ ok: true, text: kind === 'friend' ? `Ya sois amigos: ${name} te había enviado una solicitud.` : `Solicitud enviada a ${name}.` });
+      setResult({ ok: true, text: sentText(kind, name) });
     }).catch((error: unknown) => setResult({ ok: false, text: friendErrorMessage(error) })).finally(() => setBusy(false));
   };
   return (
-    <section className={s.section} aria-labelledby="friends-add">
-      <h3 id="friends-add" className={s.heading}>Añadir amigo</h3>
-      <form className={s.form} onSubmit={submit} noValidate>
-        <Field label="Nombre de usuario" autoComplete="off" spellCheck={false} maxLength={24} value={username} error={result && !result.ok ? result.text : null}
-          onChange={(event) => { setUsername(event.target.value); if (result) setResult(null); }} />
-        <Pill type="submit" variant="yellow" icon={Send} loading={busy}>Enviar solicitud</Pill>
-      </form>
-      {/* El error va en el campo (`Field`, con su alerta); el éxito, en esta región siempre montada. */}
+    <form className={s.form} onSubmit={submit} noValidate>
+      <Field label="Nombre de usuario" autoComplete="off" spellCheck={false} maxLength={24} value={username} error={result && !result.ok ? result.text : null}
+        onChange={(event) => { setUsername(event.target.value); if (result) setResult(null); }} />
+      <Pill type="submit" variant="yellow" icon={Send} loading={busy}>Enviar solicitud</Pill>
+      {/* El error va en el campo (`Field`, con su alerta); el éxito, en esta región. El diálogo sigue abierto para otra. */}
       <p className={s.ok} role="status">{result?.ok ? result.text : ''}</p>
-    </section>
+    </form>
   );
 }
 
+/** Diálogo «Añadir amigo»: único dueño de su resultado (éxito y error traducido). Solo «Cerrar» lo cierra. */
+export function AddFriendDialog({ open, onClose, send }: { open: boolean; onClose(): void } & Pick<FriendsContextValue, 'send'>) {
+  return (
+    <Dialog open={open} title="Añadir amigo" onClose={onClose} width={420} actions={[{ label: 'Cerrar', variant: 'blue', onClick: () => undefined }]}>
+      <AddFriendForm send={send} />
+    </Dialog>
+  );
+}
+
+type FriendsTab = 'friends' | 'incoming' | 'outgoing';
+
 /**
- * Panel «Amigos» (spec §Interfaz): añadir por nombre de usuario, solicitudes recibidas, amigos (con «Invitar» en el
- * lobby) y solicitudes enviadas. Los errores REST se enseñan en línea; los de «Invitar» van al aviso de la sala.
+ * Contenido del panel: «Añadir amigo» y tres pestañas (Amigos, Solicitudes, Enviadas). Va dentro del `Drawer`, que solo
+ * lo monta abierto: cada apertura vuelve a «Amigos». Los errores REST de las filas, en línea; los de «Invitar», en el
+ * aviso de la sala.
  */
-export function FriendsDrawer() {
-  const friends = useFriends();
+function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
   const { room } = useRoom();
-  const { overview, drawerOpen, closeDrawer, invited } = friends;
+  const { overview, invited } = friends;
+  const idBase = useId();
+  const [tab, setTab] = useState<FriendsTab>('friends');
+  const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [removing, setRemoving] = useState<FriendEntry | null>(null);
@@ -74,37 +91,26 @@ export function FriendsDrawer() {
   const incoming = overview?.incoming ?? [];
   const outgoing = overview?.outgoing ?? [];
   const list = overview?.friends ?? [];
+  const pending = incoming.length;
+  const panelClass = s.panel ?? '';
+  const items: TabItem<FriendsTab>[] = [
+    { key: 'friends', label: 'Amigos' },
+    {
+      key: 'incoming',
+      // El número se ve en la insignia y se lee en el nombre de la pestaña («Solicitudes (2 pendientes)»).
+      label: <>Solicitudes{pending > 0 && <span className="sr-only">{` (${pending} ${pending === 1 ? 'pendiente' : 'pendientes'})`}</span>}</>,
+      badge: pending > 0 ? <span aria-hidden="true">{pending}</span> : undefined,
+    },
+    { key: 'outgoing', label: 'Enviadas' },
+  ];
   return (
-    <Drawer open={drawerOpen} title="Amigos" onClose={closeDrawer}>
-      <div className={s.stack}>
-        <AddFriend send={friends.send} />
-        <p className={s.error} role="alert">{error ?? ''}</p>
-
-        <section className={s.section} aria-labelledby="friends-incoming">
-          <h3 id="friends-incoming" className={s.heading}>Solicitudes</h3>
-          {incoming.length === 0 ? <p className={s.empty}>No tienes solicitudes pendientes.</p> : (
-            <ul className={s.list}>
-              {incoming.map((request) => {
-                const from = request.from;
-                if (!from) return null;
-                return (
-                  <li key={request.id}>
-                    <Row name={from.username} avatar={<Avatar name={from.username} avatar={from.avatar} size="sm" />} meta="Quiere ser tu amigo">
-                      <span className={s.actions}>
-                        <Pill size="round" variant="yellow" icon={Check} title="Aceptar" loading={busy === `accept:${request.id}`} disabled={busy !== null} aria-label={`Aceptar a ${from.username}`} onClick={() => run(`accept:${request.id}`, () => friends.accept(request.id))}/>
-                        <Pill size="round" variant="ghost" icon={X} title="Rechazar" loading={busy === `decline:${request.id}`} disabled={busy !== null} aria-label={`Rechazar a ${from.username}`} onClick={() => run(`decline:${request.id}`, () => friends.decline(request.id))}/>
-                      </span>
-                    </Row>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
-
-        <section className={s.section} aria-labelledby="friends-list">
-          <h3 id="friends-list" className={s.heading}>Amigos</h3>
-          {overview === null ? <p className={s.empty}>Cargando tus amigos…</p> : list.length === 0 ? <p className={s.empty}>Aún no tienes amigos. Añade a alguien por su nombre de usuario.</p> : (
+    <div className={s.stack}>
+      <Pill className={s.add ?? ''} variant="yellow" icon={UserPlus} aria-haspopup="dialog" onClick={() => setAdding(true)}>Añadir amigo</Pill>
+      <p className={s.error} role="alert">{error ?? ''}</p>
+      <div>
+        <Tabs items={items} active={tab} onChange={setTab} label="Amigos y solicitudes" idBase={idBase} className={s.tabs ?? ''} />
+        <TabPanel idBase={idBase} tabKey="friends" className={panelClass} hidden={tab !== 'friends'}>
+          {overview === null ? <p className={s.empty}>Cargando tus amigos…</p> : list.length === 0 ? <p className={s.empty}>Todavía no tienes amigos. Añade a alguien por su nombre de usuario.</p> : (
             <ul className={s.list}>
               {list.map((friend) => {
                 const done = invited.has(friend.id);
@@ -126,10 +132,28 @@ export function FriendsDrawer() {
               })}
             </ul>
           )}
-        </section>
-
-        <section className={s.section} aria-labelledby="friends-outgoing">
-          <h3 id="friends-outgoing" className={s.heading}>Enviadas</h3>
+        </TabPanel>
+        <TabPanel idBase={idBase} tabKey="incoming" className={panelClass} hidden={tab !== 'incoming'}>
+          {incoming.length === 0 ? <p className={s.empty}>No tienes solicitudes pendientes.</p> : (
+            <ul className={s.list}>
+              {incoming.map((request) => {
+                const from = request.from;
+                if (!from) return null;
+                return (
+                  <li key={request.id}>
+                    <Row name={from.username} avatar={<Avatar name={from.username} avatar={from.avatar} size="sm" />} meta="Quiere ser tu amigo">
+                      <span className={s.actions}>
+                        <Pill size="round" variant="yellow" icon={Check} title="Aceptar" loading={busy === `accept:${request.id}`} disabled={busy !== null} aria-label={`Aceptar a ${from.username}`} onClick={() => run(`accept:${request.id}`, () => friends.accept(request.id))}/>
+                        <Pill size="round" variant="ghost" icon={X} title="Rechazar" loading={busy === `decline:${request.id}`} disabled={busy !== null} aria-label={`Rechazar a ${from.username}`} onClick={() => run(`decline:${request.id}`, () => friends.decline(request.id))}/>
+                      </span>
+                    </Row>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </TabPanel>
+        <TabPanel idBase={idBase} tabKey="outgoing" className={panelClass} hidden={tab !== 'outgoing'}>
           {outgoing.length === 0 ? <p className={s.empty}>No has enviado solicitudes.</p> : (
             <ul className={s.list}>
               {outgoing.map((request) => {
@@ -145,8 +169,9 @@ export function FriendsDrawer() {
               })}
             </ul>
           )}
-        </section>
+        </TabPanel>
       </div>
+      <AddFriendDialog open={adding} onClose={() => setAdding(false)} send={friends.send} />
       <Dialog open={removing !== null} title={removing ? `¿Quitar a ${removing.username}?` : 'Quitar amigo'} onClose={() => setRemoving(null)} width={420}
         actions={[
           { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
@@ -154,6 +179,16 @@ export function FriendsDrawer() {
         ]}>
         <p>Dejaréis de ser amigos. Podrás enviarle otra solicitud cuando quieras.</p>
       </Dialog>
+    </div>
+  );
+}
+
+/** Panel «Amigos» (spec §Interfaz): el `Drawer` y, dentro, el contenido con sus pestañas. */
+export function FriendsDrawer() {
+  const friends = useFriends();
+  return (
+    <Drawer open={friends.drawerOpen} title="Amigos" onClose={friends.closeDrawer}>
+      <FriendsPanel friends={friends} />
     </Drawer>
   );
 }

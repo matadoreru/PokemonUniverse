@@ -1,11 +1,11 @@
-import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { expect, test, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import {
   abrirAmigos, anadirJuegos, borrarCuentas, capture, cartaDeJuego, cerrarAmigos, collectErrors, comprobarBdE2E, conmutarJuego,
   createRoom, hacerAmigosPorApi, nuevaCuenta, registrarPorApi, SIZES, type CuentaE2E,
 } from '../src/helpers.js';
 
-// Amigos e invitaciones de punta a punta con cuentas registradas, cada una en su contexto de navegador: solicitud por
-// nombre en mayúsculas, aceptación, presencia, invitación desde el lobby, aviso con «Unirse» (también desde otra sala) y
+// Amigos e invitaciones de punta a punta con cuentas registradas, cada una en su contexto de navegador: panel con
+// pestañas, solicitud por nombre en mayúsculas desde el diálogo «Añadir amigo», aceptación, presencia, invitación desde el lobby, aviso con «Unirse» (también desde otra sala) y
 // una invitación a una sala que ya no existe; además, otra página de la misma cuenta fuera de la sala no le quita el asiento. Cada pareja solo admite una invitación cada 30 s: cuentas nuevas por tamaño.
 const cuentas: CuentaE2E[] = [];
 
@@ -37,6 +37,16 @@ async function persona(browser: Browser, prefijo: string, w: number, h: number):
 }
 
 const aviso = (page: Page) => page.getByRole('group', { name: 'Invitaciones' });
+/** Pestaña del panel «Amigos» por su nombre exacto (la de solicitudes lleva el número: «Solicitudes (1 pendiente)»). */
+const pestana = (panel: Locator, nombre: string) => panel.getByRole('tab', { name: nombre, exact: true });
+
+/** Abre el diálogo «Añadir amigo» desde el panel «Amigos» ya abierto. */
+async function abrirAnadirAmigo(page: Page): Promise<Locator> {
+  await page.getByRole('dialog', { name: 'Amigos' }).getByRole('button', { name: 'Añadir amigo' }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Añadir amigo' });
+  await expect(dialogo).toBeVisible();
+  return dialogo;
+}
 
 for (const { w, h } of SIZES) {
   test(`amigos e invitaciones a ${w}×${h}`, async ({ browser }) => {
@@ -46,22 +56,35 @@ for (const { w, h } of SIZES) {
     const c = await persona(browser, 'e2e_amC', w, h);
     const d = await persona(browser, 'e2e_amD', w, h);
     try {
-      // 1. A abre «Amigos» (vacío) y pide la amistad a B con el nombre en mayúsculas.
+      // 1. A abre «Amigos» (vacío, en la pestaña «Amigos») y, en el diálogo «Añadir amigo», pide la amistad a B con el
+      // nombre en mayúsculas; el diálogo sigue abierto con el resultado.
       const panelA = await abrirAmigos(a.page);
-      await expect(panelA.getByText('Aún no tienes amigos')).toBeVisible();
+      await expect(pestana(panelA, 'Amigos')).toHaveAttribute('aria-selected', 'true');
+      await expect(panelA.getByText('Todavía no tienes amigos. Añade a alguien por su nombre de usuario.')).toBeVisible();
       await capture(a.page, 'amigos-vacio');
-      await panelA.getByLabel('Nombre de usuario').fill(b.cuenta.username.toUpperCase());
-      await panelA.getByRole('button', { name: 'Enviar solicitud' }).click();
-      await expect(panelA.getByText(`Solicitud enviada a ${b.cuenta.username}.`)).toBeVisible();
+      const anadir = await abrirAnadirAmigo(a.page);
+      await anadir.getByLabel('Nombre de usuario').fill(b.cuenta.username.toUpperCase());
+      await anadir.getByRole('button', { name: 'Enviar solicitud' }).click();
+      await expect(anadir.getByText(`Solicitud enviada a ${b.cuenta.username}.`)).toBeVisible();
+      await expect(anadir.getByLabel('Nombre de usuario')).toHaveValue('');
+      await capture(a.page, 'amigos-anadir');
+      await anadir.getByRole('button', { name: 'Cerrar', exact: true }).click();
+      await expect(anadir).toBeHidden();
+      await pestana(panelA, 'Enviadas').click();
       await expect(panelA.getByRole('button', { name: `Cancelar la solicitud a ${b.cuenta.username}` })).toBeVisible();
       await cerrarAmigos(a.page);
 
-      // 2. B ve el contador en la placa, abre el panel y acepta.
+      // 2. B ve el contador en la placa, abre el panel (en «Amigos»; «Solicitudes» lleva el número) y acepta.
       await expect(b.page.getByRole('button', { name: 'Amigos, 1 solicitud pendiente' })).toBeVisible();
       const panelB = await abrirAmigos(b.page);
+      await expect(pestana(panelB, 'Amigos')).toHaveAttribute('aria-selected', 'true');
+      await pestana(panelB, 'Solicitudes (1 pendiente)').click();
       await expect(panelB.getByRole('button', { name: `Aceptar a ${a.cuenta.username}` })).toBeVisible();
       await capture(b.page, 'amigos-solicitud');
       await panelB.getByRole('button', { name: `Aceptar a ${a.cuenta.username}` }).click();
+      await expect(panelB.getByText('No tienes solicitudes pendientes.')).toBeVisible();
+      await expect(pestana(panelB, 'Solicitudes')).toBeVisible();
+      await pestana(panelB, 'Amigos').click();
       await expect(panelB.getByRole('button', { name: `Quitar a ${a.cuenta.username}` })).toBeVisible();
       await cerrarAmigos(b.page);
       await expect(b.page.getByRole('button', { name: 'Amigos', exact: true })).toBeVisible();

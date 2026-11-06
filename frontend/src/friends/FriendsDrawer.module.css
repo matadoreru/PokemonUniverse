@@ -1,18 +1,20 @@
-/* Panel «Amigos»: cuatro secciones apiladas sobre el crema del `Drawer`, que se desplaza por dentro. */
+/* Panel «Amigos»: «Añadir amigo» y las pestañas sobre el crema del `Drawer`, que se desplaza por dentro. */
 .stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-4);
+  gap: var(--sp-3);
 }
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
+.add {
+  align-self: flex-start;
 }
-.heading {
-  margin: 0;
-  font: 800 var(--fs-18) / var(--lh-display) var(--font-display);
-  color: var(--navy);
+/* Las tres lengüetas caben en una línea también a 390 px: sin sangría lateral y con poco hueco entre ellas. */
+.stack .tabs {
+  padding: 0;
+  gap: var(--sp-1);
+}
+/* Cuerpo de cada pestaña: poco margen lateral, que las filas ya llevan su contorno y el nombre necesita el ancho. */
+.stack .panel {
+  padding: var(--sp-3) var(--sp-2);
 }
 .form {
   display: flex;
@@ -38,7 +40,7 @@
   font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
   color: var(--ink-2);
 }
-/* Éxito de «Enviar solicitud» y errores de las filas: regiones vivas siempre montadas; vacías miden 0 px. */
+/* Éxito de «Enviar solicitud» (en su diálogo) y errores de las filas: regiones vivas siempre montadas; vacías miden 0 px. */
 .ok,
 .error {
   margin: 0;
