@@ -77,7 +77,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     const projection = projectionRef.current;
     const attachment = attachmentRef.current;
     // Sin socket (sesión cerrada o invitado fuera de las rutas de sala) no queda sala: su último error tampoco sigue.
-    if (!user || !active) { socketRef.current?.disconnect(); socketRef.current = null; setConnected(false); setRoom(projection.setAuthoritative(null, true)); setError(null); return; }
+    if (!user || !active) { attachment.clear(); socketRef.current?.disconnect(); socketRef.current = null; setConnected(false); setRoom(projection.setAuthoritative(null, true)); setError(null); return; }
     const socket = createRealtime(); socketRef.current = socket;
     const detachCursorChannel = attachWhoIsWhoCursorChannel(socket);
     // `error` only comes with an authentication close of `/ws` (4401), never with a plain disconnect.
@@ -90,7 +90,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     });
     socket.on('room:state', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom)));
     socket.on('session:restored', (nextRoom) => setRoom(projection.setAuthoritative(nextRoom, true)));
-    socket.on('room:kicked', (message) => { setRoom(projection.setAuthoritative(null, true)); setError(message); });
+    socket.on('room:kicked', (message) => { attachment.clear(); setRoom(projection.setAuthoritative(null, true)); setError(message); });
     socket.on('error:message', setError);
     for (const event of FRIEND_SOCKET_EVENTS) {
       socket.on(event, ((payload: never) => { for (const listener of [...(friendListenersRef.current.get(event) ?? [])]) listener(payload); }) as ServerToClientEvents[typeof event]);
@@ -134,7 +134,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     async createRoom() { const response = await emit('room:create', {}, false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     async joinRoom(code, options) { const response = await emit('room:join', { code }, options?.reportError ?? false); setRoom(projectionRef.current.setAuthoritative(response.room, true)); return response.room; },
     // Fuera de la sala, su error ya no viene a cuento (con `reportError: false` el aviso no se limpió al empezar).
-    async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); setRoom(projectionRef.current.setAuthoritative(null, true)); setError(null); },
+    async leaveRoom(options) { await emit('room:leave', {}, options?.reportError ?? true); attachmentRef.current.clear(); setRoom(projectionRef.current.setAuthoritative(null, true)); setError(null); },
     async selectGame(gameId) { await emit('room:select-game', { gameId }); },
     async updateConfig(config) {
       const gameId = projectionRef.current.view()?.selectedGameId;

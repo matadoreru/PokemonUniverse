@@ -27,6 +27,7 @@ describe('SessionAttachment', () => {
     expect(reconnected.request).toHaveBeenCalledOnce();
     release();
     release(); // soltar dos veces no descuenta a otro
+    attachment.clear();
     attachment.closed(reconnected);
     const later = fakeSocket(true);
     attachment.opened(later);
@@ -44,5 +45,18 @@ describe('SessionAttachment', () => {
     attachment.opened(failing);
     await Promise.resolve();
     expect(failing.request).toHaveBeenCalledOnce();
+  });
+
+  it('la pestaña que ya se enganchó vuelve a hacerlo al reconectar aunque no haya quien lo pida', () => {
+    const attachment = new SessionAttachment();
+    const release = attachment.hold();
+    release();
+    const reconnected = fakeSocket(true);
+    attachment.opened(reconnected);
+    expect(reconnected.request).toHaveBeenCalledExactlyOnceWith('session:attach', {});
+    attachment.clear(); // «Salir», expulsión o cambio de cuenta
+    const later = fakeSocket(true);
+    attachment.opened(later);
+    expect(later.request).not.toHaveBeenCalled();
   });
 });

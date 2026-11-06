@@ -9,25 +9,34 @@ interface AttachSocket {
  * página, pero solo una conexión enganchada ocupa su asiento: lo pide `RoomSessionLayout` (`/play` y `/room`) mientras
  * está montado. Se envía en cada apertura del socket (también al reconectar) desde el aviso de conexión, antes de que
  * ninguna pantalla mande nada, y al montar si el socket ya estaba abierto. Al desmontar no se suelta el asiento: navegar
- * a otra página en la misma pestaña lo conserva (solo «Salir» o cerrar la conexión lo liberan).
+ * a otra página en la misma pestaña lo conserva, y si el socket reconecta fuera de la sala se vuelve a enganchar (solo
+ * «Salir», una expulsión, cerrar sesión o cerrar la pestaña lo liberan).
  */
 export class SessionAttachment {
   private holders = 0;
+  /** La pestaña ya se enganchó alguna vez: sigue pidiendo asiento al reconectar hasta `clear()`. */
+  private attached = false;
   private socket: AttachSocket | null = null;
 
   /** El socket acaba de abrir: se engancha si alguien lo pide. Llamar antes de publicar `connected`. */
   opened(socket: AttachSocket): void {
     this.socket = socket;
-    if (this.holders > 0) this.send();
+    if (this.holders > 0 || this.attached) this.send();
   }
 
   closed(socket: AttachSocket): void {
     if (this.socket === socket) this.socket = null;
   }
 
+  /** La pestaña deja de reenganchar al reconectar: «Salir», expulsión, cierre de sesión o cambio de cuenta. */
+  clear(): void {
+    this.attached = false;
+  }
+
   /** Pide la sesión de sala; devuelve la función para dejar de pedirla (idempotente). */
   hold(): () => void {
     this.holders += 1;
+    this.attached = true;
     this.send();
     let released = false;
     return () => {
