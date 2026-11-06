@@ -269,11 +269,10 @@ misma que la del modo del juego:
 **Aciertos** (`correct`), para mostrar: los exactos en Distance, los `1` en Higher or Lower y en Shiny Quiz, y los
 Pokémon acertados (valor ≥ 1) en Learnset.
 
-## Datos (Flyway `V9__reto_diario.sql`)
+## Datos (Flyway `V13__reto_diario.sql`)
 
-`V8` queda para los logros (`V8__logros.sql`). **Si el reto diario se fusiona antes que los logros, esta migración se
-renombra a `V8__reto_diario.sql` antes de fusionar, y los logros pasan a `V9`.** Flyway no admite migraciones fuera
-de orden: un `V8` que llegue después de aplicar un `V9` se rechaza.
+V8–V12 ya están aplicadas en main (logros, racha del mismo juego, notas 0.6.0, perfil visible y notas 0.7.0), así que
+esta es la `V13`. Flyway no admite migraciones fuera de orden: si otra migración llega antes a main, se renumera.
 
 `DailyChallenge`:
 

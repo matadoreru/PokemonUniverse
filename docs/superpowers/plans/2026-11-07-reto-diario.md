@@ -54,7 +54,7 @@
   - `"Not available in the daily challenge"`;
   - `"Play today's challenge first"` (REST `403`).
 - **En una sala del reto:**
-  - se rechazan con `"Not available in the daily challenge"`: `room:select-game`, `room:update-config`, `room:update-game-config`, `room:update-session`, `room:update-game-selection`, `room:vote-next-game`, `room:set-role`, `room:transfer-host`, `room:kick`, `room:set-ready`, `room:start-game`, `room:continue-session`, `room:return-lobby`, `room:end-session` y `game:skip-vote:set`;
+  - se rechazan con `"Not available in the daily challenge"`: `room:select-game`, `room:update-config`, `room:update-game-config`, `room:update-session`, `room:update-game-selection`, `room:vote-next-game`, `room:set-role`, `room:transfer-host`, `room:kick`, `room:set-ready`, `room:start-game`, `room:continue-session`, `room:return-lobby`, `room:end-session`, `room:update-allowed-modes`, `room:chat:send`, `room:chat:delete`, `room:chat:mute`, `room:invite` y `game:skip-vote:set`;
   - `room:join` de otra cuenta responde `"Room not found"`;
   - `roomOf` devuelve vacío;
   - `gameSkipState` es `null`.
@@ -77,8 +77,7 @@
   - evento `daily:recorded {date, gameId}`;
   - `RoomView.daily: {gameId, date, roundCount, result: {score, correct, rounds} | null} | null`.
 - **Migración:**
-  - `V9__reto_diario.sql`, porque `V8` es de los logros;
-  - si el reto diario se fusiona antes que los logros, se renombra a `V8__reto_diario.sql` antes de fusionar;
+  - `V13__reto_diario.sql` (V8–V12 ya están en main: logros, racha, notas 0.6.0, perfil visible y notas 0.7.0);
   - nunca se edita una migración aplicada.
 - **Textos:** los literales de la spec, en el apartado «Interfaz» y en la tabla del texto para compartir.
 - **Las reglas de `AGENTS.md`:**
@@ -139,7 +138,7 @@
 ### Task 2: Tablas y repositorios del reto
 
 **Files:**
-- Create: `backend/src/main/resources/db/migration/V9__reto_diario.sql` (`DailyChallenge` con `gameId`; `DailyResult` con `gameId` y el índice único `("userId","date")`)
+- Create: `backend/src/main/resources/db/migration/V13__reto_diario.sql` (`DailyChallenge` con `gameId`; `DailyResult` con `gameId` y el índice único `("userId","date")`)
 - Create: `backend/src/main/java/es/pokemonuniverse/adapters/out/persistence/DailyChallengeEntity.java`, `DailyChallengeRepository.java`, `DailyResultEntity.java`, `DailyResultRepository.java`
 - Test: `backend/src/test/java/es/pokemonuniverse/adapters/out/persistence/DailyRepositoriesTest.java`
 
