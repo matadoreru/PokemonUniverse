@@ -8,9 +8,9 @@
   color: var(--sky-2);
 }
 .summary {
-  margin-block: var(--sp-1) var(--sp-3);
+  margin-block: var(--sp-1) var(--sp-2);
   overflow-wrap: anywhere;
-  font: 800 var(--fs-22) / 1.2 var(--font-display);
+  font: 800 var(--fs-18) / 1.25 var(--font-display);
   color: var(--white);
 }
 .tabs {
@@ -146,25 +146,33 @@
 .earlier .roundTitle {
   color: var(--sky-2);
 }
-@media (min-width: 1600px) and (min-height: 900px) {
-  .intro {
-    font-size: var(--fs-22);
+/* Escritorio: cada franja en una línea (`Row inline`): insignias, barra, fichas y «N votos» a la derecha del nombre, para
+   que todas las opciones de la vuelta que decide quepan sin desplazar. La respuesta escrita (Red Flag) baja a su línea. */
+@media (min-width: 1024px) {
+  .tags {
+    flex: 0 1 auto;
+    min-width: 0;
   }
-  .summary {
-    font-size: var(--fs-34);
-  }
-  /* Escritorio grande: las franjas crecen (letra, barra y relleno) para llenar la pantalla de arriba en vez de dejar vacío. */
-  .rows {
-    gap: var(--sp-3);
-    --row-name-fs: var(--fs-22);
-    --row-meta-fs: var(--fs-15);
-    --row-value-fs: var(--fs-34);
-  }
-  .rows.rows > li > * {
-    padding-block: var(--sp-4);
+  .count {
+    flex: 1 1 8rem;
+    flex-wrap: nowrap;
   }
   .text {
-    font-size: var(--fs-26);
+    order: 1;
+  }
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .intro {
+    font-size: var(--fs-18);
+  }
+  .summary {
+    font-size: var(--fs-22);
+  }
+  .rows {
+    --row-name-fs: var(--fs-18);
+  }
+  .text {
+    font-size: var(--fs-18);
   }
   .detail,
   .pick {
@@ -180,12 +188,19 @@
     display: none;
   }
   .summary {
-    margin-top: 0;
-    font-size: var(--fs-18);
+    margin-block: 0 var(--sp-1);
   }
-}
-@media (max-width: 639px) {
-  .summary {
-    font-size: var(--fs-18);
+  /* Franjas más bajas para que quepan todas las opciones de la vuelta que decide sin desplazar. */
+  .rows {
+    gap: var(--sp-1);
+  }
+  .rows.rows > li > * {
+    padding-block: var(--sp-1);
+  }
+  .rounds {
+    gap: var(--sp-2);
+  }
+  .round {
+    gap: 2px;
   }
 }

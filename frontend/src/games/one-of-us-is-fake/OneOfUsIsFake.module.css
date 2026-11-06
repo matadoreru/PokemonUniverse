@@ -331,6 +331,12 @@
   .revealBody {
     gap: var(--sp-3);
   }
+  .resultStage {
+    gap: var(--sp-2);
+  }
+  .categoryBox {
+    padding-block: var(--sp-1);
+  }
 }
 /* Categorías propias largas (hasta 160 caracteres): a 720 de alto el panel se desplaza por dentro antes que recortar. */
 @media (min-width: 1024px) and (max-height: 800px) {

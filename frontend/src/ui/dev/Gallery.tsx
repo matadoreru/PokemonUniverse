@@ -591,6 +591,9 @@ function RowSection() {
       <Fig id="row-disconnected" caption="Desconectada" wide>
         <Row rank={3} name="Brock" value="4 pts" color="var(--ok)" disconnected />
       </Fig>
+      <Fig id="row-inline" caption="En una línea desde 1024 px (recuento: nombre, meta y valor)" wide>
+        <Row inline name="Misty" meta={<><Badge>Más votada</Badge><span>Respuesta de Ana</span></>} value="2 votos" color="var(--info)" highlight />
+      </Fig>
       <Fig id="row-long" caption="Nombre largo recortado" wide>
         <Row rank={4} name="Entrenadora con un nombre larguísimo de verdad" value="0 pts" color="var(--red)" />
       </Fig>

@@ -14,6 +14,13 @@ describe('Row', () => {
   });
 });
 
+describe('Row en una línea', () => {
+  it('con `inline` lleva su clase (nombre y meta lado a lado desde 1024 px); sin ella, no', () => {
+    expect(renderToStaticMarkup(createElement(Row, { name: 'Ash', meta: 'Listo', inline: true }))).toMatch(/class="[^"]*_inline_/);
+    expect(renderToStaticMarkup(createElement(Row, { name: 'Ash', meta: 'Listo' }))).not.toMatch(/_inline_/);
+  });
+});
+
 describe('Row destacada', () => {
   it('lleva su clase y data-highlight, y la propia manda sobre ella', () => {
     const html = renderToStaticMarkup(createElement(Row, { name: 'Rueda Fuego', highlight: true }));

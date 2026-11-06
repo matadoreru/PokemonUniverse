@@ -115,6 +115,8 @@ describe('social-kit: recuento', () => {
     expect(html).toMatch(/data-testid="tally-votes"[^>]*>(<[^>]+>)*2(<[^>]+>|\s)*votos/);
     expect(html).toContain('Ganadora');
     expect(html).toContain('role="meter"');
+    // Cada franja en una línea en escritorio (`Row inline`), para que quepan sin desplazar.
+    expect(html.match(/class="[^"]*_inline_/g)).toHaveLength(5);
     // Los puntos ya están en el lateral «Puntos de la ronda»: nada de «+N» en el recuento.
     expect(html).not.toMatch(/>\+\d/);
   });

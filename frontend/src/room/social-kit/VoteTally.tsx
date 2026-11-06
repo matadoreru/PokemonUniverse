@@ -123,7 +123,7 @@ export function VoteTally({ options, rounds, winnerIds, voterName, voterAvatar, 
       if (option?.self) chips.push(<Chip key="self" tone="neutral" icon={<Icon icon={UserRound} size={18} />}>{selfLabel}</Chip>);
       const voters = round ? count.voterIds : [];
       return <li key={count.id} data-testid="tally-row" data-tally-winner={won || undefined}>
-        <Row name={name} {...(option?.color ? { color: option.color } : {})} highlight={won} {...(option?.media ? { avatar: option.media } : {})}
+        <Row inline name={name} {...(option?.color ? { color: option.color } : {})} highlight={won} {...(option?.media ? { avatar: option.media } : {})}
           meta={<span className={s.meta}>
             {(option?.pick || option?.detail || chips.length > 0) && <span className={s.tags}>
               {option?.pick && <span className={s.pick} data-testid="tally-pick" title={`Eligió ${option.pick.name}`}>
