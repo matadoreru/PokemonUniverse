@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import { AchievementsProvider } from '../achievements/AchievementsContext';
 import { useAuth } from '../auth/AuthContext';
 import { FriendsProvider } from '../friends/FriendsContext';
 import { RoomProvider } from '../room/RoomContext';
@@ -14,10 +15,11 @@ export function socketActive(kind: 'USER' | 'GUEST' | undefined, pathname: strin
 
 /**
  * Raíz de la aplicación: el `/ws` (`RoomProvider`) y los amigos (`FriendsProvider`) envuelven el armazón, así la placa
- * «Amigos» y las invitaciones llegan en cualquier pantalla (spec de amigos). Sin sesión no se abre nada.
+ * «Amigos» y las invitaciones llegan en cualquier pantalla (spec de amigos); los logros (`AchievementsProvider`), igual.
+ * Sin sesión no se abre nada.
  */
 export function SessionRoot() {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  return <RoomProvider active={socketActive(user?.kind, pathname)}><FriendsProvider><Layout /></FriendsProvider></RoomProvider>;
+  return <RoomProvider active={socketActive(user?.kind, pathname)}><FriendsProvider><AchievementsProvider><Layout /></AchievementsProvider></FriendsProvider></RoomProvider>;
 }

@@ -1,6 +1,9 @@
 import type { AvatarRef } from '@pokemon-universe/shared/public';
 import { Crown, Trophy } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
+import { AchievementNotice } from '../achievements/AchievementNotice';
+import { announcement } from '../achievements/achievements-state';
+import { useAchievements } from '../achievements/AchievementsContext';
 import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
 import { Badge, cx, Icon, Panel, Row, ScorePop } from '../ui';
@@ -66,6 +69,9 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
  *
  * Con `fillLarge` (y `aside`), en escritorio grande (≥1600×900) el panel llena todo el alto y las franjas de la
  * clasificación reparten el alto de su columna (con tope) y van en grande; `aside` mide lo que necesita.
+ *
+ * Encima de la clasificación va el recuadro de logros recién conseguidos (`AchievementNotice`). Su única región viva,
+ * siempre montada, anuncia esos logros: las pantallas de resultados no tienen otra.
  */
 export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, noWinner, aside, actions, fillLarge = false, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; /** Ver `ResultsStandings`. */ noWinner?: boolean; aside?: ReactNode; actions?: ReactNode; /** Ver arriba: pantalla llena en escritorio grande. */ fillLarge?: boolean; children?: ReactNode }) {
   // Solo al montar: un cambio posterior de `won` no repite el sonido.
@@ -74,9 +80,12 @@ export function ResultsShell({ title, subtitle, won = false, podium = false, sta
     const cue = resultsCue(initial.current);
     if (cue) audio.play(cue);
   }, []);
+  const achievements = useAchievements();
+  const spoken = achievements.visible && achievements.queue.shownIn === 'GAME_RESULTS' ? announcement(achievements.queue) : '';
   const wide = aside != null;
   const ranking = standings && <ResultsStandings standings={standings} selfId={selfId} {...(pointsLabel ? { pointsLabel } : {})} {...(winnersNeedPoints ? { winnersNeedPoints } : {})} {...(noWinner ? { noWinner } : {})} />;
   return <section className={cx(s.shell, wide && s.wide, wide && fillLarge && s.fillLarge)}>
+    <p className="sr-only" role="status" aria-live="polite">{spoken}</p>
     <Panel variant="dark" as="div" className={cx(wide && s.widePanel)} bodyClassName={cx(s.body, wide && s.wideBody)}>
       <header className={cx(s.head, wide && s.wideHead)}>
         <span className={s.trophy}><Icon icon={Trophy} size={32} /></span>
@@ -87,10 +96,10 @@ export function ResultsShell({ title, subtitle, won = false, podium = false, sta
       </header>
       {wide
         ? <div className={s.columns}>
-          <div className={s.column}>{ranking}{children}</div>
+          <div className={s.column}><AchievementNotice />{ranking}{children}</div>
           <div className={s.column}>{aside}</div>
         </div>
-        : <>{ranking}{children}</>}
+        : <><AchievementNotice />{ranking}{children}</>}
       {actions && <div className={cx(s.actions, wide && s.wideActions)}>{actions}</div>}
     </Panel>
   </section>;

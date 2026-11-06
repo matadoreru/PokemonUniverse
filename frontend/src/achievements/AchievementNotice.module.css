@@ -1,0 +1,22 @@
+/* Recuadro «¡Logro desbloqueado!» de los resultados: casillas en lista, «y N más», récords y enlace al perfil. */
+.notice {
+  margin-bottom: var(--sp-5);
+}
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+}
+.more,
+.record {
+  margin: var(--sp-2) 0 0;
+  font: 700 var(--fs-13) / var(--lh-text) var(--font-text);
+  color: var(--navy);
+}
+.record {
+  font-weight: 800;
+}
+.link {
+  margin-top: var(--sp-3);
+}

@@ -44,6 +44,12 @@ describe('ResultsShell', () => {
     const html = shell({ standings: [{ id: 'a', position: 1, name: 'A', points: 5 }, { id: 'b', position: 1, name: 'B', points: 5 }] });
     expect(html.match(/Ganador/g)).toHaveLength(2);
   });
+  it('hasExactlyOneLiveRegion', () => {
+    const html = shell({ standings: STANDINGS, aside: createElement('p', null, 'Métricas') });
+    expect(html.match(/aria-live=/g)).toHaveLength(1);
+    expect(html.match(/role="(status|alert)"/g)).toHaveLength(1);
+    expect(html).toContain('<p class="sr-only" role="status" aria-live="polite"></p>');
+  });
   it('puntos con etiqueta propia', () => {
     expect(shell({ standings: STANDINGS.slice(0, 1), pointsLabel: (points) => `${points} puntos` })).toContain('12 puntos');
   });

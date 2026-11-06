@@ -7,6 +7,7 @@ import { HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
 import { AudioButton } from './AudioButton';
+import { AchievementToasts } from '../achievements/AchievementToasts';
 import { FriendsButton } from '../friends/FriendsButton';
 import { FriendsDrawer } from '../friends/FriendsDrawer';
 import { InviteToasts } from '../friends/InviteToasts';
@@ -125,9 +126,10 @@ export function Layout() {
         </main>
       </div>
       {/* En toda página (dentro de `SessionRoot`): el panel «Amigos», las invitaciones recibidas y el único aviso de
-          errores de la sala, que también enseña un «Unirse» fallido desde Inicio o Perfil. */}
+          errores de la sala, que también enseña un «Unirse» fallido desde Inicio o Perfil; y los logros fuera de partida. */}
       <FriendsDrawer />
       <InviteToasts />
+      <AchievementToasts />
       <RoomNotice />
     </FeedbackTargetProvider>
   );
