@@ -1302,15 +1302,28 @@ class RoomCoordinatorTest {
   @Test
   @DisplayName("filters next-game vote options against the latest connected player count")
   void filtersVoteOptionsByPlayerCount() {
+    var kit = new RoomTestKit("pokemon-bingo", "whos-that-pokemon", "shiny-vote", "pokemon-impostor", "one-of-us-is-fake");
+    // Con dos conectados quedan fuera los juegos que piden 3 o más; el resto sigue siendo opción.
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    room.gameSelectionMode = new GameSelectionMode.Vote(
+        List.of("pokemon-impostor", "pokemon-bingo", "one-of-us-is-fake", "pokedex-distance", "shiny-vote"));
+    assertTrue(kit.manager.beginNextGameVote(room));
+    assertEquals(Set.of("pokemon-bingo", "pokedex-distance", "shiny-vote"), Set.copyOf(room.nextGameVote.optionGameIds));
+  }
+
+  @Test
+  @DisplayName("offers no next-game vote when no option admits the connected player count")
+  void noVoteWhenNoOptionAdmitsPlayerCount() {
     var kit = new RoomTestKit("pokemon-bingo", "whos-that-pokemon", "shiny-vote");
     var people = new ArrayList<AuthUser>();
     people.add(guest("host", "Host"));
     for (int index = 1; index <= 8; index++) people.add(guest("guest-" + index, "Guest " + index));
+    // Nueve conectados en una sala de 10: todos los minijuegos topan en 8 jugadores.
     var room = kit.room(10, people.toArray(AuthUser[]::new));
     room.gameSelectionMode = new GameSelectionMode.Vote(
         List.of("pokemon-bingo", "whos-that-pokemon", "pokedex-distance", "higher-lower", "shiny-vote"));
-    assertTrue(kit.manager.beginNextGameVote(room));
-    assertEquals(Set.of("pokedex-distance", "higher-lower", "shiny-vote"), Set.copyOf(room.nextGameVote.optionGameIds));
+    assertFalse(kit.manager.beginNextGameVote(room));
+    assertNull(room.nextGameVote);
   }
 
   @Test
