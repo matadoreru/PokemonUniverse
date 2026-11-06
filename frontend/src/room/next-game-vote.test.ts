@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { voteActionStatus, votesLabel } from './next-game-vote';
+import type { MiniGameManifest } from '@pokemon-universe/shared/public';
+import { voteActionStatus, voteOptionName, votesLabel } from './next-game-vote';
 
 const base = { active: true, eligible: true, ownVote: null, draftName: null, resolvedName: null, revealSeconds: 0 };
 
@@ -23,4 +24,19 @@ describe('voteActionStatus', () => {
 it('votesLabel', () => {
   expect(votesLabel(1)).toBe('1 voto');
   expect(votesLabel(3)).toBe('3 votos');
+});
+
+it('voteOptionName: «Juego · Modo», salvo Clásico como única opción del juego o un juego sin modos', () => {
+  const higherLower: MiniGameManifest = { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: '', minPlayers: 1, profileStats: { metrics: [] } };
+  const bingo: MiniGameManifest = { id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎱', description: '', minPlayers: 1, profileStats: { metrics: [] } };
+  const classic = { id: 'higher-lower:CLASSIC', game: higherLower, mode: 'CLASSIC' };
+  const endless = { id: 'higher-lower:ENDLESS', game: higherLower, mode: 'ENDLESS' };
+  const plain = { id: 'pokemon-bingo', game: bingo, mode: null };
+  expect(voteOptionName(classic, [classic, endless])).toBe('Higher or Lower · Clásico');
+  expect(voteOptionName(endless, [classic, endless])).toBe('Higher or Lower · Racha infinita');
+  const onlyClassic = { ...classic, id: 'higher-lower' };
+  const onlyEndless = { ...endless, id: 'higher-lower' };
+  expect(voteOptionName(onlyClassic, [onlyClassic, plain])).toBe('Higher or Lower');
+  expect(voteOptionName(onlyEndless, [onlyEndless, plain])).toBe('Higher or Lower · Racha infinita');
+  expect(voteOptionName(plain, [plain])).toBe('Pokémon Bingo');
 });

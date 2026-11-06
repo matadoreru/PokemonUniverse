@@ -66,3 +66,14 @@ export function gameModeLabel(gameId: string, config: unknown): string | null {
   if (typeof mode !== 'string' || mode === 'CLASSIC' || !catalog.modes.includes(mode)) return null;
   return catalog.labels[mode] ?? null;
 }
+
+/** Cuántos modos tiene `gameId` (1 si no tiene modos). */
+export function gameModeCount(gameId: string): number {
+  return gameModeCatalog(gameId)?.modes.length ?? 1;
+}
+
+/** El nombre visible de `mode` en `gameId`, también «Clásico»; `null` si el juego no tiene ese modo. */
+export function gameModeName(gameId: string, mode: string): string | null {
+  const catalog = gameModeCatalog(gameId);
+  return catalog?.modes.includes(mode) ? catalog.labels[mode] ?? null : null;
+}
