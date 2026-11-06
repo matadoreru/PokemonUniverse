@@ -75,8 +75,8 @@ export function MostLikelyToGame({ room, selfId, onAction }: { room: RoomView; s
     media: <img className={s.sprite} src={guessSprite(answer.pokemon.sprite)} alt="" />,
   }));
   const stage = result
-    ? <VoteTally idBase="most-likely-tally" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winnerIds} voterName={nameOf} intro={result.prompt}
-      points={(id) => result.pointsAwarded[id] ?? 0} summaryName={answerName} emptyText="Nadie envió una respuesta a tiempo." className={s.tally} />
+    ? <VoteTally idBase="most-likely-tally" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winnerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.member.avatar} intro={result.prompt}
+      summaryName={answerName} emptyText="Nadie envió una respuesta a tiempo." className={s.tally} />
     : prompt;
 
   const side = result

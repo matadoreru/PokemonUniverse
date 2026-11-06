@@ -3534,13 +3534,14 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await opcion(a.page, 'Bulbasaur', host).click();
     await confirmar(a.page).click();
 
-    // Revelación: gana Pikachu de A con 2 votos tras la segunda vuelta; las dos vueltas, en pestañas.
+    // Revelación: gana Pikachu de A con 2 votos tras la segunda vuelta; las dos vueltas a la vista, primero la que decide.
     await expect(titulo(host.page)).toHaveText('La respuesta favorita', { timeout: 15_000 });
     await expect(host.page.getByTestId('tally-summary')).toHaveText(`Gana Pikachu de ${a.name} con 2 votos tras la segunda vuelta.`);
-    await expect(host.page.getByRole('tab', { name: 'Primera vuelta' })).toBeVisible();
-    await expect(host.page.getByRole('tab', { name: 'Segunda vuelta' })).toHaveAttribute('aria-selected', 'true');
-    await expect(host.page.getByTestId('tally-row')).toHaveCount(2);
+    await expect(host.page.getByRole('heading', { name: 'Primera vuelta' })).toBeVisible();
+    await expect(host.page.locator('[data-tally-round]').first()).toHaveAttribute('data-tally-round', '2');
+    await expect(host.page.locator('[data-tally-round="2"]').getByTestId('tally-row')).toHaveCount(2);
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Ganadora' })).toContainText(`Votos de`);
+    await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Ganadora' }).getByTestId('tally-voter')).toHaveCount(2);
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
     await capturarAnotando(host.page, 'juego-most-likely-to-revelacion', titulo(host.page).filter({ hasText: 'La respuesta favorita' }));
 
@@ -3692,8 +3693,8 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     // Revelación: gana la de A con 2 votos tras la segunda vuelta; ahora sí, con los autores.
     await expect(titulo(host.page)).toHaveText('La red flag de la ronda', { timeout: 15_000 });
     await expect(host.page.getByTestId('tally-summary')).toHaveText(`Gana ${a.name} con 2 votos tras la segunda vuelta.`);
-    await expect(host.page.getByRole('tab', { name: 'Segunda vuelta' })).toHaveAttribute('aria-selected', 'true');
-    await expect(host.page.getByTestId('tally-row')).toHaveCount(2);
+    await expect(host.page.locator('[data-tally-round]').first()).toHaveAttribute('data-tally-round', '2');
+    await expect(host.page.locator('[data-tally-round="2"]').getByTestId('tally-row')).toHaveCount(2);
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Red flag ganadora' })).toContainText(textos.get(a)!);
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
     await capturarAnotando(host.page, 'juego-pokemon-red-flag-revelacion', titulo(host.page).filter({ hasText: 'La red flag de la ronda' }));
@@ -3986,8 +3987,9 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(b.page.getByTestId('tally-summary')).toHaveText(`Sale ${fake!.name} con 2 votos tras la segunda vuelta. ${fake!.name} era el fake.`);
     await expect(b.page.getByText(variante, { exact: true })).toBeVisible();
     await expect(b.page.getByText(principal, { exact: true })).toBeVisible();
-    await expect(b.page.getByRole('tab', { name: 'Segunda vuelta' })).toHaveAttribute('aria-selected', 'true');
+    await expect(b.page.locator('[data-tally-round]').first()).toHaveAttribute('data-tally-round', '2');
     await expect(b.page.getByTestId('tally-row').filter({ hasText: 'Más votado' })).toContainText('Votos de');
+    await expect(b.page.getByTestId('tally-row').filter({ hasText: 'Más votado' })).toContainText('Fake');
     await expect(b.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
     await capturarTamanos(b.page, 'juego-one-of-us-is-fake-revelacion', { sigue: titulo(b.page).filter({ hasText: 'Ganan los normales' }) });
     retenedor.soltar();

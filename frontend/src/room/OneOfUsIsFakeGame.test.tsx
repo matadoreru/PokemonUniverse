@@ -182,6 +182,10 @@ describe('One of Us Is Fake: pantalla', () => {
     expect(text).toContain('Primera vuelta');
     expect(text).toContain('Fake · descubierto');
     expect(text).toContain('¡El grupo descubrió al fake!');
+    // En el recuento: el Pokémon de cada uno (sprite y nombre) y la insignia «Fake», nunca en una línea de texto.
+    expect(html.match(/data-testid="tally-pick"/g)?.length).toBeGreaterThanOrEqual(3);
+    expect(html).toMatch(/data-tally-winner="true"(?:(?!<\/li>).)*Fake<\/span>/);
+    expect(html).not.toContain('eligió Snorlax');
     expect(text).toContain('+2');
     expect(html).toMatch(/data-phase="revote"/);
     expect(html).not.toMatch(LEGACY);

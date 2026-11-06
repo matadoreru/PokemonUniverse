@@ -110,7 +110,8 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; 
 
   const seats = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
   const nameOf = (id: string) => seats.get(id)?.member.displayName ?? 'Entrenador';
-  const avatarOf = (id: string) => <Avatar name={nameOf(id)} avatar={seats.get(id)?.member.avatar} size="sm" />;
+  const avatarRefOf = (id: string) => seats.get(id)?.member.avatar;
+  const avatarOf = (id: string) => <Avatar name={nameOf(id)} avatar={avatarRefOf(id)} size="sm" />;
   const ownVote = participating ? player.ownVotePlayerId : null;
   const locked = voting && ownVote !== null;
   const informedFake = participating && player.isFake === true && !result;
@@ -140,13 +141,14 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; 
   if (result) {
     const tallyOptions: TallyOption[] = result.players.map((entry) => ({
       id: entry.playerId, name: nameOf(entry.playerId), media: avatarOf(entry.playerId), color: playerColor(seats.get(entry.playerId)?.index ?? 0), self: entry.playerId === selfId,
-      detail: `${entry.isFake ? 'Fake · ' : ''}${entry.pokemon ? `eligió ${entry.pokemon.name}` : 'sin elección'}`,
+      ...(entry.pokemon ? { pick: { name: entry.pokemon.name, sprite: guessSprite(entry.pokemon.sprite) } } : { detail: 'Sin elección' }),
+      ...(entry.isFake ? { tags: [{ key: 'fake', label: 'Fake', icon: ShieldAlert }] } : {}),
     }));
     stage = <div className={s.resultStage}>
       <FakeReveal result={result} seats={seats} />
-      <VoteTally idBase="fake-tally" title="Recuento de votos" options={tallyOptions} rounds={result.voteRounds} winnerIds={[result.selectedPlayerId]} voterName={nameOf}
+      <VoteTally idBase="fake-tally" title="Recuento de votos" options={tallyOptions} rounds={result.voteRounds} winnerIds={[result.selectedPlayerId]} voterName={nameOf} voterAvatar={avatarRefOf}
         winnerLabel={tallyOutcome([result.selectedPlayerId], result.voteRounds) === 'lot' ? 'Sale por sorteo' : 'Más votado'} winnerIcon={UserRoundX} verb="Sale" selfLabel="Tú" roundLabels={FAKE_ROUND_LABELS} summary={fakeTallySummary(result, nameOf)}
-        points={(id) => result.pointsAwarded[id] ?? 0} emptyText="Nadie jugó esta ronda." className={s.tally} />
+        emptyText="Nadie jugó esta ronda." className={s.tally} />
     </div>;
   } else if (choosing) {
     stage = participating

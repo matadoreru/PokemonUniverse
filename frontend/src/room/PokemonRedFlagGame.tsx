@@ -81,9 +81,8 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
     media: <Avatar name={nameOf(answer.authorId)} avatar={members.get(answer.authorId)?.member.avatar} size="sm" />,
   }));
   const stage = result
-    ? <VoteTally idBase="red-flag-tally" title="Autores revelados" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winningAnswerIds} voterName={nameOf}
+    ? <VoteTally idBase="red-flag-tally" title="Autores revelados" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winningAnswerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.member.avatar}
       winnerLabel={green ? 'Green flag ganadora' : 'Red flag ganadora'} intro={pokemon ? redFlagQuestion(mode, pokemon.name) : undefined}
-      points={(answerId) => { const author = authorOf(answerId); return author ? result.pointsAwarded[author] ?? 0 : null; }}
       emptyText="Nadie escribió una respuesta a tiempo." className={s.tally} />
     : prompt;
 

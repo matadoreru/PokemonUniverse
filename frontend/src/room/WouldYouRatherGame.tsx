@@ -72,7 +72,7 @@ export function WouldYouRatherGame({ room, selfId, onAction }: { room: RoomView;
   const tallyOptions: TallyOption[] = WYR_OPTIONS.map((id) => ({ id, name: `Opción ${id}`, text: optionText(id), self: ownPreference === id }));
   const stage = result
     ? <VoteTally idBase="wyr-tally" title="Lo que eligió la sala" options={tallyOptions} rounds={wouldYouRatherRound(result)} winnerIds={result.majority ? [result.majority] : []}
-      voterName={nameOf} winnerLabel="Mayoría" winnerIcon={Users} selfLabel="Tu elección" summary={wouldYouRatherSummary(result)} className={s.tally} />
+      voterName={nameOf} voterAvatar={(id) => members.get(id)?.avatar} winnerLabel="Mayoría" winnerIcon={Users} selfLabel="Tu elección" summary={wouldYouRatherSummary(result)} className={s.tally} />
     : <ChoicePair kicker={locked ? 'El dilema · Tu decisión (bloqueada)' : 'El dilema · Paso 1: tu decisión'} options={choiceOptions}
       value={own?.preference ?? current.preference} onChange={choose} disabled={!open || busy}
       help={open ? 'Elige con sinceridad. Predice con malicia. Atajos: 1 y 2.' : undefined}
