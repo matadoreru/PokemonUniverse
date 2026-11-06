@@ -126,7 +126,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: Room
       item={game.condition && <Condition description={game.condition.description} clauses={game.condition.clauses} />}
       facts={game.condition && <span className={b.rule}>{PASS_RULE}</span>}
       currentBid={game.currentBid} minimumBid={game.minimumBid}
-      leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId, avatar: avatarOf(game.currentBidderId) } : null}
+      leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId } : null}
       turn={turnText && <span className={b.turn}><Icon icon={Clock3} size={18} />{turnText}</span>} />;
   }
 

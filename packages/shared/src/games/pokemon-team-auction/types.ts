@@ -10,6 +10,9 @@ export interface TeamAuctionPokemon {
   legendaryStatus: 'NORMAL' | 'LEGENDARY' | 'MYTHICAL';
 }
 
+/** El lote en subasta en la vista pública: sin su BST, que no se enseña mientras se puja (sí al ganarlo). */
+export type TeamAuctionLotPokemon = Omit<TeamAuctionPokemon, 'baseStatTotal'>;
+
 export interface TeamAuctionLotResult {
   lotNumber: number;
   pokemon: TeamAuctionPokemon;
@@ -63,7 +66,7 @@ export interface PokemonTeamAuctionPublicState {
   phase: GamePhase;
   lotNumber: number;
   totalLots: number;
-  currentPokemon: TeamAuctionPokemon | null;
+  currentPokemon: TeamAuctionLotPokemon | null;
   currentBid: number | null;
   minimumBid: number;
   currentBidderId: string | null;

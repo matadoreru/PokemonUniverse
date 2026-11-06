@@ -1,6 +1,6 @@
 /*
- * Escena de la subasta: la banda de la adjudicación arriba; el lote (carta) a la izquierda y las cifras de la puja a la
- * derecha. En escritorio llena el alto libre y la carta crece con él; en el móvil, una franja compacta en fila.
+ * Escena de la subasta: el lote (carta) a la izquierda y, a la derecha, la línea del lote anterior y la tarjeta del
+ * estado de la puja. En escritorio llena el alto libre y la carta crece con él; en el móvil, una franja compacta en fila.
  */
 .panel {
   min-height: 0;
@@ -17,7 +17,7 @@
 .lot {
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(13rem, 20rem);
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 30rem);
   align-items: center;
   gap: var(--sp-4);
   min-height: 0;
@@ -60,23 +60,40 @@
   gap: var(--sp-2);
 }
 
-/* Cifras: la puja actual en grande; quién gana, la mínima y el turno en texto. */
-.figures {
+/* Columna del estado: la línea del lote anterior y la tarjeta. */
+.state {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
+  justify-content: center;
+  gap: var(--sp-2);
   min-width: 0;
 }
-.figures dt {
+/* Tarjeta «Estado de la puja»: placa blanca con la cifra y quién gana en grande, el mínimo y el orden de turno. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--white);
+  box-shadow: var(--sh-hard-3);
+}
+.cardTitle {
   font: 800 var(--fs-13) / 1.2 var(--font-text);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ink-2);
 }
-.figures dd {
+.headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-2);
   min-width: 0;
 }
-.current dd {
+.bid {
   font: 800 var(--fs-44) / 1.05 var(--font-display);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
@@ -99,15 +116,29 @@
   font-size: var(--fs-26);
   color: var(--ink-2);
 }
+.leader {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  min-width: 0;
+  max-width: 100%;
+}
+.leaderLabel {
+  font: 800 var(--fs-18) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
 .leaderName {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
   min-width: 0;
+  max-width: 100%;
   font: 800 var(--fs-22) / 1.15 var(--font-display);
   color: var(--ink);
 }
-.leaderName > :first-child:not(.name) {
+.self {
   flex: none;
 }
 .name {
@@ -116,18 +147,83 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.muted {
-  font: 700 var(--fs-18) / 1.2 var(--font-text);
-  color: var(--ink-2);
-}
-.minimum dd {
+.minimum {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  font: 800 var(--fs-18) / 1.2 var(--font-text);
+  font: 700 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+.minimum strong {
+  font-weight: 800;
   color: var(--ink);
 }
-.turn dd {
+.minimum > :first-child {
+  flex: none;
+  color: var(--ink);
+}
+
+/* Orden de turno: nombres en fila con flechas; el actual en una píldora amarilla, quien pasó tachado y atenuado. */
+.order {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding-top: var(--sp-2);
+  border-top: 2px dashed var(--cream-2);
+}
+.seat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  max-width: 100%;
+}
+.arrow {
+  flex: none;
+  font: 800 var(--fs-15) / 1 var(--font-text);
+  color: var(--ink-2);
+}
+.seatTag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding: 2px var(--sp-2);
+  border: 2px solid transparent;
+  border-radius: var(--r-badge);
+  font: 800 var(--fs-15) / 1.25 var(--font-text);
+  color: var(--ink);
+}
+.seatTag > svg {
+  flex: none;
+}
+.seatName {
+  min-width: 0;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.seat_turn .seatTag {
+  border-color: var(--navy);
+  background: var(--yellow);
+  color: var(--navy);
+}
+.seat_leading .seatTag {
+  border-color: var(--navy);
+  background: var(--sky-2);
+  color: var(--navy);
+}
+.seat_passed .seatTag {
+  color: var(--ink-2);
+}
+.seat_passed .seatName {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.turn {
   font: 800 var(--fs-15) / 1.3 var(--font-text);
   color: var(--ink);
 }
@@ -151,6 +247,36 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Lote anterior: una línea pequeña, en texto, sobre la tarjeta. */
+.previous {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font: 700 var(--fs-13) / 1.3 var(--font-text);
+  color: var(--ink-2);
+}
+.previousSprite {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.previousKicker {
+  flex: none;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.previousText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
 }
 
 /* Banda de la adjudicación: azul noche con borde del tono, a todo el ancho. */
@@ -244,7 +370,7 @@
 }
 
 @media (max-width: 1023px) {
-  /* Móvil y tableta: la carta pequeña a la izquierda y las cifras a la derecha, en una franja. */
+  /* Móvil y tableta: la carta pequeña a la izquierda y el estado a la derecha, en una franja. */
   .lot {
     grid-template-columns: minmax(7rem, 9.5rem) minmax(0, 1fr);
     gap: var(--sp-3);
@@ -258,29 +384,75 @@
   .media > * {
     width: 100%;
   }
-  .figures {
-    gap: var(--sp-2);
+  .card {
+    gap: var(--sp-1);
+    padding: var(--sp-2) var(--sp-3);
   }
-  .current dd {
+  .bid {
     font-size: var(--fs-34);
+  }
+  .leaderLabel {
+    font-size: var(--fs-15);
   }
   .leaderName {
     font-size: var(--fs-18);
   }
-  .minimum dd,
-  .muted {
-    font-size: var(--fs-15);
+  .seatName {
+    max-width: 9rem;
   }
 }
 @media (max-width: 639px) {
   .kicker {
     display: none;
   }
-  /*
-   * Banda compacta en dos líneas (la placa pegada al fondo no debe tapar las cifras del lote): el título arriba y, debajo,
-   * «Nuevo» y la cantidad. El kicker («Lote 2 adjudicado») queda solo para lectores: el título y la cantidad ya lo dicen,
-   * y la región viva lo anuncia entero.
-   */
+  /* Móvil: la carta más estrecha y el estado compacto (cabe sobre la placa pegada al fondo). */
+  .lot {
+    grid-template-columns: minmax(6rem, 6.5rem) minmax(0, 1fr);
+    gap: var(--sp-2);
+  }
+  .media {
+    height: 8rem;
+  }
+  .card {
+    gap: 2px;
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .bid {
+    font-size: var(--fs-26);
+  }
+  .amount small,
+  .leaderLabel,
+  .leaderName,
+  .minimum {
+    font-size: var(--fs-15);
+  }
+  .minimum > :first-child {
+    display: none;
+  }
+  .order {
+    gap: 2px var(--sp-1);
+    padding-top: var(--sp-1);
+  }
+  .seatTag {
+    padding: 0 var(--sp-1);
+    font-size: var(--fs-13);
+  }
+  .seatName {
+    max-width: 8rem;
+  }
+  /* El título de la tarjeta solo para lectores: la cifra ya lo dice. */
+  .cardTitle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .state {
+    gap: var(--sp-1);
+  }
+  /* Banda de la adjudicación (Bluff, resultado) compacta en dos líneas. */
   .award {
     display: grid;
     grid-template-columns: auto auto minmax(0, 1fr);
@@ -325,15 +497,11 @@
     text-overflow: ellipsis;
     font-size: var(--fs-15);
   }
-  /* Banda y cifras del lote más juntas: caben enteras sobre la placa de la puja. */
   .body {
     gap: var(--sp-2);
   }
-  .figures {
-    gap: var(--sp-1);
-  }
 }
-/* Escritorio bajo (720 px): sin kicker, banda y cifras más bajas; la carta gana alto. */
+/* Escritorio bajo (720 px): sin kicker; la tarjeta algo más baja y la carta gana alto. */
 @media (min-width: 1024px) and (max-height: 800px) {
   .body {
     gap: var(--sp-2);
@@ -344,69 +512,66 @@
   .media {
     min-height: 7rem;
   }
-  .award {
-    padding-block: var(--sp-1);
-  }
   .awardSprite,
   .awardIcon {
     width: 40px;
     height: 40px;
   }
-  .figures {
-    gap: var(--sp-2);
+  .card {
+    gap: var(--sp-1);
+    padding: var(--sp-2) var(--sp-3);
   }
-  .current dd {
+  .bid {
     font-size: var(--fs-34);
   }
 }
-/* Escritorio grande (≥1600×900): la pantalla se llena. La carta y las cifras se reparten el lote a partes iguales y las
-   cifras son placas blancas que llenan su columna, con letra más grande. */
+/* Escritorio grande (≥1600×900): la carta y el estado se reparten el lote a partes iguales, con letra más grande. */
 @media (min-width: 1600px) and (min-height: 900px) {
   .lot {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: stretch;
     gap: var(--sp-5);
   }
   .media > * {
     width: min(100%, 34rem);
   }
-  .figures {
-    justify-content: center;
+  .state {
     gap: var(--sp-3);
   }
-  .figures > div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    padding: var(--sp-3) var(--sp-4);
-    border: var(--ol-3) solid var(--navy);
-    border-radius: var(--r-card);
-    background: var(--white);
-    box-shadow: var(--sh-hard-3);
+  .card {
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5);
   }
-  .figures dt {
+  .cardTitle {
     font-size: var(--fs-15);
+  }
+  .bid {
+    font-size: var(--fs-68);
   }
   .none {
     font-size: var(--fs-44);
   }
-  .muted {
-    font-size: var(--fs-26);
-  }
-  .minimum dd {
-    font-size: var(--fs-26);
-  }
-  .turn dd {
-    font-size: var(--fs-22);
-  }
-  .current dd {
-    font-size: var(--fs-68);
-  }
   .amount small {
     font-size: var(--fs-26);
   }
+  .leaderLabel {
+    font-size: var(--fs-22);
+  }
   .leaderName {
     font-size: var(--fs-34);
+  }
+  .minimum {
+    font-size: var(--fs-22);
+  }
+  .seatTag,
+  .turn {
+    font-size: var(--fs-18);
+  }
+  .previous {
+    font-size: var(--fs-15);
+  }
+  .previousSprite {
+    width: 36px;
+    height: 36px;
   }
   .awardTitle {
     font-size: var(--fs-26);

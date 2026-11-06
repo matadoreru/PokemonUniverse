@@ -4543,11 +4543,13 @@ async function pujasTrucables(page: Page): Promise<{ trucarSiguiente(cantidad: n
 }
 
 /**
- * Pokémon Team Auction con tres jugadores, 2 monedas cada uno y 120 s por turno. Lote 1: quien abre puja 1 (con los
- * atajos), el siguiente intenta una puja que el servidor rechaza (trucada a 999: el aviso global y el foco de vuelta en
- * «Pujar») y luego puja 2; los demás no llegan a 3 y el motor los pasa: se adjudica. Lote 2: la banda de la
- * adjudicación, «Sin presupuesto» del ganador y el equipo de un rival en su diálogo. Después, cada turno puja todo hasta
- * agotar las monedas y la clasificación. Se capturan el lote, la puja, la adjudicación y la clasificación.
+ * Pokémon Team Auction con tres jugadores, 2 monedas cada uno y 120 s por turno. Lote 1: el título es el lote (sin
+ * BST), el turno va en el reloj y quien no tiene el turno ve «Le toca a …» sin controles; quien abre puja 1 (con los
+ * atajos) y espera («Tú vas ganando con 1 moneda»), el siguiente intenta una puja que el servidor rechaza (trucada a
+ * 999: el aviso global y el foco de vuelta en «Pujar») y luego puja 2; los demás no llegan a 3 y el motor los pasa: se
+ * adjudica. Lote 2: la línea del lote anterior, «Sin presupuesto» del ganador y el equipo de un rival en su diálogo.
+ * Después, cada turno puja todo hasta agotar las monedas y la clasificación. Se capturan el lote, la espera, la puja, la
+ * adjudicación y la clasificación.
  */
 test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación, los equipos y la clasificación', async ({ browser }) => {
   test.setTimeout(240_000);
@@ -4589,28 +4591,42 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     const viva = (page: Page) => page.getByTestId('auction-screen').locator('[aria-live]');
     const pujar = (page: Page) => page.getByTestId('bid-submit');
     const placa = (page: Page) => page.locator('#bid-controls-title');
-    /** La página con el turno: la única con «Pujar» activo. */
+    /** La página con el turno: la única con «Pujar» activo (sin turno no hay controles; se cuenta, no se espera al botón). */
     const turno = async (otras: readonly Page[] = paginas) => {
       let encontrada: Page | undefined;
       await expect.poll(async () => {
-        for (const page of otras) if (await pujar(page).isEnabled().catch(() => false)) { encontrada = page; return true; }
+        for (const page of otras) if (await pujar(page).and(page.locator(':enabled')).count() > 0) { encontrada = page; return true; }
         return false;
       }, { timeout: 20_000 }).toBe(true);
       return encontrada!;
     };
+    const titulo = (page: Page) => page.getByRole('heading', { level: 1 });
+    const reloj = (page: Page) => page.getByRole('timer');
 
-    // Lote 1: el lote en una carta, sin pujas; una sola región viva en cada página.
+    // Lote 1: el título es el lote, el lote en una carta sin su BST, sin pujas; una sola región viva en cada página.
     for (const page of paginas) {
-      await expect(page.getByText('Lote 1 de 18', { exact: true })).toBeVisible({ timeout: 20_000 });
+      await expect(titulo(page)).toHaveText(/^Lote 1 de 18 · \S/, { timeout: 20_000 });
+      await expect(page.getByText('Pujas a la vista', { exact: true })).toBeVisible();
+      await expect(page.getByText(/^BST \d+$/)).toHaveCount(0);
       await expect(viva(page)).toHaveCount(1);
     }
     const p1 = await turno();
-    await expect(p1.getByRole('heading', { level: 1 })).toHaveText('Tu turno');
+    // El turno vive en el reloj (y marcado en el orden de turno), no en el título.
+    await expect(reloj(p1)).toHaveAccessibleName(/^Tu turno: \d+ s$/);
     await expect(placa(p1)).toHaveText('Tu turno');
     await expect(p1.getByTestId('auction-current-bid')).toHaveText('Sin pujas');
+    await expect(p1.getByTestId('turn-order-entry')).toHaveCount(3);
+    await expect(p1.locator('[data-testid="turn-order-entry"][data-state="turn"]')).toContainText(`${nombreDe(p1)} (Tú)`);
     await expect(p1.getByTestId('bid-budget')).toContainText('2');
     await expect(p1.getByTestId('bid-step')).toContainText(['Mínima: 1', 'Todo: 2']);
-    for (const page of paginas.filter((page) => page !== p1)) await expect(page.getByRole('heading', { level: 1 })).toHaveText(`Turno de ${nombreDe(p1)}`);
+    for (const page of paginas.filter((page) => page !== p1)) {
+      await expect(reloj(page)).toHaveAccessibleName(new RegExp(`^Turno de ${nombreDe(p1)}: \\d+ s$`));
+      // Sin tu turno: el mensaje, sin controles grises, y el presupuesto a la vista.
+      await expect(placa(page)).toHaveText(`Le toca a ${nombreDe(p1)}`);
+      await expect(page.getByTestId('bid-controls')).toContainText('Aún no hay pujas en este lote.');
+      await expect(pujar(page)).toHaveCount(0);
+      await expect(page.getByTestId('bid-budget')).toContainText('2');
+    }
     await capturarTamanos(p1, 'juego-pokemon-team-auction-lote', { sigue: placa(p1).filter({ hasText: 'Tu turno' }) });
     // A 390×844 sin desplazar: el lote, la puja actual y los controles.
     await p1.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
@@ -4620,6 +4636,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(pujar(p1)).toBeInViewport({ ratio: 1 });
     await expect(p1.getByTestId('bid-pass')).toBeInViewport({ ratio: 1 });
     expect(await sinTapar(p1.getByTestId('auction-current-bid')), 'a 390: la puja actual sin tapar por los controles').toBe(true);
+    expect(await sinTapar(p1.getByTestId('turn-order-entry').last()), 'a 390: el orden de turno sin tapar por los controles').toBe(true);
     await p1.setViewportSize({ width: 1280, height: 720 });
 
     // Atajos (fuera del campo): 2 pone «Todo», 1 vuelve a la mínima. Escribiendo en el campo no se disparan.
@@ -4636,12 +4653,18 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     await expect(p1.getByText('No te llega: máximo 2 monedas.')).toBeVisible();
     await campo.fill('1');
     await pujar(p1).click();
-    await expect(placa(p1)).toHaveText('Ya vas ganando', { timeout: 5_000 });
-    await expect(pujar(p1)).toHaveText('Ya vas ganando');
+    await expect(placa(p1)).toHaveText(/^Le toca a /, { timeout: 5_000 });
+    await expect(p1.getByTestId('bid-controls')).toContainText('Tú vas ganando con 1 moneda.');
+    await expect(pujar(p1)).toHaveCount(0);
     await expect(p1.getByTestId('auction-leader')).toContainText(nombreDe(p1));
 
     // La puja que compite: el siguiente turno.
     const p2 = await turno(paginas.filter((page) => page !== p1));
+    // Quien va ganando espera: a quién le toca y que va ganando, sin botones grises (captura del estado sin turno).
+    await expect(placa(p1)).toHaveText(`Le toca a ${nombreDe(p2)}`);
+    await expect(p1.locator('[data-testid="turn-order-entry"][data-state="leading"]')).toContainText(`${nombreDe(p1)} (Tú)`);
+    await expect(p1.locator('[data-testid="turn-order-entry"][data-state="turn"]')).toContainText(nombreDe(p2));
+    await capturarTamanos(p1, 'juego-pokemon-team-auction-espera', { sigue: placa(p1).filter({ hasText: `Le toca a ${nombreDe(p2)}` }) });
     await expect(p2.getByTestId('auction-current-bid')).toContainText('1');
     await expect(p2.getByTestId('auction-leader')).toContainText(nombreDe(p1));
     await expect(p2.getByTestId('bid-history-row').first()).toContainText('Pujó 1 moneda');
@@ -4658,29 +4681,28 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
     // El aviso global tapa la píldora: se puja con el teclado desde el foco devuelto.
     await p2.keyboard.press('Enter');
 
-    // Los demás no llegan a 3: el motor los pasa y adjudica el lote 1. La banda lo dice en el lote 2.
-    for (const page of paginas) await expect(page.getByText('Lote 2 de 18', { exact: true })).toBeVisible({ timeout: 10_000 });
-    const banda = p2.getByTestId('auction-award');
-    await expect(banda).toContainText('Lote 1 adjudicado');
-    await expect(banda).toContainText(`para ${nombreDe(p2)}`);
-    await expect(banda).toContainText('por 2 monedas');
-    await expect(banda).toHaveAttribute('data-fresh', 'true');
+    // Los demás no llegan a 3: el motor los pasa y adjudica el lote 1. La línea del lote anterior lo dice en el lote 2.
+    for (const page of paginas) await expect(titulo(page)).toHaveText(/^Lote 2 de 18 · \S/, { timeout: 10_000 });
+    const anterior = p2.getByTestId('auction-previous');
+    await expect(anterior).toContainText('Lote 1');
+    await expect(anterior).toContainText(nombreDe(p2));
+    await expect(anterior).toContainText('2 monedas');
     await expect(placa(p2)).toHaveText('Sin presupuesto');
-    await expect(pujar(p2)).toBeDisabled();
+    await expect(pujar(p2)).toHaveCount(0);
     await expect(p2.getByTestId('budget-row').filter({ hasText: nombreDe(p2) })).toContainText('Equipo 1/6');
     await expect(viva(p2)).toContainText(`Lote 1:`);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
-    await capturarTamanos(p2, 'juego-pokemon-team-auction-adjudicacion', { sigue: banda.filter({ hasText: 'Lote 1 adjudicado' }) });
-    // A 390×844, arriba del todo, la placa pegada al fondo no tapa la última cifra del lote (el medidor trata esa placa
-    // como capa permitida y no lo vería).
+    await capturarTamanos(p2, 'juego-pokemon-team-auction-adjudicacion', { sigue: anterior.filter({ hasText: 'Lote 1' }) });
+    // A 390×844, arriba del todo, la placa pegada al fondo no tapa el pie de la tarjeta del estado (el medidor trata esa
+    // placa como capa permitida y no lo vería).
     await p2.setViewportSize({ width: 390, height: 844 });
     await p2.evaluate(() => window.scrollTo(0, 0));
     await expect.poll(() => p2.evaluate(() => {
-      const ultima = document.querySelector('[data-testid="auction-lot"] dl > div:last-child');
+      const ultima = document.querySelector('[data-testid="auction-status"] > :last-child');
       const placaFija = document.querySelector('[data-layer="screen-bottom"]');
       if (!ultima || !placaFija) return Number.NaN;
       return Math.round(placaFija.getBoundingClientRect().top - ultima.getBoundingClientRect().bottom);
-    }), 'la placa no tapa las cifras del lote a 390').toBeGreaterThanOrEqual(0);
+    }), 'la placa no tapa el estado de la puja a 390').toBeGreaterThanOrEqual(0);
     await p2.setViewportSize({ width: 1280, height: 720 });
 
     // El equipo de un rival en su diálogo; Esc lo cierra y el foco vuelve a su botón.
@@ -4707,7 +4729,7 @@ test('pokemon-team-auction: pujas que compiten, una rechazada, la adjudicación,
       if (!actual) break;
       await actual.getByTestId('bid-step').last().click();
       await pujar(actual).click();
-      await expect(pujar(actual)).toBeDisabled({ timeout: 5_000 });
+      await expect(pujar(actual).and(actual.locator(':enabled'))).toHaveCount(0, { timeout: 5_000 });
     }
 
     await expect(final).toBeVisible({ timeout: 20_000 });
@@ -4917,7 +4939,7 @@ test('pokemon-bluff-auction: pujas, un pase confirmado, la demostración, el res
       if (accion === 'pujar') {
         await campo(actual).fill((await campo(actual).getAttribute('max'))!);
         await pujar(actual).click();
-        await expect(pujar(actual)).toBeDisabled({ timeout: 5_000 });
+        await expect(pujar(actual).and(actual.locator(':enabled'))).toHaveCount(0, { timeout: 5_000 });
       } else {
         await pasarConfirmando(actual);
         // Deshabilitado o, si cerró la subasta, ya sin controles (el resultado de la ronda).

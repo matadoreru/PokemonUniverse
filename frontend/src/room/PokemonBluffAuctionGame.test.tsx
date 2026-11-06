@@ -68,7 +68,7 @@ describe('Pokémon Bluff Auction: subasta', () => {
     expect(html).toContain('data-testid="bluff-condition"');
     expect(html).toMatch(/data-testid="auction-current-bid"><span[^>]*><strong>5<\/strong> <small>Pokémon<\/small>/);
     expect(html).toMatch(/data-testid="auction-leader">.*Carlos/);
-    expect(html).toContain('6 Pokémon');
+    expect(html).toMatch(/Mínimo para superarla.*<strong>6<\/strong>/);
     expect(html).toContain('>Tu turno</h1>');
     expect(html).toContain('Bluff por voz externa');
     // La mesa: orden, estado en texto y la última puja o «Pasó».

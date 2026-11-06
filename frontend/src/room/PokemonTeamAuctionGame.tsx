@@ -1,36 +1,36 @@
 import type { PokemonTeamAuctionConfig, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { Clock3, Coins, Crown, Eye, Gavel, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
+import { Coins, Crown, Eye, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
-import { Avatar } from '../components/Avatar';
 import {
-  currentLotEvents, PASS_RULE, TEAM_SIZE, TEAM_STATUS_TEXT, teamAnnouncement, teamAward, teamBlockInput, teamBst, teamHeading, teamStatus, type TeamStatus,
+  currentLotEvents, PASS_RULE, TEAM_SIZE, TEAM_STATUS_TEXT, teamAnnouncement, teamBlockInput, teamBst, teamHeading, teamPrevious, teamStatus, teamTimerLabel, teamTurnOrder, type TeamStatus,
 } from '../games/pokemon-team-auction/presentation';
 import { PokemonFacts, TeamDialog, TeamStrip } from '../games/pokemon-team-auction/TeamParts';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { useServerOffset } from '../hooks/useServerTime';
-import { Card, Chip, Icon, Pill, type ChipProps } from '../ui';
+import { Card, Chip, Pill, type ChipProps } from '../ui';
 import {
-  AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
+  AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
 } from './auction-kit';
 import { useFocusOnTransition } from './focus-transition';
 import { playerColor } from './player-color';
-import s from '../games/pokemon-team-auction/TeamAuction.module.css';
 
 const GAME_NAME = 'Pokémon Team Auction';
-const STATUS_ICON: Record<TeamStatus, LucideIcon> = { turn: Gavel, leading: Crown, passed: SkipForward, full: PackageCheck, noBudget: Coins, bidding: Hourglass, closed: Lock };
-const STATUS_TONE: Record<TeamStatus, NonNullable<ChipProps['tone']>> = { turn: 'warn', leading: 'ok', passed: 'neutral', full: 'ok', noBudget: 'bad', bidding: 'neutral', closed: 'neutral' };
+const STATUS_ICON: Record<TeamStatus, LucideIcon> = { leading: Crown, passed: SkipForward, full: PackageCheck, noBudget: Coins, bidding: Hourglass, closed: Lock };
+const STATUS_TONE: Record<TeamStatus, NonNullable<ChipProps['tone']>> = { leading: 'ok', passed: 'neutral', full: 'ok', noBudget: 'bad', bidding: 'neutral', closed: 'neutral' };
 
 type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
 /**
- * Pokémon Team Auction con el kit de subasta (spec §2 y §6 «Juegos»): arriba, la placa del lote («Lote N de M», de quién
- * es el turno y su plazo) y el lote en una `Card` con su BST, la puja actual, quién va ganando y la siguiente mínima,
- * con la banda de la última adjudicación encima. Abajo, los controles de la puja con el presupuesto propio. Al lado,
- * los presupuestos y equipos de todos (cada equipo se abre en un `Dialog`) y el historial: las pujas del lote y los
- * lotes cerrados.
+ * Pokémon Team Auction con el kit de subasta (spec §2 y §6 «Juegos»): arriba, la placa con el lote como título
+ * («Lote 2 de 18 · Liepard») y el turno solo en el reloj («Turno de Ana · 13»); el lote en una `Card` y, al lado, una
+ * sola tarjeta con el estado de la puja (cifra y quién gana, el mínimo para superarla y el orden de turno), con la línea
+ * del lote anterior encima. Abajo, en tu turno, los controles de la puja; si no, el mensaje de a quién le toca y cómo va
+ * (sin botones grises); el presupuesto propio siempre. Al lado, los presupuestos y equipos de todos (cada equipo se abre
+ * en un `Dialog`) y el historial: las pujas del lote y los lotes cerrados.
  *
  * Privacidad: la subasta es visible; el motor publica pujas, monedas y equipos de todos y la pantalla no pinta nada más.
+ * El BST del lote en subasta no llega (se juzga sin él); el de los equipos, sí.
  */
 export function PokemonTeamAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
   const game = room.game as PokemonTeamAuctionPublicState;
@@ -52,17 +52,15 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: { room: RoomV
 
   const pokemon = game.phase === 'ROUND_ACTIVE' ? game.currentPokemon : null;
   const lotNumber = Math.min(Math.max(1, game.lotNumber), game.totalLots);
-  const award = teamAward(game, nameOf);
+  const previous = teamPrevious(game, nameOf);
   const bidSeconds = config?.bidSeconds ?? 20;
-  const leader = game.currentBidderId ? members.get(game.currentBidderId) : undefined;
-  const turnText = game.currentTurnPlayerId ? (game.currentTurnPlayerId === selfId ? 'Tu turno' : `Turno de ${nameOf(game.currentTurnPlayerId)}`) : null;
 
-  const stage = <AuctionLot kicker={`Lote ${lotNumber} · en subasta`}
+  const stage = <AuctionLot kicker="En subasta"
     item={pokemon && <Card size="fill" sprite={pokemon.sprite} name={pokemon.name} decorativeSprite eager attrs={{ 'data-testid': 'auction-pokemon' }}><PokemonFacts pokemon={pokemon} /></Card>}
     currentBid={game.currentBid} minimumBid={game.minimumBid}
-    leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId, avatar: <Avatar name={nameOf(game.currentBidderId)} avatar={leader?.member.avatar} size="sm" /> } : null}
-    turn={turnText && <span className={s.turn}><Icon icon={Clock3} size={18} /><span className={s.turnText} title={turnText}>{turnText}</span></span>}
-    award={award && <AuctionAward {...award} />} />;
+    leader={game.currentBidderId ? { name: nameOf(game.currentBidderId), self: game.currentBidderId === selfId } : null}
+    order={teamTurnOrder(game, selfId, nameOf)}
+    previous={previous && <AuctionPrevious {...previous} />} />;
 
   const order = game.turnOrder.length > 0 ? game.turnOrder : Object.keys(game.participants);
   const budgets: BudgetEntry[] = order.flatMap((id) => {
@@ -104,10 +102,11 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: { room: RoomV
 
   const shown = teamOf ? game.participants[teamOf] : undefined;
   return <>
-    <AuctionScreen gameName={GAME_NAME} roundNumber={lotNumber} totalRounds={game.totalLots} roundLabel={`Lote ${lotNumber} de ${game.totalLots}`}
-      heading={teamHeading(game, selfId, nameOf)}
-      meta={<><Chip tone="info" icon={<Icon icon={Eye} size={18} />}>Subasta ascendente visible</Chip>{bidSeconds === 0 && <Chip tone="neutral">Sin límite de tiempo</Chip>}</>}
-      timer={{ deadline: game.roundEndsAt ?? null, serverOffset: offset, label: 'Turno de puja', ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) }}
+    {/* El lote ya va en el título: la insignia dice el modo («Pujas a la vista»: todos ven cada puja). */}
+    <AuctionScreen gameName={GAME_NAME} roundNumber={lotNumber} totalRounds={game.totalLots} roundLabel="Pujas a la vista"
+      heading={teamHeading(game)}
+      meta={bidSeconds === 0 ? <Chip tone="neutral">Sin límite de tiempo</Chip> : null}
+      timer={{ deadline: game.roundEndsAt ?? null, serverOffset: offset, label: teamTimerLabel(game, selfId, nameOf), ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) }}
       announcement={teamAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />
     <TeamDialog open={Boolean(teamOf && shown)} name={teamOf === selfId ? 'Tu equipo' : `Equipo de ${teamOf ? nameOf(teamOf) : ''}`} team={shown?.team ?? []} coins={shown?.coins ?? 0} onClose={() => setTeamOf(null)} />
   </>;

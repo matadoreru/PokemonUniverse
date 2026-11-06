@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, parseBid, safeAmount, type BidBlockInput } from './presentation';
+import { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, parseBid, safeAmount, turnOrderEntries, type BidBlockInput } from './presentation';
 
 const base: BidBlockInput = { participating: true, open: true, canRaise: true, canPass: true, leading: false, passed: false, full: false, min: 5, max: 20, turnName: 'Ana' };
 
@@ -123,5 +123,24 @@ describe('historial', () => {
       ['Eru', 'Pujó 1 moneda', '1', false, true],
     ]);
     expect(bidLog([], () => 'x')).toEqual([]);
+  });
+});
+
+describe('orden de turno', () => {
+  const names: Record<string, string> = { a: 'Ana', b: 'Leo', c: 'Eru' };
+  const nameOf = (id: string) => names[id] ?? 'Entrenador';
+
+  it('marca el turno, quien va ganando y quien pasó (con texto, no solo color), en el orden del lote', () => {
+    const entries = turnOrderEntries({ order: ['a', 'b', 'c'], turnId: 'b', passedIds: ['a'], leaderId: 'c' }, nameOf, 'c');
+    expect(entries).toEqual([
+      { id: 'a', name: 'Ana', state: 'passed', stateText: 'pasó', self: false },
+      { id: 'b', name: 'Leo', state: 'turn', stateText: 'le toca', self: false },
+      { id: 'c', name: 'Eru', state: 'leading', stateText: 'va ganando', self: true },
+    ]);
+  });
+
+  it('sin turno ni líder, todos esperan; quien pasó y es líder cuenta como líder', () => {
+    expect(turnOrderEntries({ order: ['a', 'b'], turnId: null, passedIds: [], leaderId: null }, nameOf).map((entry) => entry.state)).toEqual(['waiting', 'waiting']);
+    expect(turnOrderEntries({ order: ['a'], turnId: null, passedIds: ['a'], leaderId: 'a' }, nameOf)[0]?.state).toBe('leading');
   });
 });

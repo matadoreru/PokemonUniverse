@@ -280,7 +280,6 @@
           "id": "jolteon",
           "name": "Jolteon",
           "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-          "baseStatTotal": 525,
           "legendaryStatus": "NORMAL"
         },
         "currentBid": null,
@@ -367,7 +366,6 @@
               "id": "jolteon",
               "name": "Jolteon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "baseStatTotal": 525,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 3,
@@ -460,7 +458,6 @@
               "id": "jolteon",
               "name": "Jolteon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "baseStatTotal": 525,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 3,
@@ -555,7 +552,6 @@
               "id": "jolteon",
               "name": "Jolteon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "baseStatTotal": 525,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 3,
@@ -649,7 +645,6 @@
               "id": "jolteon",
               "name": "Jolteon",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/135.png",
-              "baseStatTotal": 525,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 3,
@@ -749,7 +744,6 @@
               "id": "dragonair",
               "name": "Dragonair",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png",
-              "baseStatTotal": 420,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -881,7 +875,6 @@
               "id": "horsea",
               "name": "Horsea",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
-              "baseStatTotal": 295,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1062,7 +1055,6 @@
               "id": "horsea",
               "name": "Horsea",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/116.png",
-              "baseStatTotal": 295,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1252,7 +1244,6 @@
               "id": "kakuna",
               "name": "Kakuna",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
-              "baseStatTotal": 205,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -1456,7 +1447,6 @@
               "id": "kakuna",
               "name": "Kakuna",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
-              "baseStatTotal": 205,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 2,
@@ -1665,7 +1655,6 @@
               "id": "kakuna",
               "name": "Kakuna",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
-              "baseStatTotal": 205,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 2,
@@ -1881,7 +1870,6 @@
               "id": "pidgey",
               "name": "Pidgey",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
-              "baseStatTotal": 251,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -2126,7 +2114,6 @@
               "id": "pidgey",
               "name": "Pidgey",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
-              "baseStatTotal": 251,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,
@@ -2379,7 +2366,6 @@
               "id": "pidgey",
               "name": "Pidgey",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
-              "baseStatTotal": 251,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": 3,
@@ -2638,7 +2624,6 @@
               "id": "eevee",
               "name": "Eevee",
               "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png",
-              "baseStatTotal": 325,
               "legendaryStatus": "NORMAL"
             },
             "currentBid": null,

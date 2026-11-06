@@ -30,6 +30,18 @@ public final class PokemonTeamAuctionTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record TeamAuctionPokemon(String id, String name, String sprite, int baseStatTotal, String legendaryStatus) {}
 
+  /**
+   * El lote en subasta en la vista pública: el Pokémon sin su BST, que no se enseña mientras se puja (sí al ganarlo,
+   * en el equipo y en los lotes cerrados).
+   */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record TeamAuctionLotPokemon(String id, String name, String sprite, String legendaryStatus) {
+    static TeamAuctionLotPokemon of(TeamAuctionPokemon pokemon) {
+      return new TeamAuctionLotPokemon(pokemon.id(), pokemon.name(), pokemon.sprite(), pokemon.legendaryStatus());
+    }
+  }
+
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record TeamAuctionLotResult(int lotNumber, TeamAuctionPokemon pokemon, @Nullable String winnerId, int bid) {
@@ -274,7 +286,7 @@ public final class PokemonTeamAuctionTypes {
       GamePhase phase,
       int lotNumber,
       int totalLots,
-      @Nullable TeamAuctionPokemon currentPokemon,
+      @Nullable TeamAuctionLotPokemon currentPokemon,
       @Nullable Integer currentBid,
       int minimumBid,
       @Nullable String currentBidderId,

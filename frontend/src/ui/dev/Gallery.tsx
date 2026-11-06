@@ -12,6 +12,7 @@ import { Avatar } from '../../components/Avatar';
 import { AvatarStack } from '../../components/AvatarStack';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ServerTimer } from '../../components/ServerTimer';
+import { AuctionLot, AuctionPrevious, BidControls, bidBlock, turnOrderEntries, type BidBlockInput } from '../../room/auction-kit';
 import { ConfigRange } from '../../room/ConfigRange';
 import { playerColor } from '../../room/player-color';
 import { PokemonSelector } from '../../room/PokemonSelector';
@@ -572,6 +573,11 @@ function TimerSection() {
           <Timer endsAt={NOW + 3_000} now={NOW} totalMs={30_000} />
         </span>
       </Fig>
+      <Fig id="timer-long-label" caption="Etiqueta larga (el turno de la subasta): puntos suspensivos">
+        <span className={s.barBox}>
+          <Timer endsAt={NOW + 13_000} now={NOW} totalMs={20_000} label="Turno de Bartolomeo_Entrenador" showLabel />
+        </span>
+      </Fig>
       <Fig id="timer-idle" caption="Sin temporizador">
         <span className={s.barBox}>
           <Timer endsAt={null} now={NOW} totalMs={30_000} />
@@ -1022,6 +1028,32 @@ function GenerationSelectorDemo() {
   return <GenerationSelector selected={generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={setGenerations} />;
 }
 
+const AUCTION_NAMES: Record<string, string> = { a: 'JejeGOz', b: 'Sitogc19', c: 'eru' };
+const auctionName = (id: string) => AUCTION_NAMES[id] ?? 'Entrenador';
+const AUCTION_WAIT: BidBlockInput = { participating: true, open: true, canRaise: false, canPass: false, leading: true, min: 4, max: 17, turnName: 'JejeGOz',
+  texts: { leading: { title: 'Le toca a JejeGOz', text: 'Tú vas ganando con 3 monedas.' } } };
+
+/** Kit de subasta: el estado de la puja en una tarjeta (con el orden de turno y el lote anterior) y la placa sin tu turno. */
+function AuctionSection() {
+  return (
+    <Section name="auction" title="Kit de subasta">
+      <Fig id="auction-lot-status" caption="Estado de la puja · va ganando eru (Tú), le toca a Sitogc19, JejeGOz pasó; lote anterior encima" wide cream>
+        <AuctionLot kicker="En subasta" item={<Card size="fill" name="Liepard" number={510} />} currentBid={3} minimumBid={4}
+          leader={{ name: 'eru', self: true }} order={turnOrderEntries({ order: ['a', 'b', 'c'], turnId: 'b', passedIds: ['a'], leaderId: 'c' }, auctionName, 'c')}
+          previous={<AuctionPrevious kicker="Lote 1" item="Vulpix" winner="Sitogc19" detail="2 monedas" />} />
+      </Fig>
+      <Fig id="auction-lot-empty" caption="Estado de la puja · sin pujas (puja mínima) y lote anterior sin dueño" wide cream>
+        <AuctionLot kicker="En subasta" item={<Card size="fill" name="Liepard" number={510} />} currentBid={null} minimumBid={1} leader={null}
+          order={turnOrderEntries({ order: ['a', 'b', 'c'], turnId: 'a', passedIds: [], leaderId: null }, auctionName, 'c')}
+          previous={<AuctionPrevious kicker="Lote 1" item="Mewtwo" winner={null} detail="sin dueño" />} />
+      </Fig>
+      <Fig id="auction-controls-idle" caption="Placa de la puja · sin tu turno: el mensaje y el presupuesto, sin controles grises" wide>
+        <BidControls titleRef={{ current: null }} block={bidBlock(AUCTION_WAIT)} min={4} max={17} epoch={1} budget={17} onBid={asyncNoop} onPass={asyncNoop} />
+      </Fig>
+    </Section>
+  );
+}
+
 function GamePiecesSection() {
   // Plazo fijo al montar: el número corre, pero no depende de cuándo se capture.
   const [deadline] = useState(() => Date.now() + 45_000);
@@ -1144,6 +1176,7 @@ export function Gallery() {
       <ConfettiSection />
       <ScreenTransitionSection />
       <ScreenSplitSection />
+      <AuctionSection />
       <GamePiecesSection />
       <ToastStack toasts={toasts} onClose={close} />
     </main>
