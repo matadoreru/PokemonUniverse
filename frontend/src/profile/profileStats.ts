@@ -15,9 +15,15 @@ export function winRate(won: number, played: number): string {
 /** Métrica por juego que el servidor suma en cada partida sin clasificación de victorias (cooperativa). */
 export const UNRANKED_GAMES_PLAYED = 'unrankedGamesPlayed';
 
-/** Métricas guardadas visibles en el perfil: {@code unrankedGamesPlayed} es interna (descuenta partidas del winrate). */
-export function visibleStoredMetrics<T extends { key: string }>(metrics: readonly T[]): T[] {
-  return metrics.filter((metric) => metric.key !== UNRANKED_GAMES_PLAYED);
+/** Récord de Racha infinita: cada partida de Higher or Lower lo escribe (a 0 si no se jugó esa variante). */
+const ENDLESS_BEST_STREAK = 'endlessBestStreak';
+
+/**
+ * Métricas guardadas visibles en el perfil: {@code unrankedGamesPlayed} es interna (descuenta partidas del winrate) y
+ * el récord de Racha infinita se oculta mientras vale 0 (quien nunca la jugó no debe ver «0»); para ello hacen falta los valores.
+ */
+export function visibleStoredMetrics<T extends { key: string }>(metrics: readonly T[], values: Record<string, number> = {}): T[] {
+  return metrics.filter((metric) => metric.key !== UNRANKED_GAMES_PLAYED && !(metric.key === ENDLESS_BEST_STREAK && !values[metric.key]));
 }
 
 function unranked(metrics: Record<string, number>): number {

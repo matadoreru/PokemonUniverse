@@ -1,12 +1,14 @@
 import type { LevelProgress, UserProfileResponse } from '@pokemon-universe/shared/public';
 import { ChevronDown } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { AchievementsPanel } from '../achievements/AchievementsPanel';
 import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
+import type { AchievementsResponse } from '../lib/api-contract';
 import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames, visibleStoredMetrics } from '../profile/profileStats';
-import { Bar, cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
+import { Bar, cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, TabPanel, Tabs, type StateBoxProps } from '../ui';
 import { GameArt } from '../games/GameArt';
 import tone from '../styles/tones.module.css';
 
@@ -49,7 +51,7 @@ function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
   const items: [string, string][] = [
     ['Victorias', String(stats.gamesWon)],
     ['Winrate', gameWinRate(stats)],
-    ...visibleStoredMetrics(profileStats.metrics).map((metric): [string, string] => [metric.label, formatStoredMetric(metric, stats.metrics[metric.key] ?? 0)]),
+    ...visibleStoredMetrics(profileStats.metrics, stats.metrics).map((metric): [string, string] => [metric.label, formatStoredMetric(metric, stats.metrics[metric.key] ?? 0)]),
     ...(profileStats.derivedMetrics ?? []).map((metric): [string, string] => [metric.label, formatDerivedMetric(metric, stats.metrics)]),
   ];
   return (
@@ -64,6 +66,42 @@ function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
   );
 }
 
+
+export type ProfileTab = 'estadisticas' | 'logros';
+
+/** Pestaña que abre el parámetro `?tab=`: solo «logros» cambia la de por defecto. */
+export function tabFromParam(value: string | null): ProfileTab {
+  return value === 'logros' ? 'logros' : 'estadisticas';
+}
+
+/** Los logros de la cuenta: cargando, con su respuesta o fallidos (la pestaña «Estadísticas» no depende de ello). */
+export type AchievementsState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; data: AchievementsResponse };
+
+/**
+ * Panel derecho del perfil: pestañas «Estadísticas» y «Logros» (esta con la insignia desbloqueados/total). Si los logros
+ * fallan, solo su pestaña muestra el error con «Reintentar».
+ */
+export function ProfileDetail({ tab, onTab, achievements, onRetry, children }: { tab: ProfileTab; onTab: (tab: ProfileTab) => void; achievements: AchievementsState; onRetry: () => void; children: ReactNode }) {
+  const badge = achievements.status === 'ready' ? `${achievements.data.unlocked}/${achievements.data.total}` : undefined;
+  return (
+    <Panel title={tab === 'logros' ? 'Logros' : 'Estadísticas por juego'} scroll className="lg:min-h-0">
+      <Tabs
+        idBase="perfil"
+        label="Secciones del perfil"
+        active={tab}
+        onChange={onTab}
+        items={[{ key: 'estadisticas', label: 'Estadísticas' }, { key: 'logros', label: 'Logros', ...(badge ? { badge } : {}) }]}
+      />
+      <TabPanel idBase="perfil" tabKey={tab}>
+        {tab === 'estadisticas' ? children
+          : achievements.status === 'ready' ? <AchievementsPanel data={achievements.data} />
+          : achievements.status === 'error' ? <StateBox kind="error" onCream title="No se pudieron cargar tus logros" text="Comprueba la conexión y vuelve a intentarlo." action={{ label: 'Reintentar', onClick: onRetry }} />
+          : <StateBox kind="loading" onCream title="Cargando logros" />}
+      </TabPanel>
+    </Panel>
+  );
+}
+
 /**
  * Perfil (spec §2, página larga): a la izquierda (arriba en móvil) la placa con el avatar grande, su píldora de
  * cámara para el editor, el nombre y la fecha de alta, y el resumen global; a la derecha (abajo en móvil) las
@@ -75,6 +113,9 @@ export function ProfilePage() {
   const [profile, setProfile] = useState<UserProfileResponse | null>(null);
   const [failed, setFailed] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [params, setParams] = useSearchParams();
+  const tab = tabFromParam(params.get('tab'));
+  const [achievements, setAchievements] = useState<AchievementsState>({ status: 'loading' });
 
   const load = useCallback(() => {
     setFailed(false);
@@ -86,7 +127,15 @@ export function ProfilePage() {
       })
       .catch(() => setFailed(true));
   }, [syncLevel]);
-  useEffect(() => { if (user?.kind === 'USER') load(); }, [user?.id, user?.kind, load]);
+  // Los logros se piden a la vez que el perfil: un fallo suyo no tumba las estadísticas.
+  const loadAchievements = useCallback(() => {
+    setAchievements({ status: 'loading' });
+    void api<AchievementsResponse>('/achievements')
+      .then((data) => setAchievements({ status: 'ready', data }))
+      .catch(() => setAchievements({ status: 'error' }));
+  }, []);
+  useEffect(() => { if (user?.kind === 'USER') { load(); loadAchievements(); } }, [user?.id, user?.kind, load, loadAchievements]);
+  const changeTab = (next: ProfileTab) => setParams(next === 'logros' ? { tab: 'logros' } : {}, { replace: true });
   const games = useMemo(() => sortProfileGames(profile?.games ?? []), [profile]);
 
   if (user?.kind !== 'USER') return <Navigate to="/play" replace />;
@@ -136,10 +185,10 @@ export function ProfilePage() {
         </Panel>
       </div>
 
-      <Panel title="Estadísticas por juego" right={played ? `${played} ${played === 1 ? 'jugado' : 'jugados'}` : undefined} scroll className="lg:min-h-0">
+      <ProfileDetail tab={tab} onTab={changeTab} achievements={achievements} onRetry={loadAchievements}>
         {played === 0 && (
           <div className="mb-3">
-            <StateBox kind="empty" title="Todavía no has jugado ninguna partida" text="Crea una sala, invita a tus amigos y elige un minijuego: tus estadísticas aparecerán aquí." action={{ label: 'Ir a jugar', onClick: () => navigate('/play') }} />
+            <StateBox kind="empty" onCream title="Todavía no has jugado ninguna partida" text="Crea una sala, invita a tus amigos y elige un minijuego: tus estadísticas aparecerán aquí." action={{ label: 'Ir a jugar', onClick: () => navigate('/play') }} />
           </div>
         )}
         <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 p-1" aria-label="Minijuegos">
@@ -173,7 +222,7 @@ export function ProfilePage() {
             );
           })}
         </ul>
-      </Panel>
+      </ProfileDetail>
       </div>
     </Screen>
   );

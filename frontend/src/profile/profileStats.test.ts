@@ -32,6 +32,13 @@ describe('profile stats', () => {
     expect(visibleStoredMetrics(metrics).map((metric) => metric.key)).toEqual(['coopGamesPlayed', 'coopFinds']);
   });
 
+  it('hides the endless streak record while it is 0', () => {
+    const metrics = [{ key: 'correct' }, { key: 'endlessBestStreak' }];
+    expect(visibleStoredMetrics(metrics, { correct: 3, endlessBestStreak: 0 }).map((metric) => metric.key)).toEqual(['correct']);
+    expect(visibleStoredMetrics(metrics, { correct: 3 }).map((metric) => metric.key)).toEqual(['correct']);
+    expect(visibleStoredMetrics(metrics, { endlessBestStreak: 14 }).map((metric) => metric.key)).toEqual(['correct', 'endlessBestStreak']);
+  });
+
   it('formats stored and derived metrics', () => {
     expect(formatStoredMetric({ key: 't', label: 'T', aggregation: 'MIN', format: 'DURATION_MS' }, 1234)).toBe('1,2 s');
     expect(formatStoredMetric({ key: 'n', label: 'N', aggregation: 'SUM' }, 12)).toBe('12');

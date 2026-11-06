@@ -124,6 +124,27 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await expect(page.getByRole('button', { name: /^Ocultar estadísticas de / })).toHaveCount(0);
     await page.unroute('**/api/auth/profile');
 
+    // Pestaña «Logros» (`?tab=logros`): la respuesta real con dos logros desbloqueados (uno general y un secreto) para ver los tres estados.
+    await page.route('**/api/achievements', async (route) => {
+      const respuesta = await route.fetch();
+      const json = (await respuesta.json()) as { unlocked: number; achievements: { family: string; unlockedAt: string | null }[] };
+      let puestos = 0;
+      json.achievements = json.achievements.map((logro) => {
+        if (puestos < 2 && logro.unlockedAt === null && (logro.family === 'GENERAL' || (logro.family === 'GAME' && puestos === 1))) { puestos += 1; return { ...logro, unlockedAt: '2026-11-07T10:00:00Z' }; }
+        return logro;
+      });
+      json.unlocked = puestos;
+      await route.fulfill({ response: respuesta, json });
+    });
+    await page.goto('/profile?tab=logros');
+    await expect(page.getByRole('tab', { name: /^Logros/, selected: true })).toBeVisible();
+    await expect(page.getByText('Conseguido el 7 nov 2026').first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Secretos' })).toBeVisible();
+    await capturarPagina(page, 'perfil-logros');
+    await page.getByRole('tab', { name: 'Estadísticas' }).click();
+    await expect(page.getByText('Todavía no has jugado ninguna partida')).toBeVisible();
+    await page.unroute('**/api/achievements');
+
     // El avatar sale en la lista de jugadores de la sala y la imagen carga.
     await page.goto('/play');
     const code = await createRoom(page);
