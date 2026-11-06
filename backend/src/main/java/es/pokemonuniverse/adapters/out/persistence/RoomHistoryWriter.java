@@ -1,5 +1,10 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
+import es.pokemonuniverse.application.achievements.AchievementsUnlocked;
+import es.pokemonuniverse.application.achievements.AchievementsUnlocked.AchievementUnlock;
+import es.pokemonuniverse.application.achievements.AchievementsUnlocked.PersonalRecord;
+import es.pokemonuniverse.domain.achievements.AchievementCatalog;
+import es.pokemonuniverse.domain.achievements.AchievementFacts;
 import es.pokemonuniverse.domain.game.GameManifest.MetricDefinition;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
@@ -9,7 +14,9 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 import jakarta.persistence.EntityManager;
+import java.time.Clock;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +41,26 @@ public class RoomHistoryWriter {
    */
   static final String UNRANKED_GAMES_PLAYED = "unrankedGamesPlayed";
 
-  private final EntityManager entityManager;
+  /** Récord personal que se avisa: la mejor racha de Higher or Lower en Racha infinita. */
+  static final String RECORD_GAME = "higher-lower";
+  static final String RECORD_MODE = "ENDLESS";
+  static final String RECORD_KEY = "endlessBestStreak";
+  static final String RECORD_LABEL = "Récord en Racha infinita";
+  /** Partidas completadas que mira «Fiel». */
+  static final int RECENT_GAMES = 10;
+  /** Juegos de las últimas partidas completadas de la cuenta, la más reciente primero («Fiel» de la spec). */
+  static final String RECENT_GAME_IDS = "SELECT h.\"gameId\" FROM \"PlayerGameResult\" p "
+      + "JOIN \"GameHistory\" h ON h.id = p.\"historyId\" WHERE p.\"userId\" = ?1 AND h.status = 'COMPLETED' "
+      + "ORDER BY h.\"endedAt\" DESC LIMIT " + RECENT_GAMES;
 
-  public RoomHistoryWriter(EntityManager entityManager) {
+  private final EntityManager entityManager;
+  private final AchievementCatalog catalog;
+  private final Clock clock;
+
+  public RoomHistoryWriter(EntityManager entityManager, AchievementCatalog catalog, Clock clock) {
     this.entityManager = entityManager;
+    this.catalog = catalog;
+    this.clock = clock;
   }
 
   @Transactional
@@ -98,14 +121,20 @@ public class RoomHistoryWriter {
    * (una partida {@code COMPLETED} no se vuelve a contar). El {@code HibernateTransactionManager} de Micronaut no admite
    * {@code isolation} en {@code @Transactional}; {@code SET TRANSACTION} como primera sentencia la fija solo para esta
    * transacción, sin tocar la conexión del pool.
+   *
+   * <p>Después de las estadísticas de cada jugador registrado evalúa el catálogo de logros e inserta los cumplidos en
+   * la misma transacción. Devuelve, por {@code userId}, solo las cuentas con algún logro o récord nuevo; un mapa vacío
+   * si la partida ya estaba {@code COMPLETED}. Un intento revertido no deja filas y el reintento lo recalcula todo.
    */
   @Transactional
-  public void persistResults(String historyId, String roomCode, GameResults results, List<StandingRow> standings,
+  public Map<String, AchievementsUnlocked> persistResults(String historyId, String roomCode, GameResults results, List<StandingRow> standings,
       String resultId, Instant startedAt, String gameId, Map<String, Object> config, List<MetricDefinition> metrics) {
     serializable();
     var existing = findGame(resultId);
-    if (existing != null && existing.getStatus() == GameHistoryStatus.COMPLETED) return;
-    var now = Instant.now();
+    if (existing != null && existing.getStatus() == GameHistoryStatus.COMPLETED) return Map.of();
+    var now = Instant.now(clock);
+    var mode = config.get("mode") instanceof String value ? value : null;
+    var unlocked = new LinkedHashMap<String, AchievementsUnlocked>();
     GameHistoryEntity history;
     if (existing != null) {
       existing.complete(now);
@@ -142,17 +171,60 @@ public class RoomHistoryWriter {
       var gameStats = entityManager.createQuery("select s from UserGameStatsEntity s where s.userId = :userId "
               + "and s.gameId = :gameId", UserGameStatsEntity.class)
           .setParameter("userId", userId).setParameter("gameId", gameId).getResultStream().findFirst().orElse(null);
+      var previousMetrics = gameStats == null ? null : gameStats.getMetrics();
+      var merged = MetricsMerge.merge(previousMetrics, gameMetrics, metrics);
       if (gameStats == null) {
         entityManager.persist(UserGameStatsEntity.create(newId(), userId, gameId, 1, ranked && won ? 1 : 0,
-            standing.points(),
-            MetricsMerge.merge(null, gameMetrics, metrics)));
+            standing.points(), merged));
       } else {
-        var merged = MetricsMerge.merge(gameStats.getMetrics(), gameMetrics, metrics);
         if (ranked) gameStats.addGame(won, standing.points(), merged);
         else gameStats.addUnrankedGame(standing.points(), merged);
       }
+      var news = evaluate(userId, gameId, mode, standing, results, ranked && won, userStats, previousMetrics, merged,
+          now);
+      if (!news.achievements().isEmpty() || !news.records().isEmpty()) unlocked.put(userId, news);
     }
     entityManager.flush();
+    return unlocked;
+  }
+
+  /**
+   * Logros y récord de un jugador registrado con sus estadísticas ya actualizadas: vuelca la sesión para que las
+   * lecturas vean esta partida, evalúa el catálogo e inserta los cumplidos con SQL nativo ({@code ON CONFLICT DO
+   * NOTHING}, nunca {@code persist}, para no provocar 23505).
+   */
+  private AchievementsUnlocked evaluate(String userId, String gameId, @Nullable String mode, GameStanding standing,
+      GameResults results, boolean won, UserStatsEntity userStats, @Nullable Map<String, Object> previousMetrics,
+      Map<String, Object> mergedMetrics, Instant now) {
+    entityManager.flush();
+    var winsByGame = new HashMap<String, Integer>();
+    entityManager.createQuery("select s from UserGameStatsEntity s where s.userId = :userId",
+            UserGameStatsEntity.class)
+        .setParameter("userId", userId).getResultList()
+        .forEach(stats -> winsByGame.put(stats.getGameId(), stats.getGamesWon()));
+    @SuppressWarnings("unchecked")
+    List<String> recentGameIds = entityManager.createNativeQuery(RECENT_GAME_IDS).setParameter(1, userId)
+        .getResultList();
+    var facts = AchievementFacts.of(gameId, mode, standing, results, won, userStats.getGamesPlayed(),
+        userStats.getGamesWon(), userStats.getXp(), winsByGame, recentGameIds, now);
+    var inserted = UserAchievementInserts.insertMissing(entityManager, userId, catalog.met(facts), now);
+    var achievements = inserted.stream()
+        .map(id -> AchievementUnlock.of(catalog.byId(id).orElseThrow())).toList();
+    return new AchievementsUnlocked(achievements, personalRecords(gameId, mode, previousMetrics, mergedMetrics));
+  }
+
+  /** Solo Higher or Lower en {@code ENDLESS}: {@code endlessBestStreak} antes y después de fusionar, si sube. */
+  private static List<PersonalRecord> personalRecords(String gameId, @Nullable String mode,
+      @Nullable Map<String, Object> previousMetrics, Map<String, Object> mergedMetrics) {
+    if (!RECORD_GAME.equals(gameId) || !RECORD_MODE.equals(mode)) return List.of();
+    long previous = longMetric(previousMetrics, RECORD_KEY);
+    long value = longMetric(mergedMetrics, RECORD_KEY);
+    if (value <= previous) return List.of();
+    return List.of(new PersonalRecord(RECORD_GAME, RECORD_KEY, RECORD_LABEL, value, previous));
+  }
+
+  private static long longMetric(@Nullable Map<String, Object> metrics, String key) {
+    return metrics != null && metrics.get(key) instanceof Number number ? number.longValue() : 0;
   }
 
   /** Estadísticas del motor más {@code unrankedGamesPlayed = 1}; solo para las métricas por juego del usuario. */

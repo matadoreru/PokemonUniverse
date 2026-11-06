@@ -100,7 +100,8 @@ class JpaGameResultsPersisterTest {
     assertTrue(userStats.findById(guest.id()).isEmpty());
     var gameStats = userGameStats.findByUserId(user.id());
     assertEquals(1, gameStats.size());
-    assertEquals(Map.of("correct", 3, "incorrect", 1, "sameCorrect", 0, "bestStreak", 2),
+    assertEquals(Map.of("correct", 3, "incorrect", 1, "sameCorrect", 0, "bestStreak", 2,
+        "endlessBestStreak", 0),
         intValues(gameStats.getFirst().getMetrics()));
   }
 
@@ -277,7 +278,8 @@ class JpaGameResultsPersisterTest {
     var gameStats = userGameStats.findByUserId(user.id());
     assertEquals(1, gameStats.size());
     assertEquals(2, gameStats.getFirst().getGamesPlayed());
-    assertEquals(Map.of("correct", 3, "incorrect", 0, "sameCorrect", 0, "bestStreak", 2),
+    assertEquals(Map.of("correct", 3, "incorrect", 0, "sameCorrect", 0, "bestStreak", 2,
+        "endlessBestStreak", 0),
         intValues(gameStats.getFirst().getMetrics()));
   }
 
