@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.application.assets.AssetSourceLoader;
 import es.pokemonuniverse.application.assets.LoadedAsset;
 import es.pokemonuniverse.application.ports.SpriteStorage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,7 @@ class StoredSpriteSourceLoaderTest {
     final Map<String, byte[]> files = new HashMap<>();
     boolean failReads;
     boolean failWrites;
+    final AtomicInteger writes = new AtomicInteger();
 
     @Override
     public Optional<byte[]> read(String name) {
@@ -31,8 +33,14 @@ class StoredSpriteSourceLoaderTest {
 
     @Override
     public void write(String name, byte[] body) {
+      writes.incrementAndGet();
       if (failWrites) throw new IllegalStateException("disco lleno");
       files.put(name, body);
+    }
+
+    @Override
+    public String location() {
+      return "/app/.data/sprite-cache";
     }
   }
 
@@ -90,6 +98,27 @@ class StoredSpriteSourceLoaderTest {
     assertArrayEquals(PNG, loader.fetch(SOURCE).body());
     assertEquals(2, origin.calls.get());
     assertArrayEquals(PNG, storage.files.get(name));
+  }
+
+  @Test
+  void aFailedWriteWarnsOnceAndStopsWritingButKeepsReading() {
+    var storage = new MemoryStorage();
+    var origin = new Origin();
+    var warnings = new ArrayList<String>();
+    var loader = new StoredSpriteSourceLoader(origin, storage, warnings::add);
+    loader.fetch(SOURCE);
+    storage.failWrites = true;
+
+    for (int i = 2; i < 50; i++) loader.fetch(SOURCE.replace("1.png", i + ".png"));
+
+    assertEquals(1, warnings.size());
+    assertTrue(warnings.get(0).contains("/app/.data/sprite-cache"), warnings.get(0));
+    assertTrue(warnings.get(0).contains("SPRITE_CACHE_DIR"), warnings.get(0));
+    assertEquals(2, storage.writes.get(), "tras el primer fallo no se vuelve a escribir");
+    // Lo que ya estaba en disco se sigue leyendo sin ir al origen.
+    var before = origin.calls.get();
+    loader.fetch(SOURCE);
+    assertEquals(before, origin.calls.get());
   }
 
   @Test

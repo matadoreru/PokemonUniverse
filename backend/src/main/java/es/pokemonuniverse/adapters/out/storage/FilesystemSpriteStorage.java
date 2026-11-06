@@ -53,6 +53,11 @@ public final class FilesystemSpriteStorage implements SpriteStorage {
     }
   }
 
+  @Override
+  public String location() {
+    return dir.toAbsolutePath().toString();
+  }
+
   private Path resolve(String name) {
     if (!NAME.matcher(name).matches()) throw new IllegalArgumentException("Invalid sprite filename");
     return dir.resolve(name);

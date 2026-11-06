@@ -13,4 +13,7 @@ public interface SpriteStorage {
 
   /** Sustituye el fichero de forma atómica: nunca se lee uno a medio escribir. */
   void write(String name, byte[] body);
+
+  /** Dónde se guardan (para los avisos). */
+  String location();
 }

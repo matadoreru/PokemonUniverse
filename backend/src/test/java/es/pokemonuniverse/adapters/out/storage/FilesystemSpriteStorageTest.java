@@ -41,6 +41,20 @@ class FilesystemSpriteStorageTest {
   }
 
   @Test
+  void aReadOnlyDirectoryFailsTheWriteAndReportsItsLocation() throws Exception {
+    var target = dir.resolve("sprite-cache");
+    Files.createDirectories(target);
+    assertTrue(target.toFile().setWritable(false));
+    try {
+      var storage = new FilesystemSpriteStorage(target);
+      assertThrows(java.io.UncheckedIOException.class, () -> storage.write(NAME, new byte[] {1}));
+      assertEquals(target.toAbsolutePath().toString(), storage.location());
+    } finally {
+      target.toFile().setWritable(true);
+    }
+  }
+
+  @Test
   void rejectsNamesOutsideTheCache() {
     var storage = new FilesystemSpriteStorage(dir);
 
