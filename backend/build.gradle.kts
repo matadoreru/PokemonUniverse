@@ -63,6 +63,8 @@ dependencies {
 
   testImplementation("io.micronaut:micronaut-http-client")
   testImplementation("org.yaml:snakeyaml")
+  // ListAppender: los tests que comprueban un WARN leen los eventos de logback.
+  testImplementation("ch.qos.logback:logback-classic")
   // Paridad de esquema Flyway/Prisma y arranque de FlywayMigrations: contenedor propio (pg_dump dentro) y varias BD.
   testImplementation("org.testcontainers:testcontainers-postgresql")
   testImplementation("org.postgresql:postgresql")

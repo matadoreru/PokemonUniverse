@@ -670,9 +670,14 @@ public class RoomCoordinator {
     roomActivity(member.identity);
     var game = room.game;
     if (game != null && claimGameFinish(room, game, GameFinishReason.ABANDONED)) {
-      var daily = room.daily;
-      pending.track(dailyRuns.abandoned(daily).exceptionally(error -> logged("Failed to record abandoned daily run",
-          error)));
+      // Como en finishDailyGame: un fallo síncrono del oyente se registra y no escapa de leave().
+      CompletableFuture<Void> recorded;
+      try {
+        recorded = dailyRuns.abandoned(room.daily);
+      } catch (RuntimeException error) {
+        recorded = CompletableFuture.failedFuture(error);
+      }
+      pending.track(recorded.exceptionally(error -> logged("Failed to record abandoned daily run", error)));
     }
   }
 

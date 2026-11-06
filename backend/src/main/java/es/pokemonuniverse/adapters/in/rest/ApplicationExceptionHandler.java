@@ -1,8 +1,11 @@
 package es.pokemonuniverse.adapters.in.rest;
 
+import es.pokemonuniverse.application.daily.DailyException;
+import es.pokemonuniverse.application.daily.DailyForbiddenException;
 import es.pokemonuniverse.application.errors.ApplicationException;
 import es.pokemonuniverse.application.errors.BadRequestException;
 import es.pokemonuniverse.application.errors.ConflictException;
+import es.pokemonuniverse.application.errors.ForbiddenException;
 import es.pokemonuniverse.application.errors.InvalidResetLinkException;
 import es.pokemonuniverse.application.errors.NotFoundException;
 import es.pokemonuniverse.application.errors.UnauthorizedException;
@@ -26,8 +29,11 @@ public class ApplicationExceptionHandler implements ExceptionHandler<Application
       // Subclases fuera de este paquete: van antes que su clase base.
       case FriendRequestException e -> HttpStatus.BAD_REQUEST;
       case FriendNotFoundException e -> HttpStatus.NOT_FOUND;
+      case DailyException e -> HttpStatus.BAD_REQUEST;
+      case DailyForbiddenException e -> HttpStatus.FORBIDDEN;
       case BadRequestException e -> HttpStatus.BAD_REQUEST;
       case ConflictException e -> HttpStatus.CONFLICT;
+      case ForbiddenException e -> HttpStatus.FORBIDDEN;
       case InvalidResetLinkException e -> HttpStatus.BAD_REQUEST;
       case NotFoundException e -> HttpStatus.NOT_FOUND;
       case UnauthorizedException e -> HttpStatus.UNAUTHORIZED;
