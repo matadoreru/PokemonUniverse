@@ -315,6 +315,11 @@
           "key": "coopGamesPlayed",
           "label": "Partidas cooperativas",
           "aggregation": "SUM"
+        },
+        {
+          "key": "unrankedGamesPlayed",
+          "label": "Partidas sin clasificar",
+          "aggregation": "SUM"
         }
       ],
       "derivedMetrics": [

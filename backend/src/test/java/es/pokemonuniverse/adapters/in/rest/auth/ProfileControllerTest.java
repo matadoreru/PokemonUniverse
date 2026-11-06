@@ -147,6 +147,27 @@ class ProfileControllerTest {
     assertEquals(0, map(games.get(1).get("stats")).get("gamesPlayed"));
   }
 
+  /**
+   * El porcentaje de victorias se calcula en la web como {@code gamesWon / (gamesPlayed − unrankedGamesPlayed)}: el
+   * perfil tiene que mandar la métrica de partidas sin clasificar de Type Duel y declararla en sus {@code profileStats}.
+   */
+  @Test
+  @SuppressWarnings("unchecked")
+  void profileSendsTheUnrankedGamesPlayedOfTypeDuel() {
+    var s = register();
+    gameStats.save(UserGameStatsEntity.create(UUID.randomUUID().toString(), s.id(), "type-duel", 3, 1, 9,
+        Map.of("duelsPlayed", 2, "coopGamesPlayed", 1, "unrankedGamesPlayed", 1)));
+    var games = (List<Map<String, Object>>) profile(s).get("games");
+    var typeDuel = games.stream().filter(g -> "type-duel".equals(g.get("id"))).findFirst().orElseThrow();
+    var stats = map(typeDuel.get("stats"));
+    assertEquals(3, stats.get("gamesPlayed"));
+    assertEquals(1, stats.get("gamesWon"));
+    assertEquals(1, map(stats.get("metrics")).get("unrankedGamesPlayed"));
+    var declared = (List<Map<String, Object>>) map(typeDuel.get("profileStats")).get("metrics");
+    var unranked = declared.stream().filter(m -> "unrankedGamesPlayed".equals(m.get("key"))).findFirst().orElseThrow();
+    assertEquals("SUM", unranked.get("aggregation"));
+  }
+
   @Test
   void customAvatarIsExposedWithVersion() {
     var s = register();

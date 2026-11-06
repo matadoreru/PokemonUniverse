@@ -1,10 +1,30 @@
 import { describe, expect, it } from 'vitest';
-import { formatDerivedMetric, formatStoredMetric, sortProfileGames, winRate } from './profileStats';
+import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames, winRate } from './profileStats';
 
 describe('profile stats', () => {
   it('rounds the win rate and shows 0 % with no games', () => {
     expect(winRate(2, 3)).toBe('67 %');
     expect(winRate(0, 0)).toBe('0 %');
+  });
+
+  it('computes the win rate of a game over its ranked games only', () => {
+    // 4 jugadas, 1 cooperativa: 2 ganadas de 3 clasificadas.
+    expect(gameWinRate({ gamesPlayed: 4, gamesWon: 2, metrics: { unrankedGamesPlayed: 1 } })).toBe('67 %');
+    expect(gameWinRate({ gamesPlayed: 3, gamesWon: 1, metrics: {} })).toBe('33 %');
+    // Solo cooperativas: ninguna clasificada, 0 % y no NaN.
+    expect(gameWinRate({ gamesPlayed: 2, gamesWon: 0, metrics: { unrankedGamesPlayed: 2 } })).toBe('0 %');
+  });
+
+  it('computes the global win rate without the unranked games of every game', () => {
+    const games = [
+      { stats: { metrics: { unrankedGamesPlayed: 2 } } },
+      { stats: { metrics: { correct: 5 } } },
+      { stats: { metrics: { unrankedGamesPlayed: 1 } } },
+    ];
+    // 7 jugadas, 3 sin clasificar: 2 ganadas de 4.
+    expect(globalWinRate({ gamesPlayed: 7, gamesWon: 2 }, games)).toBe('50 %');
+    expect(globalWinRate({ gamesPlayed: 3, gamesWon: 0 }, games)).toBe('0 %');
+    expect(globalWinRate({ gamesPlayed: 0, gamesWon: 0 }, [])).toBe('0 %');
   });
 
   it('formats stored and derived metrics', () => {

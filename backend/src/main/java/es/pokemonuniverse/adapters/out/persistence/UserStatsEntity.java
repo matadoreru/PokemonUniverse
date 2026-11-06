@@ -59,12 +59,13 @@ public class UserStatsEntity {
     xp = Experience.add(xp, gained);
   }
 
-  /** Suma una partida ({@code increment} de Prisma). */
-  /** Partida sin clasificación de victorias (cooperativa): suma puntos, no partida jugada ni ganada. */
+  /** Partida sin clasificación de victorias (cooperativa): cuenta como jugada, nunca como ganada, y suma puntos. */
   public void addUnrankedGame(int points) {
+    gamesPlayed += 1;
     totalPoints += points;
   }
 
+  /** Suma una partida ({@code increment} de Prisma). */
   public void addGame(boolean won, int points) {
     gamesPlayed += 1;
     gamesWon += won ? 1 : 0;

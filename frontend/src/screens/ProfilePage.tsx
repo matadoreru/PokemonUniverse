@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { AvatarEditor } from '../components/AvatarEditor';
 import { api } from '../lib/api';
-import { formatDerivedMetric, formatStoredMetric, sortProfileGames, winRate } from '../profile/profileStats';
+import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, sortProfileGames } from '../profile/profileStats';
 import { Bar, cx, HudPlate, Panel, Pill, Row, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
 import { GameArt } from '../games/GameArt';
 import tone from '../styles/tones.module.css';
@@ -48,7 +48,7 @@ function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
   const { stats, profileStats } = game;
   const items: [string, string][] = [
     ['Victorias', String(stats.gamesWon)],
-    ['Winrate', winRate(stats.gamesWon, stats.gamesPlayed)],
+    ['Winrate', gameWinRate(stats)],
     ...profileStats.metrics.map((metric): [string, string] => [metric.label, formatStoredMetric(metric, stats.metrics[metric.key] ?? 0)]),
     ...(profileStats.derivedMetrics ?? []).map((metric): [string, string] => [metric.label, formatDerivedMetric(metric, stats.metrics)]),
   ];
@@ -130,7 +130,7 @@ export function ProfilePage() {
           <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             <Stat label="Partidas" value={globalStats.gamesPlayed} />
             <Stat label="Victorias" value={globalStats.gamesWon} />
-            <Stat label="Winrate" value={winRate(globalStats.gamesWon, globalStats.gamesPlayed)} />
+            <Stat label="Winrate" value={globalWinRate(globalStats, profile.games)} />
             <Stat label="Puntos" value={globalStats.totalPoints} />
           </div>
         </Panel>

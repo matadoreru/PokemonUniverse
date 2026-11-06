@@ -12,6 +12,27 @@ export function winRate(won: number, played: number): string {
   return `${played ? Math.round((won / played) * 100) : 0} %`;
 }
 
+/** Métrica por juego que el servidor suma en cada partida sin clasificación de victorias (cooperativa). */
+export const UNRANKED_GAMES_PLAYED = 'unrankedGamesPlayed';
+
+function unranked(metrics: Record<string, number>): number {
+  return metrics[UNRANKED_GAMES_PLAYED] ?? 0;
+}
+
+/** Porcentaje de victorias de un juego: solo sobre sus partidas clasificadas (jugadas − sin clasificar). */
+export function gameWinRate(stats: { gamesPlayed: number; gamesWon: number; metrics: Record<string, number> }): string {
+  return winRate(stats.gamesWon, Math.max(0, stats.gamesPlayed - unranked(stats.metrics)));
+}
+
+/** Porcentaje de victorias global: las partidas totales menos las sin clasificar de todos los juegos. */
+export function globalWinRate(
+  totals: { gamesPlayed: number; gamesWon: number },
+  games: readonly { stats: { metrics: Record<string, number> } }[],
+): string {
+  const unrankedTotal = games.reduce((sum, game) => sum + unranked(game.stats.metrics), 0);
+  return winRate(totals.gamesWon, Math.max(0, totals.gamesPlayed - unrankedTotal));
+}
+
 /** Métrica guardada tal cual: número entero o duración en segundos con un decimal. */
 export function formatStoredMetric(metric: ProfileMetricDefinition, value: number): string {
   return metric.format === 'DURATION_MS' ? duration(value) : integer.format(value);

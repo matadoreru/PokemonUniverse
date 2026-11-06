@@ -27,6 +27,8 @@ public class RoomHistoryWriter {
 
   /** Primera sentencia de la transacción de resultados; solo afecta a esa transacción. */
   static final String SERIALIZABLE = "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE";
+  /** Métrica genérica por juego: partidas sin clasificación de victorias, para descontarlas del porcentaje. */
+  static final String UNRANKED_GAMES_PLAYED = "unrankedGamesPlayed";
 
   private final EntityManager entityManager;
 
@@ -116,8 +118,10 @@ public class RoomHistoryWriter {
           row.identity().displayName(), standing.position(), standing.points(), new LinkedHashMap<>(standing.stats())));
       if (userId == null) continue;
       boolean won = standing.won() != null ? standing.won() : standing.playerId().equals(results.winnerId());
-      // Una partida sin clasificación de victorias (cooperativa) no cuenta como jugada ni como derrota.
+      // Una partida sin clasificación de victorias (cooperativa) cuenta como jugada, nunca como ganada; la métrica
+      // `unrankedGamesPlayed` la marca para que el porcentaje de victorias solo cuente las clasificadas.
       boolean ranked = results.isRanked();
+      Map<String, ? extends Number> gameMetrics = ranked ? standing.stats() : unrankedMetrics(standing.stats());
       int xp = Experience.xpForGame(standing.position(), standings.size());
       var userStats = entityManager.find(UserStatsEntity.class, userId);
       if (userStats == null) {
@@ -135,16 +139,23 @@ public class RoomHistoryWriter {
               + "and s.gameId = :gameId", UserGameStatsEntity.class)
           .setParameter("userId", userId).setParameter("gameId", gameId).getResultStream().findFirst().orElse(null);
       if (gameStats == null) {
-        entityManager.persist(UserGameStatsEntity.create(newId(), userId, gameId, ranked ? 1 : 0, ranked && won ? 1 : 0,
+        entityManager.persist(UserGameStatsEntity.create(newId(), userId, gameId, 1, ranked && won ? 1 : 0,
             standing.points(),
-            MetricsMerge.merge(null, standing.stats(), metrics)));
+            MetricsMerge.merge(null, gameMetrics, metrics)));
       } else {
-        var merged = MetricsMerge.merge(gameStats.getMetrics(), standing.stats(), metrics);
+        var merged = MetricsMerge.merge(gameStats.getMetrics(), gameMetrics, metrics);
         if (ranked) gameStats.addGame(won, standing.points(), merged);
         else gameStats.addUnrankedGame(standing.points(), merged);
       }
     }
     entityManager.flush();
+  }
+
+  /** Estadísticas del motor más {@code unrankedGamesPlayed = 1}; solo para las métricas por juego del usuario. */
+  private static Map<String, Number> unrankedMetrics(Map<String, ? extends Number> stats) {
+    var withMark = new LinkedHashMap<String, Number>(stats);
+    withMark.put(UNRANKED_GAMES_PLAYED, 1);
+    return withMark;
   }
 
   private void serializable() {

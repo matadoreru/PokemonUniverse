@@ -161,7 +161,7 @@ class JpaGameResultsPersisterTest {
   }
 
   @Test
-  void anUnrankedCoopGameGivesXpAndMetricsButIsNotPlayedNorLost() {
+  void anUnrankedCoopGameCountsAsPlayedButNeverAsWonAndMarksItselfUnranked() {
     var user = registeredUser();
     var other = registeredUser();
     var room = room(user, other);
@@ -172,36 +172,51 @@ class JpaGameResultsPersisterTest {
         standing(other.id(), 2, 0, Map.of("duelsPlayed", 1, "duelsWon", 0)))), UUID.randomUUID().toString(), 1_000,
         "type-duel", CONFIG);
     int xpBefore = userStats.findById(user.id()).orElseThrow().getXp();
-    // Cooperativo: sin ganador, `ranked: false`.
+    // Cooperativo: sin ganador, `ranked: false`; cuenta como jugada, nunca como ganada.
     var coop = GameResults.unranked(List.of(
         standing(user.id(), 1, 3, Map.of("coopFinds", 3, "coopGamesPlayed", 1, "groupTotal", 4)),
         standing(other.id(), 2, 1, Map.of("coopFinds", 1, "coopGamesPlayed", 1, "groupTotal", 4))));
     persister.persistNow(room, coop, UUID.randomUUID().toString(), 2_000, "type-duel", CONFIG);
 
     var stats = userStats.findById(user.id()).orElseThrow();
-    assertEquals(1, stats.getGamesPlayed());
+    assertEquals(2, stats.getGamesPlayed());
     assertEquals(1, stats.getGamesWon());
     assertEquals(8, stats.getTotalPoints());
     assertTrue(stats.getXp() > xpBefore, "la partida cooperativa también da experiencia");
     var gameStats = userGameStats.findByUserId(user.id()).getFirst();
-    assertEquals(1, gameStats.getGamesPlayed());
+    assertEquals(2, gameStats.getGamesPlayed());
     assertEquals(1, gameStats.getGamesWon());
+    assertEquals(8, gameStats.getPoints());
     var metrics = intValues(gameStats.getMetrics());
     assertEquals(1, metrics.get("duelsPlayed"));
     assertEquals(3, metrics.get("coopFinds"));
     assertEquals(1, metrics.get("coopGamesPlayed"));
-    // Primera partida del jugador en este juego y cooperativa: la fila nace con 0 jugadas y 0 ganadas.
+    // El porcentaje de victorias descuenta estas partidas: jugadas − sin clasificar = clasificadas.
+    assertEquals(1, metrics.get("unrankedGamesPlayed"));
+    // Una clasificatoria después no borra la cuenta de partidas sin clasificar.
+    persister.persistNow(room, new GameResults(other.id(), List.of(
+        standing(user.id(), 2, 0, Map.of("duelsPlayed", 1, "duelsWon", 0)),
+        standing(other.id(), 1, 5, Map.of("duelsPlayed", 1, "duelsWon", 1)))), UUID.randomUUID().toString(), 2_500,
+        "type-duel", CONFIG);
+    var afterRanked = userGameStats.findByUserId(user.id()).getFirst();
+    assertEquals(3, afterRanked.getGamesPlayed());
+    assertEquals(1, intValues(afterRanked.getMetrics()).get("unrankedGamesPlayed"));
+    // Primera partida del jugador en este juego y cooperativa: la fila nace con 1 jugada y 0 ganadas.
     var fresh = registeredUser();
     var freshRoom = room(fresh);
     createRoomHistory(freshRoom);
     persister.persistNow(freshRoom, GameResults.unranked(List.of(standing(fresh.id(), 1, 2,
         Map.of("coopFinds", 2, "coopGamesPlayed", 1, "groupTotal", 2)))), UUID.randomUUID().toString(), 3_000,
         "type-duel", CONFIG);
-    assertEquals(0, userStats.findById(fresh.id()).orElseThrow().getGamesPlayed());
+    var freshTotals = userStats.findById(fresh.id()).orElseThrow();
+    assertEquals(1, freshTotals.getGamesPlayed());
+    assertEquals(0, freshTotals.getGamesWon());
+    assertEquals(2, freshTotals.getTotalPoints());
     var freshGame = userGameStats.findByUserId(fresh.id()).getFirst();
-    assertEquals(0, freshGame.getGamesPlayed());
+    assertEquals(1, freshGame.getGamesPlayed());
     assertEquals(0, freshGame.getGamesWon());
     assertEquals(2, intValues(freshGame.getMetrics()).get("coopFinds"));
+    assertEquals(1, intValues(freshGame.getMetrics()).get("unrankedGamesPlayed"));
   }
 
   @Test
