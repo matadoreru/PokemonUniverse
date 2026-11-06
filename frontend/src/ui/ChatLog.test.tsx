@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { ChatLog, isNearBottom } from './ChatLog';
+import { becameVisible, ChatLog, isNearBottom } from './ChatLog';
 import type { ChatLogItem } from './ChatLog';
 
 const items: ChatLogItem[] = [
@@ -57,6 +57,15 @@ describe('ChatLog', () => {
     expect(render()).not.toContain('Ver mensajes nuevos');
     expect(render({ forceUnseen: true })).toContain('Ver mensajes nuevos');
     expect(render({ forceUnseen: true, newMessagesLabel: 'Hay más' })).toContain('Hay más');
+  });
+});
+
+describe('becameVisible', () => {
+  it('solo al pasar de oculta a visible', () => {
+    expect(becameVisible(false, true)).toBe(true);
+    expect(becameVisible(true, true)).toBe(false);
+    expect(becameVisible(true, false)).toBe(false);
+    expect(becameVisible(false, false)).toBe(false);
   });
 });
 

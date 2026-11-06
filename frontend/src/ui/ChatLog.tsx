@@ -32,6 +32,11 @@ export interface ChatLogProps {
   className?: string;
   /** Solo galería: enseña «Ver mensajes nuevos» sin tener que desplazar la lista. */
   forceUnseen?: boolean;
+  /**
+   * Si la lista está a la vista (p. ej. su pestaña abierta). Oculta no se puede desplazar: al volver a verse baja al
+   * último mensaje, sin animación. Por defecto, `true`.
+   */
+  active?: boolean;
 }
 
 /** Distancia al final (px) hasta la que la lista sigue al último mensaje. */
@@ -39,6 +44,11 @@ const NEAR_BOTTOM_PX = 48;
 
 export function isNearBottom(m: { scrollHeight: number; clientHeight: number; scrollTop: number }, threshold = NEAR_BOTTOM_PX): boolean {
   return m.scrollHeight - m.clientHeight - m.scrollTop <= threshold;
+}
+
+/** La lista pasa de oculta a visible: hay que bajar al final (mientras estaba oculta no se pudo). */
+export function becameVisible(previous: boolean, next: boolean): boolean {
+  return !previous && next;
 }
 
 function scrollToEnd(el: HTMLElement, smooth: boolean) {
@@ -50,7 +60,7 @@ function scrollToEnd(el: HTMLElement, smooth: boolean) {
  * Lista de mensajes de un chat. No es una región viva: los avisos de mensajes nuevos los da otro sitio. Baja sola al
  * último mensaje si ya estaba abajo; si quien lee había subido, no se mueve y ofrece «Ver mensajes nuevos».
  */
-export function ChatLog({ items, label, empty, onModerate, moderateLabel, newMessagesLabel = 'Ver mensajes nuevos', className, forceUnseen }: ChatLogProps) {
+export function ChatLog({ items, label, empty, onModerate, moderateLabel, newMessagesLabel = 'Ver mensajes nuevos', className, forceUnseen, active = true }: ChatLogProps) {
   const list = useRef<HTMLOListElement>(null);
   const atBottom = useRef(true);
   const seen = useRef<Set<string> | null>(null);
@@ -71,6 +81,17 @@ export function ChatLog({ items, label, empty, onModerate, moderateLabel, newMes
     if (atBottom.current || last.own) scrollToEnd(el, true);
     else setUnseen(true);
   }, [items]);
+
+  const wasActive = useRef(active);
+  useLayoutEffect(() => {
+    const previous = wasActive.current;
+    wasActive.current = active;
+    const el = list.current;
+    if (!el || !becameVisible(previous, active)) return;
+    scrollToEnd(el, false);
+    atBottom.current = true;
+    setUnseen(false);
+  }, [active]);
 
   const onScroll = () => {
     const el = list.current;

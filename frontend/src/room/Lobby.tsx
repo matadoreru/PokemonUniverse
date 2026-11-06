@@ -1,6 +1,6 @@
 import { formatPendingReadyNames, gameModeCount, gameModeLabel, gameModeName, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
 import { canInviteFriend } from '../friends/FriendsDrawer';
 import { clientGameRegistry } from '../games/registry';
@@ -85,15 +85,17 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const unread = chatVisible ? 0 : chat.filter((message) => message.authorId !== selfId && message.seq > seen.seq).length;
 
   // La única región viva del lobby: los mensajes de otros (agrupados) y el aviso del host reconectando.
-  const [chatAnnouncement, setChatAnnouncement] = useState('');
+  // Con su número: dos anuncios iguales seguidos («Ana: hola» dos veces) cambian de nodo y se leen los dos.
+  const [chatAnnouncement, setChatAnnouncement] = useState({ id: 0, text: '' });
+  const announce = useCallback((text: string) => setChatAnnouncement((previous) => ({ id: previous.id + 1, text })), []);
   const announcer = useRef<ChatAnnouncer | null>(null);
   const announcedHistory = useRef(chatHistoryVersion);
   useEffect(() => {
-    const current = (announcer.current ??= new ChatAnnouncer(selfId, setChatAnnouncement));
+    const current = (announcer.current ??= new ChatAnnouncer(selfId, announce));
     const fromHistory = announcedHistory.current !== chatHistoryVersion;
     announcedHistory.current = chatHistoryVersion;
     current.seen(chat, fromHistory);
-  }, [chat, chatHistoryVersion, selfId]);
+  }, [chat, chatHistoryVersion, selfId, announce]);
   useEffect(() => () => { announcer.current?.dispose(); announcer.current = null; }, []);
 
   useEffect(() => {
@@ -185,7 +187,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     </Panel>
   );
 
-  const chatPanel = <LobbyChat className={wide ? s.sidePanel ?? '' : ''} messages={chat} members={room.members} selfId={selfId} selfRole={roomRole} onSend={onSendChat} onDelete={onDeleteChatMessage} onSetMute={onSetChatMute} />;
+  const chatPanel = <LobbyChat className={wide ? s.sidePanel ?? '' : ''} messages={chat} members={room.members} selfId={selfId} selfRole={roomRole} onSend={onSendChat} onDelete={onDeleteChatMessage} onSetMute={onSetChatMute} active={chatVisible} />;
   const tabs: TabItem<LobbyTab>[] = wide ? BASE_TABS : [...BASE_TABS, {
     key: 'chat', label: 'Chat', icon: MessageCircle,
     ...(unread > 0 ? { badge: <>{unread > 99 ? '99+' : unread}<span className="sr-only"> sin leer</span></> } : {}),
@@ -307,7 +309,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
       {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
       <h1 className="sr-only">Lobby de la sala</h1>
       {/* Siempre montada y fuera de los paneles de pestaña: se oye también con la pestaña «Chat» cerrada. */}
-      <p className="sr-only" role="status" aria-live="polite"><span>{hostReconnecting ? HOST_RECONNECTING : ''}</span><span>{chatAnnouncement}</span></p>
+      <p className="sr-only" role="status" aria-live="polite"><span>{hostReconnecting ? HOST_RECONNECTING : ''}</span><span key={chatAnnouncement.id}>{chatAnnouncement.text}</span></p>
       {hostReconnecting && (
         <div className={s.notice}>
           <span className={s.noticeBadge}><Icon icon={WifiOff} size={22} /></span>

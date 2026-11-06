@@ -68,13 +68,15 @@ interface Props {
   onSetMute(playerId: string, muted: boolean): Promise<void>;
   titleRef?: RefObject<HTMLHeadingElement | null>;
   className?: string;
+  /** El panel está a la vista (en el móvil, con la pestaña «Chat» abierta): al abrirse, la lista baja a lo último. */
+  active?: boolean;
 }
 
 /**
  * Chat del lobby: la lista y el campo de escribir en el panel «Chat». No es región viva (el `Lobby` anuncia los
  * mensajes) y no enseña errores: el fallo de una orden ya sale en el aviso global de la sala.
  */
-export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelete, onSetMute, titleRef, className }: Props) {
+export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelete, onSetMute, titleRef, className, active = true }: Props) {
   const ownTitleRef = useRef<HTMLHeadingElement>(null);
   const title = titleRef ?? ownTitleRef;
   const [draft, setDraft] = useState('');
@@ -121,7 +123,7 @@ export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelet
   const targetActions = target ? actions(target) : null;
   return (
     <Panel title="Chat" titleRef={title} aria-label="Chat" className={className ?? ''} bodyClassName={s.body ?? ''}>
-      <ChatLog items={items} label="Mensajes del chat" empty={empty} className={s.log ?? ''}
+      <ChatLog items={items} label="Mensajes del chat" empty={empty} className={s.log ?? ''} active={active}
         {...(canModerate ? { onModerate: (id: string) => setModerating(Number(id)), moderateLabel: (item: ChatLogItem) => `Moderar el mensaje de ${item.author}` } : {})} />
       <ChatComposer value={draft} onChange={setDraft} onSubmit={() => void send()} label="Escribe un mensaje" maxLength={MAX_LENGTH} busy={busy} disabledReason={muted ? MUTED_REASON : null} />
       {canModerate && (

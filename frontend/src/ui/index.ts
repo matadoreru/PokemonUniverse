@@ -56,7 +56,7 @@ export { Confetti, confettiPieces } from './Confetti';
 export type { ConfettiPiece } from './Confetti';
 export { AchievementTile } from './AchievementTile';
 export type { AchievementTileProps } from './AchievementTile';
-export { ChatLog, isNearBottom } from './ChatLog';
+export { becameVisible, ChatLog, isNearBottom } from './ChatLog';
 export type { ChatLogItem, ChatLogProps } from './ChatLog';
 export { ChatComposer, submitChat } from './ChatComposer';
 export type { ChatComposerProps } from './ChatComposer';
