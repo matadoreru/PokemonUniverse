@@ -31,7 +31,6 @@ import io.micronaut.json.tree.JsonNode;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,6 +54,8 @@ public class DailyChallengeService {
 
   public static final String REGISTERED_REQUIRED = "Registered account required";
   public static final String ALREADY_PLAYED = "Daily challenge already played";
+  /** El catálogo vigente está vacío (p. ej. antes de la primera sincronización): no se fija el día. */
+  public static final String CATALOG_UNAVAILABLE = "Daily challenge unavailable: the Pokémon catalog is empty";
   static final String LEAVE_ROOM_FIRST = "Leave your current room first";
   static final int LEADERBOARD_SIZE = 50;
 
@@ -62,7 +63,6 @@ public class DailyChallengeService {
   static final String IN_PROGRESS = "IN_PROGRESS";
 
   private static final Logger LOG = LoggerFactory.getLogger(DailyChallengeService.class);
-  private static final String UNIQUE_VIOLATION = "23505";
   /** Orden del catálogo fijado: número de Pokédex y, a igualdad (formas), id. */
   private static final Comparator<Pokemon> PINNED_ORDER = Comparator.comparingInt(Pokemon::nationalDexNumber)
       .thenComparing(Pokemon::id);
@@ -113,11 +113,9 @@ public class DailyChallengeService {
     }
 
     var rowId = UUID.randomUUID().toString();
-    try {
-      results.save(DailyResultEntity.started(rowId, identity.id(), date, game.gameId(), Instant.ofEpochMilli(now)));
-    } catch (RuntimeException error) {
-      if (isUniqueViolation(error)) throw new RoomException(ALREADY_PLAYED);
-      throw error;
+    // El índice único (cuenta, fecha) arbitra los arranques simultáneos: 0 filas es que ya jugó hoy.
+    if (results.insertStarted(rowId, identity.id(), date, game.gameId(), Instant.ofEpochMilli(now)) == 0) {
+      throw new RoomException(ALREADY_PLAYED);
     }
 
     var daily = new DailyRoom(rowId, identity.id(), date, game.gameId(), game.roundCount());
@@ -125,8 +123,10 @@ public class DailyChallengeService {
     try {
       return rooms.startDaily(identity, connectionId, launch);
     } catch (RuntimeException error) {
-      // Compensación: el intento no llegó a empezar.
-      results.deleteStarted(rowId);
+      // Compensación solo si el intento no llegó a empezar: si la sala ya arrancó (el fallo vino después, al avisar o
+      // al construir la vista), la partida sigue viva y su fila STARTED es la que terminará o se abandonará.
+      boolean launched = rooms.dailyRunOf(identity.id()).filter(run -> run.date().equals(date)).isPresent();
+      if (!launched) results.deleteStarted(rowId);
       throw error;
     }
   }
@@ -139,6 +139,8 @@ public class DailyChallengeService {
     var existing = challenges.findById(date);
     if (existing.isPresent()) return existing.get();
     var ids = rooms.currentPokemonCatalog().all().stream().sorted(PINNED_ORDER).map(Pokemon::id).toList();
+    // Una lista vacía quedaría fijada todo el día: mejor fallar y que la primera partida con catálogo la fije.
+    if (ids.isEmpty()) throw new RoomException(CATALOG_UNAVAILABLE);
     challenges.insertIfAbsent(date, DailyGames.ofTheDay(seed).gameId(), toJson(ids), CatalogFingerprint.of(ids));
     return challenges.findById(date).orElseThrow(() -> new IllegalStateException("Sin reto fijado para " + date));
   }
@@ -150,13 +152,6 @@ public class DailyChallengeService {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  private static boolean isUniqueViolation(Throwable error) {
-    for (Throwable t = error; t != null; t = t.getCause()) {
-      if (t instanceof SQLException sql && UNIQUE_VIOLATION.equals(sql.getSQLState())) return true;
-    }
-    return false;
   }
 
   // --------------------------------------------------------------------------------------------- lecturas

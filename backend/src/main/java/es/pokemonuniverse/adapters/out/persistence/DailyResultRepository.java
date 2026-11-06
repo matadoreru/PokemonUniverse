@@ -11,6 +11,15 @@ import java.util.Optional;
 @Repository
 public interface DailyResultRepository extends CrudRepository<DailyResultEntity, String> {
 
+  /**
+   * Guarda el intento como {@code STARTED} salvo que la cuenta ya tenga uno ese día (índice único cuenta + fecha).
+   * Devuelve las filas insertadas: {@code 0} significa que ya jugó, sin error de SQL ni aviso en el log.
+   */
+  @Query(value = "INSERT INTO \"DailyResult\" (\"id\", \"userId\", \"date\", \"gameId\", \"status\", \"startedAt\")"
+      + " VALUES (:id, :userId, :date, :gameId, 'STARTED', :now) ON CONFLICT (\"userId\", \"date\") DO NOTHING",
+      nativeQuery = true)
+  int insertStarted(String id, String userId, LocalDate date, String gameId, Instant now);
+
   /** Cierra el intento con su puntuación; solo desde {@code STARTED}. Devuelve las filas tocadas (0 o 1). */
   @Query(value = "UPDATE \"DailyResult\" SET \"status\" = 'FINISHED', \"score\" = :score, \"correct\" = :correct,"
       + " \"rounds\" = CAST(:roundsJson AS jsonb), \"finishedAt\" = :now WHERE \"id\" = :id AND \"status\" = 'STARTED'",

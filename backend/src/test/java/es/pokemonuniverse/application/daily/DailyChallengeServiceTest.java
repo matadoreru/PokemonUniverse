@@ -400,6 +400,34 @@ class DailyChallengeServiceTest {
   }
 
   @Test
+  void lateFailureAfterLaunchKeepsTheRow() {
+    var ash = user();
+    rooms.failNextDailyStartsAfterLaunch(1);
+    assertRejects("Fallo tardío de prueba", () -> start(ash));
+    // La sala ya arrancó: la fila STARTED es la de esa partida y no se borra.
+    assertEquals("STARTED", row(ash, date).getStatus());
+    assertEquals("IN_PROGRESS", service.overview(ash).status());
+    rooms.manager().leave(ash.id());
+    rooms.manager().flush();
+    assertEquals("ABANDONED", row(ash, date).getStatus());
+    assertRejects(ALREADY_PLAYED, () -> start(ash));
+  }
+
+  @Test
+  void emptyCatalogIsNotPinned() {
+    var ash = user();
+    rooms.replaceCatalog(new InMemoryPokemonCatalog(List.of()));
+    assertRejects(DailyChallengeService.CATALOG_UNAVAILABLE, () -> start(ash));
+    assertTrue(challenges.findById(date).isEmpty(), "no fija una lista vacía para todo el día");
+    assertTrue(results.findByUserIdAndDate(ash.id(), date).isEmpty());
+
+    rooms.replaceCatalog(DailyTestRooms.goldenCatalog());
+    assertNotNull(start(ash).daily());
+    assertEquals(sortedIds(DailyTestRooms.goldenCatalog()),
+        listOf(challenges.findById(date).orElseThrow().getPokemonIds(), String.class));
+  }
+
+  @Test
   void leavingMidRunIsAbandonedAndFinal() {
     var ash = user();
     start(ash);

@@ -28,6 +28,7 @@ public final class DailyTestRooms {
   private final ManualTime time;
   private final RoomCoordinator manager;
   private final AtomicInteger failingStarts = new AtomicInteger();
+  private final AtomicInteger lateFailingStarts = new AtomicInteger();
   private volatile @Nullable CountDownLatch startGate;
 
   public DailyTestRooms(long startMs) {
@@ -49,7 +50,11 @@ public final class DailyTestRooms {
         if (failingStarts.getAndUpdate(n -> Math.max(0, n - 1)) > 0) {
           throw new RoomException("Fallo de arranque de prueba");
         }
-        return super.startDaily(identity, connectionId, launch);
+        var view = super.startDaily(identity, connectionId, launch);
+        if (lateFailingStarts.getAndUpdate(n -> Math.max(0, n - 1)) > 0) {
+          throw new RoomException("Fallo tardío de prueba");
+        }
+        return view;
       }
     };
   }
@@ -82,6 +87,11 @@ public final class DailyTestRooms {
   /** Los próximos {@code count} {@code startDaily} lanzan {@link RoomException} sin crear la sala. */
   public void failNextDailyStarts(int count) {
     failingStarts.set(count);
+  }
+
+  /** Los próximos {@code count} {@code startDaily} crean y arrancan la sala, y después lanzan {@link RoomException}. */
+  public void failNextDailyStartsAfterLaunch(int count) {
+    lateFailingStarts.set(count);
   }
 
   /** Cada {@code startDaily} espera (hasta 10 s) a que se abra {@code gate}. */
