@@ -1514,7 +1514,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit(50_000, preferences);
     var room = kit.room(8, user("host-user", "Host", "host@example.com"));
     assertEquals(List.of("host-user"), loaded);
-    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"), room.gameConfigs.get("pokedex-distance")));
+    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\",\"pointsRounds\":10,\"mode\":\"CLASSIC\"}"), room.gameConfigs.get("pokedex-distance")));
     kit.manager.selectGame("host-user", "higher-lower");
     var next = new LinkedHashMap<>(RoomTestKit.asMap(room.gameConfigs.get("higher-lower")));
     next.put("rounds", 3);
@@ -1528,7 +1528,7 @@ class RoomCoordinatorTest {
     guestKit.manager.updateConfig("guest-host", json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"));
     assertEquals(List.of(), loaded);
     assertEquals(List.of(), saved);
-    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\"}"), guestRoom.gameConfigs.get("pokedex-distance")));
+    assertTrue(JsonTree.equal(json("{\"generations\":[1],\"roundSeconds\":25,\"selectionVisibility\":\"HIDDEN\",\"pointsRounds\":10,\"mode\":\"CLASSIC\"}"), guestRoom.gameConfigs.get("pokedex-distance")));
   }
 
   @Test
