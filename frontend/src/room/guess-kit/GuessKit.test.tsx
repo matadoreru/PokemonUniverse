@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen, type GuessPanelProps } from '.';
 import {
-  guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSolvedOrders, guessVerdict,
+  guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSearchAutoFocus, guessSolvedOrders, guessVerdict,
 } from './presentation';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
@@ -61,6 +61,17 @@ describe('guess-kit: presentación', () => {
     expect(guessAnnouncement({ kind: 'solved', roundNumber: 1, solveOrder: 1, roundPoints: 13 })).toBe('Acierto, 1.º en acertar: 13 puntos esta ronda.');
     expect(guessAnnouncement({ kind: 'reveal', roundNumber: 4, answer: 'Lucario' })).toBe('Ronda 4 terminada: era Lucario.');
     expect(guessAnnouncement({ kind: 'watching', roundNumber: 1, lastWrong: 'Mew' })).toBe('');
+  });
+});
+
+describe('guess-kit: foco del buscador al empezar la ronda', () => {
+  const media = (fine: boolean) => (query: string) => ({ matches: query === '(pointer: fine)' && fine });
+  it('con ratón o teclado el buscador recibe el foco; en pantallas táctiles no (el teclado taparía la pista)', () => {
+    expect(guessSearchAutoFocus(media(true))).toBe(true);
+    expect(guessSearchAutoFocus(media(false))).toBe(false);
+  });
+  it('sin matchMedia (SSR, pruebas) no pide el foco', () => {
+    expect(guessSearchAutoFocus(undefined)).toBe(false);
   });
 });
 
