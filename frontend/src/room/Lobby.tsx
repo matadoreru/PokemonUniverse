@@ -6,7 +6,7 @@ import { canInviteFriend } from '../friends/FriendsDrawer';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import { GameArt } from '../games/GameArt';
-import { GameOrderChoice, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
+import { GameOrderChoice, GameOrderHint, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
@@ -202,9 +202,12 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   // Sin panel propio: el editor de cada juego ya es un panel crema (dos anidados no caben a 390 px).
   const configPanel = <SelectedGamesConfig room={room} selfId={selfId} playerCount={connectedPlayers} disabled={!canEditGame} onConfig={onGameConfig} />;
 
+  const selectionEmpty = room.gameSelectionMode.gameIds.length === 0;
   const sessionTarget = room.sessionMode.type === 'GAME_COUNT' || room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : null;
   const sessionPanel = (
     <>
+      {/* Con la selección vacía el aviso va arriba del todo: a 390 px el resto de la pestaña queda bajo el pliegue. */}
+      {selectionEmpty && <GameOrderHint mode={room.gameSelectionMode} compatibleCount={compatibleGameIds.length} />}
       <div className={s.head}>
         <div className={s.headText}>
           <h2 className={s.title}>Modo y sesión</h2>
@@ -219,7 +222,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
           </div>
           {!canEditGameSelection && readOnlyChip}
         </div>
-        <GameOrderChoice mode={room.gameSelectionMode} compatibleCount={compatibleGameIds.length} disabled={!canEditGameSelection} onChange={gameSelection} />
+        <GameOrderChoice mode={room.gameSelectionMode} compatibleCount={compatibleGameIds.length} disabled={!canEditGameSelection} showHint={!selectionEmpty} onChange={gameSelection} />
       </section>
       <section className={s.section} aria-labelledby="format-heading">
         <div className={s.head}>

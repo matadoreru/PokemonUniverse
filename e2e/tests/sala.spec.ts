@@ -173,9 +173,12 @@ test('el host quita el único minijuego: no se puede empezar hasta elegir otro',
   await host.page.getByRole('tab', { name: 'Configuración' }).click();
   await expect(host.page.getByText('Elige uno o varios minijuegos')).toBeVisible();
   await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
-  await expect(host.page.getByRole('status').filter({ hasText: 'Elige al menos un minijuego.' })).toBeVisible();
+  const aviso = host.page.getByRole('status').filter({ hasText: 'Elige al menos un minijuego.' });
+  await expect(aviso).toBeVisible();
   for (const { w, h } of SIZES) {
     await host.page.setViewportSize({ width: w, height: h });
+    // En la primera vista del panel (sin scroll), no solo presente: a 390 el panel tiene scroll interno.
+    await expect(aviso).toBeInViewport({ ratio: 1 });
     await capture(host.page, 'lobby-modo-seleccion-vacia');
   }
   await host.page.getByRole('button', { name: /^Votación/ }).click();

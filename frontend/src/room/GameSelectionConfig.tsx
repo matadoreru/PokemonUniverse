@@ -62,11 +62,18 @@ interface OrderProps {
   mode: GameSelectionMode;
   compatibleCount: number;
   disabled: boolean;
+  /** Falso cuando el aviso ya se pinta en otro sitio (Lobby lo sube con la selección vacía). */
+  showHint?: boolean;
   onChange(mode: GameSelectionMode): void;
 }
 
+/** Frase de estado del modo de orden: la única región viva de la pestaña. */
+export function GameOrderHint({ mode, compatibleCount }: { mode: GameSelectionMode; compatibleCount: number }) {
+  return <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount, mode.gameIds.length)}</p>;
+}
+
 /** Pestaña «Modo y sesión»: en qué orden salen los minijuegos elegidos (por orden, al azar o por votación). */
-export function GameOrderChoice({ mode, compatibleCount, disabled, onChange }: OrderProps) {
+export function GameOrderChoice({ mode, compatibleCount, disabled, showHint = true, onChange }: OrderProps) {
   return <div>
     <div className={g.choices} role="group" aria-label="Orden de los minijuegos">
       {ORDER_CHOICES.map((choice) => (
@@ -74,7 +81,7 @@ export function GameOrderChoice({ mode, compatibleCount, disabled, onChange }: O
         <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={mode.type === choice.type ? 'selected' : 'idle'} {...(disabled ? {} : { onSelect: () => { if (choice.type !== mode.type) onChange({ type: choice.type, gameIds: mode.gameIds }); } })} />
       ))}
     </div>
-    <p className={g.hint} role="status">{gameOrderHint(mode.type, compatibleCount, mode.gameIds.length)}</p>
+    {showHint && <GameOrderHint mode={mode} compatibleCount={compatibleCount} />}
   </div>;
 }
 
