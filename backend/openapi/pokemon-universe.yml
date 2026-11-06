@@ -3,6 +3,25 @@ info:
   title: Pokémon Universe API
   version: "0.1"
 paths:
+  /api/achievements:
+    get:
+      tags:
+      - achievements
+      summary: Logros de la cuenta; los secretos bloqueados no revelan nombre ni descripción
+      operationId: list
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AchievementsResponse"
+        "401":
+          description: Cuenta registrada requerida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /api/admin/active-rooms:
     get:
       tags:
@@ -1144,7 +1163,7 @@ paths:
       tags:
       - friends
       summary: Amigos y solicitudes pendientes
-      operationId: list
+      operationId: list_1
       responses:
         "200":
           description: OK
@@ -1682,6 +1701,50 @@ paths:
                 $ref: "#/components/schemas/ApiError"
 components:
   schemas:
+    AchievementResponse:
+      required:
+      - description
+      - family
+      - gameId
+      - id
+      - name
+      - unlockedAt
+      type: object
+      properties:
+        id:
+          type: string
+        family:
+          type: string
+        gameId:
+          type: string
+          nullable: true
+        name:
+          type: string
+        description:
+          type: string
+        unlockedAt:
+          type: string
+          nullable: true
+      description: "Un logro de la cuenta; `gameId` y `unlockedAt` salen siempre,\
+        \ con `null` si no aplican."
+    AchievementsResponse:
+      required:
+      - achievements
+      - total
+      - unlocked
+      type: object
+      properties:
+        achievements:
+          type: array
+          items:
+            $ref: "#/components/schemas/AchievementResponse"
+        unlocked:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+      description: Los logros de la cuenta con el recuento de desbloqueados.
     AdminActiveRoom:
       required:
       - code
