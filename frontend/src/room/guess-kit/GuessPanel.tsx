@@ -71,6 +71,12 @@ export interface GuessPanelProps {
    * enviado», «Pokémon encontrado»). `kind` sigue decidiendo si va el buscador (`guess`).
    */
   content?: GuessPlateContent | undefined;
+  /**
+   * Placa compacta (Sketchmon, donde el lienzo necesita el alto): en escritorio una sola fila (el estado y el buscador)
+   * y la bandeja de resultados se abre hacia arriba, superpuesta, sin reservar alto; la ayuda del campo, solo para
+   * lectores. Por defecto no: los demás juegos no cambian.
+   */
+  compact?: boolean | undefined;
 }
 
 /** Lo que pinta la placa: icono y tono, kicker, título, ayuda y, a la derecha, el aviso o los puntos. */
@@ -83,11 +89,11 @@ type PlateContent = GuessPlateContent;
  * lo que hay que anunciar lo dice la de `GuessScreen` (`guessAnnouncement`).
  */
 export function GuessPanel(props: GuessPanelProps) {
-  const { kind, titleRef, selector, cooldownMs = 0 } = props;
+  const { kind, titleRef, selector, cooldownMs = 0, compact = false } = props;
   const content = props.content ?? plateContent(props);
   // Con el buscador a la vista, la placa solo lleva el kicker y el título: la descripción sobra junto al campo.
   const searching = kind === 'guess' && Boolean(selector);
-  return <Panel variant="cream" as="section" bodyClassName={cx(s.plate, kind === 'guess' && s.plateSearch)} aria-labelledby="guess-plate-title">
+  return <Panel variant="cream" as="section" className={cx(compact && s.compact)} bodyClassName={cx(s.plate, kind === 'guess' && s.plateSearch)} aria-labelledby="guess-plate-title">
     <div className={s.plateRow}>
       <span className={cx(s.plateIcon, s[`tone_${content.tone}`])}><Icon icon={content.icon} size={32} /></span>
       <div className={s.plateText}>

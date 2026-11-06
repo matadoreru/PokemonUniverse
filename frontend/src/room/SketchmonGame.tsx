@@ -9,6 +9,7 @@ import {
   sketchTurnStatus, sketchVerdict, type SketchTurnStatus,
 } from '../games/sketchmon/presentation';
 import { SketchCanvasPanel, SketchHints, SketchSecretPanel, SketchToolbar } from '../games/sketchmon/SketchParts';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../ui';
@@ -32,8 +33,8 @@ type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<v
  * Sketchmon con el kit social (spec §2 y §6 «Juegos»): Poké Taboo con un lienzo en lugar de pistas de texto. Arriba, la
  * placa del dibujo («Dibujo N de M · Vuelta a de b», quién dibuja y el plazo), las fases y la escena: quien dibuja ve
  * su Pokémon secreto y el lienzo; los demás, el lienzo en directo y las pistas automáticas. Abajo, la acción: las
- * herramientas (quien dibuja), el buscador con los intentos (quien adivina) o el veredicto. Al lado, el orden de turnos
- * en texto con los puntos y los intentos públicos.
+ * herramientas (quien dibuja; en escritorio van bajo el secreto y el lienzo se lleva todo el alto), el buscador compacto
+ * (quien adivina) o el veredicto. Al lado, el orden de turnos en texto con los puntos y los intentos públicos.
  *
  * Privacidad: el secreto solo llega en el estado propio de quien dibuja (`secretPokemon`) y solo se pinta con él; la
  * respuesta para los demás solo llega en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
@@ -53,6 +54,8 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
   const offset = useServerOffset(room.serverNow);
   const cooldownMs = useRemainingMs(player?.role === 'GUESSER' ? player.cooldownUntil : null, offset);
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
+  // Escritorio: las herramientas van en la columna del secreto y el lienzo se queda con todo el alto de la escena.
+  const wide = useMediaQuery('(min-width: 1024px)');
   const pad = useSketchPad({ strokes: game.strokes, onAction, enabled: drawing && player.canDraw, resetKey: game.roundNumber });
 
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
@@ -79,7 +82,11 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
     syncError: drawing ? pad.syncError : null, syncErrorSeq: pad.syncErrorSeq, result, nameOf, typeLabel,
   });
   const heading = sketchHeading({ phase: game.phase, role, drawerName, secretName: secret?.name ?? null, result });
-  const meta = drawerName && <Chip tone="warn" icon={<Icon icon={Palette} size={18} />}>{role === 'drawer' && !result ? 'Dibujas tú' : `Dibuja ${drawerName}`}</Chip>;
+  // «En directo» va en la placa de la ronda: el lienzo de quien mira no lleva barra de título (el `h1` ya dice de quién es).
+  const live = active && role !== 'drawer';
+  const meta = drawerName && <Chip tone="warn" icon={<Icon icon={live ? Radio : Palette} size={18} />}>
+    {role === 'drawer' && !result ? 'Dibujas tú' : live ? `Dibuja ${drawerName} · En directo` : `Dibuja ${drawerName}`}
+  </Chip>;
   const hints = game.visibleHints.length > 0 && !result ? <SketchHints hints={game.visibleHints} /> : null;
 
   // Escena: el secreto y el lienzo (quien dibuja), el lienzo en directo (los demás) o la revelación con el dibujo final.
@@ -93,7 +100,10 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
     </div>;
   } else if (role === 'drawer' && active) {
     stage = <div className={s.drawStage}>
-      {secret && <SketchSecretPanel pokemon={secret} serverOffset={offset} titleRef={titleRef} />}
+      <div className={s.drawSide}>
+        {secret && <SketchSecretPanel pokemon={secret} serverOffset={offset} titleRef={titleRef} />}
+        {drawing && wide && <SketchToolbar pad={pad} disabled={!player.canDraw} className={s.toolsSide} />}
+      </div>
       <div className={s.drawMain}>
         <SketchCanvasPanel strokes={game.strokes} label={sketchCanvasLabel(pad.tool)} pad={pad} emptyText="Empieza tu dibujo" testId="sketch-canvas" />
         {hints}
@@ -101,8 +111,7 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
     </div>;
   } else {
     stage = <div className={s.drawMain}>
-      <SketchCanvasPanel strokes={game.strokes} title={drawerName ? `Dibujo de ${drawerName}` : 'Dibujo'} label={`Dibujo en directo de ${drawerName ?? 'otro jugador'}`}
-        right={active ? <Chip tone="info" icon={<Icon icon={Radio} size={18} />}>En directo</Chip> : undefined}
+      <SketchCanvasPanel strokes={game.strokes} label={`Dibujo en directo de ${drawerName ?? 'otro jugador'}`}
         emptyText={active ? 'Esperando el primer trazo…' : 'Preparando el dibujo…'} testId="sketch-live" />
       {hints}
     </div>;
@@ -132,11 +141,11 @@ export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; self
       ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
     }} />;
   } else if (drawing) {
-    bottom = <SketchToolbar pad={pad} disabled={!player.canDraw} />;
+    bottom = wide ? null : <SketchToolbar pad={pad} disabled={!player.canDraw} />;
   } else if (role === 'guesser' || role === 'watcher') {
     bottom = <GuessPanel kind={canGuess ? 'guess' : role === 'watcher' ? 'watching' : 'waiting'} titleRef={titleRef} question="Busca el Pokémon dibujado" guessText={SCORING} gameName={GAME_NAME}
       cooldownMs={cooldownMs} lastWrong={ownLast?.guessedPokemon.name ?? null} attemptCount={player?.role === 'GUESSER' ? player.attemptCount : 0}
-      watchingText="Estás observando: puedes seguir el dibujo y los intentos."
+      watchingText="Estás observando: puedes seguir el dibujo y los intentos." compact
       selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el dibujo ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
   } else {
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el dibujo…', text: 'El dibujo empieza en un momento.' }} />;

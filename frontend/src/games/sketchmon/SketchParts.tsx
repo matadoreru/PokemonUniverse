@@ -85,25 +85,25 @@ function SketchPalette({ value, onChange }: { value: (typeof SKETCH_COLORS)[numb
 }
 
 /**
- * Herramientas de quien dibuja (la placa de abajo): herramienta (lápiz, goma, relleno) y grosor como `Segmented` con
+ * Herramientas de quien dibuja (la placa de abajo en el móvil; en escritorio, `className` las pone bajo el secreto): herramienta (lápiz, goma, relleno) y grosor como `Segmented` con
  * nombre, la paleta con el nombre del color elegido y deshacer, rehacer y limpiar (`Pill` redondas con nombre; limpiar
  * se puede deshacer, como hoy, así que no pide confirmación). Si un trazo no llega al servidor, lo dice aquí (el aviso
  * global no: los trazos van con `report: false`).
  */
-export function SketchToolbar({ pad, disabled }: { pad: SketchPad; disabled: boolean }) {
-  return <Panel variant="cream" as="section" aria-label="Herramientas de dibujo" className={cx(s.tools)} bodyClassName={cx(s.toolsBody)}>
+export function SketchToolbar({ pad, disabled, className }: { pad: SketchPad; disabled: boolean; className?: string | undefined }) {
+  return <Panel variant="cream" as="section" aria-label="Herramientas de dibujo" className={cx(s.tools, className)} bodyClassName={cx(s.toolsBody)}>
     <div className={s.toolGroup}>
       <Segmented label="Herramienta" value={pad.tool} className={cx(s.toolSeg)} onChange={pad.setTool}
         options={SKETCH_TOOLS.map(({ value, name }) => ({ value, disabled, label: <span className={s.optLabel}><Icon icon={TOOL_ICON[value]} size={22} /><span className={s.optText}>{name}</span></span> }))} />
-    </div>
-    <div className={s.widthGroup}>
-      <Segmented label="Grosor" value={pad.width} className={cx(s.widthSeg)} onChange={pad.setWidth}
-        options={SKETCH_WIDTHS.map(({ value, name }) => ({ value, disabled, label: <span className={s.optLabel}><span className={s.dot} style={{ width: Math.max(6, value), height: Math.max(6, value) }} aria-hidden="true" /><span className="sr-only">{name}</span></span> }))} />
     </div>
     <div className={s.actions}>
       <Pill size="round" variant="cream" icon={Undo2} aria-label="Deshacer último trazo" title="Deshacer (Ctrl+Z)" aria-keyshortcuts="Control+Z" disabled={disabled} onClick={pad.undo} data-testid="sketch-undo" />
       <Pill size="round" variant="cream" icon={Redo2} aria-label="Rehacer último trazo" title="Rehacer (Ctrl+Mayús+Z)" aria-keyshortcuts="Control+Shift+Z" disabled={disabled} onClick={pad.redo} data-testid="sketch-redo" />
       <Pill size="round" variant="danger" icon={Trash2} aria-label="Limpiar lienzo" title="Limpiar lienzo (se puede deshacer)" disabled={disabled} onClick={pad.clear} data-testid="sketch-clear" />
+    </div>
+    <div className={s.widthGroup}>
+      <Segmented label="Grosor" value={pad.width} className={cx(s.widthSeg)} onChange={pad.setWidth}
+        options={SKETCH_WIDTHS.map(({ value, name }) => ({ value, disabled, label: <span className={s.optLabel}><span className={s.dot} style={{ width: Math.max(6, value), height: Math.max(6, value) }} aria-hidden="true" /><span className="sr-only">{name}</span></span> }))} />
     </div>
     <div className={s.colorGroup}>
       <SketchPalette value={pad.color} onChange={pad.setColor} />

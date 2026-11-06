@@ -165,3 +165,68 @@
     font-size: var(--fs-68);
   }
 }
+
+/*
+ * Placa compacta (`compact`, Sketchmon): la ayuda del campo solo para lectores en todos los tamaños (el atajo lo dice
+ * la carta marcada «Enter ↵»). En escritorio, una sola fila sin icono (estado y aviso a la izquierda, el buscador a la
+ * derecha) y la bandeja de resultados, carga, error o vacío se abre hacia arriba, superpuesta a la escena: la placa no
+ * crece al escribir y el dibujo no encoge.
+ */
+.compact .search [id$='-hint'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (min-width: 1024px) {
+  /* La bandeja sale de la placa: el panel no la recorta (sus esquinas las redondea el fondo rayado). */
+  section.compact {
+    overflow: visible;
+  }
+  section.compact::before {
+    border-radius: inherit;
+  }
+  .compact .plateIcon {
+    display: none;
+  }
+  .compact .plate {
+    padding-block: var(--sp-2);
+  }
+  .compact .plateSearch {
+    grid-template-columns: auto minmax(18rem, 1fr);
+    align-items: center;
+    gap: var(--sp-2) var(--sp-4);
+  }
+  .compact .plateSearch .plateRow {
+    flex-wrap: nowrap;
+    gap: var(--sp-3);
+  }
+  .compact .plateSearch .plateAside {
+    flex-basis: auto;
+  }
+  .compact .plateTitle {
+    margin-block: 1px;
+  }
+  .compact .search {
+    position: relative;
+  }
+  .compact .search > * > :not(:first-child) {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--sp-3));
+    left: 0;
+    z-index: var(--z-hud);
+    box-shadow: var(--sh-hard-3);
+  }
+  /* Bandeja corta (una fila y media de cartas): el dibujo sigue a la vista mientras se elige. */
+  .compact .search :global(.pokemon-selector-results) {
+    max-height: min(14rem, 30dvh);
+  }
+}
+@media (min-width: 1024px) and (max-height: 800px) {
+  .compact .search :global(.pokemon-selector-results) {
+    max-height: 9.5rem;
+  }
+}

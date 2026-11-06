@@ -4455,6 +4455,9 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     const a1920 = await ancho(1920, 1080);
     test.info().annotations.push({ type: 'lienzo', description: `ancho a 1280: ${Math.round(a1280)} px; a 1920: ${Math.round(a1920)} px` });
     expect(a1920, 'a 1920 el lienzo es mayor que a 1280').toBeGreaterThan(a1280 * 1.4);
+    // El lienzo se lleva el alto de la escena (herramientas en la columna del secreto): antes medía 374 y 722 px de ancho.
+    expect(a1280, 'a 1280 el lienzo de quien dibuja ocupa la escena').toBeGreaterThan(440);
+    expect(a1920, 'a 1920 el lienzo de quien dibuja ocupa la escena').toBeGreaterThan(760);
     // A 390×844 sin desplazar: el lienzo y las herramientas (pegadas abajo) a la vista; con el lienzo arriba, entero y sin tapar.
     await dibujante.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await dibujante.evaluate(() => window.scrollTo(0, 0));
@@ -4474,6 +4477,8 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await expect(g2.getByTestId('guess-attempt').filter({ hasText: fallo })).toContainText(`${nombreDe(g1)} probó`, { timeout: 5_000 });
     await expect(g1.getByText('Tu respuesta · 1 intento')).toBeVisible();
     await capturarTamanos(g2, 'juego-sketchmon-adivinar', { sigue: titulo(g2).filter({ hasText: '¿Qué Pokémon dibuja' }) });
+    // Quien adivina: el lienzo en directo sin barra de título y con la placa del buscador en una fila (antes, 316 px a 1280).
+    expect((await directo(g2).boundingBox())!.width, 'a 1280 el lienzo en directo ocupa la escena').toBeGreaterThan(440);
     // A 390×844 sin desplazar: el lienzo en directo y el buscador.
     await g2.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await g2.evaluate(() => window.scrollTo(0, 0));

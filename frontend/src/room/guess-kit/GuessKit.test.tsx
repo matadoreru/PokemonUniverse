@@ -95,6 +95,18 @@ describe('guess-kit: GuessPanel', () => {
     expect(after).not.toContain('guess-cooldown');
   });
 
+  it('compacta (Sketchmon): solo cambia la clase de la placa; el buscador, su ayuda y el estado siguen ahí', () => {
+    const sectionClass = (html: string) => /^<section class="([^"]*)"/.exec(html)?.[1] ?? '';
+    const plain = panel({ attemptCount: 1 });
+    const compact = panel({ attemptCount: 1, compact: true });
+    expect(sectionClass(compact)).not.toBe(sectionClass(plain));
+    expect(sectionClass(compact).startsWith(sectionClass(plain))).toBe(true);
+    expect(compact.replace(/^<section class="[^"]*"/, '')).toBe(plain.replace(/^<section class="[^"]*"/, ''));
+    expect(compact).toContain('Tu respuesta · 1 intento');
+    expect(compact).toContain('Enter elige la primera');
+    expect(compact).not.toMatch(/role="status"|aria-live/);
+  });
+
   it('acertado: «¡Acertado!» con el puesto en una insignia y los puntos; sin buscador', () => {
     const html = panel({ kind: 'solved', solveOrder: 2, roundPoints: 9 });
     expect(html).toContain('¡Acertado!');
