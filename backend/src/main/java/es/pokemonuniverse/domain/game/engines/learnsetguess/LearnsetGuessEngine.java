@@ -371,10 +371,18 @@ public final class LearnsetGuessEngine
         id -> state.solves().containsKey(id) || manual && manualExhausted(state, id), LearnsetGuessEngine::resolveRound);
   }
 
+  /**
+   * El reto diario juega este modo en solitario; la sala normal sigue exigiendo el {@code minPlayers} del manifiesto.
+   */
+  int minPlayers(LearnsetGuessConfig config) {
+    return config.mode() == LearnsetGuessMode.MANUAL_REVEAL ? 1 : manifest.minPlayers();
+  }
+
   @Override
   public LearnsetGuessState createInitialState(LearnsetGuessConfig config, GameContext context) {
-    if (context.players().size() < manifest.minPlayers()) {
-      throw new EngineException("At least " + manifest.minPlayers() + " players are required");
+    int minPlayers = minPlayers(config);
+    if (context.players().size() < minPlayers) {
+      throw new EngineException("At least " + minPlayers + " players are required");
     }
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var scores = new LinkedHashMap<String, Integer>();

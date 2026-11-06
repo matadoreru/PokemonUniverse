@@ -140,6 +140,20 @@ class LearnsetGuessEngineTest {
   }
 
   @Test
+  void manualRevealStartsWithOnePlayer() {
+    var manual = new LearnsetGuessConfig(List.of(1), true, true, 30, 3, LearnsetGuessMode.MANUAL_REVEAL);
+    var state = engine.createInitialState(manual, context(GOLDEN, 1));
+    assertEquals(1, state.playerIds().size());
+  }
+
+  @Test
+  void classicStillNeedsTwoPlayers() {
+    var error = assertThrows(EngineException.class,
+        () -> engine.createInitialState(config(true, true), context(GOLDEN, 1)));
+    assertEquals("At least 2 players are required", error.getMessage());
+  }
+
+  @Test
   void needsALearnsetCatalog() {
     var context = context(new PlainCatalog(GOLDEN), 2);
     var initial = engine.createInitialState(config(true, true), context);

@@ -1,0 +1,607 @@
+{
+  "engineId": "pokedex-distance",
+  "scenario": "solo-points",
+  "seed": 2026,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "roundSeconds": 20,
+    "selectionVisibility": "HIDDEN",
+    "pointsRounds": 3,
+    "mode": "POINTS"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "gyarados"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "timeout",
+      "now": 10000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SELECT_POKEMON",
+        "pokemonId": "pikachu"
+      },
+      "now": 12000
+    },
+    {
+      "kind": "timeout",
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 45000
+    },
+    {
+      "kind": "timeout",
+      "now": 60000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "selectionVisibility": "HIDDEN",
+      "pointsRounds": 3,
+      "mode": "POINTS"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-distance",
+        "phase": "GAME_STARTING",
+        "mode": "POINTS",
+        "roundNumber": 0,
+        "tiebreakDepth": 0,
+        "targetDexNumber": null,
+        "eligibleIds": [],
+        "survivorIds": [
+          "p1"
+        ],
+        "spectatorIds": [],
+        "selections": {},
+        "selectedIds": [],
+        "lockedPokemonIds": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "lastRound": null,
+        "roundHistory": [],
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null,
+        "pointsRound": 0,
+        "pointsRounds": 3,
+        "scores": {
+          "p1": 0
+        }
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": false,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "pokedex-distance",
+        "phase": "ROUND_ACTIVE",
+        "mode": "POINTS",
+        "roundNumber": 1,
+        "tiebreakDepth": 0,
+        "targetDexNumber": 115,
+        "eligibleIds": [
+          "p1"
+        ],
+        "survivorIds": [
+          "p1"
+        ],
+        "spectatorIds": [],
+        "selections": {},
+        "selectedIds": [],
+        "lockedPokemonIds": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "lastRound": null,
+        "roundHistory": [],
+        "winnerId": null,
+        "nextTransitionAt": null,
+        "results": null,
+        "pointsRound": 1,
+        "pointsRounds": 3,
+        "scores": {
+          "p1": 0
+        }
+      },
+      "playerStates": {
+        "p1": {
+          "canSelect": true,
+          "selection": null,
+          "exactHit": false
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 8000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "mode": "POINTS",
+            "roundNumber": 1,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 115,
+            "eligibleIds": [
+              "p1"
+            ],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "selectedIds": [
+              "p1"
+            ],
+            "lockedPokemonIds": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 115,
+              "selections": {
+                "p1": {
+                  "pokemonId": "gyarados",
+                  "dexNumber": 130,
+                  "distance": 15,
+                  "selectedAt": 2000,
+                  "pokemonName": "Gyarados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
+                }
+              },
+              "eliminatedIds": [],
+              "reason": "SCORED",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1"
+              ],
+              "targetPokemon": {
+                "id": "kangaskhan",
+                "name": "Kangaskhan",
+                "nationalDexNumber": 115,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/115.png"
+              },
+              "points": {
+                "p1": 85
+              }
+            },
+            "roundHistory": [],
+            "winnerId": null,
+            "nextTransitionAt": 8000,
+            "results": null,
+            "pointsRound": 1,
+            "pointsRounds": 3,
+            "scores": {
+              "p1": 85
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "gyarados",
+                "selectedAt": 2000
+              },
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 30000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,10000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "mode": "POINTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 78,
+            "eligibleIds": [
+              "p1"
+            ],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "selectedIds": [],
+            "lockedPokemonIds": [],
+            "roundStartedAt": 10000,
+            "roundEndsAt": 30000,
+            "lastRound": null,
+            "roundHistory": [],
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null,
+            "pointsRound": 2,
+            "pointsRounds": 3,
+            "scores": {
+              "p1": 85
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 18000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,10000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "mode": "POINTS",
+            "roundNumber": 2,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 78,
+            "eligibleIds": [
+              "p1"
+            ],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "selectedIds": [
+              "p1"
+            ],
+            "lockedPokemonIds": [],
+            "roundStartedAt": 10000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 78,
+              "selections": {
+                "p1": {
+                  "pokemonId": "pikachu",
+                  "dexNumber": 25,
+                  "distance": 53,
+                  "selectedAt": 12000,
+                  "pokemonName": "Pikachu",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+                }
+              },
+              "eliminatedIds": [],
+              "reason": "SCORED",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1"
+              ],
+              "targetPokemon": {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "nationalDexNumber": 78,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              "points": {
+                "p1": 47
+              }
+            },
+            "roundHistory": [],
+            "winnerId": null,
+            "nextTransitionAt": 18000,
+            "results": null,
+            "pointsRound": 2,
+            "pointsRounds": 3,
+            "scores": {
+              "p1": 132
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": {
+                "pokemonId": "pikachu",
+                "selectedAt": 12000
+              },
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 40000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_ACTIVE",
+            "mode": "POINTS",
+            "roundNumber": 3,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 166,
+            "eligibleIds": [
+              "p1"
+            ],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "selectedIds": [],
+            "lockedPokemonIds": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": 40000,
+            "lastRound": null,
+            "roundHistory": [],
+            "winnerId": null,
+            "nextTransitionAt": null,
+            "results": null,
+            "pointsRound": 3,
+            "pointsRounds": 3,
+            "scores": {
+              "p1": 132
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 51000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "ROUND_RESULTS",
+            "mode": "POINTS",
+            "roundNumber": 3,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 166,
+            "eligibleIds": [
+              "p1"
+            ],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "selectedIds": [],
+            "lockedPokemonIds": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 166,
+              "selections": {},
+              "eliminatedIds": [],
+              "reason": "SCORED",
+              "tiedIds": [],
+              "eligibleIds": [
+                "p1"
+              ],
+              "targetPokemon": {
+                "id": "ledian",
+                "name": "Ledian",
+                "nationalDexNumber": 166,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/166.png"
+              },
+              "points": {
+                "p1": 0
+              }
+            },
+            "roundHistory": [],
+            "winnerId": null,
+            "nextTransitionAt": 51000,
+            "results": null,
+            "pointsRound": 3,
+            "pointsRounds": 3,
+            "scores": {
+              "p1": 132
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": true,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "pokedex-distance",
+            "phase": "GAME_RESULTS",
+            "mode": "POINTS",
+            "roundNumber": 3,
+            "tiebreakDepth": 0,
+            "targetDexNumber": 166,
+            "eligibleIds": [],
+            "survivorIds": [
+              "p1"
+            ],
+            "spectatorIds": [],
+            "selections": {},
+            "selectedIds": [],
+            "lockedPokemonIds": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "lastRound": {
+              "targetDexNumber": 166,
+              "selections": {},
+              "eliminatedIds": [],
+              "reason": "SCORED",
+              "tiedIds": [],
+              "eligibleIds": [],
+              "targetPokemon": {
+                "id": "ledian",
+                "name": "Ledian",
+                "nationalDexNumber": 166,
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/166.png"
+              },
+              "points": {
+                "p1": 0
+              }
+            },
+            "roundHistory": [
+              {
+                "roundNumber": 1,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 115,
+                "distances": {
+                  "p1": 15
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 2,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 78,
+                "distances": {
+                  "p1": 53
+                },
+                "eliminatedIds": []
+              },
+              {
+                "roundNumber": 3,
+                "tiebreakDepth": 0,
+                "targetDexNumber": 166,
+                "distances": {
+                  "p1": null
+                },
+                "eliminatedIds": []
+              }
+            ],
+            "winnerId": "p1",
+            "nextTransitionAt": null,
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 132,
+                  "won": true,
+                  "stats": {
+                    "exactHits": 0,
+                    "selections": 2,
+                    "averageDistance": 34
+                  }
+                }
+              ]
+            },
+            "pointsRound": 3,
+            "pointsRounds": 3,
+            "scores": {
+              "p1": 132
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canSelect": false,
+              "selection": null,
+              "exactHit": false
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 132,
+          "won": true,
+          "stats": {
+            "exactHits": 0,
+            "selections": 2,
+            "averageDistance": 34
+          }
+        }
+      ]
+    }
+  }
+}

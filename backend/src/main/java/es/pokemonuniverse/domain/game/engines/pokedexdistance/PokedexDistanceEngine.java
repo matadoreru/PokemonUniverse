@@ -231,11 +231,19 @@ public final class PokedexDistanceEngine implements
         id -> state.selections().containsKey(id), PokedexDistanceEngine::resolveRound, state.phase());
   }
 
+  /**
+   * El reto diario juega este modo en solitario; la sala normal sigue exigiendo el {@code minPlayers} del manifiesto.
+   */
+  int minPlayers(PokedexDistanceConfig config) {
+    return config.mode() == PokedexDistanceMode.POINTS ? 1 : manifest.minPlayers();
+  }
+
   /** No consume {@code random}. La configuración ya llega normalizada por {@link #parseConfig}. */
   @Override
   public PokedexDistanceState createInitialState(PokedexDistanceConfig config, GameContext context) {
-    if (context.players().size() < manifest.minPlayers()) {
-      throw new EngineException("At least " + manifest.minPlayers() + " players are required");
+    int minPlayers = minPlayers(config);
+    if (context.players().size() < minPlayers) {
+      throw new EngineException("At least " + minPlayers + " players are required");
     }
     if (context.pokemon().forGenerations(config.generations()).size() < context.players().size()) {
       throw new EngineException("The Pokémon pool is too small for this player count");

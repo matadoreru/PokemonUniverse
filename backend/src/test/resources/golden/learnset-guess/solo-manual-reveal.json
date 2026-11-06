@@ -1,0 +1,820 @@
+{
+  "engineId": "learnset-guess",
+  "scenario": "solo-manual-reveal",
+  "seed": 2026,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "showLevels": true,
+    "showEvolution": true,
+    "roundSeconds": 45,
+    "rounds": 2,
+    "mode": "MANUAL_REVEAL"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "poliwag"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "weepinbell"
+      },
+      "now": 5000
+    },
+    {
+      "kind": "timeout",
+      "now": 20000
+    },
+    {
+      "kind": "timeout",
+      "now": 65000
+    },
+    {
+      "kind": "timeout",
+      "now": 200000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "showLevels": true,
+      "showEvolution": true,
+      "roundSeconds": 45,
+      "rounds": 2,
+      "mode": "MANUAL_REVEAL"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "GAME_STARTING",
+        "mode": "MANUAL_REVEAL",
+        "roundNumber": 0,
+        "totalRounds": 2,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": null,
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastWarning": false,
+        "lastRound": null,
+        "scores": {
+          "p1": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "revealedGroups": [],
+          "attempts": [],
+          "totalGroups": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 46000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "learnset-guess",
+        "phase": "ROUND_ACTIVE",
+        "mode": "MANUAL_REVEAL",
+        "roundNumber": 1,
+        "totalRounds": 2,
+        "referenceGeneration": 1,
+        "referenceSource": "Pokémon Yellow",
+        "visibleGroups": [],
+        "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+        "attempts": [],
+        "solvedPlayers": [],
+        "roundStartedAt": 1000,
+        "roundEndsAt": 46000,
+        "nextTransitionAt": null,
+        "lastWarning": false,
+        "lastRound": null,
+        "scores": {
+          "p1": 0
+        },
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "revealedGroups": [
+            {
+              "level": 1,
+              "moves": [
+                {
+                  "moveId": "growth",
+                  "name": "Desarrollo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "vine-whip",
+                  "name": "Látigo Cepa",
+                  "level": 1,
+                  "type": "grass",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "wrap",
+                  "name": "Constricción",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "stage": 0
+            }
+          ],
+          "attempts": [],
+          "totalGroups": 8
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 46000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "mode": "MANUAL_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": "Evolución intermedia · etapa 2 de 3",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 1000,
+            "roundEndsAt": 46000,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 0
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 3000,
+              "roundPoints": 0,
+              "revealedGroups": [
+                {
+                  "level": 1,
+                  "moves": [
+                    {
+                      "moveId": "growth",
+                      "name": "Desarrollo",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "status"
+                    },
+                    {
+                      "moveId": "vine-whip",
+                      "name": "Látigo Cepa",
+                      "level": 1,
+                      "type": "grass",
+                      "category": "physical"
+                    },
+                    {
+                      "moveId": "wrap",
+                      "name": "Constricción",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "physical"
+                    }
+                  ],
+                  "stage": 0
+                },
+                {
+                  "level": 13,
+                  "moves": [
+                    {
+                      "moveId": "wrap",
+                      "name": "Constricción",
+                      "level": 13,
+                      "type": "normal",
+                      "category": "physical"
+                    }
+                  ],
+                  "stage": 1
+                }
+              ],
+              "attempts": [
+                {
+                  "playerId": "p1",
+                  "pokemonId": "poliwag",
+                  "pokemonName": "Poliwag",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                  "attemptedAt": 2000
+                }
+              ],
+              "totalGroups": 8
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 9000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "mode": "MANUAL_REVEAL",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 9000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "weepinbell",
+                "name": "Weepinbell",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                "nationalDexNumber": 70,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "growth",
+                  "name": "Desarrollo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "vine-whip",
+                  "name": "Látigo Cepa",
+                  "level": 1,
+                  "type": "grass",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "wrap",
+                  "name": "Constricción",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "wrap",
+                  "name": "Constricción",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "growth",
+                  "name": "Desarrollo",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "vine-whip",
+                  "name": "Látigo Cepa",
+                  "level": 1,
+                  "type": "grass",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "wrap",
+                  "name": "Constricción",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "wrap",
+                  "name": "Constricción",
+                  "level": 13,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "poison-powder",
+                  "name": "Polvo Veneno",
+                  "level": 15,
+                  "type": "poison",
+                  "category": "status"
+                },
+                {
+                  "moveId": "sleep-powder",
+                  "name": "Somnífero",
+                  "level": 18,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "stun-spore",
+                  "name": "Paralizador",
+                  "level": 23,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "acid",
+                  "name": "Ácido",
+                  "level": 29,
+                  "type": "poison",
+                  "category": "special"
+                },
+                {
+                  "moveId": "razor-leaf",
+                  "name": "Hoja Afilada",
+                  "level": 38,
+                  "type": "grass",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "slam",
+                  "name": "Atizar",
+                  "level": 49,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 5000,
+                  "revealStage": 1,
+                  "points": 70
+                }
+              },
+              "absentIds": [],
+              "groupsSeen": {
+                "p1": 2
+              },
+              "totalGroups": 8
+            },
+            "scores": {
+              "p1": 70
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 3000,
+              "roundPoints": 70,
+              "revealedGroups": [
+                {
+                  "level": 1,
+                  "moves": [
+                    {
+                      "moveId": "growth",
+                      "name": "Desarrollo",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "status"
+                    },
+                    {
+                      "moveId": "vine-whip",
+                      "name": "Látigo Cepa",
+                      "level": 1,
+                      "type": "grass",
+                      "category": "physical"
+                    },
+                    {
+                      "moveId": "wrap",
+                      "name": "Constricción",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "physical"
+                    }
+                  ],
+                  "stage": 0
+                },
+                {
+                  "level": 13,
+                  "moves": [
+                    {
+                      "moveId": "wrap",
+                      "name": "Constricción",
+                      "level": 13,
+                      "type": "normal",
+                      "category": "physical"
+                    }
+                  ],
+                  "stage": 1
+                }
+              ],
+              "attempts": [
+                {
+                  "playerId": "p1",
+                  "pokemonId": "poliwag",
+                  "pokemonName": "Poliwag",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                  "attemptedAt": 2000
+                }
+              ],
+              "totalGroups": 8
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 65000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_ACTIVE",
+            "mode": "MANUAL_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": "Pokémon base · etapa 1 de 2",
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": 65000,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 70
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "revealedGroups": [
+                {
+                  "level": 1,
+                  "moves": [
+                    {
+                      "moveId": "disable",
+                      "name": "Anulación",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "status"
+                    },
+                    {
+                      "moveId": "tackle",
+                      "name": "Placaje",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "physical"
+                    }
+                  ],
+                  "stage": 0
+                }
+              ],
+              "attempts": [],
+              "totalGroups": 9
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 69000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "ROUND_RESULTS",
+            "mode": "MANUAL_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 69000,
+            "lastWarning": false,
+            "lastRound": {
+              "pokemon": {
+                "id": "venonat",
+                "name": "Venonat",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/48.png",
+                "nationalDexNumber": 48,
+                "generation": 1
+              },
+              "referenceGeneration": 1,
+              "referenceSource": "Pokémon Yellow",
+              "revealedMoves": [
+                {
+                  "moveId": "disable",
+                  "name": "Anulación",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "tackle",
+                  "name": "Placaje",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                }
+              ],
+              "learnset": [
+                {
+                  "moveId": "disable",
+                  "name": "Anulación",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "tackle",
+                  "name": "Placaje",
+                  "level": 1,
+                  "type": "normal",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "supersonic",
+                  "name": "Supersónico",
+                  "level": 11,
+                  "type": "normal",
+                  "category": "status"
+                },
+                {
+                  "moveId": "confusion",
+                  "name": "Confusión",
+                  "level": 19,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "poison-powder",
+                  "name": "Polvo Veneno",
+                  "level": 22,
+                  "type": "poison",
+                  "category": "status"
+                },
+                {
+                  "moveId": "leech-life",
+                  "name": "Chupavidas",
+                  "level": 27,
+                  "type": "bug",
+                  "category": "physical"
+                },
+                {
+                  "moveId": "stun-spore",
+                  "name": "Paralizador",
+                  "level": 30,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "psybeam",
+                  "name": "Psicorrayo",
+                  "level": 35,
+                  "type": "psychic",
+                  "category": "special"
+                },
+                {
+                  "moveId": "sleep-powder",
+                  "name": "Somnífero",
+                  "level": 38,
+                  "type": "grass",
+                  "category": "status"
+                },
+                {
+                  "moveId": "psychic",
+                  "name": "Psíquico",
+                  "level": 43,
+                  "type": "psychic",
+                  "category": "special"
+                }
+              ],
+              "solves": {},
+              "absentIds": [],
+              "groupsSeen": {
+                "p1": 1
+              },
+              "totalGroups": 9
+            },
+            "scores": {
+              "p1": 70
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "revealedGroups": [
+                {
+                  "level": 1,
+                  "moves": [
+                    {
+                      "moveId": "disable",
+                      "name": "Anulación",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "status"
+                    },
+                    {
+                      "moveId": "tackle",
+                      "name": "Placaje",
+                      "level": 1,
+                      "type": "normal",
+                      "category": "physical"
+                    }
+                  ],
+                  "stage": 0
+                }
+              ],
+              "attempts": [],
+              "totalGroups": 9
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,20000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "learnset-guess",
+            "phase": "GAME_RESULTS",
+            "mode": "MANUAL_REVEAL",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "referenceGeneration": 1,
+            "referenceSource": "Pokémon Yellow",
+            "visibleGroups": [],
+            "evolutionHint": null,
+            "attempts": [],
+            "solvedPlayers": [],
+            "roundStartedAt": 20000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastWarning": false,
+            "lastRound": null,
+            "scores": {
+              "p1": 70
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 70,
+                  "won": true,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 1,
+                    "initialSolves": 0,
+                    "incorrectGuesses": 1,
+                    "pointsFromSolves": 70,
+                    "bestRoundPoints": 70
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "revealedGroups": [],
+              "attempts": [],
+              "totalGroups": 0
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 70,
+          "won": true,
+          "stats": {
+            "correct": 1,
+            "missed": 1,
+            "initialSolves": 0,
+            "incorrectGuesses": 1,
+            "pointsFromSolves": 70,
+            "bestRoundPoints": 70
+          }
+        }
+      ]
+    }
+  }
+}

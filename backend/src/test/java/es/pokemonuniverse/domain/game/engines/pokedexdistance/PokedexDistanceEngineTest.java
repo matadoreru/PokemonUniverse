@@ -190,6 +190,20 @@ class PokedexDistanceEngineTest {
   }
 
   @Test
+  void pointsModeStartsWithOnePlayer() {
+    var context = context(1);
+    var started = engine.start(engine.createInitialState(points(3), context), context);
+    assertEquals(List.of("p1"), started.eligibleIds());
+  }
+
+  @Test
+  void classicStillNeedsTwoPlayers() {
+    var classic = new PokedexDistanceConfig(List.of(1, 2), 20, SelectionVisibility.HIDDEN, 10, PokedexDistanceMode.CLASSIC);
+    var error = assertThrows(EngineException.class, () -> engine.createInitialState(classic, context(1)));
+    assertEquals("At least 2 players are required", error.getMessage());
+  }
+
+  @Test
   void startsOnlyOnce() {
     var context = context(2);
     var started = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
