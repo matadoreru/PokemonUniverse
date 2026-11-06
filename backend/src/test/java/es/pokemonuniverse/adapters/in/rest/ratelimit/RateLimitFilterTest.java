@@ -145,4 +145,16 @@ class RateLimitFilterTest {
     var games = call(HttpRequest.GET("/api/games").header("X-Forwarded-For", "203.0.113.12"));
     assertEquals("119", games.header("RateLimit-Remaining"));
   }
+
+  /** Las miniaturas del buscador tampoco gastan el límite global: buscar no bloquea la lista del buscador. */
+  @Test
+  void searchSpritesHaveTheirOwn5000Limit() {
+    for (int i = 0; i < 300; i++) {
+      var r = call(HttpRequest.GET("/api/pokemon/pikachu/sprite").header("X-Forwarded-For", "203.0.113.13"));
+      assertNotEquals(HttpStatus.TOO_MANY_REQUESTS, r.status(), "request " + (i + 1));
+      if (i == 0) assertEquals("5000", r.header("RateLimit-Limit"));
+    }
+    var selector = call(HttpRequest.GET("/api/pokemon/selector").header("X-Forwarded-For", "203.0.113.13"));
+    assertEquals("119", selector.header("RateLimit-Remaining"));
+  }
 }

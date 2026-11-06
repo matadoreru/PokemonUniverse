@@ -25,6 +25,8 @@ export function pokemonPoolPath(generations: readonly number[], includeForms: bo
 }
 
 const POOL_ERROR_FALLBACK = 'No se pudo cargar el buscador de Pokémon. Comprueba la conexión.';
+/** El límite de peticiones del servidor (`ApiError` «Too many requests»). */
+const POOL_RATE_LIMITED = 'Demasiadas peticiones seguidas. Espera unos segundos y pulsa «Reintentar».';
 
 /** Frases de estado HTTP que `api()` usa como mensaje cuando la respuesta no trae un `error` propio. */
 const HTTP_STATUS_TEXTS = new Set(['Request failed', 'Bad Request', 'Unauthorized', 'Forbidden', 'Not Found', 'Request Timeout', 'Too Many Requests', 'Internal Server Error', 'Bad Gateway', 'Service Unavailable', 'Gateway Timeout']);
@@ -37,6 +39,7 @@ const HTTP_STATUS_TEXTS = new Set(['Request failed', 'Bad Request', 'Unauthorize
 export function poolErrorMessage(caught: unknown): string {
   if (caught instanceof TypeError || !(caught instanceof Error)) return POOL_ERROR_FALLBACK;
   const message = caught.message.trim();
+  if (message === 'Too many requests') return POOL_RATE_LIMITED;
   return !message || HTTP_STATUS_TEXTS.has(message) ? POOL_ERROR_FALLBACK : message;
 }
 
