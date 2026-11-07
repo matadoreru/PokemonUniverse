@@ -22,8 +22,12 @@ async function prepararSala(page: Page, ajuste: 'una-ronda' | 'racha-infinita'):
   await seleccionarJuego(page, 'Higher or Lower');
   await page.getByRole('tab', { name: 'Configuración' }).click();
   if (ajuste === 'racha-infinita') {
-    await page.getByRole('radio', { name: 'Racha infinita' }).click();
-    await expect(page.getByRole('radio', { name: 'Racha infinita' })).toBeChecked();
+    // «Modos que se juegan»: Racha infinita marcada y Clásico desmarcado, así la sesión solo juega la racha.
+    const modos = page.getByRole('group', { name: 'Modos que se juegan' });
+    await modos.getByRole('button', { name: 'Racha infinita', exact: true }).click();
+    await expect(modos.getByRole('button', { name: 'Racha infinita', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await modos.getByRole('button', { name: 'Clásico', exact: true }).click();
+    await expect(modos.getByRole('button', { name: 'Clásico', exact: true })).toHaveAttribute('aria-pressed', 'false');
     // Sin responder, el tiempo agotado elimina: la racha se queda en 0 sin depender de la respuesta correcta.
     const tiempo = page.getByRole('slider', { name: 'Tiempo por ronda' });
     await tiempo.focus();

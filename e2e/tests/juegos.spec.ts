@@ -5258,9 +5258,14 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
 /** Elige el modo en los ajustes del juego (selector «Modo»), vuelve a «Minijuegos» y comprueba el chip de la carta. */
 async function elegirModo(host: Page, modo: string): Promise<void> {
   await host.getByRole('tab', { name: 'Configuración' }).click();
-  const opcion = host.getByRole('radio', { name: modo, exact: true });
+  // «Modos que se juegan»: se marca el modo y se desmarca Clásico, así la sesión solo juega ese modo.
+  const modos = host.getByRole('group', { name: 'Modos que se juegan' });
+  const opcion = modos.getByRole('button', { name: modo, exact: true });
+  const clasico = modos.getByRole('button', { name: 'Clásico', exact: true });
   await opcion.click();
-  await expect(opcion).toHaveAttribute('aria-checked', 'true');
+  await expect(opcion).toHaveAttribute('aria-pressed', 'true');
+  await clasico.click();
+  await expect(clasico).toHaveAttribute('aria-pressed', 'false');
 }
 
 /** Pone un deslizador del panel de ajustes en su mínimo o su máximo. */
