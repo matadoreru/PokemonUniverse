@@ -4,7 +4,7 @@ import { pollWhileSaving } from './daily-state';
 import { useAuth } from '../auth/AuthContext';
 import { Avatar } from '../components/Avatar';
 import type { DailyLeaderboardResponse } from '../lib/api-contract';
-import { Row, StateBox } from '../ui';
+import { Chip, Row, StateBox } from '../ui';
 import { fetchDailyLeaderboard, PLAY_FIRST } from './daily-api';
 
 export interface DailyLeaderboardViewProps {
@@ -25,8 +25,8 @@ export function leaderboardSaving(data: DailyLeaderboardResponse | null, error: 
 interface Line { key: string; position: number; name: string; avatar?: AvatarRef | undefined; score: number; correct: number; self: boolean }
 
 /**
- * Las filas de la clasificación de hoy. La propia va marcada (`self` y «(tú)»: el color nunca va solo) y, si queda fuera de
- * las primeras, se añade al final con su puesto.
+ * Las filas de la clasificación del día. La propia va marcada (`self` y el chip «Tú» en la meta, que no se recorta: el
+ * color nunca va solo) y, si queda fuera de las primeras, se añade al final con su puesto.
  */
 function lines(data: DailyLeaderboardResponse, self: DailyLeaderboardViewProps['self']): Line[] {
   const rows: Line[] = data.entries.map((entry) => ({ key: entry.userId, position: entry.position, name: entry.username, avatar: entry.avatar, score: entry.score, correct: entry.correct, self: entry.userId === self.id }));
@@ -54,20 +54,23 @@ export function DailyLeaderboardView({ data, error, self, gaveUp = false, onRetr
       {saving && <StateBox kind="empty" title="Guardando tu resultado…" onCream live={false} />}
       {pending && gaveUp && <StateBox kind="empty" title="No se pudo guardar tu resultado" text="Puede que tarde un poco más. Vuelve a mirarlo en un momento." onCream live={false} {...retry} />}
       {data && rows.length === 0 && !pending && <StateBox kind="empty" title="Nadie ha terminado el reto todavía" onCream live={false} />}
-      {rows.map((row) => (
-        <Row key={row.key} rank={row.position} self={row.self} name={row.self ? `${row.name} (tú)` : row.name}
-          avatar={<Avatar name={row.name} avatar={row.avatar} size="sm" />}
-          meta={`${row.correct} ${row.correct === 1 ? 'acierto' : 'aciertos'}`} value={`${formatDailyPoints(row.score)} pts`} />
-      ))}
+      {rows.map((row) => {
+        const correct = `${row.correct} ${row.correct === 1 ? 'acierto' : 'aciertos'}`;
+        return (
+          <Row key={row.key} rank={row.position} self={row.self} name={row.name}
+            avatar={<Avatar name={row.name} avatar={row.avatar} size="sm" />}
+            meta={row.self ? <><Chip tone="info">Tú</Chip><span>{correct}</span></> : correct} value={`${formatDailyPoints(row.score)} pts`} />
+        );
+      })}
     </div>
   );
 }
 
 /**
- * Clasificación del día por REST: se pide al montar, cada vez que cambia `refreshKey` (`daily:recorded`) y, mientras
+ * Clasificación del día por REST (`date`, el de la partida; sin él, hoy): se pide al montar, cada vez que cambia `refreshKey` (`daily:recorded`) y, mientras
  * falta la fila propia guardada, otra vez a los 2, 4 y 8 s (`pollWhileSaving`): el aviso puede no llegar nunca.
  */
-export function DailyLeaderboard({ refreshKey }: { refreshKey: number }) {
+export function DailyLeaderboard({ refreshKey, date }: { refreshKey: number; date?: string | undefined }) {
   const { user } = useAuth();
   const [data, setData] = useState<DailyLeaderboardResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +82,7 @@ export function DailyLeaderboard({ refreshKey }: { refreshKey: number }) {
     setGaveUp(false);
     const load = async () => {
       try {
-        const body = await fetchDailyLeaderboard(controller.signal);
+        const body = await fetchDailyLeaderboard(controller.signal, date);
         if (!controller.signal.aborted) { setData(body); setError(null); }
         return leaderboardSaving(body, null);
       } catch (caught) {
@@ -92,7 +95,7 @@ export function DailyLeaderboard({ refreshKey }: { refreshKey: number }) {
       if (saving && !controller.signal.aborted) stop = pollWhileSaving(load, () => { if (!controller.signal.aborted) setGaveUp(true); });
     });
     return () => { controller.abort(); stop?.(); };
-  }, [refreshKey, attempt]);
+  }, [refreshKey, attempt, date]);
   return <DailyLeaderboardView data={data} error={error} self={{ id: user?.id ?? '', name: user?.displayName ?? 'Tú', avatar: user?.avatar }}
     gaveUp={gaveUp} onRetry={() => setAttempt((value) => value + 1)} />;
 }

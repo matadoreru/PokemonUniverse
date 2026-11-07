@@ -55,13 +55,16 @@ class DailyControllerTest {
   @AfterEach
   void cleanUp() throws SQLException {
     // Borrar la cuenta borra en cascada sus filas de DailyResult. Después se quita la fila de hoy de DailyChallenge que
-    // fijó la prueba, salvo que otra cuenta tenga un intento de hoy (la clave ajena no cae en cascada).
+    // (y la de ayer) fijó la prueba, salvo que otra cuenta tenga un intento de hoy (la clave ajena no cae en cascada).
     createdUsers.forEach(id -> users.deleteById(id));
     try (var connection = resolver.resolve(dataSource).getConnection();
         var statement = connection.prepareStatement("DELETE FROM \"DailyChallenge\" c WHERE c.\"date\" = ?"
             + " AND NOT EXISTS (SELECT 1 FROM \"DailyResult\" r WHERE r.\"date\" = c.\"date\")")) {
-      statement.setObject(1, DailyCalendar.dateAt(System.currentTimeMillis()));
-      statement.executeUpdate();
+      var today = DailyCalendar.dateAt(System.currentTimeMillis());
+      for (var day : List.of(today, today.minusDays(1))) {
+        statement.setObject(1, day);
+        statement.executeUpdate();
+      }
     }
   }
 
@@ -104,7 +107,10 @@ class DailyControllerTest {
 
   /** Simula haber terminado el reto de hoy: fija el día si nadie lo ha hecho y guarda una fila FINISHED. */
   private LocalDate finishToday(Account account, int score, int correct) {
-    var today = DailyCalendar.dateAt(System.currentTimeMillis());
+    return finishOn(DailyCalendar.dateAt(System.currentTimeMillis()), account, score, correct);
+  }
+
+  private LocalDate finishOn(LocalDate today, Account account, int score, int correct) {
     var ids = List.of("pikachu", "bulbasaur");
     challenges.insertIfAbsent(today, "higher-lower", "[\"pikachu\",\"bulbasaur\"]", CatalogFingerprint.of(ids));
     var gameId = challenges.findById(today).orElseThrow().getGameId();
@@ -180,6 +186,30 @@ class DailyControllerTest {
     assertEquals("FINISHED", me.get("status"));
     assertEquals(mine.get("position"), me.get("position"));
     assertEquals(List.of(1, 0, 1), me.get("rounds"));
+  }
+
+  @Test
+  void leaderboardOfThePlayedDay() {
+    // Una partida que cruzó la medianoche de Madrid: la fila es de ayer y hoy no hay intento.
+    var ash = register();
+    var yesterday = finishOn(DailyCalendar.dateAt(System.currentTimeMillis()).minusDays(1), ash, 3_000, 2);
+    assertEquals(HttpStatus.FORBIDDEN, fails("/api/daily/leaderboard", ash).getStatus());
+    var board = get("/api/daily/leaderboard?date=" + yesterday, ash);
+    assertEquals(yesterday.toString(), board.get("date"));
+    var me = map(board.get("me"));
+    assertEquals("FINISHED", me.get("status"));
+    assertEquals(3_000, me.get("score"));
+
+    var e = fails("/api/daily/leaderboard?date=" + yesterday.minusDays(1), ash);
+    assertEquals(HttpStatus.FORBIDDEN, e.getStatus());
+    assertEquals(Map.of("error", "Play today's challenge first"), e.getResponse().getBody(Map.class).orElseThrow());
+    assertEquals(HttpStatus.FORBIDDEN, fails("/api/daily/leaderboard?date=" + yesterday, register()).getStatus());
+
+    for (var bad : List.of("ayer", "2026-02-30", "2026-1-05", "20261105")) {
+      var malformed = fails("/api/daily/leaderboard?date=" + bad, ash);
+      assertEquals(HttpStatus.BAD_REQUEST, malformed.getStatus(), bad);
+      assertEquals(Map.of("error", "Invalid date"), malformed.getResponse().getBody(Map.class).orElseThrow());
+    }
   }
 
   @Test

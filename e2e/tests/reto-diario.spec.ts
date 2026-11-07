@@ -42,6 +42,9 @@ const titulo = (page: Page) => page.getByRole('heading', { name: `Reto diario ·
 /** El cuerpo con scroll de «Clasificación de hoy» (la sección y su cuerpo llevan el mismo nombre). */
 const clasificacion = (page: Page) => page.getByRole('region', { name: 'Clasificación de hoy' }).last();
 const filas = (page: Page) => clasificacion(page).getByText(/ pts$/);
+/** La fila propia: el nombre entero y el chip «Tú» en la meta (no se recorta y no es solo el color). */
+const filaPropia = (page: Page, nombre: string) => clasificacion(page).locator('div')
+  .filter({ has: page.getByText(nombre, { exact: true }) }).filter({ has: page.getByText('Tú', { exact: true }) }).last();
 
 /** En Jugar, pulsa «Jugar» del reto y espera la partida: sin lobby y con la placa «Reto diario». */
 async function empezarReto(page: Page): Promise<void> {
@@ -90,7 +93,7 @@ for (const { w, h } of SIZES) {
       await expect(a.page.getByText(/^[✅❌]{10}$/u)).toBeVisible();
       await expect(a.page.getByText('No hay un minijuego activo.')).toHaveCount(0);
       // «Guardando tu resultado…» se resuelve sola: llega la fila propia.
-      await expect(clasificacion(a.page).getByText(`${a.cuenta.username} (tú)`)).toBeVisible({ timeout: 30_000 });
+      await expect(filaPropia(a.page, a.cuenta.username)).toBeVisible({ timeout: 30_000 });
       await expect(clasificacion(a.page).getByText('Guardando tu resultado…')).toHaveCount(0);
       await expect(filas(a.page)).toHaveCount(antes + 1);
       await capture(a.page, 'reto-diario-resultado');
@@ -106,7 +109,7 @@ for (const { w, h } of SIZES) {
       const parejasB = await jugarHigherLowerHastaElFinal(b.page, titulo(b.page));
       expect(parejasB).toEqual(parejasA);
       await expect(b.page.getByText(/^[✅❌]{10}$/u)).toBeVisible();
-      await expect(clasificacion(b.page).getByText(`${b.cuenta.username} (tú)`)).toBeVisible({ timeout: 30_000 });
+      await expect(filaPropia(b.page, b.cuenta.username)).toBeVisible({ timeout: 30_000 });
       await expect(clasificacion(b.page).getByText(a.cuenta.username, { exact: true })).toBeVisible();
       await expect(filas(b.page)).toHaveCount(antes + 2);
 
@@ -136,7 +139,7 @@ for (const { w, h } of SIZES) {
       await panel(a.page).getByRole('link', { name: 'Ver resultado' }).click();
       await expect(a.page).toHaveURL(/\/daily$/);
       await expect(titulo(a.page)).toBeVisible();
-      await expect(clasificacion(a.page).getByText(`${a.cuenta.username} (tú)`)).toBeVisible();
+      await expect(filaPropia(a.page, a.cuenta.username)).toBeVisible();
       await expect(filas(a.page)).toHaveCount(antes + 2);
       await capture(a.page, 'reto-diario-pagina');
 

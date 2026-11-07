@@ -239,10 +239,11 @@ Responden `"Not available in the daily challenge"`:
 - `game:skip-vote:set`.
 
 Además:
-- `gameSkipState` va siempre a `null` en estas salas;
+- `gameSkipState` sí va en estas salas, porque la web saca de él el id de la partida para `game:action`, pero con
+  `canVote` a `false`: la web no pinta el control de saltar y el servidor rechaza el voto;
 - `room:join` de otra cuenta responde `"Room not found"`, pero el propio jugador sí puede volver a entrar para
   reconectarse;
-- `room:invite` desde ella responde `"You are not in a room"`, porque `roomOf` no devuelve salas del reto.
+- `room:invite` desde ella responde `"Not available in the daily challenge"`.
 
 Sí funcionan `game:action`, `room:leave`, `session:attach` y la reconexión.
 
@@ -320,12 +321,14 @@ esta es la `V13`. Flyway no admite migraciones fuera de orden: si otra migració
 - `result` es `{score, correct, roundCount, rounds, position, total}` o `null`.
 
 `GET /api/daily/leaderboard`:
-- Una sola clasificación por día (Decisión del usuario (2026-11-06)), así que la ruta no lleva juego. Solo da el día
-  de hoy: las 50 primeras filas `FINISHED`. `gameId` es el juego de hoy, para el título.
+- Una sola clasificación por día (Decisión del usuario (2026-11-06)), así que la ruta no lleva juego. Da las 50
+  primeras filas `FINISHED` de hoy o, con `?date=AAAA-MM-DD`, de ese día, que solo se admite si la cuenta tiene fila
+  propia en él (así los resultados de una partida que cruzó la medianoche piden la clasificación del día en que
+  empezó). Una fecha mal formada responde `400 "Invalid date"`. `gameId` es el juego de ese día, para el título.
 - Ordena por `score` descendente y, a igual puntuación, por `finishedAt` ascendente. Las puntuaciones iguales
   comparten puesto (1, 1, 3).
 - `me` es la fila propia, con `status` y `rounds`, aunque no esté entre las 50.
-- Sin fila propia de hoy responde `403 "Play today's challenge first"`.
+- Sin fila propia de ese día (hoy, si no lleva `date`) responde `403 "Play today's challenge first"`.
 
 Además:
 - `avatar` tiene la misma forma que en `UserResponse`.
@@ -404,8 +407,9 @@ pantalla normal.
   - el título «Reto diario · <juego>» y la fecha;
   - la puntuación grande, los aciertos sobre el total y la línea de emojis;
   - «Compartir»;
-  - la clasificación (`DailyLeaderboard`, con `Row` y la fila propia marcada con `self`), que se pide al montar y otra
-    vez con `daily:recorded`;
+  - la clasificación del día de la partida (`DailyLeaderboard` con `date` de `room.daily.date`, con `Row` y la fila
+    propia marcada con `self` y un `Chip` «Tú» en la meta, que no se recorta), que se pide al montar y otra vez con
+    `daily:recorded`;
   - «Volver a Jugar».
 - Mientras la propia fila no ha llegado, la clasificación muestra «Guardando tu resultado…».
 - La región viva de la pantalla es única y siempre está montada.

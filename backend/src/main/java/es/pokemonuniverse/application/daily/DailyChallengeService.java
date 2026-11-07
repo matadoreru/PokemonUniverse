@@ -178,8 +178,17 @@ public class DailyChallengeService {
 
   /** {@code GET /api/daily/leaderboard}: solo para quien ya tiene su intento de hoy. */
   public DailyLeaderboard leaderboard(AuthUser user) {
+    return leaderboard(user, null);
+  }
+
+  /**
+   * {@code GET /api/daily/leaderboard?date=…}: la clasificación de {@code day} (hoy si es {@code null}), solo para quien
+   * tiene su intento de ese día. Así los resultados de una partida que empezó antes de la medianoche de Madrid piden la
+   * clasificación del día en que empezó; sin fila propia ese día (hoy sin jugar, otro día cualquiera), 403.
+   */
+  public DailyLeaderboard leaderboard(AuthUser user, @Nullable LocalDate day) {
     var userId = registeredId(user);
-    var date = DailyCalendar.dateAt(clock.now());
+    var date = day != null ? day : DailyCalendar.dateAt(clock.now());
     var row = results.findByUserIdAndDate(userId, date).orElseThrow(DailyForbiddenException::new);
     var top = results.topFinished(date, LEADERBOARD_SIZE);
     Map<String, UserEntity> people = new HashMap<>();

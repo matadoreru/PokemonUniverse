@@ -632,6 +632,33 @@ class DailyChallengeServiceTest {
   }
 
   @Test
+  void leaderboardOfAnotherDayNeedsOwnRow() {
+    // La partida empezó ayer antes de la medianoche y los resultados se cargan hoy: se pide la clasificación de ayer.
+    var yesterday = date.minusDays(1);
+    pin(yesterday, "higher-lower", sortedIds(DailyTestRooms.goldenCatalog()));
+    var base = Instant.parse("2399-12-31T22:59:00Z");
+    var ash = user();
+    var started = results.save(DailyResultEntity.started(UUID.randomUUID().toString(), ash.id(), yesterday,
+        "higher-lower", base));
+    results.finish(started.getId(), 4_200, 3, "[1,1,1]", base.plusSeconds(240));
+
+    assertThrows(DailyForbiddenException.class, () -> service.leaderboard(ash), "hoy no ha jugado");
+    var board = service.leaderboard(ash, yesterday);
+    assertEquals(yesterday.toString(), board.date());
+    assertEquals("higher-lower", board.gameId());
+    assertEquals(1, board.total());
+    assertEquals(ash.id(), board.entries().getFirst().userId());
+    assertEquals(new DailyLeaderboard.Me("FINISHED", 1, 4_200, 3, List.of(1, 1, 1)), board.me());
+
+    var forbidden = assertThrows(DailyForbiddenException.class,
+        () -> service.leaderboard(ash, date.minusDays(2)));
+    assertEquals("Play today's challenge first", forbidden.getMessage());
+    assertThrows(DailyForbiddenException.class, () -> service.leaderboard(ash, date.plusDays(1)));
+    assertThrows(DailyForbiddenException.class, () -> service.leaderboard(user(), yesterday),
+        "sin fila propia ese día no se ve aunque otros jugaran");
+  }
+
+  @Test
   void runBelongsToStartDate() {
     pin("pokedex-distance");
     rooms.setTime(at(date, LocalTime.of(23, 59)));

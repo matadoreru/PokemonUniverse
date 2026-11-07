@@ -43,7 +43,11 @@ public final class GameSkip {
     return votes != null && !eligibleIds.isEmpty() && votes.containsAll(eligibleIds);
   }
 
-  /** {@code gameSkipStateView}; {@code null} sin partida activa o en {@code GAME_RESULTS}. */
+  /**
+   * {@code gameSkipStateView}; {@code null} sin partida activa o en {@code GAME_RESULTS}. En el reto diario también va
+   * (la web saca de aquí el id de la partida para {@code game:action}), pero con {@code canVote} a {@code false}: ahí
+   * el voto de saltar se rechaza.
+   */
   public static @io.micronaut.core.annotation.Nullable StateView stateView(LiveRoom room, String playerId) {
     var game = room.game;
     if (game == null || game.finishReason != null || room.phase == RoomPhase.GAME_RESULTS) return null;
@@ -52,6 +56,7 @@ public final class GameSkip {
     var member = room.members.get(playerId);
     return new StateView(game.resultId, voterIds, voterIds.size(), eligibleIds.size(),
         game.skipVoterIds.contains(playerId),
-        member != null && member.presence == PresenceStatus.CONNECTED && eligibleIds.contains(playerId));
+        room.daily == null && member != null && member.presence == PresenceStatus.CONNECTED
+            && eligibleIds.contains(playerId));
   }
 }

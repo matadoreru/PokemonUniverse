@@ -293,6 +293,34 @@ class RoomCoordinatorDailyTest {
   }
 
   @Test
+  void gameActionWithTheProjectedIdsReachesTheEngine() {
+    // Como la web (`gameActionPayload`): el id de la partida sale de `gameSkipState` y la época de `gameActionEpoch`.
+    var room = start("higher-lower");
+    var view = lastState();
+    assertEquals(RoomPhase.ROUND_ACTIVE, view.phase());
+    var skip = view.gameSkipState();
+    assertNotNull(skip, "sin estado de salto la web no tiene id de partida");
+    assertFalse(skip.canVote(), "en el reto no se vota saltar");
+    var epoch = view.gameActionEpoch();
+    assertNotNull(epoch);
+    time.advance(1_000);
+    manager.gameAction(ASH.id(), envelope(skip.gameInstanceId(), epoch));
+    assertNotEquals(epoch, room.game.engine.getLifecycle(room.game.state).actionEpoch(), "la respuesta cerró la ronda");
+    assertRejects("El minijuego ya ha cambiado.", () -> manager.gameAction(ASH.id(),
+        envelope("00000000-0000-4000-8000-000000000000", epoch)));
+  }
+
+  /** Sobre de {@code game:action} con la respuesta «HIGHER». */
+  private static JsonNode envelope(String gameInstanceId, String epoch) {
+    try {
+      return MAPPER.writeValueToTree(Map.of("gameInstanceId", gameInstanceId, "actionEpoch", epoch,
+          "action", Map.of("type", "ANSWER", "choice", "HIGHER")));
+    } catch (java.io.IOException e) {
+      throw new java.io.UncheckedIOException(e);
+    }
+  }
+
+  @Test
   void dailyFinishSkipsPersisterAuditAndXp() {
     var room = start("higher-lower");
     playEveryRound(room, RoomTestKit.answer("HIGHER"));

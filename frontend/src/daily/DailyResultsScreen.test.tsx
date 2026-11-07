@@ -11,6 +11,11 @@ import { shareDailyResult } from './daily-state';
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'u1', kind: 'USER', displayName: 'ash', avatar: { type: 'DEFAULT' } } }) }));
 vi.mock('../room/RoomContext', () => ({ useRoom: () => ({ subscribe: () => () => undefined }) }));
 vi.mock('./daily-api', () => ({ fetchDailyLeaderboard: () => new Promise(() => undefined), PLAY_FIRST: "Play today's challenge first" }));
+const leaderboardProps = vi.hoisted(() => [] as Array<{ refreshKey: number; date?: string | undefined }>);
+vi.mock('./DailyLeaderboard', async (importOriginal) => {
+  const original = await importOriginal<typeof import('./DailyLeaderboard')>();
+  return { ...original, DailyLeaderboard: (props: { refreshKey: number; date?: string }) => { leaderboardProps.push(props); return null; } };
+});
 
 const result = { score: 612, correct: 7, rounds: [1, 1, 0, 1, 1, 1, 0, 1, 1, -1] };
 const room = {
@@ -31,6 +36,12 @@ describe('DailyResultsScreen', () => {
     expect(markup).toContain('✅✅❌✅✅✅❌✅✅⌛');
     expect(markup).toMatch(/<button[^>]*>.*Compartir/);
     expect(markup).toMatch(/<button[^>]*>.*Volver a Jugar/);
+  });
+
+  it('pide la clasificación del día de la partida, no la de hoy (una partida que cruza la medianoche)', () => {
+    leaderboardProps.length = 0;
+    render(DailyResultsScreen, { room: { ...room, daily: { ...room.daily!, date: '2026-11-06' } }, onLeave: () => undefined });
+    expect(leaderboardProps.at(-1)?.date).toBe('2026-11-06');
   });
 
   it('una sola región viva, siempre montada', () => {
@@ -83,8 +94,11 @@ describe('DailyLeaderboardView', () => {
     const entries = [entry(1, 'u2', 'misty', 700), entry(2, 'u1', 'ash', 612)];
     const markup = render(DailyLeaderboardView, { data: board({ status: 'FINISHED', position: 2, score: 612, correct: 7, rounds: [] }, entries), error: null, self: { id: 'u1', name: 'ash' } });
     expect(text(markup)).not.toContain('Guardando tu resultado…');
-    expect(text(markup)).toContain('ash');
-    expect(text(markup)).toContain('(tú)');
+    expect(markup).toMatch(/title="ash"[^>]*>ash</);
+    // La marca va en la meta, que no se recorta, y no solo en el color.
+    expect(markup).toMatch(/class="[^"]*meta[^"]*"[^>]*><span[^>]*>Tú<\/span>/);
+    expect(markup).not.toContain('(tú)');
+    expect(text(markup).match(/ Tú /g)).toHaveLength(1);
   });
 
   it('si el guardado no llega tras los reintentos, lo dice con calma y ofrece «Reintentar»', () => {

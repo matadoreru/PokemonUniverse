@@ -57,7 +57,7 @@
   - se rechazan con `"Not available in the daily challenge"`: `room:select-game`, `room:update-config`, `room:update-game-config`, `room:update-session`, `room:update-game-selection`, `room:vote-next-game`, `room:set-role`, `room:transfer-host`, `room:kick`, `room:set-ready`, `room:start-game`, `room:continue-session`, `room:return-lobby`, `room:end-session`, `room:update-allowed-modes`, `room:chat:send`, `room:chat:delete`, `room:chat:mute`, `room:invite` y `game:skip-vote:set`;
   - `room:join` de otra cuenta responde `"Room not found"`;
   - `roomOf` devuelve vacío;
-  - `gameSkipState` es `null`.
+  - `gameSkipState` lleva el id de la partida (la web lo usa para `game:action`) con `canVote` a `false`: el control de saltar no se pinta y el voto se rechaza.
 - **Una partida del reto no:**
   - llama a `GameResultsPersister`;
   - suma XP;
@@ -249,7 +249,7 @@
   - `backend/src/main/java/es/pokemonuniverse/domain/room/LiveRoom.java`: `public @Nullable DailyRoom daily;`
   - `backend/src/main/java/es/pokemonuniverse/domain/room/GameRuntime.java`: `public final @Nullable DoubleSupplier random`, más un constructor que lo recibe; el actual pasa `null`.
   - `backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCoordinator.java`
-  - `backend/src/main/java/es/pokemonuniverse/application/rooms/RoomView.java` y `RoomViews.java`: el campo `daily` y `gameSkipState` a `null` en las salas del reto.
+  - `backend/src/main/java/es/pokemonuniverse/application/rooms/RoomView.java` y `RoomViews.java`: el campo `daily`; `gameSkipState` sigue yendo en las salas del reto (con el id de la partida y `canVote` a `false`).
 - Test: `backend/src/test/java/es/pokemonuniverse/application/rooms/RoomCoordinatorDailyTest.java`
 
 **Interfaces:**

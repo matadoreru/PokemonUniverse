@@ -58,7 +58,7 @@ export function useDailyShare(input: DailyResultInput | null) {
 
 /**
  * Resultados del reto diario (sustituye a los del juego en `GAME_RESULTS`): el título con el juego y la fecha, el
- * resultado propio y la clasificación del día, que se vuelve a pedir con `daily:recorded` (la fila se guarda en segundo
+ * resultado propio y la clasificación del día de la partida (la del día en que empezó, aunque ya sea otro), que se vuelve a pedir con `daily:recorded` (la fila se guarda en segundo
  * plano). «Volver a Jugar» cierra la sala (`onLeave`).
  */
 export function DailyResultsScreen({ room, onLeave }: { room: RoomView; onLeave(): void }) {
@@ -86,7 +86,7 @@ export function DailyResultsScreen({ room, onLeave }: { room: RoomView; onLeave(
             </div>
           </Panel>}
         <Panel variant="cream" title="Clasificación de hoy" aria-label="Clasificación de hoy" scroll scrollLabel="Clasificación de hoy" className="lg:max-h-96">
-          <DailyLeaderboard refreshKey={refreshKey} />
+          <DailyLeaderboard refreshKey={refreshKey} date={daily?.date} />
         </Panel>
       </div>
     </Screen>

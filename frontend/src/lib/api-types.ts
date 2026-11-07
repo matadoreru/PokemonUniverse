@@ -509,7 +509,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Clasificación del reto diario de hoy */
+        /** Clasificación del reto diario de hoy o de un día en el que se jugó */
         get: operations["leaderboard"];
         put?: never;
         post?: never;
@@ -3131,7 +3131,10 @@ export interface operations {
     };
     leaderboard: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Día del reto (AAAA-MM-DD, hora de Madrid); por defecto, hoy. Solo hoy o un día con intento propio. */
+                date?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3147,6 +3150,15 @@ export interface operations {
                     "application/json": components["schemas"]["DailyLeaderboardResponse"];
                 };
             };
+            /** @description Fecha no válida */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
             /** @description Cuenta registrada requerida */
             401: {
                 headers: {
@@ -3156,7 +3168,7 @@ export interface operations {
                     "application/json": components["schemas"]["ApiError"];
                 };
             };
-            /** @description Sin intento de hoy: juega el reto primero */
+            /** @description Sin intento propio ese día: juega el reto primero */
             403: {
                 headers: {
                     [name: string]: unknown;

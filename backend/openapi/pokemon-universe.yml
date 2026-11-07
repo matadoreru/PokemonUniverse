@@ -1180,8 +1180,18 @@ paths:
     get:
       tags:
       - daily
-      summary: Clasificación del reto diario de hoy
+      summary: Clasificación del reto diario de hoy o de un día en el que se jugó
       operationId: leaderboard
+      parameters:
+      - name: date
+        in: query
+        description: "Día del reto (AAAA-MM-DD, hora de Madrid); por defecto, hoy.\
+          \ Solo hoy o un día con intento propio."
+        explode: false
+        schema:
+          type: string
+          format: date
+          nullable: true
       responses:
         "200":
           description: OK
@@ -1189,6 +1199,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DailyLeaderboardResponse"
+        "400":
+          description: Fecha no válida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
         "401":
           description: Cuenta registrada requerida
           content:
@@ -1196,7 +1212,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ApiError"
         "403":
-          description: "Sin intento de hoy: juega el reto primero"
+          description: "Sin intento propio ese día: juega el reto primero"
           content:
             application/json:
               schema:
