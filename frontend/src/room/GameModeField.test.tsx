@@ -29,19 +29,29 @@ describe('GameModeField', () => {
     expect(render('pokemon-bingo', 'CLASSIC')).toBe('');
   });
 
-  it('al azar o por votación pinta casillas «Modos que pueden salir» y bloquea el último marcado', () => {
-    const html = renderToStaticMarkup(<SessionModesProvider value={{ gameId: 'higher-lower', allowed: ['ENDLESS'], onChange: () => undefined }}>
+  it('en la sesión pinta casillas «Modos que se juegan» y bloquea el último marcado', () => {
+    const html = renderToStaticMarkup(<SessionModesProvider value={{ gameId: 'higher-lower', allowed: ['ENDLESS'], order: false, onChange: () => undefined }}>
       <GameModeField gameId="higher-lower" value="CLASSIC" onChange={() => undefined} disabled={false} />
     </SessionModesProvider>);
-    expect(html).toContain('Modos que pueden salir');
+    expect(html).toContain('Modos que se juegan');
+    expect(html).toContain('Cada modo marcado es una opción más al azar y en la votación');
     expect(html).not.toContain('role="radiogroup"');
     expect(html).toMatch(/aria-pressed="false"[^>]*>(?:(?!<\/button>).)*Clásico/);
     expect(html).toMatch(/aria-pressed="true"[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*Racha infinita/);
     expect(html).toContain('Un fallo y estás fuera.');
   });
 
+  it('por orden explica que cada modo marcado ocupa su turno en la cola', () => {
+    const html = renderToStaticMarkup(<SessionModesProvider value={{ gameId: 'higher-lower', allowed: ['CLASSIC', 'ENDLESS'], order: true, onChange: () => undefined }}>
+      <GameModeField gameId="higher-lower" value="CLASSIC" onChange={() => undefined} disabled={false} />
+    </SessionModesProvider>);
+    expect(html).toContain('Modos que se juegan');
+    expect(html).toContain('Cada modo marcado ocupa su propio turno en la cola, seguidos y en este orden');
+    expect(html).not.toContain('al azar y en la votación');
+  });
+
   it('con el contexto de otro juego sigue siendo el Segmented', () => {
-    const html = renderToStaticMarkup(<SessionModesProvider value={{ gameId: 'type-duel', allowed: ['CLASSIC', 'COOP'], onChange: () => undefined }}>
+    const html = renderToStaticMarkup(<SessionModesProvider value={{ gameId: 'type-duel', allowed: ['CLASSIC', 'COOP'], order: false, onChange: () => undefined }}>
       <GameModeField gameId="higher-lower" value="CLASSIC" onChange={() => undefined} disabled={false} />
     </SessionModesProvider>);
     expect(html).toContain('role="radiogroup" aria-label="Modo"');
@@ -55,7 +65,7 @@ describe('GameModeField', () => {
   });
 
   it('los ajustes propios de un modo se ven si ese modo está marcado', () => {
-    const panel = (allowed: string[] | null) => renderToStaticMarkup(<SessionModesProvider value={allowed ? { gameId: 'type-duel', allowed, onChange: () => undefined } : null}>
+    const panel = (allowed: string[] | null) => renderToStaticMarkup(<SessionModesProvider value={allowed ? { gameId: 'type-duel', allowed, order: false, onChange: () => undefined } : null}>
       <TypeDuelConfigPanel config={defaultTypeDuelConfig} disabled={false} onChange={async () => undefined} />
     </SessionModesProvider>);
     const both = panel(['CLASSIC', 'COOP']);

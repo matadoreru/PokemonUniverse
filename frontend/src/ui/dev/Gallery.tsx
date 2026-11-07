@@ -1079,10 +1079,10 @@ function GenerationSelectorDemo() {
   return <GenerationSelector selected={generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={setGenerations} />;
 }
 
-/** «Modos que pueden salir» (sesión al azar o por votación) que cambia de verdad: el último marcado no se puede quitar. */
-function SessionModesDemo({ initial }: { initial: string[] }) {
+/** «Modos que se juegan» (las tres formas de sesión) que cambia de verdad: el último marcado no se puede quitar. */
+function SessionModesDemo({ initial, order = false }: { initial: string[]; order?: boolean }) {
   const [allowed, setAllowed] = useState<string[]>(initial);
-  return <SessionModesProvider value={{ gameId: 'higher-lower', allowed, onChange: setAllowed }}>
+  return <SessionModesProvider value={{ gameId: 'higher-lower', allowed, order, onChange: setAllowed }}>
     <GameModeField gameId="higher-lower" value="CLASSIC" onChange={noop} disabled={false} />
   </SessionModesProvider>;
 }
@@ -1126,10 +1126,13 @@ function GamePiecesSection() {
           <GenerationSelector selected={[1, 9]} label="Generaciones del pool" onChange={noop} />
         </fieldset>
       </Fig>
-      <Fig id="session-modes-both" caption="Modos que pueden salir · los dos marcados (sesión al azar o por votación)" wide cream>
+      <Fig id="session-modes-both" caption="Modos que se juegan · los dos marcados (sesión al azar o por votación)" wide cream>
         <SessionModesDemo initial={['CLASSIC', 'ENDLESS']} />
       </Fig>
-      <Fig id="session-modes-last" caption="Modos que pueden salir · el último marcado, deshabilitado (siempre queda uno)" wide cream>
+      <Fig id="session-modes-order" caption="Modos que se juegan · los dos marcados por orden (cada uno, un turno de la cola)" wide cream>
+        <SessionModesDemo initial={['CLASSIC', 'ENDLESS']} order />
+      </Fig>
+      <Fig id="session-modes-last" caption="Modos que se juegan · el último marcado, deshabilitado (siempre queda uno)" wide cream>
         <SessionModesDemo initial={['ENDLESS']} />
       </Fig>
       <Fig id="selector-prompt" caption="Buscador · sin búsqueda (panel)" wide>

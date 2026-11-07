@@ -2,7 +2,7 @@ import type { MiniGameManifest, RoomView } from '@pokemon-universe/shared';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { GameOrderChoice, gameOrderHint, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
+import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, SelectedGamesConfig, sessionModesOf, toggleSelectedGame } from './GameSelectionConfig';
 import { NextGameVote } from './NextGameVote';
 
 const games: MiniGameManifest[] = [
@@ -84,7 +84,10 @@ describe('game selection UI', () => {
     // Al azar o por votación, cada modo marcado es una opción más; en orden no cuenta.
     expect(gameOrderHint('RANDOM', 1, 1, 2)).toBe('Cada partida sale al azar entre 2 opciones de minijuego y modo, sin repetir la anterior.');
     expect(gameOrderHint('VOTE', 2, 2, 4)).toBe('Tras cada partida se vota entre 3 de las 4 opciones de minijuego y modo.');
-    expect(gameOrderHint('ORDER', 2, 2, 4)).toBe('Se juegan los 2 minijuegos en el orden en que los elegiste y se vuelve a empezar.');
+    // Por orden, cada modo marcado ocupa su propio turno: la pista cuenta pares juego y modo.
+    expect(gameOrderHint('ORDER', 2, 2, 4)).toBe('Se juegan las 4 partidas de minijuego y modo en el orden de la cola y se vuelve a empezar.');
+    expect(gameOrderHint('ORDER', 1, 1, 2)).toBe('Se juegan las 2 partidas de minijuego y modo en el orden de la cola y se vuelve a empezar.');
+    expect(gameOrderHint('ORDER', 2, 2, 2)).toBe('Se juegan los 2 minijuegos en el orden en que los elegiste y se vuelve a empezar.');
     const vacio = renderToStaticMarkup(createElement(GameOrderChoice, {
       mode: { type: 'ORDER', gameIds: [] }, compatibleCount: 0, disabled: false, onChange: () => undefined,
     }));
@@ -111,6 +114,37 @@ describe('game selection UI', () => {
     expect(markup).toContain('Ajustes de Higher or Lower');
     expect(markup).toContain('Máximo 8 jugadores');
     expect(markup).toContain('aria-label="Ajustar Shiny Quiz"');
+  });
+
+  it('por orden numera la lista por turnos de la cola (las casillas del panel las prueba GameModeField)', () => {
+    const lobby = { ...lobbyWith(['higher-lower', 'shiny-vote']), allowedModes: { 'higher-lower': ['CLASSIC', 'ENDLESS'] } };
+    const markup = renderToStaticMarkup(createElement(SelectedGamesConfig, { room: lobby, selfId: 'p1', playerCount: 3, disabled: false, onConfig: async () => undefined, onAllowedModes: () => undefined }));
+    // Higher or Lower ocupa los turnos 1 y 2; Shiny Quiz, el 3.
+    expect(markup).toMatch(/aria-hidden="true">1–2<\/span>(?:(?!<\/li>).)*Higher or Lower/);
+    expect(markup).toMatch(/aria-hidden="true">3<\/span>(?:(?!<\/li>).)*Shiny Quiz/);
+  });
+
+  it('el panel lleva las casillas de modos en las tres formas de sesión', () => {
+    const lobby = { ...lobbyWith(['higher-lower', 'pokemon-bingo']), allowedModes: { 'higher-lower': ['CLASSIC', 'ENDLESS'] } };
+    const changes: unknown[] = [];
+    const ordered = sessionModesOf(lobby, 'higher-lower', (gameId, modes) => changes.push([gameId, modes]));
+    expect(ordered).toMatchObject({ gameId: 'higher-lower', allowed: ['CLASSIC', 'ENDLESS'], order: true });
+    ordered?.onChange(['ENDLESS']);
+    expect(changes).toEqual([['higher-lower', ['ENDLESS']]]);
+    for (const type of ['RANDOM', 'VOTE'] as const) {
+      expect(sessionModesOf({ ...lobby, gameSelectionMode: { type, gameIds: lobby.gameSelectionMode.gameIds } }, 'higher-lower', () => undefined)?.order).toBe(false);
+    }
+    expect(sessionModesOf(lobby, 'pokemon-bingo', () => undefined)).toBeNull();
+    expect(sessionModesOf(lobby, 'higher-lower', undefined)).toBeNull();
+  });
+
+  it('queueSlots cuenta pares por orden y juegos al azar o por votación', () => {
+    const lobby = { ...lobbyWith(['higher-lower', 'pokemon-bingo', 'shiny-vote']), allowedModes: { 'higher-lower': ['CLASSIC', 'ENDLESS'], 'shiny-vote': ['CLASSIC', 'SURVIVAL'] } };
+    expect(queueSlots(lobby)).toEqual({ 'higher-lower': [1, 2], 'pokemon-bingo': [3, 3], 'shiny-vote': [4, 5] });
+    expect(queueSlots({ ...lobby, gameSelectionMode: { type: 'RANDOM', gameIds: lobby.gameSelectionMode.gameIds } }))
+      .toEqual({ 'higher-lower': [1, 1], 'pokemon-bingo': [2, 2], 'shiny-vote': [3, 3] });
+    expect(queueSlotLabel([1, 2])).toBe('1–2');
+    expect(queueSlotLabel([3, 3])).toBe('3');
   });
 
   it('with no game selected shows an empty state instead of the settings', () => {

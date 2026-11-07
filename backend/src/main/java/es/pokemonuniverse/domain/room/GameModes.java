@@ -56,8 +56,9 @@ public final class GameModes {
   }
 
   /**
-   * Los modos que pueden salir de {@code gameId} al azar o por votación, en el orden del catálogo: los que eligió el
-   * host ({@code explicit}) o, sin elección, el modo de su configuración. Vacía para un juego sin modos.
+   * Los modos que se juegan de {@code gameId} en la sesión (opciones al azar o por votación, turnos de la cola por
+   * orden), en el orden del catálogo: los que eligió el host ({@code explicit}) o, sin elección, el modo de su
+   * configuración. Vacía para un juego sin modos.
    */
   public static List<String> allowed(Map<String, List<String>> explicit, String gameId, @Nullable JsonNode config) {
     if (!hasModes(gameId)) return List.of();

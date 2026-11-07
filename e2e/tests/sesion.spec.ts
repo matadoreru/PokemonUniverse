@@ -2,7 +2,7 @@
  * Votación del siguiente minijuego y resultados de la sesión (`frontend/src/room/NextGameVote.tsx`,
  * `SessionResults.tsx`) contra el `/ws` de Java (`npm run test:e2e -- sesion`): una partida de Higher or Lower de una
  * ronda con la rotación por votación, la votación, el revelado del ganador y la clasificación final; y los modos que
- * pueden salir de un juego al azar o por votación (cada modo marcado es una opción de voto).
+ * se juegan de un juego (al azar o por votación cada modo marcado es una opción de voto; por orden, un turno de la cola).
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
@@ -141,7 +141,7 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
   }
 });
 
-test('sesión: modos que pueden salir y votación entre los modos de un juego', async ({ browser }) => {
+test('sesión: modos que se juegan y votación entre los modos de un juego', async ({ browser }) => {
   test.setTimeout(150_000);
   const sala = await crearSalaConJugadores(browser, 2);
   try {
@@ -149,14 +149,14 @@ test('sesión: modos que pueden salir y votación entre los modos de un juego', 
     const [invitado] = invitados as [Jugador];
     const pages = jugadores.map((j) => j.page);
 
-    // Solo Higher or Lower, por votación: el «Modo» de sus ajustes pasa a ser «Modos que pueden salir».
+    // Solo Higher or Lower, por votación: el «Modo» de sus ajustes pasa a ser «Modos que se juegan».
     await seleccionarJuego(host.page, 'Higher or Lower');
     await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
     const votacion = host.page.getByRole('button', { name: /^Votación/ });
     await votacion.click();
     await expect(votacion).toHaveAttribute('aria-pressed', 'true');
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
-    const modos = host.page.getByRole('group', { name: 'Modos que pueden salir' });
+    const modos = host.page.getByRole('group', { name: 'Modos que se juegan' });
     const modo = (nombre: string) => modos.getByRole('button', { name: nombre, exact: true });
     await expect(host.page.getByRole('radiogroup', { name: 'Modo' })).toHaveCount(0);
     await expect(modo('Clásico')).toHaveAttribute('aria-pressed', 'true');
@@ -172,7 +172,7 @@ test('sesión: modos que pueden salir y votación entre los modos de un juego', 
     await expect(rondas).toHaveValue('1');
     await capturarPantalla(host.page, 'sesion-modos-ajustes', modo('Racha infinita'));
 
-    // La carta del juego dice cuántos modos tiene y cuántos pueden salir; el invitado lo ve igual.
+    // La carta del juego dice cuántos modos tiene y cuántos se juegan; el invitado lo ve igual.
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
     const cartaHl = (page: Page) => page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText('Higher or Lower', { exact: true }) });
     await expect(cartaHl(host.page).getByText('2 modos', { exact: true })).toBeVisible();
@@ -182,7 +182,7 @@ test('sesión: modos que pueden salir y votación entre los modos de un juego', 
 
     // El invitado (sin permiso) ve los mismos modos marcados, en solo lectura.
     await invitado.page.getByRole('tab', { name: 'Configuración' }).click();
-    const modosInvitado = invitado.page.getByRole('group', { name: 'Modos que pueden salir' });
+    const modosInvitado = invitado.page.getByRole('group', { name: 'Modos que se juegan' });
     await expect(modosInvitado.getByRole('button', { pressed: true })).toHaveCount(2);
     await expect(modosInvitado.getByRole('button', { name: 'Racha infinita', exact: true })).toBeDisabled();
     await expect(invitado.page.getByRole('radiogroup', { name: 'Modo' })).toHaveCount(0);
@@ -211,6 +211,70 @@ test('sesión: modos que pueden salir y votación entre los modos de un juego', 
     await expect(host.page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByRole('heading', { name: 'Elige el siguiente minijuego' })).toHaveCount(0);
     await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible();
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+test('sesión: por orden, cada modo marcado ocupa su turno en la cola', async ({ browser }) => {
+  test.setTimeout(150_000);
+  const sala = await crearSalaConJugadores(browser, 2);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const [invitado] = invitados as [Jugador];
+    const pages = jugadores.map((j) => j.page);
+
+    // Higher or Lower (una ronda) y después Pokédex Distance, por orden.
+    await seleccionarJuego(host.page, 'Higher or Lower');
+    await anadirJuegos(host.page, ['Pokédex Distance']);
+    await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
+    const orden = host.page.getByRole('button', { name: /^Por orden/ });
+    await orden.click();
+    await expect(orden).toHaveAttribute('aria-pressed', 'true');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    await host.page.getByRole('button', { name: 'Ajustar Higher or Lower' }).click();
+    // Por orden también se marcan varios modos: cada uno es un turno de la cola, seguidos.
+    const modos = host.page.getByRole('group', { name: 'Modos que se juegan' });
+    const modo = (nombre: string) => modos.getByRole('button', { name: nombre, exact: true });
+    await expect(host.page.getByRole('radiogroup', { name: 'Modo' })).toHaveCount(0);
+    await modo('Racha infinita').click();
+    await expect(modo('Racha infinita')).toHaveAttribute('aria-pressed', 'true');
+    await expect(modo('Clásico')).toHaveAttribute('aria-pressed', 'true');
+    await expect(modos.getByText('Cada modo marcado ocupa su propio turno en la cola')).toBeVisible();
+    // Higher or Lower ocupa los turnos 1 y 2 de la lista de ajustes; Pokédex Distance, el 3.
+    const elegidos = host.page.getByRole('region', { name: 'Minijuegos elegidos' });
+    await expect(elegidos.getByRole('listitem').filter({ hasText: 'Higher or Lower' }).getByText('1–2', { exact: true })).toBeVisible();
+    await expect(elegidos.getByRole('listitem').filter({ hasText: 'Pokédex Distance' }).getByText('3', { exact: true })).toBeVisible();
+    const rondas = host.page.getByRole('slider', { name: 'Número de rondas' });
+    await rondas.focus();
+    await rondas.press('Home');
+    await rondas.blur();
+    await expect(rondas).toHaveValue('1');
+    await capturarPantalla(host.page, 'sesion-orden-modos-ajustes', modo('Racha infinita'));
+
+    // La pista de «Modo y sesión» cuenta pares juego y modo.
+    await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
+    await expect(host.page.getByText('Se juegan las 3 partidas de minijuego y modo en el orden de la cola y se vuelve a empezar.')).toBeVisible();
+
+    // Las cartas numeran los turnos («1–2» y «3») y dicen cuántos modos se juegan; el invitado lo ve igual.
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    const carta = (page: Page, nombre: string) => page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) });
+    for (const page of pages) {
+      await expect(carta(page, 'Higher or Lower').getByText('2 modos en juego', { exact: true })).toBeVisible();
+      await expect(carta(page, 'Higher or Lower').getByText('1–2', { exact: true })).toBeVisible();
+      await expect(carta(page, 'Pokédex Distance').getByText('3', { exact: true })).toBeVisible();
+    }
+    await capturarPantalla(host.page, 'sesion-orden-modos-carta', carta(host.page, 'Higher or Lower'));
+
+    // Primero Higher or Lower en Clásico y, al continuar, el mismo juego en Racha infinita (no Pokédex Distance).
+    await iniciarPartida(host.page, [invitado.page]);
+    await esperarPartida(pages);
+    await expect(host.page.getByText('Higher or Lower · Racha infinita')).toHaveCount(0);
+    for (const page of pages) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
+    await host.page.getByRole('button', { name: 'Continuar sesión' }).click({ timeout: 20_000 });
+    await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible({ timeout: 20_000 });
+    await expect(host.page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 20_000 });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

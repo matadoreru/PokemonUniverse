@@ -6,7 +6,7 @@ import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, StateBox } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { summarizeGameConfig } from './game-config-summary';
-import { SessionModesProvider } from './GameModeField';
+import { SessionModesProvider, type SessionModes } from './GameModeField';
 import g from './GameSelectionConfig.module.css';
 import { playerRangeLabel } from './lobby-state';
 
@@ -21,7 +21,7 @@ export function rotationGameConfig(room: RoomView | undefined, gameId: string): 
 }
 
 /**
- * Modos que pueden salir de `gameId` al azar o por votación: los de la vista o, en una vista sin ellos, el `mode` de su
+ * Modos que se juegan de `gameId` en la sesión: los de la vista o, en una vista sin ellos, el `mode` de su
  * configuración (como el servidor). Vacía si el juego no tiene modos.
  */
 export function allowedModesOf(room: RoomView, gameId: string): string[] {
@@ -31,6 +31,26 @@ export function allowedModesOf(room: RoomView, gameId: string): string[] {
   if (allowed.length > 0) return allowed;
   const mode = (rotationGameConfig(room, gameId) as { mode?: unknown } | null)?.mode;
   return [typeof mode === 'string' && catalog.modes.includes(mode) ? mode : 'CLASSIC'];
+}
+
+/**
+ * Turnos de cada juego elegido (primero y último, desde 1). Por orden, cada modo marcado ocupa su propio turno en la
+ * cola, seguidos; al azar o por votación, un turno por juego (el orden de la selección).
+ */
+export function queueSlots(room: RoomView): Record<string, [number, number]> {
+  const slots: Record<string, [number, number]> = {};
+  let next = 1;
+  for (const gameId of room.gameSelectionMode.gameIds) {
+    const size = room.gameSelectionMode.type === 'ORDER' ? Math.max(1, allowedModesOf(room, gameId).length) : 1;
+    slots[gameId] = [next, next + size - 1];
+    next += size;
+  }
+  return slots;
+}
+
+/** «2» o «2–3» (un juego con varios modos en la cola). */
+export function queueSlotLabel([first, last]: readonly [number, number]): string {
+  return first === last ? `${first}` : `${first}–${last}`;
 }
 
 export function rotationGameReadinessReason(room: RoomView, game: MiniGameManifest, playerCount: number): string | null {
@@ -63,13 +83,14 @@ const ORDER_CHOICES: { type: GameSelectionType; icon: typeof Shuffle; title: str
 ];
 
 /**
- * Qué hará el modo elegido con los juegos compatibles de la selección. `pairCount` cuenta las opciones al azar o por
- * votación: cada modo marcado de un juego es una opción más.
+ * Qué hará el modo elegido con los juegos compatibles de la selección. `pairCount` cuenta los pares juego y modo: al
+ * azar o por votación cada modo marcado es una opción más; por orden, un turno más de la cola.
  */
 export function gameOrderHint(type: GameSelectionType, compatibleCount: number, selectedCount: number, pairCount = compatibleCount): string {
   if (selectedCount === 0) return 'Elige al menos un minijuego.';
   if (compatibleCount === 0) return 'Ninguno de los minijuegos elegidos admite a los jugadores de ahora.';
-  if (type !== 'ORDER' && pairCount > compatibleCount) {
+  if (pairCount > compatibleCount) {
+    if (type === 'ORDER') return `Se juegan las ${pairCount} partidas de minijuego y modo en el orden de la cola y se vuelve a empezar.`;
     return type === 'RANDOM'
       ? `Cada partida sale al azar entre ${pairCount} opciones de minijuego y modo, sin repetir la anterior.`
       : `Tras cada partida se vota entre ${Math.min(NEXT_GAME_VOTE_OPTIONS, pairCount)} de las ${pairCount} opciones de minijuego y modo.`;
@@ -109,13 +130,22 @@ export function GameOrderChoice({ mode, compatibleCount, pairCount = compatibleC
   </div>;
 }
 
+/**
+ * Las casillas «Modos que se juegan» del juego que se ajusta: en las tres formas de sesión (por orden, uno por turno de
+ * la cola). `null` (el `Segmented` de un solo modo) si el juego no tiene modos o no se pueden marcar.
+ */
+export function sessionModesOf(room: RoomView, gameId: string, onAllowedModes: ((gameId: string, modes: string[]) => void) | undefined): SessionModes | null {
+  if (!gameModeCatalog(gameId) || !onAllowedModes) return null;
+  return { gameId, allowed: allowedModesOf(room, gameId), order: room.gameSelectionMode.type === 'ORDER', onChange: (modes) => onAllowedModes(gameId, modes) };
+}
+
 interface ConfigProps {
   room: RoomView;
   selfId: string;
   playerCount: number;
   disabled: boolean;
   onConfig(gameId: string, config: unknown): Promise<void>;
-  /** Al azar o por votación: los modos marcados de un juego con modos. */
+  /** Los modos marcados de un juego con modos (en las tres formas de sesión). */
   onAllowedModes?(gameId: string, modes: string[]): void;
 }
 
@@ -140,6 +170,7 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
     return { skipReason, reason, needsReview: Boolean(reason) && !skipReason };
   };
   const readyCount = games.filter((game) => !status(game).needsReview).length;
+  const slots = queueSlots(room);
   const open = (game: MiniGameManifest) => {
     setEditingGameId(game.id);
     void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined);
@@ -148,10 +179,7 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
   const editor = editingGame ? (() => {
     const client = clientGameRegistry.get(editingGame.id);
     const { skipReason, reason } = status(editingGame);
-    // Al azar o por votación, el «Modo» del juego pasa a ser «Modos que pueden salir» (varios a la vez).
-    const sessionModes = room.gameSelectionMode.type !== 'ORDER' && gameModeCatalog(editingGame.id) && onAllowedModes
-      ? { gameId: editingGame.id, allowed: allowedModesOf(room, editingGame.id), onChange: (modes: string[]) => onAllowedModes(editingGame.id, modes) }
-      : null;
+    const sessionModes = sessionModesOf(room, editingGame.id, onAllowedModes);
     return <Panel key={editingGame.id} variant="cream" as="div">
       <div className={g.editorHead}>
         <h3 className={g.title}><GameArt gameId={editingGame.id} size={22} /> Ajustes de {editingGame.name}</h3>
@@ -185,14 +213,14 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
     <div className={g.split}>
       <section className={g.list} aria-label="Minijuegos elegidos">
         <ol className={g.items}>
-          {games.map((game, index) => {
+          {games.map((game) => {
             const { skipReason, reason, needsReview } = status(game);
             const customized = room.customizedGameIds?.includes(game.id) ?? false;
             const editing = editingGame?.id === game.id;
             const preload = () => void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined);
             return <li key={game.id} className={cx(g.item, g.on, editing && g.editing)}>
               <div className={g.itemMain}>
-                <span className={g.order} aria-hidden="true">{index + 1}</span>
+                <span className={g.order} aria-hidden="true">{queueSlotLabel(slots[game.id] ?? [1, 1])}</span>
                 <div className={g.itemText}>
                   <div className={g.itemName}><GameArt gameId={game.id} size={22} /><strong className={g.name} title={game.name}>{game.name}</strong></div>
                   <p className={cx(g.summary, needsReview && g.summaryBad)}>{reason ?? summarizeGameConfig(rotationGameConfig(room, game.id))}</p>

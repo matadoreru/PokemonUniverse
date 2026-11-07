@@ -5,15 +5,16 @@ import { Pill, Segmented } from '../ui';
 import s from './GameModeField.module.css';
 
 const MODE_LABEL = 'Modo';
-const ALLOWED_LABEL = 'Modos que pueden salir';
+const ALLOWED_LABEL = 'Modos que se juegan';
 
 /**
- * Modos que pueden salir del juego que se ajusta cuando la sesión elige al azar o por votación. Sin este contexto (el
- * host elige el juego) el selector es el `Segmented` de un solo modo.
+ * Modos que se juegan del juego que se ajusta en la sesión: al azar o por votación cada uno es una opción; por orden
+ * (`order`), cada uno ocupa su propio turno en la cola. Sin este contexto el selector es el `Segmented` de un solo modo.
  */
 export interface SessionModes {
   gameId: string;
   allowed: readonly string[];
+  order: boolean;
   onChange(modes: string[]): void;
 }
 
@@ -24,8 +25,8 @@ export function SessionModesProvider({ value, children }: { value: SessionModes 
 }
 
 /**
- * Si los ajustes propios de `mode` se enseñan: con el host eligiendo, si es el modo de la configuración; al azar o por
- * votación, si ese modo está marcado.
+ * Si los ajustes propios de `mode` se enseñan: sin contexto de sesión, si es el modo de la configuración; en la sesión,
+ * si ese modo está marcado.
  */
 export function useModeShown(gameId: string, configMode: string | undefined): (mode: string) => boolean {
   const session = useContext(SessionModesContext);
@@ -48,10 +49,10 @@ interface Props {
 }
 
 /**
- * Selector «Modo» de los ajustes de un juego con modos y, debajo, la línea que explica las reglas del modo nuevo. Con
- * el host eligiendo, un `Segmented` con «Clásico» y el modo nuevo; al azar o por votación (`SessionModesProvider`),
- * píldoras conmutadoras «Modos que pueden salir» como las de las generaciones: no se puede desmarcar el último. Sin
- * catálogo de modos para `gameId` no pinta nada.
+ * Selector «Modo» de los ajustes de un juego con modos y, debajo, la línea que explica las reglas del modo nuevo. Sin
+ * contexto de sesión, un `Segmented` con «Clásico» y el modo nuevo; en la sesión (`SessionModesProvider`, las tres
+ * formas de elegir), píldoras conmutadoras «Modos que se juegan» como las de las generaciones: no se puede desmarcar el
+ * último. Sin catálogo de modos para `gameId` no pinta nada.
  */
 export function GameModeField({ gameId, value, onChange, disabled }: Props) {
   const session = useContext(SessionModesContext);
@@ -73,7 +74,9 @@ export function GameModeField({ gameId, value, onChange, disabled }: Props) {
             onClick={() => { const next = toggleAllowedMode(catalog.modes, allowed, mode); if (next) session.onChange(next); }}>{label(mode)}</Pill>;
         })}
       </div>
-      <p className={s.text}>Cada modo marcado es una opción más al azar y en la votación; siempre queda al menos uno.</p>
+      <p className={s.text}>{session.order
+        ? 'Cada modo marcado ocupa su propio turno en la cola, seguidos y en este orden; siempre queda al menos uno.'
+        : 'Cada modo marcado es una opción más al azar y en la votación; siempre queda al menos uno.'}</p>
       {texts.map((text) => <p key={text} className={s.text}>{text}</p>)}
     </div>;
   }

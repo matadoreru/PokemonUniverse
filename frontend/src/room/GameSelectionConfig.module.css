@@ -92,14 +92,16 @@
   align-items: flex-start;
   gap: var(--sp-1);
 }
+/* Píldora con el turno («2» o «2–3» si el juego ocupa varios turnos de la cola por orden). */
 .order {
   flex: none;
   display: grid;
   place-items: center;
-  width: 28px;
+  min-width: 28px;
   height: 28px;
+  padding: 0 6px;
   margin: 2px var(--sp-1) 0;
-  border-radius: 50%;
+  border-radius: 14px;
   background: var(--navy);
   color: var(--white);
   font: 800 var(--fs-13) / 1 var(--font-display);

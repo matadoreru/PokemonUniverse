@@ -193,9 +193,11 @@
   left: var(--sp-2);
   display: grid;
   place-items: center;
-  width: 28px;
+  /* Píldora: «2–3» cuando el juego ocupa varios turnos de la cola por orden. */
+  min-width: 28px;
   height: 28px;
-  border-radius: 50%;
+  padding: 0 6px;
+  border-radius: 14px;
   background: var(--navy);
   color: var(--white);
   pointer-events: none;

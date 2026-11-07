@@ -103,7 +103,7 @@ final class RoomViews {
         : new RoomView.DailyOutcomeView(outcome.score(), outcome.correct(), outcome.rounds()));
   }
 
-  /** Los modos que pueden salir de cada juego con modos registrado (los elegidos o el de su configuración). */
+  /** Los modos que se juegan de cada juego con modos registrado (los elegidos o el de su configuración). */
   private Map<String, List<String>> allowedModes(LiveRoom room) {
     var allowed = new LinkedHashMap<String, List<String>>();
     for (var manifest : registry.list()) {

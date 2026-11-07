@@ -136,7 +136,7 @@ describe('lobby game modes', () => {
     expect(card(markup, 'Shiny Quiz')).toContain('>2 modos<');
   });
 
-  it('al azar o por votación el chip dice los modos que pueden salir', () => {
+  it('en las tres formas de sesión el chip dice los modos que se juegan', () => {
     const chance = (allowedModes: Record<string, string[]>, type: 'RANDOM' | 'ORDER' = 'RANDOM') => renderToStaticMarkup(<MemoryRouter><Lobby
       room={{ ...room, gameConfigs: {}, allowedModes, gameSelectionMode: { type, gameIds: room.gameSelectionMode.gameIds } }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
@@ -145,8 +145,11 @@ describe('lobby game modes', () => {
     expect(card(chance({ 'pokedex-distance': ['CLASSIC', 'POINTS'] }), 'Pokédex Distance')).toContain('>2 modos en juego<');
     expect(card(chance({ 'pokedex-distance': ['POINTS'] }), 'Pokédex Distance')).toContain('>Por puntos<');
     expect(card(chance({ 'pokedex-distance': ['CLASSIC'] }), 'Pokédex Distance')).not.toContain('Clásico');
-    // Con el host eligiendo cuenta el modo de la configuración, no los marcados.
-    expect(card(chance({ 'pokedex-distance': ['CLASSIC', 'POINTS'] }, 'ORDER'), 'Pokédex Distance')).not.toContain('en juego');
+    // Por orden cuentan también los marcados, y la carta numera sus turnos en la cola.
+    const ordered = chance({ 'pokedex-distance': ['CLASSIC', 'POINTS'] }, 'ORDER');
+    expect(card(ordered, 'Pokédex Distance')).toContain('>2 modos en juego<');
+    expect(card(ordered, 'Pokédex Distance')).toContain('n.º 1 y 2 de la sesión');
+    expect(card(chance({ 'pokedex-distance': ['POINTS'] }, 'ORDER'), 'Pokédex Distance')).toContain('>Por puntos<');
   });
 
   it('sin chip de modo en Clásico ni en una configuración guardada sin mode', () => {

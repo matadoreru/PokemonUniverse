@@ -30,8 +30,8 @@ public final class LiveRoom {
   /** Empieza en el orden de un solo juego, el elegido al crear la sala. */
   public GameSelectionMode gameSelectionMode;
   /**
-   * Modos que pueden salir de cada juego con modos cuando la sesión es al azar o por votación; solo los que eligió el
-   * host (sin entrada, sale el modo de su configuración: {@link GameModes#allowed}).
+   * Modos que se juegan de cada juego con modos en la sesión (al azar, por votación o por orden); solo los que eligió
+   * el host (sin entrada, sale el modo de su configuración: {@link GameModes#allowed}).
    */
   public final Map<String, List<String>> allowedModes = new LinkedHashMap<>();
   /** Modo sorteado o votado para el próximo arranque; {@code null} usa el de la configuración. */

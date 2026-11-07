@@ -161,8 +161,9 @@ export interface RoomView {
   sessionMode: SessionMode;
   gameSelectionMode: GameSelectionMode;
   /**
-   * Modos que pueden salir de cada juego con modos cuando la sesión elige al azar o por votación (los marcados por el
-   * host o, sin marcar, el `mode` de su configuración). Ausente en vistas antiguas.
+   * Modos que se juegan de cada juego con modos (los marcados por el host o, sin marcar, el `mode` de su
+   * configuración): al azar o por votación cada uno es una opción; por orden, un turno de la cola. Ausente en vistas
+   * antiguas.
    */
   allowedModes?: Record<string, string[]>;
   nextGameVote: NextGameVoteView | null;

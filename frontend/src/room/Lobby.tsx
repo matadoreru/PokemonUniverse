@@ -1,4 +1,4 @@
-import { formatPendingReadyNames, gameModeCount, gameModeLabel, gameModeName, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
+import { formatPendingReadyNames, gameModeCount, gameModeName, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
@@ -9,7 +9,7 @@ import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Ta
 import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
-import { allowedModesOf, GameOrderChoice, GameOrderHint, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
+import { allowedModesOf, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
@@ -120,8 +120,6 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const gameSelection = (mode: GameSelectionMode) => { if (canEditGameSelection) void onGameSelection(mode).catch(ignoreFailure); };
   // Sin permiso, el panel enseña igual los modos marcados (sus píldoras quedan inertes): solo se bloquea la escritura.
   const allowedModes = onAllowedModes ? (gameId: string, modes: string[]) => { if (canEditGame) void onAllowedModes(gameId, modes).catch(ignoreFailure); } : undefined;
-  // Al azar o por votación cada modo marcado es una opción más (en orden, el modo de la configuración).
-  const pickedByChance = room.gameSelectionMode.type !== 'ORDER';
   // Las cartas eligen varios juegos: pulsar pone o quita uno (el último elegido va al final; la lista puede quedar vacía).
   const toggleGame = (gameId: string) => gameSelection(toggleSelectedGame(room.gameSelectionMode, gameId));
   // La confirmación (expulsar, transferir el Host) la pide el diálogo de la lista de jugadores.
@@ -138,7 +136,9 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   };
   const selectedGameIds = room.gameSelectionMode.gameIds;
   const compatibleGameIds = selectedGameIds.filter(rotationPlayable);
-  const pairCount = pickedByChance ? compatibleGameIds.reduce((count, gameId) => count + Math.max(1, allowedModesOf(room, gameId).length), 0) : compatibleGameIds.length;
+  // Cada modo marcado es una opción más al azar o por votación y un turno más de la cola por orden.
+  const pairCount = compatibleGameIds.reduce((count, gameId) => count + Math.max(1, allowedModesOf(room, gameId).length), 0);
+  const slots = queueSlots(room);
   const configReason = (selectedGameIds.length === 1 ? selectedGameIds : compatibleGameIds).map((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
     if (!manifest) return null;
@@ -216,10 +216,10 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
       {visibleGames.length > 0 ? (
         <ul className={s.grid} aria-label="Minijuegos" aria-describedby={canEditGameSelection ? undefined : 'game-permission-help'}>
           {visibleGames.map((game) => {
-            const position = selectedGameIds.indexOf(game.id) + 1;
-            const selected = position > 0;
+            const slot = slots[game.id];
+            const selected = slot !== undefined;
             const preloadConfig = () => { void clientGameRegistry.get(game.id).preloadConfig().catch(() => undefined); };
-            const modeLabel = lobbyModeLabel(room, game.id, pickedByChance);
+            const modeLabel = lobbyModeLabel(room, game.id);
             const modeCount = gameModeCount(game.id);
             return (
               <li key={game.id} className={s.cell} onPointerEnter={preloadConfig} onFocus={preloadConfig}>
@@ -233,7 +233,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
                   </span>}
                   {/* Elegida: su número de orden en la esquina superior izquierda, para que la carta no cambie de tamaño
                       (el estado ya lo dicen el amarillo y `aria-pressed`). */}
-                  {selected && <><span className={s.tick} aria-hidden="true">{position}</span><span className="sr-only">{`, n.º ${position} de la sesión`}</span></>}
+                  {slot && <><span className={s.tick} aria-hidden="true">{queueSlotLabel(slot)}</span><span className="sr-only">{slot[0] === slot[1] ? `, n.º ${slot[0]} de la sesión` : `, n.º ${slot[0]} y ${slot[1]} de la sesión`}</span></>}
                   {/* TOP y BETA en la esquina superior derecha de la carta. */}
                   {(game.recommended || game.experimental) && (
                     <span className={s.corner}>
@@ -338,12 +338,10 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
 }
 
 /**
- * Chip de modo de la carta del lobby: con el host eligiendo, el modo de la configuración si no es Clásico; al azar o
- * por votación, «N modos en juego» si hay varios marcados o el nombre del único si no es Clásico. `null` sin chip.
+ * Chip de modo de la carta del lobby (las tres formas de sesión): «N modos en juego» si hay varios marcados o el nombre
+ * del único si no es Clásico. `null` sin chip.
  */
-export function lobbyModeLabel(room: RoomView, gameId: string, pickedByChance: boolean): string | null {
-  const config = room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
-  if (!pickedByChance) return gameModeLabel(gameId, config);
+export function lobbyModeLabel(room: RoomView, gameId: string): string | null {
   const allowed = allowedModesOf(room, gameId);
   if (allowed.length > 1) return `${allowed.length} modos en juego`;
   const only = allowed[0];
