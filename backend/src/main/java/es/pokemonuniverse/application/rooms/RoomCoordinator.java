@@ -1363,7 +1363,7 @@ public class RoomCoordinator {
         .thenCompose(ignored -> audit.gameAbandoned(new GameAbandoned(game.resultId, "SKIPPED", endedAt)))
         .exceptionally(error -> logged("Failed to mark skipped game as abandoned", error)));
     try {
-      advanceSessionAfterGame(room, game.gameId);
+      advanceSessionAfterGame(room, new GamePick(game.gameId, previousMode(room)));
     } catch (RuntimeException error) {
       broadcast(room);
       LOG.error("Failed to continue after skipped game", error);
@@ -1716,22 +1716,22 @@ public class RoomCoordinator {
   }
 
   /**
-   * Tras una partida (o al saltarla, con {@code skippedGameId}): la sesión termina si se cumplió su final; si no, sale
-   * el siguiente juego según el modo. Un juego saltado nunca vuelve justo después: sin otro juego jugable, la sesión
-   * termina y se ve la clasificación final.
+   * Tras una partida (o al saltarla, con {@code skippedPick}): la sesión termina si se cumplió su final; si no, sale
+   * el siguiente par según el modo. Un par saltado nunca vuelve justo después, pero sí los otros modos de su juego: sin
+   * otro par jugable, la sesión termina y se ve la clasificación final.
    */
-  private void advanceSessionAfterGame(LiveRoom room, @Nullable String skippedGameId) {
+  private void advanceSessionAfterGame(LiveRoom room, @Nullable GamePick skippedPick) {
     if (SessionMode.isComplete(room.sessionMode, room.gamesPlayed,
         room.sessionParticipants.values().stream().map(participant -> participant.sessionPoints).toList())) {
       showSessionResults(room);
       return;
     }
     var previous = new GamePick(room.selectedGameId, previousMode(room));
-    // Un juego saltado queda fuera con todos sus modos: no vuelve justo después.
+    // Saltar deja fuera solo el par juego+modo jugado: los otros modos del mismo juego siguen en la cola.
     var candidates = playablePicks(room, room.gameSelectionMode.gameIds()).stream()
-        .filter(pick -> !pick.gameId().equals(skippedGameId)).toList();
+        .filter(pick -> !pick.equals(skippedPick)).toList();
     if (candidates.isEmpty()) {
-      if (skippedGameId != null) {
+      if (skippedPick != null) {
         showSessionResults(room);
         return;
       }
@@ -1744,7 +1744,7 @@ public class RoomCoordinator {
       schedule(room);
       return;
     }
-    launchFirstStartable(room, nextPicks(room, previous, candidates), skippedGameId != null);
+    launchFirstStartable(room, nextPicks(room, previous, candidates), skippedPick != null);
   }
 
   /** El modo con que se jugó la última partida, si su juego tiene modos (no repetir el par y seguir la cola). */

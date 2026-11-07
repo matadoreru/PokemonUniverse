@@ -1593,7 +1593,7 @@ class RoomCoordinatorTest {
   }
 
   @Test
-  @DisplayName("skips a queued mode to the next game of the order and filters pairs by connected players")
+  @DisplayName("skips only the played mode: the queue goes on with the next pair, and pairs are filtered pairs by connected players")
   void orderedSessionSkipsAndFiltersModes() {
     var kit = new RoomTestKit();
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
@@ -1602,13 +1602,18 @@ class RoomCoordinatorTest {
     kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
     kit.startReady(room, "host");
     var first = room.game.resultId;
-    // Saltar Higher or Lower deja fuera todos sus modos: sigue el siguiente juego del orden.
+    // Saltar solo salta el par jugado: el siguiente modo del mismo juego sigue en la cola.
     kit.manager.setGameSkipVote("host", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + first + "\"}"));
     kit.manager.setGameSkipVote("guest", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + first + "\"}"));
-    assertEquals("pokedex-distance", room.game.gameId);
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals("ENDLESS", runningMode(room));
     var second = room.game.resultId;
     kit.manager.setGameSkipVote("host", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + second + "\"}"));
     kit.manager.setGameSkipVote("guest", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + second + "\"}"));
+    assertEquals("pokedex-distance", room.game.gameId);
+    var third = room.game.resultId;
+    kit.manager.setGameSkipVote("host", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + third + "\"}"));
+    kit.manager.setGameSkipVote("guest", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + third + "\"}"));
     // Vuelve al principio de la cola: el primer modo de Higher or Lower.
     assertEquals("higher-lower", room.game.gameId);
     assertEquals("CLASSIC", runningMode(room));
@@ -1619,6 +1624,23 @@ class RoomCoordinatorTest {
     solo.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
     assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS")),
         solo.manager.playablePicks(alone, alone.gameSelectionMode.gameIds()));
+  }
+
+  @Test
+  @DisplayName("at random, a skipped pair does not come back right away but another mode of the same game can")
+  void randomSkipKeepsTheOtherModesOfTheGame() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameSelection("host", json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\"]}"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
+    kit.startReady(room, "host");
+    var playedMode = runningMode(room);
+    var other = playedMode.equals("CLASSIC") ? "ENDLESS" : "CLASSIC";
+    var id = room.game.resultId;
+    kit.manager.setGameSkipVote("host", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + id + "\"}"));
+    kit.manager.setGameSkipVote("guest", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + id + "\"}"));
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals(other, runningMode(room));
   }
 
   @Test
