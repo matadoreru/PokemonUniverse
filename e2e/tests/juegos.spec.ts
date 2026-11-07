@@ -5250,12 +5250,12 @@ test('who-is-who-pokemon: secretos elegidos, cartas bajadas, cursores, un rechaz
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Modos de juego (Fase 3): un recorrido por modo, filtrable con `-g "<nombre del modo>"`. Cada uno elige el modo en los
-// ajustes del juego, comprueba el chip de la carta del lobby, juega con ajustes mínimos hasta los resultados y captura la
+// Modos de juego (Fase 3): un recorrido por modo, filtrable con `-g "<nombre del modo>"`. Cada uno marca solo ese modo en
+// los ajustes del juego, comprueba el chip de la carta del lobby, juega con ajustes mínimos hasta los resultados y captura la
 // pantalla de juego y la de resultados a los tres tamaños.
 // ---------------------------------------------------------------------------------------------------------------------
 
-/** Elige el modo en los ajustes del juego (selector «Modo»), vuelve a «Minijuegos» y comprueba el chip de la carta. */
+/** Deja marcado solo `modo` en «Modos que se juegan» de los ajustes del juego (lo marca y desmarca Clásico). */
 async function elegirModo(host: Page, modo: string): Promise<void> {
   await host.getByRole('tab', { name: 'Configuración' }).click();
   // «Modos que se juegan»: se marca el modo y se desmarca Clásico, así la sesión solo juega ese modo.

@@ -9,7 +9,7 @@ import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Ta
 import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
-import { allowedModesOf, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
+import { allowedModesOf, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
@@ -25,7 +25,7 @@ interface Props {
   onGameConfig(gameId: string, config: unknown): Promise<void>;
   onSession(mode: SessionMode): Promise<void>;
   onGameSelection(mode: GameSelectionMode): Promise<void>;
-  /** Al azar o por votación: los modos que pueden salir de un juego. Opcional: sin él, el panel queda como con el host eligiendo. */
+  /** Los modos que se juegan de un juego (las tres formas de sesión). Opcional: sin él, el panel enseña el selector «Modo» de un solo modo. */
   onAllowedModes?(gameId: string, modes: string[]): Promise<void>;
   onSetRoomRole(playerId: string, role: 'CO_HOST' | 'MEMBER'): Promise<void>;
   onTransferHost(playerId: string): Promise<void>;
@@ -233,7 +233,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
                   </span>}
                   {/* Elegida: su número de orden en la esquina superior izquierda, para que la carta no cambie de tamaño
                       (el estado ya lo dicen el amarillo y `aria-pressed`). */}
-                  {slot && <><span className={s.tick} aria-hidden="true">{queueSlotLabel(slot)}</span><span className="sr-only">{slot[0] === slot[1] ? `, n.º ${slot[0]} de la sesión` : `, n.º ${slot[0]} y ${slot[1]} de la sesión`}</span></>}
+                  {slot && <><span className={s.tick} aria-hidden="true">{queueSlotLabel(slot)}</span><span className="sr-only">{`, n.º ${queueSlotSpoken(slot)} de la sesión`}</span></>}
                   {/* TOP y BETA en la esquina superior derecha de la carta. */}
                   {(game.recommended || game.experimental) && (
                     <span className={s.corner}>

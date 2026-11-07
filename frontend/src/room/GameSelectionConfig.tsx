@@ -53,6 +53,12 @@ export function queueSlotLabel([first, last]: readonly [number, number]): string
   return first === last ? `${first}` : `${first}–${last}`;
 }
 
+/** Los turnos para el lector: «2», «2 y 3» (dos seguidos) o «2 a 4». */
+export function queueSlotSpoken([first, last]: readonly [number, number]): string {
+  if (first === last) return `${first}`;
+  return last === first + 1 ? `${first} y ${last}` : `${first} a ${last}`;
+}
+
 export function rotationGameReadinessReason(room: RoomView, game: MiniGameManifest, playerCount: number): string | null {
   const availability = gameAvailabilityReason(game, playerCount);
   if (availability) return availability;

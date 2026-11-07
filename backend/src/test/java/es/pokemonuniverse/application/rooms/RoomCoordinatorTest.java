@@ -1730,6 +1730,30 @@ class RoomCoordinatorTest {
   }
 
   @Test
+  @DisplayName("starts every new room in Classic even if the host saved another mode, keeping the other settings")
+  void savedModeStartsInClassic() {
+    var preferences = new UserGameConfigPreferences() {
+      @Override
+      public Map<String, JsonNode> forUser(String userId) {
+        return Map.of("pokedex-distance", json("{\"generations\":[1],\"roundSeconds\":25,"
+            + "\"selectionVisibility\":\"HIDDEN\",\"pointsRounds\":7,\"mode\":\"POINTS\"}"));
+      }
+
+      @Override
+      public void save(String userId, String gameId, JsonNode config) {
+      }
+    };
+    var kit = new RoomTestKit(50_000, preferences);
+    var room = kit.room(8, user("host-user", "Host", "host@example.com"));
+    var config = room.gameConfigs.get("pokedex-distance");
+    assertEquals("CLASSIC", config.get("mode").getStringValue());
+    assertEquals(7, config.get("pointsRounds").getIntValue());
+    assertEquals(25, config.get("roundSeconds").getIntValue());
+    // Con Clásico de partida, solo Clásico queda marcado: los demás modos se marcan en la sala.
+    assertEquals(List.of("CLASSIC"), kit.manager.view(room, "host-user").allowedModes().get("pokedex-distance"));
+  }
+
+  @Test
   @DisplayName("publishes exactly the RoomView keys with a monotonic revision and stable room instance id")
   void roomViewShapeAndRevision() {
     var kit = new RoomTestKit();

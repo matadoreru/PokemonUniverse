@@ -2,7 +2,7 @@ import type { MiniGameManifest, RoomView } from '@pokemon-universe/shared';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, SelectedGamesConfig, sessionModesOf, toggleSelectedGame } from './GameSelectionConfig';
+import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, sessionModesOf, toggleSelectedGame } from './GameSelectionConfig';
 import { NextGameVote } from './NextGameVote';
 
 const games: MiniGameManifest[] = [
@@ -145,6 +145,9 @@ describe('game selection UI', () => {
       .toEqual({ 'higher-lower': [1, 1], 'pokemon-bingo': [2, 2], 'shiny-vote': [3, 3] });
     expect(queueSlotLabel([1, 2])).toBe('1–2');
     expect(queueSlotLabel([3, 3])).toBe('3');
+    expect(queueSlotSpoken([3, 3])).toBe('3');
+    expect(queueSlotSpoken([1, 2])).toBe('1 y 2');
+    expect(queueSlotSpoken([1, 3])).toBe('1 a 3');
   });
 
   it('with no game selected shows an empty state instead of the settings', () => {

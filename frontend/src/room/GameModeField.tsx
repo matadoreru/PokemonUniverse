@@ -50,7 +50,8 @@ interface Props {
 
 /**
  * Selector «Modo» de los ajustes de un juego con modos y, debajo, la línea que explica las reglas del modo nuevo. Sin
- * contexto de sesión, un `Segmented` con «Clásico» y el modo nuevo; en la sesión (`SessionModesProvider`, las tres
+ * contexto de sesión, un `Segmented` con «Clásico» y el modo nuevo (en la sala no se ve: el lobby siempre da el contexto;
+ * queda para un panel de ajustes fuera de la sala y para el `ConfigPanel` suelto de cada juego); en la sesión (`SessionModesProvider`, las tres
  * formas de elegir), píldoras conmutadoras «Modos que se juegan» como las de las generaciones: no se puede desmarcar el
  * último. Sin catálogo de modos para `gameId` no pinta nada.
  */

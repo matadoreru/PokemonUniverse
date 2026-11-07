@@ -424,6 +424,9 @@ public class RoomCoordinator {
         var gameConfigs = new LinkedHashMap<String, JsonNode>();
         for (var game : registry.list()) {
           var stored = storedConfigs.get(game.id());
+          // Los modos se marcan por sala («Modos que se juegan»): un modo guardado no pasa a la sala nueva, que
+          // empieza en Clásico con el resto de ajustes guardados.
+          if (stored != null && GameModes.hasModes(game.id())) stored = GameModes.withMode(stored, GameModes.CLASSIC);
           gameConfigs.put(game.id(), normalizedConfig(game, stored != null ? stored : defaultConfigs.get(game.id())));
         }
         var room = new LiveRoom(random.uuid(), code, identity.id(), maxPlayers, module.id(), gameConfigs, now);
@@ -724,7 +727,8 @@ public class RoomCoordinator {
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
       var engine = engine(gameId).orElseThrow(() -> new RoomException(NOT_PORTED));
       var parsed = toTree(engine.parseConfig(config));
-      // Cambiar el modo de la configuración (host eligiendo) devuelve los modos permitidos a su valor por defecto.
+      // Cambiar el modo de la configuración devuelve los modos marcados a su valor por defecto. El lobby ya no lo
+      // cambia (marca los modos con room:update-allowed-modes); queda como defensa para otros clientes.
       if (!GameModes.configMode(gameId, room.gameConfigs.get(gameId)).equals(GameModes.configMode(gameId, parsed))) {
         room.allowedModes.remove(gameId);
       }

@@ -83,7 +83,7 @@ public final class RoomCommandParsers {
   }
 
   /**
-   * {@code allowedModesSchema}: los modos que pueden salir de un juego, una lista de textos sin repetir y con al menos
+   * {@code allowedModesSchema}: los modos que se juegan de un juego, una lista de textos sin repetir y con al menos
    * uno. Que cada modo exista en el juego lo comprueba el coordinador.
    */
   public static List<String> allowedModes(@Nullable JsonNode raw) {

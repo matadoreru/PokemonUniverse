@@ -36,7 +36,7 @@ interface RoomContextValue {
   updateGameConfig(gameId: string, config: unknown): Promise<void>;
   updateSession(mode: SessionMode): Promise<void>;
   updateGameSelection(mode: GameSelectionMode): Promise<void>;
-  /** Los modos que pueden salir de `gameId` en una sesión al azar o por votación (al menos uno). */
+  /** Los modos que se juegan de `gameId` en la sesión (al menos uno): opciones al azar o por votación, turnos por orden. */
   updateAllowedModes(gameId: string, modes: string[]): Promise<void>;
   /** `optionId`: el id de la opción de voto (un par juego y modo). */
   voteNextGame(optionId: string): Promise<void>;
