@@ -774,8 +774,9 @@ public class RoomCoordinator {
   }
 
   /**
-   * {@code room:update-allowed-modes}: los modos de {@code gameId} que pueden salir cuando la sesión elige al azar o
-   * por votación (al menos uno, todos del juego). Se guardan en el orden del catálogo.
+   * {@code room:update-allowed-modes}: los modos de {@code gameId} que se juegan en la sesión (al menos uno, todos del
+   * juego): al azar o por votación, cada uno es una opción; por orden, cada uno ocupa su turno en la cola. Se guardan
+   * en el orden del catálogo.
    */
   public void updateAllowedModes(String playerId, @Nullable String gameId, @Nullable JsonNode modes) {
     inRequiredRoom(playerId, current -> {
@@ -1004,22 +1005,27 @@ public class RoomCoordinator {
   }
 
   /**
-   * Los pares juego y modo que pueden salir de {@code gameIds}: en orden, cada juego jugable con el modo de su
-   * configuración; al azar o por votación, cada modo permitido de cada juego (un juego sin modos es un par) cuya
-   * configuración con ese modo admite a los conectados.
+   * Los pares juego y modo que pueden salir de {@code gameIds}: cada modo permitido de cada juego (un juego sin modos
+   * es un par) cuya configuración con ese modo admite a los conectados. Van en el orden de {@code gameIds} y, dentro de
+   * cada juego, en el del catálogo de modos: por orden es la cola de la sesión.
    */
   List<GamePick> playablePicks(LiveRoom room, List<String> gameIds) {
     int playerCount = connectedPlayerCount(room);
+    return allPicks(room, gameIds).stream().filter(pick -> playable(room, pick, playerCount)).toList();
+  }
+
+  /** Todos los pares de {@code gameIds} con sus modos permitidos, jugables o no (la cola completa por orden). */
+  private List<GamePick> allPicks(LiveRoom room, List<String> gameIds) {
     var picks = new ArrayList<GamePick>();
     for (var gameId : gameIds) {
-      var modes = room.gameSelectionMode instanceof GameSelectionMode.Order ? List.<String>of() : allowedModes(room, gameId);
+      var modes = allowedModes(room, gameId);
       if (modes.isEmpty()) {
         picks.add(new GamePick(gameId, null));
       } else {
         for (var mode : modes) picks.add(new GamePick(gameId, mode));
       }
     }
-    return picks.stream().filter(pick -> playable(room, pick, playerCount)).toList();
+    return picks;
   }
 
   private List<String> allowedModes(LiveRoom room, String gameId) {
@@ -1107,9 +1113,10 @@ public class RoomCoordinator {
   }
 
   /**
-   * Pares que pueden seguir a {@code previous}, el preferido primero: en orden, los juegos siguientes de la lista
-   * (vuelve al principio y el propio juego va el último); en aleatorio, un par al azar distinto del anterior si lo hay
-   * y después el resto. Los demás son reserva por si el preferido no puede arrancar.
+   * Pares que pueden seguir a {@code previous}, el preferido primero: en orden, los pares siguientes de la cola (cada
+   * modo marcado de un juego ocupa su propio turno; vuelve al principio y el propio par va el último); en aleatorio, un
+   * par al azar distinto del anterior si lo hay y después el resto. Los demás son reserva por si el preferido no puede
+   * arrancar.
    */
   private List<GamePick> nextPicks(LiveRoom room, GamePick previous, List<GamePick> candidates) {
     if (room.gameSelectionMode instanceof GameSelectionMode.Random) {
@@ -1120,12 +1127,18 @@ public class RoomCoordinator {
       for (var pick : candidates) if (!pick.equals(preferred)) ordered.add(pick);
       return ordered;
     }
-    var gameIds = room.gameSelectionMode.gameIds();
-    int start = gameIds.indexOf(previous.gameId()) + 1;
+    var queue = allPicks(room, room.gameSelectionMode.gameIds());
+    if (queue.isEmpty()) return candidates;
+    // Si el par anterior ya no está en la cola (se desmarcó su modo), se sigue tras el último par de su juego.
+    int index = queue.indexOf(previous);
+    if (index < 0) {
+      for (int i = 0; i < queue.size(); i++) if (queue.get(i).gameId().equals(previous.gameId())) index = i;
+    }
+    int start = index + 1;
     var ordered = new ArrayList<GamePick>();
-    for (int step = 0; step < gameIds.size(); step++) {
-      var gameId = gameIds.get((start + step) % gameIds.size());
-      for (var pick : candidates) if (pick.gameId().equals(gameId)) ordered.add(pick);
+    for (int step = 0; step < queue.size(); step++) {
+      var pick = queue.get((start + step) % queue.size());
+      if (candidates.contains(pick)) ordered.add(pick);
     }
     return ordered;
   }
@@ -1730,7 +1743,7 @@ public class RoomCoordinator {
     launchFirstStartable(room, nextPicks(room, previous, candidates), skippedGameId != null);
   }
 
-  /** El modo con el que se jugó la última partida, si su juego tiene modos (para no repetir el mismo par). */
+  /** El modo con que se jugó la última partida, si su juego tiene modos (no repetir el par y seguir la cola). */
   private @Nullable String previousMode(LiveRoom room) {
     var game = room.game;
     if (game == null || !GameModes.hasModes(game.gameId)) return null;

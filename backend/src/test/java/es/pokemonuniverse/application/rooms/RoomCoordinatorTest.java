@@ -1473,7 +1473,7 @@ class RoomCoordinatorTest {
   }
 
   @Test
-  @DisplayName("turns every allowed mode into a pair in random and vote sessions, never in order")
+  @DisplayName("turns every allowed mode into a pair in random, vote and ordered sessions")
   void allowedModesBecomePairs() {
     var kit = new RoomTestKit();
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
@@ -1483,9 +1483,10 @@ class RoomCoordinatorTest {
     room.gameSelectionMode = new GameSelectionMode.Vote(gameIds);
     assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS"),
         new GamePick("pokedex-distance", "CLASSIC")), kit.manager.playablePicks(room, gameIds));
+    // Por orden, cada modo marcado ocupa su propio turno, seguidos y en el orden del catálogo.
     room.gameSelectionMode = new GameSelectionMode.Order(gameIds);
-    assertEquals(List.of(new GamePick("higher-lower", null), new GamePick("pokedex-distance", null)),
-        kit.manager.playablePicks(room, gameIds));
+    assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS"),
+        new GamePick("pokedex-distance", "CLASSIC")), kit.manager.playablePicks(room, gameIds));
   }
 
   @Test
@@ -1539,14 +1540,85 @@ class RoomCoordinatorTest {
   }
 
   @Test
-  @DisplayName("keeps the configured mode in an ordered session even with several allowed modes")
-  void orderedSessionIgnoresAllowedModes() {
+  @DisplayName("plays the only allowed mode in an ordered session without touching the lobby configuration")
+  void orderedSessionUsesTheOnlyAllowedMode() {
     var kit = new RoomTestKit();
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\"]}"));
     kit.manager.updateAllowedModes("host", "higher-lower", json("[\"ENDLESS\"]"));
     kit.startReady(room, "host");
+    assertEquals("ENDLESS", runningMode(room));
+    assertEquals("CLASSIC", room.gameConfigs.get("higher-lower").get("mode").getStringValue());
+  }
+
+  @Test
+  @DisplayName("keeps the configured mode in an ordered session when only the default mode is allowed")
+  void orderedSessionWithOneModeIsUnchanged() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameConfig("host", "higher-lower", json(RoomTestKit.HIGHER_LOWER_1_ROUND));
+    kit.manager.updateGameSelection("host",
+        json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
+    kit.startReady(room, "host");
+    assertEquals("higher-lower", room.game.gameId);
     assertEquals("CLASSIC", runningMode(room));
+    kit.manager.action("host", answer("HIGHER"));
+    kit.manager.action("guest", answer("LOWER"));
+    kit.passDeadline(room);
+    kit.manager.continueSession("host");
+    assertEquals("pokedex-distance", room.game.gameId);
+  }
+
+  @Test
+  @DisplayName("plays every allowed mode of a game in turn, in catalog order, before the next game of the order")
+  void orderedSessionQueuesEveryAllowedMode() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameConfig("host", "higher-lower", json(RoomTestKit.HIGHER_LOWER_1_ROUND));
+    kit.manager.updateGameSelection("host",
+        json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"ENDLESS\",\"CLASSIC\"]"));
+    kit.startReady(room, "host");
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals("CLASSIC", runningMode(room));
+    kit.manager.action("host", answer("HIGHER"));
+    kit.manager.action("guest", answer("LOWER"));
+    kit.passDeadline(room);
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
+    kit.manager.continueSession("host");
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals("ENDLESS", runningMode(room));
+    assertEquals("CLASSIC", room.gameConfigs.get("higher-lower").get("mode").getStringValue());
+    assertNull(room.selectedMode);
+  }
+
+  @Test
+  @DisplayName("skips a queued mode to the next game of the order and filters pairs by connected players")
+  void orderedSessionSkipsAndFiltersModes() {
+    var kit = new RoomTestKit();
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.updateGameSelection("host",
+        json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\",\"pokedex-distance\"]}"));
+    kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
+    kit.startReady(room, "host");
+    var first = room.game.resultId;
+    // Saltar Higher or Lower deja fuera todos sus modos: sigue el siguiente juego del orden.
+    kit.manager.setGameSkipVote("host", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + first + "\"}"));
+    kit.manager.setGameSkipVote("guest", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + first + "\"}"));
+    assertEquals("pokedex-distance", room.game.gameId);
+    var second = room.game.resultId;
+    kit.manager.setGameSkipVote("host", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + second + "\"}"));
+    kit.manager.setGameSkipVote("guest", json("{\"wantsToSkip\":true,\"gameInstanceId\":\"" + second + "\"}"));
+    // Vuelve al principio de la cola: el primer modo de Higher or Lower.
+    assertEquals("higher-lower", room.game.gameId);
+    assertEquals("CLASSIC", runningMode(room));
+    // Con un solo jugador, Pokédex Distance (dos como mínimo) queda fuera con su modo.
+    var solo = new RoomTestKit();
+    var alone = solo.room(8, guest("host", "Host"));
+    alone.gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "pokedex-distance"));
+    solo.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
+    assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS")),
+        solo.manager.playablePicks(alone, alone.gameSelectionMode.gameIds()));
   }
 
   @Test
