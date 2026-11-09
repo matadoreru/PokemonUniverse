@@ -18,7 +18,12 @@
     }
   ],
   "config": {
-    "generations": [1,7,8,9],
+    "generations": [
+      1,
+      7,
+      8,
+      9
+    ],
     "roundSeconds": 20,
     "rounds": 3,
     "stats": {
@@ -675,7 +680,12 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [1,7,8,9],
+      "generations": [
+        1,
+        7,
+        8,
+        9
+      ],
       "roundSeconds": 20,
       "rounds": 3,
       "stats": {

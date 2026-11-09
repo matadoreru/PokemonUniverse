@@ -22,7 +22,12 @@
     }
   ],
   "config": {
-    "generations": [2,7,8,9],
+    "generations": [
+      2,
+      7,
+      8,
+      9
+    ],
     "turnSeconds": 45
   },
   "steps": [
@@ -721,7 +726,12 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [2,7,8,9],
+      "generations": [
+        2,
+        7,
+        8,
+        9
+      ],
       "turnSeconds": 45
     },
     "initial": {

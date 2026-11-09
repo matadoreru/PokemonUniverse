@@ -14,7 +14,13 @@
     }
   ],
   "config": {
-    "generations": [1,2,7,8,9],
+    "generations": [
+      1,
+      2,
+      7,
+      8,
+      9
+    ],
     "imageMode": "MIXED",
     "roundSeconds": 60,
     "rounds": 3,
@@ -859,7 +865,13 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [1,2,7,8,9],
+      "generations": [
+        1,
+        2,
+        7,
+        8,
+        9
+      ],
       "imageMode": "MIXED",
       "roundSeconds": 60,
       "rounds": 3,

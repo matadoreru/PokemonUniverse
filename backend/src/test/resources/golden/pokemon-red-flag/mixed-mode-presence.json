@@ -18,7 +18,13 @@
     }
   ],
   "config": {
-    "generations": [1,2,7,8,9],
+    "generations": [
+      1,
+      2,
+      7,
+      8,
+      9
+    ],
     "rounds": 3,
     "phaseSeconds": 120,
     "includeForms": true,
@@ -195,7 +201,13 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [1,2,7,8,9],
+      "generations": [
+        1,
+        2,
+        7,
+        8,
+        9
+      ],
       "rounds": 3,
       "phaseSeconds": 120,
       "includeForms": true,
