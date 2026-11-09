@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { z } from 'zod';
 import { GAME_MODES, gameModeCount, gameModeLabel, gameModeName } from './modes.js';
+import { absurdPokedexConfigSchema, defaultAbsurdPokedexConfig } from './absurd-pokedex/config.js';
 import { defaultHigherLowerConfig, higherLowerConfigSchema } from './higher-lower/config.js';
 import { defaultLearnsetGuessConfig, learnsetGuessConfigSchema } from './learnset-guess/config.js';
 import { defaultPokedexDistanceConfig, pokedexDistanceConfigSchema } from './pokedex-distance/config.js';
@@ -15,6 +16,7 @@ const games: Array<[string, z.ZodType, Record<string, unknown>, string]> = [
   ['learnset-guess', learnsetGuessConfigSchema, defaultLearnsetGuessConfig, 'MANUAL_REVEAL'],
   ['type-duel', typeDuelConfigSchema, defaultTypeDuelConfig, 'COOP'],
   ['pokemon-impostor', pokemonImpostorConfigSchema, defaultPokemonImpostorConfig, 'ONE_WORD'],
+  ['absurd-pokedex', absurdPokedexConfigSchema, defaultAbsurdPokedexConfig, 'REAL_ENTRY'],
 ];
 
 const without = (config: Record<string, unknown>, ...keys: string[]): Record<string, unknown> =>
@@ -65,6 +67,9 @@ describe('gameModeLabel', () => {
     expect(gameModeLabel('learnset-guess', { mode: 'MANUAL_REVEAL' })).toBe('Revelación manual');
     expect(gameModeLabel('type-duel', { mode: 'COOP' })).toBe('Cooperativo');
     expect(gameModeLabel('pokemon-impostor', { mode: 'ONE_WORD' })).toBe('Una palabra');
+    expect(gameModeLabel('absurd-pokedex', { mode: 'REAL_ENTRY' })).toBe('¿Cuál es la real?');
+    expect(gameModeName('absurd-pokedex', 'REAL_ENTRY')).toBe('¿Cuál es la real?');
+    expect(gameModeName('absurd-pokedex', 'CLASSIC')).toBe('Clásico');
     expect(gameModeLabel('pokedex-distance', { mode: 'CLASSIC' })).toBeNull();
     expect(gameModeLabel('pokedex-distance', {})).toBeNull();
   });

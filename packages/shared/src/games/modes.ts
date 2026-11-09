@@ -1,3 +1,4 @@
+import { ABSURD_POKEDEX_MODES } from './absurd-pokedex/config.js';
 import { HIGHER_LOWER_MODES } from './higher-lower/config.js';
 import { LEARNSET_GUESS_MODES } from './learnset-guess/config.js';
 import { POKEDEX_DISTANCE_MODES } from './pokedex-distance/config.js';
@@ -18,7 +19,7 @@ export interface GameModeCatalog {
 export const CLASSIC_MODE_LABEL = 'Clásico';
 
 /** Los juegos con modos de juego (Fase 3); los demás no tienen campo `mode`. */
-export type GameModeId = 'pokedex-distance' | 'higher-lower' | 'shiny-vote' | 'learnset-guess' | 'type-duel' | 'pokemon-impostor';
+export type GameModeId = 'pokedex-distance' | 'higher-lower' | 'shiny-vote' | 'learnset-guess' | 'type-duel' | 'pokemon-impostor' | 'absurd-pokedex';
 
 export const GAME_MODES: Record<GameModeId, GameModeCatalog> = {
   'pokedex-distance': {
@@ -50,6 +51,11 @@ export const GAME_MODES: Record<GameModeId, GameModeCatalog> = {
     modes: POKEMON_IMPOSTOR_MODES,
     labels: { CLASSIC: CLASSIC_MODE_LABEL, ONE_WORD: 'Una palabra' },
     texts: { ONE_WORD: 'Pistas de una sola palabra y dos vueltas antes de votar.' },
+  },
+  'absurd-pokedex': {
+    modes: ABSURD_POKEDEX_MODES,
+    labels: { CLASSIC: CLASSIC_MODE_LABEL, REAL_ENTRY: '¿Cuál es la real?' },
+    texts: { REAL_ENTRY: 'La entrada oficial se esconde entre las vuestras: descúbrela y cuela la tuya.' },
   },
 };
 
