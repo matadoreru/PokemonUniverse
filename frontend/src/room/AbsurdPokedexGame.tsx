@@ -194,9 +194,12 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: { room: RoomView; 
   const side = result
     ? <ResponseProgress title="Puntos de la ronda" members={room.members} playerIds={game.playerIds} doneIds={[]} selfId={selfId} count={false}
       status={(id) => {
-        if (result.missingPlayerIds.includes(id)) return { tone: 'bad', text: 'Sin entrada', icon: X };
+        // Primero la victoria: en `REAL_ENTRY` se puede ganar acertando la oficial sin haber escrito entrada.
         if (result.winnerPlayerIds.includes(id)) return { tone: 'ok', text: 'Ganó', icon: Trophy };
-        return { tone: 'neutral', text: 'En juego' };
+        if (result.missingPlayerIds.includes(id)) return { tone: 'bad', text: 'Sin entrada', icon: X };
+        if (result.skipped) return { tone: 'neutral', text: 'No puntúa' };
+        const own = result.entries.find((entry) => entry.authorId === id);
+        return { tone: 'neutral', text: votesText(own?.votesReceived ?? 0) };
       }}
       value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
     : <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={voting ? game.votedPlayerIds : game.submittedPlayerIds} selfId={selfId}

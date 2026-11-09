@@ -4542,7 +4542,7 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
  * Pokédex Absurda con tres jugadores y dos partidas seguidas de una ronda (el modo se cambia en el lobby entre ellas).
  * Clásico: los tres escriben (la propia entrada lleva «Tu entrada» y ningún botón), dos votan la entrada del tercero y la
  * revelación enseña al autor con sus puntos. «¿Cuál es la real?»: uno marca la graciosa y pulsa «Es la real»; la revelación
- * enseña «Entrada oficial · …». La página de B retiene la revelación (6 s) para capturarla; escribir y votar se capturan
+ * enseña «Entrada oficial · …». La página de B retiene la revelación (8 s) para capturarla; escribir y votar se capturan
  * con un jugador pendiente para que la fase no avance sola.
  */
 test('pokédex absurda: escribir, votar la más absurda y la real, y la clasificación', async ({ browser }) => {
@@ -4555,7 +4555,7 @@ test('pokédex absurda: escribir, votar la más absurda y la real, y la clasific
     await host.page.getByRole('tab', { name: 'Configuración' }).click();
     await ajustarRango(host.page, 'Número de rondas', 'Home', '1');
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
-    // B pasa su `/ws` por el retenedor (la revelación dura 6 s) y vuelve a la sala.
+    // B pasa su `/ws` por el retenedor (la revelación dura 8 s) y vuelve a la sala.
     const retenedor = await tramasRetenibles(b.page);
     await b.page.reload();
     await b.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });

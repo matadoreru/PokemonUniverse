@@ -99,6 +99,25 @@ describe('Pokédex Absurda: pantalla', () => {
     expect(html).toContain('Ana');
   });
 
+  it('el panel de puntos: gana antes que «Sin entrada» y los demás ven los votos de su entrada', () => {
+    const base = lastRound('REAL_ENTRY');
+    // Eru (p1) no escribió pero acertó la oficial y gana; Leo (p3) no gana y su entrada recibió dos votos.
+    const round: AbsurdPokedexRoundResult = {
+      ...base,
+      entries: base.entries.map((entry) => (entry.authorId === 'p3' ? { ...entry, votesReceived: 2, votedBy: ['p1', 'p2'] } : entry)),
+      winnerPlayerIds: ['p1'], missingPlayerIds: ['p1'], pointsAwarded: { p1: 2, p2: 1, p3: 2 },
+    };
+    const html = render(publicGame('ROUND_RESULTS', 'REAL_ENTRY', round), VOTER);
+    const side = html.slice(html.indexOf('Puntos de la ronda'));
+    // El recorte no incluye las tarjetas reveladas: los votos que se leen son los del panel.
+    expect(side).not.toContain('Colecciona calcetines');
+    expect(side).toContain('Ganó');
+    expect(side).not.toContain('Sin entrada');
+    expect(side).not.toContain('En juego');
+    expect(side).toContain('2 votos');
+    expect(side).toContain('1 voto');
+  });
+
   it('una ronda saltada lo dice', () => {
     expect(render(publicGame('ROUND_RESULTS', 'REAL_ENTRY', lastRound('REAL_ENTRY', true)), VOTER)).toContain('Ronda sin suficientes entradas');
   });
