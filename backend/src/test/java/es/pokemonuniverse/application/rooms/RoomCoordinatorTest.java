@@ -1464,7 +1464,7 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     var allowed = kit.manager.view(room, "host").allowedModes();
     assertEquals(Set.of("pokedex-distance", "higher-lower", "shiny-vote", "learnset-guess", "type-duel",
-        "pokemon-impostor"), allowed.keySet());
+        "pokemon-impostor", "absurd-pokedex"), allowed.keySet());
     assertEquals(List.of("CLASSIC"), allowed.get("higher-lower"));
     assertFalse(allowed.containsKey("pokemon-red-flag"));
     room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "pokedex-distance"));

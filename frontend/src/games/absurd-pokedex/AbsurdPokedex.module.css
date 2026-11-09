@@ -139,6 +139,17 @@
 .official .entry {
   outline: var(--ol-3) solid var(--navy);
 }
+/* La versión del juego puede ser larga: el chip (nowrap por defecto) parte la línea en vez de salirse de la tarjeta. */
+.officialChip {
+  display: inline-flex;
+  max-width: 100%;
+  min-width: 0;
+}
+.officialChip > span {
+  white-space: normal;
+  line-height: 1.2;
+  padding-block: var(--sp-1);
+}
 .author {
   display: inline-flex;
   align-items: center;

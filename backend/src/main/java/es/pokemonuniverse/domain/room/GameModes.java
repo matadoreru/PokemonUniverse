@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.room;
 
+import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexMode;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerMode;
 import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessMode;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceMode;
@@ -31,6 +32,7 @@ public final class GameModes {
     MODES.put("learnset-guess", names(LearnsetGuessMode.values()));
     MODES.put("type-duel", names(TypeDuelMode.values()));
     MODES.put("pokemon-impostor", names(PokemonImpostorMode.values()));
+    MODES.put("absurd-pokedex", names(AbsurdPokedexMode.values()));
   }
 
   private GameModes() {}

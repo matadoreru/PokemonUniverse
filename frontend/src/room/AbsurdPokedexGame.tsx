@@ -178,7 +178,7 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: { room: RoomView; 
               <p className={s.entryText}>“{entry.text}”</p>
               <div className={s.entryActions}>
                 {entry.isReal
-                  ? <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>{`Entrada oficial · ${result.realEntry?.versionLabel ?? ''}`}</Chip>
+                  ? <span className={s.officialChip}><Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>{`Entrada oficial · ${result.realEntry?.versionLabel ?? ''}`}</Chip></span>
                   : author && <span className={s.author}><Avatar name={nameOf(author)} avatar={members.get(author)?.member.avatar} size="sm" /><strong style={{ '--player': playerColor(members.get(author)?.index ?? 0) } as CSSProperties} className={s.authorName}>{nameOf(author)}</strong>{author === selfId && <Chip tone="info">Tu entrada</Chip>}</span>}
                 <Chip tone={entry.votesReceived > 0 ? 'ok' : 'neutral'}>{votesText(entry.votesReceived)}</Chip>
                 {entry.funnyVotesReceived > 0 && <Chip tone="warn">{`😂 ${entry.funnyVotesReceived}`}</Chip>}
