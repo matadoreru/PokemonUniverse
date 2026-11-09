@@ -133,10 +133,10 @@ describe('Sketchmon: privacidad del secreto', () => {
   });
 
   it('el punto del cursor mide lo que el trazo en pantalla, con un mínimo visible; el relleno, uno fijo', () => {
-    expect(brushDotSize({ tool: 'PENCIL', color: '#111827', width: 24 }, 900)).toBe(24);
-    expect(brushDotSize({ tool: 'ERASER', color: '#111827', width: 24 }, 450)).toBe(12);
-    expect(brushDotSize({ tool: 'PENCIL', color: '#111827', width: 4 }, 450)).toBe(6);
-    expect(brushDotSize({ tool: 'FILL', color: '#111827', width: 24 }, 900)).toBe(12);
+    expect(brushDotSize({ tool: 'PENCIL', color: '#182033', width: 22 }, 900)).toBe(22);
+    expect(brushDotSize({ tool: 'ERASER', color: '#182033', width: 22 }, 450)).toBe(11);
+    expect(brushDotSize({ tool: 'PENCIL', color: '#182033', width: 4 }, 450)).toBe(6);
+    expect(brushDotSize({ tool: 'FILL', color: '#182033', width: 22 }, 900)).toBe(12);
   });
 
   it('quien adivina ve el lienzo en directo, las pistas, el buscador y los intentos', () => {
