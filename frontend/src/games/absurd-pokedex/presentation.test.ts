@@ -1,6 +1,6 @@
 import type { AbsurdPokedexEntryResult, AbsurdPokedexRoundResult } from '@pokemon-universe/shared/public';
-import { describe, expect, it } from 'vitest';
-import { absurdModeTitle, fooledNames, sortedRoundEntries } from './presentation';
+import { describe, expect, it, vi } from 'vitest';
+import { absurdModeTitle, absurdVotePayload, createDraftScheduler, fooledNames, sortedRoundEntries, toggleFunny } from './presentation';
 
 const entry = (id: string, votesReceived: number, extra: Partial<AbsurdPokedexEntryResult> = {}): AbsurdPokedexEntryResult => ({
   id, text: id, authorId: 'p1', isReal: false, votesReceived, funnyVotesReceived: 0, votedBy: [], funnyVotedBy: [], ...extra,
@@ -28,5 +28,37 @@ describe('Pokédex Absurda: presentación', () => {
     const entries = [entry('a', 1), entry('real', 0, { isReal: true, authorId: null }), entry('b', 3), entry('c', 3)];
     expect(sortedRoundEntries(round('REAL_ENTRY', entries)).map((e) => e.id)).toEqual(['real', 'b', 'c', 'a']);
     expect(sortedRoundEntries(round('CLASSIC', entries)).map((e) => e.id)).toEqual(['b', 'c', 'a', 'real']);
+  });
+
+  it('el voto lleva la graciosa solo en REAL_ENTRY', () => {
+    expect(absurdVotePayload('REAL_ENTRY', 'a', 'b')).toEqual({ type: 'VOTE_ABSURD', entryId: 'a', funnyEntryId: 'b' });
+    expect(absurdVotePayload('REAL_ENTRY', 'a', null)).toEqual({ type: 'VOTE_ABSURD', entryId: 'a' });
+    expect(absurdVotePayload('CLASSIC', 'a', 'b')).toEqual({ type: 'VOTE_ABSURD', entryId: 'a' });
+  });
+
+  it('el conmutador de la graciosa marca, cambia y suelta', () => {
+    expect(toggleFunny(null, 'a')).toBe('a');
+    expect(toggleFunny('a', 'b')).toBe('b');
+    expect(toggleFunny('b', 'b')).toBeNull();
+  });
+
+  it('el borrador espera al debounce, envía solo el último y se vuelca al desmontar', () => {
+    vi.useFakeTimers();
+    const send = vi.fn();
+    const draft = createDraftScheduler(send, '', 400);
+    draft.schedule('h'); draft.schedule('ho'); draft.schedule('hola');
+    vi.advanceTimersByTime(399);
+    expect(send).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+    expect(send).toHaveBeenCalledOnce();
+    expect(send).toHaveBeenLastCalledWith('hola');
+    draft.schedule('hola mundo');
+    draft.flush();
+    expect(send).toHaveBeenLastCalledWith('hola mundo');
+    vi.advanceTimersByTime(1_000);
+    expect(send).toHaveBeenCalledTimes(2);
+    draft.schedule('x'); draft.cancel(); vi.advanceTimersByTime(1_000); draft.flush();
+    expect(send).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
   });
 });

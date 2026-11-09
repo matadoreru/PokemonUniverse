@@ -1,10 +1,10 @@
 import type { AbsurdPokedexConfig, AbsurdPokedexPlayerState, AbsurdPokedexPokemon, AbsurdPokedexPublicState, PokemonType, RoomView } from '@pokemon-universe/shared/public';
 import { ABSURD_POKEDEX_MAX_ENTRY_LENGTH, absurdPokedexScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, Send, Trophy, Vote, X } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type Ref } from 'react';
 import { Avatar } from '../components/Avatar';
 import { pokemonTypeLabels } from '../components/pokemon-type-labels';
-import { ABSURD_DRAFT_DEBOUNCE_MS, absurdAnnouncement, absurdCurrentStep, absurdHeading, absurdModeTitle, absurdSteps, fooledNames, sendAbsurdDraft, sortedRoundEntries } from '../games/absurd-pokedex/presentation';
+import { absurdAnnouncement, absurdCurrentStep, absurdHeading, absurdModeTitle, absurdSteps, absurdVotePayload, createDraftScheduler, fooledNames, sendAbsurdDraft, sortedRoundEntries, toggleFunny } from '../games/absurd-pokedex/presentation';
 import { autoSendDelay, createAnswerSender } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon, Panel, Pill, TextArea } from '../ui';
@@ -49,13 +49,10 @@ function AbsurdWriter({ label, initialDraft, canSubmit, roundEndsAt, serverOffse
   onDraftRef.current = onDraft;
   const [sender] = useState(() => createAnswerSender((value) => onSubmitRef.current(value), setBusy));
 
-  // Borrador: se guarda al dejar de teclear, no a cada pulsación.
-  const lastDraft = useRef(initialDraft);
-  useEffect(() => {
-    if (text === lastDraft.current) return undefined;
-    const timer = window.setTimeout(() => { lastDraft.current = text; void onDraftRef.current(text).catch(ignoreFailure); }, ABSURD_DRAFT_DEBOUNCE_MS);
-    return () => window.clearTimeout(timer);
-  }, [text]);
+  // Borrador: se guarda al dejar de teclear y, si el campo se desmonta antes (fin del tiempo), se envía lo pendiente.
+  const [draft] = useState(() => createDraftScheduler((value) => { void onDraftRef.current(value).catch(ignoreFailure); }, initialDraft));
+  useEffect(() => { draft.schedule(text); }, [text, draft]);
+  useEffect(() => () => draft.flush(), [draft]);
 
   useEffect(() => {
     if (!canSubmit || !roundEndsAt) return undefined;
@@ -86,7 +83,15 @@ function AbsurdBallot({ game, player, titleRef, onAction }: { game: AbsurdPokede
   const ownFunny = player?.ownFunnyEntryId ?? null;
   const locked = ownVote !== null;
   const canVote = player?.canVote === true && !locked;
-  const vote = (entryId: string) => void onAction({ type: 'VOTE_ABSURD', entryId, ...(real && funny ? { funnyEntryId: funny } : {}) }).catch(ignoreFailure);
+  // Un toque, un voto: hasta que el servidor confirme (o falle) no se puede votar otra vez.
+  const [sending, setSending] = useState(false);
+  const sendingRef = useRef(false);
+  const vote = (entryId: string) => {
+    if (sendingRef.current) return;
+    sendingRef.current = true;
+    setSending(true);
+    void onAction(absurdVotePayload(game.mode, entryId, funny)).catch(() => { sendingRef.current = false; setSending(false); });
+  };
   return <SocialPlate titleRef={titleRef} bodyClassName={s.ballotBody} content={{
     icon: locked ? CheckCircle2 : Vote, tone: locked ? 'ok' : 'info', kicker: 'Votación anónima', title: locked ? 'Voto enviado' : absurdModeTitle(game.mode),
     text: locked ? 'El resultado sale cuando vote todo el grupo.' : real ? 'Una de estas entradas es la oficial. No puedes votar la tuya.' : 'Vota la entrada más absurda. No puedes votar la tuya.',
@@ -101,8 +106,8 @@ function AbsurdBallot({ game, player, titleRef, onAction }: { game: AbsurdPokede
               {own && <Chip tone="info" icon={<Icon icon={PenLine} size={18} />}>Tu entrada</Chip>}
               {!own && locked && entry.id === ownVote && <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>{real ? 'Tu elección' : 'Tu voto'}</Chip>}
               {!own && locked && entry.id === ownFunny && <Chip tone="warn">😂 Tu graciosa</Chip>}
-              {!own && canVote && real && <Pill variant="cream" aria-pressed={funny === entry.id} className={cx(s.funny, funny === entry.id && s.funnyOn)} onClick={() => setFunny(funny === entry.id ? null : entry.id)}>😂 La más graciosa</Pill>}
-              {!own && canVote && <Pill variant="yellow" onClick={() => vote(entry.id)}>{real ? 'Es la real' : 'La más absurda'}</Pill>}
+              {!own && canVote && real && <Pill variant="cream" aria-pressed={funny === entry.id} className={cx(s.funny, funny === entry.id && s.funnyOn)} disabled={sending} onClick={() => setFunny(toggleFunny(funny, entry.id))}>{funny === entry.id ? '✓ ' : ''}😂 La más graciosa</Pill>}
+              {!own && canVote && <Pill variant="yellow" loading={sending} onClick={() => vote(entry.id)}>{real ? 'Es la real' : 'La más absurda'}</Pill>}
             </div>
           </Panel>
         </li>;
@@ -174,7 +179,7 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: { room: RoomView; 
               <div className={s.entryActions}>
                 {entry.isReal
                   ? <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>{`Entrada oficial · ${result.realEntry?.versionLabel ?? ''}`}</Chip>
-                  : author && <span className={s.author}><Avatar name={nameOf(author)} avatar={members.get(author)?.member.avatar} size="sm" /><strong style={{ color: playerColor(members.get(author)?.index ?? 0) }}>{nameOf(author)}</strong>{author === selfId && <Chip tone="info">Tu entrada</Chip>}</span>}
+                  : author && <span className={s.author}><Avatar name={nameOf(author)} avatar={members.get(author)?.member.avatar} size="sm" /><strong style={{ '--player': playerColor(members.get(author)?.index ?? 0) } as CSSProperties} className={s.authorName}>{nameOf(author)}</strong>{author === selfId && <Chip tone="info">Tu entrada</Chip>}</span>}
                 <Chip tone={entry.votesReceived > 0 ? 'ok' : 'neutral'}>{votesText(entry.votesReceived)}</Chip>
                 {entry.funnyVotesReceived > 0 && <Chip tone="warn">{`😂 ${entry.funnyVotesReceived}`}</Chip>}
                 {fooled && <span className={s.fooled}>{fooled}</span>}

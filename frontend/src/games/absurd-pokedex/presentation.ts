@@ -71,3 +71,34 @@ export function absurdAnnouncement({ phase, roundNumber, entryLocked, voteLocked
   }
   return '';
 }
+
+/** El voto final: la graciosa solo viaja en `REAL_ENTRY` (en Clásico no existe) y si hay una marcada. */
+export function absurdVotePayload(mode: AbsurdPokedexMode, entryId: string, funnyEntryId: string | null): { type: 'VOTE_ABSURD'; entryId: string; funnyEntryId?: string } {
+  return { type: 'VOTE_ABSURD', entryId, ...(mode === 'REAL_ENTRY' && funnyEntryId ? { funnyEntryId } : {}) };
+}
+
+/** El conmutador de «😂 La más graciosa»: pulsar la marcada la suelta; pulsar otra cambia la marca. */
+export function toggleFunny(current: string | null, entryId: string): string | null {
+  return current === entryId ? null : entryId;
+}
+
+/**
+ * Borrador con debounce, sin React: `schedule` guarda el último texto y lo envía tras `delay` sin teclear; `flush` envía ya
+ * lo pendiente (al desmontar: el servidor usa el borrador como entrada si se acaba el tiempo); `cancel` lo descarta.
+ */
+export function createDraftScheduler(send: (text: string) => void, initial: string, delay = ABSURD_DRAFT_DEBOUNCE_MS): { schedule(text: string): void; flush(): void; cancel(): void } {
+  let last = initial;
+  let pending: string | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const clear = () => { if (timer !== null) { clearTimeout(timer); timer = null; } };
+  const flush = () => {
+    clear();
+    if (pending !== null && pending !== last) { last = pending; send(pending); }
+    pending = null;
+  };
+  return {
+    schedule(text) { pending = text; clear(); timer = setTimeout(flush, delay); },
+    flush,
+    cancel() { clear(); pending = null; },
+  };
+}

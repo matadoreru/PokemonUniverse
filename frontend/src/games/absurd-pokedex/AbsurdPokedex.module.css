@@ -131,9 +131,13 @@
 }
 .funnyOn {
   outline: var(--ol-2) solid var(--navy);
+  font-weight: 800;
+}
+.authorName {
+  color: var(--player);
 }
 .official .entry {
-  outline: var(--ol-3, 3px) solid var(--navy);
+  outline: var(--ol-3) solid var(--navy);
 }
 .author {
   display: inline-flex;
