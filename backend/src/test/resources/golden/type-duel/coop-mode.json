@@ -18,10 +18,7 @@
     }
   ],
   "config": {
-    "generations": [
-      1,
-      2
-    ],
+    "generations": [1,2,7,8,9],
     "typeSelectSeconds": 15,
     "searchSeconds": 20,
     "rounds": 3,
@@ -301,10 +298,7 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [
-        1,
-        2
-      ],
+      "generations": [1,2,7,8,9],
       "typeSelectSeconds": 15,
       "searchSeconds": 20,
       "rounds": 3,

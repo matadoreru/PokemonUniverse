@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.pokemon;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,5 +31,17 @@ class RegionalFormsTest {
   @Test
   void rejectsMega() {
     assertFalse(RegionalForms.isSupported("charizard-mega-x"));
+  }
+
+  @Test
+  void regionGenerationOfEachForm() {
+    assertEquals(7, RegionalForms.regionGeneration("vulpix-alola"));
+    assertEquals(8, RegionalForms.regionGeneration("meowth-galar"));
+    assertEquals(8, RegionalForms.regionGeneration("darmanitan-galar-standard"));
+    assertEquals(8, RegionalForms.regionGeneration("growlithe-hisui"));
+    assertEquals(8, RegionalForms.regionGeneration("basculin-white-striped"));
+    assertEquals(9, RegionalForms.regionGeneration("wooper-paldea"));
+    assertEquals(9, RegionalForms.regionGeneration("tauros-paldea-aqua-breed"));
+    assertEquals(0, RegionalForms.regionGeneration("pikachu"));
   }
 }

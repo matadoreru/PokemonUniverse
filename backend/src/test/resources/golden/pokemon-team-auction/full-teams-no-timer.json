@@ -14,11 +14,7 @@
     }
   ],
   "config": {
-    "generations": [
-      2,
-      1,
-      2
-    ],
+    "generations": [1,2,7,8,9],
     "initialBudget": 100,
     "bidSeconds": 0,
     "includeForms": true
@@ -199,10 +195,7 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [
-        1,
-        2
-      ],
+      "generations": [1,2,7,8,9],
       "bidSeconds": 0,
       "initialBudget": 100,
       "includeForms": true

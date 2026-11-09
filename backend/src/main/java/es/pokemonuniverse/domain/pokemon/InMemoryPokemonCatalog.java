@@ -123,7 +123,7 @@ public final class InMemoryPokemonCatalog
   public List<Pokemon> forGenerations(List<Integer> generations, boolean includeForms) {
     Set<Integer> allowed = Set.copyOf(generations);
     return entries.stream()
-        .filter(pokemon -> allowed.contains(pokemon.generation()) && (includeForms || pokemon.isDefault()))
+        .filter(pokemon -> RegionalForms.inGenerations(pokemon, allowed, includeForms))
         .toList();
   }
 

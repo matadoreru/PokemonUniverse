@@ -21,6 +21,7 @@ import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionLink;
+import es.pokemonuniverse.domain.pokemon.RegionalForms;
 import es.pokemonuniverse.domain.text.Collations;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.data.model.Sort;
@@ -95,8 +96,9 @@ public class PokemonCatalogService implements GameCatalogProvider {
         .thenComparing(p -> p.isDefault() ? 0 : 1)
         .thenComparing(Pokemon::id);
     return catalog().all().stream()
-        .filter(p -> allowed.isEmpty() || allowed.contains(p.generation()))
-        .filter(p -> query.includeForms() || p.isDefault())
+        .filter(p -> allowed.isEmpty()
+            ? query.includeForms() || p.isDefault()
+            : RegionalForms.inGenerations(p, allowed, query.includeForms()))
         .sorted(order)
         .toList();
   }

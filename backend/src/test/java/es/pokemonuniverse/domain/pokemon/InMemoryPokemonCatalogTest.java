@@ -40,14 +40,23 @@ class InMemoryPokemonCatalogTest {
   }
 
   @Test
-  void includeFormsAddsOnlySupportedRegionalForms() {
-    var gen1 = CATALOG.forGenerations(List.of(1), true);
-    assertTrue(gen1.stream().anyMatch(p -> p.id().equals("vulpix-alola")));
-    assertTrue(gen1.stream().filter(p -> !p.isDefault()).allMatch(p -> RegionalForms.isSupported(p.id())));
-    assertTrue(gen1.size() > 151);
-    assertEquals(CATALOG.all().size(), CATALOG.forGenerations(List.of(1, 2), true).size());
+  void includeFormsAddsOnlySupportedRegionalFormsWhenTheirRegionGenerationIsSelected() {
+    var gen1Alola = CATALOG.forGenerations(List.of(1, 7), true);
+    assertTrue(gen1Alola.stream().anyMatch(p -> p.id().equals("vulpix-alola")));
+    assertTrue(gen1Alola.stream().filter(p -> !p.isDefault()).allMatch(p -> RegionalForms.isSupported(p.id())));
+    assertTrue(gen1Alola.size() > 151);
+    assertEquals(CATALOG.all().size(), CATALOG.forGenerations(List.of(1, 2, 7, 8, 9), true).size());
     assertEquals(100, CATALOG.forGenerations(List.of(2), false).size());
     assertEquals(List.of(), CATALOG.forGenerations(List.of(3), true));
+  }
+
+  @Test
+  void regionalFormsNeedTheGenerationOfTheirRegion() {
+    var gen1To3 = CATALOG.forGenerations(List.of(1, 2, 3), true);
+    assertTrue(gen1To3.stream().allMatch(Pokemon::isDefault));
+    assertEquals(CATALOG.forGenerations(List.of(1, 2, 3), false), gen1To3);
+    // Sin la generación de la especie tampoco sale: la forma necesita las dos.
+    assertTrue(CATALOG.forGenerations(List.of(7), true).stream().noneMatch(p -> p.id().equals("vulpix-alola")));
   }
 
   @Test

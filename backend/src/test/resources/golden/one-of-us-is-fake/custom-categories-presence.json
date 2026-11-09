@@ -18,11 +18,7 @@
     }
   ],
   "config": {
-    "generations": [
-      2,
-      1,
-      2
-    ],
+    "generations": [1,2,7,8,9],
     "selectionSeconds": 120,
     "discussionSeconds": 30,
     "rounds": 3,
@@ -366,10 +362,7 @@
   ],
   "expected": {
     "configNormalized": {
-      "generations": [
-        1,
-        2
-      ],
+      "generations": [1,2,7,8,9],
       "selectionSeconds": 120,
       "discussionSeconds": 30,
       "rounds": 3,
