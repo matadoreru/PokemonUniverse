@@ -3,7 +3,7 @@ import { absurdPokedexConfigSchema, defaultAbsurdPokedexConfig } from './config.
 import { absurdPokedexScoringLabel } from './rules.js';
 import { absurdPokedexActionSchema } from './types.js';
 
-const { mode: _mode, ...withoutMode } = defaultAbsurdPokedexConfig;
+const withoutMode = Object.fromEntries(Object.entries(defaultAbsurdPokedexConfig).filter(([key]) => key !== 'mode'));
 
 describe('Pokédex Absurda: contrato compartido', () => {
   it('describe la puntuación de cada modo', () => {
