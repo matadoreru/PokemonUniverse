@@ -230,4 +230,9 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./who-is-who-pokemon/ConfigPanel'), 'WhoIsWhoPokemonConfigPanel'),
   active: component(() => import('../room/WhoIsWhoPokemonGame'), 'WhoIsWhoPokemonGame'),
   results: component(() => import('../room/WhoIsWhoPokemonResults'), 'WhoIsWhoPokemonResults'),
+})).register(clientModule({
+  id: 'absurd-pokedex',
+  config: component(() => import('./absurd-pokedex/ConfigPanel'), 'AbsurdPokedexConfigPanel'),
+  active: component(() => import('../room/AbsurdPokedexGame'), 'AbsurdPokedexGame'),
+  results: component(() => import('../room/AbsurdPokedexResults'), 'AbsurdPokedexResults'),
 }));

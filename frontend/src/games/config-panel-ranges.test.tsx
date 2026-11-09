@@ -1,4 +1,6 @@
 import {
+  absurdPokedexConfigSchema,
+  defaultAbsurdPokedexConfig,
   defaultHigherLowerConfig,
   defaultLearnsetGuessConfig,
   defaultPokedexDistanceConfig,
@@ -15,6 +17,7 @@ import {
 import { createElement, type ComponentType } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { AbsurdPokedexConfigPanel } from './absurd-pokedex/ConfigPanel';
 import { HigherLowerConfigPanel } from './higher-lower/ConfigPanel';
 import { LearnsetGuessConfigPanel } from './learnset-guess/ConfigPanel';
 import { PokedexDistanceConfigPanel } from './pokedex-distance/ConfigPanel';
@@ -48,6 +51,7 @@ const panels: { game: string; Panel: Panel; config: unknown; shape: Record<strin
   { game: 'pokemon-impostor', Panel: PokemonImpostorConfigPanel, config: defaultPokemonImpostorConfig, shape: pokemonImpostorConfigSchema.shape, fields: { Impostores: 'impostorCount', 'Tiempo por pista': 'clueSeconds', 'Tiempo de votación': 'voteSeconds' } },
   { game: 'pokedex-distance', Panel: PokedexDistanceConfigPanel, config: defaultPokedexDistanceConfig, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds' } },
   { game: 'learnset-guess', Panel: LearnsetGuessConfigPanel, config: defaultLearnsetGuessConfig, shape: learnsetGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  { game: 'absurd-pokedex', Panel: AbsurdPokedexConfigPanel, config: defaultAbsurdPokedexConfig, shape: absurdPokedexConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para escribir': 'writeSeconds', 'Tiempo para votar': 'voteSeconds' } },
   // Los ajustes propios de un modo solo salen en ese modo; los que el modo no usa se ocultan.
   { game: 'pokedex-distance POINTS', Panel: PokedexDistanceConfigPanel, config: { ...defaultPokedexDistanceConfig, mode: 'POINTS' }, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'pointsRounds' } },
   { game: 'type-duel COOP', Panel: TypeDuelConfigPanel, config: { ...defaultTypeDuelConfig, mode: 'COOP' }, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
