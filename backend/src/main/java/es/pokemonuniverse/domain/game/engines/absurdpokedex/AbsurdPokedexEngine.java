@@ -155,6 +155,7 @@ public final class AbsurdPokedexEngine
         .entries(List.of())
         .votes(Map.of())
         .funnyVotes(Map.of())
+        .funnyPicks(Map.of())
         .roundEndsAt(context.now() + state.config().writeSeconds() * 1_000L)
         .nextTransitionAt(null)
         .lastRound(null)
@@ -220,6 +221,7 @@ public final class AbsurdPokedexEngine
         .entries(entries)
         .votes(Map.of())
         .funnyVotes(Map.of())
+        .funnyPicks(Map.of())
         .roundEndsAt(context.now() + state.config().voteSeconds() * 1_000L)
         .build();
   }
@@ -328,15 +330,20 @@ public final class AbsurdPokedexEngine
       }
       var funny = entryById(state, vote.funnyEntryId());
       if (funny == null) return GameActionResult.reject(state, "Esa entrada no existe.");
-      if (funny.isReal() || playerId.equals(funny.authorId())) {
+      // La propia ya la conoce; rechazar la oficial le diría cuál es, así que esa se acepta y no cuenta.
+      if (playerId.equals(funny.authorId())) {
         return GameActionResult.reject(state, "La más graciosa tiene que ser una entrada inventada por otro jugador.");
       }
     }
     var votes = new LinkedHashMap<>(state.votes());
     votes.put(playerId, vote.entryId());
     var funnyVotes = new LinkedHashMap<>(state.funnyVotes());
-    if (vote.funnyEntryId() != null) funnyVotes.put(playerId, vote.funnyEntryId());
-    var next = state.toBuilder().votes(votes).funnyVotes(funnyVotes).build();
+    var funnyPicks = new LinkedHashMap<>(state.funnyPicks());
+    if (vote.funnyEntryId() != null) {
+      funnyPicks.put(playerId, vote.funnyEntryId());
+      if (!entryById(state, vote.funnyEntryId()).isReal()) funnyVotes.put(playerId, vote.funnyEntryId());
+    }
+    var next = state.toBuilder().votes(votes).funnyVotes(funnyVotes).funnyPicks(funnyPicks).build();
     return GameActionResult.accept(allEligibleVoted(next, context) ? resolveVote(next, context) : next);
   }
 
@@ -390,7 +397,7 @@ public final class AbsurdPokedexEngine
 
   /**
    * {@code ownEntry} lleva el texto tal como lo ven los demás (tapado en {@code REAL_ENTRY}) y su {@code id} solo
-   * desde la votación.
+   * desde la votación. {@code ownFunnyEntryId} es la graciosa tal como la marcó, aunque fuera la oficial y no cuente.
    */
   @Override
   public AbsurdPokedexPlayerState getPlayerState(AbsurdPokedexState state, String playerId, GameContext context) {
@@ -409,7 +416,7 @@ public final class AbsurdPokedexEngine
         ownEntry,
         state.phase() == GamePhase.VOTING && !state.votes().containsKey(playerId),
         state.votes().get(playerId),
-        state.funnyVotes().get(playerId));
+        state.funnyPicks().get(playerId));
   }
 
   @Override

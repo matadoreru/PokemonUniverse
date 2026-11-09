@@ -251,7 +251,9 @@ public final class AbsurdPokedexTypes {
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
    * {@link #toBuilder()}. {@code submissions} es de jugador a texto enviado; {@code votes} y {@code funnyVotes}, de
-   * votante a id de entrada.
+   * votante a id de entrada. {@code funnyPicks} guarda la graciosa que marcó cada votante tal cual, también si era la
+   * oficial (que no cuenta y no está en {@code funnyVotes}): solo sirve para devolvérsela en su proyección, sin delatar
+   * cuál es la oficial.
    */
   public record AbsurdPokedexState(
       GamePhase phase,
@@ -266,6 +268,7 @@ public final class AbsurdPokedexTypes {
       List<AbsurdPokedexEntry> entries,
       Map<String, String> votes,
       Map<String, String> funnyVotes,
+      Map<String, String> funnyPicks,
       Map<String, Integer> scores,
       Map<String, AbsurdPokedexPlayerStats> playerStats,
       @Nullable Long roundEndsAt,
@@ -280,6 +283,7 @@ public final class AbsurdPokedexTypes {
       entries = frozenList(entries);
       votes = frozenMap(votes);
       funnyVotes = frozenMap(funnyVotes);
+      funnyPicks = frozenMap(funnyPicks);
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
     }
@@ -291,7 +295,8 @@ public final class AbsurdPokedexTypes {
     public Builder toBuilder() {
       return new Builder().phase(phase).config(config).playerIds(playerIds).pokemonDeckIds(pokemonDeckIds)
           .roundNumber(roundNumber).currentPokemon(currentPokemon).realEntry(realEntry).drafts(drafts)
-          .submissions(submissions).entries(entries).votes(votes).funnyVotes(funnyVotes).scores(scores)
+          .submissions(submissions).entries(entries).votes(votes).funnyVotes(funnyVotes).funnyPicks(funnyPicks)
+          .scores(scores)
           .playerStats(playerStats).roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt).lastRound(lastRound);
     }
 
@@ -309,6 +314,7 @@ public final class AbsurdPokedexTypes {
       private List<AbsurdPokedexEntry> entries = List.of();
       private Map<String, String> votes = Map.of();
       private Map<String, String> funnyVotes = Map.of();
+      private Map<String, String> funnyPicks = Map.of();
       private Map<String, Integer> scores = Map.of();
       private Map<String, AbsurdPokedexPlayerStats> playerStats = Map.of();
       private Long roundEndsAt;
@@ -341,6 +347,8 @@ public final class AbsurdPokedexTypes {
 
       public Builder funnyVotes(Map<String, String> value) { funnyVotes = value; return this; }
 
+      public Builder funnyPicks(Map<String, String> value) { funnyPicks = value; return this; }
+
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
       public Builder playerStats(Map<String, AbsurdPokedexPlayerStats> value) { playerStats = value; return this; }
@@ -354,7 +362,7 @@ public final class AbsurdPokedexTypes {
       public AbsurdPokedexState build() {
         return new AbsurdPokedexState(Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(config, "config"),
             playerIds, pokemonDeckIds, roundNumber, currentPokemon, realEntry, drafts, submissions, entries, votes,
-            funnyVotes, scores, playerStats, roundEndsAt, nextTransitionAt, lastRound);
+            funnyVotes, funnyPicks, scores, playerStats, roundEndsAt, nextTransitionAt, lastRound);
       }
     }
   }

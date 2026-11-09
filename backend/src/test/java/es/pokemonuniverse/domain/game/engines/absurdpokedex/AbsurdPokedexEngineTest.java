@@ -285,8 +285,6 @@ class AbsurdPokedexEngineTest {
     var official = officialOf(real).id();
     var mine = entryOf(real, "p1").id();
     var theirs = entryOf(real, "p2").id();
-    rejects(real, "p1", vote(theirs, official), context,
-        "La más graciosa tiene que ser una entrada inventada por otro jugador.");
     rejects(real, "p1", vote(official, mine), context,
         "La más graciosa tiene que ser una entrada inventada por otro jugador.");
     rejects(real, "p1", vote(official, "entry-9"), context, "Esa entrada no existe.");
@@ -297,6 +295,34 @@ class AbsurdPokedexEngineTest {
     // La graciosa puede coincidir con la que se cree real.
     ok = accept(ok, "p2", vote(entryOf(real, "p3").id(), entryOf(real, "p3").id()), context);
     assertEquals(entryOf(real, "p3").id(), ok.funnyVotes().get("p2"));
+  }
+
+  @Test
+  void funnyVoteOnTheOfficialIsDroppedSilently() {
+    var context = context(3, 5);
+    var real = everyoneWrites(started(config(AbsurdPokedexMode.REAL_ENTRY, 2), context), context);
+    var official = officialOf(real).id();
+    var theirs = entryOf(real, "p2").id();
+    // Rechazarla delataría la oficial: se acepta, el voto cuenta y la graciosa no se guarda como voto.
+    var dropped = accept(real, "p1", vote(theirs, official), context);
+    assertEquals(Map.of("p1", theirs), dropped.votes());
+    assertEquals(Map.of(), dropped.funnyVotes());
+    // Las proyecciones son las mismas que con una graciosa válida: solo cambia el id que el jugador marcó.
+    var counted = accept(real, "p1", vote(theirs, entryOf(real, "p3").id()), context);
+    assertEquals(wire(engine.getPublicState(counted, context)), wire(engine.getPublicState(dropped, context)));
+    for (var playerId : List.of("p2", "p3")) {
+      assertEquals(wire(engine.getPlayerState(counted, playerId, context)),
+          wire(engine.getPlayerState(dropped, playerId, context)));
+    }
+    assertEquals(official, engine.getPlayerState(dropped, "p1", context).ownFunnyEntryId());
+    assertEquals(wire(engine.getPlayerState(counted, "p1", context)).replace(entryOf(real, "p3").id(), official),
+        wire(engine.getPlayerState(dropped, "p1", context)));
+    // Al puntuar, la oficial no recibe graciosas ni nadie suma por ella.
+    var done = accept(accept(dropped, "p2", vote(official), context), "p3", vote(official), context);
+    assertEquals(GamePhase.ROUND_RESULTS, done.phase());
+    var officialResult = done.lastRound().entries().stream().filter(entry -> entry.isReal()).findFirst().orElseThrow();
+    assertEquals(0, officialResult.funnyVotesReceived());
+    assertEquals(0, done.playerStats().values().stream().mapToInt(stats -> stats.funnyVotesReceived()).sum());
   }
 
   @Test

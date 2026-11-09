@@ -52,7 +52,8 @@ Luego se vota de forma anónima. Hay dos modos:
   `domain/pokemon/` sin cambiar su comportamiento.
 - Votos:
   - `entryId`, obligatorio: cuál crees que es la oficial;
-  - `funnyEntryId`, opcional: la inventada más graciosa, que no puede ser la tuya ni la oficial.
+  - `funnyEntryId`, opcional: la inventada más graciosa, que no puede ser la tuya. Si apunta a la oficial, el voto se
+    acepta y la graciosa no cuenta (rechazarla delataría cuál es la oficial); el jugador la sigue viendo marcada.
 - Puntos: +2 por acertar la oficial, +1 al autor por cada jugador que vote su inventada como oficial y +1 por cada voto
   de graciosa recibido.
 - En resultados se ve la oficial con el juego del que sale (`versionLabel`) y, debajo de cada inventada, a quién
@@ -131,8 +132,8 @@ Luego se vota de forma anónima. Hay dos modos:
 - **Java:**
   - Tests del motor:
     - las fases;
-    - los rechazos: votar la propia, votar fuera de fase, `funnyEntryId` en Clásico o apuntando a la oficial o a la
-      propia, texto vacío o largo;
+    - los rechazos: votar la propia, votar fuera de fase, `funnyEntryId` en Clásico o apuntando a la propia, texto
+      vacío o largo; la graciosa sobre la oficial se acepta sin contar y sin delatar nada;
     - el tiempo agotado con y sin entradas y el salto con menos de 2;
     - los puntos de los dos modos con empates;
     - la privacidad antes de los resultados.

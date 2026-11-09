@@ -147,16 +147,6 @@
       "action": {
         "type": "VOTE_ABSURD",
         "entryId": "entry-1",
-        "funnyEntryId": "entry-1"
-      },
-      "now": 1794247208000
-    },
-    {
-      "kind": "action",
-      "playerId": "p1",
-      "action": {
-        "type": "VOTE_ABSURD",
-        "entryId": "entry-1",
         "funnyEntryId": "entry-4"
       },
       "now": 1794247208500
@@ -204,7 +194,8 @@
       "playerId": "p3",
       "action": {
         "type": "VOTE_ABSURD",
-        "entryId": "entry-1"
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-1"
       },
       "now": 1794247211000
     },
@@ -1860,130 +1851,6 @@
       },
       {
         "accepted": false,
-        "error": "La más graciosa tiene que ser una entrada inventada por otro jugador.",
-        "snapshot": {
-          "lifecycle": {
-            "phase": "VOTING",
-            "nextDeadline": 1794247221000,
-            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
-            "spectatorIds": []
-          },
-          "publicState": {
-            "gameId": "absurd-pokedex",
-            "phase": "VOTING",
-            "mode": "REAL_ENTRY",
-            "roundNumber": 1,
-            "totalRounds": 3,
-            "pokemon": {
-              "id": "krabby",
-              "name": "Krabby",
-              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
-              "nationalDexNumber": 98,
-              "types": [
-                "water"
-              ]
-            },
-            "playerIds": [
-              "p1",
-              "p2",
-              "p3",
-              "p4"
-            ],
-            "submittedPlayerIds": [
-              "p1",
-              "p2",
-              "p3",
-              "p4"
-            ],
-            "votedPlayerIds": [],
-            "entries": [
-              {
-                "id": "entry-1",
-                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
-              },
-              {
-                "id": "entry-2",
-                "text": "Se peina con un rayo cada mañana."
-              },
-              {
-                "id": "entry-3",
-                "text": "Silba en morse para pedir pizza."
-              },
-              {
-                "id": "entry-4",
-                "text": "Duerme dentro de una tetera."
-              },
-              {
-                "id": "entry-5",
-                "text": "Le teme a las palomas desde pequeño."
-              }
-            ],
-            "scores": {
-              "p1": 0,
-              "p2": 0,
-              "p3": 0,
-              "p4": 0
-            },
-            "roundEndsAt": 1794247221000,
-            "nextTransitionAt": null,
-            "lastRound": null,
-            "results": null
-          },
-          "playerStates": {
-            "p1": {
-              "role": "PLAYER",
-              "canSubmit": false,
-              "ownDraft": "Duerme dentro de una tetera.",
-              "ownEntry": {
-                "id": "entry-4",
-                "text": "Duerme dentro de una tetera."
-              },
-              "canVote": true,
-              "ownVoteEntryId": null,
-              "ownFunnyEntryId": null
-            },
-            "p2": {
-              "role": "PLAYER",
-              "canSubmit": false,
-              "ownDraft": "Silba en morse para pedir pizza.",
-              "ownEntry": {
-                "id": "entry-3",
-                "text": "Silba en morse para pedir pizza."
-              },
-              "canVote": true,
-              "ownVoteEntryId": null,
-              "ownFunnyEntryId": null
-            },
-            "p3": {
-              "role": "PLAYER",
-              "canSubmit": false,
-              "ownDraft": "Se peina con un rayo cada mañana.",
-              "ownEntry": {
-                "id": "entry-2",
-                "text": "Se peina con un rayo cada mañana."
-              },
-              "canVote": true,
-              "ownVoteEntryId": null,
-              "ownFunnyEntryId": null
-            },
-            "p4": {
-              "role": "PLAYER",
-              "canSubmit": false,
-              "ownDraft": "Le teme a las palomas desde pequeño.",
-              "ownEntry": {
-                "id": "entry-5",
-                "text": "Le teme a las palomas desde pequeño."
-              },
-              "canVote": true,
-              "ownVoteEntryId": null,
-              "ownFunnyEntryId": null
-            }
-          },
-          "finished": false
-        }
-      },
-      {
-        "accepted": false,
         "error": "Esa entrada no existe.",
         "snapshot": {
           "lifecycle": {
@@ -2592,7 +2459,7 @@
               },
               "canVote": false,
               "ownVoteEntryId": "entry-1",
-              "ownFunnyEntryId": null
+              "ownFunnyEntryId": "entry-1"
             },
             "p4": {
               "role": "PLAYER",
@@ -2718,7 +2585,7 @@
               },
               "canVote": false,
               "ownVoteEntryId": "entry-1",
-              "ownFunnyEntryId": null
+              "ownFunnyEntryId": "entry-1"
             },
             "p4": {
               "role": "PLAYER",
@@ -2907,7 +2774,7 @@
               },
               "canVote": false,
               "ownVoteEntryId": "entry-1",
-              "ownFunnyEntryId": null
+              "ownFunnyEntryId": "entry-1"
             },
             "p4": {
               "role": "SPECTATOR",
@@ -3095,7 +2962,7 @@
               },
               "canVote": false,
               "ownVoteEntryId": "entry-1",
-              "ownFunnyEntryId": null
+              "ownFunnyEntryId": "entry-1"
             },
             "p4": {
               "role": "SPECTATOR",
@@ -3502,5 +3369,5 @@
       }
     ]
   },
-  "stoppedAt": 26
+  "stoppedAt": 25
 }
