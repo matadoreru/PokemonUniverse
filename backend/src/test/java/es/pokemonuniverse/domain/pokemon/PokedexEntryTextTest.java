@@ -20,6 +20,14 @@ class PokedexEntryTextTest {
   }
 
   @Test
+  void repeatedCallsReuseTheCompiledPatternsWithTheSameOutput() {
+    for (int attempt = 0; attempt < 3; attempt++) {
+      assertEquals("??? y ???.", PokedexEntryText.sanitize("Pikachu y pikachu.", golden("pikachu")));
+      assertEquals("Pikachuelo", PokedexEntryText.sanitize("Pikachuelo", golden("pikachu")));
+    }
+  }
+
+  @Test
   void doesNotMaskNameGluedToAnotherLetter() {
     assertEquals("Pikachuelo", PokedexEntryText.sanitize("Pikachuelo", golden("pikachu")));
   }

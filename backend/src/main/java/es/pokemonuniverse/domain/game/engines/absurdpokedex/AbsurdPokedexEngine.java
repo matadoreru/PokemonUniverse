@@ -80,21 +80,11 @@ public final class AbsurdPokedexEngine
     return AbsurdPokedexConfig.defaults();
   }
 
-  /** El mazo del modo, o vacío si el catálogo no trae entradas de Pokédex (salas sin BD). */
-  private static List<Pokemon> pool(AbsurdPokedexConfig config, GameContext context) {
-    return context.pokemon() instanceof PokedexEntryPokemonCatalog catalog
-        ? AbsurdPokedexRules.pool(config, catalog)
-        : List.of();
-  }
-
-  private static Optional<String> availability(AbsurdPokedexConfig config, GameContext context) {
-    if (!(context.pokemon() instanceof PokedexEntryPokemonCatalog)) return Optional.of(NO_ENTRIES);
-    return AbsurdPokedexRules.availabilityIssue(config, pool(config, context));
-  }
-
+  /** Sin construir el mazo: la sala lo pregunta dentro de su sección crítica en cada elección de juego. */
   @Override
   public Optional<String> checkAvailability(AbsurdPokedexConfig config, GameContext context) {
-    return availability(config, context);
+    if (!(context.pokemon() instanceof PokedexEntryPokemonCatalog catalog)) return Optional.of(NO_ENTRIES);
+    return AbsurdPokedexRules.availabilityIssue(config, catalog);
   }
 
   /** Consume {@code random} al barajar el mazo ({@code size - 1} extracciones). */
@@ -103,9 +93,13 @@ public final class AbsurdPokedexEngine
     if (context.players().size() < manifest.minPlayers()) {
       throw new EngineException("Se necesitan al menos " + manifest.minPlayers() + " jugadores.");
     }
-    var issue = availability(config, context);
+    // Salas sin BD: el catálogo no trae entradas de Pokédex.
+    if (!(context.pokemon() instanceof PokedexEntryPokemonCatalog catalog)) throw new EngineException(NO_ENTRIES);
+    // El mazo se calcula una sola vez y sirve para comprobar la disponibilidad y para barajar.
+    var pool = AbsurdPokedexRules.pool(config, catalog);
+    var issue = AbsurdPokedexRules.availabilityIssue(config, pool);
     if (issue.isPresent()) throw new EngineException(issue.get());
-    var deck = Randoms.contentDeck(pool(config, context), config.rounds(), context.random(), Pokemon::id);
+    var deck = Randoms.contentDeck(pool, config.rounds(), context.random(), Pokemon::id);
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var scores = new LinkedHashMap<String, Integer>();
     var playerStats = new LinkedHashMap<String, AbsurdPokedexPlayerStats>();

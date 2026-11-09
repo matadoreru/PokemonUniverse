@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +22,12 @@ public final class PokedexEntryText {
    * ya ha colapsado todo espacio de JavaScript en {@code ' '} antes de enmascarar, así que basta.
    */
   private static final String ALIAS_JOINER = "[\\s\\p{P}\\p{S}]*";
+
+  /**
+   * Patrones ya compilados por expresión: los alias salen del catálogo, así que son pocos y se repiten en cada
+   * llamada a {@link #sanitize}. Compartido entre hilos ({@link Pattern} es inmutable).
+   */
+  private static final ConcurrentHashMap<String, Pattern> COMPILED = new ConcurrentHashMap<>();
 
   private PokedexEntryText() {}
 
@@ -85,8 +92,10 @@ public final class PokedexEntryText {
     for (var alias : aliasesFor(pokemon)) {
       var pattern = aliasPattern(alias);
       if (pattern.isEmpty()) continue;
-      result = Pattern.compile("(?<![\\p{L}\\p{N}])" + pattern + "(?![\\p{L}\\p{N}])",
-          Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(result).replaceAll(Matcher.quoteReplacement("???"));
+      var regex = "(?<![\\p{L}\\p{N}])" + pattern + "(?![\\p{L}\\p{N}])";
+      result = COMPILED
+          .computeIfAbsent(regex, key -> Pattern.compile(key, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE))
+          .matcher(result).replaceAll(Matcher.quoteReplacement("???"));
     }
     return result;
   }

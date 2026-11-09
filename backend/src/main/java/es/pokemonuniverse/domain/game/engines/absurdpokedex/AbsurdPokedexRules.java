@@ -55,19 +55,35 @@ public final class AbsurdPokedexRules {
         pokemon.types());
   }
 
+  /** El texto tapado de {@code entry} si es en español y cabe en {@value #MAX_ENTRY_LENGTH} caracteres; si no, nulo. */
+  private static @Nullable String usableText(PokedexEntry entry, Pokemon pokemon) {
+    if (!"es".equals(entry.language())) return null;
+    var text = PokedexEntryText.sanitize(entry.text(), pokemon);
+    return text.isEmpty() || text.length() > MAX_ENTRY_LENGTH ? null : text;
+  }
+
   /**
-   * Las entradas oficiales de {@code pokemon} de {@value #MAX_ENTRY_LENGTH} caracteres o menos una vez tapado su
-   * nombre ({@link PokedexEntryText#sanitize}), con el texto ya tapado. Así la longitud no delata a la oficial.
+   * Las entradas oficiales en español de {@code pokemon} de {@value #MAX_ENTRY_LENGTH} caracteres o menos una vez
+   * tapado su nombre ({@link PokedexEntryText#sanitize}), con el texto ya tapado. Así la longitud no delata a la
+   * oficial.
    */
   public static List<PokedexEntry> usableRealEntries(Pokemon pokemon, PokedexEntryPokemonCatalog catalog) {
     var usable = new ArrayList<PokedexEntry>();
     for (var entry : catalog.pokedexEntries(pokemon.id())) {
-      var text = PokedexEntryText.sanitize(entry.text(), pokemon);
-      if (text.isEmpty() || text.length() > MAX_ENTRY_LENGTH) continue;
+      var text = usableText(entry, pokemon);
+      if (text == null) continue;
       usable.add(new PokedexEntry(entry.pokemonId(), text, entry.language(), entry.generation(), entry.version(),
           entry.versionLabel()));
     }
     return usable;
+  }
+
+  /** Si {@code pokemon} tiene alguna entrada utilizable: para en la primera, sin tapar las demás. */
+  private static boolean hasUsableRealEntry(Pokemon pokemon, PokedexEntryPokemonCatalog catalog) {
+    for (var entry : catalog.pokedexEntries(pokemon.id())) {
+      if (usableText(entry, pokemon) != null) return true;
+    }
+    return false;
   }
 
   /**
@@ -77,16 +93,36 @@ public final class AbsurdPokedexRules {
   public static List<Pokemon> pool(AbsurdPokedexConfig config, PokedexEntryPokemonCatalog catalog) {
     var pokemon = catalog.forGenerations(config.generations(), false);
     if (config.mode() != AbsurdPokedexMode.REAL_ENTRY) return pokemon;
-    return pokemon.stream().filter(candidate -> !usableRealEntries(candidate, catalog).isEmpty()).toList();
+    return pokemon.stream().filter(candidate -> hasUsableRealEntry(candidate, catalog)).toList();
   }
 
-  /** El motivo por el que la partida no puede empezar con {@code pool}, o vacío si hay Pokémon para todas las rondas. */
+  /** El motivo por el que la partida no puede empezar con {@code pool}, o vacío si hay Pokémon para cada ronda. */
   public static Optional<String> availabilityIssue(AbsurdPokedexConfig config, List<Pokemon> pool) {
-    if (pool.isEmpty() && config.mode() == AbsurdPokedexMode.REAL_ENTRY) {
+    return availabilityIssue(config, pool.size());
+  }
+
+  /**
+   * Lo mismo que {@link #availabilityIssue(AbsurdPokedexConfig, List)} con el mazo de {@link #pool}, pero sin
+   * construirlo: en {@code REAL_ENTRY} deja de buscar en cuanto hay Pokémon para todas las rondas (la sala lo
+   * pregunta en cada elección de juego) y solo recorre todo el catálogo cuando faltan, para contar cuántos hay.
+   */
+  public static Optional<String> availabilityIssue(AbsurdPokedexConfig config, PokedexEntryPokemonCatalog catalog) {
+    var pokemon = catalog.forGenerations(config.generations(), false);
+    if (config.mode() != AbsurdPokedexMode.REAL_ENTRY) return availabilityIssue(config, pokemon.size());
+    int available = 0;
+    for (var candidate : pokemon) {
+      if (!hasUsableRealEntry(candidate, catalog)) continue;
+      available++;
+      if (available >= config.rounds()) return Optional.empty();
+    }
+    return availabilityIssue(config, available);
+  }
+
+  private static Optional<String> availabilityIssue(AbsurdPokedexConfig config, int available) {
+    if (available == 0 && config.mode() == AbsurdPokedexMode.REAL_ENTRY) {
       return Optional.of("No hay Pokémon con entradas de Pokédex en las generaciones seleccionadas.");
     }
-    if (pool.size() < config.rounds()) {
-      int available = pool.size();
+    if (available < config.rounds()) {
       return Optional.of("Solo hay " + available + " Pokémon disponibles en estas generaciones: baja las rondas a "
           + available + " o añade generaciones.");
     }

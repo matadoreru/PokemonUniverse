@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexEntry;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
+import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import io.micronaut.json.tree.JsonNode;
@@ -160,6 +161,34 @@ class AbsurdPokedexRulesTest {
     assertTrue(n > 3);
     assertEquals("No hay Pokémon con entradas de Pokédex en las generaciones seleccionadas.",
         AbsurdPokedexRules.availabilityIssue(config("REAL_ENTRY", 1, List.of(9)), List.of()).orElseThrow());
+  }
+
+  @Test
+  void availabilityFromTheCatalogMatchesTheFullPool() {
+    for (var mode : List.of("CLASSIC", "REAL_ENTRY")) {
+      for (var generations : List.of(List.of(1), List.of(1, 2), List.of(9))) {
+        var pool = AbsurdPokedexRules.pool(config(mode, 1, generations), GOLDEN);
+        for (int rounds : new int[] {1, 5, 10, pool.size(), pool.size() + 1}) {
+          if (rounds < 1) continue;
+          var config = config(mode, rounds, generations);
+          assertEquals(AbsurdPokedexRules.availabilityIssue(config, pool),
+              AbsurdPokedexRules.availabilityIssue(config, GOLDEN), mode + " " + generations + " " + rounds);
+        }
+      }
+    }
+  }
+
+  @Test
+  void onlySpanishEntriesAreUsable() {
+    var english = new PokedexEntry("pikachu", "It keeps its tail raised.", "en", 1, "red", "Rojo");
+    var spanish = new PokedexEntry("pikachu", "Guarda electricidad en las mejillas.", "es", 1, "red", "Rojo");
+    var onlyEnglish = new InMemoryPokemonCatalog(List.of(PIKACHU), List.of(), List.of(), Map.of(), List.of(english));
+    assertTrue(AbsurdPokedexRules.usableRealEntries(PIKACHU, onlyEnglish).isEmpty());
+    assertTrue(AbsurdPokedexRules.pool(config("REAL_ENTRY", 1, List.of(1)), onlyEnglish).isEmpty());
+    assertEquals("No hay Pokémon con entradas de Pokédex en las generaciones seleccionadas.",
+        AbsurdPokedexRules.availabilityIssue(config("REAL_ENTRY", 1, List.of(1)), onlyEnglish).orElseThrow());
+    var both = new InMemoryPokemonCatalog(List.of(PIKACHU), List.of(), List.of(), Map.of(), List.of(english, spanish));
+    assertEquals(List.of(spanish), AbsurdPokedexRules.usableRealEntries(PIKACHU, both));
   }
 
   @Test
