@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
+import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexConfig;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerConfig;
 import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessConfig;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceConfig;
@@ -41,7 +42,8 @@ class GameModeConfigTest {
         new Game("shiny-vote", ShinyVoteConfig::parse, ShinyVoteConfig.defaults(), "SURVIVAL"),
         new Game("learnset-guess", LearnsetGuessConfig::parse, LearnsetGuessConfig.defaults(), "MANUAL_REVEAL"),
         new Game("type-duel", TypeDuelConfig::parse, TypeDuelConfig.defaults(), "COOP"),
-        new Game("pokemon-impostor", PokemonImpostorConfig::parse, PokemonImpostorConfig.defaults(), "ONE_WORD"));
+        new Game("pokemon-impostor", PokemonImpostorConfig::parse, PokemonImpostorConfig.defaults(), "ONE_WORD"),
+        new Game("absurd-pokedex", AbsurdPokedexConfig::parse, AbsurdPokedexConfig.defaults(), "REAL_ENTRY"));
   }
 
   private static LinkedHashMap<String, JsonNode> entries(Object config) throws IOException {
