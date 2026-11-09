@@ -1,0 +1,3080 @@
+{
+  "engineId": "absurd-pokedex",
+  "scenario": "classic-votes-and-tie",
+  "seed": 5101,
+  "catalog": "gen1-2",
+  "startNow": 1794247200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    },
+    {
+      "id": "p4",
+      "displayName": "Dani"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "rounds": 2,
+    "writeSeconds": 30,
+    "voteSeconds": 15,
+    "mode": "CLASSIC"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "   "
+      },
+      "now": 1794247202000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "Guarda"
+      },
+      "now": 1794247203000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "Guarda calcetines"
+      },
+      "now": 1794247204000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Guarda calcetines desparejados en la cola."
+      },
+      "now": 1794247205000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Su grito afina los pianos de toda la región."
+      },
+      "now": 1794247206000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "  Duerme boca abajo para no soñar con lunes.  "
+      },
+      "now": 1794247207000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247229999
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247230000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-2"
+      },
+      "now": 1794247231000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1"
+      },
+      "now": 1794247232000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-2"
+      },
+      "now": 1794247233000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-2"
+      },
+      "now": 1794247234000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1"
+      },
+      "now": 1794247234500
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247242500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Colecciona tapones de botella desde la Edad de Piedra."
+      },
+      "now": 1794247243000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Cuando estornuda, cambia el tiempo en Kanto."
+      },
+      "now": 1794247244000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Nunca ha perdido al escondite porque nadie lo busca."
+      },
+      "now": 1794247245000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Cree que es un Pokémon de tipo Planta, pero no."
+      },
+      "now": 1794247246000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-4"
+      },
+      "now": 1794247247000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-4"
+      },
+      "now": 1794247248000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247260999
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247261000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247269000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 2,
+      "writeSeconds": 30,
+      "voteSeconds": 15,
+      "mode": "CLASSIC"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "absurd-pokedex",
+        "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
+        "roundNumber": 0,
+        "totalRounds": 2,
+        "pokemon": null,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "votedPlayerIds": [],
+        "entries": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 1794247230000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "absurd-pokedex",
+        "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
+        "roundNumber": 1,
+        "totalRounds": 2,
+        "pokemon": {
+          "id": "machop",
+          "name": "Machop",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+          "nationalDexNumber": 66,
+          "types": [
+            "fighting"
+          ]
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "votedPlayerIds": [],
+        "entries": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": 1794247230000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "Guarda",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "Guarda calcetines",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": null,
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": null,
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": null,
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": null,
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": null,
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": null,
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": null,
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247245000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247245000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247245000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247245000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La más graciosa solo se vota en «¿Cuál es la real?».",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247245000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247242500,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247242500,
+            "lastRound": {
+              "mode": "CLASSIC",
+              "pokemon": {
+                "id": "machop",
+                "name": "Machop",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                "nationalDexNumber": 66,
+                "types": [
+                  "fighting"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-1",
+                  "text": "Su grito afina los pianos de toda la región.",
+                  "authorId": "p3",
+                  "isReal": false,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p2",
+                    "p4"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Guarda calcetines desparejados en la cola.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p1",
+                    "p3"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-3",
+                  "text": "Duerme boca abajo para no soñar con lunes.",
+                  "authorId": "p4",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": null,
+              "winnerPlayerIds": [
+                "p3",
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p3": 4,
+                "p2": 4
+              },
+              "missingPlayerIds": [
+                "p1"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "   ",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda calcetines desparejados en la cola.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Guarda calcetines desparejados en la cola."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Su grito afina los pianos de toda la región.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Su grito afina los pianos de toda la región."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-2",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "  Duerme boca abajo para no soñar con lunes.  ",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Duerme boca abajo para no soñar con lunes."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247272500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247272500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247272500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247272500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": null,
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247272500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247272500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": null,
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": null,
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247272500,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247272500,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": null,
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": null,
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": null,
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247261000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247261000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cree que es un Pokémon de tipo Planta, pero no.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247261000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247261000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cree que es un Pokémon de tipo Planta, pero no.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247261000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247261000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cree que es un Pokémon de tipo Planta, pero no.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247261000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247261000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cree que es un Pokémon de tipo Planta, pero no.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247269000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247269000,
+            "lastRound": {
+              "mode": "CLASSIC",
+              "pokemon": {
+                "id": "wigglytuff",
+                "name": "Wigglytuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+                "nationalDexNumber": 40,
+                "types": [
+                  "normal",
+                  "fairy"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-4",
+                  "text": "Cree que es un Pokémon de tipo Planta, pero no.",
+                  "authorId": "p4",
+                  "isReal": false,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p1",
+                    "p2"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-1",
+                  "text": "Colecciona tapones de botella desde la Edad de Piedra.",
+                  "authorId": "p1",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Nunca ha perdido al escondite porque nadie lo busca.",
+                  "authorId": "p3",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-3",
+                  "text": "Cuando estornuda, cambia el tiempo en Kanto.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": null,
+              "winnerPlayerIds": [
+                "p4"
+              ],
+              "pointsAwarded": {
+                "p4": 4
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cree que es un Pokémon de tipo Planta, pero no.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "GAME_RESULTS",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 2,
+            "pokemon": {
+              "id": "wigglytuff",
+              "name": "Wigglytuff",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+              "nationalDexNumber": 40,
+              "types": [
+                "normal",
+                "fairy"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 4,
+              "p3": 4,
+              "p4": 4
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "mode": "CLASSIC",
+              "pokemon": {
+                "id": "wigglytuff",
+                "name": "Wigglytuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+                "nationalDexNumber": 40,
+                "types": [
+                  "normal",
+                  "fairy"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-4",
+                  "text": "Cree que es un Pokémon de tipo Planta, pero no.",
+                  "authorId": "p4",
+                  "isReal": false,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p1",
+                    "p2"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-1",
+                  "text": "Colecciona tapones de botella desde la Edad de Piedra.",
+                  "authorId": "p1",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Nunca ha perdido al escondite porque nadie lo busca.",
+                  "authorId": "p3",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-3",
+                  "text": "Cuando estornuda, cambia el tiempo en Kanto.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": null,
+              "winnerPlayerIds": [
+                "p4"
+              ],
+              "pointsAwarded": {
+                "p4": 4
+              },
+              "missingPlayerIds": []
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 4,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 2,
+                    "entriesSubmitted": 2,
+                    "votesReceived": 2,
+                    "funnyVotesReceived": 0,
+                    "roundWins": 1,
+                    "realGuessed": 0,
+                    "playersFooled": 0,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 4,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 2,
+                    "entriesSubmitted": 2,
+                    "votesReceived": 2,
+                    "funnyVotesReceived": 0,
+                    "roundWins": 1,
+                    "realGuessed": 0,
+                    "playersFooled": 0,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p4",
+                  "position": 1,
+                  "points": 4,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 2,
+                    "entriesSubmitted": 2,
+                    "votesReceived": 2,
+                    "funnyVotesReceived": 0,
+                    "roundWins": 1,
+                    "realGuessed": 0,
+                    "playersFooled": 0,
+                    "pointsFromRounds": 4
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 4,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 2,
+                    "entriesSubmitted": 1,
+                    "votesReceived": 0,
+                    "funnyVotesReceived": 0,
+                    "roundWins": 0,
+                    "realGuessed": 0,
+                    "playersFooled": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Colecciona tapones de botella desde la Edad de Piedra.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Colecciona tapones de botella desde la Edad de Piedra."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuando estornuda, cambia el tiempo en Kanto.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Cuando estornuda, cambia el tiempo en Kanto."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Nunca ha perdido al escondite porque nadie lo busca.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Nunca ha perdido al escondite porque nadie lo busca."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cree que es un Pokémon de tipo Planta, pero no.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Cree que es un Pokémon de tipo Planta, pero no."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 4,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 2,
+            "entriesSubmitted": 2,
+            "votesReceived": 2,
+            "funnyVotesReceived": 0,
+            "roundWins": 1,
+            "realGuessed": 0,
+            "playersFooled": 0,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 4,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 2,
+            "entriesSubmitted": 2,
+            "votesReceived": 2,
+            "funnyVotesReceived": 0,
+            "roundWins": 1,
+            "realGuessed": 0,
+            "playersFooled": 0,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p4",
+          "position": 1,
+          "points": 4,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 2,
+            "entriesSubmitted": 2,
+            "votesReceived": 2,
+            "funnyVotesReceived": 0,
+            "roundWins": 1,
+            "realGuessed": 0,
+            "playersFooled": 0,
+            "pointsFromRounds": 4
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 4,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 2,
+            "entriesSubmitted": 1,
+            "votesReceived": 0,
+            "funnyVotesReceived": 0,
+            "roundWins": 0,
+            "realGuessed": 0,
+            "playersFooled": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}

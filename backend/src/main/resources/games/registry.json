@@ -2540,5 +2540,86 @@
       "selectionSeconds": 30,
       "secretSelection": "RANDOM"
     }
+  },
+  {
+    "id": "absurd-pokedex",
+    "name": "Pokédex Absurda",
+    "icon": "📜",
+    "description": "Escribe la entrada de Pokédex más absurda para un Pokémon real, o cuela la tuya junto a la oficial.",
+    "experimental": false,
+    "minPlayers": 3,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "entriesSubmitted",
+          "label": "Entradas enviadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votesReceived",
+          "label": "Votos recibidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "funnyVotesReceived",
+          "label": "Votos de la más graciosa",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "roundWins",
+          "label": "Victorias",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "realGuessed",
+          "label": "Entradas oficiales descubiertas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "playersFooled",
+          "label": "Jugadores engañados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "answerRate",
+          "label": "Rondas con entrada",
+          "kind": "PERCENT",
+          "numerator": "entriesSubmitted",
+          "denominator": [
+            "roundsPlayed"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
   }
 ]

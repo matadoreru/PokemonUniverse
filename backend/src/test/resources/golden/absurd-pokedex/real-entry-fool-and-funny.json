@@ -1,0 +1,1836 @@
+{
+  "engineId": "absurd-pokedex",
+  "scenario": "real-entry-fool-and-funny",
+  "seed": 5202,
+  "catalog": "gen1-2",
+  "startNow": 1794247200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "rounds": 3,
+    "writeSeconds": 30,
+    "voteSeconds": 15,
+    "mode": "REAL_ENTRY"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "Squirtle se come"
+      },
+      "now": 1794247202000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Squirtle se come las nubes y por eso nunca llueve."
+      },
+      "now": 1794247203000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Vive en los tejados y canta a las farolas."
+      },
+      "now": 1794247204000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Pierde una escama cada vez que alguien miente."
+      },
+      "now": 1794247205000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-2"
+      },
+      "now": 1794247206000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-4"
+      },
+      "now": 1794247207000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1"
+      },
+      "now": 1794247208000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247216000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Sus huellas brillan en la oscuridad durante tres días."
+      },
+      "now": 1794247217000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247246000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-1"
+      },
+      "now": 1794247247000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247261000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247269000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247299000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247307000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "rounds": 3,
+      "writeSeconds": 30,
+      "voteSeconds": 15,
+      "mode": "REAL_ENTRY"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "absurd-pokedex",
+        "phase": "GAME_STARTING",
+        "mode": "REAL_ENTRY",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "pokemon": null,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "votedPlayerIds": [],
+        "entries": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 1794247230000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "absurd-pokedex",
+        "phase": "ROUND_ACTIVE",
+        "mode": "REAL_ENTRY",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "pokemon": {
+          "id": "squirtle",
+          "name": "Squirtle",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+          "nationalDexNumber": 7,
+          "types": [
+            "water"
+          ]
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "submittedPlayerIds": [],
+        "votedPlayerIds": [],
+        "entries": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 1794247230000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "Squirtle se come",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Squirtle se come las nubes y por eso nunca llueve.",
+              "ownEntry": {
+                "id": null,
+                "text": "Squirtle se come las nubes y por eso nunca llueve."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Squirtle se come las nubes y por eso nunca llueve.",
+              "ownEntry": {
+                "id": null,
+                "text": "Squirtle se come las nubes y por eso nunca llueve."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Vive en los tejados y canta a las farolas.",
+              "ownEntry": {
+                "id": null,
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247220000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Lanza agua a su presa desde el agua. Se esconde en su concha cuando se siente en peligro."
+              },
+              {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794247220000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Squirtle se come las nubes y por eso nunca llueve.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Vive en los tejados y canta a las farolas.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Pierde una escama cada vez que alguien miente.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247220000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Lanza agua a su presa desde el agua. Se esconde en su concha cuando se siente en peligro."
+              },
+              {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794247220000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Squirtle se come las nubes y por eso nunca llueve.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Vive en los tejados y canta a las farolas.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Pierde una escama cada vez que alguien miente.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247220000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Lanza agua a su presa desde el agua. Se esconde en su concha cuando se siente en peligro."
+              },
+              {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794247220000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Squirtle se come las nubes y por eso nunca llueve.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Vive en los tejados y canta a las farolas.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Pierde una escama cada vez que alguien miente.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247216000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "squirtle",
+              "name": "Squirtle",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+              "nationalDexNumber": 7,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247216000,
+            "lastRound": {
+              "mode": "REAL_ENTRY",
+              "pokemon": {
+                "id": "squirtle",
+                "name": "Squirtle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+                "nationalDexNumber": 7,
+                "types": [
+                  "water"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-1",
+                  "text": "Lanza agua a su presa desde el agua. Se esconde en su concha cuando se siente en peligro.",
+                  "authorId": null,
+                  "isReal": true,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p1",
+                    "p3"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-4",
+                  "text": "Pierde una escama cada vez que alguien miente.",
+                  "authorId": "p3",
+                  "isReal": false,
+                  "votesReceived": 1,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p2"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Vive en los tejados y canta a las farolas.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 1,
+                  "votedBy": [],
+                  "funnyVotedBy": [
+                    "p1"
+                  ]
+                },
+                {
+                  "id": "entry-3",
+                  "text": "??? se come las nubes y por eso nunca llueve.",
+                  "authorId": "p1",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": {
+                "id": "entry-1",
+                "versionLabel": "Pokémon Y"
+              },
+              "winnerPlayerIds": [
+                "p3"
+              ],
+              "pointsAwarded": {
+                "p1": 2,
+                "p3": 3,
+                "p2": 1
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Squirtle se come las nubes y por eso nunca llueve.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "??? se come las nubes y por eso nunca llueve."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-2"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Vive en los tejados y canta a las farolas.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Vive en los tejados y canta a las farolas."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Pierde una escama cada vez que alguien miente.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Pierde una escama cada vez que alguien miente."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247246000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "raticate",
+              "name": "Raticate",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+              "nationalDexNumber": 20,
+              "types": [
+                "normal"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundEndsAt": 1794247246000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247246000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "raticate",
+              "name": "Raticate",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+              "nationalDexNumber": 20,
+              "types": [
+                "normal"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundEndsAt": 1794247246000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Sus huellas brillan en la oscuridad durante tres días.",
+              "ownEntry": {
+                "id": null,
+                "text": "Sus huellas brillan en la oscuridad durante tres días."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247261000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "raticate",
+              "name": "Raticate",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+              "nationalDexNumber": 20,
+              "types": [
+                "normal"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus huellas brillan en la oscuridad durante tres días."
+              },
+              {
+                "id": "entry-2",
+                "text": "Mantiene el equilibrio gracias a sus bigotes. Aunque le coja confianza a alguien, uno puede llevarse un mordisco si intenta tocarlo."
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundEndsAt": 1794247261000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Sus huellas brillan en la oscuridad durante tres días.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Sus huellas brillan en la oscuridad durante tres días."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247261000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "raticate",
+              "name": "Raticate",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+              "nationalDexNumber": 20,
+              "types": [
+                "normal"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus huellas brillan en la oscuridad durante tres días."
+              },
+              {
+                "id": "entry-2",
+                "text": "Mantiene el equilibrio gracias a sus bigotes. Aunque le coja confianza a alguien, uno puede llevarse un mordisco si intenta tocarlo."
+              }
+            ],
+            "scores": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 3
+            },
+            "roundEndsAt": 1794247261000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Sus huellas brillan en la oscuridad durante tres días.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Sus huellas brillan en la oscuridad durante tres días."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247269000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "raticate",
+              "name": "Raticate",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+              "nationalDexNumber": 20,
+              "types": [
+                "normal"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [
+              "p2"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247269000,
+            "lastRound": {
+              "mode": "REAL_ENTRY",
+              "pokemon": {
+                "id": "raticate",
+                "name": "Raticate",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+                "nationalDexNumber": 20,
+                "types": [
+                  "normal"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-1",
+                  "text": "Sus huellas brillan en la oscuridad durante tres días.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 1,
+                  "funnyVotesReceived": 1,
+                  "votedBy": [
+                    "p1"
+                  ],
+                  "funnyVotedBy": [
+                    "p1"
+                  ]
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Mantiene el equilibrio gracias a sus bigotes. Aunque le coja confianza a alguien, uno puede llevarse un mordisco si intenta tocarlo.",
+                  "authorId": null,
+                  "isReal": true,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": {
+                "id": "entry-2",
+                "versionLabel": "Pokémon Ultraluna"
+              },
+              "winnerPlayerIds": [
+                "p2"
+              ],
+              "pointsAwarded": {
+                "p2": 2
+              },
+              "missingPlayerIds": [
+                "p1",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-1"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Sus huellas brillan en la oscuridad durante tres días.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Sus huellas brillan en la oscuridad durante tres días."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247299000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "dodrio",
+              "name": "Dodrio",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+              "nationalDexNumber": 85,
+              "types": [
+                "normal",
+                "flying"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": 1794247299000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247307000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "dodrio",
+              "name": "Dodrio",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+              "nationalDexNumber": 85,
+              "types": [
+                "normal",
+                "flying"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247307000,
+            "lastRound": {
+              "mode": "REAL_ENTRY",
+              "pokemon": {
+                "id": "dodrio",
+                "name": "Dodrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+                "nationalDexNumber": 85,
+                "types": [
+                  "normal",
+                  "flying"
+                ]
+              },
+              "skipped": true,
+              "entries": [],
+              "realEntry": null,
+              "winnerPlayerIds": [],
+              "pointsAwarded": {},
+              "missingPlayerIds": [
+                "p1",
+                "p2",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "GAME_RESULTS",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "dodrio",
+              "name": "Dodrio",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+              "nationalDexNumber": 85,
+              "types": [
+                "normal",
+                "flying"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 2,
+              "p2": 3,
+              "p3": 3
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "mode": "REAL_ENTRY",
+              "pokemon": {
+                "id": "dodrio",
+                "name": "Dodrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png",
+                "nationalDexNumber": 85,
+                "types": [
+                  "normal",
+                  "flying"
+                ]
+              },
+              "skipped": true,
+              "entries": [],
+              "realEntry": null,
+              "winnerPlayerIds": [],
+              "pointsAwarded": {},
+              "missingPlayerIds": [
+                "p1",
+                "p2",
+                "p3"
+              ]
+            },
+            "results": {
+              "winnerId": null,
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 3,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "entriesSubmitted": 2,
+                    "votesReceived": 1,
+                    "funnyVotesReceived": 2,
+                    "roundWins": 1,
+                    "realGuessed": 0,
+                    "playersFooled": 1,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 1,
+                  "points": 3,
+                  "won": true,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "entriesSubmitted": 1,
+                    "votesReceived": 1,
+                    "funnyVotesReceived": 0,
+                    "roundWins": 1,
+                    "realGuessed": 1,
+                    "playersFooled": 1,
+                    "pointsFromRounds": 3
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 3,
+                  "points": 2,
+                  "won": false,
+                  "stats": {
+                    "roundsPlayed": 3,
+                    "entriesSubmitted": 1,
+                    "votesReceived": 0,
+                    "funnyVotesReceived": 0,
+                    "roundWins": 0,
+                    "realGuessed": 1,
+                    "playersFooled": 0,
+                    "pointsFromRounds": 2
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": null,
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 3,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "entriesSubmitted": 2,
+            "votesReceived": 1,
+            "funnyVotesReceived": 2,
+            "roundWins": 1,
+            "realGuessed": 0,
+            "playersFooled": 1,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 3,
+          "won": true,
+          "stats": {
+            "roundsPlayed": 3,
+            "entriesSubmitted": 1,
+            "votesReceived": 1,
+            "funnyVotesReceived": 0,
+            "roundWins": 1,
+            "realGuessed": 1,
+            "playersFooled": 1,
+            "pointsFromRounds": 3
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 3,
+          "points": 2,
+          "won": false,
+          "stats": {
+            "roundsPlayed": 3,
+            "entriesSubmitted": 1,
+            "votesReceived": 0,
+            "funnyVotesReceived": 0,
+            "roundWins": 0,
+            "realGuessed": 1,
+            "playersFooled": 0,
+            "pointsFromRounds": 2
+          }
+        }
+      ]
+    }
+  }
+}

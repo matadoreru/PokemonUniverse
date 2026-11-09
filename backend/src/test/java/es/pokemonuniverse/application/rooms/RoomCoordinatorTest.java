@@ -622,7 +622,7 @@ class RoomCoordinatorTest {
     assertMessage("No tienes permiso para realizar esta acción.", () -> kit.manager.selectGame("guest", "higher-lower"));
     assertMessage("Unknown game", () -> kit.manager.selectGame("host", "missing-game"));
     assertEquals("pokedex-distance", room.selectedGameId);
-    assertEquals(28, created.availableGames().size());
+    assertEquals(29, created.availableGames().size());
   }
 
   @Test
@@ -1707,7 +1707,7 @@ class RoomCoordinatorTest {
     assertEquals("pokedex-distance", view.selectedGameId());
     assertEquals(7, view.gameConfigs().get("higher-lower").get("rounds").getIntValue());
     assertEquals(List.of("higher-lower"), view.customizedGameIds());
-    assertEquals(28, view.gameConfigs().size());
+    assertEquals(29, view.gameConfigs().size());
 
     nextConfig.put("rounds", 10);
     kit.manager.updateGameConfig("host", "higher-lower", RoomTestKit.tree(nextConfig));

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-/** Catálogo de 48 logros sobre los manifiestos reales de {@code registry.json}; cada condición se prueba en su borde. */
+/** Catálogo de 49 logros sobre los manifiestos reales de {@code registry.json}; cada condición se prueba en su borde. */
 class AchievementCatalogTest {
 
   private static final List<GameManifest> MANIFESTS =
@@ -66,12 +66,12 @@ class AchievementCatalogTest {
   }
 
   @Test
-  void hasFortyEightUniqueIds() {
+  void hasFortyNineUniqueIds() {
     var all = CATALOG.all();
-    assertEquals(48, all.size());
-    assertEquals(48, new HashSet<>(all.stream().map(Achievement::id).toList()).size());
+    assertEquals(49, all.size());
+    assertEquals(49, new HashSet<>(all.stream().map(Achievement::id).toList()).size());
     assertEquals(10, all.stream().filter(a -> a.family() == AchievementFamily.GENERAL).count());
-    assertEquals(34, all.stream().filter(a -> a.family() == AchievementFamily.GAME).count());
+    assertEquals(35, all.stream().filter(a -> a.family() == AchievementFamily.GAME).count());
     assertEquals(4, all.stream().filter(a -> a.family() == AchievementFamily.SECRET).count());
     assertEquals("general.first-game", all.getFirst().id());
     assertEquals("secret.4", all.getLast().id());
@@ -82,7 +82,7 @@ class AchievementCatalogTest {
   @Test
   void oneWinPerManifest() {
     var wins = CATALOG.all().stream().filter(a -> a.id().endsWith(".win")).toList();
-    assertEquals(28, wins.size());
+    assertEquals(29, wins.size());
     assertEquals(MANIFESTS.stream().map(m -> "game." + m.id() + ".win").toList(),
         wins.stream().map(Achievement::id).toList());
     for (var manifest : MANIFESTS) {

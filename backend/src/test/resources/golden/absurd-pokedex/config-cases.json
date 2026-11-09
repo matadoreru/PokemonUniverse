@@ -1,0 +1,586 @@
+[
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 0,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 1,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 1,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 11,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 29,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 30,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 30,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 120,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 120,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 121,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 14,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 15,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 15,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 60,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 60,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 61,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5.5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        1
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "REAL_ENTRY"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "REAL_ENTRY"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "MIXED"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "writeSeconds": 60,
+      "voteSeconds": 30,
+      "mode": "CLASSIC",
+      "unknownKey": true
+    },
+    "valid": false
+  }
+]

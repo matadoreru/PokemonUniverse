@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.out.resources;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
+import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexEngine;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsEngine;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessEngine;
@@ -108,6 +109,7 @@ public class ClasspathGameRegistryLoader {
         new PokemonConnectionsEngine(manifest(manifests, PokemonConnectionsEngine.ID)));
     engines.put(PokemonImpostorEngine.ID, new PokemonImpostorEngine(manifest(manifests, PokemonImpostorEngine.ID)));
     engines.put(SketchmonEngine.ID, new SketchmonEngine(manifest(manifests, SketchmonEngine.ID)));
+    engines.put(AbsurdPokedexEngine.ID, new AbsurdPokedexEngine(manifest(manifests, AbsurdPokedexEngine.ID)));
     return engines;
   }
 

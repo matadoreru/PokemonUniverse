@@ -1,0 +1,3506 @@
+{
+  "engineId": "absurd-pokedex",
+  "scenario": "errors-and-presence",
+  "seed": 5303,
+  "catalog": "gen1-2",
+  "startNow": 1794247200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    },
+    {
+      "id": "p4",
+      "displayName": "Dani"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "rounds": 3,
+    "writeSeconds": 30,
+    "voteSeconds": 15,
+    "mode": "REAL_ENTRY"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "No juego"
+      },
+      "now": 1794247202000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1"
+      },
+      "now": 1794247202500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Duerme dentro de una tetera."
+      },
+      "now": 1794247203000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "Duerme dentro de una tetera vacía."
+      },
+      "now": 1794247203500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Otra entrada"
+      },
+      "now": 1794247203600
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Silba en morse para pedir pizza."
+      },
+      "now": 1794247204000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Se peina con un rayo cada mañana."
+      },
+      "now": 1794247205000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Le teme a las palomas desde pequeño."
+      },
+      "now": 1794247206000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "UPDATE_ABSURD_DRAFT",
+        "text": "Tarde"
+      },
+      "now": 1794247206500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Tarde"
+      },
+      "now": 1794247206600
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-9"
+      },
+      "now": 1794247207000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-4"
+      },
+      "now": 1794247207500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-1"
+      },
+      "now": 1794247208000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-4"
+      },
+      "now": 1794247208500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-9"
+      },
+      "now": 1794247208700
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1",
+        "funnyEntryId": "entry-3"
+      },
+      "now": 1794247209000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-2"
+      },
+      "now": 1794247209500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-4"
+      },
+      "now": 1794247210000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1"
+      },
+      "now": 1794247211000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani"
+        }
+      ],
+      "now": 1794247212000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p4",
+          "displayName": "Dani",
+          "connected": false
+        }
+      ],
+      "now": 1794247213000
+    },
+    {
+      "kind": "action",
+      "playerId": "p4",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-4"
+      },
+      "now": 1794247213500
+    },
+    {
+      "kind": "timeout",
+      "now": 1794247221000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Cuenta ovejas Mareep para dormir."
+      },
+      "now": 1794247222000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Guarda secretos en sus orejas."
+      },
+      "now": 1794247223000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "SUBMIT_ABSURD_ENTRY",
+        "text": "Brilla cuando oye su canción favorita."
+      },
+      "now": 1794247224000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE_ABSURD"
+      },
+      "now": 1794247225000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE_ABSURD",
+        "entryId": "entry-1"
+      },
+      "now": 1794247226000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "writeSeconds": 30,
+      "voteSeconds": 15,
+      "mode": "REAL_ENTRY"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "absurd-pokedex",
+        "phase": "GAME_STARTING",
+        "mode": "REAL_ENTRY",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "pokemon": null,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "votedPlayerIds": [],
+        "entries": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": false,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 1794247230000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "absurd-pokedex",
+        "phase": "ROUND_ACTIVE",
+        "mode": "REAL_ENTRY",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "pokemon": {
+          "id": "krabby",
+          "name": "Krabby",
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+          "nationalDexNumber": 98,
+          "types": [
+            "water"
+          ]
+        },
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3",
+          "p4"
+        ],
+        "submittedPlayerIds": [],
+        "votedPlayerIds": [],
+        "entries": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0,
+          "p4": 0
+        },
+        "roundEndsAt": 1794247230000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        },
+        "p4": {
+          "role": "PLAYER",
+          "canSubmit": true,
+          "ownDraft": "",
+          "ownEntry": null,
+          "canVote": false,
+          "ownVoteEntryId": null,
+          "ownFunnyEntryId": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La votación no está activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": null,
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has enviado tu entrada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": null,
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has enviado tu entrada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": null,
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": null,
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": null,
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247230000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247230000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": null,
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": null,
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": null,
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La escritura ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La escritura ya ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esa entrada no existe.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes votar tu propia entrada.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La más graciosa tiene que ser una entrada inventada por otro jugador.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "La más graciosa tiene que ser una entrada inventada por otro jugador.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Esa entrada no existe.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has votado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"VOTING\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez."
+              },
+              {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              }
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247221000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Le teme a las palomas desde pequeño.",
+              "ownEntry": {
+                "id": "entry-5",
+                "text": "Le teme a las palomas desde pequeño."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247221000,
+            "lastRound": {
+              "mode": "REAL_ENTRY",
+              "pokemon": {
+                "id": "krabby",
+                "name": "Krabby",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+                "nationalDexNumber": 98,
+                "types": [
+                  "water"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-1",
+                  "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez.",
+                  "authorId": null,
+                  "isReal": true,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p1",
+                    "p3"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-4",
+                  "text": "Duerme dentro de una tetera.",
+                  "authorId": "p1",
+                  "isReal": false,
+                  "votesReceived": 1,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p2"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Se peina con un rayo cada mañana.",
+                  "authorId": "p3",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-3",
+                  "text": "Silba en morse para pedir pizza.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 1,
+                  "votedBy": [],
+                  "funnyVotedBy": [
+                    "p1"
+                  ]
+                },
+                {
+                  "id": "entry-5",
+                  "text": "Le teme a las palomas desde pequeño.",
+                  "authorId": "p4",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": {
+                "id": "entry-1",
+                "versionLabel": "Pokémon Let's Go, Eevee!"
+              },
+              "winnerPlayerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p3": 2,
+                "p2": 1
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No puedes participar en esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794247221000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_RESULTS",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "krabby",
+              "name": "Krabby",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+              "nationalDexNumber": 98,
+              "types": [
+                "water"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "entries": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 0
+            },
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794247221000,
+            "lastRound": {
+              "mode": "REAL_ENTRY",
+              "pokemon": {
+                "id": "krabby",
+                "name": "Krabby",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png",
+                "nationalDexNumber": 98,
+                "types": [
+                  "water"
+                ]
+              },
+              "skipped": false,
+              "entries": [
+                {
+                  "id": "entry-1",
+                  "text": "Sus pinzas son armas muy potentes y, aunque en ocasiones se le rompen al atacar, le crecen de nuevo con rapidez.",
+                  "authorId": null,
+                  "isReal": true,
+                  "votesReceived": 2,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p1",
+                    "p3"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-4",
+                  "text": "Duerme dentro de una tetera.",
+                  "authorId": "p1",
+                  "isReal": false,
+                  "votesReceived": 1,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [
+                    "p2"
+                  ],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-2",
+                  "text": "Se peina con un rayo cada mañana.",
+                  "authorId": "p3",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                },
+                {
+                  "id": "entry-3",
+                  "text": "Silba en morse para pedir pizza.",
+                  "authorId": "p2",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 1,
+                  "votedBy": [],
+                  "funnyVotedBy": [
+                    "p1"
+                  ]
+                },
+                {
+                  "id": "entry-5",
+                  "text": "Le teme a las palomas desde pequeño.",
+                  "authorId": "p4",
+                  "isReal": false,
+                  "votesReceived": 0,
+                  "funnyVotesReceived": 0,
+                  "votedBy": [],
+                  "funnyVotedBy": []
+                }
+              ],
+              "realEntry": {
+                "id": "entry-1",
+                "versionLabel": "Pokémon Let's Go, Eevee!"
+              },
+              "winnerPlayerIds": [
+                "p1"
+              ],
+              "pointsAwarded": {
+                "p1": 3,
+                "p3": 2,
+                "p2": 1
+              },
+              "missingPlayerIds": []
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Duerme dentro de una tetera.",
+              "ownEntry": {
+                "id": "entry-4",
+                "text": "Duerme dentro de una tetera."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": "entry-3"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Silba en morse para pedir pizza.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Silba en morse para pedir pizza."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-4",
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Se peina con un rayo cada mañana.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Se peina con un rayo cada mañana."
+              },
+              "canVote": false,
+              "ownVoteEntryId": "entry-1",
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247251000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "heracross",
+              "name": "Heracross",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "nationalDexNumber": 214,
+              "types": [
+                "bug",
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247251000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247251000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "heracross",
+              "name": "Heracross",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "nationalDexNumber": 214,
+              "types": [
+                "bug",
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247251000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuenta ovejas Mareep para dormir.",
+              "ownEntry": {
+                "id": null,
+                "text": "Cuenta ovejas Mareep para dormir."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794247251000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "ROUND_ACTIVE",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "heracross",
+              "name": "Heracross",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "nationalDexNumber": 214,
+              "types": [
+                "bug",
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "votedPlayerIds": [],
+            "entries": [],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247251000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuenta ovejas Mareep para dormir.",
+              "ownEntry": {
+                "id": null,
+                "text": "Cuenta ovejas Mareep para dormir."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda secretos en sus orejas.",
+              "ownEntry": {
+                "id": null,
+                "text": "Guarda secretos en sus orejas."
+              },
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": true,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "VOTING",
+            "nextDeadline": 1794247239000,
+            "actionEpoch": "[\"VOTING\",2,null,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "absurd-pokedex",
+            "phase": "VOTING",
+            "mode": "REAL_ENTRY",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "pokemon": {
+              "id": "heracross",
+              "name": "Heracross",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png",
+              "nationalDexNumber": 214,
+              "types": [
+                "bug",
+                "fighting"
+              ]
+            },
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3",
+              "p4"
+            ],
+            "submittedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "votedPlayerIds": [],
+            "entries": [
+              {
+                "id": "entry-1",
+                "text": "Cuenta ovejas Mareep para dormir."
+              },
+              {
+                "id": "entry-2",
+                "text": "Brilla cuando oye su canción favorita."
+              },
+              {
+                "id": "entry-3",
+                "text": "Guarda secretos en sus orejas."
+              },
+              {
+                "id": "entry-4",
+                "text": "Ronda los bosques en busca de miel. Se jacta de su fuerza, pero su capacidad de vuelo deja mucho que desear."
+              }
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 1,
+              "p3": 2,
+              "p4": 0
+            },
+            "roundEndsAt": 1794247239000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Cuenta ovejas Mareep para dormir.",
+              "ownEntry": {
+                "id": "entry-1",
+                "text": "Cuenta ovejas Mareep para dormir."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Guarda secretos en sus orejas.",
+              "ownEntry": {
+                "id": "entry-3",
+                "text": "Guarda secretos en sus orejas."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canSubmit": false,
+              "ownDraft": "Brilla cuando oye su canción favorita.",
+              "ownEntry": {
+                "id": "entry-2",
+                "text": "Brilla cuando oye su canción favorita."
+              },
+              "canVote": true,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            },
+            "p4": {
+              "role": "SPECTATOR",
+              "canSubmit": false,
+              "ownDraft": "",
+              "ownEntry": null,
+              "canVote": false,
+              "ownVoteEntryId": null,
+              "ownFunnyEntryId": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 26
+}
