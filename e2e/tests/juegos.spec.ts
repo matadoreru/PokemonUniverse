@@ -4449,6 +4449,17 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await dibujante.keyboard.press('Control+z');
     await expect.poll(() => trazos(directo(g1)), { timeout: 5_000 }).toBe(4);
     await herramientas(dibujante).getByRole('radio', { name: 'Lápiz' }).click();
+    // Con el ratón encima del lienzo, quien dibuja ve un punto del color elegido (Rojo) en lugar de la cruz; al salir, se va.
+    const cursor = dibujante.getByTestId('sketch-brush-cursor');
+    await expect(cursor).toBeHidden();
+    const caja = (await lienzo(dibujante).boundingBox())!;
+    await dibujante.mouse.move(caja.x + caja.width / 2, caja.y + caja.height / 2);
+    await expect(cursor).toBeVisible();
+    await expect(lienzo(dibujante)).toHaveCSS('cursor', 'none');
+    expect(await cursor.locator('span').evaluate((punto) => getComputedStyle(punto).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+    await expect(g1.getByTestId('sketch-brush-cursor')).toHaveCount(0);
+    await dibujante.mouse.move(caja.x - 20, caja.y - 20);
+    await expect(cursor).toBeHidden();
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
 
     await capturarTamanos(dibujante, 'juego-sketchmon-dibujar', { sigue: secretoEn(dibujante) });

@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { SketchmonConfigPanel } from '../games/sketchmon/ConfigPanel';
 import { SketchmonGame } from './SketchmonGame';
+import { brushDotSize } from './SketchmonCanvas';
 import { SketchmonResults } from './SketchmonResults';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
@@ -122,6 +123,20 @@ describe('Sketchmon: privacidad del secreto', () => {
     for (const leak of ['Lucario', 'Tu Pokémon secreto', 'Solo lo ves tú', '¡Era', 'acertó', 'Puntos del dibujo', 'Herramientas de dibujo']) expect(text).not.toContain(leak);
     expect(html).not.toContain('sketch-secret');
     expect(html).not.toContain('/lucario.png');
+  });
+
+  it('quien dibuja tiene el cursor de color del pincel (oculto hasta mover el puntero); los demás no', () => {
+    const html = drawer();
+    expect(html).toMatch(/<span hidden="" aria-hidden="true" data-testid="sketch-brush-cursor"[^>]*><span [^>]*style="background:#[0-9a-fA-F]{6}"/);
+    expect(guesser()).not.toContain('sketch-brush-cursor');
+    expect(spectator()).not.toContain('sketch-brush-cursor');
+  });
+
+  it('el punto del cursor mide lo que el trazo en pantalla, con un mínimo visible; el relleno, uno fijo', () => {
+    expect(brushDotSize({ tool: 'PENCIL', color: '#111827', width: 24 }, 900)).toBe(24);
+    expect(brushDotSize({ tool: 'ERASER', color: '#111827', width: 24 }, 450)).toBe(12);
+    expect(brushDotSize({ tool: 'PENCIL', color: '#111827', width: 4 }, 450)).toBe(6);
+    expect(brushDotSize({ tool: 'FILL', color: '#111827', width: 24 }, 900)).toBe(12);
   });
 
   it('quien adivina ve el lienzo en directo, las pistas, el buscador y los intentos', () => {

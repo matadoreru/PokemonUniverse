@@ -57,7 +57,7 @@ export function SketchCanvasPanel({ strokes, label, title, right, pad, emptyText
   const empty = strokes.length === 0 && !pad?.optimisticStroke;
   return <Panel variant="cream" as="section" {...(title ? { title } : { 'aria-label': label })} {...(right ? { right } : {})} className={cx(s.canvasPanel, className)} bodyClassName={cx(s.canvasBody)}>
     <div className={s.canvasFrame}>
-      <SketchmonCanvasSurface strokes={strokes} label={label} optimisticStroke={pad?.optimisticStroke ?? null} handlers={pad?.handlers} testId={testId} />
+      <SketchmonCanvasSurface strokes={strokes} label={label} optimisticStroke={pad?.optimisticStroke ?? null} handlers={pad?.handlers} brush={pad ? { tool: pad.tool, color: pad.color, width: pad.width } : undefined} testId={testId} />
       {empty && <span className={s.canvasEmpty} aria-hidden="true">{emptyText}</span>}
     </div>
   </Panel>;

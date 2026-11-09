@@ -18,6 +18,30 @@
 .canvasEditable {
   cursor: crosshair;
 }
+/* Quien dibuja con ratón o lápiz ve un punto del color y del grosor del pincel en lugar de la cruz. */
+.canvasBrush {
+  cursor: none;
+}
+/* El cursor de color: sigue al puntero con `transform` (sin repintar el dibujo) y no captura el puntero. */
+.brushCursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+.brushCursor[hidden] {
+  display: none;
+}
+.brushDot {
+  display: block;
+  translate: -50% -50%;
+  border: 1px solid var(--navy);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--white);
+}
+.brushEraser {
+  background: var(--white);
+}
 
 .canvasPanel {
   min-width: 0;

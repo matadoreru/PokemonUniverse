@@ -88,12 +88,14 @@ export interface SketchSurfaceHandlers {
  * El `<canvas>` del dibujo: su tamaño lo pone el CSS (4:3, lo escala su contenedor); el búfer sigue al tamaño en pantalla
  * (hasta 2× de densidad) y se vuelve a pintar entero. `data-stroke-count` dice cuántos trazos tiene (pruebas E2E).
  */
-export function SketchmonCanvasSurface({ strokes, label, optimisticStroke = null, handlers, className, testId }: {
+export function SketchmonCanvasSurface({ strokes, label, optimisticStroke = null, handlers, brush, className, testId }: {
   strokes: readonly SketchmonStroke[];
   label: string;
   optimisticStroke?: SketchmonStroke | null;
   /** Solo quien dibuja: el puntero (ratón, lápiz o dedo) dibuja. */
   handlers?: SketchSurfaceHandlers | undefined;
+  /** Solo quien dibuja: el pincel que enseña el cursor de color. */
+  brush?: SketchBrush | undefined;
   className?: string | undefined;
   testId?: string;
 }) {
@@ -118,16 +120,53 @@ export function SketchmonCanvasSurface({ strokes, label, optimisticStroke = null
   useEffect(() => {
     const canvas = canvasRef.current; if (canvas) renderDrawing(canvas, strokes, optimisticStroke);
   }, [optimisticStroke, strokes]);
-  return <canvas
+  const cursorRef = useRef<HTMLSpanElement>(null);
+  const dotRef = useRef<HTMLSpanElement>(null);
+  const brushRef = useRef(brush);
+  brushRef.current = brush;
+  const moveCursor = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    const cursor = cursorRef.current; if (!cursor) return;
+    if (event.pointerType === 'touch') { cursor.hidden = true; return; }
+    const bounds = event.currentTarget.getBoundingClientRect();
+    cursor.style.transform = `translate(${event.clientX - bounds.left}px, ${event.clientY - bounds.top}px)`;
+    if (dotRef.current && brushRef.current) {
+      const size = `${brushDotSize(brushRef.current, bounds.width)}px`;
+      dotRef.current.style.width = size; dotRef.current.style.height = size;
+    }
+    cursor.hidden = false;
+  };
+  const hideCursor = () => { if (cursorRef.current) cursorRef.current.hidden = true; };
+  const canvas = <canvas
     ref={canvasRef}
-    className={cx(s.canvas, editable && s.canvasEditable, className)}
+    className={cx(s.canvas, editable && s.canvasEditable, brush && s.canvasBrush, className)}
     aria-label={label}
     role="img"
     data-stroke-count={strokes.length}
     {...(testId ? { 'data-testid': testId } : {})}
-    {...(handlers ? { onPointerDown: handlers.onPointerDown, onPointerMove: handlers.onPointerMove, onPointerUp: handlers.onPointerUp, onPointerCancel: handlers.onPointerUp } : {})}
+    {...(handlers ? {
+      onPointerDown: (event: ReactPointerEvent<HTMLCanvasElement>) => { moveCursor(event); handlers.onPointerDown(event); },
+      onPointerMove: (event: ReactPointerEvent<HTMLCanvasElement>) => { moveCursor(event); handlers.onPointerMove(event); },
+      onPointerUp: handlers.onPointerUp,
+      onPointerCancel: (event: ReactPointerEvent<HTMLCanvasElement>) => { hideCursor(); handlers.onPointerUp(event); },
+      onPointerLeave: hideCursor,
+    } : {})}
     onContextMenu={(event) => { if (editable) event.preventDefault(); }}
   />;
+  if (!brush) return canvas;
+  return <>
+    {canvas}
+    <span ref={cursorRef} hidden aria-hidden="true" data-testid="sketch-brush-cursor" className={s.brushCursor}>
+      <span ref={dotRef} className={cx(s.brushDot, brush.tool === 'ERASER' && s.brushEraser)} style={brush.tool === 'ERASER' ? undefined : { background: brush.color }} />
+    </span>
+  </>;
+}
+
+/** Lo que el cursor de color necesita del pincel de quien dibuja. */
+export interface SketchBrush { tool: SketchmonTool; color: SketchmonColor; width: SketchWidth }
+
+/** El diámetro del punto en px: el del trazo en pantalla (`drawStroke`: grosor × ancho / 900); el relleno, uno fijo. */
+export function brushDotSize(brush: SketchBrush, canvasWidth: number): number {
+  return brush.tool === 'FILL' ? 12 : Math.max(6, brush.width * canvasWidth / 900);
 }
 
 export interface SketchPad {
