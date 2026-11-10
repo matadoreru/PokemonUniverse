@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowUpDown, Ban, BookOpen, BookText, Brain, Brush, ChartColumn, CircleHelp, Coins, Gamepad2, Gavel, Grid3x3,
-  Link, ListOrdered, MessageSquareQuote, Palette, Pointer, Puzzle, Rows3, Scale, ScrollText, Spade, Sparkles, Swords, Target, UserRoundSearch, UserX,
+  Languages, Link, ListOrdered, MessageSquareQuote, Palette, Pointer, Puzzle, Rows3, Scale, ScrollText, Spade, Sparkles, Swords, Target, UserRoundSearch, UserX,
   VenetianMask, Volume2, ZoomIn,
 } from 'lucide-react';
 
@@ -39,6 +39,7 @@ export const GAME_ICONS: Readonly<Record<string, LucideIcon>> = {
   'secret-ranking': ListOrdered,
   'who-is-who-pokemon': UserRoundSearch,
   'absurd-pokedex': ScrollText,
+  'unown-translator': Languages,
 };
 
 /** Icono del juego; si aparece uno nuevo sin entrada, un mando genérico (nunca su emoji). */
@@ -81,6 +82,7 @@ export const GAME_ITEMS: Readonly<Record<string, string>> = {
   'secret-ranking': 'relic-crown',
   'who-is-who-pokemon': 'scope-lens',
   'absurd-pokedex': 'tiny-mushroom',
+  'unown-translator': 'unown-report',
 };
 
 const ITEM_SPRITES = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items';

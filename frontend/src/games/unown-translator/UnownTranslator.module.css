@@ -1,0 +1,136 @@
+/* Traductor Unown: ajustes del lobby, el mensaje cifrado, la leyenda del alfabeto y la revelación. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}
+
+/*
+ * El mensaje: las palabras bajan de línea, pero cada una es un bloque que no se parte. Escala con el sitio libre de
+ * `GuessClue`; si no cabe, se desplaza dentro de su panel, nunca la página.
+ */
+.stage > div {
+  position: relative;
+  overflow: auto;
+}
+.message {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  gap: var(--sp-3) var(--sp-6);
+  max-width: 100%;
+  padding: var(--sp-3) var(--sp-2) calc(var(--sp-6) + var(--sp-4));
+}
+.word {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--sp-1);
+  white-space: nowrap;
+}
+/*
+ * Cada pieza reserva la fila de la letra (aunque el glifo siga oculto): así un glifo oculto y uno traducido quedan a
+ * la misma altura. `--glyph-size` lo pone el propio glifo (`UnownGlyph`).
+ */
+.glyph {
+  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-22));
+}
+.literal {
+  display: inline-flex;
+  align-items: center;
+  height: 64px;
+  font: 800 var(--fs-22) / 1 var(--font-display);
+}
+@media (max-width: 639px) {
+  /* En el móvil, el glifo mediano (`md`): un nombre largo cabe en 390 px sin partir palabras. */
+  .message .glyph {
+    --glyph-size: 44px;
+  }
+  .literal {
+    height: 44px;
+  }
+  .message {
+    gap: var(--sp-2) var(--sp-4);
+  }
+}
+/* Cuándo llega la siguiente letra: esquina inferior del mensaje, en texto. */
+.next {
+  position: absolute;
+  right: var(--sp-3);
+  bottom: var(--sp-3);
+}
+
+/* Leyenda del alfabeto: los 26 glifos en orden, con la letra de los ya revelados. */
+.alphabet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.alphabetTitle {
+  margin: 0;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.legendGlyph {
+  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-13));
+}
+
+/* Revelación: la respuesta en grande con lo que era (tipos del Pokémon, o tipo y categoría del movimiento). */
+.reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  text-align: center;
+}
+.revealKicker {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.answer {
+  margin: 0;
+  max-width: 100%;
+  font: 800 var(--fs-44) / 1.1 var(--font-display);
+  overflow-wrap: anywhere;
+}
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.pokemon {
+  width: 9rem;
+}
+.answerText {
+  font-weight: 800;
+}
+.rule {
+  margin: 0;
+}
+@media (max-width: 639px) {
+  .answer {
+    font-size: var(--fs-34);
+  }
+}

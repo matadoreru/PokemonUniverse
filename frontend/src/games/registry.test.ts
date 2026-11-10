@@ -23,6 +23,7 @@ describe('client minigame registry', () => {
       'pokemon-palette-guess',
       'who-is-who-pokemon',
       'absurd-pokedex',
+      'unown-translator',
     ]);
   });
 

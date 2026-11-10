@@ -235,4 +235,9 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./absurd-pokedex/ConfigPanel'), 'AbsurdPokedexConfigPanel'),
   active: component(() => import('../room/AbsurdPokedexGame'), 'AbsurdPokedexGame'),
   results: component(() => import('../room/AbsurdPokedexResults'), 'AbsurdPokedexResults'),
+})).register(clientModule({
+  id: 'unown-translator',
+  config: component(() => import('./unown-translator/ConfigPanel'), 'UnownTranslatorConfigPanel'),
+  active: component(() => import('../room/UnownTranslatorGame'), 'UnownTranslatorGame'),
+  results: component(() => import('../room/UnownTranslatorResults'), 'UnownTranslatorResults'),
 }));
