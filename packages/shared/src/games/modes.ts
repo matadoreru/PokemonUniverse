@@ -5,13 +5,14 @@ import { POKEDEX_DISTANCE_MODES } from './pokedex-distance/config.js';
 import { POKEMON_IMPOSTOR_MODES } from './pokemon-impostor/config.js';
 import { SHINY_VOTE_MODES } from './shiny-vote/config.js';
 import { TYPE_DUEL_MODES } from './type-duel/config.js';
+import { UNOWN_TRANSLATOR_MODES } from './unown-translator/config.js';
 
 /**
- * Catálogo de modos de un juego: `CLASSIC` y el modo nuevo, con su nombre visible; `texts` explica las reglas del modo
- * nuevo (Clásico no lleva línea: son las reglas de siempre).
+ * Catálogo de modos de un juego: `CLASSIC` y el modo nuevo (o, en un juego sin Clásico, sus dos modos), con su nombre
+ * visible; `texts` explica las reglas del modo nuevo (Clásico no lleva línea: son las reglas de siempre).
  */
 export interface GameModeCatalog {
-  modes: readonly ['CLASSIC', string];
+  modes: readonly [string, string];
   labels: Record<string, string>;
   texts: Record<string, string>;
 }
@@ -19,7 +20,7 @@ export interface GameModeCatalog {
 export const CLASSIC_MODE_LABEL = 'Clásico';
 
 /** Los juegos con modos de juego (Fase 3); los demás no tienen campo `mode`. */
-export type GameModeId = 'pokedex-distance' | 'higher-lower' | 'shiny-vote' | 'learnset-guess' | 'type-duel' | 'pokemon-impostor' | 'absurd-pokedex';
+export type GameModeId = 'pokedex-distance' | 'higher-lower' | 'shiny-vote' | 'learnset-guess' | 'type-duel' | 'pokemon-impostor' | 'absurd-pokedex' | 'unown-translator';
 
 export const GAME_MODES: Record<GameModeId, GameModeCatalog> = {
   'pokedex-distance': {
@@ -56,6 +57,11 @@ export const GAME_MODES: Record<GameModeId, GameModeCatalog> = {
     modes: ABSURD_POKEDEX_MODES,
     labels: { CLASSIC: CLASSIC_MODE_LABEL, REAL_ENTRY: '¿Cuál es la real?' },
     texts: { REAL_ENTRY: 'La entrada oficial se esconde entre las vuestras: descúbrela y cuela la tuya.' },
+  },
+  'unown-translator': {
+    modes: UNOWN_TRANSLATOR_MODES,
+    labels: { POKEMON: 'Pokémon', MOVES: 'Movimientos' },
+    texts: { MOVES: 'Los mensajes son nombres de movimientos en lugar de Pokémon.' },
   },
 };
 

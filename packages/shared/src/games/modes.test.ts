@@ -83,6 +83,16 @@ describe('gameModeLabel', () => {
   });
 });
 
+describe('unown-translator', () => {
+  it('sus modos son Pokémon y Movimientos, sin Clásico', () => {
+    expect(GAME_MODES['unown-translator'].modes).toEqual(['POKEMON', 'MOVES']);
+    expect(gameModeName('unown-translator', 'MOVES')).toBe('Movimientos');
+    expect(gameModeName('unown-translator', 'POKEMON')).toBe('Pokémon');
+    expect(gameModeName('unown-translator', 'CLASSIC')).toBeNull();
+    expect(GAME_MODES['unown-translator'].texts.MOVES).toBe('Los mensajes son nombres de movimientos en lugar de Pokémon.');
+  });
+});
+
 describe('gameModeCount y gameModeName', () => {
   it('cuenta los modos (1 sin modos) y nombra cualquier modo del juego, también Clásico', () => {
     expect(gameModeCount('higher-lower')).toBe(2);
