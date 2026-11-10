@@ -24,8 +24,10 @@
 }
 .message {
   /* Lo que ocupa una fila además del glifo: la letra de debajo, la fila de la cuenta atrás (chip de 28 px) y huecos. */
-  --unown-chrome: calc(var(--sp-1) + var(--fs-22) + var(--sp-2) + 28px);
-  --unown-size: clamp(20px, min(calc(100cqi / var(--longest, 8) - var(--sp-1)), calc(100cqb - var(--unown-chrome))), 96px);
+  --unown-letter: var(--fs-22);
+  --unown-floor: 20px;
+  --unown-chrome: calc(var(--sp-1) + var(--unown-letter) + var(--sp-2) + 28px);
+  --unown-size: clamp(var(--unown-floor), min(calc(100cqi / var(--longest, 8) - var(--sp-1)), calc(100cqb - var(--unown-chrome))), 96px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -46,7 +48,22 @@
  */
 .message .glyph {
   --glyph-size: var(--unown-size);
-  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-22));
+  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--unown-letter));
+}
+/* La letra traducida debajo del glifo (el único `span` dentro de `UnownGlyph`). */
+.message .glyph > span {
+  font-size: var(--unown-letter);
+}
+/*
+ * En el móvil, un movimiento de 15 glifos («Autodestrucción») a 20 px no cabe en el panel, de unos 310–330 px a 390 px de ancho
+ * (15 × 20 + 14 × 4 = 356 px), y desplazaría el mensaje: el suelo baja a 16 px (15 × 16 + 14 × 4 = 296 px) y la letra
+ * de debajo a 15 px, que sigue por encima de 13 px y no ensancha un glifo de 16 px.
+ */
+@media (max-width: 639px) {
+  .message {
+    --unown-letter: var(--fs-15);
+    --unown-floor: 16px;
+  }
 }
 .literal {
   display: inline-flex;
@@ -82,6 +99,15 @@
 }
 .legendGlyph {
   min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-13));
+}
+/*
+ * En el móvil la leyenda no cabe: la zona superior recorta lo que se sale y la placa de respuesta la taparía. Se oculta
+ * entera (sin hueco ni título suelto) porque el mensaje ya enseña traducidas todas las letras conocidas.
+ */
+@media (max-width: 639px) {
+  .alphabet {
+    display: none;
+  }
 }
 
 /* Revelación: la respuesta en grande con lo que era (tipos del Pokémon, o tipo y categoría del movimiento). */
