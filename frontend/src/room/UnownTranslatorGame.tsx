@@ -71,8 +71,8 @@ function UnownAnswerForm({ roundNumber, cooling, fieldRef, onGuess }: { roundNum
 
 /**
  * Lo que anuncia la única región viva: «Nueva letra: P.» por cada letra nueva del alfabeto, «¡Descifrado!» al acertar
- * uno mismo, «Respuesta incorrecta.» tras un fallo y, al revelar, lo que decía el mensaje. Al montarse (o al volver a
- * conectar) no anuncia las letras que ya había.
+ * uno mismo, «Respuesta incorrecta (N intentos).» tras cada fallo (con la cuenta, para que dos seguidos se anuncien) y,
+ * al revelar, lo que decía el mensaje. Al montarse (o al volver a conectar) no anuncia las letras que ya había.
  */
 function useUnownAnnouncement(game: UnownTranslatorPublicState, player: UnownTranslatorPlayerState | null, answer: string | null): string {
   const [text, setText] = useState('');
@@ -85,7 +85,7 @@ function useUnownAnnouncement(game: UnownTranslatorPublicState, player: UnownTra
     const letters = newLetters(before.alphabet, game.alphabet);
     if (letters.length > 0) parts.push(newLettersAnnouncement(letters));
     if (solved && !before.solved) parts.push('¡Descifrado!');
-    else if (attempts > before.attempts && player?.lastAttempt?.outcome === 'INCORRECT') parts.push('Respuesta incorrecta.');
+    else if (attempts > before.attempts && player?.lastAttempt?.outcome === 'INCORRECT') parts.push(`Respuesta incorrecta (${attemptsText(attempts)}).`);
     if (answer && answer !== before.answer) parts.push(`Ronda ${game.roundNumber} terminada: decía ${answer}.`);
     previous.current = { alphabet: game.alphabet, solved, attempts, answer };
     if (parts.length > 0) setText(parts.join(' '));
