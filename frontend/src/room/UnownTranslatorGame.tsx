@@ -1,7 +1,7 @@
 import type { RoomView, UnownAlphabetEntry, UnownToken, UnownTranslatorConfig, UnownTranslatorPlayerState, UnownTranslatorPublicState } from '@pokemon-universe/shared/public';
 import { gameModeName, UNOWN_GLYPH_COUNT, UNOWN_MAX_GUESS_LENGTH, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Hourglass, Languages, Send, Trophy, X } from 'lucide-react';
-import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type RefObject } from 'react';
 import { hintCountdownLabel, newLetters, newLettersAnnouncement, splitWords } from '../games/unown-translator/presentation';
 import { useNow, useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
@@ -24,10 +24,15 @@ function MessageToken({ token }: { token: UnownToken }) {
   return <UnownGlyph glyph={token.glyph} size="lg" className={s.glyph ?? ''} {...(token.kind === 'LETTER' ? { letter: token.letter } : {})} />;
 }
 
-/** El mensaje cifrado: cada palabra en un bloque que no se parte; las palabras sí bajan de línea. */
+/**
+ * El mensaje cifrado: cada palabra en un bloque que no se parte; las palabras sí bajan de línea. `--longest` (las piezas
+ * de la palabra más larga) deja que el CSS escale los glifos para que esa palabra quepa a lo ancho.
+ */
 function UnownMessage({ tokens }: { tokens: readonly UnownToken[] }) {
-  return <div className={s.message} data-testid="unown-message">
-    {splitWords(tokens).map((word, index) => <span key={index} className={s.word}>
+  const words = splitWords(tokens);
+  const longest = Math.max(1, ...words.map((word) => word.length));
+  return <div className={s.message} data-testid="unown-message" style={{ '--longest': longest } as CSSProperties}>
+    {words.map((word, index) => <span key={index} className={s.word}>
       {word.map((token, position) => <MessageToken key={position} token={token} />)}
     </span>)}
   </div>;
