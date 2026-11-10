@@ -30,9 +30,9 @@ descifra con menos letras a la vista.
   - `rounds`: entero de 1 a 10; por defecto, 5;
   - `roundSeconds`: entero de 30 a 120; por defecto, 60;
   - `hintSeconds`: entero de 3 a 15; por defecto, 6;
-  - `mode`: `POKEMON` o `MOVES`, con `.default('POKEMON')`.
+  - `mode`: `CLASSIC` (se muestra «Pokémon») o `MOVES`, con `.default('CLASSIC')`.
 - **Modos** en `games/modes.ts` y `GameModes.java`:
-  - etiquetas `{ POKEMON: 'Pokémon', MOVES: 'Movimientos' }`;
+  - etiquetas `{ CLASSIC: 'Pokémon', MOVES: 'Movimientos' }`;
   - texto de `MOVES`: `Los mensajes son nombres de movimientos en lugar de Pokémon.`
 - **Fases:** las de `GamePhase` que ya existen. `ROUND_ACTIVE` es lo que la spec llama `DECODING`; después vienen
   `ROUND_RESULTS` y `GAME_RESULTS`.
@@ -55,14 +55,14 @@ descifra con menos letras a la vista.
   hora de la siguiente pista, o `null` si ya no quedan letras ocultas o si esa hora es `>= roundEndsAt` (entonces
   `nextTransitionAt` es `roundEndsAt`, como en Zoomed). Solo las pistas añaden letras al alfabeto.
 - **Mazos** (se calculan en `start`; se barajan con `Randoms.shuffled` y se toman las primeras `rounds`):
-  - `POKEMON`: `forGenerations(generations, false)`, con `pokemon.name()` como texto (el nombre que muestran los demás
+  - `CLASSIC` (Pokémon): `forGenerations(generations, false)`, con `pokemon.name()` como texto (el nombre que muestran los demás
     motores);
   - `MOVES`: para cada Pokémon de ese mazo, `levelUpMoves(id, Math.max(generations))`, con el nombre español como en
     `LearnsetGuessEngine.hint` (si está vacío, `move.name()`), sin repetir texto normalizado y en orden de primera
     aparición. Así el `totalRounds` real es `min(rounds, tamaño del mazo)`;
   - en los dos, solo mensajes con `MIN_LETTERS` letras `A`–`Z` o más tras normalizar.
 - **Disponibilidad** (`checkAvailability`; nunca recorre los movimientos):
-  - `POKEMON`: el mazo filtrado tiene al menos `rounds` Pokémon;
+  - `CLASSIC` (Pokémon): el mazo filtrado tiene al menos `rounds` Pokémon;
   - `MOVES`: el catálogo es `LearnsetPokemonCatalog` y `forGenerations(generations, false)` no está vacío.
 - **Fin de ronda:** cuando todos los jugadores con `context.isPlayerRequired` han acertado, o al llegar a
   `roundEndsAt = roundStartedAt + roundSeconds * 1000`. Después, `ROUND_RESULTS` durante `REVEAL_MS` con
@@ -135,7 +135,7 @@ descifra con menos letras a la vista.
 
 **Interfaces:**
 - Produces:
-  - En `config.ts`: `UNOWN_TRANSLATOR_MODES = ['POKEMON', 'MOVES'] as const`, `type UnownTranslatorMode`,
+  - En `config.ts`: `UNOWN_TRANSLATOR_MODES = ['CLASSIC', 'MOVES'] as const`, `type UnownTranslatorMode`,
     `unownTranslatorConfigSchema`, `type UnownTranslatorConfig` y `defaultUnownTranslatorConfig`.
   - En `types.ts`:
     - `UnownToken`, unión discriminada por `kind`:
@@ -166,7 +166,7 @@ descifra con menos letras a la vista.
 - [ ] **Step 1: Tests que fallan** en `rules.test.ts`:
   - el texto de puntuación;
   - el esquema rechaza `rounds: 11`, `roundSeconds: 29`, `hintSeconds: 16` y una clave desconocida;
-  - una configuración sin `mode` sale con `POKEMON`;
+  - una configuración sin `mode` sale con `CLASSIC`;
   - `GUESS_UNOWN` con `"   "` falla con `Escribe una respuesta antes de enviarla.` y con 41 caracteres, con
     `La respuesta no puede superar 40 caracteres.`;
   - en `modes.test.ts`: `gameModeName('unown-translator', 'MOVES')` es `Movimientos`.
@@ -189,7 +189,7 @@ descifra con menos letras a la vista.
 **Interfaces:**
 - Consumes: `ConfigReader`, `PokemonCatalog`, `LearnsetPokemonCatalog` y `Scoring.buildRankedResults`.
 - Produces:
-  - `enum UnownTranslatorMode { POKEMON, MOVES }`.
+  - `enum UnownTranslatorMode { CLASSIC, MOVES }`.
   - `record UnownTranslatorConfig(List<Integer> generations, int rounds, int roundSeconds, int hintSeconds, UnownTranslatorMode mode)`,
     con `defaults()` y `parse(JsonNode)`.
   - En `UnownTranslatorTypes`:
@@ -221,7 +221,7 @@ descifra con menos letras a la vista.
     - `GameResults buildResults(UnownTranslatorState state)`, que lanza `EngineException` fuera de `GAME_RESULTS`.
 
 - [ ] **Step 1: Tests que fallan** en `UnownTranslatorRulesTest`, con `GoldenCatalogs.load("gen1-2")`:
-  - `parsesTheStrictConfigWithItsLimits`: los límites, `10.0` y `10.5`, el `mode` ausente (sale `POKEMON`) y una clave
+  - `parsesTheStrictConfigWithItsLimits`: los límites, `10.0` y `10.5`, el `mode` ausente (sale `CLASSIC`) y una clave
     desconocida;
   - `normalizeStripsAccentsAndKeepsLiterals`: `"Puño Fuego"` da `"PUNO FUEGO"`, `"Nidoran♀"` da `"NIDORAN♀"` y
     `"Mr. Mime"` da `"MR. MIME"`;
@@ -323,7 +323,7 @@ descifra con menos letras a la vista.
     - con `cooldownUntil` en el futuro, el botón está desactivado y sale `No es eso`;
     - con `solved` sale `¡Descifrado!` con la respuesta, y no hay campo;
     - la leyenda tiene 26 glifos;
-    - los resultados de `POKEMON` muestran el sprite y los de `MOVES`, el tipo;
+    - los resultados de `CLASSIC` (Pokémon) muestran el sprite y los de `MOVES`, el tipo;
     - hay exactamente un `aria-live`;
     - `longMessageKeepsWordsWhole` (Review Focus 5).
   - Los tres tests de registro, ampliados. Los rangos del panel son 1–10, 30–120 y 3–15.
@@ -431,8 +431,8 @@ descifra con menos letras a la vista.
   `seleccionarJuego`, `iniciarPartida`, `capturarTamanos` y `collectErrors`).
 
 - [ ] **Step 1: Escribir el test** `traductor unown: pistas, fallo, acierto y clasificación`. Usa 2 jugadores, 2
-  rondas en `POKEMON` con `roundSeconds: 60` y `hintSeconds: 3`, y después una partida de 1 ronda en `MOVES`.
-  1. `POKEMON`:
+  rondas en `CLASSIC` (Pokémon) con `roundSeconds: 60` y `hintSeconds: 3`, y después una partida de 1 ronda en `MOVES`.
+  1. `CLASSIC` (Pokémon):
      - se espera a la primera pista y se comprueba que aparece una letra;
      - un jugador falla y ve `No es eso` con el botón desactivado; cuando ya no quedan glifos ocultos, también acierta,
        para que la ronda acabe antes de los 60 s;

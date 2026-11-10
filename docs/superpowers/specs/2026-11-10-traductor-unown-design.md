@@ -22,7 +22,7 @@ rondas siguientes. Es una carrera: quien descifra con menos letras a la vista ga
   | `rounds` | entero 1–10 | 5 |
   | `roundSeconds` | entero 30–120 | 60 |
   | `hintSeconds` | entero 3–15 | 6 |
-  | `mode` | `POKEMON` \| `MOVES` (`.default('POKEMON')`) | `POKEMON` |
+  | `mode` | `CLASSIC` (se muestra «Pokémon») \| `MOVES` (`.default('CLASSIC')`) | `CLASSIC` |
 
 ### Clave y mensajes
 
@@ -32,14 +32,14 @@ rondas siguientes. Es una carrera: quien descifra con menos letras a la vista ga
 - **Normalización** del texto de un mensaje: mayúsculas, sin tildes ni diéresis, y la Ñ pasa a N. Las letras A–Z van
   cifradas. El resto de caracteres (espacio, guion, apóstrofo, punto, dígitos, ♀, ♂) se muestran tal cual.
 - **Mazo:**
-  - `POKEMON`: nombres en español de las formas por defecto de las generaciones elegidas
+  - `CLASSIC` (Pokémon): nombres en español de las formas por defecto de las generaciones elegidas
     (`forGenerations(generations, false)`);
   - `MOVES`: nombres en español, sin repetir, de los movimientos que aprenden por nivel esos Pokémon (con
     `LearnsetPokemonCatalog.levelUpMoves` y la generación de referencia `Math.max(generations)`, como Learnset Guess).
     Se calcula al empezar la partida, nunca al comprobar disponibilidad;
   - solo mensajes con al menos 3 letras A–Z tras normalizar; no se repiten mensajes en la partida.
 - **Disponibilidad:**
-  - `POKEMON`: hace falta al menos `rounds` Pokémon en el mazo; si no, «Solo hay N Pokémon en esas generaciones.»;
+  - `CLASSIC` (Pokémon): hace falta al menos `rounds` Pokémon en el mazo; si no, «Solo hay N Pokémon en esas generaciones.»;
   - `MOVES`: el catálogo debe ser `LearnsetPokemonCatalog` y haber algún Pokémon en esas generaciones; si no, «No hay
     movimientos disponibles en esas generaciones.». Si al empezar hay menos movimientos que `rounds`, `totalRounds`
     es el número de movimientos.
@@ -78,7 +78,7 @@ rondas siguientes. Es una carrera: quien descifra con menos letras a la vista ga
 
 ## Contrato compartido (`packages/shared/src/games/unown-translator/`)
 
-- `config.ts`: el esquema, `defaultUnownTranslatorConfig` y `UNOWN_TRANSLATOR_MODES = ['POKEMON', 'MOVES']`. Se
+- `config.ts`: el esquema, `defaultUnownTranslatorConfig` y `UNOWN_TRANSLATOR_MODES = ['CLASSIC', 'MOVES']`. Se
   registra en `games/modes.ts` con las etiquetas «Pokémon» y «Movimientos».
 - `types.ts`:
   - Acción (`.strict()`): `GUESS_UNOWN { text: trim 1–40 }`.
@@ -96,7 +96,7 @@ rondas siguientes. Es una carrera: quien descifra con menos letras a la vista ga
   - Estado por jugador: `role`, `canGuess`, `solved`, `answer` (solo si acertó) y `cooldownUntil`.
   - `lastRound`:
     - `answer` (el texto original, con tildes);
-    - en `POKEMON`, `pokemon` (id, nombre, sprite, número y tipos); en `MOVES`, `move` (nombre, tipo y categoría);
+    - en `CLASSIC` (Pokémon), `pokemon` (id, nombre, sprite, número y tipos); en `MOVES`, `move` (nombre, tipo y categoría);
     - `solves`, una lista `{ playerId, points, hiddenLetters }[]` en orden de acierto;
     - `missingPlayerIds`.
 - Se exporta en `public.ts`.
