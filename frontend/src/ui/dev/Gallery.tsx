@@ -1002,7 +1002,7 @@ function UnownGlyphSection() {
   const glyphs = Array.from({ length: 26 }, (_, i) => i);
   return (
     <Section name="unown-glyph" title="Glifos Unown">
-      <Fig id="unown-glyph-all" caption="Los 26 glifos (md, ocultos); el glifo i se inspira en la letra A + i" wide>
+      <Fig id="unown-glyph-all" caption="Los 26 glifos (md, ocultos): símbolos, no letras" wide>
         <span className={s.glyphGrid}>
           {glyphs.map((glyph) => (
             <UnownGlyph key={glyph} glyph={glyph} />

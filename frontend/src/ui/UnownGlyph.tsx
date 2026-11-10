@@ -2,37 +2,37 @@ import { cx } from './cx';
 import s from './UnownGlyph.module.css';
 
 /**
- * Trazos propios de los 26 glifos, inspirados en los Unown: rodean el ojo central (que es igual en todos) y el glifo
- * `i` se basa en la forma de la letra `'A' + i`. La clave de la partida baraja qué glifo es qué letra, así que la
- * forma no delata nada. Todos dejan libre un círculo de radio 9 alrededor del ojo.
+ * Trazos propios de los 26 glifos, inspirados en los Unown: rodean el ojo central (que es igual en todos) con uno a tres
+ * trazos gruesos (púas, arcos, ganchos, puntos) que los hacen parecer bichitos y no letras, para que una palabra
+ * cifrada nunca se lea como otra palabra. Todos dejan libre un círculo de radio 9 alrededor del ojo.
  */
 const GLYPH_PATHS: readonly string[] = [
-  /* A */ 'M7 43 L24 4 L41 43 M14 36 H34',
-  /* B */ 'M11 5 V43 M11 5 H24 C39 5 41 19 31 21 C43 23 41 43 24 43 H11',
-  /* C */ 'M39 13 A17 17 0 1 0 39 35',
-  /* D */ 'M11 5 V43 M11 5 H20 C46 5 46 43 20 43 H11',
-  /* E */ 'M39 5 H11 V43 H39 M11 24 H14 M39 5 V11 M39 43 V37',
-  /* F */ 'M40 12 Q40 5 33 5 H11 V44 M11 24 H14 M5 44 H17',
-  /* G */ 'M39 13 A17 17 0 1 0 41 27 H33 V35',
-  /* H */ 'M10 5 V43 M38 5 V43 M10 24 H14 M34 24 H38 M5 5 H15 M33 43 H43',
-  /* I */ 'M24 5 V14 M24 34 V43 M15 5 H33 M15 43 H33',
-  /* J */ 'M18 5 H40 M34 5 V32 Q34 43 23 43 Q12 43 12 33',
-  /* K */ 'M11 5 V43 M40 5 L30 16 M30 32 L40 43 M11 24 H14',
-  /* L */ 'M12 5 V43 H38 V36 M12 5 H6',
-  /* M */ 'M7 43 V5 L24 14 L41 5 V43',
-  /* N */ 'M10 43 V5 L17 13 M31 35 L38 43 V5',
-  /* O */ 'M24 5 A19 19 0 1 0 24 43 A19 19 0 1 0 24 5 M24 5 V10 M24 43 V38',
-  /* P */ 'M12 44 V5 H22 C44 5 44 35 22 35 H12 M5 44 H19',
-  /* Q */ 'M24 5 A18 18 0 1 0 38 35 M33 31 L44 44',
-  /* R */ 'M12 44 V5 H22 C44 5 44 33 22 33 H12 M27 34 L39 44',
-  /* S */ 'M37 9 C29 3 8 4 9 15 C10 19 13 20 15 21 M33 27 C35 28 39 30 39 34 C40 44 19 45 11 39',
-  /* T */ 'M6 7 H42 M24 7 V14 M24 34 V44 M6 7 V13 M42 7 V13',
-  /* U */ 'M10 5 V27 A14 14 0 0 0 38 27 V5',
-  /* V */ 'M5 5 L24 45 L43 5 M5 5 H11 M43 5 H37',
-  /* W */ 'M4 7 L12 42 L24 34 L36 42 L44 7',
-  /* X */ 'M7 7 L16 16 M41 7 L32 16 M7 41 L16 32 M41 41 L32 32 M7 7 H13 M41 41 H35',
-  /* Y */ 'M7 5 L17 16 M41 5 L31 16 M24 34 V44 M17 44 H31',
-  /* Z */ 'M9 7 H39 L31 16 M17 32 L9 41 H39',
+  /* antenas */ 'M19 14 L14 5 M29 14 L34 5 M24 38 V44',
+  /* media luna y pie */ 'M12 30 A13 13 0 0 1 30 12 M36 34 L42 40',
+  /* tres púas abajo */ 'M14 36 L10 43 M24 38 V45 M34 36 L38 43',
+  /* gancho a la derecha */ 'M36 14 Q44 24 36 34 L30 40 M10 24 H5',
+  /* corona */ 'M10 20 A15 15 0 0 1 38 20 M24 4 V8',
+  /* cola en espiral */ 'M24 38 Q24 44 30 44 Q36 44 36 38 M12 12 L16 16',
+  /* alas */ 'M14 24 Q6 14 10 6 M34 24 Q42 34 38 42',
+  /* anillo roto */ 'M10 20 A14.5 14.5 0 0 1 20 10 M28 38 A14.5 14.5 0 0 0 38 28',
+  /* cuernos */ 'M16 16 Q8 8 14 4 M32 16 Q40 8 34 4 M18 40 H30',
+  /* rayo */ 'M24 34 L15 38 L30 41 L21 46 M38 10 L43 5',
+  /* soles */ 'M24 4 V9 M39 24 H44 M24 39 V44 M8 8 L13 13',
+  /* media luna y púa */ 'M18 10 A15 15 0 0 0 18 38 M36 24 H44',
+  /* rombo */ 'M14 10 L24 4 L34 10 M14 38 L24 44 L34 38',
+  /* cola rizada */ 'M15 33 Q6 42 12 44 Q18 46 18 40 M34 12 L38 8',
+  /* patas */ 'M14 24 H8 V32 M34 24 H40 V16',
+  /* cuenco y antena */ 'M10 28 A14.5 14.5 0 0 0 38 28 M24 14 V4 L30 8',
+  /* remolino */ 'M10 14 Q16 6 24 9 M38 34 Q32 42 24 39',
+  /* rayos */ 'M24 13 V4 M16 15 L10 8 M32 15 L38 8',
+  /* garra */ 'M33 16 L42 12 M34 24 H44 M33 32 L42 36',
+  /* pico */ 'M14 30 L6 38 L16 40 M32 12 Q38 6 42 10',
+  /* halo */ 'M14 8 Q24 2 34 8 M8 37 L13 42 M40 37 L35 42',
+  /* ola */ 'M6 38 Q15 31 24 38 T42 38 M24 4 V9',
+  /* brazos */ 'M14 16 V8 H20 M34 32 V40 H28',
+  /* paréntesis */ 'M11 10 Q3 24 11 38 M37 10 Q45 24 37 38 M24 40 V45',
+  /* lazo */ 'M20 14 Q12 2 24 4 Q36 2 28 14 M24 38 L20 44',
+  /* ganchos */ 'M17 36 Q12 44 18 44 M31 36 Q36 44 30 44 M8 22 L4 18',
 ];
 
 export type UnownGlyphSize = 'sm' | 'md' | 'lg';
