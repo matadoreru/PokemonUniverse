@@ -1,0 +1,586 @@
+[
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 0,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 1,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 1,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 11,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 29,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 30,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 30,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 120,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 120,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 121,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 2,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 3,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 3,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 15,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 15,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 16,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5.5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        1
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "MOVES"
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "MOVES"
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "WORDS"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC",
+      "legacy": true
+    },
+    "valid": false
+  }
+]

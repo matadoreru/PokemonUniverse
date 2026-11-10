@@ -622,7 +622,7 @@ class RoomCoordinatorTest {
     assertMessage("No tienes permiso para realizar esta acción.", () -> kit.manager.selectGame("guest", "higher-lower"));
     assertMessage("Unknown game", () -> kit.manager.selectGame("host", "missing-game"));
     assertEquals("pokedex-distance", room.selectedGameId);
-    assertEquals(29, created.availableGames().size());
+    assertEquals(30, created.availableGames().size());
   }
 
   @Test
@@ -1464,7 +1464,7 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     var allowed = kit.manager.view(room, "host").allowedModes();
     assertEquals(Set.of("pokedex-distance", "higher-lower", "shiny-vote", "learnset-guess", "type-duel",
-        "pokemon-impostor", "absurd-pokedex"), allowed.keySet());
+        "pokemon-impostor", "absurd-pokedex", "unown-translator"), allowed.keySet());
     assertEquals(List.of("CLASSIC"), allowed.get("higher-lower"));
     assertFalse(allowed.containsKey("pokemon-red-flag"));
     room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "pokedex-distance"));
@@ -1707,7 +1707,7 @@ class RoomCoordinatorTest {
     assertEquals("pokedex-distance", view.selectedGameId());
     assertEquals(7, view.gameConfigs().get("higher-lower").get("rounds").getIntValue());
     assertEquals(List.of("higher-lower"), view.customizedGameIds());
-    assertEquals(29, view.gameConfigs().size());
+    assertEquals(30, view.gameConfigs().size());
 
     nextConfig.put("rounds", 10);
     kit.manager.updateGameConfig("host", "higher-lower", RoomTestKit.tree(nextConfig));

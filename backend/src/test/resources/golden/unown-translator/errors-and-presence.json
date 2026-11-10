@@ -1,0 +1,1652 @@
+{
+  "engineId": "unown-translator",
+  "scenario": "errors-and-presence",
+  "seed": 9137,
+  "catalog": "gen1-2",
+  "startNow": 1794340800000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "rounds": 3,
+    "roundSeconds": 30,
+    "hintSeconds": 15,
+    "mode": "CLASSIC"
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Snorlax"
+      },
+      "now": 1794340800500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Mew"
+      },
+      "now": 1794340801000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Snorlax"
+      },
+      "now": 1794340802000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "snorlax"
+      },
+      "now": 1794340804500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Snorlax"
+      },
+      "now": 1794340805000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Snor lax"
+      },
+      "now": 1794340806000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 1794340807000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Snorlax"
+      },
+      "now": 1794340808000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794340813000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794340814000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794340828000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_UNOWN",
+        "text": "Marill"
+      },
+      "now": 1794340843000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794340849000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_UNOWN"
+      },
+      "now": 1794340850000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "roundSeconds": 30,
+      "hintSeconds": 15,
+      "mode": "CLASSIC"
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "unown-translator",
+        "phase": "GAME_STARTING",
+        "mode": "CLASSIC",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "tokens": [],
+        "alphabet": [],
+        "solvedPlayerIds": [],
+        "roundPointsByPlayer": {},
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": null,
+        "nextHintAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "answer": null,
+          "cooldownUntil": null,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "answer": null,
+          "cooldownUntil": null,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canGuess": false,
+          "solved": false,
+          "answer": null,
+          "cooldownUntil": null,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 1794340815000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "unown-translator",
+        "phase": "ROUND_ACTIVE",
+        "mode": "CLASSIC",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "tokens": [
+          {
+            "kind": "GLYPH",
+            "glyph": 20
+          },
+          {
+            "kind": "GLYPH",
+            "glyph": 7
+          },
+          {
+            "kind": "GLYPH",
+            "glyph": 25
+          },
+          {
+            "kind": "GLYPH",
+            "glyph": 22
+          },
+          {
+            "kind": "GLYPH",
+            "glyph": 16
+          },
+          {
+            "kind": "GLYPH",
+            "glyph": 1
+          },
+          {
+            "kind": "GLYPH",
+            "glyph": 8
+          }
+        ],
+        "alphabet": [],
+        "solvedPlayerIds": [],
+        "roundPointsByPlayer": {},
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundEndsAt": 1794340830000,
+        "nextHintAt": 1794340815000,
+        "nextTransitionAt": 1794340815000,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "answer": null,
+          "cooldownUntil": null,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "answer": null,
+          "cooldownUntil": null,
+          "attemptCount": 0,
+          "lastAttempt": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "canGuess": true,
+          "solved": false,
+          "answer": null,
+          "cooldownUntil": null,
+          "attemptCount": 0,
+          "lastAttempt": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340815000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 20
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 7
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 25
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 8
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340830000,
+            "nextHintAt": 1794340815000,
+            "nextTransitionAt": 1794340815000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340815000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 20
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 7
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 25
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 8
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340830000,
+            "nextHintAt": 1794340815000,
+            "nextTransitionAt": 1794340815000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "outcome": "INCORRECT",
+                "at": 1794340801000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 2s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340815000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 20
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 7
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 25
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 8
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340830000,
+            "nextHintAt": 1794340815000,
+            "nextTransitionAt": 1794340815000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "outcome": "INCORRECT",
+                "at": 1794340801000
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340815000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 20
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 7
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 25
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 8
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [
+              "p1"
+            ],
+            "roundPointsByPlayer": {
+              "p1": 8
+            },
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340830000,
+            "nextHintAt": 1794340815000,
+            "nextTransitionAt": 1794340815000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340804500
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya lo has descifrado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340815000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 20
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 7
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 25
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 8
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [
+              "p1"
+            ],
+            "roundPointsByPlayer": {
+              "p1": 8
+            },
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340830000,
+            "nextHintAt": 1794340815000,
+            "nextTransitionAt": 1794340815000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340804500
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340815000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 20
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 7
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 25
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 8
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "roundPointsByPlayer": {
+              "p1": 8,
+              "p2": 8
+            },
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340830000,
+            "nextHintAt": 1794340815000,
+            "nextTransitionAt": 1794340815000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340804500
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": null,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340806000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794340813000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [],
+            "alphabet": [],
+            "solvedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "roundPointsByPlayer": {
+              "p1": 8,
+              "p2": 8
+            },
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextHintAt": null,
+            "nextTransitionAt": 1794340813000,
+            "lastRound": {
+              "mode": "CLASSIC",
+              "answer": "Snorlax",
+              "pokemon": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
+                "nationalDexNumber": 143,
+                "types": [
+                  "normal"
+                ]
+              },
+              "move": null,
+              "solves": [
+                {
+                  "playerId": "p1",
+                  "points": 8,
+                  "hiddenLetters": 7,
+                  "solvedAt": 1794340804500
+                },
+                {
+                  "playerId": "p2",
+                  "points": 8,
+                  "hiddenLetters": 7,
+                  "solvedAt": 1794340806000
+                }
+              ],
+              "missingPlayerIds": [
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340804500
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": null,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340806000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794340813000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1794340800000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [],
+            "alphabet": [],
+            "solvedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "roundPointsByPlayer": {
+              "p1": 8,
+              "p2": 8
+            },
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextHintAt": null,
+            "nextTransitionAt": 1794340813000,
+            "lastRound": {
+              "mode": "CLASSIC",
+              "answer": "Snorlax",
+              "pokemon": {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png",
+                "nationalDexNumber": 143,
+                "types": [
+                  "normal"
+                ]
+              },
+              "move": null,
+              "solves": [
+                {
+                  "playerId": "p1",
+                  "points": 8,
+                  "hiddenLetters": 7,
+                  "solvedAt": 1794340804500
+                },
+                {
+                  "playerId": "p2",
+                  "points": 8,
+                  "hiddenLetters": 7,
+                  "solvedAt": 1794340806000
+                }
+              ],
+              "missingPlayerIds": [
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": 1794340804000,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340804500
+              }
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": true,
+              "answer": "Snorlax",
+              "cooldownUntil": null,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "outcome": "CORRECT",
+                "at": 1794340806000
+              }
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340828000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794340813000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 14
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 24
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340843000,
+            "nextHintAt": 1794340828000,
+            "nextTransitionAt": 1794340828000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340828000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794340813000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 14
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 24
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 16
+              }
+            ],
+            "alphabet": [],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340843000,
+            "nextHintAt": 1794340828000,
+            "nextTransitionAt": 1794340828000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340843000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794340813000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 14
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 1
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 24
+              },
+              {
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
+              },
+              {
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
+            "alphabet": [
+              {
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340843000,
+            "nextHintAt": null,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794340849000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,1794340813000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_RESULTS",
+            "mode": "CLASSIC",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [],
+            "alphabet": [
+              {
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": null,
+            "nextHintAt": null,
+            "nextTransitionAt": 1794340849000,
+            "lastRound": {
+              "mode": "CLASSIC",
+              "answer": "Marill",
+              "pokemon": {
+                "id": "marill",
+                "name": "Marill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png",
+                "nationalDexNumber": 183,
+                "types": [
+                  "water",
+                  "fairy"
+                ]
+              },
+              "move": null,
+              "solves": [],
+              "missingPlayerIds": [
+                "p1",
+                "p2",
+                "p3"
+              ]
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": false,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794340864000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794340849000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "unown-translator",
+            "phase": "ROUND_ACTIVE",
+            "mode": "CLASSIC",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "tokens": [
+              {
+                "kind": "GLYPH",
+                "glyph": 18
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 24
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 11
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 17
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 22
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 4
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 4
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 10
+              },
+              {
+                "kind": "GLYPH",
+                "glyph": 4
+              },
+              {
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
+            "alphabet": [
+              {
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
+            "solvedPlayerIds": [],
+            "roundPointsByPlayer": {},
+            "scores": {
+              "p1": 8,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundEndsAt": 1794340879000,
+            "nextHintAt": 1794340864000,
+            "nextTransitionAt": 1794340864000,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "canGuess": true,
+              "solved": false,
+              "answer": null,
+              "cooldownUntil": null,
+              "attemptCount": 0,
+              "lastAttempt": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "invalidAction": true
+      }
+    ]
+  },
+  "stoppedAt": 13
+}

@@ -84,7 +84,7 @@ class ProfileControllerTest {
         (String) user.get("createdAt"));
     assertEquals(Map.of("gamesPlayed", 0, "gamesWon", 0, "totalPoints", 0), profile.get("globalStats"));
     var games = (List<Map<String, Object>>) profile.get("games");
-    assertEquals(29, games.size());
+    assertEquals(30, games.size());
     assertEquals(registry.manifests().get(0).id(), games.get(0).get("id"));
     assertFalse(games.get(0).containsKey("defaultConfig"));
     for (var game : games) {

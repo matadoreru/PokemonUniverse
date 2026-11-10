@@ -154,7 +154,7 @@ class PublicProfileControllerTest {
 
     var achievements = map(profile.get("achievements"));
     assertEquals(2, achievements.get("unlocked"));
-    assertEquals(49, achievements.get("total"));
+    assertEquals(50, achievements.get("total"));
     @SuppressWarnings("unchecked")
     var list = (List<Map<String, Object>>) achievements.get("achievements");
     assertEquals(List.of("general.first-game", "secret.3"), list.stream().map(a -> a.get("id")).toList());

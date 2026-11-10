@@ -7,6 +7,7 @@ import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceMod
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorMode;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteMode;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelMode;
+import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorMode;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ public final class GameModes {
     MODES.put("type-duel", names(TypeDuelMode.values()));
     MODES.put("pokemon-impostor", names(PokemonImpostorMode.values()));
     MODES.put("absurd-pokedex", names(AbsurdPokedexMode.values()));
+    MODES.put("unown-translator", names(UnownTranslatorMode.values()));
   }
 
   private GameModes() {}

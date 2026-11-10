@@ -22,7 +22,7 @@ import org.junit.jupiter.api.TestFactory;
 /**
  * {@code migrateStoredGameConfig} contra el de Node: {@code gameconfigs/migration-cases.json} guarda, para los casos
  * del brief (higher-lower y pokemon-bingo), varios refinamientos entre campos y un barrido de sondas sobre cada clave
- * de los 29 juegos, la salida de Node calculada una vez con {@code generate-migration-cases.ts} (junto al JSON). Desde
+ * de los 30 juegos, la salida de Node calculada una vez con {@code generate-migration-cases.ts} (junto al JSON). Desde
  * la Fase 3 (modos de juego) el JSON se edita a mano: {@code mode} y sus ajustes en los seis juegos con modos.
  */
 class StoredGameConfigMigrationTest {
@@ -65,7 +65,7 @@ class StoredGameConfigMigrationTest {
   void theFixtureCoversTheBriefCasesAndEveryGame() throws IOException {
     var all = cases();
     var games = all.stream().map(Case::gameId).distinct().count();
-    assertEquals(29, games);
+    assertEquals(30, games);
     for (var name : List.of("higher-lower: clave obsoleta eliminada", "higher-lower: tipo erróneo sustituido por el defecto",
         "higher-lower: array con un elemento inválido sustituido entero", "higher-lower: JSON no objeto",
         "higher-lower: configuración válida sin cambios", "pokemon-bingo: configuración válida sin cambios")) {

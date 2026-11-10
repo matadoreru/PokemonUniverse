@@ -78,9 +78,9 @@ class AchievementsControllerTest {
   @Test
   void listsFortyEightInCatalogOrder() {
     var body = get(register());
-    assertEquals(49, body.get("total"));
+    assertEquals(50, body.get("total"));
     assertEquals(0, body.get("unlocked"));
-    assertEquals(49, achievements(body).size());
+    assertEquals(50, achievements(body).size());
     assertEquals("general.first-game", achievements(body).get(0).get("id"));
   }
 
@@ -116,7 +116,7 @@ class AchievementsControllerTest {
     var as = register();
     unlock(as, "game.removed.win");
     var body = get(as);
-    assertEquals(49, body.get("total"));
+    assertEquals(50, body.get("total"));
     assertEquals(0, body.get("unlocked"));
   }
 }

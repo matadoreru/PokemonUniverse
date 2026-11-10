@@ -33,7 +33,7 @@ class ConfigMessagesSnapshotTest {
   private static final ObjectMapper MAPPER = ObjectMapper.getDefault();
   private static final boolean UPDATE = Boolean.getBoolean("update");
 
-  /** Un test por motor con fixtures doradas (los 29 registrados). */
+  /** Un test por motor con fixtures doradas (los 30 registrados). */
   @TestFactory
   Stream<DynamicTest> messagesMatchTheSnapshot() throws IOException, URISyntaxException {
     List<String> ids;

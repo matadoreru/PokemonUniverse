@@ -2621,5 +2621,77 @@
       "voteSeconds": 30,
       "mode": "CLASSIC"
     }
+  },
+  {
+    "id": "unown-translator",
+    "name": "Traductor Unown",
+    "icon": "🔣",
+    "description": "Descifra nombres escritos con glifos Unown: cada pista revela una letra que ya no se olvida.",
+    "experimental": false,
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "roundsPlayed",
+          "label": "Rondas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solved",
+          "label": "Mensajes descifrados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "missed",
+          "label": "Mensajes sin descifrar",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstSolves",
+          "label": "Primero en descifrar",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "hiddenLettersAtSolve",
+          "label": "Letras ocultas al acertar",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos en rondas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Tasa de descifrado",
+          "kind": "PERCENT",
+          "numerator": "solved",
+          "denominator": [
+            "solved",
+            "missed"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 60,
+      "hintSeconds": 6,
+      "mode": "CLASSIC"
+    }
   }
 ]
