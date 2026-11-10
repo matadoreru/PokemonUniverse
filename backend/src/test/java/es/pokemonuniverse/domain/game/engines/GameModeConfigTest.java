@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceCon
 import es.pokemonuniverse.domain.game.engines.pokemonimpostor.PokemonImpostorConfig;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteConfig;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelConfig;
+import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorConfig;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
@@ -43,7 +44,8 @@ class GameModeConfigTest {
         new Game("learnset-guess", LearnsetGuessConfig::parse, LearnsetGuessConfig.defaults(), "MANUAL_REVEAL"),
         new Game("type-duel", TypeDuelConfig::parse, TypeDuelConfig.defaults(), "COOP"),
         new Game("pokemon-impostor", PokemonImpostorConfig::parse, PokemonImpostorConfig.defaults(), "ONE_WORD"),
-        new Game("absurd-pokedex", AbsurdPokedexConfig::parse, AbsurdPokedexConfig.defaults(), "REAL_ENTRY"));
+        new Game("absurd-pokedex", AbsurdPokedexConfig::parse, AbsurdPokedexConfig.defaults(), "REAL_ENTRY"),
+        new Game("unown-translator", UnownTranslatorConfig::parse, UnownTranslatorConfig.defaults(), "MOVES"));
   }
 
   private static LinkedHashMap<String, JsonNode> entries(Object config) throws IOException {
