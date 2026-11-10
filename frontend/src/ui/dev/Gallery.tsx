@@ -56,6 +56,7 @@ import { ToastStack, useToasts } from '../Toast';
 import { ActionToast, ActionToastStack } from '../ActionToast';
 import { Drawer } from '../Drawer';
 import { Toggle } from '../Toggle';
+import { UnownGlyph } from '../UnownGlyph';
 import { cx } from '../cx';
 import s from './Gallery.module.css';
 
@@ -997,6 +998,39 @@ function AchievementTileSection() {
   );
 }
 
+function UnownGlyphSection() {
+  const glyphs = Array.from({ length: 26 }, (_, i) => i);
+  return (
+    <Section name="unown-glyph" title="Glifos Unown">
+      <Fig id="unown-glyph-all" caption="Los 26 glifos (md, ocultos); el glifo i se inspira en la letra A + i" wide>
+        <span className={s.glyphGrid}>
+          {glyphs.map((glyph) => (
+            <UnownGlyph key={glyph} glyph={glyph} />
+          ))}
+        </span>
+      </Fig>
+      <Fig id="unown-glyph-legend" caption="Leyenda (sm) con las letras ya descubiertas" wide cream>
+        <span className={s.glyphGrid}>
+          {glyphs.map((glyph) => (
+            <UnownGlyph key={glyph} glyph={glyph} size="sm" letter={String.fromCharCode(65 + glyph)} />
+          ))}
+        </span>
+      </Fig>
+      <Fig id="unown-glyph-hidden" caption="oculto (glifo oculto)">
+        <UnownGlyph glyph={15} size="lg" />
+      </Fig>
+      <Fig id="unown-glyph-known" caption="descubierto (letra P debajo)">
+        <UnownGlyph glyph={15} size="lg" letter="P" />
+      </Fig>
+      <Fig id="unown-glyph-sizes" caption="sm, md y lg" cream>
+        {(['sm', 'md', 'lg'] as const).map((size) => (
+          <UnownGlyph key={size} glyph={20} size={size} letter="U" />
+        ))}
+      </Fig>
+    </Section>
+  );
+}
+
 function ConfettiSection() {
   const [n, setN] = useState(0);
   return (
@@ -1242,6 +1276,7 @@ export function Gallery() {
       <CutinSection />
       <ScorePopSection />
       <AchievementTileSection />
+      <UnownGlyphSection />
       <ConfettiSection />
       <ScreenTransitionSection />
       <ScreenSplitSection />

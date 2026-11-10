@@ -1,0 +1,51 @@
+/* Glifo Unown: el dibujo en currentColor y, si ya se conoce, su letra debajo. */
+.glyph {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  color: inherit;
+  vertical-align: top;
+}
+.svg {
+  display: block;
+  flex: none;
+  width: var(--glyph-size);
+  height: var(--glyph-size);
+}
+.sm {
+  --glyph-size: 28px;
+}
+.md {
+  --glyph-size: 44px;
+}
+.lg {
+  --glyph-size: 64px;
+}
+.letter {
+  font: 800 var(--fs-15) / 1 var(--font-display);
+  text-transform: uppercase;
+  animation: reveal 240ms var(--ease) both;
+}
+.sm .letter {
+  font-size: var(--fs-13);
+}
+.lg .letter {
+  font-size: var(--fs-22);
+}
+/* La letra aparece al descubrirse: solo opacity y transform. */
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .letter {
+    animation: none;
+  }
+}

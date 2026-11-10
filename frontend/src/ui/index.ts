@@ -60,3 +60,5 @@ export { becameVisible, ChatLog, isNearBottom } from './ChatLog';
 export type { ChatLogItem, ChatLogProps } from './ChatLog';
 export { ChatComposer, submitChat } from './ChatComposer';
 export type { ChatComposerProps } from './ChatComposer';
+export { UnownGlyph } from './UnownGlyph';
+export type { UnownGlyphProps, UnownGlyphSize } from './UnownGlyph';

@@ -120,3 +120,11 @@
   padding: 0;
   width: 100%;
 }
+/* Rejilla de los 26 glifos Unown: se reparten en filas sin salirse del ancho. */
+.glyphGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  width: 100%;
+}
