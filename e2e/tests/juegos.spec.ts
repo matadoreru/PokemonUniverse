@@ -4764,7 +4764,8 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     await campo(host.page).fill('ZZZZZZ');
     await host.page.getByTestId('unown-send').click();
     await expect(host.page.getByText(/^No es eso/)).toBeVisible({ timeout: 10_000 });
-    await campo(host.page).fill('ZZZZZZ');
+    // El fallo no borra lo escrito: queda para corregirlo.
+    await expect(campo(host.page)).toHaveValue('ZZZZZZ');
     await expect(host.page.getByTestId('unown-send')).toBeDisabled();
     await expect(mensaje(host.page).getByRole('img', { name: 'glifo oculto' }).first()).toBeVisible();
     await campo(host.page).fill('');
@@ -4782,6 +4783,8 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     // Con B acertado y el host pendiente, la ronda sigue: el host acierta y B retiene la revelación.
     retenedor.retenerDesde((payload) => juegoEnTrama<{ phase: string }>(payload, 'unown-translator')?.phase === 'ROUND_RESULTS');
     await descifrarUnown(host.page);
+    // El acierto del host cierra la ronda: su región viva lo anuncia igualmente.
+    await expect(viva(host.page)).toContainText('¡Descifrado!', { timeout: 10_000 });
 
     await expect.poll(() => retenedor.retenida(), { timeout: 15_000 }).toBe(true);
     await expect(b.page.getByRole('heading', { name: `¡Decía ${respuesta}!` })).toBeVisible();

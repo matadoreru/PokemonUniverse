@@ -2,7 +2,7 @@ import type { RoomView, UnownAlphabetEntry, UnownToken, UnownTranslatorConfig, U
 import { gameModeName, UNOWN_GLYPH_COUNT, UNOWN_MAX_GUESS_LENGTH, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Hourglass, Languages, Send, Trophy, X } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type RefObject } from 'react';
-import { hintCountdownLabel, newLetters, newLettersAnnouncement, splitWords } from '../games/unown-translator/presentation';
+import { hintCountdownLabel, hitCueRound, newLetters, newLettersAnnouncement, splitWords } from '../games/unown-translator/presentation';
 import { useNow, useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Field, Icon, Pill, UnownGlyph } from '../ui';
@@ -52,7 +52,10 @@ function UnownAlphabet({ alphabet }: { alphabet: readonly UnownAlphabetEntry[] }
   </section>;
 }
 
-/** Campo de respuesta con Enviar: desactivado mientras dura el bloqueo tras un fallo; se vacía al enviarse. */
+/**
+ * Campo de respuesta con Enviar: desactivado mientras dura el bloqueo tras un fallo. Tras un fallo el texto se queda
+ * para corregirlo; al acertar el formulario desaparece.
+ */
 function UnownAnswerForm({ roundNumber, cooling, fieldRef, onGuess }: { roundNumber: number; cooling: boolean; fieldRef: RefObject<HTMLInputElement | null>; onGuess(text: string): Promise<void> }) {
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
@@ -63,7 +66,7 @@ function UnownAnswerForm({ roundNumber, cooling, fieldRef, onGuess }: { roundNum
     const value = text.trim();
     if (!value || busy || cooling) return;
     setBusy(true);
-    void onGuess(value).then(() => setText(''), ignoreFailure).finally(() => setBusy(false));
+    void onGuess(value).catch(ignoreFailure).finally(() => setBusy(false));
   };
   return <form className="flex flex-wrap items-end gap-3" onSubmit={submit}>
     <div className="min-w-0 flex-1 basis-56">
@@ -126,7 +129,8 @@ export function UnownTranslatorGame({ room, selfId, onAction }: { room: RoomView
   const titleRef = useRef<HTMLHeadingElement>(null);
   const fieldRef = useRef<HTMLInputElement>(null);
   useFocusOnTransition(solved ? `solved-${game.roundNumber}` : lastRound ? `reveal-${game.roundNumber}` : null, titleRef);
-  useSfxCue('hit', solved ? game.roundNumber : null);
+  // Suena al acertar, también cuando el acierto propio cierra la ronda (el estado salta directo a la revelación).
+  useSfxCue('hit', hitCueRound(game, player, selfId));
   const announcement = useUnownAnnouncement(game, player, lastRound?.answer ?? null);
 
   const mode = gameModeName('unown-translator', lastRound?.mode ?? game.mode);
@@ -139,7 +143,7 @@ export function UnownTranslatorGame({ room, selfId, onAction }: { room: RoomView
     ? <UnownRoundReveal round={lastRound} />
     : <GuessClue label="Mensaje cifrado" className={s.stage}>
       <UnownMessage tokens={game.tokens} />
-      {active && <span className={s.next}><Chip tone="neutral" icon={<Icon icon={Clock3} size={18} />}>{hintCountdownLabel(game.nextHintAt, serverNow)}</Chip></span>}
+      {active && <span className={s.next}><Chip tone="neutral" icon={<Icon icon={Clock3} size={18} />}>{hintCountdownLabel(game.nextHintAt, serverNow, game.tokens.some((token) => token.kind === 'GLYPH'))}</Chip></span>}
     </GuessClue>;
   const hints = active ? <UnownAlphabet alphabet={game.alphabet} /> : null;
 
@@ -175,7 +179,8 @@ export function UnownTranslatorGame({ room, selfId, onAction }: { room: RoomView
   } else if (active && !participating) {
     content = { icon: Eye, tone: 'info', kicker: 'No descifras en esta ronda', title: 'Estás observando', text: 'Las letras y los aciertos aparecen en directo.' };
   } else if (active) {
-    content = { icon: Eye, tone: 'info', kicker: 'Estás observando', title: 'No juegas esta partida', text: 'Entraste con la partida empezada: jugarás en la siguiente.' };
+    // Solo llega aquí un jugador de la partida que no cuenta en esta ronda: desconectado o inactivo.
+    content = { icon: Eye, tone: 'info', kicker: 'Estás observando', title: 'No descifras esta ronda', text: 'Sin conexión: vuelve para seguir descifrando.' };
   } else if (lastRound) {
     const index = lastRound.solves.findIndex((solve) => solve.playerId === selfId);
     const own = index >= 0 ? lastRound.solves[index] : undefined;

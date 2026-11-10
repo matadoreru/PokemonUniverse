@@ -100,6 +100,18 @@ describe('Traductor Unown: pantalla', () => {
     expect(html).not.toContain('type="submit"');
   });
 
+  it('sin siguiente letra pero con glifos ocultos, el chip dice «No habrá más letras»', () => {
+    expect(render({ ...publicGame('ROUND_ACTIVE'), nextHintAt: null }, GUESSING)).toContain('No habrá más letras');
+    expect(render({ ...publicGame('ROUND_ACTIVE', { known: 'PIKACHU' }), nextHintAt: null }, GUESSING)).toContain('No quedan letras por revelar');
+  });
+
+  it('un jugador de la partida que no cuenta en la ronda (sin conexión) ve que puede volver, no que entró tarde', () => {
+    const html = render(publicGame('ROUND_ACTIVE'), { ...GUESSING, canGuess: false });
+    expect(html).toContain('Sin conexión: vuelve para seguir descifrando.');
+    expect(html).not.toContain('Entraste con la partida empezada');
+    expect(html).not.toContain('<input');
+  });
+
   it('la leyenda «Alfabeto» tiene los 26 glifos, con la letra de los conocidos', () => {
     const legend = block(render(publicGame('ROUND_ACTIVE'), GUESSING), 'unown-alphabet');
     expect(legend).toContain('Alfabeto');
