@@ -52,9 +52,11 @@ descifra con menos letras a la vista.
 - **Pistas:** la pista `k` (desde 1) toca en `roundStartedAt + k * hintSeconds * 1000`. En `tickActive`, por cada pista
   vencida se elige con `Randoms.randomItem(context.random(), …)` una letra entre las **distintas** ocultas del mensaje,
   ordenadas alfabéticamente, y se añade al final de `alphabet`. `nextTransitionAt` (y el `nextHintAt` público) es la
-  hora de la siguiente pista, o `null` si ya no quedan letras ocultas. Solo las pistas añaden letras al alfabeto.
+  hora de la siguiente pista, o `null` si ya no quedan letras ocultas o si esa hora es `>= roundEndsAt` (entonces
+  `nextTransitionAt` es `roundEndsAt`, como en Zoomed). Solo las pistas añaden letras al alfabeto.
 - **Mazos** (se calculan en `start`; se barajan con `Randoms.shuffled` y se toman las primeras `rounds`):
-  - `POKEMON`: `forGenerations(generations, false)`, con el nombre en español como texto;
+  - `POKEMON`: `forGenerations(generations, false)`, con `pokemon.name()` como texto (el nombre que muestran los demás
+    motores);
   - `MOVES`: para cada Pokémon de ese mazo, `levelUpMoves(id, Math.max(generations))`, con el nombre español como en
     `LearnsetGuessEngine.hint` (si está vacío, `move.name()`), sin repetir texto normalizado y en orden de primera
     aparición. Así el `totalRounds` real es `min(rounds, tamaño del mazo)`;
@@ -112,9 +114,10 @@ descifra con menos letras a la vista.
    repetir letra, y `nextHintAt` queda en la siguiente hora futura. Lo comprueba `lateTickRevealsEveryDueHint` (Task 5).
 4. **Un jugador que se desconecta mientras los demás ya han acertado:** la ronda termina sin esperarlo. Lo comprueba
    `disconnectEndsTheRoundWhenTheRestSolved` (Task 5).
-5. **Mensaje con más de 10 letras en un móvil de 390 px:** las palabras no se parten y el mensaje no provoca scroll
-   horizontal. Lo comprueba la captura a 390×844 de la Task 6, con `capture()` en sus valores por defecto, usando un
-   mensaje largo (modo `MOVES`).
+5. **Mensaje largo en un móvil de 390 px:** las palabras no se parten entre líneas. Lo comprueba
+   `longMessageKeepsWordsWhole` en `UnownTranslatorGame.test.tsx` (Task 4), con un estado de 3 palabras y 20 letras:
+   cada palabra va en su propio bloque con la clase que impide partirla. La captura de `MOVES` a 390×844 (Task 6) mira
+   el caso que salga, sin scroll horizontal.
 
 ---
 
@@ -137,13 +140,14 @@ descifra con menos letras a la vista.
   - En `types.ts`:
     - `UnownToken`, unión discriminada por `kind`:
       `{ kind: 'GLYPH'; glyph: number }`, `{ kind: 'LETTER'; glyph: number; letter: string }` y
-      `{ kind: 'LITERAL'; char: string }`;
+      `{ kind: 'LITERAL'; text: string }` (`text`, no `char`, que es palabra reservada en Java);
     - `UnownAlphabetEntry { glyph: number; letter: string }`;
     - `UnownTranslatorPokemon { id; name; sprite; nationalDexNumber; types: string[] }`;
     - `UnownTranslatorMove { name; type; category }`;
     - `UnownTranslatorSolve { playerId; points; hiddenLetters; solvedAt }`;
-    - `UnownTranslatorRoundResult { mode; answer; pokemon: UnownTranslatorPokemon | null; move: UnownTranslatorMove | null; tokens: UnownToken[]; solves: UnownTranslatorSolve[]; missingPlayerIds: string[] }`.
-      En resultados, `tokens` lleva todas las letras como `LETTER`, y `solves` va en orden de acierto;
+    - `UnownTranslatorRoundResult { mode; answer; pokemon: UnownTranslatorPokemon | null; move: UnownTranslatorMove | null; solves: UnownTranslatorSolve[]; missingPlayerIds: string[] }`.
+      `solves` va en orden de acierto. No lleva piezas: pintar glifo y letra juntos para todo el mensaje daría la clave
+      entera, y solo las pistas pasan al alfabeto;
     - `UnownTranslatorPlayerStats { roundsPlayed; solved; missed; firstSolves; hiddenLettersAtSolve; pointsFromRounds }`;
     - `UnownTranslatorPublicState`, con estas claves en este orden: `gameId`, `phase`, `mode`, `roundNumber`,
       `totalRounds`, `playerIds`, `tokens`, `alphabet`, `solvedPlayerIds`, `roundPointsByPlayer`, `scores`,
@@ -189,8 +193,10 @@ descifra con menos letras a la vista.
   - `record UnownTranslatorConfig(List<Integer> generations, int rounds, int roundSeconds, int hintSeconds, UnownTranslatorMode mode)`,
     con `defaults()` y `parse(JsonNode)`.
   - En `UnownTranslatorTypes`:
-    - los records de la Task 1, con los mismos nombres y el mismo orden de componentes; `UnownToken` como interfaz
-      sellada con `Glyph`, `Letter` y `Literal`, que serializan su `kind`;
+    - los records de la Task 1, con los mismos nombres y el mismo orden de componentes;
+    - `UnownToken` como `PokedexEntryGuessHint`: interfaz sellada con `String kind()` y los records `Glyph(String kind, int glyph)`,
+      `Letter(String kind, int glyph, String letter)` y `Literal(String kind, String text)`, cada uno con `kind` primero,
+      `@Serdeable`, `@JsonInclude(ALWAYS)` y un constructor corto que fija `"GLYPH"`, `"LETTER"` o `"LITERAL"`;
     - `UnownMessage(String text, String normalized, @Nullable String pokemonId, @Nullable UnownTranslatorMove move)`,
       interno: nunca sale en una proyección de `ROUND_ACTIVE`;
     - el estado `UnownTranslatorState`, que implementa `TimedGameState` y tiene builder. Sus componentes son: `phase`,
@@ -318,7 +324,8 @@ descifra con menos letras a la vista.
     - con `solved` sale `¡Descifrado!` con la respuesta, y no hay campo;
     - la leyenda tiene 26 glifos;
     - los resultados de `POKEMON` muestran el sprite y los de `MOVES`, el tipo;
-    - hay exactamente un `aria-live`.
+    - hay exactamente un `aria-live`;
+    - `longMessageKeepsWordsWhole` (Review Focus 5).
   - Los tres tests de registro, ampliados. Los rangos del panel son 1–10, 30–120 y 3–15.
 - [ ] **Step 2: Ejecutar** `npx vitest run frontend/src/games/unown-translator frontend/src/room/UnownTranslatorGame.test.tsx frontend/src/games/registry.test.ts frontend/src/room/RoomSessionLayout.test.tsx frontend/src/games/config-panel-ranges.test.tsx`.
   Esperado: FAIL.
@@ -368,7 +375,8 @@ descifra con menos letras a la vista.
 - [ ] **Step 1: Tests que fallan** en `UnownTranslatorEngineTest`, con el catálogo dorado, un `random` fijo y un reloj
   controlado, como `ZoomedPokemonEngineTest`:
   - `defaultConfigMatchesTheRegistryManifest` y `soloGameIsAllowed`;
-  - `hintsArriveOnScheduleAndStopWhenNothingIsHidden`;
+  - `hintsArriveOnScheduleAndStopWhenNothingIsHidden`, incluido que `nextHintAt` es `null` cuando la siguiente pista
+    caería en `roundEndsAt` o después;
   - `lateTickRevealsEveryDueHint` (Review Focus 3);
   - `alphabetPersistsAcrossRoundsAndOnlyGrowsWithHints`: tras una ronda resuelta, la siguiente empieza con el mismo
     `alphabet`, sin las letras no reveladas del mensaje anterior;
@@ -426,12 +434,13 @@ descifra con menos letras a la vista.
   rondas en `POKEMON` con `roundSeconds: 60` y `hintSeconds: 3`, y después una partida de 1 ronda en `MOVES`.
   1. `POKEMON`:
      - se espera a la primera pista y se comprueba que aparece una letra;
-     - un jugador falla y ve `No es eso` con el botón desactivado;
+     - un jugador falla y ve `No es eso` con el botón desactivado; cuando ya no quedan glifos ocultos, también acierta,
+       para que la ronda acabe antes de los 60 s;
      - captura `juego-unown-translator-ronda`;
      - el otro espera a que no quede ningún `glifo oculto` (las pistas lo destapan todo en menos de 60 s), escribe
        las letras que se leen y ve `¡Descifrado!`;
      - Captura `juego-unown-translator-revelacion`.
-  2. `MOVES` (Review Focus 5): captura `juego-unown-translator-movimiento` a 390×844 con `capture()` por defecto.
+  2. `MOVES`: captura `juego-unown-translator-movimiento` a 390×844 con `capture()` por defecto.
   3. En la clasificación, captura `juego-unown-translator-clasificacion`. `collectErrors` queda vacío.
 - [ ] **Step 2: Ejecutar** `npm run ui:check -- juegos -g "unown"`. Esperado: PASS, con las capturas a 1280×720,
   1920×1080 y 390×844, sin avisos de tamaños que falten y con `capture()` en sus valores por defecto.

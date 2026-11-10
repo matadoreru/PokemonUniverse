@@ -85,7 +85,7 @@ rondas siguientes. Es una carrera: quien descifra con menos letras a la vista ga
   - Pieza del mensaje (`UnownToken`), una de:
     - `{ kind: 'GLYPH', glyph: 0–25 }`, letra oculta;
     - `{ kind: 'LETTER', glyph: 0–25, letter: 'A'–'Z' }`, letra descubierta;
-    - `{ kind: 'LITERAL', char }`, carácter sin cifrar.
+    - `{ kind: 'LITERAL', text }`, carácter sin cifrar.
   - Estado público:
     - `gameId`, `phase`, `roundNumber`, `totalRounds` y `mode`;
     - `tokens`;
