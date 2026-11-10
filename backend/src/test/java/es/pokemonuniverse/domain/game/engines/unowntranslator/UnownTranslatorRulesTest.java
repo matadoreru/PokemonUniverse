@@ -133,14 +133,16 @@ class UnownTranslatorRulesTest {
 
   @Test
   void availabilityNeedsAsManyPokemonAsRounds() {
-    var available = UnownTranslatorRules.pokemonDeck(config(UnownTranslatorMode.CLASSIC, 5, List.of(1, 2)), GOLDEN)
-        .size();
+    var generations = List.of(1, 2);
+    int usable = UnownTranslatorRules.pokemonDeck(config(UnownTranslatorMode.CLASSIC, 5, generations), GOLDEN).size();
+    assertTrue(usable >= 5);
+    // El límite exacto: N rondas con N Pokémon utilizables sí, N + 1 no.
     assertEquals(Optional.empty(),
-        UnownTranslatorRules.availabilityIssue(config(UnownTranslatorMode.CLASSIC, 5, List.of(1, 2)), GOLDEN));
-    // Las rondas están limitadas a 10: una generación sin Pokémon deja el mazo vacío y no alcanza.
+        UnownTranslatorRules.availabilityIssue(config(UnownTranslatorMode.CLASSIC, usable, generations), GOLDEN));
+    assertEquals(Optional.of("Solo hay " + usable + " Pokémon en esas generaciones."),
+        UnownTranslatorRules.availabilityIssue(config(UnownTranslatorMode.CLASSIC, usable + 1, generations), GOLDEN));
     var none = UnownTranslatorRules.availabilityIssue(config(UnownTranslatorMode.CLASSIC, 5, List.of(9)), GOLDEN);
     assertEquals(Optional.of("Solo hay 0 Pokémon en esas generaciones."), none);
-    assertTrue(available >= 5);
   }
 
   @Test

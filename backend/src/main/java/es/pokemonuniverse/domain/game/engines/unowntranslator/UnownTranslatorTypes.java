@@ -24,6 +24,8 @@ import java.util.Set;
  */
 public final class UnownTranslatorTypes {
 
+  private static final Set<String> ACTION_KEYS = Set.of("type", "text");
+
   private UnownTranslatorTypes() {}
 
   /**
@@ -302,6 +304,71 @@ public final class UnownTranslatorTypes {
       roundPointsByPlayer = frozenMap(roundPointsByPlayer);
       scores = frozenMap(scores);
     }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    /** Listas y mapas vacíos por defecto; {@link #build()} exige {@code gameId}, {@code phase} y {@code mode}. */
+    public static final class Builder {
+      private String gameId;
+      private GamePhase phase;
+      private UnownTranslatorMode mode;
+      private int roundNumber = 0;
+      private int totalRounds = 0;
+      private List<String> playerIds = List.of();
+      private List<UnownToken> tokens = List.of();
+      private List<UnownAlphabetEntry> alphabet = List.of();
+      private List<String> solvedPlayerIds = List.of();
+      private Map<String, Integer> roundPointsByPlayer = Map.of();
+      private Map<String, Integer> scores = Map.of();
+      private Long roundEndsAt;
+      private Long nextHintAt;
+      private Long nextTransitionAt;
+      private UnownTranslatorRoundResult lastRound;
+      private GameResults results;
+
+      private Builder() {}
+
+      public Builder gameId(String value) { gameId = value; return this; }
+
+      public Builder phase(GamePhase value) { phase = value; return this; }
+
+      public Builder mode(UnownTranslatorMode value) { mode = value; return this; }
+
+      public Builder roundNumber(int value) { roundNumber = value; return this; }
+
+      public Builder totalRounds(int value) { totalRounds = value; return this; }
+
+      public Builder playerIds(List<String> value) { playerIds = value; return this; }
+
+      public Builder tokens(List<UnownToken> value) { tokens = value; return this; }
+
+      public Builder alphabet(List<UnownAlphabetEntry> value) { alphabet = value; return this; }
+
+      public Builder solvedPlayerIds(List<String> value) { solvedPlayerIds = value; return this; }
+
+      public Builder roundPointsByPlayer(Map<String, Integer> value) { roundPointsByPlayer = value; return this; }
+
+      public Builder scores(Map<String, Integer> value) { scores = value; return this; }
+
+      public Builder roundEndsAt(@Nullable Long value) { roundEndsAt = value; return this; }
+
+      public Builder nextHintAt(@Nullable Long value) { nextHintAt = value; return this; }
+
+      public Builder nextTransitionAt(@Nullable Long value) { nextTransitionAt = value; return this; }
+
+      public Builder lastRound(@Nullable UnownTranslatorRoundResult value) { lastRound = value; return this; }
+
+      public Builder results(@Nullable GameResults value) { results = value; return this; }
+
+      public UnownTranslatorPublicState build() {
+        return new UnownTranslatorPublicState(Objects.requireNonNull(gameId, "gameId"),
+            Objects.requireNonNull(phase, "phase"), Objects.requireNonNull(mode, "mode"), roundNumber, totalRounds,
+            playerIds, tokens, alphabet, solvedPlayerIds, roundPointsByPlayer, scores, roundEndsAt, nextHintAt,
+            nextTransitionAt, lastRound, results);
+      }
+    }
   }
 
   /**
@@ -313,6 +380,12 @@ public final class UnownTranslatorTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record UnownTranslatorPlayerState(String role, boolean canGuess, boolean solved, @Nullable String answer,
       @Nullable Long cooldownUntil, int attemptCount, @Nullable UnownTranslatorLastAttempt lastAttempt) {
+
+    public static UnownTranslatorPlayerState player(boolean canGuess, boolean solved, @Nullable String answer,
+        @Nullable Long cooldownUntil, int attemptCount, @Nullable UnownTranslatorLastAttempt lastAttempt) {
+      return new UnownTranslatorPlayerState("PLAYER", canGuess, solved, answer, cooldownUntil, attemptCount,
+          lastAttempt);
+    }
 
     public static UnownTranslatorPlayerState spectator() {
       return new UnownTranslatorPlayerState("SPECTATOR", false, false, null, null, 0, null);
@@ -330,7 +403,7 @@ public final class UnownTranslatorTypes {
     static UnownTranslatorAction parse(JsonNode raw) {
       if (raw == null || !raw.isObject()) throw invalid();
       for (var entry : raw.entries()) {
-        if (!Set.of("type", "text").contains(entry.getKey())) throw invalid();
+        if (!ACTION_KEYS.contains(entry.getKey())) throw invalid();
       }
       var type = raw.get("type");
       if (type == null || !type.isString() || !"GUESS_UNOWN".equals(type.getStringValue())) throw invalid();
