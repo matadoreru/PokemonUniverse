@@ -123,11 +123,11 @@ class UnownTranslatorRulesTest {
     var pokemon = UnownTranslatorRules.pokemonDeck(config(UnownTranslatorMode.CLASSIC, 5, generations), GOLDEN);
     assertFalse(pokemon.isEmpty());
     assertTrue(pokemon.stream().allMatch(message -> UnownTranslatorRules.letterCount(message.normalized()) >= 3));
-    assertTrue(pokemon.stream().allMatch(message -> message.pokemonId() != null && message.move() == null));
+    assertTrue(pokemon.stream().allMatch(message -> message.pokemon() != null && message.move() == null));
     var moves = UnownTranslatorRules.moveDeck(config(UnownTranslatorMode.MOVES, 5, generations), GOLDEN);
     assertFalse(moves.isEmpty());
     assertTrue(moves.stream().allMatch(message -> UnownTranslatorRules.letterCount(message.normalized()) >= 3));
-    assertTrue(moves.stream().allMatch(message -> message.pokemonId() == null && message.move() != null));
+    assertTrue(moves.stream().allMatch(message -> message.pokemon() == null && message.move() != null));
     assertEquals(moves.size(), new HashSet<>(moves.stream().map(message -> message.normalized()).toList()).size());
   }
 

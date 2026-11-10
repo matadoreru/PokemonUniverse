@@ -20,7 +20,6 @@ import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTyp
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorLastAttempt;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorPlayerState;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorPlayerStats;
-import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorPokemon;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorPublicState;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorRoundResult;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorSolve;
@@ -202,14 +201,8 @@ public final class UnownTranslatorEngine implements
         playerStats.put(playerId, playerStats.getOrDefault(playerId, UnownTranslatorPlayerStats.ZERO).afterMiss());
       }
     }
-    UnownTranslatorPokemon pokemon = null;
-    if (message.pokemonId() != null) {
-      pokemon = context.pokemon().byId(message.pokemonId())
-          .map(found -> new UnownTranslatorPokemon(found.id(), found.name(), found.sprite(),
-              found.nationalDexNumber(), found.types()))
-          .orElseThrow(() -> new EngineException("El Pokémon del mensaje ya no está disponible."));
-    }
-    var lastRound = new UnownTranslatorRoundResult(state.config().mode(), message.text(), pokemon, message.move(),
+    // El Pokémon viaja en el mensaje desde el mazo: si faltara en el catálogo, un acierto que cierra la ronda no falla.
+    var lastRound = new UnownTranslatorRoundResult(state.config().mode(), message.text(), message.pokemon(), message.move(),
         List.copyOf(state.solves().values()), missing);
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)

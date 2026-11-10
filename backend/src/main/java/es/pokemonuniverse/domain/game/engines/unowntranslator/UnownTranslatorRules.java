@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTyp
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownToken;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorMove;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorPlayerStats;
+import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorPokemon;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownTranslatorState;
 import es.pokemonuniverse.domain.pokemon.LearnsetPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
@@ -117,7 +118,8 @@ public final class UnownTranslatorRules {
     for (var pokemon : catalog.forGenerations(config.generations(), false)) {
       var normalized = normalize(pokemon.name());
       if (letterCount(normalized) >= MIN_LETTERS) {
-        deck.add(new UnownMessage(pokemon.name(), normalized, pokemon.id(), null));
+        deck.add(new UnownMessage(pokemon.name(), normalized, new UnownTranslatorPokemon(pokemon.id(), pokemon.name(),
+            pokemon.sprite(), pokemon.nationalDexNumber(), pokemon.types()), null));
       }
     }
     return List.copyOf(deck);

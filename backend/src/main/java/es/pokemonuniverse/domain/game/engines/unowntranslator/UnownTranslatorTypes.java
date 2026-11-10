@@ -82,9 +82,10 @@ public final class UnownTranslatorTypes {
   /**
    * Mensaje ya elegido (solo en el estado): nunca sale en una proyección de {@code ROUND_ACTIVE}. {@code text} es el
    * texto tal cual se muestra al revelarlo y {@code normalized} su forma normalizada; en {@code CLASSIC} lleva
-   * {@code pokemonId} y en {@code MOVES} lleva {@code move}.
+   * {@code pokemon} (copiado del catálogo al construir el mazo, para que la revelación no dependa de volver a buscarlo)
+   * y en {@code MOVES} lleva {@code move}.
    */
-  public record UnownMessage(String text, String normalized, @Nullable String pokemonId,
+  public record UnownMessage(String text, String normalized, @Nullable UnownTranslatorPokemon pokemon,
       @Nullable UnownTranslatorMove move) {}
 
   @Serdeable

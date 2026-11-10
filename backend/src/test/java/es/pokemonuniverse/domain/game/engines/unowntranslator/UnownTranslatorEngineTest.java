@@ -401,7 +401,7 @@ class UnownTranslatorEngineTest {
     for (var text : texts) {
       assertFalse(text.contains(message.text()), text);
       assertFalse(text.contains(message.normalized()), text);
-      assertFalse(text.contains("\"" + message.pokemonId() + "\""), text);
+      if (message.pokemon() != null) assertFalse(text.contains("\"" + message.pokemon().id() + "\""), text);
     }
     var revealed = new HashSet<Integer>();
     for (var entry : publicState.alphabet()) revealed.add(entry.glyph());
@@ -459,7 +459,7 @@ class UnownTranslatorEngineTest {
     var message = state.messages().getFirst();
     state = act(state, "p1", message.text(), context, 2_000).state();
     var lastRound = view(state, context).lastRound();
-    var pokemon = CATALOG.byId(message.pokemonId()).orElseThrow();
+    var pokemon = CATALOG.byId(message.pokemon().id()).orElseThrow();
     assertEquals(UnownTranslatorMode.CLASSIC, lastRound.mode());
     assertEquals(pokemon.id(), lastRound.pokemon().id());
     assertEquals(pokemon.name(), lastRound.pokemon().name());
@@ -470,6 +470,23 @@ class UnownTranslatorEngineTest {
     state = engine.handleTimeout(state, context.withNow(state.nextTransitionAt()));
     assertTrue(engine.isFinished(state));
     assertEquals(lastRound, view(state, context).lastRound());
+  }
+
+  @Test
+  void classicRevealDoesNotLookThePokemonUpAgain() {
+    var context = context(1, 67);
+    var state = started(config(UnownTranslatorMode.CLASSIC, 1, 30, 6), context);
+    var message = state.messages().getFirst();
+    var pokemon = CATALOG.byId(message.pokemon().id()).orElseThrow();
+    // El mazo copia el Pokémon tal cual está en el catálogo.
+    assertEquals(new UnownTranslatorTypes.UnownTranslatorPokemon(pokemon.id(), pokemon.name(), pokemon.sprite(),
+        pokemon.nationalDexNumber(), pokemon.types()), message.pokemon());
+    // Aunque el Pokémon ya no esté en el catálogo, el acierto que cierra la ronda no falla y la revelación lo trae.
+    var empty = new InMemoryPokemonCatalog(List.of(), List.of(), List.of(), Map.of(), List.of());
+    var without = GameContext.builder(empty, new Mulberry32(67)).players(players(1)).now(1_000).build();
+    var result = act(state, "p1", message.text(), without, 2_000);
+    assertEquals(GamePhase.ROUND_RESULTS, result.state().phase());
+    assertEquals(message.pokemon(), view(result.state(), without).lastRound().pokemon());
   }
 
   @Test
