@@ -8,11 +8,11 @@ import { TYPE_DUEL_MODES } from './type-duel/config.js';
 import { UNOWN_TRANSLATOR_MODES } from './unown-translator/config.js';
 
 /**
- * Catálogo de modos de un juego: `CLASSIC` y el modo nuevo (o, en un juego sin Clásico, sus dos modos), con su nombre
- * visible; `texts` explica las reglas del modo nuevo (Clásico no lleva línea: son las reglas de siempre).
+ * Catálogo de modos de un juego: `CLASSIC` y el modo nuevo, con su nombre visible; `texts` explica las reglas del modo
+ * nuevo (Clásico no lleva línea: son las reglas de siempre).
  */
 export interface GameModeCatalog {
-  modes: readonly [string, string];
+  modes: readonly ['CLASSIC', string];
   labels: Record<string, string>;
   texts: Record<string, string>;
 }
@@ -60,7 +60,7 @@ export const GAME_MODES: Record<GameModeId, GameModeCatalog> = {
   },
   'unown-translator': {
     modes: UNOWN_TRANSLATOR_MODES,
-    labels: { POKEMON: 'Pokémon', MOVES: 'Movimientos' },
+    labels: { CLASSIC: 'Pokémon', MOVES: 'Movimientos' },
     texts: { MOVES: 'Los mensajes son nombres de movimientos en lugar de Pokémon.' },
   },
 };

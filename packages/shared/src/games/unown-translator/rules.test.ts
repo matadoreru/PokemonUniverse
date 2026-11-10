@@ -17,9 +17,9 @@ describe('Traductor Unown', () => {
     }
   });
 
-  it('una configuración sin mode sale con POKEMON', () => {
+  it('una configuración sin mode sale con CLASSIC', () => {
     const stored = Object.fromEntries(Object.entries(defaultUnownTranslatorConfig).filter(([key]) => key !== 'mode'));
-    expect(unownTranslatorConfigSchema.parse(stored).mode).toBe('POKEMON');
+    expect(unownTranslatorConfigSchema.parse(stored).mode).toBe('CLASSIC');
   });
 
   it('GUESS_UNOWN rechaza la respuesta vacía y la larga con su mensaje', () => {
