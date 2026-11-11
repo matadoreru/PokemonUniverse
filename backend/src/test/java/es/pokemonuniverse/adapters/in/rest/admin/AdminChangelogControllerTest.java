@@ -147,16 +147,20 @@ class AdminChangelogControllerTest {
   }
 
   @Test
-  void updatesLikeNodeIncludingThePublishedDefault() throws Exception {
+  void updatesOnlyTheFieldsSent() throws Exception {
     var id = create(entry(version(), "2026-11-02T10:00:00Z", true));
     var renamed = support.send(json(HttpRequest.PATCH("/api/admin/changelog/" + id, "{\"title\":\" Nuevo título \"}")),
         admin.cookie());
     assertEquals(HttpStatus.OK, renamed.getStatus());
-    // updateChangelogSchema = createChangelogSchema.partial(): el default de published sigue aplicándose.
+    // Sin published en la edición, la entrada sigue publicada.
     assertTrue(renamed.body().contains("\"title\":\"Nuevo título\",\"date\":\"2026-11-02T10:00:00.000Z\","
-        + "\"published\":false,"), renamed.body());
+        + "\"published\":true,"), renamed.body());
     var empty = support.send(json(HttpRequest.PATCH("/api/admin/changelog/" + id, "{}")), admin.cookie());
     assertEquals(HttpStatus.OK, empty.getStatus());
+    assertTrue(empty.body().contains("\"published\":true,"), empty.body());
+    var unpublished = support.send(json(HttpRequest.PATCH("/api/admin/changelog/" + id, "{\"published\":false}")),
+        admin.cookie());
+    assertTrue(unpublished.body().contains("\"published\":false,"), unpublished.body());
 
     var other = version();
     create(entry(other, "2026-11-02T10:00:00Z", false));

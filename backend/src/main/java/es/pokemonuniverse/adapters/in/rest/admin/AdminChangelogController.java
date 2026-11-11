@@ -112,20 +112,17 @@ public class AdminChangelogController {
       @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Como máximo 3 con `highlight: true`.")
       List<ChangelogChange> content) {}
 
-  /**
-   * Solo documenta el cuerpo: todos los campos opcionales, pero {@code published} conserva su valor por defecto
-   * ({@code false}) y se aplica aunque no se envíe, como en Node.
-   */
+  /** Solo documenta el cuerpo: todos los campos opcionales; el que no llega conserva su valor. */
   @Serdeable
-  @Schema(name = "AdminUpdateChangelogRequest", description = "Estricto. Si se omite `published`, la entrada queda"
-      + " despublicada (`published` vale `false` por defecto también al editar).")
+  @Schema(name = "AdminUpdateChangelogRequest", description = "Estricto. Los campos que no llegan conservan su valor;"
+      + " si se omite `published`, la entrada sigue publicada o en borrador.")
   public record UpdateChangelogBody(
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED) String version,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, minLength = 3, maxLength = 120) String title,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, maxLength = 200,
           description = "Recortado; vacío borra el resumen.") String summary,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, format = "date-time") String date,
-      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "false") Boolean published,
+      @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED) Boolean published,
       @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Como máximo 3 con `highlight: true`.")
       List<ChangelogChange> content) {}
 }

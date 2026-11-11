@@ -2293,14 +2293,13 @@ components:
           format: date-time
         published:
           type: boolean
-          default: false
         content:
           type: array
           description: "Como máximo 3 con `highlight: true`."
           items:
             $ref: "#/components/schemas/ChangelogChange"
-      description: "Estricto. Si se omite `published`, la entrada queda despublicada\
-        \ (`published` vale `false` por defecto también al editar)."
+      description: "Estricto. Los campos que no llegan conservan su valor; si se omite\
+        \ `published`, la entrada sigue publicada o en borrador."
     AdminUserItem:
       required:
       - createdAt

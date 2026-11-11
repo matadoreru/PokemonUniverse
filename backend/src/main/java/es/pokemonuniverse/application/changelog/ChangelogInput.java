@@ -19,15 +19,14 @@ import java.util.regex.Pattern;
  * {@code createChangelogSchema} y {@code updateChangelogSchema} de {@code shared/changelog.ts} con las incidencias de
  * Zod 4 en su orden: campos en el orden de la forma, después las claves desconocidas ({@code .strict()}).
  *
- * <p>{@code updateChangelogSchema = createChangelogSchema.partial().refine(...)}: {@code .partial()} conserva el
- * {@code .default(false)} de {@code published}, así que una edición que no lo envía despublica la entrada y el
- * {@code refine} («Incluye al menos un campo para actualizar.») nunca falla. Se reproduce tal cual (paridad con Node).
+ * <p>{@code published} vale {@code false} si no llega al crear; en la edición, ausente es {@code null} y la entrada
+ * conserva su estado. Una edición sin campos ({@code {}}) se acepta y no cambia nada salvo {@code updatedAt}.
  *
  * <p>{@code summary} es opcional también al crear y llega recortado; la cadena vacía se conserva (en la edición borra
  * el resumen) y {@code null} significa que no se envió.
  */
 public record ChangelogInput(@Nullable String version, @Nullable String title, @Nullable String summary,
-    @Nullable Instant date, boolean published, @Nullable List<ChangelogChange> content) {
+    @Nullable Instant date, @Nullable Boolean published, @Nullable List<ChangelogChange> content) {
 
   private static final Set<String> KEYS = Set.of("version", "title", "summary", "date", "published", "content");
   private static final Set<String> CHANGE_KEYS = Set.of("type", "text", "highlight");
@@ -83,7 +82,7 @@ public record ChangelogInput(@Nullable String version, @Nullable String title, @
         date = instant(rawDate.getStringValue());
       }
     }
-    boolean published = false;
+    Boolean published = partial ? null : Boolean.FALSE;
     var rawPublished = raw.get("published");
     if (rawPublished != null) {
       if (rawPublished.isBoolean()) published = rawPublished.getBooleanValue();

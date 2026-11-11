@@ -1017,7 +1017,7 @@ export interface components {
             interruptedToday: number;
             updatedAt: string;
         };
-        /** @description Estricto. Si se omite `published`, la entrada queda despublicada (`published` vale `false` por defecto también al editar). */
+        /** @description Estricto. Los campos que no llegan conservan su valor; si se omite `published`, la entrada sigue publicada o en borrador. */
         AdminUpdateChangelogRequest: {
             version?: string;
             title?: string;
@@ -1025,8 +1025,7 @@ export interface components {
             summary?: string;
             /** Format: date-time */
             date?: string;
-            /** @default false */
-            published: boolean;
+            published?: boolean;
             /** @description Como máximo 3 con `highlight: true`. */
             content?: components["schemas"]["ChangelogChange"][];
         };
