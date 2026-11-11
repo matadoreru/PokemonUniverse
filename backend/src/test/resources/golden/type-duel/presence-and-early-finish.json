@@ -143,7 +143,7 @@
     },
     {
       "kind": "timeout",
-      "now": 37000
+      "now": 34000
     },
     {
       "kind": "action",
@@ -151,7 +151,7 @@
       "action": {
         "type": "CONTINUE"
       },
-      "now": 38000
+      "now": 34500
     }
   ],
   "expected": {
@@ -1355,14 +1355,14 @@
       {
         "snapshot": {
           "lifecycle": {
-            "phase": "GAME_RESULTS",
-            "nextDeadline": null,
-            "actionEpoch": "[\"GAME_RESULTS\",3,27000,null,null,null,null,null]",
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 35000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,27000,null,null,null,null,null]",
             "spectatorIds": []
           },
           "publicState": {
             "gameId": "type-duel",
-            "phase": "GAME_RESULTS",
+            "phase": "ROUND_RESULTS",
             "mode": "CLASSIC",
             "playerIds": [
               "p1",
@@ -1395,7 +1395,7 @@
             },
             "roundStartedAt": 27000,
             "roundEndsAt": null,
-            "nextTransitionAt": null,
+            "nextTransitionAt": 35000,
             "lastRound": {
               "reason": "DISCONNECT_FORFEIT",
               "winnerId": "p1",
@@ -1407,56 +1407,7 @@
                 "p2"
               ]
             },
-            "results": {
-              "winnerId": "p1",
-              "standings": [
-                {
-                  "playerId": "p1",
-                  "position": 1,
-                  "points": 10,
-                  "won": true,
-                  "stats": {
-                    "duelsPlayed": 2,
-                    "duelsWon": 2,
-                    "correctAttempts": 1,
-                    "incorrectAttempts": 0,
-                    "correctTimeTotalMs": 500,
-                    "winRate": 100,
-                    "averageCorrectTimeMs": 500
-                  }
-                },
-                {
-                  "playerId": "p2",
-                  "position": 2,
-                  "points": 5,
-                  "won": false,
-                  "stats": {
-                    "duelsPlayed": 3,
-                    "duelsWon": 1,
-                    "correctAttempts": 0,
-                    "incorrectAttempts": 0,
-                    "correctTimeTotalMs": 0,
-                    "winRate": 33,
-                    "averageCorrectTimeMs": 0
-                  }
-                },
-                {
-                  "playerId": "p3",
-                  "position": 3,
-                  "points": 0,
-                  "won": false,
-                  "stats": {
-                    "duelsPlayed": 1,
-                    "duelsWon": 0,
-                    "correctAttempts": 0,
-                    "incorrectAttempts": 0,
-                    "correctTimeTotalMs": 0,
-                    "winRate": 0,
-                    "averageCorrectTimeMs": 0
-                  }
-                }
-              ]
-            }
+            "results": null
           },
           "playerStates": {
             "p1": {
@@ -1481,12 +1432,11 @@
               "cooldownUntil": 0
             }
           },
-          "finished": true
+          "finished": false
         }
       },
       {
-        "accepted": false,
-        "error": "No hay ningún resultado que avanzar.",
+        "accepted": true,
         "snapshot": {
           "lifecycle": {
             "phase": "GAME_RESULTS",
