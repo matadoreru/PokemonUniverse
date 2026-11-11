@@ -11,20 +11,9 @@ import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Pill } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, GuessScreen, type GuessPlateContent } from './guess-kit';
+import { useChoiceShortcuts } from './useChoiceShortcuts';
+import { usePendingAction } from './usePendingAction';
 import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
-
-/**
- * Los atajos no se disparan mientras se escribe en un campo ni sobre otro control (Enter en «Confirmar respuesta» ya
- * pulsa el botón: no se envía dos veces). Sobre una carta de opción sí: Enter confirma la elegida.
- */
-function ignoresGameShortcuts(target: EventTarget | null): boolean {
-  if (!(target instanceof Element)) return false;
-  if (target.closest('[data-trivia-card]')) return false;
-  return Boolean(target.closest('input, textarea, select, button, a, [contenteditable="true"]'));
-}
 
 /**
  * Pokémon Trivia (spec §2 y §6 «Juegos»), con el marco del kit (`GuessScreen`: placa de la ronda con el plazo y
@@ -41,7 +30,8 @@ export function PokemonTriviaGame({ room, selfId, onAction }: { room: RoomView; 
   const config = room.selectedGameConfig as Partial<PokemonTriviaConfig> | null;
   const offset = useServerOffset(room.serverNow);
   const [draft, setDraft] = useState<PokemonTriviaOptionId | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const { pending, submit } = usePendingAction(onAction);
+  const submitting = pending !== null;
   const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
   const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
   // Jugadores de la partida: los que puntúan (los espectadores no), en el orden de la sala.
@@ -66,36 +56,22 @@ export function PokemonTriviaGame({ room, selfId, onAction }: { room: RoomView; 
     setDraft((current) => triviaDraftAfterSelect(current, optionId, canAnswer, submitting));
   }, [canAnswer, submitting]);
 
-  const confirm = useCallback(async () => {
+  const confirm = () => {
     const action = triviaConfirmAction(draft, canAnswer, submitting);
-    if (!action) return;
-    setSubmitting(true);
-    try {
-      await onAction(action).catch(ignoreFailure);
-    } finally {
-      setSubmitting(false);
-    }
-  }, [canAnswer, draft, onAction, submitting]);
+    if (action) void submit(action);
+  };
 
-  // Atajos como en Shiny Quiz: 1–4 eligen y Enter confirma.
-  useEffect(() => {
-    if (!canAnswer || submitting) return undefined;
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || ignoresGameShortcuts(event.target)) return;
-      const optionId = triviaOptionFromKey(event.key, game.options);
-      if (optionId) {
-        event.preventDefault();
-        selectOption(optionId);
-        return;
-      }
-      if (event.key === 'Enter' && draft) {
-        event.preventDefault();
-        void confirm();
-      }
+  // Atajos como en Shiny Quiz: 1–4 eligen y Enter confirma (Intro sobre un control, una carta incluida, lo activa).
+  useChoiceShortcuts(canAnswer && !submitting, (key) => {
+    const optionId = triviaOptionFromKey(key, game.options);
+    if (optionId) {
+      selectOption(optionId);
+      return true;
     }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canAnswer, confirm, draft, game.options, selectOption, submitting]);
+    if (key !== 'Enter' || !draft) return false;
+    confirm();
+    return true;
+  });
 
   const category = game.questionType ? triviaCategoryLabels[game.questionType] : null;
   const correct = result ? game.options.find((option) => option.id === result.correctOptionId) : undefined;
@@ -104,7 +80,7 @@ export function PokemonTriviaGame({ room, selfId, onAction }: { room: RoomView; 
     ? { deadline: game.nextTransitionAt, serverOffset: offset, label: last ? 'Clasificación' : 'Siguiente pregunta' }
     : { deadline: game.phase === 'ROUND_ACTIVE' ? game.roundEndsAt : null, serverOffset: offset, label: 'Tiempo', totalMs: (config?.roundSeconds ?? 20) * 1_000 };
   const selected = player?.answer?.optionId ?? draft;
-  const content = plateContent({ kind, game, player, verdict, countdown: `${last ? 'Clasificación' : 'Siguiente pregunta'} en ${Math.max(0, transition)}s`, optionCount: game.options.length, draft, submitting, onConfirm: () => void confirm() });
+  const content = plateContent({ kind, game, player, verdict, countdown: `${last ? 'Clasificación' : 'Siguiente pregunta'} en ${Math.max(0, transition)}s`, optionCount: game.options.length, draft, submitting, onConfirm: confirm });
 
   return <GuessScreen gameName="Pokémon Trivia" roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} className={s.screen}
     meta={<Chip tone="neutral">{triviaDifficultyLabels[game.difficulty]}</Chip>}

@@ -12,16 +12,9 @@ import { useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './GameSkipSlot';
+import { useChoiceShortcuts } from './useChoiceShortcuts';
+import { usePendingAction } from './usePendingAction';
 import s from '../games/shiny-vote/ShinyVote.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
-
-function ignoresGameShortcuts(target: EventTarget | null): boolean {
-  if (!(target instanceof Element)) return false;
-  if (target.closest('[data-shiny-option]')) return false;
-  return Boolean(target.closest('input, textarea, select, button, a, [contenteditable="true"]'));
-}
 
 /**
  * Cartas de la ronda listas para votar: todas cargadas (o fallidas) o, como mucho, `SHINY_CARDS_TIMEOUT_MS` después de
@@ -59,7 +52,8 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
   const config = room.selectedGameConfig as ShinyVoteConfig;
   const playerState = room.gamePlayerState as ShinyVotePlayerState | null;
   const [draft, setDraft] = useState<ShinyOptionId | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const { pending, submit } = usePendingAction(onAction);
+  const submitting = pending !== null;
   const serverOffset = useServerOffset(room.serverNow);
   const active = game.phase === 'ROUND_ACTIVE';
   const reveal = game.phase === 'ROUND_RESULTS';
@@ -98,35 +92,22 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
     setDraft((current) => updateShinyDraft(current, optionId, canVote && !submitting));
   }, [canVote, submitting]);
 
-  const confirmVote = useCallback(async () => {
+  const confirmVote = () => {
     const action = createShinyVoteAction(draft, canVote, submitting);
-    if (!action) return;
-    setSubmitting(true);
-    try {
-      await onAction(action).catch(ignoreFailure);
-    } finally {
-      setSubmitting(false);
-    }
-  }, [canVote, draft, onAction, submitting]);
+    if (action) void submit(action);
+  };
 
-  useEffect(() => {
-    if (!canVote || submitting) return undefined;
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || ignoresGameShortcuts(event.target)) return;
-      const optionId = shinyOptionFromShortcut(event.key, optionIds);
-      if (optionId) {
-        event.preventDefault();
-        selectOption(optionId);
-        return;
-      }
-      if (event.key === 'Enter' && draft) {
-        event.preventDefault();
-        void confirmVote();
-      }
+  // 1–4 o A–D eligen y Enter confirma (Intro sobre un control, una carta incluida, lo activa).
+  useChoiceShortcuts(canVote && !submitting, (key) => {
+    const optionId = shinyOptionFromShortcut(key, optionIds);
+    if (optionId) {
+      selectOption(optionId);
+      return true;
     }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canVote, confirmVote, draft, optionIds, selectOption, submitting]);
+    if (key !== 'Enter' || !draft) return false;
+    confirmVote();
+    return true;
+  });
 
   const timer = active
     ? <ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} totalMs={Math.max(1, config.roundSeconds * 1_000)} label="Tiempo" />
@@ -178,7 +159,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
     correctOptionId={game.correctOptionId}
     points={playerState?.roundResult?.points ?? 0}
     submitting={submitting}
-    onConfirm={() => void confirmVote()}
+    onConfirm={confirmVote}
     survival={survivalStatus}
   />;
 
