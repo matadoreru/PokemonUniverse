@@ -194,10 +194,8 @@ public final class WouldYouRatherEngine implements
     var ballots = new LinkedHashMap<>(state.ballots());
     ballots.put(playerId, new WouldYouRatherBallot(action.preference(), action.prediction()));
     var next = state.toBuilder().ballots(ballots).build();
-    return GameActionResult.accept(
-        context.allConnectedRequiredCompleted(state.playerIds(), id -> next.ballots().containsKey(id))
-            ? resolveRound(next, context)
-            : next);
+    return GameActionResult.accept(Timing.resolveWhenRequiredPlayersComplete(next, context, next.playerIds(),
+        id -> next.ballots().containsKey(id), WouldYouRatherEngine::resolveRound));
   }
 
   @Override
@@ -213,10 +211,8 @@ public final class WouldYouRatherEngine implements
 
   @Override
   public WouldYouRatherState handlePresenceChange(WouldYouRatherState state, GameContext context) {
-    return state.phase() == GamePhase.ROUND_ACTIVE
-        && context.allConnectedRequiredCompleted(state.playerIds(), id -> state.ballots().containsKey(id))
-        ? resolveRound(state, context)
-        : state;
+    return Timing.resolveWhenRequiredPlayersComplete(state, context, state.playerIds(),
+        id -> state.ballots().containsKey(id), WouldYouRatherEngine::resolveRound);
   }
 
   @Override

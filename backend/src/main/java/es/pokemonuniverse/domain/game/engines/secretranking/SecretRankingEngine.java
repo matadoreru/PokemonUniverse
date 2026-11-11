@@ -277,10 +277,8 @@ public final class SecretRankingEngine
     var submissions = new LinkedHashMap<>(state.submissions());
     submissions.put(playerId, action.pokemonIds());
     var next = state.toBuilder().submissions(submissions).build();
-    return GameActionResult.accept(
-        context.allConnectedRequiredCompleted(state.playerIds(), id -> next.submissions().containsKey(id))
-            ? finishRound(next, context)
-            : next);
+    return GameActionResult.accept(Timing.resolveWhenRequiredPlayersComplete(next, context, next.playerIds(),
+        id -> next.submissions().containsKey(id), SecretRankingEngine::finishRound));
   }
 
   @Override
@@ -296,10 +294,8 @@ public final class SecretRankingEngine
 
   @Override
   public SecretRankingState handlePresenceChange(SecretRankingState state, GameContext context) {
-    return state.phase() == GamePhase.ROUND_ACTIVE
-        && context.allConnectedRequiredCompleted(state.playerIds(), id -> state.submissions().containsKey(id))
-        ? finishRound(state, context)
-        : state;
+    return Timing.resolveWhenRequiredPlayersComplete(state, context, state.playerIds(),
+        id -> state.submissions().containsKey(id), SecretRankingEngine::finishRound);
   }
 
   @Override

@@ -8,6 +8,7 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
@@ -90,9 +91,6 @@ public final class PokemonPaletteGuessTypes {
     }
   }
 
-  /** {@code pokemonPaletteScore}: puntos por rapidez, bonificación de podio y total. */
-  public record PokemonPaletteScore(int speedPoints, int placementBonus, int totalPoints) {}
-
   /**
    * {@code PokemonPaletteSolve}. Cuatro enteros contiguos al final: solo se construye con {@link #of}, a partir de la
    * puntuación con nombre.
@@ -102,7 +100,7 @@ public final class PokemonPaletteGuessTypes {
   public record PokemonPaletteSolve(int solveOrder, long solvedAt, long elapsedMs, int speedPoints, int placementBonus,
       int points, int attempts) {
 
-    static PokemonPaletteSolve of(int solveOrder, long solvedAt, long elapsedMs, PokemonPaletteScore score,
+    static PokemonPaletteSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score,
         int attempts) {
       return new PokemonPaletteSolve(solveOrder, solvedAt, elapsedMs, score.speedPoints(), score.placementBonus(),
           score.totalPoints(), attempts);

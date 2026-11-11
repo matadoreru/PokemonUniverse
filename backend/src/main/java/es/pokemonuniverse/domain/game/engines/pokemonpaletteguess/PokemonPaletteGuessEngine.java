@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
+import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -281,7 +282,7 @@ public final class PokemonPaletteGuessEngine implements
       int solveOrder = state.solves().size() + 1;
       long roundStartedAt = Objects.requireNonNull(state.roundStartedAt(), "roundStartedAt");
       long elapsedMs = context.now() - roundStartedAt;
-      var score = PokemonPaletteGuessRules.pokemonPaletteScore(roundStartedAt, state.config().roundSeconds(),
+      var score = SpeedPodiumScore.of(roundStartedAt, state.config().roundSeconds(),
           context.now(), solveOrder);
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, PokemonPaletteSolve.of(solveOrder, context.now(), elapsedMs, score, attempts));

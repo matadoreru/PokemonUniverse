@@ -4,7 +4,6 @@ import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
-import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhoPokemonScore;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonHint;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPlayerStats;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonState;
@@ -19,11 +18,6 @@ import java.util.regex.Pattern;
 
 /** Traducción literal de {@code whos-that-pokemon/rules.ts}. */
 public final class WhosThatPokemonRules {
-
-  public static final int MAX_POINTS = 10;
-  public static final int MIN_POINTS = 1;
-  /** {@code WHOS_THAT_POKEMON_PODIUM_BONUSES}. */
-  static final int[] PODIUM_BONUSES = {3, 2, 1};
 
   private static final Pattern IMAGE_PATH = Pattern.compile("\\.(png|webp)$", Pattern.CASE_INSENSITIVE);
 
@@ -51,16 +45,6 @@ public final class WhosThatPokemonRules {
     } catch (URISyntaxException e) {
       return false;
     }
-  }
-
-  /** {@code whoPokemonScore}: la proporción restante es una división en coma flotante, como en JS. */
-  public static WhoPokemonScore whoPokemonScore(long roundStartedAt, int roundSeconds, long solvedAt, int solveOrder) {
-    long duration = roundSeconds * 1_000L;
-    long elapsed = Math.max(0, Math.min(duration, solvedAt - roundStartedAt));
-    double remainingRatio = Math.max(0, 1 - (double) elapsed / duration);
-    int speedPoints = (int) Math.max(MIN_POINTS, Math.ceil(remainingRatio * MAX_POINTS));
-    int placementBonus = solveOrder >= 1 && solveOrder <= PODIUM_BONUSES.length ? PODIUM_BONUSES[solveOrder - 1] : 0;
-    return new WhoPokemonScore(speedPoints, placementBonus, speedPoints + placementBonus);
   }
 
   /** {@code buildWhoPokemonHints}: generación, primer tipo y etapa evolutiva o número de tipos; como mucho 3. */

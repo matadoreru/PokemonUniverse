@@ -312,10 +312,8 @@ public final class PokemonRedFlagEngine
       var answers = new LinkedHashMap<>(state.answers());
       answers.put(answerId, new PokemonRedFlagAnswer(answerId, playerId, submit.text()));
       var next = state.toBuilder().drafts(drafts).answers(answers).build();
-      return GameActionResult.accept(
-          context.allConnectedRequiredCompleted(state.playerIds(), id -> hasAnswer(next, id))
-              ? beginVoting(next, context)
-              : next);
+      return GameActionResult.accept(Timing.resolveWhenRequiredPlayersComplete(next, context, next.playerIds(),
+          id -> hasAnswer(next, id), PokemonRedFlagEngine::beginVoting));
     }
     var vote = (PokemonRedFlagAction.Vote) action;
     if (state.phase() != GamePhase.VOTING && state.phase() != GamePhase.REVOTE) {
@@ -352,9 +350,9 @@ public final class PokemonRedFlagEngine
 
   @Override
   public PokemonRedFlagState handlePresenceChange(PokemonRedFlagState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE
-        && context.allConnectedRequiredCompleted(state.playerIds(), id -> hasAnswer(state, id))) {
-      return beginVoting(state, context);
+    if (state.phase() == GamePhase.ROUND_ACTIVE) {
+      return Timing.resolveWhenRequiredPlayersComplete(state, context, state.playerIds(), id -> hasAnswer(state, id),
+          PokemonRedFlagEngine::beginVoting);
     }
     if ((state.phase() == GamePhase.VOTING || state.phase() == GamePhase.REVOTE) && allEligibleVoted(state, context)) {
       return resolveVote(state, context);

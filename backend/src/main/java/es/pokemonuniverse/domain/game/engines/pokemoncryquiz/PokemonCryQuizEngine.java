@@ -16,6 +16,7 @@ import es.pokemonuniverse.domain.game.engine.PokemonAudioCatalog.CryVersion;
 import es.pokemonuniverse.domain.game.engine.infra.AssetTokens;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
+import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -278,7 +279,7 @@ public final class PokemonCryQuizEngine implements
       long roundStartedAt = Objects.requireNonNull(state.roundStartedAt(), "roundStartedAt");
       int solveOrder = state.solves().size() + 1;
       long elapsedMs = context.now() - roundStartedAt;
-      var score = PokemonCryQuizRules.pokemonCryScore(roundStartedAt, state.config().roundSeconds(), context.now(),
+      var score = SpeedPodiumScore.of(roundStartedAt, state.config().roundSeconds(), context.now(),
           solveOrder);
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, PokemonCryQuizSolve.of(solveOrder, context.now(), elapsedMs, score, attempts));

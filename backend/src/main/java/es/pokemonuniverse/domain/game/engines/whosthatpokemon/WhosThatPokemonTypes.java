@@ -8,6 +8,7 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
@@ -86,19 +87,16 @@ public final class WhosThatPokemonTypes {
   public record WhosThatPokemonAttempt(String playerId, WhosThatPokemonPokemonSummary guessedPokemon,
       long attemptedAt) {}
 
-  /** {@code WhoPokemonScore}, antes en {@code rules.ts}. */
-  public record WhoPokemonScore(int speedPoints, int placementBonus, int totalPoints) {}
-
   /**
    * {@code WhosThatPokemonSolve}. Cuatro enteros contiguos: fuera de este record solo se construye con {@link #of}, que
-   * toma la puntuación como {@link WhoPokemonScore}.
+   * toma la puntuación como {@link SpeedPodiumScore}.
    */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record WhosThatPokemonSolve(int solveOrder, long solvedAt, long elapsedMs, int speedPoints,
       int placementBonus, int points, int attempts) {
 
-    static WhosThatPokemonSolve of(int solveOrder, long solvedAt, long elapsedMs, WhoPokemonScore score, int attempts) {
+    static WhosThatPokemonSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score, int attempts) {
       return new WhosThatPokemonSolve(solveOrder, solvedAt, elapsedMs, score.speedPoints(), score.placementBonus(),
           score.totalPoints(), attempts);
     }

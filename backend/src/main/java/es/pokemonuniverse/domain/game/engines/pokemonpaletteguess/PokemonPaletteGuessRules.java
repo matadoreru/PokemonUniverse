@@ -5,7 +5,6 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteGuessState;
-import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteScore;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteStats;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -13,20 +12,7 @@ import java.util.LinkedHashMap;
 /** Traducción literal del TS que antes estaba en {@code pokemon-palette-guess/rules.ts}. */
 public final class PokemonPaletteGuessRules {
 
-  /** {@code PODIUM_BONUSES}. */
-  private static final int[] PODIUM_BONUSES = {3, 2, 1};
-
   private PokemonPaletteGuessRules() {}
-
-  /** Hasta 10 puntos por rapidez (mínimo 1) más el podio; aritmética {@code double}, como JS. */
-  public static PokemonPaletteScore pokemonPaletteScore(long roundStartedAt, int roundSeconds, long solvedAt,
-      int solveOrder) {
-    long duration = roundSeconds * 1_000L;
-    long elapsed = Math.max(0, Math.min(duration, solvedAt - roundStartedAt));
-    int speedPoints = Math.max(1, (int) Math.ceil(Math.max(0, 1 - (double) elapsed / duration) * 10));
-    int placementBonus = solveOrder >= 1 && solveOrder <= PODIUM_BONUSES.length ? PODIUM_BONUSES[solveOrder - 1] : 0;
-    return new PokemonPaletteScore(speedPoints, placementBonus, speedPoints + placementBonus);
-  }
 
   /**
    * Clasificación final: puntos y aciertos descendentes y, al final, {@code playerId.localeCompare}, aquí
