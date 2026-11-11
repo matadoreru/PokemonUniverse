@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokedexdistance;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,16 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
-import es.pokemonuniverse.domain.game.engine.GamePlayer;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceConfig.SelectionVisibility;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.PokedexDistanceAction;
 import es.pokemonuniverse.domain.json.JsonTree;
-import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
+import es.pokemonuniverse.support.EngineTestKit;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +24,8 @@ class PokedexDistanceEngineTest {
 
   private final PokedexDistanceEngine engine = new PokedexDistanceEngine(GoldenManifests.of(PokedexDistanceEngine.ID));
 
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
   private static GameContext context(int players) {
-    var list = new java.util.ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(1000).build();
+    return EngineTestKit.context(players);
   }
 
   @Test
@@ -107,9 +98,7 @@ class PokedexDistanceEngineTest {
   }
 
   private static GameContext contextAt(int players, long now) {
-    var list = new java.util.ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(now).build();
+    return EngineTestKit.builder(players).now(now).build();
   }
 
   /** Estado en el tercer desempate entre p1 y p2 con objetivo #1 (Carla, si la hay, sobrevive fuera). */

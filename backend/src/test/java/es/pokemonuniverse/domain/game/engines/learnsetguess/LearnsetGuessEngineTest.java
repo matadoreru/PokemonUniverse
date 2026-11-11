@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.learnsetguess;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -11,7 +12,6 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Move;
@@ -22,7 +22,7 @@ import es.pokemonuniverse.domain.pokemon.ResolvedLevelUpMove;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
+import es.pokemonuniverse.support.EngineTestKit;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,14 +45,8 @@ class LearnsetGuessEngineTest {
 
   private final LearnsetGuessEngine engine = new LearnsetGuessEngine(GoldenManifests.of(LearnsetGuessEngine.ID));
 
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
   private static GameContext context(PokemonCatalog catalog, int players) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(catalog, new Mulberry32(1)).players(list).now(1000).build();
+    return EngineTestKit.builder(catalog, 1, players).build();
   }
 
   private static LearnsetGuessConfig config(boolean showLevels, boolean showEvolution) {
@@ -310,9 +304,7 @@ class LearnsetGuessEngineTest {
   }
 
   private static GameContext manualContext(int players, int seed) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GOLDEN, new Mulberry32(seed)).players(list).now(1000).build();
+    return EngineTestKit.builder(GOLDEN, seed, players).build();
   }
 
   /** Un Pokémon de Gen 1 que no es la respuesta de la ronda. */

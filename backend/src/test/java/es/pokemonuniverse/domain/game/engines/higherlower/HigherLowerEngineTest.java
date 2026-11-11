@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.higherlower;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -21,10 +22,8 @@ import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
+import es.pokemonuniverse.support.EngineTestKit;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -33,10 +32,6 @@ import org.junit.jupiter.api.Test;
 class HigherLowerEngineTest {
 
   private final HigherLowerEngine engine = new HigherLowerEngine(GoldenManifests.of(HigherLowerEngine.ID));
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
 
   @Test
   void defaultConfigMatchesTheRegistryManifest() {
@@ -110,9 +105,7 @@ class HigherLowerEngineTest {
   }
 
   private static GamePlayer[] players(int count) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= count; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return list.toArray(GamePlayer[]::new);
+    return EngineTestKit.players(count).toArray(GamePlayer[]::new);
   }
 
   /** La respuesta correcta de la ronda activa (la misma cuenta que el motor al revelar). */

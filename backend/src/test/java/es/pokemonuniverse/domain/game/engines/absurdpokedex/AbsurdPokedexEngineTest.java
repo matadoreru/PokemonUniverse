@@ -1,5 +1,8 @@
 package es.pokemonuniverse.domain.game.engines.absurdpokedex;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
+import static es.pokemonuniverse.support.EngineTestKit.players;
+import static es.pokemonuniverse.support.EngineTestKit.wire;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -14,21 +17,20 @@ import es.pokemonuniverse.domain.game.engine.GameActionResult;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
+import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexAction;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexEntry;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexPlayerState;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexPlayerStats;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexState;
-import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.PokedexEntryText;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
+import es.pokemonuniverse.support.EngineTestKit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,32 +41,11 @@ import org.junit.jupiter.api.Test;
 class AbsurdPokedexEngineTest {
 
   private static final InMemoryPokemonCatalog CATALOG = GoldenCatalogs.load("gen1-2");
-  /** El mapper del cable ({@code NON_NULL}, como {@code application.yml}). */
-  private static final ObjectMapper WIRE =
-      ObjectMapper.create(Map.of("micronaut.serde.serialization.inclusion", "NON_NULL"));
 
   private final AbsurdPokedexEngine engine = new AbsurdPokedexEngine(GoldenManifests.of(AbsurdPokedexEngine.ID));
 
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
-  private static String wire(Object value) {
-    try {
-      return WIRE.writeValueAsString(value);
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
-  }
-
-  private static List<GamePlayer> players(int count) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= count; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return list;
-  }
-
   private static GameContext context(int players, long seed) {
-    return GameContext.builder(CATALOG, new Mulberry32(seed)).players(players(players)).now(1_000).build();
+    return EngineTestKit.builder(CATALOG, seed, players).build();
   }
 
   private static AbsurdPokedexConfig config(AbsurdPokedexMode mode, int rounds) {

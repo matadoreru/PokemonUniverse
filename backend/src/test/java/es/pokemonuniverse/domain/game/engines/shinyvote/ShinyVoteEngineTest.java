@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.shinyvote;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -26,8 +27,7 @@ import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
+import es.pokemonuniverse.support.EngineTestKit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +39,8 @@ class ShinyVoteEngineTest {
 
   private final ShinyVoteEngine engine = new ShinyVoteEngine(GoldenManifests.of(ShinyVoteEngine.ID));
 
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
   private static GameContext context(int players) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(1000)
-        .roomCode("GOLD01").build();
+    return EngineTestKit.builder(players).roomCode("GOLD01").build();
   }
 
   private static ShinyVoteConfig config(List<Integer> generations, CandidateMode mode, int optionCount) {
@@ -213,9 +206,7 @@ class ShinyVoteEngineTest {
   }
 
   private static GamePlayer[] players(int count) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= count; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return list.toArray(GamePlayer[]::new);
+    return EngineTestKit.players(count).toArray(GamePlayer[]::new);
   }
 
   private static GameContext at(long now, GamePlayer... players) {
