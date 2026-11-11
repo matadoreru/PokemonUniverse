@@ -16,6 +16,8 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
+import es.pokemonuniverse.support.MutableClock;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -29,11 +31,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** {@code persistGameResults} contra Postgres real (Test Resources). */
+/**
+ * {@code persistGameResults} contra Postgres real (Test Resources). El reloj va fijo a mediodía UTC para que «Búho
+ * nocturno» (fin entre las 03:00 y las 05:00 de Madrid) no dependa de la hora a la que se ejecuta el test.
+ */
 @MicronautTest(transactional = false)
+@Property(name = "test.clock.mutable", value = "true")
 class JpaGameResultsPersisterTest {
+
+  private static final Instant NOON = Instant.parse("2026-11-07T12:00:00Z");
 
   @Inject JpaGameResultsPersister persister;
   @Inject RoomHistoryWriter writer;
@@ -47,6 +56,12 @@ class JpaGameResultsPersisterTest {
   @Inject GameRegistry registry;
   @Inject JsonMapper json;
   @Inject UserAchievementRepository userAchievements;
+  @Inject MutableClock clock;
+
+  @BeforeEach
+  void fixClock() {
+    clock.set(NOON);
+  }
 
   private AuthUser registeredUser() {
     var tag = UUID.randomUUID().toString().substring(0, 8);
