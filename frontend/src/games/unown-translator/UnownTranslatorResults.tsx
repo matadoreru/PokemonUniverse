@@ -1,16 +1,16 @@
 import type { MoveCategory, PokemonType, UnownTranslatorPublicState, UnownTranslatorRoundResult } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, EyeOff, Zap } from 'lucide-react';
-import { categoryLabel } from '../games/learnset-guess/presentation';
-import { Card, Chip, cx, Icon, Panel, TypeBadge } from '../ui';
-import { guessSprite, guessTop } from './guess-kit';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords, type ResultsRecordItem } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { plural, roundsLabel } from '../lib/format';
-import s from '../games/unown-translator/UnownTranslator.module.css';
+import { categoryLabel } from '../learnset-guess/presentation';
+import { Card, Chip, cx, Icon, Panel, TypeBadge } from '../../ui';
+import { guessSprite, guessTop } from '../../room/guess-kit';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords, type ResultsRecordItem } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { plural, roundsLabel } from '../../lib/format';
+import s from './UnownTranslator.module.css';
 
 const GAME_NAME = 'Traductor Unown';
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;

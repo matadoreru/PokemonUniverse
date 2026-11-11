@@ -2,17 +2,17 @@ import type { PokemonTriviaPlayerState, PokemonTriviaPublicState, PokemonTriviaR
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokemonTriviaConfigPanel } from '../games/pokemon-trivia/ConfigPanel';
+import { PokemonTriviaConfigPanel } from './ConfigPanel';
 import {
   triviaAnnouncement, triviaCategoryScores, triviaComparedValue, triviaConfirmAction, triviaDraftAfterSelect, triviaFocusKey, triviaOptionFromKey, triviaPlateKind, triviaRanking, triviaVerdict, triviaVisibleRound,
-} from '../games/pokemon-trivia/presentation';
+} from './presentation';
 import { PokemonTriviaGame } from './PokemonTriviaGame';
 import { PokemonTriviaResults } from './PokemonTriviaResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 const options = [
   { id: 'A' as const, pokemon: { id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' } },

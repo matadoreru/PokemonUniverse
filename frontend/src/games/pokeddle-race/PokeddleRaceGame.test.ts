@@ -3,20 +3,20 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import { AppHeader } from '../components/Layout';
-import { PokeddleRaceConfigPanel } from '../games/pokeddle-race/ConfigPanel';
+import { AppHeader } from '../../components/Layout';
+import { PokeddleRaceConfigPanel } from './ConfigPanel';
 import { PokeddleBoard } from './PokeddleBoard';
 import {
   formatPokeddleFeedback, getPokeddleColumns, pokeddleAnnouncement, pokeddleFocusKey, pokeddleMatchCount, pokeddlePlateKind, pokeddleRivalStatus, pokeddleVisibleSecret,
 } from './pokeddle-presentation';
 import { PokeddleRaceGame } from './PokeddleRaceGame';
 import { PokeddleRaceResults } from './PokeddleRaceResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const allClues: PokeddleClueKey[] = ['generation', 'dexNumber', 'types', 'typeCount', 'hp', 'attack', 'defense', 'specialAttack', 'specialDefense', 'speed', 'height', 'weight'];
 const SECRET = { id: 'lucario', name: 'Lucario', sprite: '/secret-lucario.png' };

@@ -1,24 +1,24 @@
 import type { PokeddlePublicBoard, PokeddleRaceConfig, PokeddleRacePlayerState, PokeddleRacePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, Flag, Search, Send, Users } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Avatar } from '../components/Avatar';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { Badge, Chip, cx, Dialog, Icon, Panel, Row, RowButton, StateBox } from '../ui';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { GuessPanel, guessSprite, type GuessPlateContent } from './guess-kit';
-import { GameScreen } from './game-kit/GameScreen';
+import { Avatar } from '../../components/Avatar';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { Badge, Chip, cx, Dialog, Icon, Panel, Row, RowButton, StateBox } from '../../ui';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { GuessPanel, guessSprite, type GuessPlateContent } from '../../room/guess-kit';
+import { GameScreen } from '../../room/game-kit/GameScreen';
 import { PokeddleBoard, PokeddleLegend } from './PokeddleBoard';
-import { playerColor } from '../lib/player-color';
-import type { PokemonSearchOption } from './game-kit/pokemon-search';
+import { playerColor } from '../../lib/player-color';
+import type { PokemonSearchOption } from '../../room/game-kit/pokemon-search';
 import {
   pokeddleAnnouncement, pokeddleAttemptsText, pokeddleFocusKey, pokeddleMatchCount, pokeddlePlateKind, pokeddleRivalStatus, pokeddleVisibleSecret,
   type PokeddlePlateKind, type PokeddleRivalStatus,
 } from './pokeddle-presentation';
-import type { ActiveGameProps } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/pokeddle-race/PokeddleRace.module.css';
+import type { ActiveGameProps } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './PokeddleRace.module.css';
 
 const GAME_NAME = 'Pokédle Race';
 

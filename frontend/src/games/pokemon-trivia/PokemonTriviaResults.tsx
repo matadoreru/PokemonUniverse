@@ -1,14 +1,14 @@
 import type { PokemonTriviaPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Target, Timer } from 'lucide-react';
-import { triviaAccuracy, triviaCategoryScores } from '../games/pokemon-trivia/presentation';
-import { Chip, Icon } from '../ui';
-import { guessSeconds, guessTop } from './guess-kit';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
+import { triviaAccuracy, triviaCategoryScores } from './presentation';
+import { Chip, Icon } from '../../ui';
+import { guessSeconds, guessTop } from '../../room/guess-kit';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import s from './PokemonTrivia.module.css';
 
 /**
  * Resultados de Pokémon Trivia: la clasificación del catálogo (`ResultsShell`: podio, ganador y «+N») con, en texto, los

@@ -1,13 +1,13 @@
 import type { PokeddleRacePublicState } from '@pokemon-universe/shared/public';
 import { Flag, ListChecks, Timer, X, Check } from 'lucide-react';
-import { Chip, Icon } from '../ui';
-import { guessSeconds, guessSprite, guessTop } from './guess-kit';
+import { Chip, Icon } from '../../ui';
+import { guessSeconds, guessSprite, guessTop } from '../../room/guess-kit';
 import { pokeddleAttemptsText, pokeddleVisibleSecret } from './pokeddle-presentation';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { roundsLabel } from '../lib/format';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { roundsLabel } from '../../lib/format';
 
 const num = (stats: Record<string, number>, key: string) => Number(stats[key] ?? 0);
 

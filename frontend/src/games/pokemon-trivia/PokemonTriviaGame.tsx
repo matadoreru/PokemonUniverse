@@ -1,21 +1,21 @@
 import type { PokemonTriviaConfig, PokemonTriviaOptionId, PokemonTriviaPlayerState, PokemonTriviaPublicState } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, MousePointerClick, Send, TimerOff, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { TriviaAnswersBoard, TriviaBoard, TriviaScoreboard } from '../games/pokemon-trivia/TriviaParts';
+import { TriviaAnswersBoard, TriviaBoard, TriviaScoreboard } from './TriviaParts';
 import {
   triviaAnnouncement, triviaCategoryLabels, triviaConfirmAction, triviaDifficultyLabels, triviaDraftAfterSelect, triviaFocusKey, triviaOptionFromKey, triviaOptionLabel, triviaPlateKind, triviaVerdict, triviaVisibleRound, type TriviaPlateKind, type TriviaVerdict,
-} from '../games/pokemon-trivia/presentation';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { Chip, Pill, ScorePop } from '../ui';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { GuessPanel, type GuessPlateContent } from './guess-kit';
-import { GameScreen } from './game-kit/GameScreen';
-import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
-import { usePendingAction } from './game-kit/usePendingAction';
-import type { ActiveGameProps } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
+} from './presentation';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { Chip, Pill, ScorePop } from '../../ui';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { GuessPanel, type GuessPlateContent } from '../../room/guess-kit';
+import { GameScreen } from '../../room/game-kit/GameScreen';
+import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
+import { usePendingAction } from '../../room/game-kit/usePendingAction';
+import type { ActiveGameProps } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './PokemonTrivia.module.css';
 
 /**
  * Pokémon Trivia (spec §2 y §6 «Juegos»), con el marco del kit (`GameScreen`: placa de la ronda con el plazo y

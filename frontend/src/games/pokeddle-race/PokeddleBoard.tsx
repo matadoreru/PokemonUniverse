@@ -3,10 +3,10 @@ import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, EqualApproximately, Minus, X } from 'lucide-react';
 import { memo, useMemo, type CSSProperties } from 'react';
-import { Badge, Chip, cx, Icon, Panel, StateBox, TypeBadge } from '../ui';
-import { guessSprite } from './guess-kit';
+import { Badge, Chip, cx, Icon, Panel, StateBox, TypeBadge } from '../../ui';
+import { guessSprite } from '../../room/guess-kit';
 import { formatPokeddleFeedback, getPokeddleColumns, latestGuessRound, POKEDDLE_LEGEND, pokeddleAttemptsText, type PokeddleColumn, type PokeddleFeedbackSemantic } from './pokeddle-presentation';
-import s from '../games/pokeddle-race/PokeddleBoard.module.css';
+import s from './PokeddleBoard.module.css';
 
 /** Icono de cada resultado: el color nunca va solo (icono y palabra a la vista, frase para lectores). */
 export const POKEDDLE_ICONS: Record<PokeddleFeedbackSemantic, LucideIcon> = { match: Check, partial: EqualApproximately, none: X, higher: ArrowUp, lower: ArrowDown };

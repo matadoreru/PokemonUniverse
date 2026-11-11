@@ -3,15 +3,15 @@ import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { UnownTranslatorConfigPanel } from '../games/unown-translator/ConfigPanel';
-import s from '../games/unown-translator/UnownTranslator.module.css';
+import { UnownTranslatorConfigPanel } from './ConfigPanel';
+import s from './UnownTranslator.module.css';
 import { UnownTranslatorGame } from './UnownTranslatorGame';
 import { UnownTranslatorResults } from './UnownTranslatorResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 const NAMES = ['Eru', 'Ana', 'Leo'];
 type Phase = 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS';
@@ -180,7 +180,7 @@ describe('Traductor Unown: pantalla', () => {
     expect(count(message, 'role="img"')).toBe(20);
     // Cada pieza, glifo oculto o letra revelada, lleva `.glyph`, que les da a todas el mismo lado (`--unown-size`).
     expect(count(message, `class="[^"]*\\b${s.glyph}\\b`)).toBe(20);
-    expect(readFileSync(new URL('../games/unown-translator/UnownTranslator.module.css', import.meta.url), 'utf8')).toMatch(/\.message \.glyph\s*\{[^}]*--glyph-size: var\(--unown-size\)/);
+    expect(readFileSync(new URL('./UnownTranslator.module.css', import.meta.url), 'utf8')).toMatch(/\.message \.glyph\s*\{[^}]*--glyph-size: var\(--unown-size\)/);
     // Las medidas con las que el CSS escala el mensaje: 3 palabras, 20 piezas y 9 en la más larga.
     expect(message).toMatch(/--words:\s*3/);
     expect(message).toMatch(/--total:\s*20/);

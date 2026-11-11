@@ -130,8 +130,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokeddle-race',
   config: component(() => import('./pokeddle-race/ConfigPanel'), 'PokeddleRaceConfigPanel'),
-  active: component(() => import('../room/PokeddleRaceGame'), 'PokeddleRaceGame'),
-  results: component(() => import('../room/PokeddleRaceResults'), 'PokeddleRaceResults'),
+  active: component(() => import('./pokeddle-race/PokeddleRaceGame'), 'PokeddleRaceGame'),
+  results: component(() => import('./pokeddle-race/PokeddleRaceResults'), 'PokeddleRaceResults'),
 })).register(clientModule({
   id: 'pokemon-bingo',
   config: component(() => import('./pokemon-bingo/ConfigPanel'), 'PokemonBingoConfigPanel'),
@@ -225,8 +225,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-trivia',
   config: component(() => import('./pokemon-trivia/ConfigPanel'), 'PokemonTriviaConfigPanel'),
-  active: component(() => import('../room/PokemonTriviaGame'), 'PokemonTriviaGame'),
-  results: component(() => import('../room/PokemonTriviaResults'), 'PokemonTriviaResults'),
+  active: component(() => import('./pokemon-trivia/PokemonTriviaGame'), 'PokemonTriviaGame'),
+  results: component(() => import('./pokemon-trivia/PokemonTriviaResults'), 'PokemonTriviaResults'),
 })).register(clientModule({
   id: 'pokemon-palette-guess',
   config: component(() => import('./pokemon-palette-guess/ConfigPanel'), 'PokemonPaletteGuessConfigPanel'),
@@ -245,8 +245,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'unown-translator',
   config: component(() => import('./unown-translator/ConfigPanel'), 'UnownTranslatorConfigPanel'),
-  active: component(() => import('../room/UnownTranslatorGame'), 'UnownTranslatorGame'),
-  results: component(() => import('../room/UnownTranslatorResults'), 'UnownTranslatorResults'),
+  active: component(() => import('./unown-translator/UnownTranslatorGame'), 'UnownTranslatorGame'),
+  results: component(() => import('./unown-translator/UnownTranslatorResults'), 'UnownTranslatorResults'),
 })).register(clientModule({
   id: 'who-am-i',
   config: component(() => import('./who-am-i/ConfigPanel'), 'WhoAmIConfigPanel'),
