@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * {@code RoomView} de {@code room.ts} con exactamente sus claves; las opcionales de TS siempre están presentes, como
- * las envía Node. Se construye con {@link Builder}: son 29 campos.
+ * las envía Node. Se construye con {@link Builder}: son 30 campos.
  */
 @Serdeable
 @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -48,6 +48,8 @@ public record RoomView(
     @Nullable JsonNode game,
     @Nullable JsonNode gamePlayerState,
     long serverNow,
+    /** En {@code GAME_RESULTS}, cuándo sigue sola la sesión; {@code null} si no sigue sola o fuera de los resultados. */
+    @Nullable Long resultsEndsAt,
     int hostCustomCategoryCount,
     int hostWouldYouRatherPromptCount,
     @Nullable DailyView daily) {
@@ -113,7 +115,7 @@ public record RoomView(
         .gameConfigs(gameConfigs).customizedGameIds(customizedGameIds).gameSelectionMode(gameSelectionMode)
         .allowedModes(allowedModes).nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
         .sessionStandings(sessionStandings).sessionHistory(sessionHistory).gameActionEpoch(gameActionEpoch).game(game)
-        .gamePlayerState(gamePlayerState).serverNow(serverNow).hostCustomCategoryCount(hostCustomCategoryCount)
+        .gamePlayerState(gamePlayerState).serverNow(serverNow).resultsEndsAt(resultsEndsAt).hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount).daily(daily);
   }
 
@@ -143,6 +145,7 @@ public record RoomView(
     private JsonNode game;
     private JsonNode gamePlayerState;
     private long serverNow;
+    private Long resultsEndsAt;
     private int hostCustomCategoryCount;
     private int hostWouldYouRatherPromptCount;
     private DailyView daily;
@@ -200,6 +203,8 @@ public record RoomView(
 
     public Builder serverNow(long v) { serverNow = v; return this; }
 
+    public Builder resultsEndsAt(@Nullable Long v) { resultsEndsAt = v; return this; }
+
     public Builder hostCustomCategoryCount(int v) { hostCustomCategoryCount = v; return this; }
 
     public Builder hostWouldYouRatherPromptCount(int v) { hostWouldYouRatherPromptCount = v; return this; }
@@ -210,7 +215,7 @@ public record RoomView(
       return new RoomView(roomInstanceId, revision, gameCatalogVersion, code, phase, hostId, maxPlayers, members,
           availableGames, selectedGameId, selectedGameConfig, sessionMode, gameConfigs, customizedGameIds,
           gameSelectionMode, allowedModes, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
-          gameActionEpoch, game, gamePlayerState, serverNow, hostCustomCategoryCount, hostWouldYouRatherPromptCount,
+          gameActionEpoch, game, gamePlayerState, serverNow, resultsEndsAt, hostCustomCategoryCount, hostWouldYouRatherPromptCount,
           daily);
     }
   }

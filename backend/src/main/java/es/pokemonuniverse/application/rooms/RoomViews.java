@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.room.GameModes;
 import es.pokemonuniverse.domain.room.GameSkip;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.PresenceStatus;
+import es.pokemonuniverse.domain.room.RoomPhase;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.LinkedHashMap;
@@ -91,6 +92,7 @@ final class RoomViews {
         .game(game != null ? toTree.apply(game.engine.getPublicState(game.state, context)) : null)
         .gamePlayerState(null)
         .serverNow(clock.now())
+        .resultsEndsAt(room.phase == RoomPhase.GAME_RESULTS ? room.resultsEndsAt : null)
         .hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount)
         .daily(daily == null ? null : dailyView(daily))

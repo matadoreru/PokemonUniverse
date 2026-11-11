@@ -1,7 +1,8 @@
 import { isSessionComplete, type RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { RotateCcw, StopCircle } from 'lucide-react';
-import { cx, Icon, Panel, Pill } from '../../ui';
+import { Flame, RotateCcw, StopCircle } from 'lucide-react';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { Badge, cx, Icon, Panel, Pill, timerSeconds } from '../../ui';
 import s from './ResultsRecords.module.css';
 
 /** Un récord de la partida. */
@@ -48,8 +49,30 @@ export function ResultsRecords({ id, title = 'Récords de la partida', records }
   </Panel>;
 }
 
-/** Lo de la sala que decide el texto de «Continuar»: si la sesión ya ha terminado. */
-export type ResultsSession = Pick<RoomView, 'sessionMode' | 'gamesPlayed' | 'sessionStandings'>;
+/**
+ * Lo de la sala que usan las acciones: si la sesión ya ha terminado (el texto de «Continuar»), si la partida valió doble
+ * (`sessionHistory`) y cuándo sigue sola (`resultsEndsAt`, en el reloj de `serverNow`).
+ */
+export type ResultsSession = Pick<RoomView, 'sessionMode' | 'gamesPlayed' | 'sessionStandings'> & Partial<Pick<RoomView, 'sessionHistory' | 'resultsEndsAt' | 'serverNow'>>;
+
+/** La partida que acaba de terminar valió doble: lo dice el servidor en su entrada del historial de la sesión. */
+export function resultsCountedDouble(room: ResultsSession): boolean {
+  const last = room.sessionHistory?.at(-1);
+  return last !== undefined && last.gameNumber === room.gamesPlayed && last.pointsMultiplier === 2;
+}
+
+/** Texto de la cuenta atrás hasta que la sesión sigue sola. */
+export function resultsCountdownText(seconds: number): string {
+  return seconds > 0 ? `Siguiente partida en ${seconds} s` : 'Empieza la siguiente partida…';
+}
+
+/** Cuenta atrás visible (sin región viva: cambia cada segundo) hasta que la sesión sigue sola; nada si no sigue sola. */
+function ResultsCountdown({ endsAt, serverNow }: { endsAt: number | null; serverNow: number }) {
+  const offset = useServerOffset(serverNow);
+  const remainingMs = useRemainingMs(endsAt, offset, 250);
+  if (endsAt === null) return null;
+  return <p className={s.countdown} role="timer" data-testid="results-countdown">{resultsCountdownText(timerSeconds(endsAt, endsAt - remainingMs))}</p>;
+}
 
 /** Texto de la acción del host tras una partida: «Ver clasificación final» si la sesión ha terminado. */
 export function resultsContinueLabel(room: ResultsSession): string {
@@ -60,10 +83,13 @@ export function resultsContinueLabel(room: ResultsSession): string {
 
 /**
  * Acciones de `ResultsShell`: «Continuar sesión» («Ver clasificación final» si la sesión ha terminado, igual en todos
- * los juegos) y «Terminar sesión» para el host; para el resto, la espera.
+ * los juegos) y «Terminar sesión» para el host; para el resto, la espera. Si queda sesión, todos ven la cuenta atrás
+ * hasta que sigue sola, y si la partida valió doble, la insignia.
  */
 export function ResultsHostActions({ room, host, onLobby, onEnd, waitingText = 'Esperando al host…' }: { room: ResultsSession; host: boolean; onLobby(): void; onEnd(): void; waitingText?: string }) {
+  const doubled = resultsCountedDouble(room) && <Badge><Icon icon={Flame} size={18} />Última partida: vale doble</Badge>;
+  const countdown = <ResultsCountdown endsAt={room.resultsEndsAt ?? null} serverNow={room.serverNow ?? 0} />;
   return host
-    ? <><Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>{resultsContinueLabel(room)}</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
-    : <p className={s.waiting}>{waitingText}</p>;
+    ? <>{doubled}{countdown}<Pill variant="yellow" icon={RotateCcw} onClick={onLobby}>{resultsContinueLabel(room)}</Pill><Pill variant="ghost" icon={StopCircle} onClick={onEnd}>Terminar sesión</Pill></>
+    : <>{doubled}<p className={s.waiting}>{waitingText}</p>{countdown}</>;
 }

@@ -42,6 +42,11 @@ public final class LiveRoom {
   public List<SessionGameSummary> sessionHistory = new ArrayList<>();
   public @Nullable GameRuntime game;
   public @Nullable RoomTimer transitionTimer;
+  /**
+   * En {@code GAME_RESULTS}, cuándo sigue sola la sesión si el host no lo hace antes; {@code null} si no sigue sola (la
+   * sesión ha terminado o es el reto diario) o fuera de los resultados.
+   */
+  public @Nullable Long resultsEndsAt;
   /** Sala del reto diario: privada, de una cuenta y sin lobby; {@code null} en las salas normales. */
   public @Nullable DailyRoom daily;
   public final long createdAt;

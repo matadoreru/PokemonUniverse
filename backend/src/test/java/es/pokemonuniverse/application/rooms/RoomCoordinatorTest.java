@@ -932,6 +932,107 @@ class RoomCoordinatorTest {
     assertEquals(0, room.gamesPlayed);
   }
 
+  /** Sala de dos con el juego falso de Shiny Vote ya terminado: la sala queda en los resultados. */
+  private static LiveRoom finishedFakeGame(RoomTestKit kit, String session) {
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.selectGame("host", "shiny-vote");
+    kit.manager.updateSession("host", json(session));
+    kit.startReady(room, "host");
+    kit.manager.action("host", json("{\"type\":\"SCORE\",\"points\":3}"));
+    kit.manager.action("host", json("{\"type\":\"FINISH\"}"));
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
+    return room;
+  }
+
+  @Test
+  @DisplayName("game results continue the session on their own after 20 s when the host does not")
+  void resultsContinueOnTheirOwn() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = finishedFakeGame(kit, "{\"type\":\"INFINITE\"}");
+    var finished = room.game;
+    long endsAt = kit.time.now() + RoomSettings.DEFAULT_RESULTS_AUTO_CONTINUE_MS;
+    assertEquals(Long.valueOf(endsAt), room.resultsEndsAt);
+    assertEquals(Long.valueOf(endsAt), kit.manager.view(room, "guest").resultsEndsAt());
+    kit.time.advance(RoomSettings.DEFAULT_RESULTS_AUTO_CONTINUE_MS - 1);
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
+    assertSame(finished, room.game);
+    kit.time.advance(1 + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+    assertNotSame(finished, room.game);
+    assertNotNull(room.game);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    assertNull(room.resultsEndsAt);
+    assertNull(kit.manager.view(room, "guest").resultsEndsAt());
+  }
+
+  @Test
+  @DisplayName("the host can still continue before the results deadline, which then never fires")
+  void hostContinuesBeforeTheResultsDeadline() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = finishedFakeGame(kit, "{\"type\":\"INFINITE\"}");
+    kit.time.advance(15_000);
+    kit.manager.continueSession("host");
+    var next = room.game;
+    assertNotNull(next);
+    assertNull(room.resultsEndsAt);
+    // El juego falso dura 10 s: antes de que acabe vence el plazo viejo de los resultados, que ya no existe.
+    kit.time.advance(9_000);
+    assertSame(next, room.game);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+  }
+
+  @Test
+  @DisplayName("results of a finished session never continue on their own")
+  void finishedSessionResultsWaitForTheHost() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = finishedFakeGame(kit, "{\"type\":\"GAME_COUNT\",\"target\":1}");
+    assertNull(room.resultsEndsAt);
+    assertNull(kit.manager.view(room, "host").resultsEndsAt());
+    kit.time.advance(10 * 60_000);
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
+    kit.manager.continueSession("host");
+    assertEquals(RoomPhase.SESSION_RESULTS, room.phase);
+  }
+
+  @Test
+  @DisplayName("ending the session or returning to the lobby cancels the results deadline")
+  void endingTheSessionCancelsTheResultsDeadline() {
+    var kit = new RoomTestKit("shiny-vote");
+    var ended = finishedFakeGame(kit, "{\"type\":\"INFINITE\"}");
+    kit.manager.endSession("host");
+    assertNull(ended.resultsEndsAt);
+    kit.time.advance(RoomSettings.DEFAULT_RESULTS_AUTO_CONTINUE_MS + 1_000);
+    assertEquals(RoomPhase.SESSION_RESULTS, ended.phase);
+
+    var other = new RoomTestKit("shiny-vote");
+    var lobby = finishedFakeGame(other, "{\"type\":\"INFINITE\"}");
+    other.manager.returnLobby("host");
+    assertNull(lobby.resultsEndsAt);
+    other.time.advance(RoomSettings.DEFAULT_RESULTS_AUTO_CONTINUE_MS + 1_000);
+    assertEquals(RoomPhase.LOBBY, lobby.phase);
+    assertNull(lobby.game);
+  }
+
+  @Test
+  @DisplayName("with nobody connected at the results deadline the room goes back to the lobby")
+  void resultsDeadlineWithNobodyConnected() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = finishedFakeGame(kit, "{\"type\":\"INFINITE\"}");
+    kit.manager.disconnect("host", "socket-host");
+    kit.manager.disconnect("guest", "socket-guest");
+    kit.time.advance(RoomSettings.DEFAULT_RESULTS_AUTO_CONTINUE_MS + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+    assertEquals(RoomPhase.LOBBY, room.phase);
+    assertNull(room.game);
+    assertNull(room.resultsEndsAt);
+  }
+
+  @Test
+  @DisplayName("the results deadline comes from the room settings")
+  void resultsDeadlineFromSettings() {
+    var kit = new RoomTestKit(new RoomSettings(8, 30_000, 60_000), "shiny-vote");
+    var room = finishedFakeGame(kit, "{\"type\":\"INFINITE\"}");
+    assertEquals(Long.valueOf(kit.time.now() + 60_000), room.resultsEndsAt);
+  }
+
   @Test
   @DisplayName("doubles the session points of the last game when the session asks for it")
   void lastGameCountsDouble() {
@@ -1840,7 +1941,7 @@ class RoomCoordinatorTest {
     assertEquals(Set.of("code", "phase", "hostId", "maxPlayers", "members", "availableGames", "selectedGameId",
         "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "allowedModes",
         "nextGameVote", "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
-        "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "hostCustomCategoryCount",
+        "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "resultsEndsAt", "hostCustomCategoryCount",
         "hostWouldYouRatherPromptCount", "daily"), keys);
     var serialized = serialize(second);
     assertTrue(serialized.contains("\"gameCatalogVersion\":null"));

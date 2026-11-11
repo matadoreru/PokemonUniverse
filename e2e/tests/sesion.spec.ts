@@ -53,6 +53,8 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     await iniciarPartida(host.page, [invitado.page]);
     await esperarPartida(pages);
     for (const page of pages) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
+    // Queda sesión: host e invitado ven la cuenta atrás hasta que sigue sola (el host puede seguir antes).
+    for (const page of pages) await expect(page.getByTestId('results-countdown')).toHaveText(/^Siguiente partida en \d+ s$/, { timeout: 20_000 });
     await host.page.getByRole('button', { name: 'Continuar sesión' }).click({ timeout: 20_000 });
 
     // Votación: tres cartas, la cuenta atrás y «Confirmar voto» abajo; la clasificación de la sesión en franjas.

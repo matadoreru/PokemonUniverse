@@ -214,6 +214,11 @@ class RoomCoordinatorDailyTest {
     assertAllRejected(room);
     assertEquals(RoomPhase.GAME_RESULTS, room.phase);
     assertEquals(1, room.members.size());
+    // El reto no sigue solo: sus resultados no tienen plazo y se quedan hasta que el jugador sale.
+    assertNull(room.resultsEndsAt);
+    assertNull(manager.view(room, ASH.id()).resultsEndsAt());
+    time.advance(10 * 60_000);
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
   }
 
   private void assertAllRejected(LiveRoom room) {

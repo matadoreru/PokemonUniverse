@@ -46,13 +46,15 @@ export default defineConfig({
       // que el shell exporte BACKEND_DATA_SYNC_ENABLED=true. PORT fijo porque el .env puede traer PORT=3001 (el del
       // antiguo servidor Node); JWT_SECRET llega del .env cargado. ROOM_MAX_PLAYERS fijo: sala.spec.ts espera el contador
       // "2 / 8" y no debe depender del .env. SMTP_* apunta al Mailpit de compose.local.yaml (recuperar-contrasena.spec.ts
-      // lee los correos de su API en :8025).
+      // lee los correos de su API en :8025). ROOM_RESULTS_AUTO_CONTINUE_MS alarga a 2 min la espera de los resultados
+      // antes de que la sesión siga sola (20 s en producción): así ningún spec compite con ella mientras captura los
+      // resultados a tres tamaños o pulsa «Continuar sesión». La cuenta atrás se sigue viendo (sesion.spec.ts).
       command: 'npm run dev:backend',
       url: 'http://localhost:8080/health',
       cwd: '..',
       reuseExistingServer: !process.env.CI,
       timeout: 240_000,
-      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8', SMTP_HOST: 'localhost', SMTP_PORT: '1025' },
+      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8', ROOM_RESULTS_AUTO_CONTINUE_MS: '120000', SMTP_HOST: 'localhost', SMTP_PORT: '1025' },
     },
     {
       command: 'npm run dev -w @pokemon-universe/web',

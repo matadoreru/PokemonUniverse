@@ -1125,10 +1125,11 @@ public class RoomCoordinator {
       }
       return;
     }
-    if (room.phase == RoomPhase.LOBBY || room.phase == RoomPhase.GAME_RESULTS
-        || room.phase == RoomPhase.SESSION_RESULTS) {
+    if (room.phase == RoomPhase.GAME_RESULTS) {
+      continueAfterResultsDeadline(room);
       return;
     }
+    if (room.phase == RoomPhase.LOBBY || room.phase == RoomPhase.SESSION_RESULTS) return;
     var game = room.game;
     if (game == null || game.finishReason != null) return;
     var previousEpoch = game.engine.getLifecycle(game.state).actionEpoch();
@@ -1138,6 +1139,26 @@ public class RoomCoordinator {
       resetWhoIsWhoCursors(room);
     }
     syncAndBroadcast(room, game);
+  }
+
+  /**
+   * Vence el plazo de los resultados: la sesión sigue como si el host hubiera pulsado «Continuar sesión». Si no puede
+   * (ningún juego admite a los conectados), la sala queda en el lobby; el error solo se registra.
+   */
+  private void continueAfterResultsDeadline(LiveRoom room) {
+    var deadline = room.resultsEndsAt;
+    if (room.daily != null || deadline == null) return;
+    if (clock.now() < deadline) {
+      schedule(room);
+      return;
+    }
+    room.resultsEndsAt = null;
+    try {
+      advanceSessionAfterGame(room, null);
+    } catch (RuntimeException error) {
+      broadcast(room);
+      LOG.warn("The session could not continue on its own in room {}", room.code, error);
+    }
   }
 
   private void applyPresenceChange(LiveRoom room) {
@@ -1220,6 +1241,10 @@ public class RoomCoordinator {
       room.sessionHistory.subList(0, room.sessionHistory.size() - MAX_SESSION_HISTORY).clear();
     }
     room.phase = RoomPhase.GAME_RESULTS;
+    // Si queda sesión, sigue sola pasado el plazo aunque el host no pulse (un host distraído no bloquea a nadie).
+    room.resultsEndsAt = SessionMode.isComplete(room.sessionMode, room.gamesPlayed,
+        room.sessionParticipants.values().stream().map(participant -> participant.sessionPoints).toList())
+        ? null : clock.now() + settings.resultsAutoContinueMs();
     // La sesión puede avanzar antes de que termine la auditoría asíncrona del arranque.
     var identities = new LinkedHashMap<String, AuthUser>();
     for (var entry : room.members.entrySet()) identities.put(entry.getKey(), entry.getValue().identity);
@@ -1272,6 +1297,7 @@ public class RoomCoordinator {
 
   private void resetToLobby(LiveRoom room, boolean resetSession) {
     room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    room.resultsEndsAt = null;
     var iterator = room.members.entrySet().iterator();
     while (iterator.hasNext()) {
       var entry = iterator.next();
@@ -1399,6 +1425,7 @@ public class RoomCoordinator {
 
   private void showSessionResults(LiveRoom room) {
     room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    room.resultsEndsAt = null;
     cancelPresenceGraces(room);
     room.game = null;
     room.nextGameVote = null;
@@ -1415,6 +1442,7 @@ public class RoomCoordinator {
         throw new RoomException("Cannot end the session during a game");
       }
       room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+      room.resultsEndsAt = null;
       room.nextGameVote = null;
       room.phase = RoomPhase.SESSION_RESULTS;
       broadcast(room);
@@ -1428,6 +1456,10 @@ public class RoomCoordinator {
       var vote = room.nextGameVote;
       Long deadline = vote == null ? null : room.phase == RoomPhase.NEXT_GAME_VOTE ? vote.endsAt : vote.nextTransitionAt;
       if (deadline != null) scheduleCurrent(room, deadline);
+      return;
+    }
+    if (room.phase == RoomPhase.GAME_RESULTS) {
+      if (room.daily == null && room.resultsEndsAt != null) scheduleCurrent(room, room.resultsEndsAt);
       return;
     }
     var game = room.game;

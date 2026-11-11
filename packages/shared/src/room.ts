@@ -184,6 +184,11 @@ export interface RoomView {
   game: unknown | null;
   gamePlayerState: unknown | null;
   serverNow: number;
+  /**
+   * En `GAME_RESULTS`, cuándo sigue sola la sesión si el host no lo hace antes; `null` si no sigue sola (la sesión ha
+   * terminado o es el reto diario) o fuera de los resultados. Ausente en vistas antiguas.
+   */
+  resultsEndsAt?: number | null;
   /** Enabled custom categories owned by the host; used for lobby validation only. */
   hostCustomCategoryCount?: number;
   /** Enabled custom Would You Rather pairs owned by the host; used for lobby validation only. */
