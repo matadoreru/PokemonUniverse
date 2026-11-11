@@ -92,7 +92,14 @@ public final class WhoAmITypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record WhoAmIResultEntry(String playerId, WhoAmIPokemon pokemon, boolean solved, int questionsAsked,
-      int points, int rank) {}
+      int points, int rank) {
+
+    /** Constructor con nombre: evita confundir los tres enteros contiguos. */
+    public static WhoAmIResultEntry of(String playerId, WhoAmIPokemon pokemon, boolean solved, int questionsAsked,
+        int points, int rank) {
+      return new WhoAmIResultEntry(playerId, pokemon, solved, questionsAsked, points, rank);
+    }
+  }
 
   /**
    * {@code WhoAmIPlayerStats}: seis contadores contiguos. Fuera de este record solo se construye con {@link #ZERO} y
@@ -340,13 +347,46 @@ public final class WhoAmITypes {
       others = frozenMap(others);
     }
 
-    public static WhoAmIPlayerState player(Map<String, WhoAmIPokemon> others, @Nullable WhoAmIPokemon self,
-        boolean canAsk, boolean canAnswer, boolean canGuess, boolean canPass, @Nullable WhoAmIAnswer ownAnswer) {
-      return new WhoAmIPlayerState("PLAYER", others, self, canAsk, canAnswer, canGuess, canPass, ownAnswer);
+    public static Builder builder() {
+      return new Builder();
     }
 
     public static WhoAmIPlayerState spectator(Map<String, WhoAmIPokemon> others) {
-      return new WhoAmIPlayerState("SPECTATOR", others, null, false, false, false, false, null);
+      return builder().role("SPECTATOR").others(others).build();
+    }
+
+    /** Rol {@code PLAYER}, sin Pokémon propio ni respuesta y con todos los permisos a {@code false} por defecto. */
+    public static final class Builder {
+      private String role = "PLAYER";
+      private Map<String, WhoAmIPokemon> others = Map.of();
+      private WhoAmIPokemon self;
+      private boolean canAsk;
+      private boolean canAnswer;
+      private boolean canGuess;
+      private boolean canPass;
+      private WhoAmIAnswer ownAnswer;
+
+      private Builder() {}
+
+      public Builder role(String value) { role = value; return this; }
+
+      public Builder others(Map<String, WhoAmIPokemon> value) { others = value; return this; }
+
+      public Builder self(@Nullable WhoAmIPokemon value) { self = value; return this; }
+
+      public Builder canAsk(boolean value) { canAsk = value; return this; }
+
+      public Builder canAnswer(boolean value) { canAnswer = value; return this; }
+
+      public Builder canGuess(boolean value) { canGuess = value; return this; }
+
+      public Builder canPass(boolean value) { canPass = value; return this; }
+
+      public Builder ownAnswer(@Nullable WhoAmIAnswer value) { ownAnswer = value; return this; }
+
+      public WhoAmIPlayerState build() {
+        return new WhoAmIPlayerState(role, others, self, canAsk, canAnswer, canGuess, canPass, ownAnswer);
+      }
     }
   }
 

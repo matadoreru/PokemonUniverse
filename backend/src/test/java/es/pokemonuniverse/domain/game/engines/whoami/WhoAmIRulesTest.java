@@ -84,10 +84,10 @@ class WhoAmIRulesTest {
   void dealGivesEachPlayerADifferentPokemon() {
     var players = List.of("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8");
     var pool = WhoAmIRules.pool(config(List.of(1, 2)), GOLDEN);
-    var dealt = WhoAmIRules.deal(players, pool, new Random(7));
+    var dealt = WhoAmIRules.deal(players, pool, new Random(7)::nextDouble);
     assertEquals(players, List.copyOf(dealt.keySet()));
     assertEquals(8, new HashSet<>(dealt.values().stream().map(WhoAmITypes.WhoAmIPokemon::id).toList()).size());
-    assertEquals(dealt, WhoAmIRules.deal(players, pool, new Random(7)));
+    assertEquals(dealt, WhoAmIRules.deal(players, pool, new Random(7)::nextDouble));
   }
 
   @Test
@@ -142,7 +142,8 @@ class WhoAmIRulesTest {
     var results = WhoAmIRules.buildResults(state);
     assertEquals(List.of("b", "a", "c", "d"),
         results.standings().stream().map(standing -> standing.playerId()).toList());
-    assertEquals(List.of(1, 1, 3, 3), results.standings().stream().map(standing -> standing.position()).toList());
+    assertEquals(List.of(1, 2, 3, 3), results.standings().stream().map(standing -> standing.position()).toList());
+    assertEquals("b", results.winnerId());
     assertEquals(0, results.standings().getFirst().stats().get("gamesPlayed"));
     assertThrows(EngineException.class,
         () -> WhoAmIRules.buildResults(state.toBuilder().phase(GamePhase.TURN_ACTIVE).build()));

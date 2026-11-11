@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
@@ -59,11 +58,6 @@ public final class WhoAmIRules {
           pokemon.nationalDexNumber(), pokemon.types()));
     }
     return dealt;
-  }
-
-  /** Igual que {@link #deal(List, List, DoubleSupplier)} con un {@link Random}. */
-  public static Map<String, WhoAmIPokemon> deal(List<String> playerIds, List<Pokemon> pool, Random random) {
-    return deal(playerIds, pool, random::nextDouble);
   }
 
   /** {@code max(MIN_POINTS, BASE_POINTS - preguntas) + bonus del orden} (orden desde 1; 0 a partir del cuarto). */
@@ -110,6 +104,7 @@ public final class WhoAmIRules {
         .<Scoring.ScoreEntry<WhoAmIPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> state.questionsAsked().getOrDefault(entry.playerId(), 0))
         .thenComparing(Scoring.ScoreEntry::playerId);
-    return Scoring.buildRankedResults(entries, compare, Scoring.ScoreEntry::points, entry -> entry.stats().toMap());
+    return Scoring.buildRankedResults(entries, compare, entry -> entry.points() + ":" + state.questionsAsked().getOrDefault(entry.playerId(), 0),
+        entry -> entry.stats().toMap());
   }
 }
