@@ -1,0 +1,2120 @@
+{
+  "engineId": "whos-that-pokemon",
+  "scenario": "streak-bonus",
+  "seed": 901,
+  "catalog": "gen1-2",
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1
+    ],
+    "roundSeconds": 20,
+    "rounds": 3,
+    "hintsEnabled": false,
+    "includeRegionalForms": false,
+    "streakBonus": true
+  },
+  "roomCode": "A B/ü",
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p9",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 2000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "chikorita"
+      },
+      "now": 2500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "hypno"
+      },
+      "now": 3000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 3400
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 1,
+      "assetId": "shadow",
+      "now": 3500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 1,
+      "assetId": "reveal",
+      "now": 3500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-otra-partida",
+      "roundNumber": 1,
+      "assetId": "shadow",
+      "now": 3500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 0,
+      "assetId": "shadow",
+      "now": 3500
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 1,
+      "assetId": "stage-0",
+      "now": 3500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 4000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 4500
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 9000
+    },
+    {
+      "kind": "timeout",
+      "now": 20999
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 21000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "drowzee"
+      },
+      "now": 22000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 1,
+      "assetId": "reveal",
+      "now": 22000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 1,
+      "assetId": "shadow",
+      "now": 22000
+    },
+    {
+      "kind": "timeout",
+      "now": 25000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 1,
+      "assetId": "shadow",
+      "now": 26000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 2,
+      "assetId": "shadow",
+      "now": 26000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "gengar"
+      },
+      "now": 27000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 28000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 29000
+    },
+    {
+      "kind": "timeout",
+      "now": 33000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 34000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_POKEMON",
+        "pokemonId": "geodude"
+      },
+      "now": 35000
+    },
+    {
+      "kind": "timeout",
+      "now": 53000
+    },
+    {
+      "kind": "timeout",
+      "now": 57000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 3,
+      "assetId": "reveal",
+      "now": 57000
+    },
+    {
+      "kind": "asset",
+      "assetToken": "rs-67e1f1-1gjpytd-18nyec9",
+      "roundNumber": 2,
+      "assetId": "reveal",
+      "now": 57000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "publicAttempts": true,
+      "streakBonus": true
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "whos-that-pokemon",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "silhouetteSprite": null,
+        "visibleHints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null,
+          "streak": 0
+        },
+        "p2": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null,
+          "streak": 0
+        },
+        "p3": {
+          "canGuess": false,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null,
+          "streak": 0
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 21000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "whos-that-pokemon",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+        "visibleHints": [],
+        "attempts": [],
+        "solvedPlayers": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1000,
+        "roundEndsAt": 21000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null,
+          "streak": 0
+        },
+        "p2": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null,
+          "streak": 0
+        },
+        "p3": {
+          "canGuess": true,
+          "solved": false,
+          "solveOrder": null,
+          "cooldownUntil": null,
+          "roundPoints": 0,
+          "attemptCount": 0,
+          "lastAttempt": null,
+          "streak": 0
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": false,
+        "error": "Estás observando esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon no pertenece al pool configurado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              },
+              "streak": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Espera 0.6s antes de volver a intentar.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 4000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 3000
+              },
+              "streak": 0
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png",
+          "transform": "SILHOUETTE"
+        }
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": null
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 4000,
+              "roundPoints": 12,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              },
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ya has acertado esta ronda.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 4000,
+              "roundPoints": 12,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              },
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 4000,
+              "roundPoints": 12,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              },
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 8,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 9000
+              },
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 21000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": 21000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 4000,
+              "roundPoints": 12,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              },
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 8,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 9000
+              },
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "El tiempo ha terminado.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 25000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Drowzee",
+                "generation": 1,
+                "sprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/reveal/sprite"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 4000,
+                  "elapsedMs": 3000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 12,
+                  "attempts": 2,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 9000,
+                  "elapsedMs": 8000,
+                  "speedPoints": 6,
+                  "placementBonus": 2,
+                  "points": 8,
+                  "attempts": 1,
+                  "streakBonus": 0
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 4000,
+              "roundPoints": 12,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              },
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 8,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 9000
+              },
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "No hay una ronda activa.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 25000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p1",
+                "guessedPokemon": {
+                  "id": "hypno",
+                  "name": "Hypno",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                },
+                "attemptedAt": 3000
+              }
+            ],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              },
+              {
+                "playerId": "p2",
+                "solveOrder": 2
+              }
+            ],
+            "scores": {
+              "p1": 12,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 1000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 25000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Drowzee",
+                "generation": 1,
+                "sprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/1/options/reveal/sprite"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 4000,
+                  "elapsedMs": 3000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 12,
+                  "attempts": 2,
+                  "streakBonus": 0
+                },
+                "p2": {
+                  "solveOrder": 2,
+                  "solvedAt": 9000,
+                  "elapsedMs": 8000,
+                  "speedPoints": 6,
+                  "placementBonus": 2,
+                  "points": 8,
+                  "attempts": 1,
+                  "streakBonus": 0
+                }
+              },
+              "attemptCounts": {
+                "p1": 2,
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": 4000,
+              "roundPoints": 12,
+              "attemptCount": 2,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 4000
+              },
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 2,
+              "cooldownUntil": null,
+              "roundPoints": 8,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 9000
+              },
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png",
+          "transform": "ORIGINAL"
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/96.png",
+          "transform": "SILHOUETTE"
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/2/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 12,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": 45000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 1
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "resolution": null
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png",
+          "transform": "SILHOUETTE"
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/2/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": 45000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 13,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 27000
+              },
+              "streak": 2
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 45000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/2/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": 45000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 13,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 27000
+              },
+              "streak": 2
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 1
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 33000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,25000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [
+              {
+                "playerId": "p1",
+                "solveOrder": 1
+              }
+            ],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 25000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 33000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Gengar",
+                "generation": 1,
+                "sprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/2/options/reveal/sprite"
+              },
+              "solves": {
+                "p1": {
+                  "solveOrder": 1,
+                  "solvedAt": 27000,
+                  "elapsedMs": 2000,
+                  "speedPoints": 9,
+                  "placementBonus": 3,
+                  "points": 13,
+                  "attempts": 1,
+                  "streakBonus": 1
+                }
+              },
+              "attemptCounts": {
+                "p1": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": true,
+              "solveOrder": 1,
+              "cooldownUntil": null,
+              "roundPoints": 13,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "CORRECT",
+                "attemptedAt": 27000
+              },
+              "streak": 2
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 53000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,33000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/3/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 33000,
+            "roundEndsAt": 53000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 2
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 53000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,33000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/3/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 33000,
+            "roundEndsAt": 53000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 2
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 53000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,33000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/3/options/shadow/sprite",
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 35000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 33000,
+            "roundEndsAt": 53000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 2
+            },
+            "p2": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 36000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 35000
+              },
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": true,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 57000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,33000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 35000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 33000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 57000,
+            "lastRound": {
+              "pokemon": {
+                "name": "Golem",
+                "generation": 1,
+                "sprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/3/options/reveal/sprite"
+              },
+              "solves": {},
+              "attemptCounts": {
+                "p2": 1
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 36000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 35000
+              },
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,33000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "whos-that-pokemon",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "silhouetteSprite": null,
+            "visibleHints": [],
+            "attempts": [
+              {
+                "playerId": "p2",
+                "guessedPokemon": {
+                  "id": "geodude",
+                  "name": "Geodude",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+                },
+                "attemptedAt": 35000
+              }
+            ],
+            "solvedPlayers": [],
+            "scores": {
+              "p1": 25,
+              "p2": 8,
+              "p3": 0
+            },
+            "roundStartedAt": 33000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "pokemon": {
+                "name": "Golem",
+                "generation": 1,
+                "sprite": "/api/rooms/A%20B%2F%C3%BC/games/rs-67e1f1-1gjpytd-18nyec9/rounds/3/options/reveal/sprite"
+              },
+              "solves": {},
+              "attemptCounts": {
+                "p2": 1
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 25,
+                  "won": true,
+                  "stats": {
+                    "correct": 2,
+                    "missed": 1,
+                    "totalAttempts": 3,
+                    "firstTry": 1,
+                    "roundFirsts": 2,
+                    "solveTimeTotalMs": 5000,
+                    "bestTimeMs": 2000,
+                    "pointsFromRounds": 25
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 8,
+                  "won": false,
+                  "stats": {
+                    "correct": 1,
+                    "missed": 2,
+                    "totalAttempts": 2,
+                    "firstTry": 1,
+                    "roundFirsts": 0,
+                    "solveTimeTotalMs": 8000,
+                    "bestTimeMs": 8000,
+                    "pointsFromRounds": 8
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 0,
+                  "won": false,
+                  "stats": {
+                    "correct": 0,
+                    "missed": 3,
+                    "totalAttempts": 0,
+                    "firstTry": 0,
+                    "roundFirsts": 0,
+                    "solveTimeTotalMs": 0,
+                    "bestTimeMs": 0,
+                    "pointsFromRounds": 0
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            },
+            "p2": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": 36000,
+              "roundPoints": 0,
+              "attemptCount": 1,
+              "lastAttempt": {
+                "result": "INCORRECT",
+                "attemptedAt": 35000
+              },
+              "streak": 0
+            },
+            "p3": {
+              "canGuess": false,
+              "solved": false,
+              "solveOrder": null,
+              "cooldownUntil": null,
+              "roundPoints": 0,
+              "attemptCount": 0,
+              "lastAttempt": null,
+              "streak": 0
+            }
+          },
+          "finished": true
+        }
+      },
+      {
+        "resolution": {
+          "source": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png",
+          "transform": "ORIGINAL"
+        }
+      },
+      {
+        "resolution": null
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 25,
+          "won": true,
+          "stats": {
+            "correct": 2,
+            "missed": 1,
+            "totalAttempts": 3,
+            "firstTry": 1,
+            "roundFirsts": 2,
+            "solveTimeTotalMs": 5000,
+            "bestTimeMs": 2000,
+            "pointsFromRounds": 25
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 8,
+          "won": false,
+          "stats": {
+            "correct": 1,
+            "missed": 2,
+            "totalAttempts": 2,
+            "firstTry": 1,
+            "roundFirsts": 0,
+            "solveTimeTotalMs": 8000,
+            "bestTimeMs": 8000,
+            "pointsFromRounds": 8
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "correct": 0,
+            "missed": 3,
+            "totalAttempts": 0,
+            "firstTry": 0,
+            "roundFirsts": 0,
+            "solveTimeTotalMs": 0,
+            "bestTimeMs": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}
