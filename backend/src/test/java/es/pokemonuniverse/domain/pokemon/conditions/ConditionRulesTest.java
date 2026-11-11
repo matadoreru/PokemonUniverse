@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -175,6 +177,9 @@ class ConditionRulesTest {
     conditions.add(new Condition.Color("red"));
     conditions.add(new Condition.Ability("cuerpo-puro"));
     conditions.add(new Condition.Ability("Vista Lince"));
+    // Una variante nueva de Condition tiene que salir aquí: la web también tiene que describirla.
+    assertEquals(Set.of(Condition.class.getPermittedSubclasses()),
+        conditions.stream().map(Object::getClass).collect(Collectors.toSet()));
     var cases = new ArrayList<LinkedHashMap<String, Object>>();
     for (var condition : conditions) {
       var entry = new LinkedHashMap<String, Object>();
