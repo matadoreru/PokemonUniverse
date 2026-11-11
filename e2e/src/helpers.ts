@@ -77,6 +77,24 @@ export async function capture(page: Page, name: string, opts: CaptureOptions = {
   await checkLayout(page, name, true, opts);
 }
 
+/** Opciones de `capturarATresTamaños()`: las de `capture()` más un paso previo por tamaño y la vuelta a 1280×720. */
+export interface CapturaATresTamanos extends CaptureOptions {
+  /** Se ejecuta en cada tamaño tras cambiar la vista y antes de capturar (desplazar, comprobar que algo se ve…). */
+  antes?: (tamano: (typeof SIZES)[number]) => Promise<void>;
+  /** Vuelve a 1280×720 al acabar (por defecto, `true`); con `false` la página se queda a 390×844. */
+  restaurar?: boolean;
+}
+
+/** `capture()` a los tres tamaños de revisión (`SIZES`), en ese orden. */
+export async function capturarATresTamaños(page: Page, name: string, { antes, restaurar = true, ...opts }: CapturaATresTamanos = {}): Promise<void> {
+  for (const tamano of SIZES) {
+    await page.setViewportSize({ width: tamano.w, height: tamano.h });
+    if (antes) await antes(tamano);
+    await capture(page, name, opts);
+  }
+  if (restaurar) await page.setViewportSize({ width: 1280, height: 720 });
+}
+
 /**
  * Lo mismo que `capture()`, sin guardar el PNG cuando `screenshot` es `false`: sin scroll
  * horizontal ni de página y `measureLayout` vacío (o anotado en `PU_LAYOUT_LOG`).
@@ -378,6 +396,32 @@ export function nuevaCuenta(prefijo: string): CuentaE2E {
 export async function registrarPorApi(page: Page, cuenta: CuentaE2E): Promise<void> {
   const response = await page.request.post('/api/auth/register', { data: cuenta });
   expect(response.status(), `registro de ${cuenta.username}`).toBe(201);
+}
+
+/** Jugador con cuenta registrada en su propio contexto de navegador. */
+export interface Persona {
+  cuenta: CuentaE2E;
+  context: BrowserContext;
+  page: Page;
+  errors: string[];
+}
+
+/**
+ * Cuenta nueva (apuntada en `cuentas` antes de nada, para que el `afterAll` del spec la borre aunque falle lo demás),
+ * registrada por la API en un contexto con la vista dada. Con `enJugar`, abre `/play` y espera a «¡Crear sala!».
+ */
+export async function persona(browser: Browser, cuentas: CuentaE2E[], prefijo: string, w: number, h: number, { enJugar = false }: { enJugar?: boolean } = {}): Promise<Persona> {
+  const cuenta = nuevaCuenta(prefijo);
+  cuentas.push(cuenta);
+  const context = await browser.newContext({ viewport: { width: w, height: h } });
+  const page = await context.newPage();
+  const errors = collectErrors(page);
+  await registrarPorApi(page, cuenta);
+  if (enJugar) {
+    await page.goto('/play');
+    await expect(page.getByRole('button', { name: '¡Crear sala!' })).toBeEnabled();
+  }
+  return { cuenta, context, page, errors };
 }
 
 /**

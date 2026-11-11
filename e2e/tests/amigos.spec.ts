@@ -1,7 +1,7 @@
-import { expect, test, type Browser, type BrowserContext, type Locator, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
-  abrirAmigos, anadirJuegos, borrarCuentas, capture, cartaDeJuego, cerrarAmigos, collectErrors, comprobarBdE2E, conmutarJuego,
-  createRoom, hacerAmigosPorApi, joinRoom, nuevaCuenta, registrarPorApi, SIZES, type CuentaE2E,
+  abrirAmigos, anadirJuegos, borrarCuentas, capture, cartaDeJuego, cerrarAmigos, comprobarBdE2E, conmutarJuego,
+  createRoom, hacerAmigosPorApi, joinRoom, persona, SIZES, type CuentaE2E,
 } from '../src/helpers.js';
 
 // Amigos e invitaciones de punta a punta con cuentas registradas, cada una en su contexto de navegador: panel con
@@ -16,25 +16,6 @@ test.beforeAll(() => {
 test.afterAll(() => {
   borrarCuentas(cuentas.map((c) => c.email), () => undefined);
 });
-
-interface Persona {
-  cuenta: CuentaE2E;
-  context: BrowserContext;
-  page: Page;
-  errors: string[];
-}
-
-async function persona(browser: Browser, prefijo: string, w: number, h: number): Promise<Persona> {
-  const cuenta = nuevaCuenta(prefijo);
-  cuentas.push(cuenta);
-  const context = await browser.newContext({ viewport: { width: w, height: h } });
-  const page = await context.newPage();
-  const errors = collectErrors(page);
-  await registrarPorApi(page, cuenta);
-  await page.goto('/play');
-  await expect(page.getByRole('button', { name: '¡Crear sala!' })).toBeEnabled();
-  return { cuenta, context, page, errors };
-}
 
 const aviso = (page: Page) => page.getByRole('group', { name: 'Avisos' });
 /** Pestaña del panel «Amigos» por su nombre exacto (la de solicitudes lleva el número: «Solicitudes (1 pendiente)»). */
@@ -65,10 +46,10 @@ async function abrirAnadirAmigo(page: Page): Promise<Locator> {
 for (const { w, h } of SIZES) {
   test(`amigos e invitaciones a ${w}×${h}`, async ({ browser }) => {
     test.setTimeout(120_000);
-    const a = await persona(browser, 'e2e_amA', w, h);
-    const b = await persona(browser, 'e2e_amB', w, h);
-    const c = await persona(browser, 'e2e_amC', w, h);
-    const d = await persona(browser, 'e2e_amD', w, h);
+    const a = await persona(browser, cuentas, 'e2e_amA', w, h, { enJugar: true });
+    const b = await persona(browser, cuentas, 'e2e_amB', w, h, { enJugar: true });
+    const c = await persona(browser, cuentas, 'e2e_amC', w, h, { enJugar: true });
+    const d = await persona(browser, cuentas, 'e2e_amD', w, h, { enJugar: true });
     try {
       // 1. A abre «Amigos» (vacío, en la pestaña «Amigos») y, en el diálogo «Añadir amigo», pide la amistad a B con el
       // nombre en mayúsculas; el diálogo sigue abierto con el resultado.

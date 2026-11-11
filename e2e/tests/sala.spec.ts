@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, cartaDeJuego, collectErrors, conmutarJuego, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, capturarATresTamaños, cartaDeJuego, collectErrors, conmutarJuego, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, SIZES, uniqueName } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -164,10 +164,7 @@ test('el host quita el único minijuego: no se puede empezar hasta elegir otro',
   await expect(host.page.getByText('0 elegidos', { exact: false })).toBeVisible();
   await expect(host.page.locator('#start-help')).toHaveText('Elige al menos un minijuego para empezar.');
   await expect(empezar).toBeDisabled();
-  for (const { w, h } of SIZES) {
-    await host.page.setViewportSize({ width: w, height: h });
-    await capture(host.page, 'lobby-seleccion-vacia');
-  }
+  await capturarATresTamaños(host.page, 'lobby-seleccion-vacia', { restaurar: false });
 
   // Configuración: un estado vacío en lugar de los ajustes; el modo se sigue pudiendo cambiar.
   await host.page.getByRole('tab', { name: 'Configuración' }).click();
@@ -175,12 +172,8 @@ test('el host quita el único minijuego: no se puede empezar hasta elegir otro',
   await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
   const aviso = host.page.getByRole('status').filter({ hasText: 'Elige al menos un minijuego.' });
   await expect(aviso).toBeVisible();
-  for (const { w, h } of SIZES) {
-    await host.page.setViewportSize({ width: w, height: h });
-    // En la primera vista del panel (sin scroll), no solo presente: a 390 el panel tiene scroll interno.
-    await expect(aviso).toBeInViewport({ ratio: 1 });
-    await capture(host.page, 'lobby-modo-seleccion-vacia');
-  }
+  // En la primera vista del panel (sin scroll), no solo presente: a 390 el panel tiene scroll interno.
+  await capturarATresTamaños(host.page, 'lobby-modo-seleccion-vacia', { antes: () => expect(aviso).toBeInViewport({ ratio: 1 }), restaurar: false });
   await host.page.getByRole('button', { name: /^Votación/ }).click();
   await expect(host.page.getByRole('button', { name: /^Votación/ })).toHaveAttribute('aria-pressed', 'true');
 
@@ -205,29 +198,20 @@ test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultad
   await guest.page.getByRole('tab', { name: 'Configuración' }).click();
   await expect(guest.page.getByRole('heading', { name: 'Ajustes de Pokédex Distance' })).toBeVisible();
   await expect(guest.page.getByText('Solo el host y los co-hosts pueden cambiar estos ajustes.')).toBeVisible();
-  for (const { w, h } of SIZES) {
-    await guest.page.setViewportSize({ width: w, height: h });
-    await capture(guest.page, 'lobby-invitado-configuracion');
-  }
+  await capturarATresTamaños(guest.page, 'lobby-invitado-configuracion', { restaurar: false });
 
   // Host: el modo de la sesión con el orden de los minijuegos elegidos (por defecto, «Por orden»).
   await host.page.getByRole('tab', { name: 'Modo y sesión' }).click();
   await expect(host.page.getByRole('button', { name: /^Por orden/ })).toHaveAttribute('aria-pressed', 'true');
   await expect(host.page.getByRole('button', { name: /^Infinita/ })).toHaveAttribute('aria-pressed', 'true');
-  for (const { w, h } of SIZES) {
-    await host.page.setViewportSize({ width: w, height: h });
-    await capture(host.page, 'lobby-modo-sesion');
-  }
+  await capturarATresTamaños(host.page, 'lobby-modo-sesion', { restaurar: false });
 
   // Búsqueda de minijuegos sin coincidencias: estado vacío con acción para volver a la rejilla.
   await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
   const buscar = host.page.getByLabel('Buscar minijuego');
   await buscar.fill('zzzz');
   await expect(host.page.getByText('No hay minijuegos que coincidan con “zzzz”.')).toBeVisible();
-  for (const { w, h } of SIZES) {
-    await host.page.setViewportSize({ width: w, height: h });
-    await capture(host.page, 'lobby-busqueda-vacia');
-  }
+  await capturarATresTamaños(host.page, 'lobby-busqueda-vacia', { restaurar: false });
   await host.page.getByRole('button', { name: 'Borrar búsqueda' }).click();
   await expect(buscar).toHaveValue('');
   await expect(host.page.getByRole('list', { name: 'Minijuegos' })).toBeVisible();
@@ -324,10 +308,7 @@ test('un rechazo del servidor sale una sola vez, en español, en el aviso de la 
   await expect(aviso).toHaveCount(1);
   await expect(aviso).toContainText('Este ajuste solo se puede cambiar en el lobby.');
   await expect(guest.page.getByText('This setting can only be changed in the lobby')).toHaveCount(0);
-  for (const { w, h } of SIZES) {
-    await guest.page.setViewportSize({ width: w, height: h });
-    await capture(guest.page, 'sala-aviso-error');
-  }
+  await capturarATresTamaños(guest.page, 'sala-aviso-error', { restaurar: false });
   await aviso.getByRole('button', { name: 'Cerrar aviso' }).click();
   await expect(guest.page.getByRole('alert')).toHaveCount(0);
 

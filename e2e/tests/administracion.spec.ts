@@ -6,7 +6,7 @@
  * del Full Sync, que se cancela: ninguna petición que cambie datos llega al servidor.
  */
 import { expect, test, type Page, type Route } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, nuevaCuenta, promoverAAdmin, registrarPorApi, SIZES } from '../src/helpers.js';
+import { borrarCuentas, capture, capturarATresTamaños, collectErrors, comprobarBdE2E, nuevaCuenta, promoverAAdmin, registrarPorApi } from '../src/helpers.js';
 
 const HOY = '2026-11-04T10:00:00.000Z';
 const hace = (min: number) => new Date(Date.parse(HOY) - min * 60_000).toISOString();
@@ -94,15 +94,6 @@ async function simularAdmin(page: Page, estado: { vacio: boolean; fallo: boolean
   });
 }
 
-/** Capturas de la página a los tres tamaños, sin scroll de página; vuelve a 1280×720. */
-async function capturarPagina(page: Page, nombre: string): Promise<void> {
-  for (const { w, h } of SIZES) {
-    await page.setViewportSize({ width: w, height: h });
-    await capture(page, nombre);
-  }
-  await page.setViewportSize({ width: 1280, height: 720 });
-}
-
 test.beforeAll(() => {
   comprobarBdE2E();
 });
@@ -127,7 +118,7 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     const paginas = page.getByRole('navigation', { name: 'Páginas de salas activas' });
     await expect(paginas).toContainText('Página 1 de 3 · 47 registros');
     await expect(paginas.getByRole('button', { name: 'Página anterior' })).toBeDisabled();
-    await capturarPagina(page, 'admin-salas');
+    await capturarATresTamaños(page, 'admin-salas');
 
     // Móvil: lista y, al abrir una sala, solo su ficha; «Volver» no añade entradas al historial y devuelve el foco.
     await page.setViewportSize({ width: 390, height: 844 });
@@ -145,21 +136,21 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
 
     await page.getByRole('radio', { name: 'Historial' }).click();
     await expect(page.getByRole('navigation', { name: 'Páginas de historial de salas' })).toContainText('213 registros');
-    await capturarPagina(page, 'admin-salas-historial');
+    await capturarATresTamaños(page, 'admin-salas-historial');
 
     await page.getByRole('tab', { name: 'Partidas' }).click();
     await expect(page.getByRole('navigation', { name: 'Páginas de partidas' })).toContainText('388 registros');
     await expect(page.getByRole('list', { name: 'Resultados' })).toBeVisible();
-    await capturarPagina(page, 'admin-partidas');
+    await capturarATresTamaños(page, 'admin-partidas');
 
     await page.getByRole('tab', { name: 'Usuarios' }).click();
     await expect(page.getByRole('navigation', { name: 'Páginas de usuarios' })).toContainText('1342 registros');
-    await capturarPagina(page, 'admin-usuarios');
+    await capturarATresTamaños(page, 'admin-usuarios');
 
     await page.getByRole('tab', { name: 'Feedback' }).click();
     await expect(page.getByRole('heading', { name: 'Feedback de jugadores' })).toBeVisible();
     await expect(page.getByRole('combobox', { name: 'Estado', exact: true })).toHaveValue('NEW');
-    await capturarPagina(page, 'admin-feedback');
+    await capturarATresTamaños(page, 'admin-feedback');
 
     // Changelog: editar una versión y cambiar de sección pide confirmación en un diálogo (no `window.confirm`).
     await page.getByRole('tab', { name: 'Changelog' }).click();
@@ -167,7 +158,7 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     await expect(page.getByRole('heading', { name: 'Editar v0.8.0' })).toBeVisible();
     await expect(page.getByLabel('Resumen (opcional)')).toHaveValue('La portada se convierte en una pantalla de título.');
     await expect(page.getByRole('switch', { name: 'Destacar el cambio 1' })).toHaveAttribute('aria-checked', 'true');
-    await capturarPagina(page, 'admin-changelog');
+    await capturarATresTamaños(page, 'admin-changelog');
     await page.getByLabel('Título').fill('Una sala más completa (editada)');
     await page.getByRole('tab', { name: 'Datos' }).click();
     const descartar = page.getByRole('dialog', { name: '¿Descartar los cambios del changelog?' });
@@ -181,16 +172,11 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     // Datos: las dos fuentes y el Full Sync con confirmación, que se cancela.
     await expect(page.getByRole('tab', { name: 'Datos' })).toHaveAttribute('aria-selected', 'true');
     await expect(page.getByText('TCGdex respondió 503: la última versión válida se conserva.')).toBeVisible();
-    await capturarPagina(page, 'admin-datos');
+    await capturarATresTamaños(page, 'admin-datos');
     await page.getByRole('button', { name: 'Forzar Full Sync' }).click();
     const full = page.getByRole('dialog', { name: '¿Forzar el Full Sync?' });
     await expect(full.getByRole('button', { name: 'Cancelar' })).toBeFocused();
-    for (const { w, h } of SIZES) {
-      await page.setViewportSize({ width: w, height: h });
-      await expect(full).toBeVisible();
-      await capture(page, 'admin-dialogo-full-sync');
-    }
-    await page.setViewportSize({ width: 1280, height: 720 });
+    await capturarATresTamaños(page, 'admin-dialogo-full-sync', { antes: () => expect(full).toBeVisible() });
     await full.getByRole('button', { name: 'Cancelar' }).click();
     await expect(full).toBeHidden();
 
@@ -198,13 +184,13 @@ test('un ADMIN recorre las secciones de administración a los tres tamaños', as
     estado.vacio = true;
     await page.getByRole('tab', { name: 'Salas' }).click();
     await expect(page.getByText('No hay registros con estos filtros')).toBeVisible();
-    await capturarPagina(page, 'admin-vacio');
+    await capturarATresTamaños(page, 'admin-vacio');
     estado.vacio = false;
     estado.fallo = true;
     // La sección guarda «Historial» de antes: volver a «Activas» pide la lista otra vez y falla.
     await page.getByRole('radio', { name: 'Activas' }).click();
     await expect(page.getByRole('alert')).toContainText('No se pudieron cargar las salas');
-    await capturarPagina(page, 'admin-error');
+    await capturarATresTamaños(page, 'admin-error');
     estado.fallo = false;
     await page.getByRole('button', { name: 'Reintentar' }).click();
     await expect(page.getByRole('navigation', { name: 'Páginas de salas activas' })).toContainText('47 registros');

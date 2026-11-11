@@ -5,9 +5,9 @@
  * propio (Solo amigos y Nadie) con su estado privado, un nombre que no existe y un invitado, que vuelve a jugar.
  * Cuentas nuevas por tamaño: la amistad y los ajustes cambian en cada pasada.
  */
-import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import {
-  abrirAmigos, borrarCuentas, capture, collectErrors, comprobarBdE2E, loginAsGuest, nuevaCuenta, psql, registrarPorApi,
+  abrirAmigos, borrarCuentas, capture, comprobarBdE2E, loginAsGuest, nuevaCuenta, persona, psql, registrarPorApi,
   SIZES, totalDeLogros, uniqueName, type CuentaE2E,
 } from '../src/helpers.js';
 
@@ -20,23 +20,6 @@ test.beforeAll(() => {
 test.afterAll(() => {
   borrarCuentas(cuentas.map((c) => c.email), () => undefined);
 });
-
-interface Persona {
-  cuenta: CuentaE2E;
-  context: BrowserContext;
-  page: Page;
-  errors: string[];
-}
-
-async function persona(browser: Browser, prefijo: string, w: number, h: number): Promise<Persona> {
-  const cuenta = nuevaCuenta(prefijo);
-  cuentas.push(cuenta);
-  const context = await browser.newContext({ viewport: { width: w, height: h } });
-  const page = await context.newPage();
-  const errors = collectErrors(page);
-  await registrarPorApi(page, cuenta);
-  return { cuenta, context, page, errors };
-}
 
 /** Partidas, puntos, experiencia (nivel 3) y dos logros, uno secreto, escritos en la BD para que el perfil tenga datos. */
 function darEstadisticas(cuenta: CuentaE2E): void {
@@ -75,9 +58,9 @@ async function esperarPrivado(page: Page): Promise<void> {
 for (const { w, h } of SIZES) {
   test(`perfiles: buscar, ver, añadir, privacidad y no encontrado (${w}×${h})`, async ({ browser }) => {
     test.setTimeout(120_000);
-    const ana = await persona(browser, 'pfa', w, h);
-    const beto = await persona(browser, 'pfb', w, h);
-    const cris = await persona(browser, 'pfc', w, h);
+    const ana = await persona(browser, cuentas, 'pfa', w, h);
+    const beto = await persona(browser, cuentas, 'pfb', w, h);
+    const cris = await persona(browser, cuentas, 'pfc', w, h);
     darEstadisticas(beto.cuenta);
     try {
       // Ana busca a Beto desde el panel «Amigos», con el nombre en mayúsculas.

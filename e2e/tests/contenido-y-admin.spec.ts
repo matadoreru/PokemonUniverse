@@ -8,7 +8,7 @@ import { rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { crc32, deflateSync } from 'node:zlib';
 import { expect, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego, SIZES } from '../src/helpers.js';
+import { borrarCuentas, capturarATresTamaños, collectErrors, comprobarBdE2E, createRoom, nuevaCuenta, promoverAAdmin, registrarPorApi, seleccionarJuego } from '../src/helpers.js';
 
 /** Almacén de avatares de desarrollo del backend Java (`application-dev.yml`). */
 const AVATAR_DIR = fileURLToPath(new URL('../../backend/.data/avatars/', import.meta.url));
@@ -48,23 +48,9 @@ test.beforeAll(() => {
   comprobarBdE2E();
 });
 
-/** Capturas de revisión de la página a los tres tamaños, sin scroll de página en escritorio; vuelve a 1280×720. */
-async function capturarPagina(page: Page, nombre: string): Promise<void> {
-  for (const { w, h } of SIZES) {
-    await page.setViewportSize({ width: w, height: h });
-    await capture(page, nombre);
-  }
-  await page.setViewportSize({ width: 1280, height: 720 });
-}
-
 /** Capturas de revisión del diálogo abierto a los tres tamaños; vuelve a 1280×720 al acabar. */
 async function capturarDialogo(page: Page, nombre: string, dialogo: Locator): Promise<void> {
-  for (const { w, h } of SIZES) {
-    await page.setViewportSize({ width: w, height: h });
-    await expect(dialogo).toBeVisible();
-    await capture(page, nombre);
-  }
-  await page.setViewportSize({ width: 1280, height: 720 });
+  await capturarATresTamaños(page, nombre, { antes: () => expect(dialogo).toBeVisible() });
 }
 
 test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa', async ({ browser }) => {
@@ -91,7 +77,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     // Perfil recién creado: placa, resumen a cero y el vacío de «Estadísticas por juego» que lleva a jugar.
     await expect(page.getByRole('heading', { name: usuario.username, level: 1 })).toBeVisible();
     await expect(page.getByText('Todavía no has jugado ninguna partida')).toBeVisible();
-    await capturarPagina(page, 'perfil');
+    await capturarATresTamaños(page, 'perfil');
     await page.getByRole('button', { name: 'Cambiar avatar' }).click();
     const dialogo = page.getByRole('dialog', { name: 'Elige tu avatar' });
     await expect(dialogo).toBeVisible();
@@ -119,7 +105,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     const primera = page.getByRole('button', { name: /^Ocultar estadísticas de / });
     await expect(primera).toHaveAttribute('aria-expanded', 'true');
     await expect(page.getByText('Winrate', { exact: true }).last()).toBeVisible();
-    await capturarPagina(page, 'perfil-con-partidas');
+    await capturarATresTamaños(page, 'perfil-con-partidas');
     await primera.click();
     await expect(page.getByRole('button', { name: /^Ocultar estadísticas de / })).toHaveCount(0);
     await page.unroute('**/api/auth/profile');
@@ -140,7 +126,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await expect(page.getByRole('tab', { name: /^Logros/, selected: true })).toBeVisible();
     await expect(page.getByText('Conseguido el 7 nov 2026').first()).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Secretos' })).toBeVisible();
-    await capturarPagina(page, 'perfil-logros');
+    await capturarATresTamaños(page, 'perfil-logros');
     await page.getByRole('tab', { name: 'Estadísticas' }).click();
     await expect(page.getByText('Todavía no has jugado ninguna partida')).toBeVisible();
     await page.unroute('**/api/achievements');
@@ -178,12 +164,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await borrarCategoria.getByRole('button', { name: 'Cancelar' }).click();
     await expect(borrarCategoria).toBeHidden();
     await expect(categorias.getByText(editada, { exact: true })).toBeVisible();
-    for (const { w, h } of SIZES) {
-      await page.setViewportSize({ width: w, height: h });
-      await categorias.scrollIntoViewIfNeeded();
-      await capture(page, 'lobby-one-of-us-is-fake-categorias');
-    }
-    await page.setViewportSize({ width: 1280, height: 720 });
+    await capturarATresTamaños(page, 'lobby-one-of-us-is-fake-categorias', { antes: () => categorias.scrollIntoViewIfNeeded() });
     await categorias.getByRole('button', { name: `Eliminar ${editada}` }).click();
     await borrarCategoria.getByRole('button', { name: 'Eliminar' }).click();
     await expect(categorias.getByText('Todavía no has creado categorías personales.')).toBeVisible();
@@ -208,12 +189,7 @@ test('un USER gestiona categorías, dilemas y avatar; un ADMIN ve su sala activa
     await dilemas.getByLabel('JSON para importar').fill('{"version": 1, "prompts": [{"optionA": "abc", "optionB": "Volar con Dragonite"}]}');
     await dilemas.getByRole('button', { name: 'Validar e importar' }).click();
     await expect(dilemas.getByRole('alert')).toContainText('prompts.0.optionA (dilema 1, opción A): Escribe al menos 4 caracteres.');
-    for (const { w, h } of SIZES) {
-      await page.setViewportSize({ width: w, height: h });
-      await dilemas.scrollIntoViewIfNeeded();
-      await capture(page, 'lobby-would-you-rather-dilemas');
-    }
-    await page.setViewportSize({ width: 1280, height: 720 });
+    await capturarATresTamaños(page, 'lobby-would-you-rather-dilemas', { antes: () => dilemas.scrollIntoViewIfNeeded() });
     // Eliminar pide confirmación en un diálogo del catálogo (ya no `window.confirm`); Cancelar no borra.
     await dilemas.getByRole('button', { name: 'Eliminar dilema' }).click();
     const confirmacion = page.getByRole('dialog', { name: '¿Eliminar este dilema?' });
