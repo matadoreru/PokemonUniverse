@@ -4,7 +4,7 @@ import { Avatar } from '../../components/Avatar';
 import { AvatarStack, avatarStackLabel } from '../../components/AvatarStack';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, type CardState } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, ScoreValue, type CardState } from '../../ui';
 import { triviaComparedValue, triviaOptionLabel, triviaRanking, triviaShortcut } from './presentation';
 import s from './PokemonTrivia.module.css';
 
@@ -92,7 +92,7 @@ export function TriviaScoreboard({ game, players, members, colors, selfId, class
             {done ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Respondió</Chip> : <Chip tone="neutral" icon={<Icon icon={CircleDashed} size={18} />}>Pensando…</Chip>}
             {tied(position) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
           </span>}
-          value={<span key={game.scores[id] ?? 0} className={cx(s.score, 'motion-bump')}>{game.scores[id] ?? 0}<small> pts</small></span>} />
+          value={<ScoreValue value={game.scores[id] ?? 0} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small> pts</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

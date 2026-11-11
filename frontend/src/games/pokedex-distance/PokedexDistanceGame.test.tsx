@@ -71,7 +71,7 @@ describe('PokedexDistanceGame: modo Por puntos', () => {
     // Bruno va primero con 150.
     const board = html.slice(html.indexOf('Marcador de la partida'));
     expect(board.indexOf('Bruno')).toBeLessThan(board.indexOf('Ana'));
-    expect(html).toContain('150<small> pts</small>');
+    expect(html).toContain('150</span><small> pts</small>');
     expectSingleLiveRegion(html);
   });
   it('en la revelación cada fila lleva sus puntos de la ronda y no hay eliminados', () => {

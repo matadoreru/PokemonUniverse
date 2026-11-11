@@ -7,7 +7,7 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
+import { Badge, Chip, cx, Icon, Panel, Row, ScoreValue, TypeBadge } from '../../ui';
 import { typeChainCooldownText, typeChainEliminationLabels, typeChainEventView, typeChainMemberStatus, typeChainNamed, typeChainReasonShort, typeLabel } from './presentation';
 import s from './TypeChain.module.css';
 
@@ -127,7 +127,7 @@ export function TypeChainPlayers({ game, members, colors, selfId, className }: {
           disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
           avatar={<span className={cx(status.kind === 'eliminated' && s.out)}><Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" /></span>}
           meta={<span className={s.rowMeta}>{chip}</span>}
-          value={<span className={s.links}>{named}<small> {named === 1 ? 'nombrado' : 'nombrados'}</small></span>} />
+          value={<ScoreValue value={named} self={id === selfId} color={playerColor(colors.get(id) ?? 0)} className={s.links}><small> {named === 1 ? 'nombrado' : 'nombrados'}</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

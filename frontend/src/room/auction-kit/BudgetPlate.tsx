@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { Badge, Chip, cx, Icon, Panel, Row, ScoreValue } from '../../ui';
 import type { ProgressStatus } from '../social-kit';
 import { safeAmount } from './presentation';
 import s from './AuctionSide.module.css';
@@ -50,7 +50,7 @@ export function BudgetPlate({ title = 'Presupuestos', entries, unit = 'monedas',
         {entry.status && <Chip tone={entry.status.tone} {...(entry.status.icon ? { icon: <Icon icon={entry.status.icon} size={18} /> } : {})}>{entry.status.text}</Chip>}
         {entry.detail && <span className={s.detail}>{entry.detail}</span>}
       </span> : undefined}
-      {...(entry.value != null ? { value: <span className={s.value}>{entry.value}</span> } : entry.budget !== null ? { value: <span className={s.value}><strong>{safeAmount(entry.budget)}</strong><small>{unit === 'monedas' && safeAmount(entry.budget) === 1 ? 'moneda' : unit}</small></span> } : {})}>
+      {...(entry.value != null ? { value: <span className={s.value}>{entry.value}</span> } : entry.budget !== null ? { value: <span className={s.value}><strong><ScoreValue value={safeAmount(entry.budget)} self={Boolean(entry.self)} color={entry.color} /></strong><small>{unit === 'monedas' && safeAmount(entry.budget) === 1 ? 'moneda' : unit}</small></span> } : {})}>
       {entry.action && <span className={cx(s.action)}>{entry.action}</span>}
     </Row>
   </li>)}</ol>;

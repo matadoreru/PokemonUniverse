@@ -2,7 +2,7 @@ import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { Check, Equal, Search, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { Badge, Chip, Icon, Panel, Row, ScoreValue } from '../../ui';
 import { playerColor } from '../../lib/player-color';
 import { attemptsText, guessSeconds, guessSprite, ordinal, type GuessAttemptLike, type GuessRevealLine, type GuessRevealSolveLike, type GuessScoreLine } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../room-members';
@@ -23,7 +23,7 @@ export function GuessPlayersPanel({ lines, selfId, title = 'Marcador', className
           {solveOrder ? <Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solveOrder)}</Chip> : <Chip tone="neutral" icon={<Icon icon={Search} size={18} />}>Buscando…</Chip>}
           {tied && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
         </span>}
-        value={<span key={points} className={cx(s.score, 'motion-bump')} data-testid="guess-score">{points}<small> pts</small></span>} />
+        value={<ScoreValue value={points} self={member.id === selfId} quiet color={playerColor(colorIndex)} className={s.score} data-testid="guess-score"><small> pts</small></ScoreValue>} />
     </li>)}</ol>
   </Panel>;
 }

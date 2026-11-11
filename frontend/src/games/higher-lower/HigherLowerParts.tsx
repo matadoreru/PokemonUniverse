@@ -7,7 +7,7 @@ import { apiAsset } from '../../lib/api';
 import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from './higher-lower-labels';
 import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, ScoreValue } from '../../ui';
 import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, type HigherLowerPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './HigherLower.module.css';
@@ -131,8 +131,8 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
             {line && <span className={s.outcomeLine} data-outcome-line>{line}</span>}
           </span>}
           value={endless
-            ? <span key={streak} className={cx(s.score, streak > 0 && 'motion-bump')} data-streak={id}>{streak}<small> racha</small></span>
-            : <span className={s.score}>{game.scores[id] ?? 0}<small> pts</small></span>} />
+            ? <span data-streak={id}><ScoreValue value={streak} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small> racha</small></ScoreValue></span>
+            : <ScoreValue value={game.scores[id] ?? 0} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small> pts</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

@@ -199,7 +199,7 @@ describe('Higher or Lower · Racha infinita', () => {
     const board = html.slice(html.indexOf('Clasificación de la partida'));
     expect(board.match(/>Eliminado</g)).toHaveLength(1);
     expect(board.indexOf('Carla')).toBeGreaterThan(board.indexOf('Bruno'));
-    expect(board).toContain('2<small> racha</small>');
+    expect(board).toContain('2</span><small> racha</small>');
     expect(html).toContain('Un fallo y estás fuera');
     expect(html).not.toContain('Igual vale más puntos');
     expectSingleLiveRegion(html);

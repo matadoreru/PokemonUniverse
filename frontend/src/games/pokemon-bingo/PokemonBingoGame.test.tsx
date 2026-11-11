@@ -79,7 +79,7 @@ describe('PokemonBingoGame', () => {
     expect(html).toContain('Quitar Pokémon');
     expect(html).toContain('Actualmente: <strong>Charmander</strong>');
     expect(html).toContain('Tu progreso · 1/4');
-    expect(html).toContain('7 pts');
+    expect(html).toContain('7</span> pts');
     // Una sola región viva, «Saltar minijuego» dentro de la pantalla y nada heredado.
     expectSingleLiveRegion(html);
     expect(html).toContain('data-testid="pokemon-bingo-screen"');

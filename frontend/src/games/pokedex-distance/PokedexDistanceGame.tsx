@@ -8,7 +8,7 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
-import { Badge, Card, Chip, Confetti, Cutin, cx, Icon, Panel, Row, ScreenSplit } from '../../ui';
+import { Badge, Card, Chip, Confetti, Cutin, cx, Icon, Panel, Row, ScoreValue, ScreenSplit } from '../../ui';
 import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
@@ -69,7 +69,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
       <Badge>{pointsMode ? pointsRoundText : `Ronda ${game.roundNumber}`}</Badge>
       {game.tiebreakDepth > 0 && <Chip tone="warn">Desempate {game.tiebreakDepth}</Chip>}
       {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
-      <span className={s.points}><Icon icon={Trophy} size={18} />{member?.sessionPoints ?? 0} pts</span>
+      <span className={s.points}><Icon icon={Trophy} size={18} /><ScoreValue value={member?.sessionPoints ?? 0} self> pts</ScoreValue></span>
     </div>
     <div className={s.target}>
       <span className={s.targetIcon}><Icon icon={Target} size={32} /></span>
@@ -146,7 +146,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
               disconnected={rowMember?.presence !== undefined && rowMember.presence !== 'CONNECTED'}
               avatar={<Avatar name={name} avatar={rowMember?.avatar} level={rowMember?.level} size="sm" />}
               meta={<span className={s.rowMeta}><span className={s.clip}>{`${entry.position}.º`}</span></span>}
-              value={<span className={s.distance}>{entry.score}<small> pts</small></span>}
+              value={<ScoreValue value={entry.score} self={entry.playerId === selfId} color={colorOf(entry.playerId)} className={s.distance}><small> pts</small></ScoreValue>}
             />
           </li>;
         })}</ul>

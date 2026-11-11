@@ -111,7 +111,7 @@ describe('Type Chain: pantalla', () => {
     expect(markup).toContain('¡Tu turno!'); expect(markup).toContain('Nombra un Pokémon de tipo Volador');
     expect(markup).toContain('Cadena 1 · Volador · 2 Pokémon');
     expect(markup).toContain('Siguiente'); expect(markup).toContain('Marta'); expect(markup).toContain('Eliminado</span><span'); expect(markup).toContain('Se le acabó el tiempo');
-    expect(markup).toMatch(/3<small> nombrados<\/small>/);
+    expect(markup).toMatch(/3<\/span><small> nombrados<\/small>/);
     expect(markup).toContain('Ana nombra a Staraptor'); expect(markup).toContain('role="timer"');
   });
 
