@@ -23,6 +23,7 @@ export const ROOM_CODE_PATTERN = '/^[A-Z2-9]{6}$/';
 /** Ficheros del backend de los que salen los textos que se reconocen aquí (los vigila `roomCode.test.ts`). */
 export const SERVER_MESSAGE_SOURCES = {
   coordinator: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCoordinator.java',
+  chatCommands: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomChatCommands.java',
   parsers: 'backend/src/main/java/es/pokemonuniverse/application/rooms/RoomCommandParsers.java',
   invitations: 'backend/src/main/java/es/pokemonuniverse/application/friends/RoomInvitations.java',
   chat: 'backend/src/main/java/es/pokemonuniverse/domain/room/RoomChat.java',
@@ -38,8 +39,8 @@ export const SERVER_MESSAGE_SOURCES = {
 export const DAILY_MESSAGES = ['Registered account required', 'Daily challenge already played', 'Not available in the daily challenge', 'Daily challenge unavailable: the Pokémon catalog is empty'] as const;
 
 /**
- * Errores del chat del lobby que no salen de `RoomChat.java` sino de `RoomCoordinator.java` (`assertChatLobby`); el test
- * los busca en `coordinator` entre comillas, no como `new RoomException("…")`.
+ * Errores del chat del lobby que no salen de `RoomChat.java` sino de `RoomChatCommands.java` (`CHAT_ONLY_LOBBY`); el
+ * test los busca en `chatCommands` entre comillas, no como `new RoomException("…")`.
  */
 export const CHAT_COORDINATOR_MESSAGES = ['Chat is only available in the lobby'] as const;
 

@@ -105,6 +105,7 @@ describe('roomActionErrorMessage', () => {
 describe('textos del servidor vigilados', () => {
   // Si el backend cambia uno de estos textos, la traducción dejaría de aplicarse en silencio: este test lo detecta.
   const coordinator = javaSource(SERVER_MESSAGE_SOURCES.coordinator);
+  const chatCommands = javaSource(SERVER_MESSAGE_SOURCES.chatCommands);
   const invitations = javaSource(SERVER_MESSAGE_SOURCES.invitations);
   const chat = javaSource(SERVER_MESSAGE_SOURCES.chat);
   const daily = javaSource(SERVER_MESSAGE_SOURCES.daily) + javaSource(SERVER_MESSAGE_SOURCES.unauthorized);
@@ -124,8 +125,8 @@ describe('textos del servidor vigilados', () => {
     expect(roomActionErrorMessage(new Error('Not available in the daily challenge'))).toBe('No disponible en el reto diario.');
     expect(roomErrorMessage(new Error('Leave your current room first'))).toBe('Ya estás en otra sala. Sal de ella antes de unirte a esta.');
   });
-  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !rest.includes(message) && !dailyMessages.has(message)))('«%s» del chat sigue saliendo de RoomChat.java o del coordinador', (message) => {
-    expect(chatFromCoordinator.has(message) ? coordinator : chat).toContain(`"${message}"`);
+  it.each(Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !rest.includes(message) && !dailyMessages.has(message)))('«%s» del chat sigue saliendo de RoomChat.java o de RoomChatCommands.java', (message) => {
+    expect(chatFromCoordinator.has(message) ? chatCommands : chat).toContain(`"${message}"`);
   });
   it('traduce los siete errores del chat', () => {
     expect(roomErrorMessage(new Error('Chat is only available in the lobby'))).toBe('El chat solo está disponible en el lobby.');
