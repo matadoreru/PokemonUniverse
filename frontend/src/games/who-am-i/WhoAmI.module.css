@@ -24,14 +24,9 @@
   overflow-wrap: anywhere;
 }
 
-/* Escena: una carta por jugador. Llena el alto libre en escritorio; en el móvil, una franja con tope que se desplaza. */
+/* Escena: una carta por jugador. Llena el alto libre en escritorio; en el móvil, una sola fila (ver abajo). */
 .stage {
   min-height: 0;
-}
-@media (max-width: 1023px) {
-  .stage {
-    height: clamp(9rem, 28svh, 22rem);
-  }
 }
 .cards {
   display: grid;
@@ -41,9 +36,53 @@
   padding: var(--sp-1);
   list-style: none;
 }
+
+/*
+ * Móvil y tableta: nada queda debajo de la placa de la acción. La placa deja de ir pegada al fondo y va justo después
+ * de la placa de la ronda, antes que las cartas y que «Tus pistas»: la acción se ve sin desplazar y lo demás se lee al
+ * bajar sin que nada lo tape. Las cartas van en una sola fila que se desplaza en horizontal dentro de su panel.
+ * Estructura (`GuessScreen` + `ScreenSplit`): la pantalla > `p` de la región viva y la rejilla; la rejilla > arriba
+ * (> arriba de `GuessScreen` > placa de la ronda, escena), lateral (`aside`) y placa de la acción (`data-layer`).
+ * Las dos envolturas de arriba se disuelven (`display: contents`) para ordenar sus piezas con la placa de la acción.
+ */
+@media (max-width: 1023px) {
+  .screen > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .screen > div > div:first-child,
+  .screen > div > div:first-child > div {
+    display: contents;
+  }
+  .screen > div > div:first-child > div > * {
+    order: 2;
+  }
+  .screen > div > div:first-child > div > :first-child {
+    order: 0;
+  }
+  .screen [data-layer='screen-bottom'] {
+    order: 1;
+    position: static;
+  }
+  .screen > div > aside {
+    order: 3;
+    /* Sitio para la sombra dura del último panel. */
+    padding-bottom: var(--sp-2);
+  }
+  /* La bisagra marca la placa pegada al fondo: sin pegar, sobra. */
+  .screen [data-layer='screen-bottom'] > [aria-hidden='true'] {
+    display: none;
+  }
+  .cards {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(8.5rem, 1fr);
+  }
+}
 @media (max-width: 639px) {
   .cards {
-    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    grid-auto-columns: minmax(6.25rem, 1fr);
     gap: var(--sp-2);
   }
 }

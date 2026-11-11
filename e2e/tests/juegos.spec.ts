@@ -4838,7 +4838,9 @@ const escaparRegExp = (texto: string) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\
 async function pokemonDe(page: Page, dueno: string): Promise<string> {
   const carta = page.getByTestId('who-am-i-cards').getByRole('button', { name: new RegExp(`, de ${escaparRegExp(dueno)}: ver sus pistas$`) });
   const etiqueta = await carta.getAttribute('aria-label', { timeout: 10_000 });
-  return /^(.+), de .+: ver sus pistas$/.exec(etiqueta ?? '')![1]!;
+  const nombre = /^(.+), de .+: ver sus pistas$/.exec(etiqueta ?? '')?.[1];
+  expect(nombre, `Pokémon de ${dueno} en la carta («${etiqueta ?? ''}»)`).toBeTruthy();
+  return nombre!;
 }
 
 /** Abre el buscador con «Adivinar», escribe `nombre` y espera a que su carta salga en la bandeja (sin elegirla). */
