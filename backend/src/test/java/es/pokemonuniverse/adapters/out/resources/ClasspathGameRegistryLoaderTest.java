@@ -23,8 +23,8 @@ class ClasspathGameRegistryLoaderTest {
 
   @Test
   void loadsTwentyEightGames() {
-    assertEquals(30, registry.list().size());
-    assertEquals(30, registry.manifests().size());
+    assertEquals(31, registry.list().size());
+    assertEquals(31, registry.manifests().size());
     assertTrue(registry.get("pokedex-distance").isPresent());
   }
 
@@ -45,7 +45,7 @@ class ClasspathGameRegistryLoaderTest {
   void everyManifestHasAPortedEngine() {
     var notPorted = registry.list().stream().map(GameManifest::id).filter(id -> !registry.isPorted(id)).toList();
     assertEquals(List.of(), notPorted);
-    assertEquals(30, registry.list().stream().filter(game -> registry.engine(game.id()).isPresent()).count());
+    assertEquals(31, registry.list().stream().filter(game -> registry.engine(game.id()).isPresent()).count());
   }
 
   @Test

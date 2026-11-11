@@ -29,6 +29,7 @@ import es.pokemonuniverse.domain.game.engines.tcghigherlower.TcgHigherLowerEngin
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainEngine;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelEngine;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorEngine;
+import es.pokemonuniverse.domain.game.engines.whoami.WhoAmIEngine;
 import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonEngine;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonEngine;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherEngine;
@@ -113,6 +114,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(AbsurdPokedexEngine.ID, new AbsurdPokedexEngine(manifest(manifests, AbsurdPokedexEngine.ID)));
     engines.put(UnownTranslatorEngine.ID,
         new UnownTranslatorEngine(manifest(manifests, UnownTranslatorEngine.ID)));
+    engines.put(WhoAmIEngine.ID, new WhoAmIEngine(manifest(manifests, WhoAmIEngine.ID)));
     return engines;
   }
 

@@ -29,7 +29,7 @@ class GamesControllerTest {
     var response = client.toBlocking().exchange(HttpRequest.GET("/api/games"), String.class);
     assertEquals(HttpStatus.OK, response.status());
     var games = games(response.body());
-    assertEquals(30, games.size());
+    assertEquals(31, games.size());
     var first = games.get(0);
     assertTrue(first.containsKey("defaultConfig"));
     var metrics = (List<?>) ((Map<?, ?>) first.get("profileStats")).get("metrics");

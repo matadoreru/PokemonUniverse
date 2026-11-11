@@ -1,0 +1,2798 @@
+{
+  "engineId": "who-am-i",
+  "scenario": "timeouts-and-presence",
+  "seed": 4202,
+  "catalog": "gen1-2",
+  "startNow": 1794427200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "maxLaps": 3,
+    "askSeconds": 45,
+    "answerSeconds": 20
+  },
+  "steps": [
+    {
+      "kind": "timeout",
+      "now": 1794427245000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Soy de tipo planta?"
+      },
+      "now": 1794427250000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427252000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427270000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427290000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Soy morado?"
+      },
+      "now": 1794427295000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427297000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794427298000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "PASS_TURN"
+      },
+      "now": 1794427300000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno",
+          "connected": false
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794427302000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794427304000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Soy legendario?"
+      },
+      "now": 1794427310000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 1794427311000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427356000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_SELF",
+        "pokemonId": "weepinbell"
+      },
+      "now": 1794427360000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "maxLaps": 3,
+      "askSeconds": 45,
+      "answerSeconds": 20
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",1,null,null,0,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-am-i",
+        "phase": "GAME_STARTING",
+        "lap": 1,
+        "maxLaps": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "turnPlayerId": null,
+        "turnStep": null,
+        "currentQuestion": null,
+        "history": {
+          "p1": [],
+          "p2": [],
+          "p3": []
+        },
+        "solvedPlayerIds": [],
+        "questionsAsked": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "turnEndsAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "others": {},
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "others": {},
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "others": {},
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 1794427245000,
+        "actionEpoch": "[\"TURN_ACTIVE\",1,1794427200000,null,0,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-am-i",
+        "phase": "TURN_ACTIVE",
+        "lap": 1,
+        "maxLaps": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "turnPlayerId": "p1",
+        "turnStep": "ASKING",
+        "currentQuestion": null,
+        "history": {
+          "p1": [],
+          "p2": [],
+          "p3": []
+        },
+        "solvedPlayerIds": [],
+        "questionsAsked": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "turnEndsAt": 1794427245000,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "others": {
+            "p2": {
+              "id": "weepinbell",
+              "name": "Weepinbell",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+              "nationalDexNumber": 70,
+              "types": [
+                "grass",
+                "poison"
+              ]
+            },
+            "p3": {
+              "id": "nidoran-m",
+              "name": "Nidoran M",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+              "nationalDexNumber": 32,
+              "types": [
+                "poison"
+              ]
+            }
+          },
+          "self": null,
+          "canAsk": true,
+          "canAnswer": false,
+          "canGuess": true,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "others": {
+            "p1": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "p3": {
+              "id": "nidoran-m",
+              "name": "Nidoran M",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+              "nationalDexNumber": 32,
+              "types": [
+                "poison"
+              ]
+            }
+          },
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "others": {
+            "p1": {
+              "id": "machop",
+              "name": "Machop",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+              "nationalDexNumber": 66,
+              "types": [
+                "fighting"
+              ]
+            },
+            "p2": {
+              "id": "weepinbell",
+              "name": "Weepinbell",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+              "nationalDexNumber": 70,
+              "types": [
+                "grass",
+                "poison"
+              ]
+            }
+          },
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427290000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427245000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427290000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427270000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427250000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy de tipo planta?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427270000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427270000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427250000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy de tipo planta?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1"
+              ]
+            },
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427270000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427290000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427270000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "DECIDING",
+            "currentQuestion": {
+              "text": "¿Soy de tipo planta?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1"
+              ]
+            },
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427290000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": true,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427335000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427290000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427335000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427315000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427295000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy morado?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427315000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427315000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427295000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy morado?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1"
+              ]
+            },
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427315000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427318000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427298000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "DECIDING",
+            "currentQuestion": {
+              "text": "¿Soy morado?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1"
+              ]
+            },
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427318000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": true,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427345000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427300000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ]
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427345000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427347000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427302000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ]
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427347000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427347000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427302000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ]
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 1
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427347000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427330000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427310000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy legendario?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ]
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 2
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427330000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427356000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,1794427311000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 3,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy legendario?",
+                  "answers": []
+                }
+              ]
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 2
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427356000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427401000,
+            "actionEpoch": "[\"TURN_ACTIVE\",3,1794427356000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 3,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy legendario?",
+                  "answers": []
+                }
+              ]
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 2
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427401000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,1794427356000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "GAME_RESULTS",
+            "lap": 3,
+            "maxLaps": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": null,
+            "turnStep": null,
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo planta?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy morado?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy legendario?",
+                  "answers": []
+                }
+              ]
+            },
+            "solvedPlayerIds": [
+              "p2"
+            ],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 1,
+              "p3": 2
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 12,
+              "p3": 0
+            },
+            "turnEndsAt": null,
+            "results": [
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "solved": true,
+                "questionsAsked": 1,
+                "points": 12,
+                "rank": 1
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "solved": false,
+                "questionsAsked": 0,
+                "points": 0,
+                "rank": 2
+              },
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                },
+                "solved": false,
+                "questionsAsked": 2,
+                "points": 0,
+                "rank": 3
+              }
+            ]
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p3": {
+                  "id": "nidoran-m",
+                  "name": "Nidoran M",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                  "nationalDexNumber": 32,
+                  "types": [
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "weepinbell",
+                "name": "Weepinbell",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                "nationalDexNumber": 70,
+                "types": [
+                  "grass",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "machop",
+                  "name": "Machop",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+                  "nationalDexNumber": 66,
+                  "types": [
+                    "fighting"
+                  ]
+                },
+                "p2": {
+                  "id": "weepinbell",
+                  "name": "Weepinbell",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png",
+                  "nationalDexNumber": 70,
+                  "types": [
+                    "grass",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 12,
+          "won": true,
+          "stats": {
+            "gamesPlayed": 1,
+            "solved": 1,
+            "questionsAsked": 1,
+            "wrongGuesses": 0,
+            "firstSolves": 1,
+            "pointsFromRounds": 12
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "gamesPlayed": 1,
+            "solved": 0,
+            "questionsAsked": 0,
+            "wrongGuesses": 0,
+            "firstSolves": 0,
+            "pointsFromRounds": 0
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 0,
+          "won": false,
+          "stats": {
+            "gamesPlayed": 1,
+            "solved": 0,
+            "questionsAsked": 2,
+            "wrongGuesses": 0,
+            "firstSolves": 0,
+            "pointsFromRounds": 0
+          }
+        }
+      ]
+    }
+  }
+}

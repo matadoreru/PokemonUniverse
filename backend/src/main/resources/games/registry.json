@@ -2693,5 +2693,75 @@
       "hintSeconds": 6,
       "mode": "CLASSIC"
     }
+  },
+  {
+    "id": "who-am-i",
+    "name": "¿Quién soy?",
+    "icon": "🎭",
+    "description": "Todos ven tu Pokémon menos tú: pregunta, deduce y adivina quién eres con las menos preguntas posibles.",
+    "experimental": false,
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "gamesPlayed",
+          "label": "Partidas jugadas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "solved",
+          "label": "Pokémon adivinados",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "questionsAsked",
+          "label": "Preguntas hechas",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "wrongGuesses",
+          "label": "Intentos fallidos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "firstSolves",
+          "label": "Primero en adivinar",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "pointsFromRounds",
+          "label": "Puntos conseguidos",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "solveRate",
+          "label": "Tasa de acierto",
+          "kind": "PERCENT",
+          "numerator": "solved",
+          "denominator": [
+            "gamesPlayed"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "maxLaps": 10,
+      "askSeconds": 45,
+      "answerSeconds": 20
+    }
   }
 ]

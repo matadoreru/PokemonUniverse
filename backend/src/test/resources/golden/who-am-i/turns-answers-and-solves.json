@@ -1,0 +1,4475 @@
+{
+  "engineId": "who-am-i",
+  "scenario": "turns-answers-and-solves",
+  "seed": 4101,
+  "catalog": "gen1-2",
+  "startNow": 1794427200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "maxLaps": 10,
+    "askSeconds": 45,
+    "answerSeconds": 20
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Soy de tipo bicho?"
+      },
+      "now": 1794427202000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427204000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "PARTLY"
+      },
+      "now": 1794427205000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "PASS_TURN"
+      },
+      "now": 1794427207000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        },
+        {
+          "id": "p9",
+          "displayName": "Diego",
+          "active": false
+        }
+      ],
+      "now": 1794427208000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Vivo en el mar?"
+      },
+      "now": 1794427210000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "NO"
+      },
+      "now": 1794427212000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "UNKNOWN"
+      },
+      "now": 1794427213000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_SELF",
+        "pokemonId": "tentacruel"
+      },
+      "now": 1794427215000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "GUESS_SELF",
+        "pokemonId": "piloswine"
+      },
+      "now": 1794427217000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Tengo ocho patas?"
+      },
+      "now": 1794427219000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427220000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427221000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "GUESS_SELF",
+        "pokemonId": "ariados"
+      },
+      "now": 1794427223000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "ASK_QUESTION",
+        "text": "¿Soy venenoso?"
+      },
+      "now": 1794427225000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427226000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "ANSWER_QUESTION",
+        "answer": "YES"
+      },
+      "now": 1794427227000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "GUESS_SELF",
+        "pokemonId": "tentacool"
+      },
+      "now": 1794427229000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "maxLaps": 10,
+      "askSeconds": 45,
+      "answerSeconds": 20
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",1,null,null,0,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-am-i",
+        "phase": "GAME_STARTING",
+        "lap": 1,
+        "maxLaps": 10,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "turnPlayerId": null,
+        "turnStep": null,
+        "currentQuestion": null,
+        "history": {
+          "p1": [],
+          "p2": [],
+          "p3": []
+        },
+        "solvedPlayerIds": [],
+        "questionsAsked": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "turnEndsAt": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "others": {},
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "others": {},
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "others": {},
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "TURN_ACTIVE",
+        "nextDeadline": 1794427245000,
+        "actionEpoch": "[\"TURN_ACTIVE\",1,1794427200000,null,0,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "who-am-i",
+        "phase": "TURN_ACTIVE",
+        "lap": 1,
+        "maxLaps": 10,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "turnPlayerId": "p1",
+        "turnStep": "ASKING",
+        "currentQuestion": null,
+        "history": {
+          "p1": [],
+          "p2": [],
+          "p3": []
+        },
+        "solvedPlayerIds": [],
+        "questionsAsked": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "turnEndsAt": 1794427245000,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "role": "PLAYER",
+          "others": {
+            "p2": {
+              "id": "tentacool",
+              "name": "Tentacool",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+              "nationalDexNumber": 72,
+              "types": [
+                "water",
+                "poison"
+              ]
+            },
+            "p3": {
+              "id": "piloswine",
+              "name": "Piloswine",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+              "nationalDexNumber": 221,
+              "types": [
+                "ice",
+                "ground"
+              ]
+            }
+          },
+          "self": null,
+          "canAsk": true,
+          "canAnswer": false,
+          "canGuess": true,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p2": {
+          "role": "PLAYER",
+          "others": {
+            "p1": {
+              "id": "ariados",
+              "name": "Ariados",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+              "nationalDexNumber": 168,
+              "types": [
+                "bug",
+                "poison"
+              ]
+            },
+            "p3": {
+              "id": "piloswine",
+              "name": "Piloswine",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+              "nationalDexNumber": 221,
+              "types": [
+                "ice",
+                "ground"
+              ]
+            }
+          },
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        },
+        "p3": {
+          "role": "PLAYER",
+          "others": {
+            "p1": {
+              "id": "ariados",
+              "name": "Ariados",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+              "nationalDexNumber": 168,
+              "types": [
+                "bug",
+                "poison"
+              ]
+            },
+            "p2": {
+              "id": "tentacool",
+              "name": "Tentacool",
+              "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+              "nationalDexNumber": 72,
+              "types": [
+                "water",
+                "poison"
+              ]
+            }
+          },
+          "self": null,
+          "canAsk": false,
+          "canAnswer": false,
+          "canGuess": false,
+          "canPass": false,
+          "ownAnswer": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427222000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427202000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy de tipo bicho?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427222000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427222000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427202000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy de tipo bicho?",
+              "answers": [
+                {
+                  "playerId": "p2",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p2"
+              ]
+            },
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427222000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427225000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427205000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "DECIDING",
+            "currentQuestion": {
+              "text": "¿Soy de tipo bicho?",
+              "answers": [
+                {
+                  "playerId": "p2",
+                  "answer": "YES"
+                },
+                {
+                  "playerId": "p3",
+                  "answer": "PARTLY"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p2",
+                "p3"
+              ]
+            },
+            "history": {
+              "p1": [],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427225000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": true,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "PARTLY"
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427252000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427207000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427252000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427252000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427207000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 0,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427252000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427230000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427210000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Vivo en el mar?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427230000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427230000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427210000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Vivo en el mar?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "NO"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1"
+              ]
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427230000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "NO"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427233000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427213000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "DECIDING",
+            "currentQuestion": {
+              "text": "¿Vivo en el mar?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "NO"
+                },
+                {
+                  "playerId": "p3",
+                  "answer": "UNKNOWN"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1",
+                "p3"
+              ]
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427233000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "NO"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": true,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "UNKNOWN"
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427260000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427215000,null,2,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p3",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "turnEndsAt": 1794427260000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427262000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427217000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3"
+            ],
+            "questionsAsked": {
+              "p1": 1,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427262000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427239000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427219000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Tengo ocho patas?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427239000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427239000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427219000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Tengo ocho patas?",
+              "answers": [
+                {
+                  "playerId": "p2",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p2"
+              ]
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427239000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427241000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427221000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "DECIDING",
+            "currentQuestion": {
+              "text": "¿Tengo ocho patas?",
+              "answers": [
+                {
+                  "playerId": "p2",
+                  "answer": "YES"
+                },
+                {
+                  "playerId": "p3",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p2",
+                "p3"
+              ]
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427241000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": true,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427268000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427223000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Tengo ocho patas?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 1,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 10,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427268000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                "nationalDexNumber": 168,
+                "types": [
+                  "bug",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427225000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy venenoso?",
+              "answers": [],
+              "answeredPlayerIds": []
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Tengo ocho patas?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 10,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427245000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                "nationalDexNumber": 168,
+                "types": [
+                  "bug",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427225000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "ANSWERING",
+            "currentQuestion": {
+              "text": "¿Soy venenoso?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1"
+              ]
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Tengo ocho patas?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 10,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427245000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                "nationalDexNumber": 168,
+                "types": [
+                  "bug",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": true,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427247000,
+            "actionEpoch": "[\"TURN_ACTIVE\",2,1794427227000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": "p2",
+            "turnStep": "DECIDING",
+            "currentQuestion": {
+              "text": "¿Soy venenoso?",
+              "answers": [
+                {
+                  "playerId": "p1",
+                  "answer": "YES"
+                },
+                {
+                  "playerId": "p3",
+                  "answer": "YES"
+                }
+              ],
+              "answeredPlayerIds": [
+                "p1",
+                "p3"
+              ]
+            },
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Tengo ocho patas?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3",
+              "p1"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 10,
+              "p2": 0,
+              "p3": 13
+            },
+            "turnEndsAt": 1794427247000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                "nationalDexNumber": 168,
+                "types": [
+                  "bug",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": true,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": "YES"
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",2,1794427227000,null,1,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "GAME_RESULTS",
+            "lap": 2,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "turnPlayerId": null,
+            "turnStep": null,
+            "currentQuestion": null,
+            "history": {
+              "p1": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy de tipo bicho?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "PARTLY"
+                    }
+                  ]
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Tengo ocho patas?",
+                  "answers": [
+                    {
+                      "playerId": "p2",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p2": [
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Vivo en el mar?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "NO"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "UNKNOWN"
+                    }
+                  ]
+                },
+                {
+                  "kind": "GUESS",
+                  "pokemon": {
+                    "id": "tentacruel",
+                    "name": "Tentacruel",
+                    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/73.png",
+                    "nationalDexNumber": 73,
+                    "types": [
+                      "water",
+                      "poison"
+                    ]
+                  }
+                },
+                {
+                  "kind": "QUESTION",
+                  "text": "¿Soy venenoso?",
+                  "answers": [
+                    {
+                      "playerId": "p1",
+                      "answer": "YES"
+                    },
+                    {
+                      "playerId": "p3",
+                      "answer": "YES"
+                    }
+                  ]
+                }
+              ],
+              "p3": []
+            },
+            "solvedPlayerIds": [
+              "p3",
+              "p1",
+              "p2"
+            ],
+            "questionsAsked": {
+              "p1": 2,
+              "p2": 2,
+              "p3": 0
+            },
+            "scores": {
+              "p1": 10,
+              "p2": 9,
+              "p3": 13
+            },
+            "turnEndsAt": null,
+            "results": [
+              {
+                "playerId": "p3",
+                "pokemon": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                },
+                "solved": true,
+                "questionsAsked": 0,
+                "points": 13,
+                "rank": 1
+              },
+              {
+                "playerId": "p1",
+                "pokemon": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "solved": true,
+                "questionsAsked": 2,
+                "points": 10,
+                "rank": 2
+              },
+              {
+                "playerId": "p2",
+                "pokemon": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "solved": true,
+                "questionsAsked": 2,
+                "points": 9,
+                "rank": 3
+              }
+            ]
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": {
+                "id": "ariados",
+                "name": "Ariados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                "nationalDexNumber": 168,
+                "types": [
+                  "bug",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": {
+                "id": "tentacool",
+                "name": "Tentacool",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                "nationalDexNumber": 72,
+                "types": [
+                  "water",
+                  "poison"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p3": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                }
+              },
+              "self": {
+                "id": "piloswine",
+                "name": "Piloswine",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                "nationalDexNumber": 221,
+                "types": [
+                  "ice",
+                  "ground"
+                ]
+              },
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p9": {
+              "role": "SPECTATOR",
+              "others": {
+                "p1": {
+                  "id": "ariados",
+                  "name": "Ariados",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png",
+                  "nationalDexNumber": 168,
+                  "types": [
+                    "bug",
+                    "poison"
+                  ]
+                },
+                "p2": {
+                  "id": "tentacool",
+                  "name": "Tentacool",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/72.png",
+                  "nationalDexNumber": 72,
+                  "types": [
+                    "water",
+                    "poison"
+                  ]
+                },
+                "p3": {
+                  "id": "piloswine",
+                  "name": "Piloswine",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/221.png",
+                  "nationalDexNumber": 221,
+                  "types": [
+                    "ice",
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p3",
+      "standings": [
+        {
+          "playerId": "p3",
+          "position": 1,
+          "points": 13,
+          "won": true,
+          "stats": {
+            "gamesPlayed": 1,
+            "solved": 1,
+            "questionsAsked": 0,
+            "wrongGuesses": 0,
+            "firstSolves": 1,
+            "pointsFromRounds": 13
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 10,
+          "won": false,
+          "stats": {
+            "gamesPlayed": 1,
+            "solved": 1,
+            "questionsAsked": 2,
+            "wrongGuesses": 0,
+            "firstSolves": 0,
+            "pointsFromRounds": 10
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 3,
+          "points": 9,
+          "won": false,
+          "stats": {
+            "gamesPlayed": 1,
+            "solved": 1,
+            "questionsAsked": 2,
+            "wrongGuesses": 1,
+            "firstSolves": 0,
+            "pointsFromRounds": 9
+          }
+        }
+      ]
+    }
+  }
+}
