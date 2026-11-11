@@ -24,7 +24,7 @@ public record OneOfUsIsFakeConfig(List<Integer> generations, int selectionSecond
   /** {@code defaultOneOfUsIsFakeConfig}. */
   public static OneOfUsIsFakeConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new OneOfUsIsFakeConfig(generations, 30, 180, 5, false, CategorySource.OFFICIAL, true);
+    return new OneOfUsIsFakeConfig(generations, 30, 120, 5, false, CategorySource.OFFICIAL, true);
   }
 
   /**

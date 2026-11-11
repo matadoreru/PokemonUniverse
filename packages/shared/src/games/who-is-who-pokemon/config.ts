@@ -15,5 +15,5 @@ export const whoIsWhoPokemonConfigSchema = z.object({
 export type WhoIsWhoPokemonConfig = z.infer<typeof whoIsWhoPokemonConfigSchema>;
 
 export const defaultWhoIsWhoPokemonConfig: WhoIsWhoPokemonConfig = {
-  generations: [...GENERATIONS], boardSize: 24, includeForms: true, turnSeconds: 40, rounds: 25, selectionSeconds: 30, secretSelection: 'RANDOM',
+  generations: [...GENERATIONS], boardSize: 24, includeForms: true, turnSeconds: 40, rounds: 15, selectionSeconds: 30, secretSelection: 'RANDOM',
 };

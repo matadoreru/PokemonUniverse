@@ -35,7 +35,7 @@ public record WhoIsWhoPokemonConfig(
   /** {@code defaultWhoIsWhoPokemonConfig}. */
   public static WhoIsWhoPokemonConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new WhoIsWhoPokemonConfig(generations, 24, true, 40, 25, DEFAULT_SELECTION_SECONDS,
+    return new WhoIsWhoPokemonConfig(generations, 24, true, 40, 15, DEFAULT_SELECTION_SECONDS,
         WhoIsWhoSecretSelection.RANDOM);
   }
 

@@ -236,7 +236,7 @@ describe('One of Us Is Fake: resultados, ajustes y gestor', () => {
   it('ajustes con los controles del catálogo', () => {
     const html = renderToStaticMarkup(createElement(OneOfUsIsFakeConfigPanel, { config: defaultOneOfUsIsFakeConfig, disabled: false, room: room(publicGame(), null), selfId: 'p1', onChange: async () => undefined }));
     for (const label of ['Número de rondas', 'Tiempo para elegir', 'Tiempo de debate y voto', 'El fake sabe que es fake', 'Fuente de categorías', 'Formas regionales']) expect(html).toContain(label);
-    expect(html).toContain('3 min');
+    expect(html).toContain('2 min');
     expect(html).toContain('Crea una cuenta para guardar categorías personales');
     expect(html).not.toMatch(/class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|chip|field)\b/);
   });

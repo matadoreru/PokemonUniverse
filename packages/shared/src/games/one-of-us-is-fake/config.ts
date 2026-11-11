@@ -20,7 +20,7 @@ export type OneOfUsIsFakeConfig = z.infer<typeof oneOfUsIsFakeConfigSchema>;
 export const defaultOneOfUsIsFakeConfig: OneOfUsIsFakeConfig = {
   generations: [...GENERATIONS],
   selectionSeconds: 30,
-  discussionSeconds: 180,
+  discussionSeconds: 120,
   rounds: 5,
   fakeKnows: false,
   categorySource: 'OFFICIAL',

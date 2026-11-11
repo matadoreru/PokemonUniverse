@@ -1427,7 +1427,7 @@
         9
       ],
       "selectionSeconds": 30,
-      "discussionSeconds": 180,
+      "discussionSeconds": 120,
       "rounds": 5,
       "fakeKnows": false,
       "categorySource": "OFFICIAL",
@@ -2701,7 +2701,7 @@
       "boardSize": 24,
       "includeForms": true,
       "turnSeconds": 40,
-      "rounds": 25,
+      "rounds": 15,
       "selectionSeconds": 30,
       "secretSelection": "RANDOM"
     }
