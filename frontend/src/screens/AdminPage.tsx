@@ -137,7 +137,7 @@ export function AdminPage() {
 
   return (
     <Screen fill>
-      <HudPlate className="w-full !flex-col !items-stretch !gap-4 !px-5 !py-4 lg:!flex-row lg:!items-center lg:!justify-between">
+      <HudPlate size="header">
         <div className="min-w-0">
           <h1 className={cx('ol2 font-display text-26 font-extrabold leading-tight 2xl:text-34', tone.textWhite)}>Administración de Pokémon Universe</h1>
           <p className={cx('text-13 font-extrabold', tone.textSky2)}>{summary ? `Actualizado ${formatAdminTime(summary.updatedAt)}` : 'Versiones, feedback, salas, partidas y cuentas'}</p>

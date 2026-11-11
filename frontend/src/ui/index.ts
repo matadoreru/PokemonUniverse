@@ -31,7 +31,7 @@ export type { CardAttrs, CardProps, CardState } from './Card';
 export { TextCard } from './TextCard';
 export type { TextCardProps } from './TextCard';
 export { HudPlate } from './HudPlate';
-export type { HudPlateProps } from './HudPlate';
+export type { HudPlateProps, HudPlateSize } from './HudPlate';
 export { Dialog, createDialogController, dialogCloseReason } from './Dialog';
 export type { DialogAction, DialogCloseReason, DialogController, DialogLike, DialogProps } from './Dialog';
 export { Drawer } from './Drawer';

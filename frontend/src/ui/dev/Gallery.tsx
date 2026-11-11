@@ -833,6 +833,19 @@ function HudSection() {
           <span className={s.text}>12 pts</span>
         </HudPlate>
       </Fig>
+      <Fig id="hudplate-block" caption={'size="block": a todo el ancho, el contenido baja si no cabe (ficha del perfil)'} wide>
+        <HudPlate size="block">
+          <span className="ol2 font-display text-26">Misty</span>
+          <span className={s.text}>Miembro desde el 3 de noviembre de 2026</span>
+          <span className={cx(s.text, 'basis-full')}>Nivel 4 · 320 XP en total</span>
+        </HudPlate>
+      </Fig>
+      <Fig id="hudplate-size-header" caption={'size="header": cabecera de pantalla, en columna en móvil y en fila desde 1024 px'} wide>
+        <HudPlate size="header">
+          <span className="ol2 font-display text-26">Administración</span>
+          <span className={s.text}>3 salas abiertas · 12 partidas hoy</span>
+        </HudPlate>
+      </Fig>
       <Fig id="hudplate-header" caption="Cabecera: logotipo, sonido, novedades sin leer y salir" wide>
         <span className={s.iconRow}>
           <HudPlate>

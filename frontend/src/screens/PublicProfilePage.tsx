@@ -9,7 +9,7 @@ import { api } from '../lib/api';
 import type { PublicProfileResponse } from '../lib/api-contract';
 import { cx, HudPlate, Icon, Panel, Pill, Screen, ScreenHeader, StateBox, type StateBoxProps } from '../ui';
 import tone from '../styles/tones.module.css';
-import { LevelMeter, ProfileDetail, ProfileGames, ProfileLayout, ProfileName, ProfileSummary, useProfileTab } from './ProfilePage';
+import { LevelMeter, ProfileDetail, ProfileGames, ProfileLayout, ProfileName, ProfileSummary, useProfileTab } from '../profile/ProfileParts';
 
 /** Mensaje del servidor para un nombre que no es de ninguna cuenta (`UsersController`). */
 const NOT_FOUND = 'User not found';
@@ -113,7 +113,7 @@ export function PublicProfilePage() {
   const { profile } = state;
   const reload = () => load(true);
   const plate = (
-    <HudPlate className="w-full flex-wrap !gap-5 !p-5 lg:!p-6">
+    <HudPlate size="block">
       <Avatar name={profile.user.username} avatar={profile.user.avatar} level={profile.progress?.level} size="xxl" className={cx('border-[3px]', tone.borderNavy)} />
       <ProfileName username={profile.user.username} createdAt={profile.user.createdAt ?? null} />
       {profile.progress && <LevelMeter progress={profile.progress} />}

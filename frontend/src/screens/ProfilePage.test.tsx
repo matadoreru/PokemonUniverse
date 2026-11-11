@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { AppHeader } from '../components/Layout';
 import type { AchievementsResponse } from '../lib/api-contract';
-import { LevelMeter, ProfileDetail, tabFromParam, type AchievementsState } from './ProfilePage';
+import { LevelMeter, ProfileDetail, tabFromParam, type AchievementsState } from '../profile/ProfileParts';
 
 vi.mock('../components/feedback-target', () => ({ useFeedbackHref: () => '/feedback' }));
 

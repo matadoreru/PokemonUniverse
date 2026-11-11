@@ -14,3 +14,30 @@
   flex-direction: row-reverse;
   text-align: right;
 }
+/* A todo el ancho, con 20 px de aire (24 desde 1024 px); lo que no cabe en la fila baja a la siguiente. */
+.block {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: calc(var(--sp-4) + var(--sp-1));
+  padding: calc(var(--sp-4) + var(--sp-1));
+}
+/* Cabecera de pantalla: en columna y estirada en móvil; desde 1024 px, una fila con los extremos separados. */
+.header {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sp-4);
+  padding: var(--sp-4) calc(var(--sp-4) + var(--sp-1));
+}
+@media (min-width: 1024px) {
+  .block {
+    padding: var(--sp-5);
+  }
+  .header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
