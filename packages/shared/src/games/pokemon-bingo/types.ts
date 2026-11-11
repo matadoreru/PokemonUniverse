@@ -1,35 +1,8 @@
-import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { PokemonBingoConfig } from './config.js';
 
 import type { BingoCell } from '../../pokemon/conditions/types.js';
 export type { BingoCell, BingoCondition, BingoComparisonOperator, BingoStatKey, BingoEvolutionStatus } from '../../pokemon/conditions/types.js';
-
-export interface BingoBoardState {
-  cells: BingoCell[];
-  assignments: Record<string, string>;
-  /** One validated perfect matching retained only in opaque server state. */
-  solutionPokemonIds: Record<string, string>;
-  lastProgressAt: number;
-}
-export interface BingoPlayerStats { correctAssignments: number; incorrectAttempts: number }
 export interface BingoPrivateAttempt { cellId: string; pokemonId: string; pokemonName: string; attemptedAt: number; correct: boolean; message: string }
-
-export interface PokemonBingoState {
-  phase: GamePhase;
-  config: PokemonBingoConfig;
-  playerIds: string[];
-  poolIds: string[];
-  boards: Record<string, BingoBoardState>;
-  playerStats: Record<string, BingoPlayerStats>;
-  cooldownUntil: Record<string, number>;
-  lastAttempts: Record<string, BingoPrivateAttempt>;
-  winnerId: string | null;
-  bingoAt: number | null;
-  gameStartedAt: number;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-}
 
 export interface BingoPokemonView { id: string; name: string; sprite: string }
 export interface BingoPublicCell extends BingoCell { assignment: BingoPokemonView | null; possibleSolutions: BingoPokemonView[] }
@@ -44,11 +17,3 @@ export interface PokemonBingoPlayerState {
   cooldownUntil: number | null;
   lastAttempt: BingoPrivateAttempt | null;
 }
-
-export const pokemonBingoActionSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('SKIP_RESULTS') }).strict(),
-  z.object({ type: z.literal('ASSIGN_POKEMON'), cellId: z.string().min(1).max(64), pokemonId: z.string().min(1).max(64), moveExisting: z.boolean().optional() }).strict(),
-  z.object({ type: z.literal('MOVE_POKEMON'), fromCellId: z.string().min(1).max(64), toCellId: z.string().min(1).max(64) }).strict(),
-  z.object({ type: z.literal('REMOVE_POKEMON'), cellId: z.string().min(1).max(64) }).strict(),
-]);
-export type PokemonBingoAction = z.infer<typeof pokemonBingoActionSchema>;

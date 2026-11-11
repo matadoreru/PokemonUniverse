@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import type { PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { SketchmonConfig } from './config.js';
 
 export const SKETCHMON_COLORS = [
   '#182033', '#ffffff', '#7b8496', '#e24671', '#ef4444', '#f97316', '#e1a817',
@@ -60,44 +59,6 @@ export interface SketchmonRoundResult {
 export interface SketchmonGalleryEntry extends SketchmonRoundResult {
   roundNumber: number;
   lapNumber: number;
-}
-
-export interface SketchmonPlayerStats {
-  guessedPokemon: number;
-  firstTry: number;
-  totalAttempts: number;
-  firstCorrectResponses: number;
-  drawingRounds: number;
-  drawingSuccesses: number;
-  drawingFailures: number;
-  pointsFromGuessing: number;
-  pointsFromDrawing: number;
-}
-
-export interface SketchmonState {
-  phase: GamePhase;
-  config: SketchmonConfig;
-  playerIds: string[];
-  drawerOrder: string[];
-  poolIds: string[];
-  usedPokemonIds: string[];
-  roundNumber: number;
-  targetPokemonId: string | null;
-  drawerId: string | null;
-  strokes: SketchmonStroke[];
-  undoStack: SketchmonStroke[][];
-  redoStack: SketchmonStroke[][];
-  visibleHints: SketchmonHint[];
-  attempts: SketchmonAttempt[];
-  attemptCounts: Record<string, number>;
-  cooldownUntil: Record<string, number>;
-  scores: Record<string, number>;
-  playerStats: Record<string, SketchmonPlayerStats>;
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: SketchmonRoundResult | null;
-  gallery: SketchmonGalleryEntry[];
 }
 
 export interface SketchmonPublicState {

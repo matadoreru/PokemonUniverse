@@ -8,38 +8,6 @@ export type MoveCategory = (typeof MOVE_CATEGORIES)[number];
 export const POKEMON_LEGENDARY_STATUSES = ['NORMAL', 'LEGENDARY', 'MYTHICAL'] as const;
 export type PokemonLegendaryStatus = (typeof POKEMON_LEGENDARY_STATUSES)[number];
 
-export interface Move {
-  id: string;
-  name: string;
-  type: PokemonType;
-  category: MoveCategory;
-  names?: LocalizedText;
-}
-
-export interface LevelUpMove {
-  moveId: string;
-  level: number;
-}
-
-export interface ResolvedLevelUpMove extends LevelUpMove {
-  move: Move;
-}
-
-export interface PokemonEvolutionInfo {
-  stage: number;
-  stages: number;
-}
-
-export interface PokedexEntry {
-  pokemonId: string;
-  text: string;
-  /** This game deliberately accepts only source entries tagged as Spanish. */
-  language: 'es';
-  generation: Generation;
-  version: string;
-  versionLabel: string;
-}
-
 export const GENERATION_LEARNSET_SOURCES = {
   1: { versionGroup: 'yellow', label: 'Pokémon Yellow' },
   2: { versionGroup: 'crystal', label: 'Pokémon Crystal' },
@@ -85,40 +53,6 @@ export interface Pokemon {
   abilities?: string[];
   names?: LocalizedText;
   types: PokemonType[];
-}
-
-/** Forms intentionally imported by the authoritative catalog. Other PokéAPI variants are cosmetic or battle-only. */
-export function isSupportedRegionalFormId(id: string): boolean {
-  if (/-totem(?:-|$)/.test(id)) return false;
-  return /-(alola|galar|hisui|paldea)$/.test(id)
-    || /^tauros-paldea-(combat|blaze|aqua)-breed$/.test(id)
-    || id === 'darmanitan-galar-standard'
-    || id === 'basculin-white-striped';
-}
-
-export interface PokemonCatalog {
-  all(): readonly Pokemon[];
-  byId(id: string): Pokemon | undefined;
-  byDexNumber(number: number): Pokemon | undefined;
-  forGenerations(generations: readonly number[], options?: { includeForms?: boolean }): readonly Pokemon[];
-}
-
-export interface LearnsetPokemonCatalog extends PokemonCatalog {
-  levelUpMoves(pokemonId: string, referenceGeneration: Generation): readonly ResolvedLevelUpMove[];
-  evolutionInfo(pokemonId: string): PokemonEvolutionInfo | undefined;
-}
-
-export interface PokedexEntryPokemonCatalog extends PokemonCatalog {
-  pokedexEntries(pokemonId: string): readonly PokedexEntry[];
-}
-
-export function isLearnsetPokemonCatalog(catalog: PokemonCatalog): catalog is LearnsetPokemonCatalog {
-  const candidate = catalog as Partial<LearnsetPokemonCatalog>;
-  return typeof candidate.levelUpMoves === 'function' && typeof candidate.evolutionInfo === 'function';
-}
-
-export function isPokedexEntryPokemonCatalog(catalog: PokemonCatalog): catalog is PokedexEntryPokemonCatalog {
-  return typeof (catalog as Partial<PokedexEntryPokemonCatalog>).pokedexEntries === 'function';
 }
 
 export const GENERATIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;

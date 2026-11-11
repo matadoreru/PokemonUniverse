@@ -1,6 +1,3 @@
-import type { PokemonCatalog } from '../pokemon/types.js';
-import type { TcgCardCatalog } from '../tcg/types.js';
-
 export type GamePhase =
   | 'GAME_STARTING'
   | 'ROUND_ACTIVE'
@@ -21,62 +18,7 @@ export type GamePhase =
   | 'REVOTE'
   | 'GAME_RESULTS';
 
-export interface GamePlayer {
-  id: string;
-  displayName: string;
-  /** Defaults to true for callers (notably unit tests) that omit presence. */
-  connected?: boolean;
-  /** False for room spectators and identities whose reconnect grace expired. */
-  active?: boolean;
-}
-
-export function isPlayerRequired(context: GameContext, playerId: string): boolean {
-  const player = context.players.find((candidate) => candidate.id === playerId);
-  return Boolean(player && player.connected !== false && player.active !== false);
-}
-
-export function connectedRequiredPlayerIds(
-  context: GameContext,
-  candidateIds: readonly string[],
-): string[] {
-  return candidateIds.filter((playerId) => isPlayerRequired(context, playerId));
-}
-
-export function allConnectedRequiredCompleted(
-  context: GameContext,
-  candidateIds: readonly string[],
-  completed: (playerId: string) => boolean,
-): boolean {
-  return connectedRequiredPlayerIds(context, candidateIds).every(completed);
-}
-
-export interface GameContext {
-  players: readonly GamePlayer[];
-  pokemon: PokemonCatalog;
-  /** PostgreSQL-backed TCG catalog. Never implemented by an external API client. */
-  tcgCards?: TcgCardCatalog | undefined;
-  now: number;
-  random: () => number;
-  roomCode?: string;
-  hostId?: string;
-  preloadImage?: (source: string) => void;
-  /** Best-effort warm-up of the exact transformed asset `resolveAsset` will serve. Never affects game state. */
-  preloadAsset?: (asset: GameAssetResolution) => void;
-  /** Server-owned visual sources. Local artwork paths never enter public game state. */
-  pokemonVisuals?: PokemonVisualCatalog;
-  /** PostgreSQL-backed cry references. Raw source URLs never enter game projections. */
-  pokemonAudio?: PokemonAudioCatalog;
-  /** Enabled, persistent categories owned by the current room host. */
-  hostCustomCategories?: readonly SubjectiveCategory[];
-  /** Enabled, persistent Would You Rather pairs owned by the current room host. */
-  hostWouldYouRatherPrompts?: readonly WouldYouRatherPromptPair[];
-}
-
 export type PokemonCryVersion = 'LATEST' | 'LEGACY';
-export interface PokemonAudioCatalog {
-  cryFor(pokemonId: string, version: PokemonCryVersion): string | null;
-  pokemonIds(version?: PokemonCryVersion): readonly string[];
-}
 
 export interface SubjectiveCategory {
   id: string;
@@ -88,30 +30,6 @@ export interface WouldYouRatherPromptPair {
   optionA: string;
   optionB: string;
 }
-
-export interface PokemonVisualAsset {
-  pokemonId: string;
-  source: 'SPRITE' | 'ARTWORK';
-  /** Trusted remote URL or an opaque local-artwork source understood by the server. */
-  location: string;
-  width?: number;
-  height?: number;
-  alphaBounds?: { x: number; y: number; width: number; height: number };
-}
-
-export interface PokemonVisualCatalog {
-  artworkFor(pokemonId: string): PokemonVisualAsset | null;
-  artworkPokemonIds(): readonly string[];
-}
-
-export interface GameActionResult<TState> {
-  state: TState;
-  accepted: boolean;
-  error?: string;
-}
-
-/** Gracia de presencia (§8.3) de los minijuegos que la declaran en su manifiesto. */
-export const PRESENCE_GRACE_MS = 8_000;
 
 export interface MiniGameManifest {
   id: string;
@@ -180,30 +98,6 @@ export interface UserProfileResponse {
   games: Array<MiniGameManifest & { stats: ProfileGameStats }>;
   /** Ausente en respuestas anteriores al ajuste; sin él vale `EVERYONE`. */
   profileVisibility?: ProfileVisibility;
-}
-
-export interface GameAssetRequest {
-  assetToken: string;
-  roundNumber: number;
-  assetId: string;
-}
-
-export type GameAssetTransform = 'ORIGINAL' | 'SILHOUETTE' | 'NORMALIZED' | 'FOCUSED_NORMALIZED' | 'ZOOM_CROP' | 'PIXEL_ART' | 'PALETTE_RECOLOR';
-export interface GameAssetRecolor {
-  hueShiftDegrees: number;
-  saturationScale: number;
-  lightnessScale: number;
-  contrast: number;
-}
-export interface GameAssetResolution {
-  source: string;
-  transform: GameAssetTransform;
-  /** Used only by FOCUSED_NORMALIZED to deterministically select an alpha-safe focus. */
-  focusSeed?: number;
-  /** Server-authorized magnification; only cropped pixels reach the browser. */
-  zoom?: number;
-  /** Used only by PALETTE_RECOLOR. It is retained in opaque server state. */
-  recolor?: GameAssetRecolor;
 }
 
 export interface GameStanding {

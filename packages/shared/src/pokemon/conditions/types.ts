@@ -24,9 +24,3 @@ export type BingoCondition =
   | { kind: 'ABILITY'; ability: string };
 
 export interface BingoCell { id: string; conditions: BingoCondition[] }
-export interface ConditionGenerationOptions {
-  generations: readonly number[];
-  families: Record<BingoFamilyKey, boolean>;
-  maxConditions: 1 | 2;
-  combinationLimit: number;
-}

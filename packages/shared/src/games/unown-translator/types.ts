@@ -1,7 +1,5 @@
-import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
 import type { UnownTranslatorMode } from './config.js';
-import { UNOWN_MAX_GUESS_LENGTH } from './rules.js';
 
 /** Una pieza del mensaje cifrado: glifo oculto, glifo ya traducido a letra, o un carácter que no se cifra. */
 export type UnownToken =
@@ -45,15 +43,6 @@ export interface UnownTranslatorRoundResult {
   missingPlayerIds: string[];
 }
 
-export interface UnownTranslatorPlayerStats {
-  roundsPlayed: number;
-  solved: number;
-  missed: number;
-  firstSolves: number;
-  hiddenLettersAtSolve: number;
-  pointsFromRounds: number;
-}
-
 export interface UnownTranslatorPublicState {
   gameId: 'unown-translator';
   phase: GamePhase;
@@ -77,12 +66,3 @@ export interface UnownTranslatorPublicState {
 export type UnownTranslatorPlayerState =
   | { role: 'PLAYER'; canGuess: boolean; solved: boolean; answer: string | null; cooldownUntil: number | null; attemptCount: number; lastAttempt: { outcome: 'CORRECT' | 'INCORRECT'; at: number } | null }
   | { role: 'SPECTATOR'; canGuess: false; solved: false; answer: null; cooldownUntil: null; attemptCount: 0; lastAttempt: null };
-
-export const unownTranslatorActionSchema = z.object({
-  type: z.literal('GUESS_UNOWN'),
-  text: z.string().trim()
-    .min(1, 'Escribe una respuesta antes de enviarla.')
-    .max(UNOWN_MAX_GUESS_LENGTH, `La respuesta no puede superar ${UNOWN_MAX_GUESS_LENGTH} caracteres.`),
-}).strict();
-
-export type UnownTranslatorAction = z.infer<typeof unownTranslatorActionSchema>;

@@ -1,17 +1,4 @@
-import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { BingoCondition } from '../../pokemon/conditions/types.js';
-import type { PokemonBluffAuctionConfig } from './config.js';
-
-export type BluffAuctionCuratedCategory = 'DOG' | 'CAT' | 'STARTER' | 'FOSSIL' | 'PSEUDO_LEGENDARY' | 'ULTRA_BEAST';
-export type BluffAuctionRule = BingoCondition | { kind: 'CURATED_CATEGORY'; category: BluffAuctionCuratedCategory };
-
-export interface BluffAuctionCondition {
-  key: string;
-  conditions: BluffAuctionRule[];
-  description: string;
-  clauses: string[];
-}
 
 export type BluffAuctionBidEvent =
   | { playerId: string; type: 'BID'; amount: number }
@@ -22,18 +9,6 @@ export interface BluffAuctionAttempt {
   pokemon: BluffAuctionPokemonView;
   result: 'CORRECT' | 'INCORRECT' | 'DUPLICATE';
   submittedAt: number;
-}
-
-export interface BluffAuctionPlayerStats {
-  roundsWon: number;
-  bidderRounds: number;
-  completedBids: number;
-  failedBids: number;
-  correctPokemon: number;
-  incorrectPokemon: number;
-  highestCompletedBid: number;
-  highestAttemptedBid: number;
-  impossibleBids: number;
 }
 
 export interface BluffAuctionRoundResult {
@@ -47,35 +22,6 @@ export interface BluffAuctionRoundResult {
   incorrectCount: number;
   validPokemonCount: number | null;
   pointsAwarded: Record<string, number>;
-}
-
-export interface PokemonBluffAuctionState {
-  phase: GamePhase;
-  config: PokemonBluffAuctionConfig;
-  playerIds: string[];
-  poolIds: string[];
-  conditionTemplates: Array<BluffAuctionCondition & { candidatePokemonIds: string[] }>;
-  usedConditionKeys: string[];
-  roundNumber: number;
-  condition: BluffAuctionCondition | null;
-  validPokemonIds: string[];
-  bidOrder: string[];
-  turnIndex: number;
-  passedPlayerIds: string[];
-  currentBid: number | null;
-  currentBidderId: string | null;
-  bidHistory: BluffAuctionBidEvent[];
-  bidderId: string | null;
-  targetBid: number | null;
-  attempts: BluffAuctionAttempt[];
-  usedPokemonIds: string[];
-  correctCount: number;
-  incorrectCount: number;
-  scores: Record<string, number>;
-  playerStats: Record<string, BluffAuctionPlayerStats>;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: BluffAuctionRoundResult | null;
 }
 
 export interface PokemonBluffAuctionPublicState {
@@ -109,10 +55,3 @@ export interface PokemonBluffAuctionPublicState {
 export type PokemonBluffAuctionPlayerState =
   | { role: 'PLAYER'; canRaise: boolean; canPass: boolean; canSubmitPokemon: boolean }
   | { role: 'SPECTATOR'; canRaise: false; canPass: false; canSubmitPokemon: false };
-
-export const pokemonBluffAuctionActionSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('RAISE_BID'), amount: z.number().int().min(1) }).strict(),
-  z.object({ type: z.literal('PASS_BID') }).strict(),
-  z.object({ type: z.literal('SUBMIT_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict(),
-]);
-export type PokemonBluffAuctionAction = z.infer<typeof pokemonBluffAuctionActionSchema>;

@@ -1,29 +1,12 @@
 import type { GamePhase } from '../contracts.js';
 import type { GameResults } from '../contracts.js';
-import type { PokedexDistanceConfig, PokedexDistanceMode } from './config.js';
-import { z } from 'zod';
-
-export interface PlayerRoundStats {
-  exactHits: number;
-  distanceTotal: number;
-  selections: number;
-  roundsSurvived: number;
-  /** Desempates resueltos con alguien eliminado en los que este jugador jugaba y no cayó. */
-  tiebreaksWon: number;
-}
+import type { PokedexDistanceMode } from './config.js';
 
 export interface RoundSelection {
   pokemonId: string;
   dexNumber: number;
   distance: number;
   selectedAt: number;
-}
-
-export interface EliminationRecord {
-  playerIds: string[];
-  reason: 'FARTHEST' | 'NO_RESPONSE';
-  roundNumber: number;
-  remainingAfter: number;
 }
 
 export interface RoundResult {
@@ -48,40 +31,6 @@ export interface DistanceRoundRecord {
   distances: Record<string, number | null>;
   eliminatedIds: string[];
 }
-
-export interface PokedexDistanceState {
-  phase: GamePhase;
-  config: PokedexDistanceConfig;
-  initialPlayerIds: string[];
-  survivorIds: string[];
-  spectatorIds: string[];
-  roundNumber: number;
-  tiebreakDepth: number;
-  eligibleIds: string[];
-  targetDexNumber: number | null;
-  selections: Record<string, RoundSelection>;
-  lockedPokemonIds: string[];
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  pendingEligibleIds: string[];
-  pendingTiebreakDepth: number;
-  lastRound: RoundResult | null;
-  eliminations: EliminationRecord[];
-  /**
-   * Solo rondas ya resueltas, así que nunca adelanta elecciones ocultas. Acotado sin tope explícito: cada número de
-   * ronda tiene como mucho 1 + MAX_TIEBREAK_DEPTH resoluciones y la última elimina al menos a uno, así que hay
-   * ≤ 4·(jugadores − 1) registros.
-   */
-  roundHistory: DistanceRoundRecord[];
-  playerStats: Record<string, PlayerRoundStats>;
-  /** Puntos acumulados en `POINTS`; solo cambian al resolver una ronda. */
-  scores: Record<string, number>;
-  winnerId: string | null;
-}
-
-export const pokedexDistanceActionSchema = z.object({ type: z.literal('SELECT_POKEMON'), pokemonId: z.string().min(1).max(64) }).strict();
-export type PokedexDistanceAction = z.infer<typeof pokedexDistanceActionSchema>;
 
 export interface PublicSelection extends RoundSelection {
   pokemonName: string;

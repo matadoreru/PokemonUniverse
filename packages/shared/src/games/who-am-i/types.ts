@@ -1,6 +1,4 @@
-import { z } from 'zod';
 import type { GamePhase } from '../contracts.js';
-import { WHO_AM_I_MAX_QUESTION_LENGTH } from './rules.js';
 
 export const WHO_AM_I_ANSWERS = ['YES', 'NO', 'PARTLY', 'UNKNOWN'] as const;
 export type WhoAmIAnswer = (typeof WHO_AM_I_ANSWERS)[number];
@@ -49,15 +47,6 @@ export interface WhoAmIResultEntry {
   rank: number;
 }
 
-export interface WhoAmIPlayerStats {
-  gamesPlayed: number;
-  solved: number;
-  questionsAsked: number;
-  wrongGuesses: number;
-  firstSolves: number;
-  pointsFromRounds: number;
-}
-
 /**
  * Estado público: no lleva ningún Pokémon de los jugadores hasta `GAME_RESULTS` (entonces `results` los revela).
  * `turnPlayerId` y `turnStep` son nulos fuera de `TURN_ACTIVE`.
@@ -98,17 +87,3 @@ export interface WhoAmIPlayerState {
   canPass: boolean;
   ownAnswer: WhoAmIAnswer | null;
 }
-
-export const whoAmIActionSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('ASK_QUESTION'),
-    text: z.string().trim()
-      .min(1, 'Escribe una pregunta antes de enviarla.')
-      .max(WHO_AM_I_MAX_QUESTION_LENGTH, `La pregunta no puede superar ${WHO_AM_I_MAX_QUESTION_LENGTH} caracteres.`),
-  }).strict(),
-  z.object({ type: z.literal('ANSWER_QUESTION'), answer: z.enum(WHO_AM_I_ANSWERS) }).strict(),
-  z.object({ type: z.literal('GUESS_SELF'), pokemonId: z.string().min(1).max(96) }).strict(),
-  z.object({ type: z.literal('PASS_TURN') }).strict(),
-]);
-
-export type WhoAmIAction = z.infer<typeof whoAmIActionSchema>;

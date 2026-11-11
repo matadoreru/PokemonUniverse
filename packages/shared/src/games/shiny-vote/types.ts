@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import type { GameAssetRecolor, GamePhase, GameResults } from '../contracts.js';
-import type { ShinyVoteConfig, ShinyVoteMode, ShinyVoteVisibility } from './config.js';
+import type { GamePhase, GameResults } from '../contracts.js';
+import type { ShinyVoteMode, ShinyVoteVisibility } from './config.js';
 
 export const SHINY_OPTION_IDS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 export type ShinyOptionId = (typeof SHINY_OPTION_IDS)[number];
@@ -12,19 +12,9 @@ export interface ShinyOption {
   sprite: string;
 }
 
-export interface ShinyOptionState extends ShinyOption {
-  /** Never published: null identifies the official shiny in authoritative state. */
-  recolor: GameAssetRecolor | null;
-}
-
 export interface ShinyVote {
   optionId: ShinyOptionId;
   votedAt: number;
-}
-
-export interface ShinyPlayerStats {
-  votes: number;
-  correctVotes: number;
 }
 
 export interface ShinyRoundResult {
@@ -39,27 +29,6 @@ export interface ShinyVotePlayerState {
   canVote: boolean;
   vote: ShinyVote | null;
   roundResult: { correct: boolean; points: number } | null;
-}
-
-export interface ShinyVoteState {
-  phase: GamePhase;
-  config: ShinyVoteConfig;
-  assetToken: string;
-  playerIds: string[];
-  roundNumber: number;
-  options: ShinyOptionState[];
-  correctOptionId: ShinyOptionId | null;
-  votes: Record<string, ShinyVote>;
-  scores: Record<string, number>;
-  playerStats: Record<string, ShinyPlayerStats>;
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: ShinyRoundResult | null;
-  preparedOptions: ShinyOptionState[] | null;
-  preparedCorrectOptionId: ShinyOptionId | null;
-  /** Solo cuenta en `SURVIVAL`: quien sigue en pie, en el orden de `playerIds`. */
-  alive: string[];
 }
 
 export const shinyVoteActionSchema = z.object({

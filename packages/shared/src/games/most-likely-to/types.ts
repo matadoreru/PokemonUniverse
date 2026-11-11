@@ -1,23 +1,9 @@
-import { z } from 'zod';
-import type { GamePhase, GameResults, SubjectiveCategory } from '../contracts.js';
-import type { MostLikelyToConfig } from './config.js';
+import type { GamePhase, GameResults } from '../contracts.js';
 
 export interface MostLikelyToPokemon {
   id: string;
   name: string;
   sprite: string;
-}
-
-export interface MostLikelyToStats {
-  roundsPlayed: number;
-  answersSubmitted: number;
-  roundsMissed: number;
-  votesCast: number;
-  votesReceived: number;
-  roundWins: number;
-  soloWins: number;
-  sharedWins: number;
-  pointsFromRounds: number;
 }
 
 export interface MostLikelyToVoteRound {
@@ -32,27 +18,6 @@ export interface MostLikelyToRoundResult {
   voteRounds: MostLikelyToVoteRound[];
   winnerIds: string[];
   pointsAwarded: Record<string, number>;
-}
-
-export interface MostLikelyToState {
-  phase: GamePhase;
-  config: MostLikelyToConfig;
-  playerIds: string[];
-  pokemonPoolIds: string[];
-  promptPool: SubjectiveCategory[];
-  usedPromptIds: string[];
-  roundNumber: number;
-  currentPromptId: string | null;
-  selections: Record<string, MostLikelyToPokemon>;
-  votes: Record<string, string>;
-  voteCandidates: string[];
-  voteRoundNumber: number;
-  voteHistory: MostLikelyToVoteRound[];
-  scores: Record<string, number>;
-  playerStats: Record<string, MostLikelyToStats>;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: MostLikelyToRoundResult | null;
 }
 
 export interface MostLikelyToPublicState {
@@ -77,10 +42,3 @@ export interface MostLikelyToPublicState {
 export type MostLikelyToPlayerState =
   | { role: 'PLAYER'; canSelect: boolean; ownChoice: MostLikelyToPokemon | null; canVote: boolean; ownVotePlayerId: string | null }
   | { role: 'SPECTATOR'; canSelect: false; ownChoice: null; canVote: false; ownVotePlayerId: null };
-
-export const mostLikelyToActionSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('SELECT_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict(),
-  z.object({ type: z.literal('VOTE_ANSWER'), playerId: z.string().min(1).max(128) }).strict(),
-]);
-
-export type MostLikelyToAction = z.infer<typeof mostLikelyToActionSchema>;

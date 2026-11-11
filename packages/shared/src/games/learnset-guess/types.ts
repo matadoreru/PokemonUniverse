@@ -1,16 +1,6 @@
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { Generation, MoveCategory, PokemonEvolutionInfo, PokemonType, ResolvedLevelUpMove } from '../../pokemon/types.js';
-import type { LearnsetGuessConfig, LearnsetGuessMode } from './config.js';
-import { z } from 'zod';
-
-export interface LearnsetGuessPlayerStats {
-  correct: number;
-  missed: number;
-  initialSolves: number;
-  incorrectGuesses: number;
-  pointsFromSolves: number;
-  bestRoundPoints: number;
-}
+import type { Generation, MoveCategory, PokemonType } from '../../pokemon/types.js';
+import type { LearnsetGuessMode } from './config.js';
 
 export interface LearnsetGuessAttempt {
   playerId: string;
@@ -52,32 +42,6 @@ export interface LearnsetRoundResult {
   totalGroups?: number;
 }
 
-export interface LearnsetGuessState {
-  phase: GamePhase;
-  config: LearnsetGuessConfig;
-  playerIds: string[];
-  roundNumber: number;
-  referenceGeneration: Generation;
-  correctPokemonId: string | null;
-  usedPokemonIds: string[];
-  learnset: ResolvedLevelUpMove[];
-  evolutionInfo: PokemonEvolutionInfo | null;
-  initialGroupCount: number;
-  revealedExtraGroups: number;
-  attempts: LearnsetGuessAttempt[];
-  solves: Record<string, LearnsetGuessSolve>;
-  cooldownUntil: Record<string, number>;
-  lastWarning: boolean;
-  scores: Record<string, number>;
-  playerStats: Record<string, LearnsetGuessPlayerStats>;
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: LearnsetRoundResult | null;
-  /** Solo cuenta en `MANUAL_REVEAL`: intentos fallidos de cada jugador en la ronda (ve `1 + fallos` grupos). */
-  manualMisses: Record<string, number>;
-}
-
 /**
  * En `MANUAL_REVEAL` (Revelación manual) los grupos y los intentos son de cada jugador: durante la ronda
  * `visibleGroups` y `attempts` van vacíos y no hay `nextTransitionAt` de pista (solo el tope `roundEndsAt`).
@@ -116,6 +80,3 @@ export interface LearnsetGuessPlayerState {
   /** Solo en `MANUAL_REVEAL` y para quien juega: grupos del learnset de la ronda. */
   totalGroups?: number;
 }
-
-export const learnsetGuessActionSchema = z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(64) }).strict();
-export type LearnsetGuessAction = z.infer<typeof learnsetGuessActionSchema>;

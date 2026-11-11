@@ -1,7 +1,6 @@
-import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
-import type { PokeddleClueKey, PokeddleRaceConfig } from './config.js';
+import type { PokemonType } from '../../pokemon/types.js';
+import type { PokeddleClueKey } from './config.js';
 
 export type PokeddleNumericComparison = 'HIGHER' | 'LOWER' | 'MATCH';
 export type PokeddleTypeComparison = 'EXACT' | 'PARTIAL' | 'NONE';
@@ -18,7 +17,6 @@ export type PokeddleFeedbackEntry =
 
 export type PokeddleFeedback = Partial<Record<PokeddleClueKey, PokeddleFeedbackEntry>>;
 export interface PokeddlePokemonReveal { id: string; name: string; sprite: string }
-export interface PokeddleRoundGuess { pokemonId: string; submittedAt: number }
 export interface PokeddleBoardRow {
   round: number;
   status: 'GUESS' | 'NO_GUESS';
@@ -26,29 +24,6 @@ export interface PokeddleBoardRow {
   feedback: PokeddleFeedback | null;
   correct: boolean;
   submittedAt: number | null;
-}
-export interface PokeddleSolve { round: number; validGuesses: number; solvedAt: number }
-export interface PokeddlePlayerStats {
-  roundsParticipated: number;
-  validGuesses: number;
-  missedRounds: number;
-}
-
-export interface PokeddleRaceState {
-  phase: GamePhase;
-  config: PokeddleRaceConfig;
-  playerIds: string[];
-  poolIds: string[];
-  secretPokemonIds: Record<string, string>;
-  roundNumber: number;
-  currentGuesses: Record<string, PokeddleRoundGuess>;
-  boards: Record<string, PokeddleBoardRow[]>;
-  solved: Record<string, PokeddleSolve>;
-  playerStats: Record<string, PokeddlePlayerStats>;
-  gameStartedAt: number;
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
 }
 
 export interface PokeddlePublicBoard {
@@ -82,23 +57,4 @@ export interface PokeddleRacePlayerState {
   hasGuessedThisRound: boolean;
   solved: boolean;
 }
-
-export interface PokeddleResultStats extends Record<string, number> {
-  resolved: number;
-  unresolved: number;
-  totalGuesses: number;
-  guessesToSolveTotal: number;
-  resolutionRoundsTotal: number;
-  bestResolutionRounds: number;
-  bestTimeMs: number;
-  missedRounds: number;
-  roundsParticipated: number;
-}
-
-export const pokeddleRaceActionSchema = z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(64) }).strict();
-export type PokeddleRaceAction = z.infer<typeof pokeddleRaceActionSchema>;
-
-export const legendaryStatusLabels: Record<PokemonLegendaryStatus, string> = {
-  NORMAL: 'Normal', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico',
-};
 

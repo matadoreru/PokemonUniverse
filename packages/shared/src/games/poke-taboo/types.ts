@@ -1,19 +1,5 @@
-import { z } from 'zod';
 import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { PokeTabooConfig } from './config.js';
-
-export interface PokeTabooPlayerStats {
-  guessedPokemon: number;
-  firstTry: number;
-  totalAttempts: number;
-  firstCorrectResponses: number;
-  descriptorRounds: number;
-  descriptorSuccesses: number;
-  descriptorFailures: number;
-  pointsFromGuessing: number;
-  pointsFromDescribing: number;
-}
 
 export interface PokeTabooAttempt {
   playerId: string;
@@ -61,29 +47,6 @@ export interface PokeTabooRoundResult {
   winnerAttemptCount: number | null;
 }
 
-export interface PokeTabooState {
-  phase: GamePhase;
-  config: PokeTabooConfig;
-  playerIds: string[];
-  descriptorOrder: string[];
-  poolIds: string[];
-  usedPokemonIds: string[];
-  roundNumber: number;
-  targetPokemonId: string | null;
-  descriptorId: string | null;
-  hints: PokeTabooHint[];
-  hintCooldownUntil: number | null;
-  attempts: PokeTabooAttempt[];
-  attemptCounts: Record<string, number>;
-  cooldownUntil: Record<string, number>;
-  scores: Record<string, number>;
-  playerStats: Record<string, PokeTabooPlayerStats>;
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: PokeTabooRoundResult | null;
-}
-
 export interface PokeTabooPublicState {
   gameId: 'poke-taboo';
   phase: GamePhase;
@@ -110,10 +73,3 @@ export type PokeTabooPlayerState =
   /** `attempts`: solo con `publicAttempts` apagado, los fallos propios de la ronda. */
   | { role: 'GUESSER'; canGuess: boolean; cooldownUntil: number | null; attemptCount: number; attempts?: PokeTabooAttempt[] }
   | { role: 'SPECTATOR' };
-
-export const pokeTabooActionSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('GUESS_POKEMON'), pokemonId: z.string().min(1).max(96) }).strict(),
-  z.object({ type: z.literal('SEND_HINT'), text: z.string().trim().min(1).max(180) }).strict(),
-]);
-
-export type PokeTabooAction = z.infer<typeof pokeTabooActionSchema>;

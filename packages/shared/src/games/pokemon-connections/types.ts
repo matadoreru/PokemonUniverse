@@ -1,6 +1,4 @@
-import { z } from 'zod';
 import type { GamePhase, GameResults } from '../contracts.js';
-import type { PokemonConnectionsConfig } from './config.js';
 
 export interface ConnectionPokemon {
   id: string;
@@ -25,27 +23,6 @@ export interface ConnectionAttemptFeedback {
   attemptedAt: number;
 }
 
-export interface PokemonConnectionsProgress {
-  foundGroupIds: string[];
-  mistakesUsed: number;
-  status: ConnectionPlayerStatus;
-  completedAt: number | null;
-  completionRank: number | null;
-  roundPoints: number;
-  lastAttempt: ConnectionAttemptFeedback | null;
-}
-
-export interface PokemonConnectionsStats {
-  roundsPlayed: number;
-  groupsFound: number;
-  boardsSolved: number;
-  mistakes: number;
-  nearMisses: number;
-  podiumFinishes: number;
-  solveTimeTotalMs: number;
-  bestSolveTimeMs: number;
-}
-
 export interface PokemonConnectionsRoundResult {
   source: 'CURATED' | 'DYNAMIC';
   groups: ConnectionAnswerGroup[];
@@ -58,27 +35,6 @@ export interface PokemonConnectionsRoundResult {
     elapsedMs: number | null;
     pointsAwarded: number;
   }>;
-}
-
-export interface PokemonConnectionsState {
-  phase: GamePhase;
-  config: PokemonConnectionsConfig;
-  playerIds: string[];
-  roundNumber: number;
-  board: ConnectionPokemon[];
-  answerGroups: ConnectionAnswerGroup[];
-  puzzleSource: 'CURATED' | 'DYNAMIC';
-  puzzleKey: string;
-  usedPuzzleKeys: string[];
-  recentCategoryIds: string[];
-  progress: Record<string, PokemonConnectionsProgress>;
-  completionOrder: string[];
-  scores: Record<string, number>;
-  playerStats: Record<string, PokemonConnectionsStats>;
-  roundStartedAt: number | null;
-  roundEndsAt: number | null;
-  nextTransitionAt: number | null;
-  lastRound: PokemonConnectionsRoundResult | null;
 }
 
 export interface PokemonConnectionsPublicState {
@@ -111,13 +67,3 @@ export type PokemonConnectionsPlayerState =
     roundPoints: number;
     lastAttempt: ConnectionAttemptFeedback | null;
   };
-
-export const pokemonConnectionsActionSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('SUBMIT_GROUP'),
-    pokemonIds: z.array(z.string().min(1).max(96)).min(3).max(5),
-  }).strict(),
-  z.object({ type: z.literal('ADVANCE_ROUND') }).strict(),
-]);
-
-export type PokemonConnectionsAction = z.infer<typeof pokemonConnectionsActionSchema>;
