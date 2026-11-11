@@ -107,14 +107,14 @@ describe('textos del servidor vigilados', () => {
   const coordinator = javaSource(SERVER_MESSAGE_SOURCES.coordinator);
   const invitations = javaSource(SERVER_MESSAGE_SOURCES.invitations);
   const chat = javaSource(SERVER_MESSAGE_SOURCES.chat);
-  const daily = javaSource(SERVER_MESSAGE_SOURCES.daily);
+  const daily = javaSource(SERVER_MESSAGE_SOURCES.daily) + javaSource(SERVER_MESSAGE_SOURCES.unauthorized);
   const chatFromCoordinator = new Set<string>(CHAT_COORDINATOR_MESSAGES);
   const dailyMessages = new Set<string>(DAILY_MESSAGES);
   const rest = Object.keys(ROOM_ERROR_TRANSLATIONS).filter((message) => !chatFromCoordinator.has(message) && !dailyMessages.has(message) && !chat.includes(`"${message}"`));
   it.each(rest)('«%s» sigue saliendo de RoomCoordinator.java o RoomInvitations.java', (message) => {
     expect(coordinator + invitations).toContain(`new RoomException("${message}")`);
   });
-  it.each([...DAILY_MESSAGES])('«%s» del reto diario sigue saliendo de DailyChallengeService.java o del coordinador', (message) => {
+  it.each([...DAILY_MESSAGES])('«%s» del reto diario sigue saliendo de DailyChallengeService.java, UnauthorizedException.java o del coordinador', (message) => {
     expect(daily + coordinator).toContain(`= "${message}";`);
   });
   it('traduce los errores del reto diario', () => {

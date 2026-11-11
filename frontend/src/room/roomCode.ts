@@ -27,10 +27,12 @@ export const SERVER_MESSAGE_SOURCES = {
   invitations: 'backend/src/main/java/es/pokemonuniverse/application/friends/RoomInvitations.java',
   chat: 'backend/src/main/java/es/pokemonuniverse/domain/room/RoomChat.java',
   daily: 'backend/src/main/java/es/pokemonuniverse/application/daily/DailyChallengeService.java',
+  unauthorized: 'backend/src/main/java/es/pokemonuniverse/application/errors/UnauthorizedException.java',
 } as const;
 
 /**
- * Errores del reto diario declarados como constantes (`DailyChallengeService` y `RoomCoordinator.DAILY_UNAVAILABLE`),
+ * Errores del reto diario declarados como constantes (`DailyChallengeService`, `RoomCoordinator.DAILY_UNAVAILABLE` y
+ * `UnauthorizedException.REGISTERED_REQUIRED`),
  * no como `new RoomException("…")`: el test los busca entre comillas en `daily` y `coordinator`.
  */
 export const DAILY_MESSAGES = ['Registered account required', 'Daily challenge already played', 'Not available in the daily challenge', 'Daily challenge unavailable: the Pokémon catalog is empty'] as const;
