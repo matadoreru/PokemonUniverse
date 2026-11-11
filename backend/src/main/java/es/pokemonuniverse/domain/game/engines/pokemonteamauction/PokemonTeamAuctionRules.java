@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonteamauction;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.PokemonTeamAuctionState;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.TeamAuctionParticipant;
@@ -21,9 +19,7 @@ public final class PokemonTeamAuctionRules {
    * {@code guest_<uuid>}; ver el README de motores).
    */
   public static GameResults buildTeamAuctionResults(PokemonTeamAuctionState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the auction finishes");
-    }
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the auction finishes");
     var entries = state.playerIds().stream()
         .map(playerId -> {
           var stats = TeamAuctionPlayerStats.of(Objects.requireNonNull(state.participants().get(playerId)),

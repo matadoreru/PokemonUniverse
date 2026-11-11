@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonredflag;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonRedFlagState;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonRedFlagStats;
@@ -27,13 +25,8 @@ public final class PokemonRedFlagRules {
    * {@code guest_<uuid>}; ver el README de motores).
    */
   public static GameResults buildPokemonRedFlagResults(PokemonRedFlagState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before Pokémon Red Flag finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            statsOf(state, playerId)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before Pokémon Red Flag finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(), playerId -> statsOf(state, playerId));
     Comparator<Scoring.ScoreEntry<PokemonRedFlagStats>> compare = (left, right) -> {
       int result = Integer.compare(right.points(), left.points());
       if (result == 0) result = Integer.compare(right.stats().soloWins(), left.stats().soloWins());

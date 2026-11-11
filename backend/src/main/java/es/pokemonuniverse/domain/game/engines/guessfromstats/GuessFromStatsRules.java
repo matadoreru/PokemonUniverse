@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.guessfromstats;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsEvolution;
@@ -131,13 +129,9 @@ public final class GuessFromStatsRules {
    * de motores). Sin {@code mapStats}: las estadísticas se copian tal cual ({@code { ...entry.stats }}).
    */
   public static GameResults buildGuessFromStatsResults(GuessFromStatsState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().getOrDefault(playerId, GuessFromStatsPlayerStats.ZERO)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().getOrDefault(playerId, GuessFromStatsPlayerStats.ZERO));
     Comparator<Scoring.ScoreEntry<GuessFromStatsPlayerStats>> compare = Comparator
         .<Scoring.ScoreEntry<GuessFromStatsPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> -entry.stats().roundFirsts())

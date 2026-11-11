@@ -2,7 +2,6 @@ package es.pokemonuniverse.domain.game.engines.pokemonconnections;
 
 import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.PokemonConnectionsState;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.PokemonConnectionsStats;
@@ -30,9 +29,7 @@ public final class PokemonConnectionsRules {
    * equivalente para los ids del servidor (cuid y {@code guest_<uuid>}; ver el README de motores).
    */
   public static GameResults buildPokemonConnectionsResults(PokemonConnectionsState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
     var entries = state.playerIds().stream()
         .map(playerId -> new Scoring.ScoreEntry<>(playerId,
             Objects.requireNonNullElse(state.scores().get(playerId), 0),

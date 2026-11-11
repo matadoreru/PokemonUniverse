@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.absurdpokedex;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexEntry;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexEntryResult;
@@ -209,13 +207,8 @@ public final class AbsurdPokedexRules {
    * {@code localeCompare} para los ids del servidor; ver el README de motores). Solo existe en {@code GAME_RESULTS}.
    */
   public static GameResults buildResults(AbsurdPokedexState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before Pokédex Absurda finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            statsOf(state, playerId)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before Pokédex Absurda finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(), playerId -> statsOf(state, playerId));
     Comparator<Scoring.ScoreEntry<AbsurdPokedexPlayerStats>> compare = (left, right) -> {
       int result = Integer.compare(right.points(), left.points());
       if (result == 0) result = Integer.compare(right.stats().roundWins(), left.stats().roundWins());

@@ -3,8 +3,6 @@ package es.pokemonuniverse.domain.game.engines.poketaboo;
 import com.ibm.icu.lang.UCharacter;
 import com.ibm.icu.lang.UProperty;
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooTypes.PokeTabooPlayerStats;
 import es.pokemonuniverse.domain.game.engines.poketaboo.PokeTabooTypes.PokeTabooState;
@@ -116,13 +114,8 @@ public final class PokeTabooRules {
    * {@code guest_<uuid>}; ver el README de motores). La posición solo la comparte quien empata en puntos.
    */
   public static GameResults buildPokeTabooResults(PokeTabooState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            statsOf(state, playerId)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(), playerId -> statsOf(state, playerId));
     Comparator<Scoring.ScoreEntry<PokeTabooPlayerStats>> compare = (left, right) -> {
       int result = Integer.compare(right.points(), left.points());
       if (result == 0) result = Integer.compare(right.stats().guessedPokemon(), left.stats().guessedPokemon());

@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.Scoring.ScoreEntry;
+import es.pokemonuniverse.domain.game.engine.EngineException;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import java.util.Comparator;
@@ -85,5 +87,18 @@ class ScoringTest {
         new GameStanding("a", 1, 5, null, Map.of()), new GameStanding("b", 1, 5, null, Map.of())))));
     assertEquals(Map.of("a", 0, "b", 0), Scoring.sessionPointsForResults(new GameResults(null, List.of(
         new GameStanding("a", 1, 0, null, Map.of()), new GameStanding("b", 1, 0, null, Map.of())))));
+  }
+
+  @Test
+  void requireFinishedThrowsTheGameMessageOutsideGameResults() {
+    Scoring.requireFinished(GamePhase.GAME_RESULTS, "x");
+    var error = assertThrows(EngineException.class, () -> Scoring.requireFinished(GamePhase.ROUND_RESULTS, "Antes"));
+    assertEquals("Antes", error.getMessage());
+  }
+
+  @Test
+  void scoreEntriesKeepThePlayerOrderAndDefaultMissingScoresToZero() {
+    var entries = Scoring.scoreEntries(List.of("b", "a"), Map.of("a", 3), id -> id + "-stats");
+    assertEquals(List.of(new ScoreEntry<>("b", 0, "b-stats"), new ScoreEntry<>("a", 3, "a-stats")), entries);
   }
 }

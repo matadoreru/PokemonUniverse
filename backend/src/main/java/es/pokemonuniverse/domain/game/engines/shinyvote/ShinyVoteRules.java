@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.shinyvote;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyPlayerStats;
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyVoteState;
@@ -32,13 +30,9 @@ public final class ShinyVoteRules {
   }
 
   public static GameResults buildShinyResults(ShinyVoteState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().getOrDefault(playerId, ShinyPlayerStats.ZERO)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().getOrDefault(playerId, ShinyPlayerStats.ZERO));
     Comparator<Scoring.ScoreEntry<ShinyPlayerStats>> compare = Comparator
         .<Scoring.ScoreEntry<ShinyPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparing(Scoring.ScoreEntry::playerId);

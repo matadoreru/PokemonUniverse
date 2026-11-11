@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokedexdistance;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceTypes.DistanceRoundRecord;
@@ -89,9 +87,7 @@ public final class PokedexDistanceRules {
    * necesitarían un {@link java.text.Collator}. {@code List.sort} es estable como {@code Array.prototype.sort}.
    */
   public static GameResults buildResults(PokedexDistanceState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
     if (state.config().mode() == PokedexDistanceMode.POINTS) return buildPointsResults(state);
     int total = state.initialPlayerIds().size();
     var positions = new HashMap<String, Integer>();
@@ -126,10 +122,8 @@ public final class PokedexDistanceRules {
    * comparten puesto (1, 1, 3). {@code points} de cada fila son sus puntos de la partida; líder único o {@code null}.
    */
   static GameResults buildPointsResults(PokedexDistanceState state) {
-    var entries = state.initialPlayerIds().stream()
-        .map(id -> new Scoring.ScoreEntry<>(id, state.scores().getOrDefault(id, 0),
-            state.playerStats().getOrDefault(id, PlayerRoundStats.ZERO)))
-        .toList();
+    var entries = Scoring.scoreEntries(state.initialPlayerIds(), state.scores(),
+        id -> state.playerStats().getOrDefault(id, PlayerRoundStats.ZERO));
     Comparator<Scoring.ScoreEntry<PlayerRoundStats>> compare = (left, right) -> {
       int byPoints = Integer.compare(right.points(), left.points());
       return byPoints != 0 ? byPoints : left.playerId().compareTo(right.playerId());

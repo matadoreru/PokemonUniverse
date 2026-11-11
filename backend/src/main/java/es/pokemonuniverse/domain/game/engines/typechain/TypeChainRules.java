@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.typechain;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engines.typechain.TypeChainTypes.TypeChainPlayerStats;
@@ -108,9 +106,7 @@ public final class TypeChainRules {
   }
 
   public static GameResults buildTypeChainResults(TypeChainState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
     int longestChain = Math.max(state.longestChain(), state.chain().size());
     var ranking = typeChainRanking(state);
     int total = state.playerIds().size();

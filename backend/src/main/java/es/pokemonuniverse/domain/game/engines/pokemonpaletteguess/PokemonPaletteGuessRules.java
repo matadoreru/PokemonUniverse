@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonpaletteguess;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteGuessState;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteStats;
@@ -20,13 +18,9 @@ public final class PokemonPaletteGuessRules {
    * las estadísticas se copian tal cual ({@code { ...entry.stats }}).
    */
   public static GameResults buildPokemonPaletteResults(PokemonPaletteGuessState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().getOrDefault(playerId, PokemonPaletteStats.ZERO)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().getOrDefault(playerId, PokemonPaletteStats.ZERO));
     Comparator<Scoring.ScoreEntry<PokemonPaletteStats>> compare = Comparator
         .<Scoring.ScoreEntry<PokemonPaletteStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> -entry.stats().correct())

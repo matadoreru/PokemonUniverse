@@ -115,10 +115,8 @@ public final class HigherLowerRules {
    */
   public static GameResults buildHigherLowerResults(HigherLowerState state) {
     if (state.phase() != GamePhase.GAME_RESULTS) throw new EngineException("Results unavailable");
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().get(playerId)))
-        .toList();
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().get(playerId));
     Comparator<Scoring.ScoreEntry<HigherLowerStats>> compare = (left, right) -> {
       int byPoints = Integer.compare(right.points(), left.points());
       return byPoints != 0 ? byPoints : left.playerId().compareTo(right.playerId());

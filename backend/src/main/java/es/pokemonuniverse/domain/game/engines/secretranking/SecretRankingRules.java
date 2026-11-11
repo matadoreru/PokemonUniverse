@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.secretranking;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingPlayerStats;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingState;
@@ -76,13 +74,8 @@ public final class SecretRankingRules {
    * desempate final es {@link String#compareTo} (el {@code localeCompare} de TS sobre ids del servidor).
    */
   public static GameResults buildSecretRankingResults(SecretRankingState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before Secret Ranking finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            statsOf(state, playerId)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before Secret Ranking finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(), playerId -> statsOf(state, playerId));
     Comparator<Scoring.ScoreEntry<SecretRankingPlayerStats>> compare = (left, right) -> {
       int result = Integer.compare(right.points(), left.points());
       if (result == 0) result = Integer.compare(right.stats().roundWins(), left.stats().roundWins());

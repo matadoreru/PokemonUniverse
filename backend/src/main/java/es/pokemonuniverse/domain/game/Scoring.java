@@ -1,5 +1,7 @@
 package es.pokemonuniverse.domain.game;
 
+import es.pokemonuniverse.domain.game.engine.EngineException;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import java.util.ArrayList;
@@ -21,6 +23,18 @@ public final class Scoring {
   public record RankedEntry<T>(T entry, int position) {}
 
   private Scoring() {}
+
+  /** Los resultados solo existen en {@code GAME_RESULTS}; el mensaje es el literal de cada juego. */
+  public static void requireFinished(GamePhase phase, String message) {
+    if (phase != GamePhase.GAME_RESULTS) throw new EngineException(message);
+  }
+
+  /** Una entrada por jugador, en el orden de {@code playerIds}, con {@code scores[playerId] ?? 0}. */
+  public static <S> List<ScoreEntry<S>> scoreEntries(List<String> playerIds, Map<String, Integer> scores,
+      Function<String, S> statsOf) {
+    return playerIds.stream().map(playerId -> new ScoreEntry<>(playerId, scores.getOrDefault(playerId, 0),
+        statsOf.apply(playerId))).toList();
+  }
 
   /** Base según el tamaño del grupo más multiplicador de podio (aritmética {@code double}, como JS). */
   public static int pointsForPosition(int playerCount, int position) {

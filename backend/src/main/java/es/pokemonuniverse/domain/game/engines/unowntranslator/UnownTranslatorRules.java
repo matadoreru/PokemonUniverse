@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.unowntranslator;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.unowntranslator.UnownTranslatorTypes.UnownMessage;
@@ -167,13 +165,9 @@ public final class UnownTranslatorRules {
 
   /** Clasificación final: puntos, después aciertos y después id del jugador. */
   public static GameResults buildResults(UnownTranslatorState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().getOrDefault(playerId, UnownTranslatorPlayerStats.ZERO)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().getOrDefault(playerId, UnownTranslatorPlayerStats.ZERO));
     Comparator<Scoring.ScoreEntry<UnownTranslatorPlayerStats>> compare = Comparator
         .<Scoring.ScoreEntry<UnownTranslatorPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> -entry.stats().solved())

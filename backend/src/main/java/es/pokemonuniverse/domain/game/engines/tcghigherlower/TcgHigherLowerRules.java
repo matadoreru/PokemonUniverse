@@ -26,10 +26,8 @@ public final class TcgHigherLowerRules {
    * de otros juegos, TS no comprueba la fase.
    */
   public static GameResults buildTcgHigherLowerResults(TcgHigherLowerState state) {
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().get(playerId)))
-        .toList();
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().get(playerId));
     Comparator<Scoring.ScoreEntry<TcgHigherLowerStats>> compare = (left, right) -> {
       int byPoints = Integer.compare(right.points(), left.points());
       if (byPoints != 0) return byPoints;

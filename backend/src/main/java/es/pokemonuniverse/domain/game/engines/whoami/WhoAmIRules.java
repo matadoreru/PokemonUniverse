@@ -2,7 +2,6 @@ package es.pokemonuniverse.domain.game.engines.whoami;
 
 import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.whoami.WhoAmITypes.WhoAmIPlayerStats;
@@ -93,13 +92,9 @@ public final class WhoAmIRules {
 
   /** Clasificación final: puntos, después menos preguntas hechas y después id del jugador. */
   public static GameResults buildResults(WhoAmIState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) {
-      throw new EngineException("Results are unavailable before the game finishes");
-    }
-    var entries = state.playerIds().stream()
-        .map(playerId -> new Scoring.ScoreEntry<>(playerId, state.scores().getOrDefault(playerId, 0),
-            state.playerStats().getOrDefault(playerId, WhoAmIPlayerStats.ZERO)))
-        .toList();
+    Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
+    var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
+        playerId -> state.playerStats().getOrDefault(playerId, WhoAmIPlayerStats.ZERO));
     Comparator<Scoring.ScoreEntry<WhoAmIPlayerStats>> compare = Comparator
         .<Scoring.ScoreEntry<WhoAmIPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> state.questionsAsked().getOrDefault(entry.playerId(), 0))
