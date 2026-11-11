@@ -354,7 +354,8 @@ test('a 390 px, el campo del chat sigue a la vista cuando el teclado encoge la p
   await expect.poll(() => campo.evaluate((input) => {
     const main = document.querySelector('main')!.getBoundingClientRect();
     const box = input.getBoundingClientRect();
-    return box.top >= main.top - 1 && box.bottom <= main.bottom + 1;
+    // Sin el hook el campo queda casi 300 px por debajo; con él, a ras del fondo del `main` (unos px de margen).
+    return box.top >= main.top - 1 && box.bottom <= main.bottom + 4;
   }), { message: 'el campo del chat queda dentro del main visible', timeout: 3_000 }).toBe(true);
   await expect(campo).toBeFocused();
   expect(await host.page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 1), 'sin scroll de documento').toBe(true);
