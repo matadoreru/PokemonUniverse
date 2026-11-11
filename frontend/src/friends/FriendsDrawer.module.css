@@ -38,11 +38,6 @@
   align-items: center;
   gap: var(--sp-2);
 }
-.empty {
-  margin: 0;
-  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
-  color: var(--ink-2);
-}
 /* Éxito de «Enviar solicitud» (en su diálogo) y errores de las filas: regiones vivas siempre montadas; vacías miden 0 px. */
 .ok,
 .error {

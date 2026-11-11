@@ -271,10 +271,6 @@
   display: inline-flex;
   opacity: 0.55;
 }
-.empty {
-  font: 700 var(--fs-13) / 1.35 var(--font-text);
-  color: var(--sky-2);
-}
 
 /* Columna lateral: los jugadores miden lo que necesitan (con tope) y los fallos llenan el resto. */
 .side {

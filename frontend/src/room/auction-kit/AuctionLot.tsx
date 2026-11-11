@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { Crown, Gavel, PackageX, SkipForward } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
-import { cx, Icon, Panel, type Tone } from '../../ui';
+import { cx, Icon, Panel, StateBox, type Tone } from '../../ui';
 import { safeAmount, type TurnOrderEntry, type TurnOrderState } from './presentation';
 import s from './AuctionLot.module.css';
 
@@ -90,7 +90,7 @@ export function AuctionLot({ kicker, item, facts, currentBid, leader, minimumBid
             {turn && <p className={s.turn}>{turn}</p>}
           </section>
         </div>
-      </> : <p className={s.empty}>{emptyText}</p>}
+      </> : <div className={s.empty}><StateBox kind="empty" live={false} onCream title={emptyText} /></div>}
     </div>
   </Panel>;
 }

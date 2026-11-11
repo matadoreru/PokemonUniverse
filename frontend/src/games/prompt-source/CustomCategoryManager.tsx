@@ -123,7 +123,7 @@ export function CustomCategoryManager({
     {loading
       ? <StateBox kind="loading" title="Cargando textos…" onCream live={false} />
       : categories.length === 0
-        ? <p className={s.empty}>{emptyText}</p>
+        ? <StateBox kind="empty" live={false} onCream title={emptyText} />
         : <ul className={s.list}>{categories.map((category) => <li key={category.id} className={category.enabled ? s.item : s.itemOff}>
           {editingId === category.id
             ? <div className={s.editRow}>

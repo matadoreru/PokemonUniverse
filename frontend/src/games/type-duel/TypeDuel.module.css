@@ -502,16 +502,6 @@
   white-space: nowrap;
   font: 700 var(--fs-13) / 1.2 var(--font-text);
 }
-.empty {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  font: 700 var(--fs-13) / 1.35 var(--font-text);
-  color: var(--sky-2);
-}
-.empty strong {
-  color: var(--white);
-}
 
 /* Pantalla inferior: placa crema con icono, estado y, a la derecha, el aviso o los puntos; debajo, los tipos o el buscador. */
 .plate {

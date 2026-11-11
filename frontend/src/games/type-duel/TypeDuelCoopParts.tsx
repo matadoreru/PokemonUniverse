@@ -4,7 +4,7 @@ import { CheckCircle2, Clock3, Eye, Search, Target, Trophy, Users } from 'lucide
 import type { CSSProperties, ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, StateBox, TypeBadge } from '../../ui';
 import { typeDuelCoopRanking, typeLabel } from './presentation';
 import { typeDuelSprite } from './TypeDuelParts';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
@@ -57,7 +57,7 @@ export function TypeDuelCoopFound({ found, total, members, colors, selfId, class
   const ordered = [...found].reverse();
   return <Panel title="Encontrados" variant="dark" scroll scrollLabel="Pokémon encontrados por el grupo" {...(className ? { className } : {})} right={<Badge tone="cream">{`${found.length} de ${total}`}</Badge>}>
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
-    {found.length === 0 && <p className={s.empty}><Icon icon={Search} size={24} /><span><strong>Todavía no hay ninguno.</strong> Cada Pokémon con esos tipos suma una vez para el grupo.</span></p>}
+    {found.length === 0 && <StateBox kind="empty" live={false} icon={Search} title="Todavía no hay ninguno." text="Cada Pokémon con esos tipos suma una vez para el grupo." />}
     {ordered.length > 0 && <ul className={s.rows} aria-label="Pokémon encontrados">{ordered.map((find) => {
       const name = members.get(find.playerId)?.displayName ?? UNKNOWN_PLAYER_NAME;
       return <li key={find.pokemonId}>

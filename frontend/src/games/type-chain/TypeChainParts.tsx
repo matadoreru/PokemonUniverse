@@ -7,7 +7,7 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Chip, cx, Icon, Panel, Row, ScoreValue, TypeBadge } from '../../ui';
+import { Badge, Chip, cx, Icon, Panel, Row, ScoreValue, StateBox, TypeBadge } from '../../ui';
 import { typeChainCooldownText, typeChainEliminationLabels, typeChainEventView, typeChainMemberStatus, typeChainNamed, typeChainReasonShort, typeLabel } from './presentation';
 import s from './TypeChain.module.css';
 
@@ -99,7 +99,7 @@ export function TypeChainChain({ game, members, colors, className }: { game: Typ
   const nodes = game.chain.map((node, index) => ({ node, index })).reverse();
   return <Panel title={`Cadena ${game.chainNumber}`} variant="dark" scroll scrollLabel="Cadena de Pokémon, el último arriba" {...(className ? { className } : {})}
     right={<Badge tone="cream">{`${game.chain.length} · récord ${game.longestChain}`}</Badge>}>
-    {nodes.length === 0 && <p className={s.empty}>Nadie ha nombrado aún un Pokémon en esta cadena.</p>}
+    {nodes.length === 0 && <StateBox kind="empty" live={false} title="Cadena vacía" text="Nadie ha nombrado aún un Pokémon en esta cadena." />}
     <ol className={s.rows} aria-label="Pokémon de la cadena">{nodes.map(({ node, index }) => <ChainRow key={`${node.pokemon.id}-${node.turnNumber}`} node={node} index={index} latest={index === game.chain.length - 1} members={members} colors={colors} />)}</ol>
   </Panel>;
 }
@@ -139,7 +139,7 @@ export function TypeChainAttempts({ game, members, colors, className }: { game: 
   return <Panel title="Intentos fallidos" variant="dark" scroll scrollLabel="Intentos fallidos, el último arriba" {...(className ? { className } : {})}
     right={<Badge tone="cream">{String(attempts.length)}</Badge>}>
     {attempts.length === 0
-      ? <p className={s.empty}>Todavía no hay fallos. Un intento que no vale cuesta {typeChainCooldownText} de espera.</p>
+      ? <StateBox kind="empty" live={false} title="Todavía no hay fallos." text={`Un intento que no vale cuesta ${typeChainCooldownText} de espera.`} />
       : <ol className={s.rows} aria-label="Intentos fallidos">{attempts.map((attempt) => <li key={`${attempt.playerId}-${attempt.attemptedAt}`} data-testid="type-chain-attempt">
         <Row name={attempt.pokemon.name} color={playerColor(colors.get(attempt.playerId) ?? 0)}
           avatar={<img src={guessSprite(attempt.pokemon.sprite)} alt="" className={s.chainSprite} loading="lazy" />}

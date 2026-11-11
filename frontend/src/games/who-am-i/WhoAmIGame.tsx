@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, t
 import { answerLabel, freshAnnouncement, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useServerOffset } from '../../hooks/useServerTime';
-import { Card, Chip, cx, Field, Icon, Panel, Pill } from '../../ui';
+import { Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { guessSprite } from '../../room/guess-kit';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
@@ -21,7 +21,7 @@ const cardTypes = (pokemon: WhoAmIPokemon) => pokemon.types.map((type) => ({ typ
 
 /** Historial de un jugador, de la pista más reciente a la más antigua: cada pregunta con sus respuestas y cada fallo. */
 export function WhoAmIHistory({ entries, nameOf, testId, emptyText }: { entries: readonly WhoAmIHistoryEntry[]; nameOf(id: string): string; testId?: string; emptyText: string }) {
-  if (entries.length === 0) return <p className={s.empty}>{emptyText}</p>;
+  if (entries.length === 0) return <StateBox kind="empty" live={false} title={emptyText} />;
   return <ul className={s.clues} {...(testId ? { 'data-testid': testId } : {})}>
     {[...entries].reverse().map((entry, index) => entry.kind === 'GUESS'
       ? <li key={index} className={cx(s.clue, s.guess)}><Icon icon={X} size={18} />{`Probó con ${entry.pokemon.name}`}</li>

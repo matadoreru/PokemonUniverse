@@ -20,6 +20,8 @@ export interface StateBoxProps {
   action?: StateBoxAction;
   /** Segunda acción, en crema detrás de la principal (p. ej. «Invitar amigos» junto a «Copiar enlace»). */
   secondaryAction?: StateBoxAction;
+  /** Icono del vacío o del error en vez del de siempre (p. ej. la lupa de unos intentos, el reloj de una espera). */
+  icon?: LucideIcon;
   /** Sobre fondo crema. */
   onCream?: boolean;
   /** Sin icono ni alto mínimo: para un vacío bajo contenido en un panel bajo (p. ej. la sala con un solo jugador). */
@@ -31,7 +33,7 @@ export interface StateBoxProps {
   live?: boolean;
 }
 
-export function StateBox({ kind, title, text, action, secondaryAction, onCream, compact, live = true }: StateBoxProps) {
+export function StateBox({ kind, title, text, icon, action, secondaryAction, onCream, compact, live = true }: StateBoxProps) {
   if (kind === 'loading') {
     return (
       <div className={s.ghost} {...(live ? { role: 'status', 'aria-live': 'polite' as const, 'aria-label': title } : {})} aria-busy="true">
@@ -45,7 +47,7 @@ export function StateBox({ kind, title, text, action, secondaryAction, onCream, 
   }
   return (
     <div className={cx(s.box, onCream && s.onCream, kind === 'error' && s.error, compact && s.compact)} {...(kind === 'error' ? { role: 'alert' } : live ? { role: 'status' } : {})}>
-      {!compact && <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} className={s.icon} />}
+      {!compact && <Icon icon={icon ?? (kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass)} size={32} className={s.icon} />}
       <strong className={s.title}>{title}</strong>
       {text && <p className={s.text}>{text}</p>}
       {action && !secondaryAction && (

@@ -8,7 +8,7 @@ import { playerColor } from '../../lib/player-color';
 import { learnsetGroupProgress, learnsetRevealStatus } from './learnset-texts';
 import { revealedLearnsetFlags } from './learnset-reveal';
 import { GuessHints } from '../../room/guess-kit';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, ScorePop, TypeBadge } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, ScorePop, StateBox, TypeBadge } from '../../ui';
 import { categoryLabel, learnsetClueOrder, learnsetStageText, moveText, ordinal, typeLabel, type LearnsetPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './LearnsetGuess.module.css';
@@ -70,7 +70,7 @@ function MoveRow({ move, fresh }: { move: LearnsetMoveHint; fresh: boolean }) {
  * Pistas reveladas (pantalla superior): una franja por movimiento, la última pista arriba (entra con `motion-enter-up`
  * y va marcada «Nueva»). En la cabecera, lo que vale ahora un acierto y cuándo llega la siguiente pista.
  */
-export function LearnsetClues({ groups, latestStage, stake, nextClueIn, progress = null, emptyText = null }: { groups: readonly LearnsetMoveGroup[]; latestStage: number; stake: string | null; nextClueIn: number | null; /** Revelación manual: «N de M grupos». */ progress?: string | null; /** Texto del vacío si no es la espera de siempre. */ emptyText?: ReactNode }) {
+export function LearnsetClues({ groups, latestStage, stake, nextClueIn, progress = null, emptyText = null }: { groups: readonly LearnsetMoveGroup[]; latestStage: number; stake: string | null; nextClueIn: number | null; /** Revelación manual: «N de M grupos». */ progress?: string | null; /** Texto del vacío si no es la espera de siempre. */ emptyText?: { title: string; text: string } | null }) {
   const ordered = learnsetClueOrder(groups);
   const moveCount = groups.reduce((total, group) => total + group.moves.length, 0);
   return <Panel title="Pistas reveladas" variant="dark" scroll scrollLabel="Pistas reveladas" className={cx(s.cluesPanel)}
@@ -81,7 +81,7 @@ export function LearnsetClues({ groups, latestStage, stake, nextClueIn, progress
       {stake === null && nextClueIn === null && progress === null && <Badge tone="cream">{`${moveCount} ${moveCount === 1 ? 'movimiento' : 'movimientos'}`}</Badge>}
     </span>}>
     {ordered.length === 0
-      ? <p className={s.empty}><Icon icon={Hourglass} size={24} />{emptyText ?? <span><strong>Preparando las pistas…</strong> Llegan los movimientos que aprende el Pokémon por nivel.</span>}</p>
+      ? <StateBox kind="empty" live={false} icon={Hourglass} title={emptyText?.title ?? 'Preparando las pistas…'} text={emptyText?.text ?? 'Llegan los movimientos que aprende el Pokémon por nivel.'} />
       : <ul className={s.clues} aria-label="Movimientos conocidos">{ordered.flatMap((group) => group.moves.map((move, index) => {
         const fresh = group.stage > 0 && group.stage === latestStage;
         return <li key={`${group.stage}-${move.moveId}-${move.level ?? 'x'}-${index}`} className={cx(group.stage > 0 && 'motion-enter-up')} data-stage={group.stage}><MoveRow move={move} fresh={fresh} /></li>;
@@ -119,9 +119,9 @@ export function LearnsetAttempts({ attempts, members, colors, className, own = f
   return <Panel title={own ? 'Tus intentos' : 'Intentos públicos'} variant="dark" scroll scrollLabel={own ? 'Tus intentos de la ronda' : 'Intentos públicos de la ronda'} {...(className ? { className } : {})} right={<Badge tone="cream">{attempts.length}</Badge>}>
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
     {ordered.length === 0
-      ? <p className={s.empty}><Icon icon={Search} size={24} />{own
-        ? <span><strong>Todavía no has fallado.</strong> Cada fallo te enseña otro grupo de movimientos, pero el acierto vale {MANUAL_REVEAL_STEP} puntos menos.</span>
-        : <span><strong>Todavía no hay intentos incorrectos.</strong> Cuanto antes aciertes, más puntos: cada pista nueva resta uno.</span>}</p>
+      ? own
+        ? <StateBox kind="empty" live={false} icon={Search} title="Todavía no has fallado." text={`Cada fallo te enseña otro grupo de movimientos, pero el acierto vale ${MANUAL_REVEAL_STEP} puntos menos.`} />
+        : <StateBox kind="empty" live={false} icon={Search} title="Todavía no hay intentos incorrectos." text="Cuanto antes aciertes, más puntos: cada pista nueva resta uno." />
       : <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
         const name = members.get(attempt.playerId)?.displayName ?? UNKNOWN_PLAYER_NAME;
         return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`}>

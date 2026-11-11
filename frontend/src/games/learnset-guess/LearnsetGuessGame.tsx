@@ -93,7 +93,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: ActiveGameProps) {
     {lastRound
       ? <LearnsetRevealScene result={lastRound} />
       : <LearnsetClues groups={groups} latestStage={latestStage} stake={stake} nextClueIn={!manual && active && game.nextTransitionAt ? transitionRemaining : null} progress={progress}
-        emptyText={manual && active && totalGroups === 0 ? <span><strong>Cada jugador ve solo sus pistas.</strong> Los movimientos que desbloquea cada uno se descubren en la revelación.</span> : null} />}
+        emptyText={manual && active && totalGroups === 0 ? { title: 'Cada jugador ve solo sus pistas.', text: 'Los movimientos que desbloquea cada uno se descubren en la revelación.' } : null} />}
     {!lastRound && <LearnsetHints evolutionHint={active ? game.evolutionHint : null} className={s.hints} />}
   </div>;
 

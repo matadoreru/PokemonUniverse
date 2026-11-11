@@ -100,7 +100,7 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
     {loading
       ? <StateBox kind="loading" title="Cargando dilemas…" onCream live={false} />
       : prompts.length === 0
-        ? <p className={s.empty}>Todavía no has creado dilemas personales.</p>
+        ? <StateBox kind="empty" live={false} onCream title="Todavía no has creado dilemas personales." />
         : <ul className={s.list}>{prompts.map((prompt) => <li key={prompt.id} className={prompt.enabled ? s.item : s.itemOff}>
           {editingId === prompt.id
             ? <div className={s.editRow}>

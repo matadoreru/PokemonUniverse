@@ -151,19 +151,6 @@
   gap: var(--sp-1);
   min-width: 0;
 }
-.empty {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  font: 700 var(--fs-13) / 1.35 var(--font-text);
-  color: var(--sky-2);
-}
-.empty > svg {
-  flex: none;
-}
-.empty strong {
-  color: var(--white);
-}
 
 /* Columna lateral: el marcador, los intentos (o los puntos de la ronda) y «Saltar minijuego». */
 .sideColumn {
@@ -528,9 +515,6 @@
   .cluesRight > span > span,
   .cluesRight > span:not(.stake) {
     min-height: 30px;
-    font-size: var(--fs-15);
-  }
-  .empty {
     font-size: var(--fs-15);
   }
   .rows {

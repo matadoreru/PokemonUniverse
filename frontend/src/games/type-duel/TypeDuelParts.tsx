@@ -5,7 +5,7 @@ import { useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNod
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, TypeBadge, TypeOption } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, StateBox, TypeBadge, TypeOption } from '../../ui';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { typeDuelMemberStatus, typeGridMove, typeLabel, type TypeDuelPlateKind } from './presentation';
@@ -140,7 +140,7 @@ export function TypeDuelAttempts({ attempts, members, colors, className }: { att
   const ordered = [...attempts].reverse();
   return <Panel title="Intentos públicos" variant="dark" scroll scrollLabel="Intentos públicos del duelo" {...(className ? { className } : {})} right={<Badge tone="cream">{attempts.length}</Badge>}>
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
-    {attempts.length === 0 && <p className={s.empty}><Icon icon={Search} size={24} /><span><strong>Todavía no hay intentos.</strong> El primero que dé con un Pokémon de la combinación exacta gana.</span></p>}
+    {attempts.length === 0 && <StateBox kind="empty" live={false} icon={Search} title="Todavía no hay intentos." text="El primero que dé con un Pokémon de la combinación exacta gana." />}
     {ordered.length > 0 && <ul className={s.rows} aria-label="Intentos del duelo">{ordered.map((attempt, index) => {
       const name = members.get(attempt.playerId)?.displayName ?? UNKNOWN_PLAYER_NAME;
       return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`}>

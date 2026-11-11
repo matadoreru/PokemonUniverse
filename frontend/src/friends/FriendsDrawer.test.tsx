@@ -49,7 +49,8 @@ describe('FriendsDrawer', () => {
 
   it('cada pestaña tiene su estado vacío', () => {
     const markup = render();
-    expect(markup).toContain('Todavía no tienes amigos. Añade a alguien por su nombre de usuario.');
+    expect(markup).toContain('Todavía no tienes amigos.');
+    expect(markup).toContain('Añade a alguien por su nombre de usuario.');
     expect(markup).toContain('No tienes solicitudes pendientes.');
     expect(markup).toContain('No has enviado solicitudes.');
     expect(markup.match(/role="tabpanel"/g)).toHaveLength(3);

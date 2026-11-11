@@ -4,7 +4,7 @@ import { useId, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
 import { useRoom } from '../room/RoomContext';
-import { ConfirmDialog, Dialog, Drawer, Field, Pill, PillLink, Row, TabPanel, Tabs, type TabItem } from '../ui';
+import { ConfirmDialog, Dialog, Drawer, Field, Pill, PillLink, Row, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import { useFriends, type FriendsContextValue } from './FriendsContext';
 import { FRIEND_STATUS_LABEL, friendErrorMessage, sentText, type FriendEntry } from './friends-state';
 import s from './FriendsDrawer.module.css';
@@ -146,7 +146,7 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
       <div>
         <Tabs items={items} active={tab} onChange={setTab} label="Amigos y solicitudes" idBase={idBase} className={s.tabs ?? ''} />
         <TabPanel idBase={idBase} tabKey="friends" className={panelClass} hidden={tab !== 'friends'}>
-          {overview === null ? <p className={s.empty}>Cargando tus amigos…</p> : list.length === 0 ? <p className={s.empty}>Todavía no tienes amigos. Añade a alguien por su nombre de usuario.</p> : (
+          {overview === null ? <StateBox kind="loading" live={false} onCream title="Cargando tus amigos…" /> : list.length === 0 ? <StateBox kind="empty" live={false} onCream title="Todavía no tienes amigos." text="Añade a alguien por su nombre de usuario." /> : (
             <ul className={s.list}>
               {list.map((friend) => {
                 const done = invited.has(friend.id);
@@ -170,7 +170,7 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
           )}
         </TabPanel>
         <TabPanel idBase={idBase} tabKey="incoming" className={panelClass} hidden={tab !== 'incoming'}>
-          {incoming.length === 0 ? <p className={s.empty}>No tienes solicitudes pendientes.</p> : (
+          {incoming.length === 0 ? <StateBox kind="empty" live={false} onCream title="No tienes solicitudes pendientes." /> : (
             <ul className={s.list}>
               {incoming.map((request) => {
                 const from = request.from;
@@ -190,7 +190,7 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
           )}
         </TabPanel>
         <TabPanel idBase={idBase} tabKey="outgoing" className={panelClass} hidden={tab !== 'outgoing'}>
-          {outgoing.length === 0 ? <p className={s.empty}>No has enviado solicitudes.</p> : (
+          {outgoing.length === 0 ? <StateBox kind="empty" live={false} onCream title="No has enviado solicitudes." /> : (
             <ul className={s.list}>
               {outgoing.map((request) => {
                 const to = request.to;
