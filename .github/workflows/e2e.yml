@@ -1,0 +1,151 @@
+name: E2E
+
+# Suite Playwright completa (e2e/) contra el backend Java, con PostgreSQL y Mailpit como servicios y el catálogo
+# sembrado desde PokéAPI en el propio job. Solo nocturna o a mano: no la llama main.yml ni bloquea ningún despliegue.
+on:
+  schedule:
+    # 03:30 UTC, antes de la sincronización diaria de PRO (06:00 en Madrid).
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+    inputs:
+      filter:
+        description: Filtro de specs de Playwright (por ejemplo «juegos» o «tests/sala.spec.ts»); vacío para toda la suite.
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  e2e:
+    name: Playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    services:
+      # Los mismos que compose.local.yaml (npm run db:up).
+      postgres:
+        image: docker.io/library/postgres:17-alpine
+        env:
+          POSTGRES_DB: pokemon_universe
+          POSTGRES_USER: pokemon
+          POSTGRES_PASSWORD: pokemon
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pokemon -d pokemon_universe"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      mailpit:
+        image: docker.io/axllent/mailpit:v1.27.10
+        ports:
+          - 1025:1025
+          - 8025:8025
+    # El bloque «Desarrollo local sin Compose» de .env.example; la BD la fija application-dev.yml.
+    env:
+      WEB_ORIGIN: http://localhost:5173
+      JWT_SECRET: e2e-ci-secret-only-for-this-ephemeral-run-0000
+      COOKIE_SECURE: 'false'
+      ROOM_MAX_PLAYERS: '8'
+      RECONNECT_GRACE_MS: '30000'
+      DATA_SYNC_HOUR: '6'
+      DATA_SYNC_MINUTE: '0'
+      DATA_SYNC_TIMEZONE: Europe/Madrid
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Build shared contracts
+        run: npm run build -w @pokemon-universe/shared
+
+      - name: Install Chromium for Playwright
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      # Como npm run db:seed: el backend con data-sync aplica Flyway y carga el catálogo de PokéAPI antes de abrir
+      # :8080. Después se para y se espera a que el puerto quede libre, porque con CI=true Playwright no reutiliza un
+      # servidor y arranca el suyo.
+      - name: Seed the catalog
+        shell: bash
+        run: |
+          set -uo pipefail
+          cd backend
+          BACKEND_DATA_SYNC_ENABLED=true MICRONAUT_ENVIRONMENTS=dev PORT=8080 \
+            ./gradlew run --no-daemon --quiet > ../seed.log 2>&1 &
+          pid=$!
+          ready=false
+          for _ in $(seq 1 180); do
+            if curl -fsS http://localhost:8080/health > /dev/null 2>&1; then ready=true; break; fi
+            if ! kill -0 "$pid" 2> /dev/null; then break; fi
+            sleep 10
+          done
+          kill "$pid" 2> /dev/null || true
+          fuser -k -TERM 8080/tcp 2> /dev/null || true
+          for _ in $(seq 1 30); do
+            curl -fsS http://localhost:8080/health > /dev/null 2>&1 || break
+            sleep 2
+          done
+          ./gradlew --stop > /dev/null 2>&1 || true
+          if [ "$ready" != true ]; then
+            echo '::error::El backend no respondió en /health durante la siembra (ver el artefacto e2e-logs).'
+            tail -n 100 ../seed.log
+            exit 1
+          fi
+          if curl -fsS http://localhost:8080/health > /dev/null 2>&1; then
+            echo '::error::El backend de la siembra sigue ocupando :8080.'
+            exit 1
+          fi
+
+      # Playwright arranca el backend (npm run dev:backend) y Vite; los helpers preparan datos con psql dentro del
+      # contenedor del servicio postgres, por docker.
+      - name: Run Playwright
+        env:
+          PU_E2E_CONTAINER_CLI: docker
+          PU_E2E_PG_CONTAINER: ${{ job.services.postgres.id }}
+          FILTER: ${{ inputs.filter }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Varios filtros separados por espacios, como en local (npm run test:e2e -- amigos inicio).
+          read -ra filters <<< "${FILTER:-}"
+          npm run test:e2e -- "${filters[@]}"
+
+      - name: Upload test results and screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results
+          path: |
+            e2e/test-results
+            e2e/screenshots
+          if-no-files-found: ignore
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-logs
+          path: seed.log
+          if-no-files-found: ignore

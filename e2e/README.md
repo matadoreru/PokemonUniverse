@@ -1,7 +1,9 @@
 # E2E con Playwright
 
 Pruebas de extremo a extremo de Pokémon Universe en Chromium, contra la base de datos local de
-desarrollo (solo en local, sin CI). Además de comprobar los flujos, cada `capture()` deja una captura
+desarrollo. En CI las lanza `.github/workflows/e2e.yml` cada noche o a mano (Actions → E2E → Run workflow, con un
+filtro de specs opcional), sin bloquear ningún despliegue: PostgreSQL y Mailpit van como servicios, el catálogo se
+siembra en el propio job y, si falla, sube `test-results/` y `screenshots/` como artefactos. Además de comprobar los flujos, cada `capture()` deja una captura
 de revisión y mide encaje y legibilidad. Las capturas se puntúan con la rúbrica de
 [`docs/visual-review.md`](../docs/visual-review.md).
 
@@ -108,7 +110,8 @@ cargado en la lista de jugadores de su sala; en la configuración del lobby crea
 su anfitrión. Para el ADMIN se registra una cuenta por la API, se promueve en la BD local y se vuelve a iniciar sesión
 (`/api/auth/me` devuelve el rol del token). Los helpers (`psql`, `nuevaCuenta`, `registrarPorApi`, `promoverAAdmin`,
 `borrarCuentas` en `src/helpers.ts`) ejecutan `psql` dentro del contenedor con `podman exec`
-(`pokemonuniverse_postgres_1`; otro nombre con `PU_E2E_PG_CONTAINER`). Antes de crear nada, `comprobarBdE2E` (en
+(`pokemonuniverse_postgres_1`; otro nombre con `PU_E2E_PG_CONTAINER`, y otro programa que `podman` con
+`PU_E2E_CONTAINER_CLI`, como el `docker` de la CI). Antes de crear nada, `comprobarBdE2E` (en
 `beforeAll`, y en la primera llamada a `psql`) falla con un mensaje claro si falta `podman` o el contenedor no está en
 marcha (`npm run db:up`). Al acabar, aunque falle, se borran las dos cuentas (`@e2e.example.test`) y el fichero del
 avatar de `backend/.data/avatars`; cada cuenta se borra por separado y los fallos se informan juntos al final.
