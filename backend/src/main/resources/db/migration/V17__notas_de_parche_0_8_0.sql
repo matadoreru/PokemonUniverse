@@ -17,7 +17,7 @@ WHERE version = '0.8.0'
 INSERT INTO public."Changelog" (id, version, title, summary, date, published, content, "createdAt", "updatedAt")
 VALUES
     (gen_random_uuid()::text, '0.8.0', 'Tres minijuegos nuevos',
-     'Llegan Pokédex Absurda, Traductor Unown y ¿Quién soy?, y saltar un minijuego en la sesión por orden ya no se lleva por delante sus otros modos.',
+     'Llegan Pokédex Absurda, Traductor Unown y ¿Quién soy?, además de algunos ajustes en las formas regionales, Sketchmon y el buscador de Pokémon.',
      TIMESTAMP '2026-11-11 12:00:00', true,
      $json$[
        {"type": "NEW", "text": "Pokédex Absurda: en cada ronda sale un Pokémon y cada jugador escribe en secreto una entrada de Pokédex inventada; luego se vota sin saber de quién es cada una. En Clásico gana la más disparatada. En «¿Cuál es la real?» la entrada oficial se cuela entre las vuestras: hay que descubrirla y conseguir que voten la tuya. De 3 a 8 jugadores.", "highlight": true},
@@ -25,8 +25,7 @@ VALUES
        {"type": "NEW", "text": "¿Quién soy?: todos ven tu Pokémon menos tú. En tu turno haces una pregunta de sí o no y los demás responden con botones (Sí, No, A medias, No lo sé); después puedes intentar adivinar o pasar. Cuantas menos preguntas necesites, más puntos. Un corte de conexión de unos segundos no te hace perder el turno. De 2 a 8 jugadores.", "highlight": true},
        {"type": "MINIGAMES", "text": "Formas regionales: las formas de Alola, Galar, Hisui y Paldea solo salen si también está marcada la generación de su región (por ejemplo, el Vulpix de Alola necesita la 7.ª generación)."},
        {"type": "INTERFACE", "text": "Sketchmon: quien dibuja ve un cursor con el color y el grosor del pincel que tiene elegido."},
-       {"type": "IMPROVEMENTS", "text": "El buscador de Pokémon carga más rápido."},
-       {"type": "BUGS", "text": "Sesión por orden: saltar un minijuego solo salta el modo que se está jugando; los demás modos de ese minijuego siguen en la cola."}
+       {"type": "IMPROVEMENTS", "text": "El buscador de Pokémon carga más rápido."}
      ]$json$::jsonb,
      CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (version) DO NOTHING;

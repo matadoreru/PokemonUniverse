@@ -346,8 +346,6 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
     limita el número de píxeles (riesgo de memoria, bajo).
   - `PokemonCatalogService` depende de clases adaptador (`FilesystemArtworkCatalog`, `JpaPokemonAudioCatalog`) en vez
     de puertos, como la concesión de la etapa 1.
-  - El script de exportación dorada no fija `LANG=en_US.UTF-8`; si CI difiere en una comparación de textos, fijarlo
-    ahí. La imagen `node:22-alpine` sin versión fija puede cambiar de ICU respecto a `icu4j` 78.3.
 
 - Sincronización de Pokémon en Java (2C, `application/datasync/pokemon`; apagada con `pu.data-sync.enabled=false`):
   - Interruptor propio `BACKEND_DATA_SYNC_ENABLED` (no el `DATA_SYNC_ENABLED` de Node); el corte 2D lo puso a `true`
@@ -357,15 +355,14 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
     literal `Input image exceeds pixel limit`; cuenta como paleta fallida.
   - Atajo INCREMENTAL portado con su defecto: con ≥ 100 paletas se compara `pokemon-species?limit=1`.count con el
     total de filas de `Pokemon` (formas incluidas), que ya lo supera en cuanto hay formas; una especie nueva no se
-    detecta hasta un FULL (o hasta que falten paletas). Corregirlo en los dos lados a la vez.
+    detecta hasta un FULL (o hasta que falten paletas).
   - El sembrador usa `SyncHttpClient` (backoff `500·2^(n-1)` + jitter, timeout 30 s, 16 MiB) en lugar del `fetchJson`
-    propio de `seed.ts` (`intento·400` ms, sin timeout); conserva el literal `PokéAPI returned <status> for <label>`.
+    del antiguo `seed.ts` de Node (`intento·400` ms, sin timeout); conserva el literal `PokéAPI returned <status> for <label>`.
     Las transacciones no fijan los timeouts de 30 s/120 s de Prisma.
   - Prisma guarda los `float` de un `Json` con ~16 cifras (`paletteWeights` `0.14191852825229961` →
     `0.1419185282522996`); Java guarda el `double` exacto. Diferencia en la 17.ª cifra, sin efecto en el juego.
   - `PaletteExtractor` lee con ImageIO/`getRGB`: idéntico a sharp en los sprites de PokéAPI (PNG de 8 bits) y en las
     reducciones fijadas; un PNG de 16 bits o en gris podría diferir de los bytes crudos de sharp.
-  - `seed.ts` sigue siendo también un CLI de Node (`POKEMON_SYNC=true`); Java solo tiene el adaptador.
   - Las marcas de tiempo del JDBC crudo (`JpaPokemonCatalogStore`, `JpaTcgCardRepository`) se enlazan como
     `LocalDateTime` en UTC: `Timestamp.from` las guardaba en la zona de la JVM (`hibernate.jdbc.time_zone` no se aplica
     a los `PreparedStatement` crudos). Los parámetros de Hibernate (`JpaDataSyncRecords`, `JpaUserGameConfigStore`) ya
@@ -412,8 +409,7 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
     `CatalogTables.clear` y `TcgTables` vacían con `CASCADE` tablas de las que dependen otras clases de la BD de test
     compartida y `NonUtcZone` cambia la zona por defecto de toda la JVM: hoy las clases corren en serie, pero si se
     activa el paralelismo de pruebas ambos pasan a ser de arreglo obligatorio (zona por prueba, datos aislados por
-    clase); el generador de paridad puede dejar `pu_parity_pokeapi` en un
-    `DATABASE_URL` que no sea el contenedor.
+    clase).
 
 ## Métricas de CI
 
