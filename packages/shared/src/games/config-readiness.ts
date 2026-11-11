@@ -8,7 +8,8 @@ export interface GameConfigReadinessContext {
   playerCount?: number;
 }
 
-const bingoFamilyLabels: Record<BingoFamilyKey, string> = {
+/** Nombre de cada familia de condiciones del Bingo: el panel de ajustes y los mensajes de preparación. */
+export const bingoFamilyLabels: Record<BingoFamilyKey, string> = {
   generation: 'Generación',
   dexNumber: 'Número Pokédex',
   type: 'Tipo',
