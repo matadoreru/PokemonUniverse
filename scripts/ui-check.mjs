@@ -19,6 +19,8 @@ const e2e = join(root, 'e2e');
 const screenshots = join(e2e, 'screenshots');
 const SIZES = ['1280x720', '1920x1080', '390x844'];
 const PG_CONTAINER = process.env.PU_E2E_PG_CONTAINER ?? 'pokemonuniverse_postgres_1';
+// El mismo programa de contenedores que los helpers de e2e (podman salvo PU_E2E_CONTAINER_CLI).
+const CONTAINER_CLI = process.env.PU_E2E_CONTAINER_CLI ?? 'podman';
 
 const MAILPIT_CONTAINER = process.env.PU_E2E_MAILPIT_CONTAINER ?? 'pokemonuniverse_mailpit_1';
 
@@ -36,7 +38,7 @@ try {
 
 function containerRunning(name) {
   try {
-    return execFileSync('podman', ['ps', '--format', '{{.Names}}'], { encoding: 'utf8' }).split('\n').includes(name);
+    return execFileSync(CONTAINER_CLI, ['ps', '--format', '{{.Names}}'], { encoding: 'utf8' }).split('\n').includes(name);
   } catch {
     return false;
   }
