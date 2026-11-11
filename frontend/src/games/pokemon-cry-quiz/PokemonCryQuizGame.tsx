@@ -1,4 +1,4 @@
-import { speedPodiumScoringText, type PokemonCryQuizConfig, type PokemonCryQuizPlayerState, type PokemonCryQuizPublicState } from '@pokemon-universe/shared/public';
+import { speedPodiumScoringLabel, speedPodiumScoringText, type PokemonCryQuizConfig, type PokemonCryQuizPlayerState, type PokemonCryQuizPublicState } from '@pokemon-universe/shared/public';
 import { Play, RotateCcw, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CRY_PLAY_FAILED, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from './presentation';
@@ -80,7 +80,7 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: ActiveGameProps) 
   const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce su grito';
 
   const clue = lastRound
-    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {cryVersionLabel(lastRound.cryVersion)}</>}
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {cryVersionLabel(lastRound.cryVersion)} · {speedPodiumScoringLabel(config?.streakBonus)}</>}
       clueTitle="Su grito" clue={<CryPlayer source={lastRound.cryUrl} replay onError={setAudioError} />} />
     : <GamePanel label="Grito del Pokémon misterioso" variant="dark" className={s.stage}>
       {game.cryUrl && <CryPlayer source={game.cryUrl} onError={setAudioError} />}

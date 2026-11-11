@@ -1,4 +1,4 @@
-import { speedPodiumScoringText, type PokemonPaletteGuessConfig, type PokemonPaletteGuessPlayerState, type PokemonPaletteGuessPublicState } from '@pokemon-universe/shared/public';
+import { speedPodiumScoringLabel, speedPodiumScoringText, type PokemonPaletteGuessConfig, type PokemonPaletteGuessPlayerState, type PokemonPaletteGuessPublicState } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
 import { describePaletteHint, paletteSwatches } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
@@ -56,7 +56,7 @@ export function PokemonPaletteGuessGame({ room, selfId, onAction }: ActiveGamePr
   const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce sus colores';
 
   const clue = lastRound
-    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation}</>}
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {speedPodiumScoringLabel(config?.streakBonus)}</>}
       clueTitle="Su paleta" clue={<PaletteClue className={s.reveal} colors={lastRound.palette} weights={lastRound.paletteWeights} />} />
     : <GamePanel label={`Paleta de ${game.colors.length} colores dominantes`} className={s.stage}>
       <PaletteClue colors={game.colors} weights={game.colorWeights} />

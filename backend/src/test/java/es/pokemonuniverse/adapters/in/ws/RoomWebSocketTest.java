@@ -218,6 +218,11 @@ class RoomWebSocketTest {
     var action = "{\"gameInstanceId\":\"" + hostState.get("gameSkipState").get("gameInstanceId").getStringValue()
         + "\",\"actionEpoch\":" + quote(hostState.get("gameActionEpoch").getStringValue())
         + ",\"action\":{\"type\":\"ANSWER\",\"choice\":\"HIGHER\"}}";
+    // «Siguiente» (room:reveal-next): fuera de un revelado no hace nada; mal formado, error en español.
+    assertError("Petición de «Siguiente» no válida.", host.command("room:reveal-next", "{}"));
+    assertOk(host.command("room:reveal-next", "{\"gameInstanceId\":\""
+        + hostState.get("gameSkipState").get("gameInstanceId").getStringValue() + "\",\"actionEpoch\":"
+        + quote(hostState.get("gameActionEpoch").getStringValue()) + "}"));
     assertOk(host.command("game:action", action));
 
     // Review Focus 3: una pestaña nueva del mismo usuario reemplaza a la conexión antigua, que sigue abierta.

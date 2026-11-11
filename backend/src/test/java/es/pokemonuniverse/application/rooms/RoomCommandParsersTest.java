@@ -177,6 +177,19 @@ class RoomCommandParsersTest {
   }
 
   @Test
+  void revealNextRequest() {
+    var id = "00000000-0000-4000-8000-000000000001";
+    assertEquals(new RoomCommandParsers.RevealNextRequest(id, "[\"ROUND_RESULTS\",1]"),
+        RoomCommandParsers.revealNextRequest(json("{\"gameInstanceId\":\"" + id + "\",\"actionEpoch\":\"[\\\"ROUND_RESULTS\\\",1]\"}")));
+    for (var invalid : List.of("{}", "null", "{\"gameInstanceId\":\"" + id + "\"}",
+        "{\"gameInstanceId\":\"x\",\"actionEpoch\":\"e\"}", "{\"gameInstanceId\":\"" + id + "\",\"actionEpoch\":\"\"}",
+        "{\"gameInstanceId\":\"" + id + "\",\"actionEpoch\":\"" + "x".repeat(513) + "\"}",
+        "{\"gameInstanceId\":\"" + id + "\",\"actionEpoch\":\"e\",\"extra\":1}")) {
+      assertEquals("Petición de «Siguiente» no válida.", error(() -> RoomCommandParsers.revealNextRequest(json(invalid))), invalid);
+    }
+  }
+
+  @Test
   void assignableRoles() {
     assertEquals(RoomRole.CO_HOST, RoomCommandParsers.assignableRole(JsonNode.createStringNode("CO_HOST")));
     assertEquals("""

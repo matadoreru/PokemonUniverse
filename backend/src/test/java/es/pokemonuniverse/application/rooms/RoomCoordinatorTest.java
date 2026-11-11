@@ -1941,7 +1941,7 @@ class RoomCoordinatorTest {
     assertEquals(Set.of("code", "phase", "hostId", "maxPlayers", "members", "availableGames", "selectedGameId",
         "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "allowedModes",
         "nextGameVote", "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
-        "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "resultsEndsAt", "intro",
+        "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "resultsEndsAt", "intro", "revealSkip",
         "hostCustomCategoryCount",
         "hostWouldYouRatherPromptCount", "daily"), keys);
     var serialized = serialize(second);

@@ -493,7 +493,9 @@
     "includeRegionalForms ausente": "Configuración de Adivina el Grito no válida: falta includeRegionalForms.",
     "includeRegionalForms tipo erróneo": "Configuración de Adivina el Grito no válida: includeRegionalForms debe ser booleano.",
     "publicAttempts ausente": "valid",
-    "publicAttempts tipo erróneo": "Configuración de Adivina el Grito no válida: publicAttempts debe ser booleano."
+    "publicAttempts tipo erróneo": "Configuración de Adivina el Grito no válida: publicAttempts debe ser booleano.",
+    "streakBonus ausente": "valid",
+    "streakBonus tipo erróneo": "Configuración de Adivina el Grito no válida: streakBonus debe ser booleano."
   },
   "pokemon-impostor": {
     "<raíz null>": "Configuración de Pokémon Impostor no válida: la configuración debe ser un objeto.",
@@ -554,7 +556,9 @@
     "hintKinds [1e20]": "Configuración de Adivina por la Paleta no válida: hintKinds tiene un valor no válido.",
     "hintKinds [-1]": "Configuración de Adivina por la Paleta no válida: hintKinds tiene un valor no válido.",
     "publicAttempts ausente": "valid",
-    "publicAttempts tipo erróneo": "Configuración de Adivina por la Paleta no válida: publicAttempts debe ser booleano."
+    "publicAttempts tipo erróneo": "Configuración de Adivina por la Paleta no válida: publicAttempts debe ser booleano.",
+    "streakBonus ausente": "valid",
+    "streakBonus tipo erróneo": "Configuración de Adivina por la Paleta no válida: streakBonus debe ser booleano."
   },
   "pokemon-red-flag": {
     "<raíz null>": "Configuración de La Frase Pokémon no válida: la configuración debe ser un objeto.",
@@ -915,7 +919,9 @@
     "includeRegionalForms ausente": "Configuración de ¿Quién es ese Pokémon? no válida: falta includeRegionalForms.",
     "includeRegionalForms tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: includeRegionalForms debe ser booleano.",
     "publicAttempts ausente": "valid",
-    "publicAttempts tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: publicAttempts debe ser booleano."
+    "publicAttempts tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: publicAttempts debe ser booleano.",
+    "streakBonus ausente": "valid",
+    "streakBonus tipo erróneo": "Configuración de ¿Quién es ese Pokémon? no válida: streakBonus debe ser booleano."
   },
   "would-you-rather": {
     "<raíz null>": "Configuración de Would You Rather no válida: la configuración debe ser un objeto.",

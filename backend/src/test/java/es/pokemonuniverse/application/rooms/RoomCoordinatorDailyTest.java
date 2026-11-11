@@ -24,9 +24,11 @@ import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.PresenceStatus;
 import es.pokemonuniverse.domain.room.RoomPhase;
 import es.pokemonuniverse.domain.room.SessionMode;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -238,29 +240,55 @@ class RoomCoordinatorDailyTest {
   }
 
   /**
-   * «Siguiente» también vale en el reto: adelanta los revelados sin consumir más azar ni cambiar el resultado, que es
-   * el mismo que dejando vencer cada plazo.
+   * «Siguiente» también vale en el reto: en los juegos del reto adelanta los revelados sin consumir más azar ni
+   * cambiar el resultado, que es el mismo que dejando vencer cada plazo.
    */
   @Test
   void revealNextKeepsTheDailyDeterministic() {
-    var reference = new CountingSupplier();
-    var direct = start("higher-lower", reference);
-    playEveryRound(direct, RoomTestKit.answer("HIGHER"));
-    var directOutcome = direct.daily.outcome;
-    manager.leave(ASH.id());
+    var actions = new LinkedHashMap<String, JsonNode>();
+    actions.put("higher-lower", RoomTestKit.answer("HIGHER"));
+    actions.put("pokedex-distance", json("{\"type\":\"SELECT_POKEMON\",\"pokemonId\":\"bulbasaur\"}"));
+    actions.put("shiny-vote", null);
+    // Learnset Guess no entra: el catálogo dorado gen1-2 no trae learnsets y el reto no puede ni arrancar.
+    // Con los motores reales (el registro de los demás tests solo trae Higher or Lower y Pokédex Distance).
+    manager = RoomTestKit.coordinator(RoomTestKit.REAL_REGISTRY, events, audit, persister,
+        UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time, random, time, RoomTestKit.NO_INTRO,
+        RoomTestKit.Hooks.NONE.withDailyRuns(runs).withExperience(userId -> XP));
+    for (var entry : actions.entrySet()) {
+      var gameId = entry.getKey();
+      var reference = new CountingSupplier();
+      var direct = start(gameId, reference);
+      int directSkips = playDaily(direct, entry.getValue(), false);
+      var directOutcome = direct.daily.outcome;
+      manager.leave(ASH.id());
 
-    var gameRandom = new CountingSupplier();
-    var room = start("higher-lower", gameRandom);
+      var gameRandom = new CountingSupplier();
+      var room = start(gameId, gameRandom);
+      int skipped = playDaily(room, entry.getValue(), true);
+      assertEquals(0, directSkips);
+      assertTrue(skipped > 0, "no hubo revelados que adelantar en " + gameId);
+      assertTrue(room.clockOffsetMs > 0, gameId);
+      assertEquals(reference.calls, gameRandom.calls, gameId);
+      assertEquals(directOutcome, room.daily.outcome, gameId);
+      manager.leave(ASH.id());
+    }
+  }
+
+  /**
+   * Juega el reto hasta los resultados: {@code action} una vez en cada ronda activa (si la hay) y, con {@code skip},
+   * «Siguiente» en cada revelado; lo demás, dejando vencer los plazos. Devuelve cuántos revelados se adelantaron.
+   */
+  private int playDaily(LiveRoom room, @Nullable JsonNode action, boolean skip) {
     int skipped = 0;
     String actedEpoch = null;
-    for (int step = 0; step < 200 && room.phase != RoomPhase.GAME_RESULTS; step++) {
+    for (int step = 0; step < 300 && room.phase != RoomPhase.GAME_RESULTS; step++) {
       var epoch = room.game.engine.getLifecycle(room.game.state).actionEpoch();
-      if (room.phase == RoomPhase.ROUND_ACTIVE && !epoch.equals(actedEpoch)) {
+      var reveal = manager.view(room, ASH.id()).revealSkip();
+      if (action != null && room.phase == RoomPhase.ROUND_ACTIVE && !epoch.equals(actedEpoch)) {
         actedEpoch = epoch;
         time.advance(1_000);
-        manager.action(ASH.id(), RoomTestKit.answer("HIGHER"));
-      } else if (room.phase == RoomPhase.ROUND_RESULTS && lastState().revealSkip() != null
-          && lastState().revealSkip().readyPlayerIds().isEmpty()) {
+        manager.action(ASH.id(), action);
+      } else if (skip && reveal != null && reveal.readyPlayerIds().isEmpty()) {
         manager.setRevealNext(ASH.id(), json("{\"gameInstanceId\":\"" + room.game.resultId
             + "\",\"actionEpoch\":\"" + epoch.replace("\"", "\\\"") + "\"}"));
         skipped++;
@@ -269,10 +297,7 @@ class RoomCoordinatorDailyTest {
       }
     }
     assertEquals(RoomPhase.GAME_RESULTS, room.phase);
-    assertTrue(skipped > 0, "no hubo revelados que adelantar");
-    assertTrue(room.clockOffsetMs > 0);
-    assertEquals(reference.calls, gameRandom.calls);
-    assertEquals(directOutcome, room.daily.outcome);
+    return skipped;
   }
 
   @Test
