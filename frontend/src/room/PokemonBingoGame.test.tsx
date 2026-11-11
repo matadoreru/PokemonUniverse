@@ -160,14 +160,15 @@ describe('PokemonBingoGame', () => {
     expect(host).toContain('Saltar y continuar');
     expect(host).not.toContain('🎉');
     expect(host).not.toContain('Buscar Pokémon para');
-    // La región de la pantalla no repite el bingo: lo anuncia el cut-in (su región, solo esos segundos).
-    expect(host).toMatch(/role="status" aria-live="polite"><\/p>/);
-    expect(host.match(/aria-live="assertive"/g)).toHaveLength(1);
+    // El bingo lo dice la única región de la pantalla: el cut-in solo se ve.
+    expectSingleLiveRegion(host);
+    expect(host).toMatch(/role="status" aria-live="polite">¡Bingo! Ana completó el tablero\.<\/p>/);
     const guest = render(room(publicGame('ROUND_RESULTS'), { ...playing, canAct: false }, 'p2'));
     expect(guest).not.toContain('Saltar y continuar');
     expect(guest).toContain('El host puede continuar antes.');
     const winner = render(room(publicGame('ROUND_RESULTS'), { ...playing, canAct: false }), 'p2');
     expect(winner).toContain('¡Has completado tu tablero!');
+    expect(winner).toMatch(/role="status" aria-live="polite">¡Bingo! Completaste tu tablero\.<\/p>/);
   });
 });
 

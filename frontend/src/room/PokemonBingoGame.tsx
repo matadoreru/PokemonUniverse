@@ -135,12 +135,12 @@ export function PokemonBingoGame({ room, selfId, onAction }: { room: RoomView; s
     {move && <div className={s.moveText}><p>{move.used}</p><p><strong>{move.question}</strong></p></div>}
   </Dialog>;
 
-  const announcement = bingoAnnouncement({ kind, attempt, cooldownMs });
+  const announcement = bingoAnnouncement({ kind, attempt, cooldownMs, winner: winnerName ? { name: winnerName, self: game.winnerId === selfId } : null });
   return <>
     {rivalDialog}
     {moveDialog}
-    {/* El bingo lo anuncia el cut-in (su propia región, solo esos segundos): la de la pantalla no lo repite. */}
-    {kind === 'bingo' && winnerName && <Cutin key={game.bingoAt ?? 0} tone="yellow" title="¡BINGO!" subtitle={game.winnerId === selfId ? '¡Has completado tu tablero!' : `${winnerName} ha completado el tablero`} />}
+    {/* Sin región viva propia: el bingo lo dice la región de la pantalla. */}
+    {kind === 'bingo' && winnerName && <Cutin key={game.bingoAt ?? 0} tone="yellow" title="¡BINGO!" subtitle={game.winnerId === selfId ? '¡Has completado tu tablero!' : `${winnerName} ha completado el tablero`} live={false} />}
     <div className={cx('content-row', s.screen)} data-testid="pokemon-bingo-screen">
       <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
       <ScreenSplit fill top={top} side={side} bottom={bottom} />

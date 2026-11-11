@@ -33,11 +33,12 @@ export function bingoFocusKey(kind: BingoPlateKind, placedAt: number | null = nu
 
 /**
  * Texto de la única región viva de la pantalla. En la ronda, el último intento propio (y, si falló, que hay una espera:
- * la cuenta atrás no se anuncia, solo se ve). En el bingo, nada: lo anuncia el `Cutin` (una vez).
+ * la cuenta atrás no se anuncia, solo se ve). En el bingo, quién lo ha cantado (el `Cutin` solo se ve).
  * Un fallo solo se dice mientras dura su espera: al acabar, la región se vacía, y así un segundo fallo idéntico (mismo
  * texto) vuelve a cambiarla y se anuncia otra vez.
  */
-export function bingoAnnouncement({ kind, attempt, cooldownMs = 0 }: { kind: BingoPlateKind; attempt: BingoPrivateAttempt | null; cooldownMs?: number }): string {
+export function bingoAnnouncement({ kind, attempt, cooldownMs = 0, winner = null }: { kind: BingoPlateKind; attempt: BingoPrivateAttempt | null; cooldownMs?: number; winner?: { name: string; self: boolean } | null }): string {
+  if (kind === 'bingo') return winner ? `¡Bingo! ${winner.self ? 'Completaste tu tablero.' : `${winner.name} completó el tablero.`}` : '';
   if (kind === 'watching') return 'Estás observando: los tableros se actualizan en directo.';
   if (kind === 'blocked') return 'Ahora no puedes colocar Pokémon en tu tablero.';
   if (kind !== 'pick' || !attempt) return '';
