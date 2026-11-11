@@ -90,6 +90,8 @@ class AuthControllerTest {
     var e = postFails("/api/auth/register",
         Map.of("username", "ana_" + u, "email", "otro" + u + "@mail.com", "password", "0123456789"));
     assertEquals(HttpStatus.CONFLICT, e.getStatus());
+    // El mismo mensaje que con el email repetido: la respuesta no revela qué cuenta existe.
+    assertEquals(Map.of("error", "Email or username already in use"), e.getResponse().getBody(Map.class).orElseThrow());
   }
 
   @Test
