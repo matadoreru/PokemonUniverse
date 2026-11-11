@@ -19,9 +19,9 @@ export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: st
  * Cut-in de la expulsión: el nombre primero y el rol en la línea que aparece tras la pausa de 1 s.
  * Solo se llama con la revelación que publica el motor en `ELIMINATION`.
  */
-export function impostorEliminationCutIn(reveal: ImpostorEliminationReveal, name: string): { tone: 'berry' | 'aqua'; title: string; delayedLine: string } {
+export function impostorEliminationCutIn(reveal: ImpostorEliminationReveal, name: string): { tone: 'red' | 'info'; title: string; delayedLine: string } {
   const impostor = reveal.role === 'IMPOSTOR';
-  return { tone: impostor ? 'berry' : 'aqua', title: name, delayedLine: impostor ? '…era impostor' : '…era inocente' };
+  return { tone: impostor ? 'red' : 'info', title: name, delayedLine: impostor ? '…era impostor' : '…era inocente' };
 }
 
 /**

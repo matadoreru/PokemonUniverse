@@ -456,7 +456,7 @@ test.describe('pokemon-impostor: eliminación', () => {
       }
 
       // Resultado de la votación: el rol aún no está en ninguna parte de la página.
-      const banda = (page: Page) => page.locator('.reveal-cut-in');
+      const banda = (page: Page) => page.locator('[data-layer="cutin"][data-tone]');
       await expect(host.page.getByText(`${expulsado.name} recibió más votos`)).toBeVisible({ timeout: 10_000 });
       await expect(banda(host.page)).toHaveCount(0);
       await expect(host.page.getByText(/era (impostor|inocente|IMPOSTOR|INOCENTE)/)).toHaveCount(0);
@@ -475,9 +475,9 @@ test.describe('pokemon-impostor: eliminación', () => {
       await expect(banda(host.page)).toContainText(expulsado.name);
       expect(await banda(host.page).textContent(), 'sin rol al empezar la fase').not.toMatch(/era/);
       expect(await host.page.getByText(/era (impostor|inocente|IMPOSTOR|INOCENTE)/).count(), 'tarjeta sin rol al empezar la fase').toBe(0);
-      await expect(banda(host.page)).toHaveClass(/reveal-cut-in-electric/);
+      await expect(banda(host.page)).toHaveAttribute('data-tone', 'yellow');
       await expect(banda(host.page)).toContainText('…era', { timeout: 2_000 });
-      await expect(banda(host.page)).toHaveClass(/reveal-cut-in-(berry|aqua)/);
+      await expect(banda(host.page)).toHaveAttribute('data-tone', /^(red|info)$/);
       for (const page of pages.slice(1)) {
         await expect(banda(page)).toBeVisible({ timeout: 2_000 });
         await expect(banda(page)).toContainText(expulsado.name);
@@ -491,7 +491,7 @@ test.describe('pokemon-impostor: eliminación', () => {
       const encima = await banda(host.page).evaluate((el) => {
         const r = el.getBoundingClientRect();
         const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-        return hit ? hit.closest('.reveal-cut-in') !== null : true;
+        return hit ? hit.closest('[data-layer="cutin"]') !== null : true;
       });
       expect(encima, 'el cut-in no intercepta el puntero').toBe(false);
       expect(await animacionDe(banda(host.page)), 'cut-in con movimiento').toBe('reveal-cut-in-enter');
@@ -706,7 +706,7 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
       await page.evaluate(() => {
         const w = window as unknown as { scorePopVisto?: boolean };
         w.scorePopVisto = false;
-        new MutationObserver(() => { if (document.querySelector('.score-pop')) w.scorePopVisto = true; }).observe(document.body, { childList: true, subtree: true });
+        new MutationObserver(() => { if (document.querySelector('[data-testid="score-pop"]')) w.scorePopVisto = true; }).observe(document.body, { childList: true, subtree: true });
       });
     }
     // El anfitrión pulsa «Mayor»; el del móvil responde «Menor» con el atajo 3; el último, «Igual» con el teclado (Tab
@@ -945,7 +945,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     expect(exacto, `Pokémon #${numero} en la BD`).not.toBe('');
     await elegirPokemon(host.page, exacto);
 
-    const banda = host.page.locator('.reveal-cut-in');
+    const banda = host.page.locator('[data-layer="cutin"][data-tone]');
     await expect(banda).toContainText('¡Acierto exacto!', { timeout: 5_000 });
     // Se detiene un poco por delante del reloj de la página (detenerlo en el pasado falla) y se captura a los tres
     // tamaños con la banda quieta.

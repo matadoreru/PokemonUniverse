@@ -1,13 +1,12 @@
 import type { PokemonConnectionsConfig, PokemonConnectionsPlayerState, PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, CheckCircle2, Clock3, Eye, Lightbulb, MousePointerClick, ShieldX, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ScorePop } from '../components/ScorePop';
 import { ServerTimer } from '../components/ServerTimer';
 import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from '../games/pokemon-connections/ConnectionsParts';
 import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsGroupAction, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from '../games/pokemon-connections/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { Chip, cx, Icon, Pill, ScreenSplit } from '../ui';
+import { Chip, cx, Icon, Pill, ScorePop, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, type GuessPlateContent } from './guess-kit';
@@ -166,7 +165,7 @@ function plateContent({ kind, game, own, selected, submitting, ownResult, host, 
         title: `${last ? 'Clasificación' : 'Siguiente puzle'} en ${Math.max(1, remaining)}s`,
         text: host ? 'Puedes avanzar ya.' : 'El host puede avanzar antes.',
         aside: <span className={s.revealAside}>
-          {ownResult && <strong className={s.points}>{points > 0 && <ScorePop points={points} tone="leaf" self />}+{points}<small> {points === 1 ? 'punto' : 'puntos'}</small></strong>}
+          {ownResult && <strong className={s.points}>{points > 0 && <ScorePop points={points} color="var(--ok)" placement="before" self />}+{points}<small> {points === 1 ? 'punto' : 'puntos'}</small></strong>}
           {host && <Pill variant="blue" icon={ArrowRight} loading={advancing} onClick={onAdvance}>{last ? 'Ver clasificación' : 'Siguiente puzle'}</Pill>}
         </span>,
       };

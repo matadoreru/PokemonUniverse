@@ -3,13 +3,12 @@ import type { LucideIcon } from 'lucide-react';
 import type { ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
 import { Check, Clock3, Crosshair, Eye, Hourglass, Lock, Ruler, Swords, Target, TimerOff, Trophy, UserX } from 'lucide-react';
-import { RevealCutIn } from '../components/RevealCutIn';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { Badge, Card, Chip, Confetti, cx, Icon, Panel, Row, ScreenSplit } from '../ui';
+import { Badge, Card, Chip, Confetti, Cutin, cx, Icon, Panel, Row, ScreenSplit } from '../ui';
 import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
@@ -177,7 +176,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {/* Sin región viva propia: el acierto exacto ya lo dice el aviso de la pantalla. */}
-    {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} live={false} />}
+    {exactHitNow && <Cutin key={roundKey} tone="yellow" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} live={false} />}
     {/* Clavo: la elección propia era exactamente el objetivo; al revelar, confeti (decorativo, sin movimiento no sale). */}
     {distanceExactAtReveal(game, selfId) && <Confetti key={`confeti-${roundKey}`} seed={game.roundNumber + game.tiebreakDepth * 31} />}
   </div>;

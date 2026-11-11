@@ -13,9 +13,6 @@ export const CUTIN_HOLD_MS = 1_600;
 /** Pausa antes de la `delayedLine`. */
 export const CUTIN_DELAYED_LINE_MS = 1_000;
 
-/** Clase extra del elemento raíz visible; como función recibe el tono que se ve (el diferido cuando ya toca). */
-export type CutinClassName = string | ((tone: CutinTone) => string);
-
 interface CutinContent {
   tone: CutinTone;
   title: string;
@@ -25,9 +22,8 @@ interface CutinContent {
   /** Tono que toma la losa al aparecer la `delayedLine` (para que el color no la adelante). */
   delayedTone?: CutinTone | undefined;
   onSkip?: (() => void) | undefined;
-  className?: CutinClassName | undefined;
-  /** Valor de `data-layer` (capa que el medidor de E2E no cuenta como solape). */
-  layer?: string | undefined;
+  /** Clase extra del elemento raíz visible. */
+  className?: string | undefined;
   /**
    * Región viva (`role="status"` asertiva, por defecto). Con `false`, sin rol: para una pantalla que ya dice lo mismo
    * en su única región viva. Oculta entonces no deja nada montado.
@@ -52,7 +48,8 @@ export interface CutinBandProps extends CutinContent {
 
 /**
  * Presentación pura del cut-in. Oculto deja montada la región `status` vacía (sin las clases de la losa), así el
- * siguiente anuncio cae en una región viva que ya existe. La `delayedLine` no está en el DOM hasta `delayedShown`.
+ * siguiente anuncio cae en una región viva que ya existe. La `delayedLine` no está en el DOM hasta `delayedShown`. La
+ * losa visible lleva `data-layer="cutin"` y `data-tone` con el tono que se ve (los E2E los leen).
  */
 export function CutinBand({
   visible,
@@ -67,20 +64,19 @@ export function CutinBand({
   holdMs = CUTIN_HOLD_MS,
   onSkip,
   className,
-  layer = 'cutin',
   live = true,
 }: CutinBandProps) {
   const region = live ? { role: 'status', 'aria-live': 'assertive' as const } : {};
-  if (!visible) return live ? <div className={s.srOnly} {...region} data-layer={layer} /> : null;
+  if (!visible) return live ? <div className={s.srOnly} {...region} data-layer="cutin" /> : null;
   const shownTone = delayedTone && delayedShown ? delayedTone : tone;
-  const extra = typeof className === 'function' ? className(shownTone) : className;
   // La salida por la derecha empieza `--t-screen` antes de que el temporizador la desmonte.
   const style = { '--cutin-hold': `${holdMs}ms` } as CSSProperties;
   return (
     <div
-      className={cx(extra, s.cutin, s[shownTone], onSkip && s.skippable)}
+      className={cx(className, s.cutin, s[shownTone], onSkip && s.skippable)}
       {...region}
-      data-layer={layer}
+      data-layer="cutin"
+      data-tone={shownTone}
       data-motion={reduced ? 'reduced' : 'full'}
       style={style}
       onClick={onSkip}

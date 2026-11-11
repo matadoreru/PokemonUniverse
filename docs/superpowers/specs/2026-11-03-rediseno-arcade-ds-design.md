@@ -190,7 +190,7 @@ carga y error. Ningún componente nuevo ni estado nuevo entra en una pantalla si
 | `StateBox` | Vacío, carga (esqueleto) y error con acción («Reintentar»). | Inazuma |
 | `Icon` | Envoltorio de `lucide-react`: tamaños 18, 22, 24 y 32, trazo 2,5 y color por token. Solo `Icon` pinta lucide: fuera de `ui/` se importa para pasarlo por la prop `icon`, nunca como JSX directo (lint `arcade/no-raw-lucide`, F9). | nuevo |
 | `ScreenSplit` | Pantalla superior e inferior en móvil; columnas principal y lateral en escritorio. | nuevo |
-| `Cutin` | Losa azul noche con bordes del tono, que entra desde la izquierda (200 ms), se para y sale por la derecha. Título en Baloo 2 de 44 px y sprite opcional. Se salta con clic o Espacio; si llega otro, sustituye al actual. `RevealCutIn` queda como envoltorio con su API actual. | Inazuma `Cutin` |
+| `Cutin` | Losa azul noche con bordes del tono, que entra desde la izquierda (200 ms), se para y sale por la derecha. Título en Baloo 2 de 44 px y sprite opcional. Se salta con clic o Espacio; si llega otro, sustituye al actual. Los juegos lo usan directamente, sin envoltorio. | Inazuma `Cutin` |
 | `ScorePop` | «+N» que sube y se desvanece sobre una franja, con el color del jugador. | el de la Fase 2, retocado |
 
 ## 5. Teclado

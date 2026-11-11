@@ -3,12 +3,11 @@ import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, UserX, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { ScorePop } from '../../components/ScorePop';
 import { apiAsset } from '../../lib/api';
 import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { playerColor } from '../../room/player-color';
 import { sharesPosition } from '../../room/results-ties';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop } from '../../ui';
 import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, type HigherLowerPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './HigherLower.module.css';
@@ -210,7 +209,7 @@ function plateContent({ kind, answer, pending, correctAnswer, outcome, participa
           kicker: verdict,
           title: `Respuesta: ${correctAnswer ? higherLowerChoiceLabels[correctAnswer] : '—'}`,
           text: <>{participant && <span className={s.helpStrong}>{correct ? `Sigues en pie · Racha ${streak}` : `Quedas eliminado con racha ${streak}.`}</span>}<span className={s.countdown}>{countdown}</span></>,
-          aside: participant ? <strong className={s.points}>{correct && <ScorePop points={1} tone="leaf" self />}{streak}<small> racha</small></strong> : undefined,
+          aside: participant ? <strong className={s.points}>{correct && <ScorePop points={1} color="var(--ok)" placement="before" self />}{streak}<small> racha</small></strong> : undefined,
         };
       }
       const correct = outcome?.correct === true;
@@ -221,7 +220,7 @@ function plateContent({ kind, answer, pending, correctAnswer, outcome, participa
         kicker: verdict,
         title: `Respuesta: ${correctAnswer ? higherLowerChoiceLabels[correctAnswer] : '—'}`,
         text: <>{correct && outcome && <span className={s.helpStrong}>{higherLowerOutcomeLine(outcome)}</span>}<span className={s.countdown}>{countdown}</span></>,
-        aside: participant ? <strong className={s.points}>{correct && <ScorePop points={points} tone="leaf" self />}+{points}<small> puntos</small></strong> : undefined,
+        aside: participant ? <strong className={s.points}>{correct && <ScorePop points={points} color="var(--ok)" placement="before" self />}+{points}<small> puntos</small></strong> : undefined,
       };
     }
     case 'locked': return { icon: Check, tone: 'ok', kicker: 'Respuesta bloqueada', title: `Respuesta ${higherLowerChoiceLabels[answer!]} bloqueada.`, text: 'Esperando al resto de entrenadores.' };

@@ -574,12 +574,6 @@
 .points small {
   font: 800 var(--fs-15) / 1 var(--font-text);
 }
-.points > :global(.score-pop) {
-  position: absolute;
-  right: 100%;
-  top: -0.5rem;
-  margin-right: var(--sp-2);
-}
 
 /* Los 18 tipos: 3 columnas en el móvil, 6 desde tableta. */
 .typeGrid {

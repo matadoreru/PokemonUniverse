@@ -2,7 +2,6 @@ import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type PokemonImpost
 import { Check, Clock3, Eye, Hourglass, Lock, MousePointerClick, Send, TimerOff, UserX, Vote } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
-import { CUT_IN_DELAYED_LINE_MS, RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from '../games/pokemon-impostor/ImpostorParts';
 import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from '../games/pokemon-impostor/presentation';
@@ -12,7 +11,7 @@ import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { useDelayElapsed } from '../hooks/useTimedVisibility';
-import { cx, Field, Panel, Pill, ScreenSplit } from '../ui';
+import { Cutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { PokemonSelector } from './PokemonSelector';
@@ -51,7 +50,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   useSfxCue('game.eliminate', elimination ? `${game.roundNumber}:${game.votingRound}` : null);
   // El rol de la placa sigue la misma pausa que el cut-in: no está en el DOM hasta pasado 1 s.
   const reducedMotion = usePrefersReducedMotion();
-  const eliminationRoleShown = useDelayElapsed(CUT_IN_DELAYED_LINE_MS, elimination ? `${game.roundNumber}:${elimination.playerId}` : 'none', reducedMotion);
+  const eliminationRoleShown = useDelayElapsed(CUTIN_DELAYED_LINE_MS, elimination ? `${game.roundNumber}:${elimination.playerId}` : 'none', reducedMotion);
 
   useEffect(() => { setClueText(''); setVoteDraft(null); }, [game.phase, game.roundNumber, game.votingRound]);
   useEffect(() => { if (!player.canGuessPokemon) setShowGuess(false); }, [player.canGuessPokemon]);
@@ -125,7 +124,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {/* Una sola región viva, siempre montada: solo cambia su texto. La expulsión también va aquí (el cut-in solo se ve). */}
     <p className="sr-only" role="status" aria-live="polite">{elimination ? impostorEliminationAnnouncement(elimination, people.nameOf(elimination.playerId), eliminationRoleShown) : impostorAnnouncement(game, player, selfId, people.nameOf)}</p>
-    {elimination && eliminationCutIn && <RevealCutIn key={`${game.roundNumber}:${elimination.playerId}`} tone="electric" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} live={false} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
+    {elimination && eliminationCutIn && <Cutin key={`${game.roundNumber}:${elimination.playerId}`} tone="yellow" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} live={false} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
   </div>;
 }
 

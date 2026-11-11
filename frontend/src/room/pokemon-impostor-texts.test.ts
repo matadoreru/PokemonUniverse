@@ -87,10 +87,10 @@ describe('impostorCluePhaseTitle', () => {
 
 describe('impostorEliminationCutIn', () => {
   it('an impostor: berry tone, the name as title and the role after the pause', () => {
-    expect(impostorEliminationCutIn({ playerId: 'p1', role: 'IMPOSTOR' }, 'Ana')).toEqual({ tone: 'berry', title: 'Ana', delayedLine: '…era impostor' });
+    expect(impostorEliminationCutIn({ playerId: 'p1', role: 'IMPOSTOR' }, 'Ana')).toEqual({ tone: 'red', title: 'Ana', delayedLine: '…era impostor' });
   });
   it('an innocent: aqua tone', () => {
-    expect(impostorEliminationCutIn({ playerId: 'p2', role: 'INNOCENT' }, 'Bruno')).toEqual({ tone: 'aqua', title: 'Bruno', delayedLine: '…era inocente' });
+    expect(impostorEliminationCutIn({ playerId: 'p2', role: 'INNOCENT' }, 'Bruno')).toEqual({ tone: 'info', title: 'Bruno', delayedLine: '…era inocente' });
   });
 });
 

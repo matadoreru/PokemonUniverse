@@ -1,7 +1,6 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { cutInToneMap } from '../components/RevealCutIn';
 import { Cutin, CutinBand, isSkipKey } from './Cutin';
 
 const classes = (html: string) => (/class="([^"]*)"/.exec(html)?.[1] ?? '').split(' ').map((c) => c.replace(/^_/, '').replace(/_[0-9a-z]+$/i, ''));
@@ -14,6 +13,7 @@ describe('Cutin', () => {
     expect(full).toContain('role="status"');
     expect(full).toContain('aria-live="assertive"');
     expect(full).toContain('data-layer="cutin"');
+    expect(full).toContain('data-tone="red"');
     const reduced = renderToStaticMarkup(createElement(Cutin, { tone: 'ok', title: 'Bien', reducedMotion: true }));
     expect(classes(reduced)).toContain('ok');
     expect(reduced).toContain('data-motion="reduced"');
@@ -26,18 +26,28 @@ describe('Cutin', () => {
     expect(classes(skip)).toContain('skippable');
   });
 
-  it('añade la clase de quien la envuelve según el tono visible', () => {
-    const html = renderToStaticMarkup(createElement(Cutin, { tone: 'yellow', title: 'Ana', reducedMotion: false, className: (tone: string) => `extra-${tone}` }));
-    expect(html).toContain('extra-yellow');
+  it('añade la clase de quien la envuelve', () => {
+    const html = renderToStaticMarkup(createElement(Cutin, { tone: 'yellow', title: 'Ana', reducedMotion: false, className: 'extra' }));
+    expect(classes(html)).toContain('extra');
   });
 
-  it('al ocultarse deja la región status vacía, sin las clases de la banda', () => {
-    const html = renderToStaticMarkup(createElement(CutinBand, { visible: false, delayedShown: false, reduced: false, tone: 'yellow', title: 'Ana', className: 'reveal-cut-in', layer: 'reveal-cut-in' }));
+  it('al ocultarse deja la región status vacía, sin las clases de la banda ni su tono', () => {
+    const html = renderToStaticMarkup(createElement(CutinBand, { visible: false, delayedShown: false, reduced: false, tone: 'yellow', title: 'Ana', className: 'extra' }));
     expect(html).toContain('role="status"');
     expect(html).toContain('aria-live="assertive"');
-    expect(html).toContain('data-layer="reveal-cut-in"');
+    expect(html).toContain('data-layer="cutin"');
     expect(html).not.toContain('Ana');
-    expect(html).not.toMatch(/class="[^"]*reveal-cut-in/);
+    expect(html).not.toContain('extra');
+    expect(html).not.toContain('data-tone');
+  });
+
+  it('deja la línea diferida fuera del DOM hasta la pausa, salvo con reducción de movimiento', () => {
+    const full = renderToStaticMarkup(createElement(Cutin, { tone: 'info', title: 'Ana', delayedLine: '…era inocente', reducedMotion: false }));
+    expect(full).toContain('Ana');
+    expect(full).not.toContain('…era inocente');
+    const reduced = renderToStaticMarkup(createElement(Cutin, { tone: 'yellow', delayedTone: 'red', title: 'Ana', delayedLine: '…era impostor', reducedMotion: true }));
+    expect(reduced).toContain('…era impostor');
+    expect(reduced).toContain('data-tone="red"');
   });
 
   it('con `live={false}` se ve igual pero no es región viva, y oculta no deja nada', () => {
@@ -52,9 +62,11 @@ describe('Cutin', () => {
   it('cambia al tono diferido junto con la línea diferida', () => {
     const before = renderToStaticMarkup(createElement(CutinBand, { visible: true, delayedShown: false, reduced: false, tone: 'yellow', delayedTone: 'red', title: 'Ana', delayedLine: '…era impostor' }));
     expect(classes(before)).toContain('yellow');
+    expect(before).toContain('data-tone="yellow"');
     expect(before).not.toContain('…era impostor');
     const after = renderToStaticMarkup(createElement(CutinBand, { visible: true, delayedShown: true, reduced: false, tone: 'yellow', delayedTone: 'red', title: 'Ana', delayedLine: '…era impostor' }));
     expect(classes(after)).toContain('red');
+    expect(after).toContain('data-tone="red"');
     expect(after).toContain('…era impostor');
     expect(after).toContain('motion-enter-up');
   });
@@ -72,11 +84,5 @@ describe('isSkipKey', () => {
     expect(isSkipKey(key({ key: 'Enter', code: 'Enter' }))).toBe(false);
     for (const tagName of ['INPUT', 'TEXTAREA', 'BUTTON', 'A']) expect(isSkipKey(key({ target: { tagName } as never }))).toBe(false);
     expect(isSkipKey(key({ target: { tagName: 'DIV', getAttribute: () => 'button' } as never }))).toBe(false);
-  });
-});
-
-describe('RevealCutIn › mapa de tonos', () => {
-  it('traduce los tonos de siempre a los del cut-in', () => {
-    expect(cutInToneMap).toEqual({ electric: 'yellow', berry: 'red', aqua: 'info', leaf: 'ok' });
   });
 });

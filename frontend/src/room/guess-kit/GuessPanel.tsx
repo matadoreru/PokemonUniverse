@@ -1,8 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Eye, Hourglass, Search, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
-import { ScorePop } from '../../components/ScorePop';
-import { Badge, Chip, cx, Icon, Panel } from '../../ui';
+import { Badge, Chip, cx, Icon, Panel, ScorePop } from '../../ui';
 import { PokemonSelector } from '../PokemonSelector';
 import type { PokemonSearchOption } from '../pokemon-search';
 import { attemptsText, guessSearchAutoFocus, guessSeconds, ordinal, pointsWord, type GuessPanelKind, type GuessVerdict } from './presentation';
@@ -110,7 +109,7 @@ export function GuessPanel(props: GuessPanelProps) {
 }
 
 function points(value: number, pop: boolean) {
-  return <strong className={s.points}>{pop && <ScorePop points={value} tone="leaf" self />}+{value}<small> {pointsWord(value)}</small></strong>;
+  return <strong className={s.points}>{pop && <ScorePop points={value} color="var(--ok)" placement="before" self />}+{value}<small> {pointsWord(value)}</small></strong>;
 }
 
 /** Aviso junto al buscador: la espera tras un fallo (a la vista, oculto a los lectores: ya lo dice la región viva) o el último fallo. */

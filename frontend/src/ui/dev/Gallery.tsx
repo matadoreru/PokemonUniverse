@@ -975,6 +975,14 @@ function ScorePopSection() {
           <span className={s.popSlot}>{n > 0 && <ScorePop key={n} points={10} color="var(--yellow)" />}</span>
         </span>
       </Fig>
+      <Fig id="scorepop-before" caption={'placement="before": a la izquierda de la cifra'} cream>
+        <span className={s.iconRow}>
+          <Pill size="small" onClick={() => setN((v) => v + 1)}>
+            Sumar puntos
+          </Pill>
+          <strong className={s.popFigure}>{n > 0 && <ScorePop key={n} points={3} color="var(--ok)" placement="before" />}+3<small> puntos</small></strong>
+        </span>
+      </Fig>
     </Section>
   );
 }

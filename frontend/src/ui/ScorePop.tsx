@@ -21,6 +21,11 @@ export interface ScorePopProps {
   className?: string | undefined;
   /** Es el «+N» del propio jugador: solo entonces suena `game.score`. */
   self?: boolean | undefined;
+  /**
+   * `before`: flota a la izquierda de la cifra que acompaña, un poco por encima (el padre lleva `position: relative`).
+   * Sin ella, va en línea y quien lo envuelve lo coloca con `className`.
+   */
+  placement?: 'before' | undefined;
 }
 
 /**
@@ -28,7 +33,7 @@ export interface ScorePopProps {
  * `points` o `color` nuevos lo vuelven a mostrar; para repetir el mismo valor, móntalo con `key={idDelEvento}`. Es
  * decorativo (`aria-hidden`): el cambio de puntos se anuncia en el texto de la pantalla.
  */
-export function ScorePop({ points, color, reducedMotion, className, self }: ScorePopProps) {
+export function ScorePop({ points, color, reducedMotion, className, self, placement }: ScorePopProps) {
   const prefersReduced = usePrefersReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
   const key = `${points}|${color ?? ''}`;
@@ -37,7 +42,7 @@ export function ScorePop({ points, color, reducedMotion, className, self }: Scor
   if (!visible) return null;
   const style = color ? ({ '--player': color } as CSSProperties) : undefined;
   return (
-    <span className={cx(className, s.pop, !reduced && s.anim, 'ol')} style={style} data-testid="score-pop" aria-hidden="true">
+    <span className={cx(className, s.pop, placement === 'before' && s.before, !reduced && s.anim, 'ol')} style={style} data-testid="score-pop" aria-hidden="true">
       {scorePopLabel(points)}
     </span>
   );

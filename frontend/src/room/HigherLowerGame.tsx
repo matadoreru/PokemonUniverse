@@ -1,12 +1,11 @@
 import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSidebar } from '../games/higher-lower/HigherLowerParts';
 import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerPlateKind, higherLowerVerdict } from '../games/higher-lower/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { cx, ScreenSplit } from '../ui';
+import { Cutin, cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
 import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
@@ -95,7 +94,7 @@ export function HigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
     announcement={announcement} titleRef={titleRef} onAnswer={submit} endless={endless} eliminated={eliminated} streak={selfStreak} />;
 
   return <div className={cx('content-row', s.screen)}>
-    {milestone && <RevealCutIn key={game.roundNumber} tone="electric" title={milestone.title} subtitle={milestone.subtitle} live={false} />}
+    {milestone && <Cutin key={game.roundNumber} tone="yellow" title={milestone.title} subtitle={milestone.subtitle} live={false} />}
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
   </div>;
 }

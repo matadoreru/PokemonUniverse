@@ -3,10 +3,9 @@ import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Check, CircleDashed, Clock3, Equal, Eye, Hourglass, LockKeyhole, Search, Swords, Target, Trophy, X, XCircle, Zap } from 'lucide-react';
 import { useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode, type Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { ScorePop } from '../../components/ScorePop';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, TypeBadge, TypeOption } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, TypeBadge, TypeOption } from '../../ui';
 import { sharesPosition } from '../../room/results-ties';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { typeDuelMemberStatus, typeGridMove, typeLabel, type TypeDuelPlateKind } from './presentation';
@@ -252,7 +251,7 @@ function plateContent({ kind, ownType, phase, countdown, verdict, wonPoints, wil
       icon: wonPoints > 0 ? Trophy : verdict === 'Estás observando' ? Eye : Clock3, tone: wonPoints > 0 ? 'ok' : verdict === 'Perdiste el duelo' ? 'bad' : 'info',
       kicker: verdict, title: countdown,
       aside: <span className={s.resultAside}>
-        {wonPoints > 0 && <strong className={s.points}><ScorePop points={wonPoints} tone="leaf" self />+{wonPoints}<small> puntos</small></strong>}
+        {wonPoints > 0 && <strong className={s.points}><ScorePop points={wonPoints} color="var(--ok)" placement="before" self />+{wonPoints}<small> puntos</small></strong>}
         {hostAction}
       </span>,
     };

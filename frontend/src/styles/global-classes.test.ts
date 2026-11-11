@@ -4,7 +4,7 @@
  * genera Tailwind tiene que estar definido en styles.css; así no queda nadie apuntando a una clase heredada borrada.
  *
  * Límite aceptado: solo ve los literales escritos en `className`/`*ClassName` o en `cx(…)` (y sus ramas). Una clase que
- * llega por variable o la devuelve una función (`const c = 'x'; className={c}`, como `RevealCutIn.tsx`) no se revisa.
+ * llega por variable o la devuelve una función (`const c = 'x'; className={c}`) no se revisa.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -20,10 +20,10 @@ const src = path.join(here, '..');
 
 /**
  * Lista corta de clases sin CSS a propósito: los marcadores de Tailwind para variantes (`group`, `peer`) y los ganchos
- * de E2E y tests (`ScorePop.tsx`, `RoomSessionLayout.tsx`). Los ganchos que estiliza un módulo con `:global(.x)` ya
+ * de E2E y tests (`RoomSessionLayout.tsx`). Los ganchos que estiliza un módulo con `:global(.x)` ya
  * cuentan como definidos.
  */
-const SIN_CSS = new Set(['group', 'peer', 'score-pop-anim', 'connection-notice', 'connection-notice-region']);
+const SIN_CSS = new Set(['group', 'peer', 'connection-notice', 'connection-notice-region']);
 
 function cssModules(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {

@@ -5,6 +5,13 @@
   font-variant-numeric: tabular-nums;
   color: var(--player, var(--white));
 }
+/* A la izquierda de la cifra que acompaña (`placement="before"`): el padre es el `position: relative`. */
+.before {
+  position: absolute;
+  right: 100%;
+  top: -0.5rem;
+  margin-right: var(--sp-2);
+}
 /* 400 ms fijos (no hay token): debe coincidir con `SCORE_POP_MS` de ScorePop.tsx, que lo desmonta a ese tiempo. */
 .anim {
   animation: rise 400ms var(--ease) both;

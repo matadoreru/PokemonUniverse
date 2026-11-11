@@ -41,7 +41,7 @@ export type { ActionToastAction, ActionToastProps, ActionToastStackProps } from 
 export { ToastStack, toastRole, useToasts } from './Toast';
 export type { ToastData, ToastKind, ToastStackProps } from './Toast';
 export { Cutin, CutinBand, CUTIN_DELAYED_LINE_MS, CUTIN_HOLD_MS } from './Cutin';
-export type { CutinBandProps, CutinClassName, CutinProps, CutinTone } from './Cutin';
+export type { CutinBandProps, CutinProps, CutinTone } from './Cutin';
 export { ScorePop, SCORE_POP_MS, scorePopLabel } from './ScorePop';
 export type { ScorePopProps } from './ScorePop';
 export { Screen, ScreenHeader } from './Screen';

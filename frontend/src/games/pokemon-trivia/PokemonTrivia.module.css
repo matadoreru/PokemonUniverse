@@ -161,12 +161,6 @@
 .points small {
   font: 800 var(--fs-15) / 1 var(--font-text);
 }
-.points > :global(.score-pop) {
-  position: absolute;
-  right: 100%;
-  top: -0.5rem;
-  margin-right: var(--sp-2);
-}
 
 @media (max-width: 1023px) {
   /* Móvil y tableta: cartas de alto fijo, el mismo al elegir y al revelar. */

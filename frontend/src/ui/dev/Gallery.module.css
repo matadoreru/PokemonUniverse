@@ -102,6 +102,20 @@
   min-width: var(--sp-6);
   min-height: var(--sp-6);
 }
+/* Cifra de puntos como la de las placas de los juegos: el «+N» con `placement="before"` flota a su izquierda. */
+.popFigure {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  margin-left: var(--sp-6);
+  font: 800 var(--fs-34) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.popFigure small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
 /* La pantalla doble ocupa toda la vista por debajo de 1024 px: ahí va en un marco de alto fijo con su propio scroll. */
 .splitFrame {
   height: auto;

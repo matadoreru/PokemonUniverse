@@ -5,10 +5,9 @@ import { TriviaAnswersBoard, TriviaBoard, TriviaScoreboard } from '../games/poke
 import {
   triviaAnnouncement, triviaCategoryLabels, triviaConfirmAction, triviaDifficultyLabels, triviaDraftAfterSelect, triviaFocusKey, triviaOptionFromKey, triviaOptionLabel, triviaPlateKind, triviaVerdict, triviaVisibleRound, type TriviaPlateKind, type TriviaVerdict,
 } from '../games/pokemon-trivia/presentation';
-import { ScorePop } from '../components/ScorePop';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { Chip, Pill } from '../ui';
+import { Chip, Pill, ScorePop } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, GuessScreen, type GuessPlateContent } from './guess-kit';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
@@ -107,7 +106,7 @@ function plateContent({ kind, game, player, verdict, countdown, optionCount, dra
     case 'reveal': return {
       icon: verdict?.tone === 'ok' ? CheckCircle2 : verdict?.tone === 'bad' ? (verdict.text === 'Sin respuesta' ? TimerOff : X) : Eye,
       tone: verdict?.tone ?? 'info', kicker: verdict?.text ?? 'Resultado de la pregunta', title: countdown,
-      ...(verdict && verdict.points > 0 ? { aside: <strong className={s.points}>{verdict.tone === 'ok' && <ScorePop points={verdict.points} tone="leaf" self />}+{verdict.points}<small> puntos</small></strong> } : {}),
+      ...(verdict && verdict.points > 0 ? { aside: <strong className={s.points}>{verdict.tone === 'ok' && <ScorePop points={verdict.points} color="var(--ok)" placement="before" self />}+{verdict.points}<small> puntos</small></strong> } : {}),
     };
     default: return { icon: Clock3, tone: 'info', kicker: 'Pokémon Trivia', title: 'Esperando al servidor…', text: 'La pregunta llega en un momento.' };
   }

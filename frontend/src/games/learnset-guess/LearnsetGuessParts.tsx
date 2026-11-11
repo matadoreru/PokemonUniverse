@@ -3,13 +3,12 @@ import type { LucideIcon } from 'lucide-react';
 import { AlarmClock, BookOpen, Check, CheckCircle2, CircleDashed, Clock3, Coins, Equal, Eye, EyeOff, Hourglass, Lightbulb, Search, Sparkles, Swords, WifiOff, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { ScorePop } from '../../components/ScorePop';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
 import { learnsetGroupProgress, learnsetRevealStatus } from '../../room/learnset-texts';
 import { revealedLearnsetFlags } from '../../room/learnset-reveal';
 import { GuessHints } from '../../room/guess-kit';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, ScorePop, TypeBadge } from '../../ui';
 import { categoryLabel, learnsetClueOrder, learnsetStageText, moveText, ordinal, typeLabel, type LearnsetPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './LearnsetGuess.module.css';
@@ -218,7 +217,7 @@ export function LearnsetPlate(props: LearnsetPlateProps) {
 }
 
 function points(value: number, pop: boolean) {
-  return <strong className={s.points}>{pop && <ScorePop points={value} tone="leaf" self />}+{value}<small> {value === 1 ? 'punto' : 'puntos'}</small></strong>;
+  return <strong className={s.points}>{pop && <ScorePop points={value} color="var(--ok)" placement="before" self />}+{value}<small> {value === 1 ? 'punto' : 'puntos'}</small></strong>;
 }
 
 function plateContent({ kind, searchNote, solveOrder, roundPoints, verdict, countdown }: LearnsetPlateProps): PlateContent {
