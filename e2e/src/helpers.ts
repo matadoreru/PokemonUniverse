@@ -378,6 +378,16 @@ export async function registrarPorApi(page: Page, cuenta: CuentaE2E): Promise<vo
 }
 
 /**
+ * Total de logros del catálogo según la API, con la sesión de `page`. El catálogo crece con cada minijuego nuevo, así
+ * que los specs comparan la insignia «desbloqueados/total» con este número en vez de fijarlo.
+ */
+export async function totalDeLogros(page: Page): Promise<number> {
+  const response = await page.request.get('/api/achievements');
+  expect(response.status(), 'GET /api/achievements').toBe(200);
+  return ((await response.json()) as { total: number }).total;
+}
+
+/**
  * Da el rol ADMIN a una cuenta ya registrada y vuelve a iniciar sesión con ella. Las rutas
  * `/api/admin/` releen el rol de la BD, pero `/api/auth/me` (y con él `RequireAdmin` de la web)
  * devuelve el del token, que solo cambia con un login nuevo.

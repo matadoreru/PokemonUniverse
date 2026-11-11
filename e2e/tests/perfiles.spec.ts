@@ -8,7 +8,7 @@
 import { expect, test, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import {
   abrirAmigos, borrarCuentas, capture, collectErrors, comprobarBdE2E, loginAsGuest, nuevaCuenta, psql, registrarPorApi,
-  SIZES, uniqueName, type CuentaE2E,
+  SIZES, totalDeLogros, uniqueName, type CuentaE2E,
 } from '../src/helpers.js';
 
 const cuentas: CuentaE2E[] = [];
@@ -98,7 +98,7 @@ for (const { w, h } of SIZES) {
       await expect(ana.page.getByRole('button', { name: 'Ocultar estadísticas de Higher or Lower' })).toBeVisible();
       await capture(ana.page, 'perfiles-visible');
       await ana.page.getByRole('tab', { name: /^Logros/ }).click();
-      await expect(ana.page.getByRole('tab', { name: /^Logros/ })).toContainText('2/48');
+      await expect(ana.page.getByRole('tab', { name: /^Logros/ })).toContainText(`2/${await totalDeLogros(ana.page)}`);
       await expect(ana.page.getByText('Búho nocturno')).toBeVisible();
       await expect(ana.page.getByText('Logro secreto')).toHaveCount(0);
       await capture(ana.page, 'perfiles-logros');

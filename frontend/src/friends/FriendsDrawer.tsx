@@ -156,9 +156,8 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
                       meta={<span className={s.status} data-status={friend.status}>{FRIEND_STATUS_LABEL[friend.status]}</span>}>
                       <span className={s.actions}>
                         {canInviteFriend(room, friend) && (
-                          <Pill size="small" variant={done ? 'ghost' : 'yellow'} icon={done ? Check : UserPlus} loading={busy === `invite:${friend.id}`} disabled={done || busy !== null} aria-label={done ? `${friend.username} invitado` : `Invitar a ${friend.username}`} onClick={() => invite(friend.id)}>
-                            {done ? 'Invitado' : 'Invitar'}
-                          </Pill>
+                          // Redondo, como «Ver perfil» y «Quitar»: con tres acciones de texto, el nombre y el estado no caben en el panel.
+                          <Pill size="round" variant={done ? 'ghost' : 'yellow'} icon={done ? Check : UserPlus} loading={busy === `invite:${friend.id}`} disabled={done || busy !== null} aria-label={done ? `${friend.username} invitado` : `Invitar a ${friend.username}`} title={done ? 'Invitado' : 'Invitar a la sala'} onClick={() => invite(friend.id)} />
                         )}
                         <PillLink size="round" variant="ghost" icon={IdCard} to={profilePath(friend.username)} aria-label={`Ver perfil de ${friend.username}`} title="Ver perfil" onClick={() => friends.closeDrawer()} />
                         <Pill size="round" variant="ghost" icon={UserMinus} disabled={busy !== null} aria-label={`Quitar a ${friend.username}`} aria-haspopup="dialog" title="Quitar" onClick={() => setRemoving(friend)} />

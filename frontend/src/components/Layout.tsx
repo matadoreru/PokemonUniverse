@@ -48,7 +48,7 @@ export function AppHeader({ user, level = null, onLogout }: { user: AuthUser | n
       {/* Mismos bordes que el contenido (`content-row`). */}
       <div className="content-row flex flex-wrap items-stretch justify-end gap-3 pb-2 pt-3 sm:flex-nowrap">
         <div id={HEADER_ROOM_ID} className="order-last flex w-full min-w-0 empty:hidden sm:order-none sm:w-auto sm:flex-1" />
-        <HudPlate>
+        <HudPlate className={s.hud ?? ''}>
           <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
           <AudioButton />
           {/* «Amigos»: solo con una cuenta registrada (lo decide `FriendsProvider`). */}

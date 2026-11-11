@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Catálogo declarativo de los 48 logros, construido a partir de los manifiestos del registro: 10 generales, una
+ * Catálogo declarativo de logros, construido a partir de los manifiestos del registro: 10 generales, una
  * victoria por minijuego más un específico en los seis juegos con modos, y 4 secretos con ids neutros.
  *
  * <p>Orden: generales, de minijuego (en el orden de los manifiestos, la victoria antes que el específico) y secretos.

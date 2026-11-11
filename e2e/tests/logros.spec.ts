@@ -5,7 +5,7 @@
  * «Primera partida» solo se desbloquea una vez. La prueba ENDLESS comprueba que con racha 0 no hay récord.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, iniciarPartida, esperarPartida, nuevaCuenta, registrarPorApi, seleccionarJuego, SIZES, type CuentaE2E } from '../src/helpers.js';
+import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, iniciarPartida, esperarPartida, nuevaCuenta, registrarPorApi, seleccionarJuego, SIZES, totalDeLogros, type CuentaE2E } from '../src/helpers.js';
 
 const cuentas: CuentaE2E[] = [];
 
@@ -76,7 +76,7 @@ for (const { w, h } of SIZES) {
       await expect(page).toHaveURL(/\/profile\?tab=logros$/);
       const pestana = page.getByRole('tab', { name: /^Logros/ });
       await expect(pestana).toHaveAttribute('aria-selected', 'true');
-      await expect(pestana).toContainText(/[34]\/48/);
+      await expect(pestana).toContainText(new RegExp(`[34]/${await totalDeLogros(page)}$`));
       await expect(page.getByText('Logro secreto').first()).toBeVisible();
       await capture(page, 'logros-perfil');
 

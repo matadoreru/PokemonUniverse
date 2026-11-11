@@ -19,3 +19,13 @@
   min-height: 44px;
   color: var(--white);
 }
+
+/* Móvil: con ADMIN la placa lleva siete botones redondos de 44 px, que con el hueco y el relleno de la placa de partida
+   no caben en 390 px. Menos hueco entre ellos y menos relleno lateral (el anillo de foco de 5 px sigue cabiendo en los
+   8 px de relleno más el contorno). Doble clase: gana al módulo de `HudPlate`. */
+@media (max-width: 639px) {
+  .hud.hud {
+    gap: var(--sp-1);
+    padding-inline: var(--sp-2);
+  }
+}
