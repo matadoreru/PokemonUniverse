@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.json.JsonTree;
-import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
@@ -59,8 +56,10 @@ class PublicAttemptsProjectionTest {
     var engine = (GameEngine<Object, Object, Object, Object>) GoldenEngines.get(engineId).orElseThrow();
     var fixture = MAPPER.readValue(Files.readString(file), GoldenFixture.class);
     var catalog = GoldenCatalogs.load(fixture.catalog(), fixture.catalogPatch());
-    var shown = new Run(engine, fixture, catalog, withPublicAttempts(fixture.config(), true));
-    var hidden = new Run(engine, fixture, catalog, withPublicAttempts(fixture.config(), false));
+    var shown = new GoldenRun(engine, fixture, catalog, withPublicAttempts(fixture.config(), true));
+    var hidden = new GoldenRun(engine, fixture, catalog, withPublicAttempts(fixture.config(), false));
+    shown.start();
+    hidden.start();
     int misses = compare(name, shown, hidden);
     for (var step : fixture.steps()) {
       boolean ok = shown.step(step);
@@ -79,14 +78,14 @@ class PublicAttemptsProjectionTest {
   }
 
   /** Devuelve cuántos fallos públicos hay en la partida encendida. */
-  private static int compare(String id, Run shown, Run hidden) {
+  private static int compare(String id, GoldenRun shown, GoldenRun hidden) {
     var shownPublic = shown.publicState();
     var hiddenPublic = hidden.publicState();
     var attempts = shownPublic.get("attempts");
     assertEquals(0, hiddenPublic.get("attempts").size(), id + ": la vista pública apagada no lleva fallos");
     assertTrue(JsonTree.equal(without(shownPublic, "attempts"), without(hiddenPublic, "attempts")),
         id + ": la vista pública solo cambia en attempts");
-    for (var player : shown.context.players()) {
+    for (var player : shown.context().players()) {
       var shownPlayer = shown.playerState(player.id());
       var hiddenPlayer = hidden.playerState(player.id());
       assertNull(shownPlayer.get("attempts"), id + ": encendido, la vista propia no trae attempts");
@@ -114,45 +113,5 @@ class PublicAttemptsProjectionTest {
     var copy = new LinkedHashMap<String, JsonNode>();
     for (var entry : object.entries()) if (!entry.getKey().equals(key)) copy.put(entry.getKey(), entry.getValue());
     return JsonNode.createObjectNode(copy);
-  }
-
-  /** Una partida del escenario: los pasos de la fixture sin las aserciones de {@link GoldenReplayer}. */
-  private static final class Run {
-    private final GameEngine<Object, Object, Object, Object> engine;
-    private GameContext context;
-    private Object state;
-
-    Run(GameEngine<Object, Object, Object, Object> engine, GoldenFixture fixture,
-        PokemonCatalog catalog, JsonNode config) {
-      this.engine = engine;
-      this.context = GoldenContexts.contextFor(fixture, catalog, new Mulberry32(fixture.seed()));
-      this.state = engine.start(engine.createInitialState(engine.parseConfig(config), context), context);
-    }
-
-    /** {@code false} si el paso detiene la partida (acción inválida o excepción), como {@code stoppedAt}. */
-    boolean step(GoldenFixture.Step step) {
-      context = context.withNow(step.now());
-      if ("presence".equals(step.kind())) context = context.withPlayers(step.players());
-      try {
-        switch (step.kind()) {
-          case "action" -> state = engine.handleAction(state, step.playerId(), engine.parseAction(step.action()),
-              context).state();
-          case "timeout" -> state = engine.handleTimeout(state, context);
-          case "presence" -> state = engine.handlePresenceChange(state, context);
-          default -> { } // "asset": no cambia el estado
-        }
-        return true;
-      } catch (RuntimeException e) { // acción que no valida (ConfigValidationException) o error del motor
-        return false;
-      }
-    }
-
-    JsonNode publicState() {
-      return GoldenReplayer.tree(engine.getPublicState(state, context));
-    }
-
-    JsonNode playerState(String playerId) {
-      return GoldenReplayer.tree(engine.getPlayerState(state, playerId, context));
-    }
   }
 }
