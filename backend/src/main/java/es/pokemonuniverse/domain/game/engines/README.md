@@ -81,7 +81,7 @@ proyección, el orden de claves del cable y los mensajes de error. Un cambio de 
   literal de acierto previo y el estado con el que rechaza el intento tardío (casi siempre la ronda ya resuelta). Las
   guardas propias (pool, respuesta) van después, en el motor. Los records `GuessPokemonSummary`, `GuessLastAttempt`,
   `GuessAttemptOutcome` y `GuessPlayerStats` (con `GuessingRound.recordGuessSolve`) sirven a todo juego con esa forma
-  exacta; uno con otras estadísticas o claves (Zoomed Pokémon, Unown Translator) conserva sus records.
+  exacta. Zoomed Pokémon conserva sus estadísticas, y Unown Translator, todos sus records.
 - **Errores**: los literales de `server.ts`, idénticos, en `GameActionResult.reject`. Un `throw new Error` de TS se
   traduce como `EngineException` con el mismo mensaje.
 - **`localeCompare`** (constraint 21): sobre ids de jugador se traduce como `String.compareTo`. Es equivalente: cuid de usuario (`c` + minúsculas y dígitos) y `guest_<uuid>` (hexadecimal en minúscula), con el

@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/** Traducción literal del TS que antes estaba en {@code poke-taboo/rules.ts}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code poke-taboo/rules.ts}. La web conserva allí una copia de
+ * {@code normalizeTabooText} y {@code tabooBaseId}: si cambian aquí, hay que cambiarlas también allí.
+ */
 public final class PokeTabooRules {
 
   public static final int GUESSER_MAX_POINTS = 5;
