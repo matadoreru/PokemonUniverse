@@ -22,3 +22,9 @@
     transform: translateY(-12px);
   }
 }
+/* El componente ya no pone `.anim` con reducción de movimiento; esto lo cubre si alguien la fuerza. */
+@media (prefers-reduced-motion: reduce) {
+  .anim {
+    animation: none;
+  }
+}

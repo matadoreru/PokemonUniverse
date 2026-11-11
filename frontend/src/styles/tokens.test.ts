@@ -211,3 +211,35 @@ describe('capas (§2)', () => {
     expect(Object.keys((tailwind.theme as { zIndex?: Record<string, string> }).zIndex ?? {}).sort()).toEqual(Object.keys(layers).sort());
   });
 });
+
+describe('reducción de movimiento (§3.4)', () => {
+  const root = path.join(here, '..');
+  const hojas = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const p = path.join(dir, e.name);
+    return e.isDirectory() ? hojas(p) : e.name.endsWith('.css') ? [p] : [];
+  });
+  /** Cuerpos de los bloques `@media (prefers-reduced-motion: reduce)` de una hoja (sin anidar más de un nivel). */
+  const bloquesReduce = (texto: string): string[] =>
+    [...texto.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{((?:[^{}]|\{[^{}]*\})*)\}/g)].map((m) => m[1]!);
+
+  it('sin regla global con !important: los fundidos de 120 ms siguen vivos', () => {
+    expect(bloquesReduce(styles).length).toBeGreaterThan(0);
+    for (const bloque of bloquesReduce(styles)) expect(bloque).not.toContain('!important');
+  });
+  it('las clases motion-* se apagan con su propio reduce', () => {
+    const apagadas = bloquesReduce(styles).join('\n');
+    for (const clase of ['motion-bump', 'motion-enter-up', 'motion-enter-left', 'motion-enter-right']) {
+      expect(apagadas, clase).toMatch(new RegExp(`\\.${clase}\\b[^{]*\\{[^}]*animation:\\s*none`));
+    }
+  });
+  it('toda animación o transición con duración literal tiene su media query de movimiento', () => {
+    // Las duraciones de los tokens ya bajan a 0 con reducción; una literal no, así que su hoja debe decidirlo.
+    const literal = /(?:animation|transition)(?:-duration)?:([^;]*);/g;
+    const sinCubrir = hojas(root).filter((f) => {
+      const texto = readFileSync(f, 'utf8');
+      const conLiteral = [...texto.matchAll(literal)].some((m) => /\b\d*\.?\d+m?s\b/.test(m[1]!.replace(/var\([^)]*\)/g, '')));
+      return conLiteral && !texto.includes('prefers-reduced-motion');
+    }).map((f) => path.relative(root, f));
+    expect(sinCubrir).toEqual([]);
+  });
+});

@@ -84,9 +84,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes motion-enter-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes motion-enter-left { from { opacity: 0; transform: translateX(-1.5rem); } to { opacity: 1; transform: translateX(0); } }
 @keyframes motion-enter-right { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: translateX(0); } }
-/* Reducción de movimiento global: apaga todas las animaciones y transiciones en un único sitio. */
+/* Con reducción de movimiento no se mueven (y su nombre calculado es `none`). El resto baja a 0 ms con los tokens. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .motion-bump, .motion-enter-up, .motion-enter-left, .motion-enter-right { animation: none; }
 }
 
 /* Modo estático de los E2E (spec §3.4): .static lo apaga todo. */
