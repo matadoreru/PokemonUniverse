@@ -44,6 +44,14 @@ class ClasspathGameRegistryLoaderTest {
     assertEquals(List.of(), missing);
   }
 
+  /** Un corte de red breve nunca es un abandono: todos los juegos dan 8 s de margen de reconexión. */
+  @Test
+  void everyManifestHasAPresenceGrace() {
+    var withoutGrace = registry.list().stream().filter(manifest -> !Integer.valueOf(8_000)
+        .equals(manifest.presenceGraceMs())).map(GameManifest::id).toList();
+    assertEquals(List.of(), withoutGrace);
+  }
+
   @Test
   void aManifestWithoutEngineFailsAtStartup() throws Exception {
     var json = """

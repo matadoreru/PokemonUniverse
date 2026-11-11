@@ -457,6 +457,7 @@
     "description": "Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -574,6 +575,7 @@
     "description": "Completa antes que nadie un tablero de condiciones con Pokémon distintos.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -679,6 +681,7 @@
     "description": "Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -782,6 +785,7 @@
     "description": "Reconoce al Pokémon por una entrada oficial de la Pokédex en español.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -891,6 +895,7 @@
     "description": "Cada cadena tiene un tipo: por turnos, nombra un Pokémon de ese tipo sin repetir. Gana quien más nombre.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -954,6 +959,7 @@
     "description": "Reconoce Pokémon por sus estadísticas base y resuelve antes que tus rivales.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1075,6 +1081,7 @@
     "description": "Reconoce el Pokémon mientras una cámara compartida se aleja progresivamente.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1194,6 +1201,7 @@
     "description": "Describe un Pokémon sin decir su nombre y ayuda al grupo a descubrirlo.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1280,6 +1288,7 @@
     "description": "Elegid Pokémon para categorías secretas y descubrid quién recibió una diferente.",
     "minPlayers": 3,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1356,6 +1365,7 @@
     "description": "Puja cuántos Pokémon puedes nombrar y demuestra tu apuesta ante el grupo.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1442,6 +1452,7 @@
     "experimental": false,
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1531,6 +1542,7 @@
     "experimental": false,
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1626,6 +1638,7 @@
     "experimental": false,
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1690,6 +1703,7 @@
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1775,6 +1789,7 @@
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1862,6 +1877,7 @@
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -1927,6 +1943,7 @@
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2013,6 +2030,7 @@
     "description": "Compara el precio actual de dos cartas Pokémon TCG.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2083,6 +2101,7 @@
     "description": "Escucha el grito oficial y descubre qué Pokémon lo está haciendo.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2177,6 +2196,7 @@
     "description": "Responde preguntas objetivas sobre tipos, generaciones, estadísticas y medidas.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2399,6 +2419,7 @@
     "description": "Reconoce al Pokémon usando únicamente los colores dominantes de su sprite.",
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2497,6 +2518,7 @@
     "description": "Dos equipos se enfrentan para descubrir el Pokémon secreto rival.",
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2549,6 +2571,7 @@
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {
@@ -2630,6 +2653,7 @@
     "experimental": false,
     "minPlayers": 1,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {

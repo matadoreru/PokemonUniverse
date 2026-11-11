@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import es.pokemonuniverse.domain.game.GameManifest;
+import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
@@ -364,7 +366,20 @@ class RoomCoordinatorTest {
   @Test
   @DisplayName("games without a presence grace see a disconnect immediately")
   void gamesWithoutGraceSeeDisconnectsImmediately() {
-    var kit = new RoomTestKit("whos-that-pokemon");
+    // Todos los manifiestos publicados llevan gracia: se quita aquí para probar el camino sin ella.
+    var manifests = RoomTestKit.REAL_REGISTRY.list().stream().map(manifest -> !manifest.id().equals("whos-that-pokemon")
+        ? manifest : new GameManifest(manifest.id(), manifest.name(), manifest.icon(), manifest.description(),
+            manifest.experimental(), manifest.recommended(), manifest.minPlayers(), manifest.maxPlayers(), null,
+            manifest.profileStats(), manifest.defaultConfig())).toList();
+    var engines = new LinkedHashMap<String, GameEngine<?, ?, ?, ?>>();
+    for (var id : List.of("higher-lower", "pokedex-distance")) {
+      engines.put(id, RoomTestKit.REAL_REGISTRY.engine(id).orElseThrow());
+    }
+    var withoutGrace = manifests.stream().filter(manifest -> manifest.id().equals("whos-that-pokemon")).findFirst()
+        .orElseThrow();
+    engines.put("whos-that-pokemon", new FakeEngine(withoutGrace));
+    var kit = new RoomTestKit(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY,
+        new GameRegistry(manifests, engines));
     var room = kit.room(8, guest("p1", "Uno"), guest("p2", "Dos"), guest("p3", "Tres"));
     kit.manager.selectGame("p1", "whos-that-pokemon");
     kit.startReady(room, "p1");
