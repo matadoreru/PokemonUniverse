@@ -3,7 +3,7 @@ import { SKETCHMON_COLORS, type SketchmonAction, type SketchmonColor, type Sketc
 import {
   appendPendingPoints, farEnough, normalizedPoint, sendDrawBatch, sketchmonHistoryShortcut, strokeStartAllowed, takeDrawBatch, type DrawOperation, type SketchWidth,
 } from '../games/sketchmon/presentation';
-import { typingTarget } from './social-kit';
+import { typingTarget } from './shortcuts';
 import { cx } from '../ui';
 import s from '../games/sketchmon/Sketchmon.module.css';
 

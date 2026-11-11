@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ballotState, bindChoiceShortcuts, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, typingTarget, votesText } from './presentation';
+import { ballotState, bindChoiceShortcuts, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, votesText } from './presentation';
 
 const names: Record<string, string> = { p1: 'Snorlax', p2: 'Psyduck', p3: 'Gengar' };
 const nameOf = (id: string) => names[id] ?? id;
@@ -68,7 +68,8 @@ describe('social-kit: presentación', () => {
 
 describe('social-kit: atajos de las opciones', () => {
   const ids = ['A', 'B'] as const;
-  const field = (tag: string) => ({ closest: (selector: string) => (selector.split(', ').some((part) => part === tag || part.startsWith(`[${tag}`)) ? {} : null) });
+  /** Un elemento con foco mínimo: la etiqueta y, si hace falta, sus atributos. */
+  const field = (tagName: string, attributes: Record<string, string> = {}) => ({ tagName, getAttribute: (name: string) => attributes[name] ?? null });
   it('1 y 2 eligen la primera y la segunda; el resto de teclas, nada', () => {
     expect(choiceFromKey({ key: '1' }, ids)).toBe('A');
     expect(choiceFromKey({ key: '2' }, ids)).toBe('B');
@@ -77,16 +78,14 @@ describe('social-kit: atajos de las opciones', () => {
     expect(choiceFromKey({ key: 'Enter' }, ids)).toBeNull();
   });
   it('no se disparan mientras se escribe en un campo, con modificadores, al mantener la tecla ni si otro ya la atendió', () => {
-    for (const tag of ['input', 'textarea', 'select', 'contenteditable']) expect(choiceFromKey({ key: '1', target: field(tag) }, ids), tag).toBeNull();
-    expect(choiceFromKey({ key: '1', target: field('button') }, ids)).toBe('A');
+    for (const target of [field('INPUT'), field('TEXTAREA'), field('SELECT'), field('DIV', { contenteditable: '' })]) expect(choiceFromKey({ key: '1', target }, ids), target.tagName).toBeNull();
+    expect(choiceFromKey({ key: '1', target: field('BUTTON') }, ids)).toBe('A');
     expect(choiceFromKey({ key: '1', target: null }, ids)).toBe('A');
     expect(choiceFromKey({ key: '1', ctrlKey: true }, ids)).toBeNull();
     expect(choiceFromKey({ key: '1', altKey: true }, ids)).toBeNull();
     expect(choiceFromKey({ key: '1', metaKey: true }, ids)).toBeNull();
     expect(choiceFromKey({ key: '1', repeat: true }, ids)).toBeNull();
     expect(choiceFromKey({ key: '1', defaultPrevented: true }, ids)).toBeNull();
-    expect(typingTarget(field('textarea'))).toBe(true);
-    expect(typingTarget({})).toBe(false);
   });
 });
 
@@ -114,7 +113,7 @@ describe('social-kit: escucha de los atajos', () => {
     expect(t.press('2').preventDefault).toHaveBeenCalled();
     t.press('1');
     expect(t.press('x').preventDefault).not.toHaveBeenCalled();
-    t.press('1', { target: { closest: () => ({}) } as unknown as EventTarget });
+    t.press('1', { target: { tagName: 'TEXTAREA' } as unknown as EventTarget });
     t.press('2', { ctrlKey: true });
     expect(chosen).toEqual(['B', 'A']);
     unbind();

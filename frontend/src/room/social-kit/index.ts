@@ -19,5 +19,5 @@ export { ChoicePair } from './ChoicePair';
 export type { ChoiceOption, ChoicePairProps } from './ChoicePair';
 export { VoteTally } from './VoteTally';
 export type { TallyOption, VoteTallyProps } from './VoteTally';
-export { ballotState, bindChoiceShortcuts, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, runoffTotal, socialFocusKey, tallyOutcome, tallySummary, typingTarget, votesText } from './presentation';
-export type { BallotState, RunoffCount, RunoffRoundLike, ShortcutTarget, TallyOutcome } from './presentation';
+export { ballotState, bindChoiceShortcuts, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, runoffTotal, socialFocusKey, tallyOutcome, tallySummary, votesText } from './presentation';
+export type { BallotState, RunoffCount, RunoffRoundLike, TallyOutcome } from './presentation';

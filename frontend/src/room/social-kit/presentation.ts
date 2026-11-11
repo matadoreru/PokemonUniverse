@@ -1,4 +1,5 @@
 import type { GamePhase } from '@pokemon-universe/shared/public';
+import { bindShortcuts, shortcutKey, type ShortcutEvent, type ShortcutTarget } from '../shortcuts';
 
 /**
  * Lógica pura del kit social (Most Likely To, Red Flag, Would You Rather, One of Us Is Fake, Secret Ranking y Poké
@@ -149,27 +150,14 @@ export function ballotState({ epoch, pick, candidateIds, ownId, ownVote, busyId,
 }
 
 /**
- * Atajos de las opciones (`1`, `2`…) de `ChoicePair`: la opción de la tecla pulsada, o `null`. No cuenta con
- * modificadores, con la tecla mantenida, si otro ya la atendió (`defaultPrevented`) ni mientras se escribe en un campo
- * (`input`, `textarea`, `select` o `contenteditable`).
+ * Atajos de las opciones (`1`, `2`…) de `ChoicePair`: la opción de la tecla pulsada, o `null`. Con el criterio común de
+ * `shortcutKey`: sin modificadores, sin la tecla mantenida, sin lo que otro ya atendió y nunca mientras se escribe en un
+ * campo.
  */
-export function choiceFromKey<T extends string>(event: { key: string; repeat?: boolean; altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; defaultPrevented?: boolean; target?: unknown }, ids: readonly T[]): T | null {
-  if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || typingTarget(event.target)) return null;
-  if (!/^[1-9]$/.test(event.key)) return null;
-  return ids[Number(event.key) - 1] ?? null;
-}
-
-/** ¿Se está escribiendo en un campo? (los atajos de las opciones no se disparan). */
-export function typingTarget(target: unknown): boolean {
-  const element = target as { closest?: (selector: string) => unknown } | null | undefined;
-  if (!element || typeof element.closest !== 'function') return false;
-  return Boolean(element.closest('input, textarea, select, [contenteditable="true"], [contenteditable=""]'));
-}
-
-/** Lo que necesita `bindChoiceShortcuts` del destino de los eventos (en la app, `window`). */
-export interface ShortcutTarget {
-  addEventListener(type: 'keydown', listener: (event: KeyboardEvent) => void): void;
-  removeEventListener(type: 'keydown', listener: (event: KeyboardEvent) => void): void;
+export function choiceFromKey<T extends string>(event: ShortcutEvent, ids: readonly T[]): T | null {
+  const key = shortcutKey(event);
+  if (key === null || !/^[1-9]$/.test(key)) return null;
+  return ids[Number(key) - 1] ?? null;
 }
 
 /**
@@ -177,12 +165,10 @@ export interface ShortcutTarget {
  * función que deja de escuchar (la del efecto de React).
  */
 export function bindChoiceShortcuts<T extends string>(target: ShortcutTarget, ids: readonly T[], onChoose: (id: T) => void): () => void {
-  const listener = (event: KeyboardEvent) => {
-    const id = choiceFromKey(event, ids);
-    if (!id) return;
-    event.preventDefault();
+  return bindShortcuts(target, (key) => {
+    const id = choiceFromKey({ key }, ids);
+    if (!id) return false;
     onChoose(id);
-  };
-  target.addEventListener('keydown', listener);
-  return () => target.removeEventListener('keydown', listener);
+    return true;
+  });
 }
