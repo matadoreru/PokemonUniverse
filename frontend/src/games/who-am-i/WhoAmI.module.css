@@ -1,0 +1,182 @@
+/* ¿Quién soy?: ajustes del lobby, las cartas de los jugadores, las pistas, la acción del turno y los resultados. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}
+
+/*
+ * Cualquier texto de una pregunta (la que está en curso, las del historial y el título): una pregunta de 120
+ * caracteres sin espacios parte por donde haga falta antes que ensanchar la página.
+ */
+.question {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.screen h1 {
+  overflow-wrap: anywhere;
+}
+
+/* Escena: una carta por jugador. Llena el alto libre en escritorio; en el móvil, una franja con tope que se desplaza. */
+.stage {
+  min-height: 0;
+}
+@media (max-width: 1023px) {
+  .stage {
+    height: clamp(9rem, 28svh, 22rem);
+  }
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: var(--sp-1);
+  list-style: none;
+}
+@media (max-width: 639px) {
+  .cards {
+    grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+    gap: var(--sp-2);
+  }
+}
+.seat {
+  display: flex;
+  min-width: 0;
+  border-radius: var(--r-card);
+}
+.seat > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* El jugador del turno: contorno grueso y la etiqueta «Turno» en texto (el color nunca va solo). */
+.turn {
+  outline: 4px solid var(--yellow);
+  outline-offset: 2px;
+}
+.player {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-1);
+  max-width: 100%;
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+/* Las pistas: cada pregunta con sus respuestas (nombre y etiqueta) y cada intento fallido. */
+.clues {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.clue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--navy-2);
+}
+.clue:last-child {
+  border-bottom: 0;
+}
+.clueQuestion {
+  font: 800 var(--fs-15) / 1.3 var(--font-text);
+}
+.answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  margin: 0;
+  font: 600 var(--fs-13) / 1.3 var(--font-text);
+}
+.answer {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.guess {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: 700 var(--fs-15) / 1.3 var(--font-text);
+}
+.empty {
+  margin: 0;
+  font: 600 var(--fs-13) / 1.3 var(--font-text);
+}
+
+/* La acción del turno: el campo de la pregunta con «Enviar» y «Adivinar»; las cuatro respuestas; adivinar o pasar. */
+.ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.askField {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.answerButtons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-2);
+  min-width: 0;
+}
+@media (max-width: 639px) {
+  .answerButtons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.answerButtons > * {
+  min-width: 0;
+}
+.plateQuestion {
+  font: 800 var(--fs-18) / 1.3 var(--font-text);
+}
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.progress > li {
+  max-width: 100%;
+}
+.progress > li > span {
+  white-space: normal;
+}
+
+/* Resultados: los Pokémon revelados de todos, cada uno con su jugador. */
+.rule {
+  margin: 0;
+}
+.reveal {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

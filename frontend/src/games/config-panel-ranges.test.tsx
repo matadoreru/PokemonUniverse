@@ -15,6 +15,8 @@ import {
   typeDuelConfigSchema,
   defaultUnownTranslatorConfig,
   unownTranslatorConfigSchema,
+  defaultWhoAmIConfig,
+  whoAmIConfigSchema,
 } from '@pokemon-universe/shared/public';
 import { createElement, type ComponentType } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -27,6 +29,7 @@ import { PokemonImpostorConfigPanel } from './pokemon-impostor/ConfigPanel';
 import { ShinyVoteConfigPanel } from './shiny-vote/ConfigPanel';
 import { TypeDuelConfigPanel } from './type-duel/ConfigPanel';
 import { UnownTranslatorConfigPanel } from './unown-translator/ConfigPanel';
+import { WhoAmIConfigPanel } from './who-am-i/ConfigPanel';
 
 type Panel = ComponentType<{ config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }>;
 interface NumericField { minValue: number | null; maxValue: number | null }
@@ -56,6 +59,7 @@ const panels: { game: string; Panel: Panel; config: unknown; shape: Record<strin
   { game: 'learnset-guess', Panel: LearnsetGuessConfigPanel, config: defaultLearnsetGuessConfig, shape: learnsetGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
   { game: 'absurd-pokedex', Panel: AbsurdPokedexConfigPanel, config: defaultAbsurdPokedexConfig, shape: absurdPokedexConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para escribir': 'writeSeconds', 'Tiempo para votar': 'voteSeconds' } },
   { game: 'unown-translator', Panel: UnownTranslatorConfigPanel, config: defaultUnownTranslatorConfig, shape: unownTranslatorConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por ronda': 'roundSeconds', 'Tiempo entre letras': 'hintSeconds' } },
+  { game: 'who-am-i', Panel: WhoAmIConfigPanel, config: defaultWhoAmIConfig, shape: whoAmIConfigSchema.shape, fields: { 'Número de vueltas': 'maxLaps', 'Tiempo para preguntar': 'askSeconds', 'Tiempo para responder': 'answerSeconds' } },
   // Los ajustes propios de un modo solo salen en ese modo; los que el modo no usa se ocultan.
   { game: 'pokedex-distance POINTS', Panel: PokedexDistanceConfigPanel, config: { ...defaultPokedexDistanceConfig, mode: 'POINTS' }, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'pointsRounds' } },
   { game: 'type-duel COOP', Panel: TypeDuelConfigPanel, config: { ...defaultTypeDuelConfig, mode: 'COOP' }, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
@@ -95,6 +99,13 @@ describe('config panel ranges', () => {
     expect(ranges.get('Número de rondas')).toEqual({ min: 1, max: 10 });
     expect(ranges.get('Tiempo por ronda')).toEqual({ min: 30, max: 120 });
     expect(ranges.get('Tiempo entre letras')).toEqual({ min: 3, max: 15 });
+  });
+
+  it('¿Quién soy?: 3–20 vueltas, 20–90 s para preguntar y 10–60 s para responder', () => {
+    const ranges = renderRanges(WhoAmIConfigPanel, defaultWhoAmIConfig);
+    expect(ranges.get('Número de vueltas')).toEqual({ min: 3, max: 20 });
+    expect(ranges.get('Tiempo para preguntar')).toEqual({ min: 20, max: 90 });
+    expect(ranges.get('Tiempo para responder')).toEqual({ min: 10, max: 60 });
   });
 
   it.each(panels)('$game: every slider matches the bounds of its Zod field', ({ Panel, config, shape, fields }) => {

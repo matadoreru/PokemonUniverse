@@ -240,4 +240,9 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./unown-translator/ConfigPanel'), 'UnownTranslatorConfigPanel'),
   active: component(() => import('../room/UnownTranslatorGame'), 'UnownTranslatorGame'),
   results: component(() => import('../room/UnownTranslatorResults'), 'UnownTranslatorResults'),
+})).register(clientModule({
+  id: 'who-am-i',
+  config: component(() => import('./who-am-i/ConfigPanel'), 'WhoAmIConfigPanel'),
+  active: component(() => import('../room/WhoAmIGame'), 'WhoAmIGame'),
+  results: component(() => import('../room/WhoAmIResults'), 'WhoAmIResults'),
 }));
