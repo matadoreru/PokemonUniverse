@@ -54,7 +54,8 @@
   height: 48px;
   border: var(--ol-3) solid var(--navy);
   border-radius: 50%;
-  background: var(--red);
+  /* `--red-d`: el blanco cumple AA también a 13 px, en el disco pequeño del móvil. */
+  background: var(--red-d);
   box-shadow: var(--sh-hard-3);
   font: 800 var(--fs-22) / 1 var(--font-display);
   color: var(--white);
