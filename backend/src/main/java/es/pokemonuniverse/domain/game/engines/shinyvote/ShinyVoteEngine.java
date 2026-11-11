@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 /** Traducción literal de {@code shiny-vote/server.ts}. */
 public final class ShinyVoteEngine
@@ -102,17 +101,6 @@ public final class ShinyVoteEngine
     return survival(state) ? state.alive() : state.playerIds();
   }
 
-  /** {@code takeRandom}: extrae sin reemplazo con {@code splice}; un {@code random()} por elemento elegido. */
-  static <T> List<T> takeRandom(List<T> source, int count, DoubleSupplier random) {
-    var pool = new ArrayList<>(source);
-    var selected = new ArrayList<T>();
-    while (selected.size() < count && !pool.isEmpty()) {
-      int index = Math.min((int) Math.floor(random.getAsDouble() * pool.size()), pool.size() - 1);
-      selected.add(pool.remove(index));
-    }
-    return selected;
-  }
-
   /** {@code shinySprite}: {@code pokemon.shinySprite ?? pokemon.sprite}. */
   private static String shinySprite(Pokemon pokemon) {
     return pokemon.shinySprite() != null ? pokemon.shinySprite() : pokemon.sprite();
@@ -140,7 +128,7 @@ public final class ShinyVoteEngine
     var optionIds = List.of(ShinyOptionId.values())
         .subList(0, optionCountForRound(state.config(), state.roundNumber() + 1));
     int requiredPokemon = samePokemon ? 1 : optionIds.size();
-    var selected = takeRandom(shinyPool(state.config(), context), requiredPokemon, context.random());
+    var selected = Randoms.takeRandom(shinyPool(state.config(), context), requiredPokemon, context.random());
     if (selected.size() < requiredPokemon) throw new EngineException(requiredPokemonMessage(requiredPokemon));
     List<Pokemon> candidates = samePokemon ? optionIds.stream().map(id -> selected.getFirst()).toList() : selected;
     int correctIndex = Math.min((int) Math.floor(context.random().getAsDouble() * optionIds.size()),

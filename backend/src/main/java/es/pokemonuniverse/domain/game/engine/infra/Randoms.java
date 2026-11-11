@@ -52,6 +52,21 @@ public final class Randoms {
     return result;
   }
 
+  /**
+   * {@code takeRandom}: extrae {@code count} elementos sin reposición ({@code splice}), un {@code random()} por
+   * elemento con {@code Math.min(Math.floor(r * n), n - 1)}. No es Fisher–Yates: con {@code count = size} consume
+   * {@code size} sorteos, no {@code size - 1}. Se detiene si el pool se vacía antes.
+   */
+  public static <T> List<T> takeRandom(List<T> items, int count, DoubleSupplier random) {
+    var pool = new ArrayList<>(items);
+    var result = new ArrayList<T>();
+    while (result.size() < count && !pool.isEmpty()) {
+      int index = Math.min((int) Math.floor(random.getAsDouble() * pool.size()), pool.size() - 1);
+      result.add(pool.remove(index));
+    }
+    return result;
+  }
+
   /** {@code items[Math.min(Math.floor(random() * items.length), items.length - 1)]}; exige una lista no vacía. */
   public static <T> T randomItem(List<T> items, DoubleSupplier random) {
     return items.get(Math.min((int) Math.floor(random.getAsDouble() * items.size()), items.size() - 1));

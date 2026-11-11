@@ -54,4 +54,24 @@ class RandomsTest {
     assertEquals("b", Randoms.randomItem(List.of("a", "b", "c"), () -> 0.5));
     assertEquals("c", Randoms.randomItem(List.of("a", "b", "c"), () -> 1.0));
   }
+
+  @Test
+  void takeRandomDrawsOncePerTakenItemWithoutReplacementAndStopsWhenThePoolRunsOut() {
+    var input = List.of("a", "b", "c", "d");
+    var draws = new AtomicInteger();
+    // Cada extracción se fija a la posición del medio del pool que queda: 4 → 2, 3 → 1, 2 → 1, 1 → 0.
+    assertEquals(List.of("c", "b", "d", "a"), Randoms.takeRandom(input, 9, () -> {
+      draws.incrementAndGet();
+      return 0.5;
+    }));
+    assertEquals(4, draws.get());
+    assertEquals(List.of("a", "b", "c", "d"), input);
+    assertEquals(List.of("d", "c"), Randoms.takeRandom(input, 2, () -> 1.0));
+    var sequence = new double[] {0.99, 0.0, 0.5};
+    var next = new AtomicInteger();
+    assertEquals(List.of("d", "a", "c"), Randoms.takeRandom(input, 3, () -> sequence[next.getAndIncrement()]));
+    assertEquals(List.of(), Randoms.takeRandom(input, 0, () -> {
+      throw new AssertionError("sin extracciones");
+    }));
+  }
 }

@@ -205,15 +205,6 @@ class ShinyVoteEngineTest {
     assertEquals("At least 4 Pokémon are required for the selected generations", error.getMessage());
   }
 
-  @Test
-  void takeRandomDrawsWithoutReplacement() {
-    var draws = new double[] {0.99, 0.0, 0.5};
-    var counter = new int[1];
-    var picked = ShinyVoteEngine.takeRandom(List.of("a", "b", "c", "d"), 3, () -> draws[counter[0]++]);
-    assertEquals(List.of("d", "a", "c"), picked);
-    assertEquals(List.of("a", "b"), ShinyVoteEngine.takeRandom(List.of("a", "b"), 5, () -> 0.0));
-  }
-
   // ---- Supervivencia (SURVIVAL) ----
 
   private static ShinyVoteConfig survival(int optionCount, int rounds) {

@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonConfig.WhoIsWhoSecretSelection;
@@ -168,15 +169,15 @@ public final class WhoIsWhoPokemonEngine
     if (pool.size() < config.boardSize()) {
       throw new EngineException("No hay suficientes Pokémon para un tablero de " + config.boardSize() + ".");
     }
-    var selected = WhoIsWhoPokemonRules.choose(pool, config.boardSize(), context.random());
-    var shuffledPlayers = WhoIsWhoPokemonRules.choose(context.players(), context.players().size(), context.random());
+    var selected = Randoms.takeRandom(pool, config.boardSize(), context.random());
+    var shuffledPlayers = Randoms.takeRandom(context.players(), context.players().size(), context.random());
     var blue = new ArrayList<String>();
     var red = new ArrayList<String>();
     for (int index = 0; index < shuffledPlayers.size(); index++) {
       (index % 2 == 0 ? blue : red).add(shuffledPlayers.get(index).id());
     }
     var secrets = config.secretSelection() == WhoIsWhoSecretSelection.RANDOM
-        ? WhoIsWhoPokemonRules.choose(selected, 2, context.random()) : List.<Pokemon>of();
+        ? Randoms.takeRandom(selected, 2, context.random()) : List.<Pokemon>of();
     var scores = new LinkedHashMap<String, Integer>();
     var playerStats = new LinkedHashMap<String, WhoIsWhoStats>();
     for (var player : context.players()) scores.put(player.id(), 0);
@@ -286,7 +287,7 @@ public final class WhoIsWhoPokemonEngine
       var nextTeams = state.teams();
       for (var team : TEAMS) {
         if (nextTeams.get(team).secretPokemonId() != null) continue;
-        var secret = WhoIsWhoPokemonRules.choose(state.board(), 1, context.random()).getFirst();
+        var secret = Randoms.takeRandom(state.board(), 1, context.random()).getFirst();
         nextTeams = nextTeams.with(team, nextTeams.get(team).withSecret(secret.id()));
       }
       return state.toBuilder()

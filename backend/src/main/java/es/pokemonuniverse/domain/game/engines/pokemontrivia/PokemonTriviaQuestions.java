@@ -2,6 +2,7 @@ package es.pokemonuniverse.domain.game.engines.pokemontrivia;
 
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaDifficulty;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaQuestionType;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaOption;
@@ -71,22 +72,11 @@ final class PokemonTriviaQuestions {
           new NumericQuestion("¿Cuál aparece más tarde en la Pokédex Nacional?", Pokemon::nationalDexNumber,
               value -> "N.º " + value + " de la Pokédex Nacional")));
 
-  /** {@code takeRandom}: extrae sin reposición; una llamada a {@code random} por elemento extraído. */
-  static <T> List<T> takeRandom(List<T> items, int count, DoubleSupplier random) {
-    var pool = new ArrayList<>(items);
-    var result = new ArrayList<T>();
-    while (result.size() < count && !pool.isEmpty()) {
-      int index = Math.min((int) Math.floor(random.getAsDouble() * pool.size()), pool.size() - 1);
-      result.add(pool.remove(index));
-    }
-    return result;
-  }
-
   private record Built(List<PokemonTriviaOption> options, PokemonTriviaOptionId correctOptionId) {}
 
   /** {@code makeOptions}: baraja las opciones y les asigna A, B, C, D por posición. */
   private static Built makeOptions(List<Pokemon> pokemon, String correctId, DoubleSupplier random) {
-    var shuffled = takeRandom(pokemon, pokemon.size(), random);
+    var shuffled = Randoms.takeRandom(pokemon, pokemon.size(), random);
     var ids = PokemonTriviaOptionId.values();
     var options = new ArrayList<PokemonTriviaOption>();
     for (int index = 0; index < shuffled.size(); index++) {
@@ -109,10 +99,10 @@ final class PokemonTriviaQuestions {
   private static @Nullable PokemonTriviaQuestion categoricalQuestion(PokemonTriviaQuestionType type, List<Pokemon> pool,
       int count, Set<String> used, DoubleSupplier random) {
     boolean byType = type == PokemonTriviaQuestionType.TYPE;
-    for (var target : takeRandom(pool, pool.size(), random)) {
+    for (var target : Randoms.takeRandom(pool, pool.size(), random)) {
       String discriminator;
       if (byType) {
-        var picked = takeRandom(target.types(), 1, random);
+        var picked = Randoms.takeRandom(target.types(), 1, random);
         if (picked.isEmpty()) continue;
         discriminator = picked.getFirst();
       } else {
@@ -125,7 +115,7 @@ final class PokemonTriviaQuestions {
               ? !candidate.types().contains(discriminator)
               : candidate.generation() != target.generation()))
           .toList();
-      var selected = takeRandom(distractors, count - 1, random);
+      var selected = Randoms.takeRandom(distractors, count - 1, random);
       if (selected.size() != count - 1) continue;
       var built = makeOptions(withTarget(target, selected), target.id(), random);
       var label = byType ? TYPE_LABELS.get(discriminator) : "la generación " + discriminator;
@@ -146,7 +136,7 @@ final class PokemonTriviaQuestions {
       int count, PokemonTriviaDifficulty difficulty, Set<String> used, DoubleSupplier random) {
     var definition = NUMERIC_QUESTIONS.get(type);
     var valid = pool.stream().filter(pokemon -> definition.value().applyAsInt(pokemon) > 0).toList();
-    for (var target : takeRandom(valid, valid.size(), random)) {
+    for (var target : Randoms.takeRandom(valid, valid.size(), random)) {
       int targetValue = definition.value().applyAsInt(target);
       var ordered = new ArrayList<>(valid.stream()
           .filter(candidate -> !candidate.id().equals(target.id())
@@ -159,7 +149,7 @@ final class PokemonTriviaQuestions {
         case EASY -> ordered.subList(easyStart, ordered.size());
         case NORMAL -> ordered;
       };
-      var selected = takeRandom(candidates, count - 1, random);
+      var selected = Randoms.takeRandom(candidates, count - 1, random);
       if (selected.size() != count - 1) continue;
       var built = makeOptions(withTarget(target, selected), target.id(), random);
       var key = type.name() + ":" + String.join(",",
@@ -185,11 +175,11 @@ final class PokemonTriviaQuestions {
     var preferred = questionTypes.stream().filter(type -> !recent.contains(type)).toList();
     List<PokemonTriviaQuestionType> typeOrder;
     if (!preferred.isEmpty()) {
-      typeOrder = new ArrayList<>(takeRandom(preferred, preferred.size(), context.random()));
-      typeOrder.addAll(takeRandom(questionTypes.stream().filter(recent::contains).toList(), recent.size(),
+      typeOrder = new ArrayList<>(Randoms.takeRandom(preferred, preferred.size(), context.random()));
+      typeOrder.addAll(Randoms.takeRandom(questionTypes.stream().filter(recent::contains).toList(), recent.size(),
           context.random()));
     } else {
-      typeOrder = takeRandom(questionTypes, questionTypes.size(), context.random());
+      typeOrder = Randoms.takeRandom(questionTypes, questionTypes.size(), context.random());
     }
     var config = state.config();
     for (var type : typeOrder) {

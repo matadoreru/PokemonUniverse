@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.DoubleSupplier;
 
 /** Traducción literal de {@code pokemon-impostor/server.ts}. */
 public final class PokemonImpostorEngine implements
@@ -89,17 +88,6 @@ public final class PokemonImpostorEngine implements
     return PokemonImpostorConfig.defaults();
   }
 
-  /** Extracción sin reemplazo: una extracción de {@code random} por elemento, retirándolo del pool. */
-  static List<String> takeRandom(List<String> source, int count, DoubleSupplier random) {
-    var pool = new ArrayList<>(source);
-    var selected = new ArrayList<String>();
-    while (selected.size() < count && !pool.isEmpty()) {
-      int index = Math.min((int) Math.floor(random.getAsDouble() * pool.size()), pool.size() - 1);
-      selected.add(pool.remove(index));
-    }
-    return selected;
-  }
-
   private static Pokemon choosePokemon(PokemonImpostorConfig config, GameContext context) {
     var pool = context.pokemon().forGenerations(config.generations());
     if (pool.isEmpty()) throw new EngineException("Las generaciones seleccionadas no contienen Pokémon.");
@@ -143,7 +131,7 @@ public final class PokemonImpostorEngine implements
   private static PokemonImpostorState beginClueLap(PokemonImpostorState state, GameContext context, int lap) {
     int roundNumber = state.roundNumber() + 1;
     var connectedAliveIds = context.connectedRequiredPlayerIds(state.aliveIds());
-    var clueOrder = takeRandom(connectedAliveIds, connectedAliveIds.size(), context.random());
+    var clueOrder = Randoms.takeRandom(connectedAliveIds, connectedAliveIds.size(), context.random());
     if (clueOrder.size() > 1 && sameOrder(clueOrder, state.clueOrder())) {
       var rotated = new ArrayList<>(clueOrder.subList(1, clueOrder.size()));
       rotated.add(clueOrder.getFirst());
@@ -315,7 +303,7 @@ public final class PokemonImpostorEngine implements
     }
     var secretPokemon = choosePokemon(config, context);
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
-    var impostorIds = new HashSet<>(takeRandom(playerIds, config.impostorCount(), context.random()));
+    var impostorIds = new HashSet<>(Randoms.takeRandom(playerIds, config.impostorCount(), context.random()));
     var roles = new LinkedHashMap<String, ImpostorRole>();
     var playerStats = new LinkedHashMap<String, ImpostorPlayerStats>();
     for (var id : playerIds) {
@@ -490,7 +478,7 @@ public final class PokemonImpostorEngine implements
         var connectedAliveIds = context.connectedRequiredPlayerIds(state.aliveIds());
         if (!connectedAliveIds.isEmpty()) {
           return state.toBuilder()
-              .clueOrder(takeRandom(connectedAliveIds, connectedAliveIds.size(), context.random()))
+              .clueOrder(Randoms.takeRandom(connectedAliveIds, connectedAliveIds.size(), context.random()))
               .currentClueTurnIndex(0)
               .roundStartedAt(context.now())
               .roundEndsAt(context.now() + state.config().clueSeconds() * 1_000L)
