@@ -271,8 +271,8 @@ public final class PokemonBingoEngine
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No puedes modificar este tablero.");
     }
-    long deadline = state.roundEndsAt() == null ? 0 : state.roundEndsAt();
-    if (context.now() >= deadline) return GameActionResult.reject(finish(state), "El tiempo ha terminado.");
+    boolean timeUp = Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt());
+    if (timeUp) return GameActionResult.reject(finish(state), "El tiempo ha terminado.");
     var board = state.boards().get(playerId);
     if (action instanceof PokemonBingoAction.RemovePokemon remove) {
       if (findCell(board, remove.cellId()).isEmpty()) return GameActionResult.reject(state, "Casilla desconocida.");

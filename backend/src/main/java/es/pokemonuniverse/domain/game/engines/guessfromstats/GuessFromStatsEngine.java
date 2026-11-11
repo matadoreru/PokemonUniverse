@@ -245,7 +245,7 @@ public final class GuessFromStatsEngine
       return GameActionResult.reject(state, "Estás observando esta ronda.");
     }
     if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     var cooldown = state.cooldownUntil().get(playerId);

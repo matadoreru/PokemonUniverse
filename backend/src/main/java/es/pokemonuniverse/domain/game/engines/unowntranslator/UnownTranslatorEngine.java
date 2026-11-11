@@ -262,7 +262,7 @@ public final class UnownTranslatorEngine implements
       return GameActionResult.reject(state, "Estás observando esta ronda.");
     }
     if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya lo has descifrado.");
-    if (context.now() >= Objects.requireNonNullElse(state.roundEndsAt(), 0L)) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       // Rechazo que también resuelve la ronda, como en Zoomed Pokémon.
       return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
     }

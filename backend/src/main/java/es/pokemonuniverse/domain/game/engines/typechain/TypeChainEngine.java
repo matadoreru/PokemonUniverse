@@ -273,7 +273,7 @@ public final class TypeChainEngine
     if (!state.activePlayerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "Ya no participas en esta cadena.");
     }
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El turno ha terminado.");
     }
     var cooldown = state.cooldownUntil().get(playerId);
@@ -324,7 +324,7 @@ public final class TypeChainEngine
 
   @Override
   public TypeChainState handleTimeout(TypeChainState state, GameContext context) {
-    if (state.phase() != GamePhase.TURN_ACTIVE || state.roundEndsAt() == null || context.now() < state.roundEndsAt()
+    if (state.phase() != GamePhase.TURN_ACTIVE || !Timing.deadlineReached(context.now(), state.roundEndsAt())
         || state.currentPlayerId() == null) {
       return state;
     }

@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsCatalog.PuzzleOptions;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAnswerGroup;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAttemptFeedback;
@@ -242,8 +243,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
   @Override
   public GameActionResult<PokemonConnectionsState> handleAction(PokemonConnectionsState state, String playerId,
       PokemonConnectionsAction action, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE && state.roundEndsAt() != null
-        && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     if (action instanceof PokemonConnectionsAction.AdvanceRound) {
@@ -333,12 +333,10 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
 
   @Override
   public PokemonConnectionsState handleTimeout(PokemonConnectionsState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE && state.roundEndsAt() != null
-        && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return finishRound(state, context);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginNextRound(state, context);
     }
     return state;

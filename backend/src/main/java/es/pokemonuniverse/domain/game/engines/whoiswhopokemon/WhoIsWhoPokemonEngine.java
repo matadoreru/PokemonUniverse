@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonConfig.WhoIsWhoSecretSelection;
 import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonTypes.WhoIsWhoGuess;
 import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonTypes.WhoIsWhoPlayerState;
@@ -224,7 +225,7 @@ public final class WhoIsWhoPokemonEngine
       return GameActionResult.reject(state, "La partida no está en un turno activo.");
     }
     if (action instanceof SelectSecret select) {
-      if (state.roundEndsAt() != null && context.now() >= state.roundEndsAt()) {
+      if (Timing.deadlineReached(context.now(), state.roundEndsAt())) {
         return GameActionResult.reject(state, "El tiempo de selección ha terminado.");
       }
       if (state.config().secretSelection() != WhoIsWhoSecretSelection.PLAYER_CHOICE) {
@@ -254,7 +255,7 @@ public final class WhoIsWhoPokemonEngine
           .build());
     }
     if (team != state.currentTeam()) return GameActionResult.reject(state, "Es el turno del otro equipo.");
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       // Rechazada, pero el turno caducado avanza igualmente.
       return GameActionResult.reject(advanceTurn(state, context), "El tiempo ha terminado.");
     }
@@ -278,7 +279,7 @@ public final class WhoIsWhoPokemonEngine
   /** Consume {@code random} una vez por equipo sin secreto al vencer el plazo de selección. */
   @Override
   public WhoIsWhoState handleTimeout(WhoIsWhoState state, GameContext context) {
-    if (state.phase() != GamePhase.TURN_ACTIVE || state.roundEndsAt() == null || context.now() < state.roundEndsAt()) {
+    if (state.phase() != GamePhase.TURN_ACTIVE || !Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return state;
     }
     if (!state.teams().allSecretsReady()) {

@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.RunoffVoting;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToConfig.PromptSource;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToAction;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToPlayerState;
@@ -269,10 +270,10 @@ public final class MostLikelyToEngine
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No puedes participar en esta ronda.");
     }
-    long deadline = state.roundEndsAt() == null ? 0 : state.roundEndsAt();
+    boolean timeUp = Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt());
     if (action instanceof MostLikelyToAction.SelectPokemon select) {
       if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La selección ya ha terminado.");
-      if (context.now() >= deadline) return GameActionResult.reject(state, "El tiempo ha terminado.");
+      if (timeUp) return GameActionResult.reject(state, "El tiempo ha terminado.");
       var pokemon = context.pokemon().byId(select.pokemonId());
       if (pokemon.isEmpty() || !state.pokemonPoolIds().contains(pokemon.get().id())) {
         return GameActionResult.reject(state, "Ese Pokémon no pertenece al pool configurado.");
@@ -289,7 +290,7 @@ public final class MostLikelyToEngine
     if (state.phase() != GamePhase.VOTING && state.phase() != GamePhase.REVOTE) {
       return GameActionResult.reject(state, "La votación no está activa.");
     }
-    if (context.now() >= deadline) return GameActionResult.reject(state, "El tiempo de votación ha terminado.");
+    if (timeUp) return GameActionResult.reject(state, "El tiempo de votación ha terminado.");
     if (vote.playerId().equals(playerId)) return GameActionResult.reject(state, "No puedes votar tu propia respuesta.");
     if (!state.voteCandidates().contains(vote.playerId())) {
       return GameActionResult.reject(state, "Esa respuesta no es candidata en esta votación.");
@@ -306,13 +307,12 @@ public final class MostLikelyToEngine
 
   @Override
   public MostLikelyToState handleTimeout(MostLikelyToState state, GameContext context) {
-    boolean activeDeadline = state.roundEndsAt() != null && context.now() >= state.roundEndsAt();
+    boolean activeDeadline = Timing.deadlineReached(context.now(), state.roundEndsAt());
     if (state.phase() == GamePhase.ROUND_ACTIVE && activeDeadline) return beginVoting(state, context);
     if ((state.phase() == GamePhase.VOTING || state.phase() == GamePhase.REVOTE) && activeDeadline) {
       return resolveVote(state, context);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginRound(state, context);
     }
     return state;

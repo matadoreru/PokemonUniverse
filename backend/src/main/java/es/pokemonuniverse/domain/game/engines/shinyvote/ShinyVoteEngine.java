@@ -314,7 +314,7 @@ public final class ShinyVoteEngine
     if (state.phase() != GamePhase.ROUND_ACTIVE) {
       return GameActionResult.reject(state, "La ronda no está en fase de votación.");
     }
-    if (context.now() >= Objects.requireNonNullElse(state.roundEndsAt(), 0L)) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       // Rechazo que también revela la ronda (y prepara la siguiente), como el { state: revealRound(...) } de TS.
       return GameActionResult.reject(revealRound(state, context), "La votación ha terminado.");
     }
@@ -331,12 +331,10 @@ public final class ShinyVoteEngine
   /** {@code handleTimeout} propio (no usa {@code advanceTimedRound}); un plazo nulo es {@code Infinity}. */
   @Override
   public ShinyVoteState handleTimeout(ShinyVoteState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return lastRoundPlayed(state) ? state.finished() : beginRound(state, context);
     }
-    if (state.phase() != GamePhase.ROUND_ACTIVE || state.roundEndsAt() == null
-        || context.now() < state.roundEndsAt()) {
+    if (state.phase() != GamePhase.ROUND_ACTIVE || !Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return state;
     }
     return revealRound(state, context);

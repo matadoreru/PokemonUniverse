@@ -13,6 +13,7 @@ import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.RunoffVoting;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagConfig.PokemonRedFlagMode;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonFlagMode;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonRedFlagAction;
@@ -291,10 +292,10 @@ public final class PokemonRedFlagEngine
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No puedes participar en esta ronda.");
     }
-    long deadline = state.roundEndsAt() == null ? 0 : state.roundEndsAt();
+    boolean timeUp = Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt());
     if (action instanceof PokemonRedFlagAction.UpdateDraft update) {
       if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La escritura ya ha terminado.");
-      if (context.now() >= deadline) return GameActionResult.reject(beginVoting(state, context), "El tiempo ha terminado.");
+      if (timeUp) return GameActionResult.reject(beginVoting(state, context), "El tiempo ha terminado.");
       var answerId = state.answerSlots().get(playerId);
       if (state.answers().containsKey(answerId)) return GameActionResult.reject(state, "Tu respuesta ya está bloqueada.");
       var drafts = new LinkedHashMap<>(state.drafts());
@@ -303,7 +304,7 @@ public final class PokemonRedFlagEngine
     }
     if (action instanceof PokemonRedFlagAction.Submit submit) {
       if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La escritura ya ha terminado.");
-      if (context.now() >= deadline) return GameActionResult.reject(state, "El tiempo ha terminado.");
+      if (timeUp) return GameActionResult.reject(state, "El tiempo ha terminado.");
       var answerId = Objects.requireNonNull(state.answerSlots().get(playerId), "answerSlots");
       if (state.answers().containsKey(answerId)) return GameActionResult.reject(state, "Tu respuesta ya está bloqueada.");
       var drafts = new LinkedHashMap<>(state.drafts());
@@ -320,7 +321,7 @@ public final class PokemonRedFlagEngine
     if (state.phase() != GamePhase.VOTING && state.phase() != GamePhase.REVOTE) {
       return GameActionResult.reject(state, "La votación no está activa.");
     }
-    if (context.now() >= deadline) return GameActionResult.reject(state, "El tiempo de votación ha terminado.");
+    if (timeUp) return GameActionResult.reject(state, "El tiempo de votación ha terminado.");
     var answer = state.answers().get(vote.answerId());
     if (answer == null || !state.voteCandidates().contains(vote.answerId())) {
       return GameActionResult.reject(state, "Esa respuesta no es candidata.");
@@ -338,13 +339,12 @@ public final class PokemonRedFlagEngine
 
   @Override
   public PokemonRedFlagState handleTimeout(PokemonRedFlagState state, GameContext context) {
-    boolean activeDeadline = state.roundEndsAt() != null && context.now() >= state.roundEndsAt();
+    boolean activeDeadline = Timing.deadlineReached(context.now(), state.roundEndsAt());
     if (state.phase() == GamePhase.ROUND_ACTIVE && activeDeadline) return beginVoting(state, context);
     if ((state.phase() == GamePhase.VOTING || state.phase() == GamePhase.REVOTE) && activeDeadline) {
       return resolveVote(state, context);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginRound(state, context);
     }
     return state;

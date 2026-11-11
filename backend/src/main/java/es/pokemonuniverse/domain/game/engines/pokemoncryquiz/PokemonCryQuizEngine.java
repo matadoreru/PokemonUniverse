@@ -258,7 +258,7 @@ public final class PokemonCryQuizEngine implements
       return GameActionResult.reject(state, "Estás observando esta ronda.");
     }
     if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
-    if (context.now() >= Objects.requireNonNullElse(state.roundEndsAt(), 0L)) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       // Rechazo que también resuelve la ronda, como el { state: resolveRound(...), accepted: false } de TS.
       return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
     }

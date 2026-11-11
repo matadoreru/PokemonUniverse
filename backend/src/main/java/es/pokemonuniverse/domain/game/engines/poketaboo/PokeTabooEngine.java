@@ -230,7 +230,7 @@ public final class PokeTabooEngine
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "Estás observando esta ronda.");
     }
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(resolveRound(state, context, null), "El tiempo ha terminado.");
     }
     if (action instanceof PokeTabooAction.SendHint sendHint) {
@@ -285,11 +285,10 @@ public final class PokeTabooEngine
 
   @Override
   public PokeTabooState handleTimeout(PokeTabooState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE && state.roundEndsAt() != null && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return resolveRound(state, context, null);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginNextRound(state, context);
     }
     return state;

@@ -244,7 +244,7 @@ public final class TypeDuelEngine
       return GameActionResult.reject(state, "No se están eligiendo tipos.");
     }
     if (state.phase() != GamePhase.POKEMON_SEARCH) return GameActionResult.reject(state, "La carrera no está activa.");
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     var cooldown = state.cooldownUntil().get(playerId);
@@ -294,11 +294,6 @@ public final class TypeDuelEngine
     boolean done = state.completedRounds() >= state.config().rounds()
         || state.selectionCycles() >= state.config().rounds() * 2;
     return done ? state.finished() : selectPlayers(state, context);
-  }
-
-  /** {@code context.now >= (deadline ?? Infinity)}. */
-  private static boolean reached(GameContext context, @Nullable Long deadline) {
-    return deadline != null && context.now() >= deadline;
   }
 
   @Override
@@ -355,7 +350,7 @@ public final class TypeDuelEngine
       if (state.phase() != GamePhase.SELECTING_TYPES) {
         return GameActionResult.reject(state, "No se están eligiendo tipos.");
       }
-      if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+      if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
         return GameActionResult.reject(state, "El tiempo ha terminado.");
       }
       if (state.typeSelections().containsKey(playerId)) {
@@ -369,7 +364,7 @@ public final class TypeDuelEngine
     }
     var attemptAction = (TypeDuelAction.AttemptPokemon) action;
     if (state.phase() != GamePhase.POKEMON_SEARCH) return GameActionResult.reject(state, "La carrera no está activa.");
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     var cooldown = state.cooldownUntil().get(playerId);
@@ -406,24 +401,24 @@ public final class TypeDuelEngine
   @Override
   public TypeDuelState handleTimeout(TypeDuelState state, GameContext context) {
     if (coop(state)) {
-      if (state.phase() == GamePhase.POKEMON_SEARCH && reached(context, state.roundEndsAt())) {
+      if (state.phase() == GamePhase.POKEMON_SEARCH && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
         return coopRoundResult(state, context, TypeDuelRoundReason.TIMEOUT);
       }
-      if (state.phase() == GamePhase.ROUND_RESULTS && reached(context, state.nextTransitionAt())) {
+      if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
         return advanceAfterResult(state, context);
       }
       return state;
     }
-    if (state.phase() == GamePhase.SELECTING_TYPES && reached(context, state.roundEndsAt())) {
+    if (state.phase() == GamePhase.SELECTING_TYPES && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       var playersWhoSelected = state.participants().stream().filter(state.typeSelections()::containsKey).toList();
       return playersWhoSelected.size() == 1
           ? roundResult(state, context, TypeDuelRoundReason.TYPE_FORFEIT, playersWhoSelected.getFirst())
           : roundResult(state, context, TypeDuelRoundReason.TYPE_TIMEOUT, null);
     }
-    if (state.phase() == GamePhase.TYPE_REVEAL && reached(context, state.nextTransitionAt())) {
+    if (state.phase() == GamePhase.TYPE_REVEAL && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginSearch(state, context);
     }
-    if (state.phase() == GamePhase.INVALID_COMBINATION && reached(context, state.nextTransitionAt())) {
+    if (state.phase() == GamePhase.INVALID_COMBINATION && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       if (state.invalidCombinations() >= TypeDuelRules.TYPE_DUEL_MAX_INVALID_COMBINATIONS
           || state.selectionCycles() >= state.config().rounds() * 2) {
         return roundResult(state, context, TypeDuelRoundReason.INVALID_COMBINATION, null);
@@ -439,10 +434,10 @@ public final class TypeDuelEngine
           .nextTransitionAt(null)
           .build();
     }
-    if (state.phase() == GamePhase.POKEMON_SEARCH && reached(context, state.roundEndsAt())) {
+    if (state.phase() == GamePhase.POKEMON_SEARCH && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return roundResult(state, context, TypeDuelRoundReason.TIMEOUT, null);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && reached(context, state.nextTransitionAt())) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return advanceAfterResult(state, context);
     }
     return state;

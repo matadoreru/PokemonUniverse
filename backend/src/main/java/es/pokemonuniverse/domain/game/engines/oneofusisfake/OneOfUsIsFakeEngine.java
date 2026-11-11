@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeConfig.CategorySource;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.FakePokemonChoice;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.FakeRevealedChoice;
@@ -305,7 +306,7 @@ public final class OneOfUsIsFakeEngine
       OneOfUsIsFakeAction action, GameContext context) {
     boolean timedPhase = state.phase() == GamePhase.ROUND_ACTIVE || state.phase() == GamePhase.DISCUSSION
         || state.phase() == GamePhase.REVOTE;
-    if (timedPhase && state.roundEndsAt() != null && context.now() >= state.roundEndsAt()) {
+    if (timedPhase && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
@@ -348,8 +349,8 @@ public final class OneOfUsIsFakeEngine
 
   @Override
   public OneOfUsIsFakeState handleTimeout(OneOfUsIsFakeState state, GameContext context) {
-    boolean roundDeadline = state.roundEndsAt() != null && context.now() >= state.roundEndsAt();
-    boolean transitionDue = state.nextTransitionAt() != null && context.now() >= state.nextTransitionAt();
+    boolean roundDeadline = Timing.deadlineReached(context.now(), state.roundEndsAt());
+    boolean transitionDue = Timing.deadlineReached(context.now(), state.nextTransitionAt());
     if (state.phase() == GamePhase.ROUND_ACTIVE && roundDeadline) return beginReveal(state, context);
     if (state.phase() == GamePhase.CHOICE_REVEAL && transitionDue) return advanceReveal(state, context);
     if ((state.phase() == GamePhase.DISCUSSION || state.phase() == GamePhase.REVOTE) && roundDeadline) {

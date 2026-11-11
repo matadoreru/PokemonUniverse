@@ -49,6 +49,11 @@ class TimingTest {
   void handlesNullableDeadlinesAndCooldownMapsConsistently() {
     assertFalse(Timing.deadlineReached(10, null));
     assertTrue(Timing.deadlineReached(10, 10L));
+    assertFalse(Timing.deadlineReached(9, 10L));
+    assertTrue(Timing.deadlinePassedOrMissing(10, null));
+    assertTrue(Timing.deadlinePassedOrMissing(0, null));
+    assertTrue(Timing.deadlinePassedOrMissing(10, 10L));
+    assertFalse(Timing.deadlinePassedOrMissing(9, 10L));
     assertEquals(750, Timing.cooldownRemainingMs(1_250, 2_000L));
     assertEquals(0, Timing.cooldownRemainingMs(1_250, null));
     assertEquals("Espera 0.8s antes de volver a intentar.", Timing.cooldownMessage(1_250, 2_000L));

@@ -419,7 +419,7 @@ public final class LearnsetGuessEngine
     if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
     boolean manual = manual(state);
     if (manual && manualExhausted(state, playerId)) return GameActionResult.reject(state, EXHAUSTED_MESSAGE);
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       // El rechazo lleva ya la ronda resuelta, como el TS.
       return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
     }

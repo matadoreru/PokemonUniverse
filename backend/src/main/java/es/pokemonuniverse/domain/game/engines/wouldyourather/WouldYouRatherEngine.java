@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherConfig.PromptSource;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherTypes.WouldYouRatherAction;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherTypes.WouldYouRatherBallot;
@@ -200,8 +201,8 @@ public final class WouldYouRatherEngine implements
       return GameActionResult.reject(state, "No puedes participar en esta ronda.");
     }
     if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La votación ya ha terminado.");
-    long deadline = state.roundEndsAt() == null ? 0 : state.roundEndsAt();
-    if (context.now() >= deadline) return GameActionResult.reject(state, "El tiempo ha terminado.");
+    boolean timeUp = Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt());
+    if (timeUp) return GameActionResult.reject(state, "El tiempo ha terminado.");
     if (state.ballots().containsKey(playerId)) return GameActionResult.reject(state, "Tu papeleta ya está bloqueada.");
     var ballots = new LinkedHashMap<>(state.ballots());
     ballots.put(playerId, new WouldYouRatherBallot(action.preference(), action.prediction()));
@@ -214,12 +215,10 @@ public final class WouldYouRatherEngine implements
 
   @Override
   public WouldYouRatherState handleTimeout(WouldYouRatherState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE && state.roundEndsAt() != null
-        && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return resolveRound(state, context);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginRound(state, context);
     }
     return state;

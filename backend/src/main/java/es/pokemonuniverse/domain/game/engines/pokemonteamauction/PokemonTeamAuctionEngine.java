@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.PokemonTeamAuctionAction;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.PokemonTeamAuctionPlayerState;
 import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuctionTypes.PokemonTeamAuctionPublicState;
@@ -294,7 +295,7 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
   public GameActionResult<PokemonTeamAuctionState> handleAction(PokemonTeamAuctionState state, String playerId,
       PokemonTeamAuctionAction action, GameContext context) {
     if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La subasta ya ha terminado.");
-    if (state.roundEndsAt() != null && context.now() >= state.roundEndsAt()) {
+    if (Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo de puja ha terminado.");
     }
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
@@ -326,8 +327,7 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
 
   @Override
   public PokemonTeamAuctionState handleTimeout(PokemonTeamAuctionState state, GameContext context) {
-    if (state.phase() != GamePhase.ROUND_ACTIVE || state.roundEndsAt() == null
-        || context.now() < state.roundEndsAt()) {
+    if (state.phase() != GamePhase.ROUND_ACTIVE || !Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return state;
     }
     var playerId = currentTurnPlayerId(state);

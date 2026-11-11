@@ -15,8 +15,21 @@ public final class Timing {
 
   private Timing() {}
 
+  /**
+   * {@code now >= (deadline ?? Infinity)}: sin plazo, nunca vence. Es la regla de {@code handleTimeout}, que solo
+   * avanza cuando hay un plazo y ya pasó.
+   */
   public static boolean deadlineReached(long now, @Nullable Long deadline) {
     return deadline != null && now >= deadline;
+  }
+
+  /**
+   * {@code now >= (deadline ?? 0)}: sin plazo, cualquier instante cuenta como vencido. Es la regla de las acciones que
+   * rechazan con «El tiempo ha terminado.»; no se intercambia con {@link #deadlineReached}, que da lo contrario con
+   * un plazo nulo.
+   */
+  public static boolean deadlinePassedOrMissing(long now, @Nullable Long deadline) {
+    return now >= (deadline == null ? 0 : deadline);
   }
 
   public static long cooldownRemainingMs(long now, @Nullable Long cooldownUntil) {

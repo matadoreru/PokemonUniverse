@@ -305,11 +305,6 @@ public final class PokemonImpostorEngine implements
     return Normalizer.normalize(JsStrings.trim(value), Normalizer.Form.NFC);
   }
 
-  /** {@code context.now >= (deadline ?? 0)}: sin plazo, cualquier instante cuenta como vencido. */
-  private static boolean pastOrMissing(long now, @Nullable Long deadline) {
-    return now >= (deadline == null ? 0 : deadline);
-  }
-
   @Override
   public PokemonImpostorState createInitialState(PokemonImpostorConfig config, GameContext context) {
     if (context.players().size() < manifest.minPlayers()) {
@@ -376,7 +371,7 @@ public final class PokemonImpostorEngine implements
     if (state.roles().get(playerId) != ImpostorRole.IMPOSTOR) {
       return GameActionResult.reject(state, "Solo los impostores pueden intentar adivinar.");
     }
-    if (pastOrMissing(context.now(), state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(advanceClueTurn(state, context, ClueStatus.TIMEOUT),
           "El tiempo para adivinar ha terminado.");
     }
@@ -405,7 +400,7 @@ public final class PokemonImpostorEngine implements
     if (state.phase() != GamePhase.CLUE_PHASE) {
       return GameActionResult.reject(state, "No estamos en la fase de pistas.");
     }
-    if (pastOrMissing(context.now(), state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo para enviar pistas ha terminado.");
     }
     if (!playerId.equals(state.currentCluePlayerId())) {
@@ -441,7 +436,7 @@ public final class PokemonImpostorEngine implements
   private static GameActionResult<PokemonImpostorState> vote(PokemonImpostorState state, String playerId,
       String targetId, GameContext context) {
     if (state.phase() != GamePhase.VOTING) return GameActionResult.reject(state, "No estamos en la fase de votación.");
-    if (pastOrMissing(context.now(), state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo para votar ha terminado.");
     }
     if (state.votes().containsKey(playerId)) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");

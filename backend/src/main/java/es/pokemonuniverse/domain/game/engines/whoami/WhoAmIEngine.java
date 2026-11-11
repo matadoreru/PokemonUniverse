@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.whoami.WhoAmITypes.WhoAmIAction;
 import es.pokemonuniverse.domain.game.engines.whoami.WhoAmITypes.WhoAmIAnswer;
 import es.pokemonuniverse.domain.game.engines.whoami.WhoAmITypes.WhoAmIAnswerEntry;
@@ -342,7 +343,7 @@ public final class WhoAmIEngine
   /** {@code ASKING} y {@code DECIDING} vencidos pasan el turno; {@code ANSWERING} vencido pasa a decidir. */
   @Override
   public WhoAmIState handleTimeout(WhoAmIState state, GameContext context) {
-    if (!isActive(state) || state.roundEndsAt() == null || context.now() < state.roundEndsAt()) return state;
+    if (!isActive(state) || !Timing.deadlineReached(context.now(), state.roundEndsAt())) return state;
     return state.turnStep() == WhoAmITurnStep.ANSWERING ? toDeciding(state, context) : endTurn(state, context);
   }
 

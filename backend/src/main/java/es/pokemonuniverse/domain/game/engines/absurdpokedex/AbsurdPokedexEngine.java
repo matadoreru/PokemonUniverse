@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexAction;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexEntry;
 import es.pokemonuniverse.domain.game.engines.absurdpokedex.AbsurdPokedexTypes.AbsurdPokedexEntryView;
@@ -344,11 +345,10 @@ public final class AbsurdPokedexEngine
   /** Dos fases activas con plazo propio (escritura y voto): se escribe a mano, como La Frase. */
   @Override
   public AbsurdPokedexState handleTimeout(AbsurdPokedexState state, GameContext context) {
-    boolean activeDeadline = state.roundEndsAt() != null && context.now() >= state.roundEndsAt();
+    boolean activeDeadline = Timing.deadlineReached(context.now(), state.roundEndsAt());
     if (state.phase() == GamePhase.ROUND_ACTIVE && activeDeadline) return beginVoting(state, context);
     if (state.phase() == GamePhase.VOTING && activeDeadline) return resolveVote(state, context);
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginRound(state, context);
     }
     return state;

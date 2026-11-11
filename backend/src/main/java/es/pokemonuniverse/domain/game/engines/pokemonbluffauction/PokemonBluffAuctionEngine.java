@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionTypes.BluffAuctionAttempt;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionTypes.BluffAuctionBidEvent;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionTypes.BluffAuctionConditionTemplate;
@@ -321,7 +322,7 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
   public GameActionResult<PokemonBluffAuctionState> handleAction(PokemonBluffAuctionState state, String playerId,
       PokemonBluffAuctionAction action, GameContext context) {
     if ((state.phase() == GamePhase.POKEMON_SEARCH || state.phase() == GamePhase.ROUND_ACTIVE)
-        && state.roundEndsAt() != null && context.now() >= state.roundEndsAt()) {
+        && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
@@ -388,18 +389,15 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
 
   @Override
   public PokemonBluffAuctionState handleTimeout(PokemonBluffAuctionState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE && state.roundEndsAt() != null
-        && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       var playerId = currentTurnPlayerId(state);
       if (playerId == null) return state;
       return passAndAdvance(state, playerId, context);
     }
-    if (state.phase() == GamePhase.POKEMON_SEARCH && state.roundEndsAt() != null
-        && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.POKEMON_SEARCH && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return finishRound(state, context, false, "TIMEOUT");
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginRound(state, context);
     }
     return state;

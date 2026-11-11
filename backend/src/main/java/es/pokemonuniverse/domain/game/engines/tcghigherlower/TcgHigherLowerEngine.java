@@ -206,7 +206,7 @@ public final class TcgHigherLowerEngine
     if (!context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No estás conectado como participante.");
     }
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
     if (state.answers().containsKey(playerId)) return GameActionResult.reject(state, "Tu respuesta ya está bloqueada.");

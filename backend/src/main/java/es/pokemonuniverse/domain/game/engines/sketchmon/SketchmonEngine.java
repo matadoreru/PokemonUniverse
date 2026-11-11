@@ -392,7 +392,7 @@ public final class SketchmonEngine
     if (!initial.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(initial, "Estás observando esta ronda.");
     }
-    if (context.now() >= Objects.requireNonNullElse(initial.roundEndsAt(), 0L)) {
+    if (Timing.deadlinePassedOrMissing(context.now(), initial.roundEndsAt())) {
       // Rechazo que también resuelve la ronda, como el { state: resolveRound(...), accepted: false } de TS.
       return GameActionResult.reject(resolveRound(initial, context, null), "El tiempo ha terminado.");
     }

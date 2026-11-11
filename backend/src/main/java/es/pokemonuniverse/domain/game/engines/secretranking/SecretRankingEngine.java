@@ -12,6 +12,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
+import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingConfig.PromptSource;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingRules.RankingDistance;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingAction;
@@ -277,8 +278,8 @@ public final class SecretRankingEngine
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No puedes participar en esta ronda.");
     }
-    long deadline = state.roundEndsAt() == null ? 0 : state.roundEndsAt();
-    if (context.now() >= deadline) return GameActionResult.reject(state, "El tiempo ha terminado.");
+    boolean timeUp = Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt());
+    if (timeUp) return GameActionResult.reject(state, "El tiempo ha terminado.");
     if (state.submissions().containsKey(playerId)) {
       return GameActionResult.reject(state, "Tu ranking ya está bloqueado.");
     }
@@ -297,12 +298,10 @@ public final class SecretRankingEngine
 
   @Override
   public SecretRankingState handleTimeout(SecretRankingState state, GameContext context) {
-    if (state.phase() == GamePhase.ROUND_ACTIVE && state.roundEndsAt() != null
-        && context.now() >= state.roundEndsAt()) {
+    if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return finishRound(state, context);
     }
-    if (state.phase() == GamePhase.ROUND_RESULTS && state.nextTransitionAt() != null
-        && context.now() >= state.nextTransitionAt()) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && Timing.deadlineReached(context.now(), state.nextTransitionAt())) {
       return beginRound(state, context);
     }
     return state;

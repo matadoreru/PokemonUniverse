@@ -279,7 +279,7 @@ public final class PokedexDistanceEngine implements
     if (!isActive(state.phase())) return GameActionResult.reject(state, "No active round");
     if (!state.eligibleIds().contains(playerId)) return GameActionResult.reject(state, "You are spectating this round");
     if (state.selections().containsKey(playerId)) return GameActionResult.reject(state, "Selection already locked");
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(resolveRound(state, context), "Round has ended");
     }
     boolean live = state.config().selectionVisibility() == SelectionVisibility.LIVE;

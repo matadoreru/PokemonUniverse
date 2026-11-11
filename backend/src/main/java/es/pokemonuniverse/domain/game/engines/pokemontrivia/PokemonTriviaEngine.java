@@ -200,7 +200,7 @@ public final class PokemonTriviaEngine
       return GameActionResult.reject(state, "Estás observando esta ronda.");
     }
     if (state.answers().containsKey(playerId)) return GameActionResult.reject(state, "Tu respuesta ya está bloqueada.");
-    if (context.now() >= (state.roundEndsAt() == null ? 0 : state.roundEndsAt())) {
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(revealRound(state, context), "El tiempo ha terminado.");
     }
     if (question.options().stream().noneMatch(option -> option.id() == action.optionId())) {
