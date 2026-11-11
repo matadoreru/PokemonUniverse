@@ -1,6 +1,7 @@
 package es.pokemonuniverse.adapters.in.rest.ratelimit;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
+import es.pokemonuniverse.application.time.Clock;
 import es.pokemonuniverse.config.PuConfig;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Nullable;
@@ -12,7 +13,6 @@ import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.RequestFilter;
 import io.micronaut.http.annotation.ResponseFilter;
 import io.micronaut.http.annotation.ServerFilter;
-import java.time.Clock;
 import java.util.List;
 
 /**
@@ -34,9 +34,9 @@ public class RateLimitFilter {
   private final List<Entry> entries;
   private final Clock clock;
 
-  public RateLimitFilter(PuConfig config, Environment env) {
+  public RateLimitFilter(PuConfig config, Environment env, Clock clock) {
     this.active = config.rateLimitActive(env);
-    this.clock = Clock.systemUTC();
+    this.clock = clock;
     this.entries = RateLimitPolicy.defaults().stream()
         .map(p -> new Entry(p, new FixedWindowCounter(p.window().toSeconds())))
         .toList();
@@ -46,7 +46,7 @@ public class RateLimitFilter {
   @Nullable
   public HttpResponse<?> limit(HttpRequest<?> request) {
     String ip = ClientAddress.of(request);
-    long now = clock.instant().getEpochSecond();
+    long now = clock.now() / 1000;
     Status worst = null;
     for (Entry e : entries) {
       if (!active && !e.policy().alwaysActive() || !e.policy().matcher().test(request)) {

@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.application.errors.InvalidResetLinkException;
 import es.pokemonuniverse.application.errors.UnauthorizedException;
+import es.pokemonuniverse.application.time.Clock;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.support.MutableClock;
 import es.pokemonuniverse.support.RecordingMailSender;
@@ -21,7 +22,6 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

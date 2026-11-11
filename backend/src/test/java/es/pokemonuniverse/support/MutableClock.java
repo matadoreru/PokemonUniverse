@@ -1,34 +1,27 @@
 package es.pokemonuniverse.support;
 
-import es.pokemonuniverse.config.ClockBeans;
+import es.pokemonuniverse.application.time.Clock;
+import es.pokemonuniverse.application.time.SystemClock;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
-import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 /**
  * {@link Clock} fijo que el test adelanta a mano. Se activa con {@code @Property(name = "test.clock.mutable",
- * value = "true")} y sustituye al {@code Clock.systemUTC()} de {@link ClockBeans}.
+ * value = "true")} y sustituye al {@link SystemClock}.
  */
 @Singleton
 @Requires(property = "test.clock.mutable", value = "true")
-@Replaces(bean = Clock.class, factory = ClockBeans.class)
-public class MutableClock extends Clock {
+@Replaces(SystemClock.class)
+public class MutableClock implements Clock {
 
   private volatile Instant now = Instant.now();
 
   @Override
-  public ZoneId getZone() {
-    return ZoneOffset.UTC;
-  }
-
-  @Override
-  public Clock withZone(ZoneId zone) {
-    return Clock.fixed(now, zone);
+  public long now() {
+    return now.toEpochMilli();
   }
 
   @Override
