@@ -60,9 +60,15 @@ public class IdentityTokens {
         throw new InvalidTokenException("Invalid signature");
       }
       var claims = jwt.getJWTClaimsSet();
+      var now = Instant.now();
       var exp = claims.getExpirationTime();
-      if (exp != null && !exp.toInstant().isAfter(Instant.now())) {
+      if (exp != null && !exp.toInstant().isAfter(now)) {
         throw new InvalidTokenException("Token expired");
+      }
+      // Como jose sin tolerancia de reloj: un nbf posterior al instante actual aún no es válido.
+      var nbf = claims.getNotBeforeTime();
+      if (nbf != null && nbf.toInstant().isAfter(now)) {
+        throw new InvalidTokenException("Token not yet valid");
       }
       var id = claims.getSubject();
       var displayName = claims.getClaim("displayName");
