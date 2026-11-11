@@ -9,7 +9,7 @@ import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, Lo
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { SettingsPanel } from '../../components/SettingsDialog';
-import { ShortcutList } from '../../room/game-kit/ShortcutHelp';
+import { ShortcutList } from '../../room/game-kit/ShortcutList';
 import type { TextPreference } from '../../preferences/preferences';
 import { Avatar } from '../../components/Avatar';
 import { AvatarStack } from '../../components/AvatarStack';
@@ -407,7 +407,7 @@ function KbdSection() {
       <Fig id="kbd-pill" caption="En un botón, solo con ratón (fineOnly): «Confirmar» con Intro; en táctil o por debajo de 640 px no se ve" wide>
         <Pill variant="yellow" icon={Send} aria-keyshortcuts="Enter">Confirmar respuesta <Kbd fineOnly>Intro</Kbd></Pill>
       </Fig>
-      <Fig id="kbd-help" caption="Ayuda de atajos («?»): contenido del diálogo" cream>
+      <Fig id="kbd-help" caption="Sección «Atajos de teclado» del diálogo de ayuda («?»)" cream>
         <ShortcutList entries={[{ keys: ['A', '1'], label: 'Opción A: Pikachu' }, { keys: ['B', '2'], label: 'Opción B: Raichu' }, { keys: ['Enter'], label: 'Confirmar voto' }]} />
       </Fig>
     </Section>

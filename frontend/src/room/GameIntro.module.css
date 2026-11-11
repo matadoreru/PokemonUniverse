@@ -157,12 +157,10 @@
   }
 }
 /* Con movimiento reducido, solo fundidos de 120 ms. */
-@media (prefers-reduced-motion: reduce) {
-  .head,
-  .rule {
-    animation: intro-fade var(--t-fade) linear both;
-    animation-delay: 0ms;
-  }
+:root[data-motion="reduce"] .head,
+:root[data-motion="reduce"] .rule {
+  animation: intro-fade var(--t-fade) linear both;
+  animation-delay: 0ms;
 }
 @keyframes intro-fade {
   from {

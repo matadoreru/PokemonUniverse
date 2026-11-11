@@ -2,7 +2,7 @@ import type { RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { GameHelpButton, gameHelpRules } from './GameHelpButton';
+import { GameHelpButton, gameHelpRules, gameHelpSections } from './GameHelpButton';
 import { GameIntro } from './GameIntro';
 import { activeGameManifest, introActionTitle, introAnnouncement, introStatus } from './game-intro';
 import { manifest, member, roomView } from './test-support/room-view';
@@ -79,6 +79,15 @@ describe('«Cómo se juega»', () => {
   it('la píldora «?» tiene nombre accesible y el diálogo lleva las tres reglas', () => {
     const html = renderToStaticMarkup(createElement(GameHelpButton, { room: { ...intro([]), phase: 'ROUND_ACTIVE' } }));
     expect(html).toContain('aria-label="Cómo se juega"');
-    expect(renderToStaticMarkup(createElement(GameHelpButton, { room: intro([]) }))).toBe('');
+    // Sin reglas no hay píldora; el diálogo (cerrado) sigue montado para la tecla «?» si la pantalla tiene atajos.
+    expect(renderToStaticMarkup(createElement(GameHelpButton, { room: intro([]) }))).not.toContain('Cómo se juega');
+  });
+
+  it('el diálogo lleva «Reglas» si las hay y «Atajos de teclado» si la pantalla tiene alguno', () => {
+    const atajos = [{ keys: ['1'], label: 'Mayor' }];
+    expect(gameHelpSections(RULES, atajos).map((section) => section.title)).toEqual(['Reglas', 'Atajos de teclado']);
+    expect(gameHelpSections(RULES, []).map((section) => section.title)).toEqual(['Reglas']);
+    expect(gameHelpSections(null, atajos).map((section) => section.title)).toEqual(['Atajos de teclado']);
+    expect(gameHelpSections(null, [])).toEqual([]);
   });
 });

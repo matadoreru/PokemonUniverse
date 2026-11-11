@@ -2,7 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { keyLabel, shortcutEntries, type ShortcutSource } from './shortcut-help';
-import { ShortcutList } from './ShortcutHelp';
+import { ShortcutList } from './ShortcutList';
 
 function control(attributes: Record<string, string>, { text = '', visible = true } = {}): ShortcutSource {
   return { getAttribute: (name) => attributes[name] ?? null, textContent: text, visible };

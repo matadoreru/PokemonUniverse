@@ -44,17 +44,25 @@ test('intro de partida: reglas, «¡Listo!» de los dos y «Cómo se juega» en 
       await expect(page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 10_000 });
     }
 
-    // «Cómo se juega»: la píldora «?» de la placa abre el diálogo de ayuda con las reglas.
+    // «Cómo se juega»: la píldora «?» de la placa abre el diálogo de ayuda con las reglas y los atajos de la pantalla.
     const ayuda = invitado.page.getByRole('dialog', { name: 'Cómo se juega · Higher or Lower' });
     await invitado.page.getByRole('button', { name: 'Cómo se juega' }).click();
     await expect(ayuda).toBeVisible();
     await expect(ayuda.getByRole('heading', { name: 'Reglas' })).toBeVisible();
-    await expect(ayuda.getByRole('listitem')).toHaveCount(3);
+    await expect(ayuda.getByRole('region', { name: 'Reglas' }).getByRole('listitem')).toHaveCount(3);
+    // Mayor, Igual y Menor con 1, 2 y 3, y la propia «?».
+    await expect(ayuda.getByRole('region', { name: 'Atajos de teclado' }).getByRole('listitem')).toHaveCount(4);
     await capturarATresTamaños(invitado.page, 'como-se-juega');
     // Con el diálogo abierto, los atajos del juego no llegan a la pantalla de debajo.
     await invitado.page.keyboard.press('1');
     await expect(ayuda).toBeVisible();
     await expect(invitado.page.getByText('0 / 2 respuestas')).toBeVisible();
+    await invitado.page.keyboard.press('Escape');
+    await expect(ayuda).toBeHidden();
+    // La tecla «?» abre el mismo diálogo.
+    await invitado.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+    await invitado.page.keyboard.press('?');
+    await expect(ayuda).toBeVisible();
     await invitado.page.keyboard.press('Escape');
     await expect(ayuda).toBeHidden();
     await invitado.page.getByRole('button', { name: 'Cómo se juega' }).click();

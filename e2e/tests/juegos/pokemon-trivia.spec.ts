@@ -63,9 +63,9 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       // El atajo no depende de dónde esté el foco (salvo en un campo): se quita del control que lo tenga.
       await host.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
       if (ronda === 1) {
-        // «?» abre la lista de atajos de la pantalla (las opciones y «Confirmar» con Intro); con ella abierta, «1» no elige.
+        // «?» abre la ayuda con los atajos de la pantalla (las opciones y «Confirmar» con Intro); abierta, «1» no elige.
         await host.page.keyboard.press('?');
-        const ayuda = host.page.getByRole('dialog', { name: 'Atajos de teclado' });
+        const ayuda = host.page.getByRole('dialog', { name: /^Cómo se juega/ }).getByRole('region', { name: 'Atajos de teclado' });
         await expect(ayuda).toBeVisible();
         await expect(ayuda.getByRole('listitem').filter({ hasText: 'Confirmar respuesta' }).locator('kbd')).toHaveText('Intro');
         await expect(ayuda.getByRole('listitem').filter({ has: host.page.locator('kbd', { hasText: /^1$/ }) })).toHaveCount(1);

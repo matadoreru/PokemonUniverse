@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { bindShortcuts, controlTarget, dialogTarget, shortcutKey, typingTarget } from './shortcuts';
+import { bindShortcuts, controlTarget, shortcutKey, typingTarget } from './shortcuts';
 
 /** Un elemento con foco mínimo (sin DOM en los tests): la etiqueta, el tipo de `input` y los atributos. */
 function element(tagName: string, { type, attributes = {}, isContentEditable }: { type?: string; attributes?: Record<string, string>; isContentEditable?: boolean } = {}) {
@@ -73,24 +73,18 @@ describe('atajos: qué tecla cuenta', () => {
     expect(shortcutKey({ key: '1', target: outside })).toBe('1');
   });
 
+  it('«?» (con Mayúsculas) cuenta fuera de los campos y de los diálogos', () => {
+    const outside = { ...element('H2', { attributes: { tabindex: '-1' } }), closest: () => null };
+    expect(shortcutKey({ key: '?', target: outside })).toBe('?');
+    expect(shortcutKey({ key: '?', target: element('INPUT', { type: 'text' }) })).toBeNull();
+  });
+
   it('con Ctrl, Alt o Meta, con la tecla mantenida o ya atendida, nada', () => {
     expect(shortcutKey({ key: '1', ctrlKey: true })).toBeNull();
     expect(shortcutKey({ key: '1', altKey: true })).toBeNull();
     expect(shortcutKey({ key: '1', metaKey: true })).toBeNull();
     expect(shortcutKey({ key: '1', repeat: true })).toBeNull();
     expect(shortcutKey({ key: '1', defaultPrevented: true })).toBeNull();
-  });
-
-  it('con el foco dentro de un diálogo abierto no hay atajos de la pantalla; «?» con Mayúsculas sí cuenta fuera', () => {
-    const inDialog = { ...element('BUTTON'), closest: (selector: string) => (selector === 'dialog[open]' ? {} : null) };
-    const outside = { ...element('H2', { attributes: { tabindex: '-1' } }), closest: () => null };
-    expect(dialogTarget(inDialog)).toBe(true);
-    expect(shortcutKey({ key: '1', target: inDialog })).toBeNull();
-    expect(shortcutKey({ key: '?', target: inDialog })).toBeNull();
-    expect(dialogTarget(outside)).toBe(false);
-    expect(shortcutKey({ key: '1', target: outside })).toBe('1');
-    expect(shortcutKey({ key: '?', target: outside })).toBe('?');
-    expect(shortcutKey({ key: '?', target: element('INPUT', { type: 'text' }) })).toBeNull();
   });
 });
 
