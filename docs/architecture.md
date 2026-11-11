@@ -74,7 +74,7 @@ Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Solo desarrollo y
 
 **Enrutado.** Las URL de assets que emiten los motores son relativas (`/api/rooms/…`). En dev, `proxyFor` de `frontend/vite.config.ts` manda todo `/api` (también `/api/rooms/`) a `:8080`. `infra/nginx.conf` las manda también a Java (`location ^~ /api/`) desde el corte 2D.
 
-**E2E por juego.** `e2e/tests/juegos.spec.ts` (`npm run test:e2e -- juegos`) lanza los 31 juegos contra el `/ws` de Java y exige que ninguna página abra Socket.IO. `tcg-higher-lower` y `pokemon-palette-guess` se saltan solo si el servidor muestra su literal de no disponibilidad (sin cartas TCG o sin paletas en la BD). El encaje se anota y solo falla con `PU_LAYOUT_STRICT=1` (ver `e2e/README.md`).
+**E2E por juego.** `e2e/tests/juegos.spec.ts` (`npm run test:e2e -- juegos`, que también coge los specs de cada juego en `e2e/tests/juegos/<id>.spec.ts`) lanza los 31 juegos contra el `/ws` de Java y exige que ninguna página abra Socket.IO. `tcg-higher-lower` y `pokemon-palette-guess` se saltan solo si el servidor muestra su literal de no disponibilidad (sin cartas TCG o sin paletas en la BD). El encaje se anota y solo falla con `PU_LAYOUT_STRICT=1` (ver `e2e/README.md`).
 
 ## Datos y administración en Java (etapa 2C)
 

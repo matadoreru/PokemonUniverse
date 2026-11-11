@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       filter:
-        description: Filtro de specs de Playwright (por ejemplo «juegos» o «tests/sala.spec.ts»); vacío para toda la suite.
+        description: Filtro de specs de Playwright (por ejemplo «juegos», «juegos/type-chain» o «tests/sala.spec.ts»); vacío para toda la suite.
         type: string
         default: ''
 

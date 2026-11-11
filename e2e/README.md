@@ -62,13 +62,25 @@ Desde el corte 2D la web habla solo con el backend Java (HTTP y las salas por `/
 `chromium`, y Playwright ya no arranca el servidor Node. La antigua `test:e2e:java` y la bandera `VITE_REALTIME` ya no
 existen.
 
-### Un test por minijuego: `juegos.spec.ts`
+### Minijuegos: `juegos.spec.ts` y `tests/juegos/`
 
 ```sh
-npm run test:e2e -- juegos        # los 28 minijuegos contra el /ws de Java
+npm run test:e2e -- juegos                     # la prueba de humo y los specs de cada juego
+npm run test:e2e -- tests/juegos.spec.ts       # solo la prueba de humo (y los tests del lobby con varios juegos)
+npm run test:e2e -- tests/juegos/              # solo los specs de cada juego
+npm run test:e2e -- juegos/type-chain          # el spec de un juego
+cd e2e && npx playwright test juegos -g type-chain   # su spec y su prueba de humo (`npm run` se come `-g`)
 ```
 
-Lee los ids de `backend/src/main/resources/games/registry.json` y genera un test por juego: abre
+El filtro de Playwright es una expresión regular sobre la ruta del fichero: `juegos` coge `tests/juegos.spec.ts` y todo
+`tests/juegos/`, igual en `npm run ui:check -- juegos` y en el filtro del workflow `e2e.yml`.
+
+- `tests/juegos.spec.ts`: la prueba de humo de todos los minijuegos del registro (abajo) y los tests del lobby con
+  varios minijuegos (rotación, orden).
+- `tests/juegos/<id>.spec.ts`: los recorridos de un juego (`<id>` es su id del registro), incluidos los de sus modos
+  de juego. Los helpers que usan varios de estos specs están en `src/juegos.ts`; los de un solo juego, en su spec.
+
+La prueba de humo lee los ids de `backend/src/main/resources/games/registry.json` y genera un test por juego: abre
 `max(3, minPlayers)` invitados, el host crea la sala, los demás se unen por código, el host elige el
 juego por su nombre del manifest, los invitados se marcan listos y el host pulsa «Empezar partida».
 Después comprueba que todos salen del lobby y pintan la pantalla de juego, que cada página abrió el
@@ -136,7 +148,7 @@ con el límite de `/api/auth`. Las salas viven en memoria: reiniciar el backend 
 
 ## Medición de encaje: `PU_LAYOUT_LOG`
 
-`capture()` (y `layoutProblems()`, que usan los helpers de `juegos.spec.ts`) hace fallar el spec si hay scroll
+`capture()` (y `layoutProblems()`, que usan los helpers de `src/juegos.ts`) hace fallar el spec si hay scroll
 horizontal, si la página se desplaza en vertical a cualquier ancho o el `main` del armazón a 1024 px o más (spec
 Arcade DS §2: en escritorio no hay scroll de página), o si `measureLayout` (`src/layout.ts`) encuentra texto de menos
 de 13 px, solapes, texto recortado sin `title` o controles fuera de su caja. Las dos cosas son el valor por defecto:
@@ -157,7 +169,12 @@ solo si es un falso positivo del medidor; cada uso se apunta en `docs/visual-rev
 
 - Fichero `tests/<pantalla>.spec.ts` (`*.spec.ts`, no `*.test.ts`, para que Vitest no lo coja; este
   workspace no tiene script `test`).
-- Recorre los tamaños de revisión con `for (const { w, h } of SIZES)` y `page.setViewportSize`.
+- Un minijuego nuevo va en `tests/juegos/<id>.spec.ts` (la prueba de humo de `tests/juegos.spec.ts` ya lo recoge del
+  registro).
+- Recorre los tamaños de revisión con `for (const { w, h } of SIZES)` y `page.setViewportSize`, o, para capturar una
+  pantalla a los tres tamaños dentro de un mismo test, `capturarATresTamaños(page, nombre)` (con `antes` y `despues` para
+  un paso por tamaño y `restaurar: false` para quedarse en 390×844). Varias cuentas registradas, cada una en su contexto:
+  `persona(browser, cuentas, prefijo, w, h)`.
 - `collectErrors(page)` al principio y `expect(errors).toEqual([])` al final.
 - Entra con `loginAsGuest(page, uniqueName('E2E'))` (un invitado nuevo por test; nunca registres
   usuarios). Para salas: `createRoom(page)` devuelve el código y `joinRoom(page, code)` se une; para
