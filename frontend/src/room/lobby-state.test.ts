@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { connectedCount, emptyRoomState, filterGames, lobbyActionStatus, lobbyStartReason, emptyRoomState, normalizeSearch, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
+import { connectedCount, emptyRoomState, filterGames, lobbyActionStatus, lobbyStartReason, normalizeSearch, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
 
 describe('la última partida vale doble', () => {
   it('cambiar el número de partidas conserva la opción', () => {
