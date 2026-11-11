@@ -576,7 +576,7 @@
     gap: var(--sp-1);
   }
   .sent .clueText {
-    font-size: 24px;
+    font-size: var(--fs-22);
   }
   .clue {
     font-size: var(--fs-18);

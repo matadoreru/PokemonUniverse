@@ -5,7 +5,7 @@
  */
 .stage > div {
   position: relative;
-  background: radial-gradient(circle at center, rgb(143 208 255 / 0.22) 0, transparent 62%);
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--sky) 22%, transparent) 0, transparent 62%);
 }
 .viewport {
   position: relative;
@@ -16,7 +16,7 @@
   border: var(--ol-2) solid var(--navy);
   border-radius: var(--r-card);
   background: var(--band);
-  box-shadow: inset 0 0 70px rgb(5 8 17 / 0.55);
+  box-shadow: inset 0 0 70px color-mix(in srgb, var(--band) 55%, transparent);
 }
 .viewport > img {
   position: absolute;

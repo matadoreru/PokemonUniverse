@@ -232,7 +232,7 @@
 }
 .ruleCount {
   min-width: 26px;
-  padding: 4px var(--sp-2);
+  padding: var(--sp-1) var(--sp-2);
   border-radius: var(--r-pill);
   background: var(--navy);
   color: var(--white);

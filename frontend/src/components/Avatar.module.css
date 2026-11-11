@@ -100,7 +100,7 @@
   place-items: center;
   min-width: 20px;
   height: 20px;
-  padding: 0 4px;
+  padding: 0 var(--sp-1);
   border: var(--ol-1-5) solid var(--navy);
   border-radius: var(--r-pill);
   background: var(--yellow);

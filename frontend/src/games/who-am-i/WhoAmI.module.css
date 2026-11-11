@@ -99,7 +99,7 @@
 }
 /* El jugador del turno: contorno grueso y la etiqueta «Turno» en texto (el color nunca va solo). */
 .turn {
-  outline: 4px solid var(--yellow);
+  outline: var(--ol-4) solid var(--yellow);
   outline-offset: 2px;
 }
 .player {
@@ -129,7 +129,7 @@
   gap: var(--sp-1);
   min-width: 0;
   padding-bottom: var(--sp-2);
-  border-bottom: 2px solid var(--navy-2);
+  border-bottom: var(--ol-2) solid var(--navy-2);
 }
 .clue:last-child {
   border-bottom: 0;

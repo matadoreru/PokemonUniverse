@@ -116,7 +116,7 @@
 }
 .small {
   height: 34px;
-  padding: 0 16px;
+  padding: 0 var(--sp-4);
   font-size: var(--fs-15);
   box-shadow: var(--sh-hard-3);
 }
@@ -180,7 +180,7 @@
   right: -4px;
   min-width: 22px;
   height: 22px;
-  padding: 0 4px;
+  padding: 0 var(--sp-1);
   display: inline-flex;
   align-items: center;
   justify-content: center;

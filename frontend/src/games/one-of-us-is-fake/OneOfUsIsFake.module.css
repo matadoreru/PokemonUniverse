@@ -47,7 +47,7 @@
   max-width: 100%;
   overflow: hidden;
   padding: 2px var(--sp-2);
-  border-left: 4px solid var(--seat, var(--navy));
+  border-left: var(--ol-4) solid var(--seat, var(--navy));
   border-radius: 6px;
   background: var(--white);
   text-overflow: ellipsis;

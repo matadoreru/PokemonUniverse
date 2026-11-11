@@ -61,14 +61,14 @@ fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
 /* Foco visible siempre: anillo de 3 px con 2 px de separación; sobre amarillo, blanco. */
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: var(--ol-3) solid var(--focus-ring); outline-offset: 2px; }
 /* Títulos que reciben el foco por programa (`tabIndex={-1}`, p. ej. `room/game-kit/focus-transition.ts`): no son controles y no
    llevan anillo (si no, queda pintado entre fases). Solo títulos: los botones con -1 (foco itinerante) conservan el suyo. */
 :is(h1, h2, h3, h4, h5, h6)[tabindex="-1"]:focus { outline: none; }
 ::selection { color: var(--navy-2); background: var(--yellow); }
 ::-webkit-scrollbar { width: .65rem; height: .65rem; }
 ::-webkit-scrollbar-track { background: var(--navy-2); }
-::-webkit-scrollbar-thumb { border: 2px solid var(--navy-2); border-radius: 999px; background: var(--yellow); }
+::-webkit-scrollbar-thumb { border: var(--ol-2) solid var(--navy-2); border-radius: var(--r-pill); background: var(--yellow); }
 
 @layer components {
   /* Fila de contenido: mismos bordes que la cabecera (`--content-max` y `--gutter`, en tokens.css). */

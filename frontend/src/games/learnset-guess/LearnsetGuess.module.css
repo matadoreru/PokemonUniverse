@@ -454,7 +454,7 @@
   }
   .clues > li > * {
     gap: var(--sp-2);
-    padding-block: 4px;
+    padding-block: var(--sp-1);
   }
   /*
    * Con la bandeja de resultados abierta, el título de la placa de la ronda («¿Qué Pokémon es?») repite la pregunta de

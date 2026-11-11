@@ -49,7 +49,7 @@
 }
 .versus {
   align-self: end;
-  padding-bottom: 12px;
+  padding-bottom: var(--sp-3);
   font: 800 var(--fs-15) / 1 var(--font-display);
   color: var(--red-d);
 }

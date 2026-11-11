@@ -95,7 +95,7 @@
   background: var(--sky-2);
 }
 .correct {
-  box-shadow: inset 0 0 0 3px var(--ok);
+  box-shadow: inset 0 0 0 var(--ol-3) var(--ok);
 }
 .anchor {
   position: sticky;
@@ -132,7 +132,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font: 800 clamp(15px, 1.3cqw, 20px) / 1.15 var(--font-display);
+  font: 800 clamp(var(--fs-15), 1.3cqw, 20px) / 1.15 var(--font-display);
 }
 .round {
   font: 700 var(--fs-13) / 1.2 var(--font-text);

@@ -86,7 +86,7 @@
   border: var(--ol-2) solid var(--white);
   border-radius: 50%;
   background: var(--player);
-  box-shadow: 0 0 0 2px var(--navy);
+  box-shadow: 0 0 0 var(--ol-2) var(--navy);
 }
 .hudSide {
   display: flex;

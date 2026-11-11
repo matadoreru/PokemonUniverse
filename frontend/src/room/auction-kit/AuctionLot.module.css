@@ -173,7 +173,7 @@
   gap: var(--sp-1);
   min-width: 0;
   padding-top: var(--sp-2);
-  border-top: 2px dashed var(--cream-2);
+  border-top: var(--ol-2) dashed var(--cream-2);
 }
 .seat {
   display: inline-flex;
@@ -193,7 +193,7 @@
   gap: var(--sp-1);
   min-width: 0;
   padding: 2px var(--sp-2);
-  border: 2px solid transparent;
+  border: var(--ol-2) solid transparent;
   border-radius: var(--r-badge);
   font: 800 var(--fs-15) / 1.25 var(--font-text);
   color: var(--ink);

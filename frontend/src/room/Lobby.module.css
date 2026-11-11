@@ -164,7 +164,7 @@
   min-width: 28px;
   height: 28px;
   padding: 0 6px;
-  border-radius: 14px;
+  border-radius: var(--r-card);
   background: var(--navy);
   color: var(--white);
   pointer-events: none;

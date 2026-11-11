@@ -32,14 +32,14 @@
 }
 /* Separación entre franjas: un filo navy fino (dos colores parecidos siguen siendo dos franjas). */
 .segment + .segment {
-  border-left: 2px solid var(--navy);
+  border-left: var(--ol-2) solid var(--navy);
 }
 .legend {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
   gap: var(--sp-1) var(--sp-3);
   flex: none;
-  font: 800 clamp(13px, 1.9cqw, 24px) / 1.25 var(--font-text);
+  font: 800 clamp(var(--fs-13), 1.9cqw, 24px) / 1.25 var(--font-text);
   color: var(--ink);
 }
 /* Escritorio: columnas iguales, en dos filas como mucho (`--cols` = la mitad de los colores, hasta 4). */
@@ -58,7 +58,7 @@
   flex: none;
   width: 1em;
   height: 1em;
-  border: 2px solid var(--navy);
+  border: var(--ol-2) solid var(--navy);
   border-radius: 50%;
 }
 .name {
@@ -100,7 +100,7 @@
   height: 3rem;
 }
 .reveal .legend {
-  font-size: 13px;
+  font-size: var(--fs-13);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 /* Escritorio: una columna, para que los nombres largos («amarillo oscuro») se lean enteros. */
@@ -128,6 +128,6 @@
     height: clamp(4rem, 10vh, 7rem);
   }
   .reveal .legend {
-    font-size: 15px;
+    font-size: var(--fs-15);
   }
 }

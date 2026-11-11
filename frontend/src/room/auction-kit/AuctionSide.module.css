@@ -72,7 +72,7 @@
   flex: none;
   margin: 0;
   padding: var(--sp-2) 14px var(--sp-3);
-  border-top: 2px solid var(--navy-2);
+  border-top: var(--ol-2) solid var(--navy-2);
 }
 .note {
   margin-top: var(--sp-3);

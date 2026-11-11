@@ -116,7 +116,7 @@
   right: -4px;
   min-width: 26px;
   height: 26px;
-  padding: 0 4px;
+  padding: 0 var(--sp-1);
   display: inline-flex;
   align-items: center;
   justify-content: center;

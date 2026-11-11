@@ -5,7 +5,7 @@
  */
 .stage > div {
   padding: var(--sp-3);
-  background: radial-gradient(circle at center, rgb(255 210 63 / 0.18) 0, transparent 62%);
+  background: radial-gradient(circle at center, color-mix(in srgb, var(--yellow) 18%, transparent) 0, transparent 62%);
 }
 .player {
   display: flex;
@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(4px, 1.6cqw, 22px);
+  gap: clamp(var(--sp-1), 1.6cqw, 22px);
   flex: 1 1 auto;
   width: min(88cqw, 64rem);
   min-height: 0;
@@ -33,7 +33,7 @@
   height: var(--h);
   min-height: 6px;
   border: var(--ol-2) solid var(--navy-2);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: linear-gradient(180deg, var(--yellow-l), var(--yellow) 55%, var(--yellow-d));
   box-shadow: var(--sh-hard-3);
   transform: scaleY(0.45);
