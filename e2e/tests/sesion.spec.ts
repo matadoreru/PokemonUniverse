@@ -24,7 +24,7 @@ async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Pro
   await page.setViewportSize({ width: 1280, height: 720 });
 }
 
-/** Juegos que necesitan datos que la BD local puede no tener (los `UNAVAILABLE` de `juegos.spec.ts`): no se votan. */
+/** Juegos que necesitan datos que la BD local puede no tener (los `UNAVAILABLE` de `src/juegos.ts`): no se votan. */
 const registry = JSON.parse(readFileSync(new URL('../../backend/src/main/resources/games/registry.json', import.meta.url), 'utf8')) as { id: string; name: string }[];
 const SIN_DATOS = new Set(registry.filter((game) => ['tcg-higher-lower', 'pokemon-palette-guess'].includes(game.id)).map((game) => game.name));
 
