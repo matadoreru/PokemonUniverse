@@ -285,9 +285,6 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 ## Deuda técnica conocida
 
-- **OpenAPI más laxo que `shared`**: `email` y `role` aparecen anulables y los enumerados como `string`; los tipos
-  generados no son asignables a los de `shared`. Hay que afinar las anotaciones Java (y quitar los alias sin uso
-  `ProfileResponse` y `GamesResponse` si siguen sin usarse).
 - El procesamiento incremental de anotaciones está desactivado para que el OpenAPI sea determinista; ralentiza la compilación.
 - CI: los pushes en cola esperan a un build nativo en curso (concurrencia serie); un push solo de documentación
   redespliega PRE con imágenes idénticas; volver a lanzar un Main antiguo reetiqueta el `:pre` actual; las listas de rutas de
