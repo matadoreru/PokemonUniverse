@@ -1,10 +1,10 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import { friendsButtonLabel } from './FriendsButton';
 import { canInviteFriend } from './FriendsDrawer';
 import { inviteText } from './InviteToasts';
+import { member, roomView } from '../room/test-support/room-view';
 
-const lobby = { phase: 'LOBBY', members: [{ id: 'self' }, { id: 'inside' }] } as unknown as RoomView;
+const lobby = roomView({ members: [member({ id: 'self', displayName: 'Yo' }), member({ id: 'inside', displayName: 'Dentro' })] });
 
 describe('canInviteFriend', () => {
   it('solo en el lobby, a un amigo conectado o en otra sala que no esté ya en la tuya', () => {
@@ -13,7 +13,7 @@ describe('canInviteFriend', () => {
     expect(canInviteFriend(lobby, { id: 'a', status: 'PLAYING' })).toBe(false);
     expect(canInviteFriend(lobby, { id: 'a', status: 'OFFLINE' })).toBe(false);
     expect(canInviteFriend(lobby, { id: 'inside', status: 'IN_ROOM' })).toBe(false);
-    expect(canInviteFriend({ ...lobby, phase: 'ROUND_ACTIVE' } as RoomView, { id: 'a', status: 'ONLINE' })).toBe(false);
+    expect(canInviteFriend({ ...lobby, phase: 'ROUND_ACTIVE' }, { id: 'a', status: 'ONLINE' })).toBe(false);
     expect(canInviteFriend(null, { id: 'a', status: 'ONLINE' })).toBe(false);
   });
 });

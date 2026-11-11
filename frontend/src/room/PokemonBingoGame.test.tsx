@@ -7,6 +7,7 @@ import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoClock, bingoF
 import { PokemonBingoGame } from './PokemonBingoGame';
 import { PokemonBingoResults } from './PokemonBingoResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -42,18 +43,15 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 }
 
 function room(game: PokemonBingoPublicState, player: PokemonBingoPlayerState | null, hostId = 'p1'): RoomView {
-  return {
-    code: 'ABC234', phase: game.phase, hostId, maxPlayers: 8,
+  return roomView({ phase: game.phase, hostId,
     availableGames: [{ id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Bingo', minPlayers: 1, profileStats: { metrics: [] } }],
-    selectedGameId: 'pokemon-bingo', selectedGameConfig: { ...defaultPokemonBingoConfig, width: 2, height: 2, generations: [1] },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-bingo'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player,
+    selectedGameId: 'pokemon-bingo', selectedGameConfig: { ...defaultPokemonBingoConfig, width: 2, height: 2, generations: [1] }, game, gamePlayerState: player,
     members: [
-      { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },
-      { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: false, presence: 'DISCONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 3 },
-      { id: 'p3', displayName: 'Leo', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'SPECTATOR', isHost: false, ready: false, sessionPoints: 0 },
+      member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 7 }),
+      member({ id: 'p2', displayName: 'Ana', connected: false, presence: 'TEMPORARILY_DISCONNECTED', sessionPoints: 3 }),
+      member({ id: 'p3', displayName: 'Leo', role: 'SPECTATOR' }),
     ],
-  } as RoomView;
+  });
 }
 
 const playing: PokemonBingoPlayerState = { canAct: true, cooldownUntil: null, lastAttempt: null };

@@ -1,7 +1,7 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PromptSourceField, type PromptSourceOption } from './PromptSourceField';
+import { roomView } from '../../room/test-support/room-view';
 
 const auth = vi.hoisted(() => ({ user: { kind: 'GUEST' } as { kind: string } | null }));
 vi.mock('../../auth/AuthContext', () => ({ useAuth: () => auth }));
@@ -11,7 +11,7 @@ const sources: PromptSourceOption[] = [
   { id: 'CUSTOM', title: 'Personales', detail: 'Solo las del host.' },
   { id: 'BOTH', title: 'Mezcladas', detail: 'Las dos.' },
 ];
-const room = { hostId: 'host' } as RoomView;
+const room = roomView({ hostId: 'host' });
 
 const render = (selfId: string, extra: { masculine?: boolean } = {}) => renderToStaticMarkup(
   <PromptSourceField label="Fuente de preguntas" sources={sources} value="CUSTOM" disabled={false} onChange={() => undefined} room={room} selfId={selfId}

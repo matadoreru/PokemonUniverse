@@ -7,6 +7,7 @@ import { chainTypeText, typeChainAnnouncement, typeChainEventView, typeChainFocu
 import { TypeChainGame } from './TypeChainGame';
 import { TypeChainResults } from './TypeChainResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -38,12 +39,12 @@ function publicGame(phase: 'TURN_ACTIVE' | 'GAME_RESULTS' = 'TURN_ACTIVE'): Type
 }
 
 function room(game: TypeChainPublicState, player: TypeChainPlayerState | null): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'type-chain', selectedGameConfig: defaultTypeChainConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['type-chain'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: Date.now(), game, gamePlayerState: player, members: [
-    { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 8 },
-    { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 5 },
-    { id: 'p3', displayName: 'Marta', avatar: { type: 'DEFAULT' }, connected: false, presence: 'TEMPORARILY_DISCONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 2 },
-    { id: 's1', displayName: 'Sara', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'SPECTATOR', isHost: false, ready: false, sessionPoints: 0 },
-  ] };
+  return roomView({ phase: game.phase, selectedGameId: 'type-chain', selectedGameConfig: defaultTypeChainConfig, serverNow: Date.now(), game, gamePlayerState: player, members: [
+    member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 8 }),
+    member({ id: 'p2', displayName: 'Ana', sessionPoints: 5 }),
+    member({ id: 'p3', displayName: 'Marta', connected: false, presence: 'TEMPORARILY_DISCONNECTED', sessionPoints: 2 }),
+    member({ id: 's1', displayName: 'Sara', role: 'SPECTATOR' }),
+  ] });
 }
 
 const turn: TypeChainPlayerState = { canSubmit: true, isCurrentPlayer: true, eliminated: false, cooldownUntil: null, lastAttempt: null };

@@ -1,4 +1,4 @@
-import type { PokedexDistancePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
+import type { PokedexDistancePublicState } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -6,13 +6,8 @@ import type { FriendsContextValue } from '../friends/FriendsContext';
 import type { FriendsResponse } from '../lib/api-contract';
 import { MemberMenu, memberReadiness, PlayerList } from './PlayerList';
 import { playerColor } from './player-color';
+import { member } from './test-support/room-view';
 
-function member(overrides: Partial<RoomMemberView> & Pick<RoomMemberView, 'id' | 'displayName'>): RoomMemberView {
-  return {
-    avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false,
-    ready: false, sessionPoints: 0, ...overrides,
-  };
-}
 
 let friends: FriendsContextValue | null = null;
 vi.mock('../friends/FriendsContext', () => ({ useOptionalFriends: () => friends }));

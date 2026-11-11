@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RoomView } from '@pokemon-universe/shared/public';
 import { WebSocketRealtime } from './realtime-ws';
+import { roomView } from '../room/test-support/room-view';
 
 class FakeWebSocket {
   static readonly CONNECTING = 0;
@@ -26,7 +26,7 @@ class FakeWebSocket {
 
 const latest = () => FakeWebSocket.instances.at(-1)!;
 const create = () => new WebSocketRealtime('ws://example.test/ws', FakeWebSocket as unknown as typeof WebSocket);
-const room = { code: 'ABCD' } as unknown as RoomView;
+const room = roomView({ code: 'ABCD' });
 
 describe('native WebSocket realtime client', () => {
   beforeEach(() => { vi.useFakeTimers(); FakeWebSocket.instances = []; });

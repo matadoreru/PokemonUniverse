@@ -5,11 +5,11 @@ import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocu
 import { HigherLowerGame } from './HigherLowerGame';
 import { HigherLowerResults } from './HigherLowerResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const member = (id: string, displayName: string) => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 });
 
 /** Pokémon de la ronda: el número de Pokédex de Onix (95) es la respuesta de la categoría «N.º Pokédex» y nunca se pinta. */
 const ONIX_DEX = 95;
@@ -21,7 +21,7 @@ function room(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS', overrides: Partial<Higher
     p3: { choice: null, correct: false, basePoints: 0, streakBonus: 0, speedBonus: 0, awardedPoints: 0, streak: 0 },
   } };
   const game: HigherLowerPublicState = { gameId: 'higher-lower', phase, mode: 'CLASSIC', playerIds: ['p1', 'p2', 'p3'], roundNumber: 1, totalRounds: 5, category: 'HP', previousPokemon: { id: 'pidgey', name: 'Pidgey', sprite: '/api/pokemon/pidgey/sprite', value: 40 }, currentPokemon: { id: 'onix', name: 'Onix', sprite: '/api/pokemon/onix/sprite', value: phase === 'ROUND_RESULTS' ? 63 : null }, answers: {}, answeredIds: [], scores: { p1: 2, p2: 0, p3: 0 }, streaks: { p1: 1, p2: 0, p3: 0 }, roundStartedAt: 1_000, roundEndsAt: phase === 'ROUND_ACTIVE' ? 21_000 : null, nextTransitionAt: phase === 'ROUND_RESULTS' ? 4_000 : null, lastRound: phase === 'ROUND_RESULTS' ? lastRound : null, results: null, ...overrides };
-  return { code: 'TEST11', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla')], availableGames: [], selectedGameId: 'higher-lower', selectedGameConfig: { answerVisibility: visibility, roundSeconds: 20 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['higher-lower'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, daily: null, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return roomView({ code: 'TEST11', phase, members: [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno' }), member({ id: 'p3', displayName: 'Carla' })], selectedGameId: 'higher-lower', selectedGameConfig: { answerVisibility: visibility, roundSeconds: 20 }, gameConfigs: {}, customizedGameIds: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 });
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<HigherLowerGame room={view} selfId={selfId} onAction={async () => undefined} />);
@@ -184,7 +184,7 @@ describe('Higher or Lower · Racha infinita', () => {
   } };
   const endless = (phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS', overrides: Partial<HigherLowerPublicState> = {}, player: Partial<HigherLowerPlayerState> = {}) => {
     const view = room(phase, { mode: 'ENDLESS', roundNumber: 3, totalRounds: 100, alive: phase === 'ROUND_ACTIVE' ? ['p1', 'p2'] : ['p1'], scores: { p1: 2, p2: 1, p3: 0 }, streaks: { p1: 2, p2: 1, p3: 0 }, ...(phase === 'ROUND_RESULTS' ? { lastRound: endlessRound } : {}), ...overrides }, player);
-    return { ...view, selectedGameConfig: { ...(view.selectedGameConfig as object), mode: 'ENDLESS' } } as RoomView;
+    return { ...view, selectedGameConfig: { ...(view.selectedGameConfig as object), mode: 'ENDLESS' } };
   };
 
   it('shows each streak and who is still standing, with «Eliminado» for the fallen', () => {

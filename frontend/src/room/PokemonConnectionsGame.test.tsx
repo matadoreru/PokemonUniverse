@@ -7,6 +7,7 @@ import { connectionsSnapSeconds, nextAttemptFocus, connectionsAnnouncement, conn
 import { PokemonConnectionsGame } from './PokemonConnectionsGame';
 import { PokemonConnectionsResults } from './PokemonConnectionsResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -44,17 +45,14 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 }
 
 function room(game: PokemonConnectionsPublicState, player: PokemonConnectionsPlayerState): RoomView {
-  return {
-    code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8,
+  return roomView({ phase: game.phase,
     availableGames: [{ id: 'pokemon-connections', name: 'Pokémon Connections', icon: '🧩', description: 'Conexiones', minPlayers: 1, profileStats: { metrics: [] } }],
-    selectedGameId: 'pokemon-connections', selectedGameConfig: { ...defaultPokemonConnectionsConfig, generations: [1] },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-connections'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player,
+    selectedGameId: 'pokemon-connections', selectedGameConfig: { ...defaultPokemonConnectionsConfig, generations: [1] }, game, gamePlayerState: player,
     members: [
-      { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 7 },
-      { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: false, presence: 'DISCONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 1 },
+      member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 7 }),
+      member({ id: 'p2', displayName: 'Ana', connected: false, presence: 'TEMPORARILY_DISCONNECTED', sessionPoints: 1 }),
     ],
-  } as RoomView;
+  });
 }
 
 const playing: PokemonConnectionsPlayerState = { role: 'PLAYER', canSubmit: true, foundGroups: [], mistakesUsed: 1, mistakesAllowed: 4, status: 'PLAYING', completionRank: null, roundPoints: 0, lastAttempt: { kind: 'INCORRECT', attemptedPokemonIds: ['pokemon-1', 'pokemon-2', 'pokemon-3', 'pokemon-5'], nearMiss: true, attemptedAt: 2_000 } };

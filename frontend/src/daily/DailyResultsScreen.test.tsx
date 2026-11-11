@@ -1,4 +1,3 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
 import { createElement, type FunctionComponent } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,6 +6,7 @@ import type { DailyLeaderboardResponse } from '../lib/api-contract';
 import { DailyLeaderboardView } from './DailyLeaderboard';
 import { DailyResultSummary, DailyResultsScreen } from './DailyResultsScreen';
 import { shareDailyResult } from './daily-state';
+import { manifest, member, roomView } from '../room/test-support/room-view';
 
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'u1', kind: 'USER', displayName: 'ash', avatar: { type: 'DEFAULT' } } }) }));
 vi.mock('../room/RoomContext', () => ({ useRoom: () => ({ subscribe: () => () => undefined }) }));
@@ -18,11 +18,11 @@ vi.mock('./DailyLeaderboard', async (importOriginal) => {
 });
 
 const result = { score: 612, correct: 7, rounds: [1, 1, 0, 1, 1, 1, 0, 1, 1, -1] };
-const room = {
+const room = roomView({
   code: 'DAILY1', phase: 'GAME_RESULTS', selectedGameId: 'higher-lower', game: { gameId: 'higher-lower' },
-  availableGames: [{ id: 'higher-lower', name: 'Higher or Lower' }], members: [{ id: 'u1', displayName: 'ash' }],
+  availableGames: [manifest({ id: 'higher-lower', name: 'Higher or Lower' })], members: [member({ id: 'u1', displayName: 'ash' })],
   daily: { gameId: 'higher-lower', date: '2026-11-07', roundCount: 10, result },
-} as unknown as RoomView;
+});
 const text = (markup: string) => markup.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 const render = <P extends object>(element: FunctionComponent<P>, props: P) => renderToStaticMarkup(createElement(MemoryRouter, null, createElement(element, props)));
 

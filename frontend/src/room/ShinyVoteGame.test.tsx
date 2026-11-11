@@ -10,22 +10,12 @@ import { shouldMoveFocusOnTransition } from './focus-transition';
 import { ShinyVoteGame } from './ShinyVoteGame';
 import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const members: RoomView['members'] = ['Eru', 'Ana', 'Leo', 'Marta', 'Iris'].map((displayName, index): RoomView['members'][number] => ({
-  id: `p${index + 1}`,
-  displayName,
-  avatar: { type: 'DEFAULT' },
-  connected: true,
-  presence: 'CONNECTED',
-  roomRole: index === 0 ? 'HOST' : 'MEMBER',
-  role: 'PLAYER',
-  isHost: index === 0,
-  ready: false,
-  sessionPoints: 0,
-}));
+const members: RoomView['members'] = ['Eru', 'Ana', 'Leo', 'Marta', 'Iris'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
 
 const options: ShinyVotePublicState['options'] = ['A', 'B', 'C', 'D'].map((id) => ({
   id: id as 'A' | 'B' | 'C' | 'D',
@@ -65,25 +55,14 @@ function player(overrides: Partial<ShinyVotePlayerState> = {}): ShinyVotePlayerS
 
 function room(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | null): RoomView {
   const candidateMode = new Set(game.options.map((option) => option.pokemonId)).size <= 1 ? 'SAME_POKEMON' : 'DIFFERENT_POKEMON';
-  return {
-    code: 'ABC234',
+  return roomView({
     phase: game.phase,
-    hostId: 'p1',
-    maxPlayers: 8,
     members,
-    availableGames: [],
     selectedGameId: 'shiny-vote',
     selectedGameConfig: { generations: [1], rounds: 10, roundSeconds: 20, optionCount: game.options.length, candidateMode, voteVisibility: game.voteVisibility, revealSeconds: 4 },
-    sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'ORDER', gameIds: ['shiny-vote'] },
-    nextGameVote: null,
-    gamesPlayed: 0,
-    sessionStandings: [],
-    sessionHistory: [],
-    daily: null, serverNow: 1_000,
     game,
     gamePlayerState: playerState,
-  };
+  });
 }
 
 function render(game: ShinyVotePublicState, playerState: ShinyVotePlayerState | null = player()) {

@@ -8,6 +8,7 @@ import { ApiError } from '../lib/api';
 import { OneOfUsIsFakeGame } from './OneOfUsIsFakeGame';
 import { OneOfUsIsFakeResults } from './OneOfUsIsFakeResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -58,17 +59,11 @@ function publicGame(phase: Phase = 'ROUND_ACTIVE', lastRound: FakeRoundResult | 
 }
 
 function room(game: OneOfUsIsFakePublicState, player: OneOfUsIsFakePlayerState | null): RoomView {
-  const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => ({
-    id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const,
-    roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: 0,
-  }));
-  return {
-    code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, members,
+  const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
+  return roomView({ phase: game.phase, members,
     availableGames: [{ id: 'one-of-us-is-fake', name: 'One of Us Is Fake', icon: '🕵️', description: 'Categorías', minPlayers: 3, profileStats: { metrics: [] } }],
-    selectedGameId: 'one-of-us-is-fake', selectedGameConfig: defaultOneOfUsIsFakeConfig,
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['one-of-us-is-fake'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, daily: null, serverNow: 1_000,
-  };
+    selectedGameId: 'one-of-us-is-fake', selectedGameConfig: defaultOneOfUsIsFakeConfig, game, gamePlayerState: player,
+  });
 }
 
 const normal = (overrides: Partial<Extract<OneOfUsIsFakePlayerState, { role: 'PLAYER' }>> = {}): OneOfUsIsFakePlayerState => ({ role: 'PLAYER', myCategory: MAIN, ownChoice: null, canSelect: true, canVote: false, ownVotePlayerId: null, ...overrides });

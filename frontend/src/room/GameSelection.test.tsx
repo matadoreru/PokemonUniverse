@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, sessionModesOf, toggleSelectedGame } from './GameSelectionConfig';
 import { NextGameVote } from './NextGameVote';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 const games: MiniGameManifest[] = [
   { id: 'one', name: 'Juego uno', icon: '①', description: 'Primera opción.', minPlayers: 1, profileStats: { metrics: [] } },
@@ -14,8 +15,8 @@ const games: MiniGameManifest[] = [
 
 function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
   const resolved = phase === 'NEXT_GAME_VOTE_RESULTS';
-  return {
-    code: 'ABC234', phase, hostId: 'p1', maxPlayers: 8, availableGames: games,
+  return roomView({
+    phase, availableGames: games,
     selectedGameId: resolved ? 'two' : 'one', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 5 },
     gameSelectionMode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, gamesPlayed: 1,
     sessionStandings: [
@@ -30,12 +31,12 @@ function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
       tallies: resolved ? { one: 0, two: 3, three: 0 } : null, nextTransitionAt: resolved ? Date.now() + 3_000 : null,
     },
     game: { gameId: 'one', results: { winnerId: 'p1', standings: [{ playerId: 'p1', position: 1, points: 5, stats: {} }, { playerId: 'p2', position: 2, points: 2, stats: {} }] } },
-    gamePlayerState: null, daily: null, serverNow: Date.now(), members: [
-      { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 5 },
-      { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: true, sessionPoints: 2 },
-      { id: 'p3', displayName: 'Leo', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: true, sessionPoints: 0 },
+    serverNow: Date.now(), members: [
+      member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 5 }),
+      member({ id: 'p2', displayName: 'Ana', ready: true, sessionPoints: 2 }),
+      member({ id: 'p3', displayName: 'Leo', ready: true }),
     ],
-  };
+  });
 }
 
 describe('game selection UI', () => {

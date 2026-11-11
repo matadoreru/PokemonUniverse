@@ -6,6 +6,7 @@ import { SecretRankingConfigPanel } from '../games/secret-ranking/ConfigPanel';
 import { SecretRankingGame } from './SecretRankingGame';
 import { SecretRankingResults } from './SecretRankingResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -41,8 +42,8 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 }
 
 function room(game: SecretRankingPublicState, player: SecretRankingPlayerState | null): RoomView {
-  const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'secret-ranking', name: 'Secret Ranking', icon: '📋', description: 'Ranking', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'secret-ranking', selectedGameConfig: defaultSecretRankingConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['secret-ranking'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player, members };
+  const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
+  return roomView({ phase: game.phase, availableGames: [{ id: 'secret-ranking', name: 'Secret Ranking', icon: '📋', description: 'Ranking', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'secret-ranking', selectedGameConfig: defaultSecretRankingConfig, game, gamePlayerState: player, members });
 }
 
 const render = (game: SecretRankingPublicState, player: SecretRankingPlayerState | null, selfId = 'p1') => renderToStaticMarkup(createElement(SecretRankingGame, { room: room(game, player), selfId, onAction: async () => undefined }));

@@ -3,6 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { PokedexDistanceResults } from './PokedexDistanceResults';
+import { member, roomView } from './test-support/room-view';
 
 const stats = (exactHits: number, tiebreaksWon: number) => ({ exactHits, roundsSurvived: 1, selections: 2, averageDistance: 4.5, tiebreaksWon });
 
@@ -12,8 +13,8 @@ function room(roundHistory: DistanceRoundRecord[], results: GameResults, extra: 
     survivorIds: results.winnerId ? [results.winnerId] : [], spectatorIds: [], selections: {}, selectedIds: [], lockedPokemonIds: [],
     roundStartedAt: null, roundEndsAt: null, nextTransitionAt: null, lastRound: null, roundHistory, winnerId: results.winnerId, results, ...extra,
   };
-  const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: 0 }));
-  return { code: 'ABC234', phase: 'GAME_RESULTS', hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: defaultPokedexDistanceConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 1, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: null, members };
+  const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
+  return roomView({ phase: 'GAME_RESULTS', selectedGameId: 'pokedex-distance', selectedGameConfig: defaultPokedexDistanceConfig, gamesPlayed: 1, game, members });
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(createElement(PokedexDistanceResults, { room: view, selfId, onLobby: () => undefined, onEnd: () => undefined }));

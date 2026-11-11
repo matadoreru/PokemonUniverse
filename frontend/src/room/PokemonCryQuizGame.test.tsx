@@ -8,6 +8,7 @@ import { PokemonCryQuizGame } from './PokemonCryQuizGame';
 import { PokemonCryQuizResults } from './PokemonCryQuizResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { labelledRadiogroup } from '../ui/segmented-markup';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -42,10 +43,10 @@ const solvedPlayer: PokemonCryQuizPlayerState = { role: 'PLAYER', canGuess: fals
 const spectator: PokemonCryQuizPlayerState = { ...guessing, role: 'SPECTATOR', canGuess: false };
 
 function room(game: PokemonCryQuizPublicState, player: PokemonCryQuizPlayerState | null): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokemon-cry-quiz', selectedGameConfig: config, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-cry-quiz'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), game, gamePlayerState: player, members: [
-    { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 0 },
-    { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
-  ] } as unknown as RoomView;
+  return roomView({ phase: game.phase, selectedGameId: 'pokemon-cry-quiz', selectedGameConfig: config, serverNow: Date.now(), game, gamePlayerState: player, members: [
+    member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true }),
+    member({ id: 'p2', displayName: 'Ana' }),
+  ] });
 }
 const render = (view: RoomView) => renderToStaticMarkup(createElement(PokemonCryQuizGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
 const ANSWER = /Pikachu|options\/reveal|raw\.githubusercontent|\.ogg/;

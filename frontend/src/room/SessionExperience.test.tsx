@@ -1,16 +1,10 @@
-import type { RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { PlayerList } from './PlayerList';
 import { SessionResults } from './SessionResults';
-
-function member(overrides: Partial<RoomMemberView> & Pick<RoomMemberView, 'id' | 'displayName'>): RoomMemberView {
-  return {
-    avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false,
-    ready: false, sessionPoints: 0, ...overrides,
-  };
-}
+import { member, roomView } from './test-support/room-view';
 
 describe('priority session experience', () => {
   it('shows readiness and reconnecting states as visible text', () => {
@@ -29,15 +23,14 @@ describe('priority session experience', () => {
   });
 
   it('renders tied champions and point history for a player who already left', () => {
-    const room: RoomView = {
-      code: 'ABC234', phase: 'SESSION_RESULTS', hostId: 'host', maxPlayers: 8,
+    const room: RoomView = roomView({
+      phase: 'SESSION_RESULTS', hostId: 'host',
       members: [member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 8 })],
       availableGames: [
         { id: 'one', name: 'Juego uno', icon: '①', description: 'Uno', minPlayers: 1, profileStats: { metrics: [] } },
         { id: 'two', name: 'Juego dos', icon: '②', description: 'Dos', minPlayers: 1, profileStats: { metrics: [] } },
       ],
-      selectedGameId: 'two', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 2 }, gameSelectionMode: { type: 'ORDER', gameIds: ['two'] },
-      nextGameVote: null, gamesPlayed: 2,
+      selectedGameId: 'two', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 2 }, gamesPlayed: 2,
       sessionStandings: [
         { id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, sessionPoints: 8 },
         { id: 'departed', displayName: 'Ana', avatar: { type: 'DEFAULT' }, sessionPoints: 8 },
@@ -46,8 +39,7 @@ describe('priority session experience', () => {
         { gameNumber: 1, gameId: 'one', winnerIds: ['host'], points: { host: 5, departed: 3 } },
         { gameNumber: 2, gameId: 'two', winnerIds: ['departed'], points: { host: 3, departed: 5 } },
       ],
-      game: null, gamePlayerState: null, daily: null, serverNow: 1_000,
-    };
+    });
 
     const markup = renderToStaticMarkup(createElement(SessionResults, { room, selfId: 'host', onLobby: () => undefined }));
     expect(markup).toContain('Campeones de la sesión');
@@ -66,13 +58,10 @@ describe('priority session experience', () => {
   });
 
   it('shows an empty standings state when the session ends before any game', () => {
-    const room: RoomView = {
-      code: 'ABC234', phase: 'SESSION_RESULTS', hostId: 'host', maxPlayers: 8,
-      members: [member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true })],
-      availableGames: [], selectedGameId: 'one', selectedGameConfig: {}, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['one'] },
-      nextGameVote: null, gamesPlayed: 0, sessionStandings: [{ id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, sessionPoints: 0 }],
-      sessionHistory: [], game: null, gamePlayerState: null, daily: null, serverNow: 1_000,
-    };
+    const room: RoomView = roomView({
+      phase: 'SESSION_RESULTS', hostId: 'host', members: [member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true })],
+      selectedGameId: 'one', selectedGameConfig: {}, sessionStandings: [{ id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, sessionPoints: 0 }],
+    });
     const markup = renderToStaticMarkup(createElement(SessionResults, { room, selfId: 'host', onLobby: () => undefined }));
     expect(markup).toContain('Sesión terminada');
     expect(markup).toContain('Aún no se ha jugado ninguna partida');

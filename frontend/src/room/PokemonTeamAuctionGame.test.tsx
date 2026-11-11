@@ -6,6 +6,7 @@ import { PokemonTeamAuctionConfigPanel } from '../games/pokemon-team-auction/Con
 import { PokemonTeamAuctionGame } from './PokemonTeamAuctionGame';
 import { PokemonTeamAuctionResults } from './PokemonTeamAuctionResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -21,7 +22,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'GAME_RESULTS' = 'ROUND_ACTIVE'): Po
 }
 
 function room(game: PokemonTeamAuctionPublicState, player: PokemonTeamAuctionPlayerState): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'pokemon-team-auction', name: 'Pokémon Team Auction', icon: '💰', description: 'Subasta', minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-team-auction', selectedGameConfig: defaultPokemonTeamAuctionConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-team-auction'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player, members: [{ id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 534 }, { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 }] };
+  return roomView({ phase: game.phase, availableGames: [{ id: 'pokemon-team-auction', name: 'Pokémon Team Auction', icon: '💰', description: 'Subasta', minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-team-auction', selectedGameConfig: defaultPokemonTeamAuctionConfig, game, gamePlayerState: player, members: [member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 534 }), member({ id: 'p2', displayName: 'Ana' })] });
 }
 
 const player: PokemonTeamAuctionPlayerState = { role: 'PLAYER', canRaise: true, canPass: true, minimumBid: 5, coins: 20, team: [won] };

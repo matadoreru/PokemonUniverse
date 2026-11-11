@@ -7,6 +7,7 @@ import { redFlagAnnouncement, redFlagHeading, redFlagVerdict, sendRedFlagDraft }
 import { PokemonRedFlagGame } from './PokemonRedFlagGame';
 import { PokemonRedFlagResults } from './PokemonRedFlagResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -50,9 +51,9 @@ function room(game: PokemonRedFlagPublicState, player: PokemonRedFlagPlayerState
   const members = NAMES.map((displayName, index) => {
     const id = `p${index + 1}`;
     const off = disconnected.includes(id);
-    return { id, displayName, avatar: { type: 'DEFAULT' as const }, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' as const : 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: game.scores[id] ?? 0 };
+    return member({ id, displayName, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[id] ?? 0 });
   });
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'pokemon-red-flag', name: 'La Frase Pokémon', icon: '💬', description: 'Frases', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-red-flag', selectedGameConfig: defaultPokemonRedFlagConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-red-flag'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player, members };
+  return roomView({ phase: game.phase, availableGames: [{ id: 'pokemon-red-flag', name: 'La Frase Pokémon', icon: '💬', description: 'Frases', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-red-flag', selectedGameConfig: defaultPokemonRedFlagConfig, game, gamePlayerState: player, members });
 }
 
 const WRITING: PokemonRedFlagPlayerState = { role: 'PLAYER', canSubmit: true, ownDraft: '', ownAnswer: null, canVote: false, ownVoteAnswerId: null, ownAnswerId: 'rf-1-x' };

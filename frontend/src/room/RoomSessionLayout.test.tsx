@@ -1,4 +1,4 @@
-import type { GameSkipStateView, RoomView } from '@pokemon-universe/shared/public';
+import type { DailyRoomInfo, GameSkipStateView, RoomView } from '@pokemon-universe/shared/public';
 import { createElement, type PropsWithChildren } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { RoomPlate, roomPlateHeading } from './RoomPlate';
 import { RoomNotice } from './RoomNotice';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
 import { GameSkipSlot } from './GameSkipSlot';
+import { manifest, roomView } from './test-support/room-view';
 
 const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn(), holdRoomSession: vi.fn(() => () => undefined) }));
 vi.mock('./RoomContext', () => ({ useRoom: () => context, RoomProvider: ({ children }: PropsWithChildren) => children }));
@@ -14,7 +15,7 @@ vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { id: 'self' } }
 
 const skip: GameSkipStateView = { gameInstanceId: '123e4567-e89b-42d3-a456-426614174000', voterIds: [], votes: 0, requiredVotes: 4, currentUserVoted: false, canVote: true };
 function render(gameId: string, phase: RoomView['phase'], state: GameSkipStateView | null) {
-  context.room = { code: 'ABC234', selectedGameId: gameId, phase, game: { gameId }, gameSkipState: state } as RoomView;
+  context.room = roomView({ selectedGameId: gameId, phase, game: { gameId }, gameSkipState: state });
   return renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(RoomSessionLayout)));
 }
 
@@ -35,13 +36,13 @@ describe('global room actions', () => {
   });
 
   it('no pinta «Saltar minijuego» en el reto diario, aunque la sala lleve el estado de salto (de él sale el id de la partida)', () => {
-    const dailyView = { gameId: 'higher-lower', date: '2026-11-07', roundCount: 10, result: null };
+    const dailyView: DailyRoomInfo = { gameId: 'higher-lower', date: '2026-11-07', roundCount: 10, result: null };
     expect(render('future-minigame', 'ROUND_ACTIVE', skip)).toContain('Votar para saltar el minijuego');
-    context.room = { ...context.room, daily: dailyView } as RoomView;
+    context.room = { ...context.room!, daily: dailyView };
     expect(renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(RoomSessionLayout)))).not.toContain('Votar para saltar el minijuego');
     render('higher-lower', 'ROUND_ACTIVE', skip);
     expect(renderToStaticMarkup(createElement(GameSkipSlot))).toContain('Votar para saltar el minijuego');
-    context.room = { ...context.room, daily: dailyView } as RoomView;
+    context.room = { ...context.room!, daily: dailyView };
     expect(renderToStaticMarkup(createElement(GameSkipSlot))).toBe('');
   });
 
@@ -57,7 +58,7 @@ describe('room plate', () => {
   });
 
   it('shows the code with its copy button and an accessible «Salir de la sala»', () => {
-    const room = { code: 'ABC234', selectedGameId: 'higher-lower', phase: 'LOBBY', game: null, availableGames: [] } as unknown as RoomView;
+    const room = roomView({ selectedGameId: 'higher-lower' });
     const markup = renderToStaticMarkup(createElement(RoomPlate, { room, onLeave: vi.fn() }));
     expect(markup).toContain('aria-label="Copiar código de sala ABC234"');
     expect(markup).toContain('Lobby de la sala');
@@ -67,27 +68,27 @@ describe('room plate', () => {
   });
 
   it('names the current game during a match', () => {
-    const room = { phase: 'ROUND_ACTIVE', selectedGameId: 'higher-lower', game: { gameId: 'higher-lower' }, availableGames: [{ id: 'higher-lower', name: 'Más o menos' }] } as unknown as RoomView;
+    const room = roomView({ phase: 'ROUND_ACTIVE', selectedGameId: 'higher-lower', game: { gameId: 'higher-lower' }, availableGames: [manifest({ id: 'higher-lower', name: 'Más o menos' })] });
     expect(roomPlateHeading(room)).toEqual({ kicker: 'Sala', title: 'Más o menos' });
   });
 
   it('adds the mode to the title when the running game is not Classic', () => {
-    const base = { phase: 'GAME_STARTING', selectedGameId: 'pokedex-distance', availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }, { id: 'pokemon-impostor', name: 'Pokémon Impostor' }] };
-    const fromState = { ...base, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, selectedGameConfig: { mode: 'CLASSIC' } } as unknown as RoomView;
+    const base = roomView({ phase: 'GAME_STARTING', selectedGameId: 'pokedex-distance', availableGames: [manifest({ id: 'pokedex-distance', name: 'Pokédex Distance' }), manifest({ id: 'pokemon-impostor', name: 'Pokémon Impostor' })] });
+    const fromState: RoomView = { ...base, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, selectedGameConfig: { mode: 'CLASSIC' } };
     expect(roomPlateHeading(fromState).title).toBe('Pokédex Distance · Por puntos');
     // Un estado sin `mode` (de antes del modo): el título lo toma de la configuración elegida. Prueba pura de `roomPlateHeading`.
-    const fromConfig = { ...base, selectedGameId: 'type-duel', game: { gameId: 'type-duel' }, availableGames: [{ id: 'type-duel', name: 'Type Duel' }], selectedGameConfig: { mode: 'COOP' } } as unknown as RoomView;
+    const fromConfig: RoomView = { ...base, selectedGameId: 'type-duel', game: { gameId: 'type-duel' }, availableGames: [manifest({ id: 'type-duel', name: 'Type Duel' })], selectedGameConfig: { mode: 'COOP' } };
     expect(roomPlateHeading(fromConfig).title).toBe('Type Duel · Cooperativo');
-    const classic = { ...base, game: { gameId: 'pokedex-distance', mode: 'CLASSIC' }, selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;
+    const classic: RoomView = { ...base, game: { gameId: 'pokedex-distance', mode: 'CLASSIC' }, selectedGameConfig: { mode: 'POINTS' } };
     expect(roomPlateHeading(classic).title).toBe('Pokédex Distance');
-    const noModes = { ...base, selectedGameId: 'type-chain', game: { gameId: 'type-chain' }, availableGames: [{ id: 'type-chain', name: 'Type Chain' }], selectedGameConfig: { mode: 'POINTS' } } as unknown as RoomView;
+    const noModes: RoomView = { ...base, selectedGameId: 'type-chain', game: { gameId: 'type-chain' }, availableGames: [manifest({ id: 'type-chain', name: 'Type Chain' })], selectedGameConfig: { mode: 'POINTS' } };
     expect(roomPlateHeading(noModes).title).toBe('Type Chain');
   });
 });
 
 describe('daily room plate', () => {
-  const daily = { gameId: 'pokedex-distance', date: '2026-11-07', roundCount: 5, result: null };
-  const room = (phase: RoomView['phase']) => ({ code: 'DAILY1', phase, selectedGameId: 'pokedex-distance', selectedGameConfig: { mode: 'POINTS' }, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, availableGames: [{ id: 'pokedex-distance', name: 'Pokédex Distance' }], daily } as unknown as RoomView);
+  const daily: DailyRoomInfo = { gameId: 'pokedex-distance', date: '2026-11-07', roundCount: 5, result: null };
+  const room = (phase: RoomView['phase']) => roomView({ code: 'DAILY1', phase, selectedGameId: 'pokedex-distance', selectedGameConfig: { mode: 'POINTS' }, game: { gameId: 'pokedex-distance', mode: 'POINTS' }, availableGames: [manifest({ id: 'pokedex-distance', name: 'Pokédex Distance' })], daily });
 
   it.each(['ROUND_ACTIVE', 'GAME_RESULTS'] as const)('lleva «Reto diario», el juego y su modo en %s', (phase) => {
     expect(roomPlateHeading(room(phase))).toEqual({ kicker: 'Reto diario', title: 'Pokédex Distance · Por puntos' });

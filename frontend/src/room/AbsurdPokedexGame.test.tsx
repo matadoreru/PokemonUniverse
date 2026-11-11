@@ -6,6 +6,7 @@ import { AbsurdPokedexConfigPanel } from '../games/absurd-pokedex/ConfigPanel';
 import { AbsurdPokedexGame } from './AbsurdPokedexGame';
 import { AbsurdPokedexResults } from './AbsurdPokedexResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -41,8 +42,8 @@ function publicGame(phase: Phase, mode: Mode = 'REAL_ENTRY', round: AbsurdPokede
 }
 
 function room(game: AbsurdPokedexPublicState, player: AbsurdPokedexPlayerState | null): RoomView {
-  const members = NAMES.map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'absurd-pokedex', name: 'Pokédex Absurda', icon: '📖', description: 'Entradas', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'absurd-pokedex', selectedGameConfig: { ...defaultAbsurdPokedexConfig, mode: game.mode }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['absurd-pokedex'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player, members } as RoomView;
+  const members = NAMES.map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
+  return roomView({ phase: game.phase, availableGames: [{ id: 'absurd-pokedex', name: 'Pokédex Absurda', icon: '📖', description: 'Entradas', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'absurd-pokedex', selectedGameConfig: { ...defaultAbsurdPokedexConfig, mode: game.mode }, game, gamePlayerState: player, members });
 }
 
 const WRITING: AbsurdPokedexPlayerState = { role: 'PLAYER', canSubmit: true, ownDraft: '', ownEntry: null, canVote: false, ownVoteEntryId: null, ownFunnyEntryId: null };

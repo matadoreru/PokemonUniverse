@@ -1,16 +1,15 @@
-import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import { PLAYER_COLORS } from './player-color';
 import { sessionPodium } from './session-results';
+import { member } from './test-support/room-view';
 
-const member = (id: string): RoomMemberView => ({ id, displayName: id, avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 });
 const standing = (id: string, displayName: string, sessionPoints: number) => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, sessionPoints });
 
 describe('sessionPodium', () => {
   it('shares positions on ties, orders by name and colours by room order', () => {
     const podium = sessionPodium({
       gamesPlayed: 3,
-      members: [member('c'), member('a'), member('b')],
+      members: [member({ id: 'c', displayName: 'c' }), member({ id: 'a', displayName: 'a' }), member({ id: 'b', displayName: 'b' })],
       sessionStandings: [standing('a', 'Eru', 8), standing('b', 'Ana', 8), standing('c', 'Leo', 5), standing('gone', 'Zoe', 1)],
     }, 'a');
     expect(podium.standings.map((s) => [s.name, s.position])).toEqual([['Ana', 1], ['Eru', 1], ['Leo', 3], ['Zoe', 4]]);

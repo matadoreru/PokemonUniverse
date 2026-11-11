@@ -5,12 +5,12 @@ import { learnsetAnnouncement, learnsetClueOrder, learnsetFocusKey, learnsetPlat
 import { LearnsetGuessGame } from './LearnsetGuessGame';
 import { LearnsetGuessResults } from './LearnsetGuessResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
-const member = (id: string, displayName: string, role: 'PLAYER' | 'SPECTATOR' = 'PLAYER') => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: 'MEMBER' as const, role, isHost: false, ready: false, sessionPoints: 0 });
 const move = (moveId: string, name: string, level: number | null, type: 'normal' | 'electric' | 'steel' = 'normal', category: 'physical' | 'special' | 'status' = 'physical') => ({ moveId, name, level, type, category });
 
 const groups = [
@@ -31,7 +31,7 @@ const answer: LearnsetRoundResult = {
 type Phase = LearnsetGuessPublicState['phase'];
 function room(phase: Phase, overrides: Partial<LearnsetGuessPublicState> = {}, player: Partial<LearnsetGuessPlayerState> = {}): RoomView {
   const game: LearnsetGuessPublicState = { gameId: 'learnset-guess', phase, mode: 'CLASSIC', roundNumber: 1, totalRounds: 3, referenceGeneration: 9, referenceSource: 'Pokémon Scarlet / Violet', visibleGroups: phase === 'ROUND_ACTIVE' ? groups : [], evolutionHint: null, attempts: [], solvedPlayers: [], roundStartedAt: 1_000, roundEndsAt: 61_000, nextTransitionAt: 8_000, lastWarning: false, lastRound: null, scores: { p1: 0, p2: 0, p3: 0 }, results: null, ...overrides };
-  return { code: 'TEST11', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla'), member('s1', 'Sara', 'SPECTATOR')], availableGames: [], selectedGameId: 'learnset-guess', selectedGameConfig: { generations: [1], showLevels: true, showEvolution: true, roundSeconds: 60, rounds: 3 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['learnset-guess'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canGuess: phase === 'ROUND_ACTIVE', solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, ...player }, daily: null, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return roomView({ code: 'TEST11', phase, members: [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno' }), member({ id: 'p3', displayName: 'Carla' }), member({ id: 's1', displayName: 'Sara', role: 'SPECTATOR' })], selectedGameId: 'learnset-guess', selectedGameConfig: { generations: [1], showLevels: true, showEvolution: true, roundSeconds: 60, rounds: 3 }, gameConfigs: {}, customizedGameIds: [], game, gamePlayerState: { canGuess: phase === 'ROUND_ACTIVE', solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, ...player }, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 });
 }
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<LearnsetGuessGame room={view} selfId={selfId} onAction={async () => undefined} />);
 

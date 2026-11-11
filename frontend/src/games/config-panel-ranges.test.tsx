@@ -98,13 +98,14 @@ import { WhoIsWhoPokemonConfigPanel } from './who-is-who-pokemon/ConfigPanel';
 import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
 import { WouldYouRatherConfigPanel } from './would-you-rather/ConfigPanel';
 import { ZoomedPokemonConfigPanel } from './zoomed-pokemon/ConfigPanel';
+import { roomView } from '../room/test-support/room-view';
 
 // Los paneles de preguntas propias leen la sesión: un invitado no ve el gestor, que pediría datos a la API.
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
 type Panel = ComponentType<{ config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }>;
 /** Sala mínima: quien mira no es el anfitrión. */
-const room = { hostId: 'host' } as RoomView;
+const room = roomView({ hostId: 'host' });
 interface NumericField { minValue: number | null; maxValue: number | null }
 interface Range { min: number; max: number }
 

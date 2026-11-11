@@ -9,16 +9,13 @@ import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { labelledRadiogroup } from '../ui/segmented-markup';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
-const players = ['Ana', 'Pedro', 'Carlos'].map((displayName, index) => ({
-  id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true,
-  presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const,
-  role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: 0,
-}));
+const players = ['Ana', 'Pedro', 'Carlos'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
 const nameOf = (id: string) => players.find((player) => player.id === id)?.displayName ?? id;
 
 function game(phase: PokemonBluffAuctionPublicState['phase'] = 'ROUND_ACTIVE'): PokemonBluffAuctionPublicState {
@@ -42,13 +39,10 @@ const impossible: BluffAuctionRoundResult = {
 };
 
 function room(publicGame: PokemonBluffAuctionPublicState, player: PokemonBluffAuctionPlayerState): RoomView {
-  return {
-    code: 'ABC234', phase: publicGame.phase, hostId: 'p1', maxPlayers: 8, members: players,
+  return roomView({ phase: publicGame.phase, members: players,
     availableGames: [{ id: 'pokemon-bluff-auction', name: 'Pokémon Bluff Auction', icon: '🔨', description: 'Pujas', minPlayers: 2, profileStats: { metrics: [] } }],
-    selectedGameId: 'pokemon-bluff-auction', selectedGameConfig: { generations: [1, 2, 3], demonstrationSeconds: 30, rounds: 10, bidSeconds: 20 },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-bluff-auction'] }, nextGameVote: null,
-    gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: publicGame, gamePlayerState: player, daily: null, serverNow: 1_000,
-  };
+    selectedGameId: 'pokemon-bluff-auction', selectedGameConfig: { generations: [1, 2, 3], demonstrationSeconds: 30, rounds: 10, bidSeconds: 20 }, game: publicGame, gamePlayerState: player,
+  });
 }
 
 const turn: PokemonBluffAuctionPlayerState = { role: 'PLAYER', canRaise: true, canPass: true, canSubmitPokemon: false };

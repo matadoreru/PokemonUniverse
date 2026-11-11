@@ -5,19 +5,19 @@ import { typeDuelAnnouncement, typeDuelCoopAnnouncement, typeDuelCoopRanking, ty
 import { TypeDuelGame } from './TypeDuelGame';
 import { TypeDuelResults } from './TypeDuelResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
-const member = (id: string, displayName: string) => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 });
 
 type Phase = TypeDuelPublicState['phase'];
 const attempt = (playerId: string, pokemonName: string, correct: boolean, attemptedAt: number) => ({ playerId, pokemonId: pokemonName.toLowerCase(), pokemonName, sprite: `/api/pokemon/${pokemonName.toLowerCase()}/sprite`, correct, attemptedAt });
 
 function room(phase: Phase, overrides: Partial<TypeDuelPublicState> = {}, player: Partial<TypeDuelPlayerState> = {}): RoomView {
   const game: TypeDuelPublicState = { gameId: 'type-duel', phase, mode: 'CLASSIC', playerIds: ['p1', 'p2', 'p3'], completedRounds: 0, roundNumber: 1, totalRounds: 3, participants: ['p1', 'p2'], participationCounts: { p1: 1, p2: 1, p3: 0 }, typeSelectionCompletedIds: [], revealedTypes: {}, requiredTypes: null, solutionCount: null, invalidCombinations: 0, finalSelectionCycle: false, attempts: [], scores: { p1: 0, p2: 0, p3: 0 }, roundStartedAt: 1_000, roundEndsAt: 16_000, nextTransitionAt: null, lastRound: null, results: null, ...overrides };
-  return { code: 'TEST11', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla')], availableGames: [], selectedGameId: 'type-duel', selectedGameConfig: { generations: [1], typeSelectSeconds: 15, searchSeconds: 20, rounds: 3 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['type-duel'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { participant: true, ownType: null, canSelectType: phase === 'SELECTING_TYPES', canAttempt: phase === 'POKEMON_SEARCH', cooldownUntil: 0, ...player }, daily: null, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return roomView({ code: 'TEST11', phase, members: [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno' }), member({ id: 'p3', displayName: 'Carla' })], selectedGameId: 'type-duel', selectedGameConfig: { generations: [1], typeSelectSeconds: 15, searchSeconds: 20, rounds: 3 }, gameConfigs: {}, customizedGameIds: [], game, gamePlayerState: { participant: true, ownType: null, canSelectType: phase === 'SELECTING_TYPES', canAttempt: phase === 'POKEMON_SEARCH', cooldownUntil: 0, ...player }, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 });
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<TypeDuelGame room={view} selfId={selfId} onAction={async () => undefined} />);
@@ -167,7 +167,7 @@ describe('TypeDuelGame: Cooperativo', () => {
   const find = (pokemonId: string, playerId: string) => ({ pokemonId, playerId, pokemonName: pokemonId[0]!.toUpperCase() + pokemonId.slice(1), sprite: `/api/pokemon/${pokemonId}/sprite` });
   const coop = (phase: Phase, overrides: Partial<TypeDuelPublicState> = {}, player: Partial<TypeDuelPlayerState> = {}) => {
     const view = room(phase, { mode: 'COOP', combination: ['water', 'ground'], solutionCount: 2, found: [], contributions: { p1: 0, p2: 0, p3: 0 }, roundEndsAt: 31_000, ...overrides }, { canAttempt: phase === 'POKEMON_SEARCH', ...player });
-    return { ...view, selectedGameConfig: { generations: [1, 2], typeSelectSeconds: 15, searchSeconds: 20, rounds: 3, coopSeconds: 30, mode: 'COOP' } } as RoomView;
+    return { ...view, selectedGameConfig: { generations: [1, 2], typeSelectSeconds: 15, searchSeconds: 20, rounds: 3, coopSeconds: 30, mode: 'COOP' } };
   };
 
   it('shows the combination, the group counter, the own contribution and who found each one', () => {

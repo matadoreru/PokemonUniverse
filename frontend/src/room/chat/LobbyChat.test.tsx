@@ -3,12 +3,12 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { canDeleteChatMessage, draftAfterSend, canMuteInChat, ChatModerationMenu, LobbyChat } from './LobbyChat';
+import { member } from '../test-support/room-view';
 
-function member(id: string, displayName: string, roomRole: RoomRole = 'MEMBER', extra: Partial<RoomMemberView> = {}): RoomMemberView {
-  return { id, displayName, avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole, role: 'PLAYER', isHost: roomRole === 'HOST', ready: false, sessionPoints: 0, ...extra };
-}
-
-const members = [member('host', 'Eru', 'HOST'), member('co', 'Ana', 'CO_HOST'), member('co2', 'Bea', 'CO_HOST'), member('leo', 'Leo')];
+const members = [
+  member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true }), member({ id: 'co', displayName: 'Ana', roomRole: 'CO_HOST' }),
+  member({ id: 'co2', displayName: 'Bea', roomRole: 'CO_HOST' }), member({ id: 'leo', displayName: 'Leo' }),
+];
 const message = (seq: number, authorId: string, authorName: string, text = 'hola'): ChatMessage => ({ seq, authorId, authorName, text, sentAt: Date.UTC(2026, 10, 7, 17, 3) });
 const messages = [message(1, 'host', 'Eru'), message(2, 'co', 'Ana'), message(3, 'leo', 'Leo'), message(4, 'gone', 'Sam')];
 const noop = () => Promise.resolve();

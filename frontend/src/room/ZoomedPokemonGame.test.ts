@@ -9,6 +9,7 @@ import { ZoomedPokemonGame, ZoomViewport } from './ZoomedPokemonGame';
 import { ZoomedPokemonResults } from './ZoomedPokemonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { labelledRadiogroup } from '../ui/segmented-markup';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -40,10 +41,10 @@ const guessing: ZoomedPokemonPlayerState = { canGuess: true, solved: false, solv
 const solvedPlayer: ZoomedPokemonPlayerState = { canGuess: false, solved: true, solveOrder: 1, cooldownUntil: null, roundPoints: 14, attemptCount: 1, lastAttempt: { result: 'CORRECT', attemptedAt: 2_000 } };
 
 function room(game: ZoomedPokemonPublicState, player: ZoomedPokemonPlayerState | null, spectator = false): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'zoomed-pokemon', selectedGameConfig: defaultZoomedPokemonConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['zoomed-pokemon'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: Date.now(), game, gamePlayerState: player, members: [
-    { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, ready: false, sessionPoints: 5 },
-    { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
-  ] } as RoomView;
+  return roomView({ phase: game.phase, selectedGameId: 'zoomed-pokemon', selectedGameConfig: defaultZoomedPokemonConfig, serverNow: Date.now(), game, gamePlayerState: player, members: [
+    member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, sessionPoints: 5 }),
+    member({ id: 'p2', displayName: 'Ana' }),
+  ] });
 }
 const render = (view: RoomView) => renderToStaticMarkup(createElement(ZoomedPokemonGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
 const ANSWER = /Lucario|options\/reveal|targetPokemon/;

@@ -7,6 +7,7 @@ import { describePokedexEntryHint, entrySegments, fitFontSize } from '../games/p
 import { PokedexEntryGuessGame } from './PokedexEntryGuessGame';
 import { PokedexEntryGuessResults } from './PokedexEntryGuessResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -39,10 +40,10 @@ const solvedPlayer: PokedexEntryGuessPlayerState = { canGuess: false, solved: tr
 const watching: PokedexEntryGuessPlayerState = { ...guessing, canGuess: false };
 
 function room(game: PokedexEntryGuessPublicState, player: PokedexEntryGuessPlayerState | null, spectator = false): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokedex-entry-guess', selectedGameConfig: { ...defaultPokedexEntryGuessConfig, generations: [1, 2, 3, 4, 5] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-entry-guess'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: Date.now(), game, gamePlayerState: player, members: [
-    { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, ready: false, sessionPoints: 4 },
-    { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
-  ] } as unknown as RoomView;
+  return roomView({ phase: game.phase, selectedGameId: 'pokedex-entry-guess', selectedGameConfig: { ...defaultPokedexEntryGuessConfig, generations: [1, 2, 3, 4, 5] }, serverNow: Date.now(), game, gamePlayerState: player, members: [
+    member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', role: spectator ? 'SPECTATOR' : 'PLAYER', isHost: true, sessionPoints: 4 }),
+    member({ id: 'p2', displayName: 'Ana' }),
+  ] });
 }
 const render = (view: RoomView) => renderToStaticMarkup(createElement(PokedexEntryGuessGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
 const ANSWER = /Absol|options\/reveal|Esmeralda/;

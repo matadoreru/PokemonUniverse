@@ -1,4 +1,3 @@
-import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
@@ -7,12 +6,12 @@ import {
   guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSearchAutoFocus, guessSolvedOrders, guessVerdict,
 } from './presentation';
 import { expectSingleLiveRegion } from '../test-support/live-regions';
+import { member } from '../test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('../RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const member = (id: string, displayName: string, role: 'PLAYER' | 'SPECTATOR' = 'PLAYER', presence: 'CONNECTED' | 'DISCONNECTED' = 'CONNECTED') => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: presence === 'CONNECTED', presence, roomRole: 'MEMBER' as const, role, isHost: false, ready: false, sessionPoints: 0 }) as RoomMemberView;
-const members = [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla', 'PLAYER', 'DISCONNECTED'), member('s1', 'Sara', 'SPECTATOR')];
+const members = [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno' }), member({ id: 'p3', displayName: 'Carla', connected: false, presence: 'TEMPORARILY_DISCONNECTED' }), member({ id: 's1', displayName: 'Sara', role: 'SPECTATOR' })];
 const attempt = (playerId: string, name: string, at: number) => ({ playerId, guessedPokemon: { id: name.toLowerCase(), name, sprite: `/api/pokemon/${name.toLowerCase()}/sprite` }, attemptedAt: at });
 const selector = { pokemon: [], loading: false, loadError: '', onRetry: () => undefined, inputLabel: 'Buscar respuesta para la ronda 2', roundKey: 2, onGuess: async () => undefined };
 const panel = (props: Partial<GuessPanelProps>) => renderToStaticMarkup(<GuessPanel kind="guess" titleRef={{ current: null }} question="¿Quién es ese Pokémon?" selector={selector} {...props} />);

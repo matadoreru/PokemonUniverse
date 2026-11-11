@@ -8,6 +8,7 @@ import { wouldYouRatherAnnouncement, wouldYouRatherHeading, wouldYouRatherSummar
 import { WouldYouRatherGame } from './WouldYouRatherGame';
 import { WouldYouRatherResults } from './WouldYouRatherResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -43,9 +44,9 @@ function room(game: WouldYouRatherPublicState, player: WouldYouRatherPlayerState
   const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => {
     const id = `p${index + 1}`;
     const off = disconnected.includes(id);
-    return { id, displayName, avatar: { type: 'DEFAULT' as const }, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' as const : 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: game.scores[id] ?? 0 };
+    return member({ id, displayName, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[id] ?? 0 });
   });
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'would-you-rather', name: 'Would You Rather Pokémon', icon: '⚖️', description: 'Dilemas', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'would-you-rather', selectedGameConfig: defaultWouldYouRatherConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['would-you-rather'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player, members };
+  return roomView({ phase: game.phase, availableGames: [{ id: 'would-you-rather', name: 'Would You Rather Pokémon', icon: '⚖️', description: 'Dilemas', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'would-you-rather', selectedGameConfig: defaultWouldYouRatherConfig, game, gamePlayerState: player, members });
 }
 
 const OPEN: WouldYouRatherPlayerState = { role: 'PLAYER', canSubmit: true, ownBallot: null };

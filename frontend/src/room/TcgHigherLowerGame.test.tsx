@@ -7,11 +7,11 @@ import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tc
 import { TcgHigherLowerGame } from './TcgHigherLowerGame';
 import { TcgHigherLowerResults } from './TcgHigherLowerResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const member = (id: string, displayName: string, presence: 'CONNECTED' | 'DISCONNECTED' = 'CONNECTED') => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: presence === 'CONNECTED', presence, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 });
 
 /** Precio de la nueva carta: nunca puede salir antes de revelar (ni en bruto ni formateado). */
 const SECRET_PRICE = '98.7654';
@@ -38,7 +38,7 @@ function room(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS', override
     ] } : null,
     ...overrides,
   };
-  return { code: 'TEST12', phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla', 'DISCONNECTED')], availableGames: [], selectedGameId: 'tcg-higher-lower', selectedGameConfig: { roundSeconds: 15 }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['tcg-higher-lower'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, daily: null, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return roomView({ code: 'TEST12', phase, members: [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno' }), member({ id: 'p3', displayName: 'Carla', connected: false, presence: 'TEMPORARILY_DISCONNECTED' })], selectedGameId: 'tcg-higher-lower', selectedGameConfig: { roundSeconds: 15 }, gameConfigs: {}, customizedGameIds: [], game, gamePlayerState: { canAnswer: phase === 'ROUND_ACTIVE', answer: null, ...player }, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 });
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<TcgHigherLowerGame room={view} selfId={selfId} onAction={async () => undefined} />);

@@ -1,17 +1,17 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
+import { member, roomView } from '../test-support/room-view';
 import { useGuessRound, type GuessRound, type GuessRoundGame, type GuessRoundOptions, type GuessRoundPlayer } from './useGuessRound';
 
 interface Result { pokemon: { name: string }; solves: Record<string, { solveOrder: number; points: number }> }
 const result: Result = { pokemon: { name: 'Lucario' }, solves: { p1: { solveOrder: 1, points: 13 } } };
 
 const members = [
-  { id: 'p1', displayName: 'Eru', role: 'PLAYER' },
-  { id: 'p2', displayName: 'Ana', role: 'SPECTATOR' },
+  member({ id: 'p1', displayName: 'Eru' }),
+  member({ id: 'p2', displayName: 'Ana', role: 'SPECTATOR' }),
 ];
-const room = { members, serverNow: Date.now() } as unknown as RoomView;
+const room = roomView({ members, serverNow: Date.now() });
 const guessing: GuessRoundPlayer = { canGuess: true, solved: false, solveOrder: null, cooldownUntil: null, roundPoints: 0, attemptCount: 0 };
 
 function game(overrides: Partial<GuessRoundGame<Result>> = {}): GuessRoundGame<Result> {

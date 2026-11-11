@@ -9,6 +9,7 @@ import {
 import { PokemonTriviaGame } from './PokemonTriviaGame';
 import { PokemonTriviaResults } from './PokemonTriviaResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -27,11 +28,11 @@ const lastRound: PokemonTriviaRoundResult = {
 };
 
 function room(game: PokemonTriviaPublicState, playerState: PokemonTriviaPlayerState | null): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [], selectedGameId: 'pokemon-trivia', selectedGameConfig: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 3, difficulty: 'NORMAL', questionTypes: ['ATTACK'] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-trivia'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], serverNow: 1_000, game, gamePlayerState: playerState, members: [
-    { id: 'p1', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 0 },
-    { id: 'p2', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
-    { id: 's1', displayName: 'Sara', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'SPECTATOR', isHost: false, ready: false, sessionPoints: 0 },
-  ] } as unknown as RoomView;
+  return roomView({ phase: game.phase, selectedGameId: 'pokemon-trivia', selectedGameConfig: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 3, difficulty: 'NORMAL', questionTypes: ['ATTACK'] }, game, gamePlayerState: playerState, members: [
+    member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true }),
+    member({ id: 'p2', displayName: 'Ana' }),
+    member({ id: 's1', displayName: 'Sara', role: 'SPECTATOR' }),
+  ] });
 }
 
 const active: PokemonTriviaPublicState = { gameId: 'pokemon-trivia', phase: 'ROUND_ACTIVE', roundNumber: 1, totalRounds: 10, difficulty: 'NORMAL', prompt: '¿Cuál tiene más Ataque?', questionType: 'ATTACK', options, answeredPlayerIds: [], scores: { p1: 0, p2: 0 }, roundStartedAt: 1_000, roundEndsAt: Date.now() + 20_000, nextTransitionAt: null, lastRound: null, results: null };

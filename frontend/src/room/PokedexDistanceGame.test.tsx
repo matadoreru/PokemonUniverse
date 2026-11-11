@@ -3,12 +3,12 @@ import { describe, expect, it, vi } from 'vitest';
 import type { PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { PokedexDistanceGame } from './PokedexDistanceGame';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{ id: 'pikachu', name: 'Pikachu', sprite: '/api/pokemon/pikachu/sprite' }], loading: false, error: '', retry: () => undefined }) }));
 
-const member = (id: string, displayName: string, presence: 'CONNECTED' | 'DISCONNECTED' = 'CONNECTED') => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: presence === 'CONNECTED', presence, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 });
 
 function room(overrides: Partial<PokedexDistancePublicState> = {}, player: Partial<PokedexDistancePlayerState> = {}, config: Record<string, unknown> = {}): RoomView {
   const game: PokedexDistancePublicState = {
@@ -17,7 +17,7 @@ function room(overrides: Partial<PokedexDistancePublicState> = {}, player: Parti
     lockedPokemonIds: [], roundStartedAt: 0, roundEndsAt: 20_000, nextTransitionAt: null, lastRound: null, roundHistory: [], winnerId: null,
     results: null, ...overrides,
   };
-  return { code: 'TEST11', phase: game.phase, hostId: 'p1', maxPlayers: 8, members: [member('p1', 'Ana'), member('p2', 'Bruno', 'DISCONNECTED')], availableGames: [], selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN', pointsRounds: 10, mode: 'CLASSIC', ...config }, gameConfigs: {}, customizedGameIds: [], sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game, gamePlayerState: { canSelect: true, selection: null, exactHit: false, ...player }, daily: null, serverNow: 1_000, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 } as RoomView;
+  return roomView({ code: 'TEST11', phase: game.phase, members: [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno', connected: false, presence: 'TEMPORARILY_DISCONNECTED' })], selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20, selectionVisibility: 'HIDDEN', pointsRounds: 10, mode: 'CLASSIC', ...config }, gameConfigs: {}, customizedGameIds: [], game, gamePlayerState: { canSelect: true, selection: null, exactHit: false, ...player }, hostCustomCategoryCount: 0, hostWouldYouRatherPromptCount: 0 });
 }
 
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<PokedexDistanceGame room={view} selfId={selfId} onAction={async () => undefined} />);

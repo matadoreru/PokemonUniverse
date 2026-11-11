@@ -3,25 +3,24 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { Lobby } from './Lobby';
+import { member, roomView } from './test-support/room-view';
 
 // El hook real, sin `matchMedia` (como en estas pruebas de marcado), da `false`: el móvil. `wide` simula el escritorio.
 let wide = false;
 vi.mock('../hooks/useMediaQuery', () => ({ useMediaQuery: () => wide }));
 
-const room: RoomView = {
-  code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8,
+const room: RoomView = roomView({
+  hostId: 'host',
   members: [
-    { id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 0 },
-    { id: 'guest', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: true, sessionPoints: 0 },
+    member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true }),
+    member({ id: 'guest', displayName: 'Ana', ready: true }),
   ],
   availableGames: [
     { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', recommended: true, minPlayers: 2, profileStats: { metrics: [] } },
     { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', experimental: true, minPlayers: 1, profileStats: { metrics: [] } },
   ],
   selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20 },
-  sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokedex-distance'] }, nextGameVote: null,
-  gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, daily: null, serverNow: 1_000,
-};
+});
 
 const noOp = async () => undefined;
 /** Chat vacío y sus órdenes: los tests de chat los cambian. */
@@ -163,10 +162,7 @@ describe('lobby game modes', () => {
 
 describe('lobby impostor parity', () => {
   const impostorManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
-  const members = ['host', 'p2', 'p3', 'p4'].map((id) => ({
-    id, displayName: id, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const,
-    roomRole: id === 'host' ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: id === 'host', ready: true, sessionPoints: 0,
-  }));
+  const members = ['host', 'p2', 'p3', 'p4'].map((id) => member({ id, displayName: id, roomRole: id === 'host' ? 'HOST' : 'MEMBER', isHost: id === 'host', ready: true }));
   const parityRoom: RoomView = {
     ...room, members, availableGames: [...room.availableGames, impostorManifest],
     selectedGameId: 'pokemon-impostor', selectedGameConfig: { impostorCount: 2 },

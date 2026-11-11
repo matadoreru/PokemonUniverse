@@ -2,25 +2,20 @@ import { defaultPokemonBingoConfig, type RoomMemberView, type RoomView } from '@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { clientGameRegistry, webConfigChecks } from './registry';
+import { member, roomView } from '../room/test-support/room-view';
 
-function member(id: string, presence: RoomMemberView['presence'] = 'CONNECTED'): RoomMemberView {
-  return {
-    id, displayName: id, avatar: { type: 'DEFAULT' }, connected: presence === 'CONNECTED', presence,
-    roomRole: id === 'p1' ? 'HOST' : 'MEMBER', role: 'PLAYER', isHost: id === 'p1', ready: true, sessionPoints: 0,
-  };
+function seat(id: string, presence: RoomMemberView['presence'] = 'CONNECTED'): RoomMemberView {
+  return member({ id, displayName: id, connected: presence === 'CONNECTED', presence, roomRole: id === 'p1' ? 'HOST' : 'MEMBER', isHost: id === 'p1', ready: true });
 }
 
 function roomWith(members: RoomMemberView[], extra: Partial<RoomView> = {}): RoomView {
-  return {
-    code: 'ABC234', phase: 'LOBBY', hostId: 'p1', maxPlayers: 8, members, availableGames: [],
-    selectedGameId: 'pokemon-impostor', selectedGameConfig: { impostorCount: 2 },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] }, nextGameVote: null,
-    gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, daily: null, serverNow: 1_000,
-    ...extra,
-  };
+  return roomView({
+    members, selectedGameId: 'pokemon-impostor', selectedGameConfig: { impostorCount: 2 },
+    gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] }, ...extra,
+  });
 }
 
-const players = (count: number) => Array.from({ length: count }, (_, index) => member(`p${index + 1}`));
+const players = (count: number) => Array.from({ length: count }, (_, index) => seat(`p${index + 1}`));
 const validate = (gameId: string, config: unknown, room?: RoomView) => clientGameRegistry.get(gameId).validateConfig(config, room);
 
 describe('client minigame registry', () => {
@@ -67,7 +62,7 @@ describe('client minigame registry', () => {
     it('cuenta solo a los jugadores conectados para la paridad de impostores', () => {
       expect(validate('pokemon-impostor', { impostorCount: 2 }, roomWith(players(4)))).toBe('Demasiados impostores: con 4 jugadores el máximo es 1.');
       expect(validate('pokemon-impostor', { impostorCount: 2 }, roomWith(players(5)))).toBeNull();
-      expect(validate('pokemon-impostor', { impostorCount: 2 }, roomWith([...players(4), member('p5', 'TEMPORARILY_DISCONNECTED')])))
+      expect(validate('pokemon-impostor', { impostorCount: 2 }, roomWith([...players(4), seat('p5', 'TEMPORARILY_DISCONNECTED')])))
         .toBe('Demasiados impostores: con 4 jugadores el máximo es 1.');
     });
 

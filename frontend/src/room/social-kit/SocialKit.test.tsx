@@ -1,15 +1,14 @@
-import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, type BallotOption, type ChoiceOption, type VoteBallotProps } from '.';
 import { expectSingleLiveRegion } from '../test-support/live-regions';
+import { member } from '../test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('../RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const member = (id: string, displayName: string, presence: 'CONNECTED' | 'TEMPORARILY_DISCONNECTED' = 'CONNECTED') => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, connected: presence === 'CONNECTED', presence, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 }) as RoomMemberView;
-const members = [member('p1', 'Ana'), member('p2', 'Bruno'), member('p3', 'Carla', 'TEMPORARILY_DISCONNECTED')];
+const members = [member({ id: 'p1', displayName: 'Ana' }), member({ id: 'p2', displayName: 'Bruno' }), member({ id: 'p3', displayName: 'Carla', connected: false, presence: 'TEMPORARILY_DISCONNECTED' })];
 
 const options: BallotOption[] = [
   { id: 'p1', name: 'Snorlax', ariaLabel: 'Snorlax, respuesta de Ana', sprite: '/snorlax.png', detail: 'de Ana' },

@@ -7,6 +7,7 @@ import { impostorAnnouncement, impostorClueLine, impostorFocusKey, impostorPhase
 import { PokemonImpostorGame } from './PokemonImpostorGame';
 import { impostorResultLine, impostorTeam, PokemonImpostorResults } from './PokemonImpostorResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -16,18 +17,7 @@ vi.mock('../hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: ()
 
 const SECRET = 'Snorlax';
 
-const members: RoomView['members'] = ['Eru', 'Ana', 'Leo', 'Marta'].map((displayName, index): RoomView['members'][number] => ({
-  id: `p${index + 1}`,
-  displayName,
-  avatar: { type: 'DEFAULT' },
-  connected: true,
-  presence: 'CONNECTED',
-  roomRole: index === 0 ? 'HOST' : 'MEMBER',
-  role: 'PLAYER',
-  isHost: index === 0,
-  ready: false,
-  sessionPoints: 0,
-}));
+const members: RoomView['members'] = ['Eru', 'Ana', 'Leo', 'Marta'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
 const ids = members.map((member) => member.id);
 
 function publicGame(overrides: Partial<PokemonImpostorPublicState> = {}): PokemonImpostorPublicState {
@@ -82,25 +72,14 @@ function impostor(overrides: Partial<PokemonImpostorPlayerState> = {}): PokemonI
 }
 
 function room(game: PokemonImpostorPublicState, playerState: PokemonImpostorPlayerState): RoomView {
-  return {
-    code: 'ABC234',
+  return roomView({
     phase: game.phase,
-    hostId: 'p1',
-    maxPlayers: 8,
     members,
-    availableGames: [],
     selectedGameId: 'pokemon-impostor',
     selectedGameConfig: { generations: [1], impostorCount: 1, clueSeconds: 15, voteSeconds: 20 },
-    sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] },
-    nextGameVote: null,
-    gamesPlayed: 0,
-    sessionStandings: [],
-    sessionHistory: [],
-    serverNow: 1_000,
     game,
     gamePlayerState: playerState,
-  } as unknown as RoomView;
+  });
 }
 
 function render(game: PokemonImpostorPublicState, playerState: PokemonImpostorPlayerState, selfId = 'p1') {

@@ -1,14 +1,13 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation } from './optimistic-room';
+import { roomView } from './test-support/room-view';
 
 function room(overrides: Partial<RoomView> = {}): RoomView {
-  return {
-    code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8, members: [], availableGames: [],
-    selectedGameId: 'shiny-vote', selectedGameConfig: { voteVisibility: 'LIVE' }, sessionMode: { type: 'INFINITE' },
-    gameSelectionMode: { type: 'ORDER', gameIds: ['shiny-vote'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null,
-    gamePlayerState: null, daily: null, serverNow: 1_000, ...overrides,
-  };
+  return roomView({
+    hostId: 'host', selectedGameId: 'shiny-vote', selectedGameConfig: { voteVisibility: 'LIVE' },
+    gameSelectionMode: { type: 'ORDER', gameIds: ['shiny-vote'] }, ...overrides,
+  });
 }
 
 function deferred<T>() {

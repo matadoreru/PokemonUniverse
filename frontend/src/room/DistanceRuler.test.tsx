@@ -1,10 +1,11 @@
-import type { PublicRoundResult, RoomMemberView } from '@pokemon-universe/shared/public';
+import type { PublicRoundResult } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { DistanceRuler } from './DistanceRuler';
+import { member } from './test-support/room-view';
 
-const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: 'MEMBER' as const, role: 'PLAYER' as const, isHost: false, ready: false, sessionPoints: 0 })) as RoomMemberView[];
+const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName }));
 
 const round: PublicRoundResult = {
   targetDexNumber: 25, eligibleIds: ['p1', 'p2', 'p3'], eliminatedIds: ['p3'], reason: 'NO_RESPONSE', tiedIds: [],

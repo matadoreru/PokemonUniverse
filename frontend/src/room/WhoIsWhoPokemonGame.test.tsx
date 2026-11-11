@@ -7,6 +7,7 @@ import { WhoIsWhoPokemonGame } from './WhoIsWhoPokemonGame';
 import { WhoIsWhoPokemonResults } from './WhoIsWhoPokemonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { labelledRadiogroup } from '../ui/segmented-markup';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -19,11 +20,7 @@ const board = [
   { id: 'pikachu', nationalDexNumber: 25, name: 'Pikachu', sprite: '/pikachu.png' },
   { id: 'bulbasaur', nationalDexNumber: 1, name: 'Bulbasaur', sprite: '/bulbasaur.png' },
 ];
-const members: RoomView['members'] = ['blue-1', 'blue-2', 'red-1'].map((id, index) => ({
-  id, displayName: ['Jose', 'Pepe', 'Eru'][index]!, avatar: { type: 'DEFAULT' }, connected: true,
-  presence: 'CONNECTED', roomRole: index === 0 ? 'HOST' : 'MEMBER', role: 'PLAYER', isHost: index === 0,
-  ready: false, sessionPoints: 0,
-}));
+const members: RoomView['members'] = ['blue-1', 'blue-2', 'red-1'].map((id, index) => member({ id, displayName: ['Jose', 'Pepe', 'Eru'][index]!, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
 
 function game(overrides: Partial<WhoIsWhoPublicState> = {}): WhoIsWhoPublicState {
   return {
@@ -36,12 +33,7 @@ function game(overrides: Partial<WhoIsWhoPublicState> = {}): WhoIsWhoPublicState
 }
 
 function room(player: WhoIsWhoPlayerState | null, state = game()): RoomView {
-  return {
-    code: 'ABC234', phase: state.phase, hostId: 'blue-1', maxPlayers: 8, members,
-    availableGames: [], selectedGameId: 'who-is-who-pokemon', selectedGameConfig: { ...defaultWhoIsWhoPokemonConfig, boardSize: 24, turnSeconds: 30 },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['who-is-who-pokemon'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], game: state, gamePlayerState: player, daily: null, serverNow: 2_000,
-  };
+  return roomView({ phase: state.phase, hostId: 'blue-1', members, selectedGameId: 'who-is-who-pokemon', selectedGameConfig: { ...defaultWhoIsWhoPokemonConfig, boardSize: 24, turnSeconds: 30 }, game: state, gamePlayerState: player, serverNow: 2_000 });
 }
 
 const bluePlayer: WhoIsWhoPlayerState = { role: 'PLAYER', team: 'BLUE', ownSecret: board[0]!, discardedPokemonIds: ['pikachu'], canChooseSecret: false, canManageBoard: true, canAct: true, canGuess: true, guessUsed: false, lastGuess: null };

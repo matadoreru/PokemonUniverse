@@ -12,6 +12,7 @@ import {
 import { PokeddleRaceGame } from './PokeddleRaceGame';
 import { PokeddleRaceResults } from './PokeddleRaceResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -50,8 +51,8 @@ function gameState(phase: Phase = 'ROUND_ACTIVE', boards: Record<string, Pokeddl
 const guessing: PokeddleRacePlayerState = { canGuess: true, hasGuessedThisRound: false, solved: false };
 
 function roomOf(game: PokeddleRacePublicState, player: PokeddleRacePlayerState | null, spectator = false): RoomView {
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, selectedGameId: 'pokeddle-race', selectedGameConfig: { ...defaultPokeddleRaceConfig, generations: [1, 2, 3, 4] }, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokeddle-race'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: Date.now(), availableGames: [], game, gamePlayerState: player,
-    members: ['p1', 'p2', 'p3'].map((id, index) => ({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, avatar: { type: 'DEFAULT' }, connected: true, presence: index === 2 ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: index === 0 && spectator ? 'SPECTATOR' : 'PLAYER', isHost: index === 0, ready: false, sessionPoints: 0 })) } as RoomView;
+  return roomView({ phase: game.phase, selectedGameId: 'pokeddle-race', selectedGameConfig: { ...defaultPokeddleRaceConfig, generations: [1, 2, 3, 4] }, serverNow: Date.now(), game, gamePlayerState: player,
+    members: ['p1', 'p2', 'p3'].map((id, index) => member({ id, displayName: ['Eru', 'Ana', 'Pedro'][index]!, presence: index === 2 ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index ? 'MEMBER' : 'HOST', role: index === 0 && spectator ? 'SPECTATOR' : 'PLAYER', isHost: index === 0 })) });
 }
 const render = (view: RoomView) => renderToStaticMarkup(createElement(PokeddleRaceGame, { room: view, selfId: 'p1', onAction: async () => undefined }));
 

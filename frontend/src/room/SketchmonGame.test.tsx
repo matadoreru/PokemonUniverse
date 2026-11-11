@@ -7,6 +7,7 @@ import { SketchmonGame } from './SketchmonGame';
 import { brushDotSize } from './SketchmonCanvas';
 import { SketchmonResults } from './SketchmonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -47,19 +48,16 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 }
 
 function room(player: SketchmonPlayerState | null, game: SketchmonPublicState = publicGame(), config: Record<string, unknown> = {}): RoomView {
-  return {
-    code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8,
+  return roomView({ phase: game.phase,
     members: [
-      { id: 'p1', displayName: 'Ana', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 0 },
-      { id: 'p2', displayName: 'Pedro', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
-      { id: 'p3', displayName: 'Carlos', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 },
-      { id: 'p4', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'SPECTATOR', isHost: false, ready: false, sessionPoints: 0 },
+      member({ id: 'p1', displayName: 'Ana', roomRole: 'HOST', isHost: true }),
+      member({ id: 'p2', displayName: 'Pedro' }),
+      member({ id: 'p3', displayName: 'Carlos' }),
+      member({ id: 'p4', displayName: 'Eru', role: 'SPECTATOR' }),
     ],
     availableGames: [{ id: 'sketchmon', name: 'Sketchmon', icon: '🎨', description: 'Dibuja', minPlayers: 2, profileStats: { metrics: [] } }],
-    selectedGameId: 'sketchmon', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false },
-    sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['sketchmon'] }, nextGameVote: null, gamesPlayed: 0,
-    sessionStandings: [], sessionHistory: [], game, gamePlayerState: player, daily: null, serverNow: 1_000,
-  } as RoomView;
+    selectedGameId: 'sketchmon', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false }, game, gamePlayerState: player,
+  });
 }
 
 const render = (player: SketchmonPlayerState | null, selfId: string, game?: SketchmonPublicState, config?: Record<string, unknown>) => renderToStaticMarkup(createElement(SketchmonGame, { room: room(player, game, config), selfId, onAction: async () => undefined }));

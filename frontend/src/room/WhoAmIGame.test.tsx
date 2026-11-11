@@ -8,6 +8,7 @@ import s from '../games/who-am-i/WhoAmI.module.css';
 import { WhoAmIGame } from './WhoAmIGame';
 import { WhoAmIResults } from './WhoAmIResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { member, roomView } from './test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -41,8 +42,8 @@ function playerState(overrides: Partial<WhoAmIPlayerState> = {}): WhoAmIPlayerSt
 }
 
 function room(game: WhoAmIPublicState, player: WhoAmIPlayerState | null): RoomView {
-  const members = NAMES.map((displayName, index) => ({ id: `p${index + 1}`, displayName, avatar: { type: 'DEFAULT' as const }, connected: true, presence: 'CONNECTED' as const, roomRole: index === 0 ? 'HOST' as const : 'MEMBER' as const, role: 'PLAYER' as const, isHost: index === 0, ready: false, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return { code: 'ABC234', phase: game.phase, hostId: 'p1', maxPlayers: 8, availableGames: [{ id: 'who-am-i', name: '¿Quién soy?', icon: '🎭', description: 'Adivina', minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'who-am-i', selectedGameConfig: defaultWhoAmIConfig, sessionMode: { type: 'INFINITE' }, gameSelectionMode: { type: 'ORDER', gameIds: ['who-am-i'] }, nextGameVote: null, gamesPlayed: 0, sessionStandings: [], sessionHistory: [], daily: null, serverNow: 1_000, game, gamePlayerState: player, members } as RoomView;
+  const members = NAMES.map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
+  return roomView({ phase: game.phase, availableGames: [{ id: 'who-am-i', name: '¿Quién soy?', icon: '🎭', description: 'Adivina', minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'who-am-i', selectedGameConfig: defaultWhoAmIConfig, game, gamePlayerState: player, members });
 }
 
 const render = (game: WhoAmIPublicState, player: WhoAmIPlayerState | null, selfId = 'p1') => renderToStaticMarkup(createElement(WhoAmIGame, { room: room(game, player), selfId, onAction: async () => undefined }));
