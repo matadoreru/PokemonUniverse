@@ -831,10 +831,15 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * @description Familia de un logro: hito general, de un minijuego o secreto (oculto hasta conseguirlo).
+         * @enum {string}
+         */
+        AchievementFamily: "GENERAL" | "GAME" | "SECRET";
         /** @description Un logro de la cuenta; `gameId` y `unlockedAt` salen siempre, con `null` si no aplican. */
         AchievementResponse: {
             id: string;
-            family: string;
+            family: components["schemas"]["AchievementFamily"];
             gameId: string | null;
             name: string;
             description: string;
@@ -931,7 +936,7 @@ export interface components {
         AdminFeedbackStatusRequest: {
             status: components["schemas"]["FeedbackStatus"];
         };
-        /** @description `AdminGameHistoryItem` de `shared/admin.ts`; los nulos se emiten explícitos, como Node. */
+        /** @description `AdminGameHistoryItem` de `shared/admin.ts`; los nulos se emiten explícitos, como Node. `status` es el enum de Postgres como texto: sus valores solo documentan el contrato, no se validan al leer. */
         AdminGameHistoryItem: {
             id: string;
             roomCode: string;
@@ -939,7 +944,8 @@ export interface components {
             gameName: string;
             /** Format: int32 */
             playerCount: number;
-            status: string;
+            /** @enum {string} */
+            status: "IN_PROGRESS" | "COMPLETED" | "ABANDONED" | "INTERRUPTED";
             startedAt: string;
             endedAt: string | null;
             participants: components["schemas"]["AdminGameHistoryItem.Participant"][];
@@ -964,7 +970,7 @@ export interface components {
             /** Format: int64 */
             totalPages: number;
         };
-        /** @description `AdminRoomHistoryItem` de `shared/admin.ts`; los nulos se emiten explícitos, como Node. */
+        /** @description `AdminRoomHistoryItem` de `shared/admin.ts`; los nulos se emiten explícitos, como Node. `status` es el enum de Postgres como texto: sus valores solo documentan el contrato, no se validan al leer. */
         AdminRoomHistoryItem: {
             id: string;
             code: string;
@@ -972,7 +978,8 @@ export interface components {
             hostUserId: string | null;
             /** Format: int32 */
             maxPlayers: number;
-            status: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "CLOSED" | "INTERRUPTED";
             closeReason: string | null;
             /** Format: int64 */
             gamesStarted: number;
@@ -1028,7 +1035,7 @@ export interface components {
             id: string;
             username: string;
             email: string;
-            role: string;
+            role: components["schemas"]["UserRole"];
             /** Format: int32 */
             gamesPlayed: number;
             /** Format: int32 */
@@ -1059,13 +1066,13 @@ export interface components {
             path: string;
             message: string;
         };
-        /** @description Identidad autenticada (usuario registrado o invitado); es la misma que viaja en la cookie de sesión. */
+        /** @description Identidad autenticada (usuario registrado o invitado); es la misma que viaja en la cookie de sesión. Sin `email` ni `role` (invitados) las claves no salen: en el OpenAPI son opcionales, nunca `null`. */
         AuthUser: {
             id: string;
             displayName: string;
             kind: components["schemas"]["AuthUser.Kind"];
-            email?: string | null;
-            role?: components["schemas"]["UserRole"] | null;
+            email?: string;
+            role?: components["schemas"]["UserRole"];
             avatar: components["schemas"]["AvatarRef"];
         };
         /** @enum {string} */
@@ -1091,9 +1098,10 @@ export interface components {
         };
         /** @description Un cambio de una entrada del changelog (changelogChangeSchema en shared). `highlight` solo vale `true` o `null`: un `false` se normaliza a `null` y la clave no sale en el JSON. */
         ChangelogChange: {
-            type: string;
+            /** @enum {string} */
+            type: "NEW" | "MINIGAMES" | "BALANCE" | "INTERFACE" | "IMPROVEMENTS" | "BUGS" | "TECHNICAL";
             text: string;
-            highlight?: boolean | null;
+            highlight?: boolean;
         };
         "ChangelogController.ChangelogResponse": {
             entries: components["schemas"]["ChangelogEntryResponse"][];
@@ -1103,7 +1111,7 @@ export interface components {
             id: string;
             version: string;
             title: string;
-            summary?: string | null;
+            summary?: string;
             date: string;
             published: boolean;
             content: components["schemas"]["ChangelogChange"][];
@@ -1165,7 +1173,8 @@ export interface components {
         };
         /** @description La fila propia; `position`, `score`, `correct` y `rounds` son `null` salvo en `FINISHED`. */
         "DailyLeaderboardResponse.Me": {
-            status: string;
+            /** @enum {string} */
+            status: "AVAILABLE" | "IN_PROGRESS" | "FINISHED" | "ABANDONED";
             /** Format: int32 */
             position: number | null;
             /** Format: int32 */
@@ -1185,7 +1194,8 @@ export interface components {
             roundCount: number;
             /** Format: int64 */
             players: number;
-            status: string;
+            /** @enum {string} */
+            status: "AVAILABLE" | "IN_PROGRESS" | "FINISHED" | "ABANDONED";
             result: components["schemas"]["DailyOverviewResponse.Result"] | null;
         };
         /** @description Resultado propio de hoy; `total` son las cuentas que lo han terminado. */
@@ -1210,15 +1220,15 @@ export interface components {
         "FeedbackController.FeedbackResponse": {
             feedback: components["schemas"]["FeedbackItemResponse"];
         };
-        /** @description Vista pública de un feedback; los nulos se emiten explícitos, como hace Node. */
+        /** @description Vista pública de un feedback; los nulos se emiten explícitos, como hace Node. Los textos enumerados documentan en el OpenAPI su enum (el `name()` que se emite). */
         FeedbackItemResponse: {
             id: string;
-            reference: string;
+            reference: components["schemas"]["FeedbackReference"];
             gameId: string | null;
             gameName: string | null;
             roomCode: string | null;
-            type: string;
-            status: string;
+            type: components["schemas"]["FeedbackType"];
+            status: components["schemas"]["FeedbackStatus"];
             description: string;
             author: components["schemas"]["FeedbackItemResponse.Author"];
             createdAt: string;
@@ -1227,7 +1237,7 @@ export interface components {
         "FeedbackItemResponse.Author": {
             userId: string | null;
             displayName: string;
-            kind: string;
+            kind: components["schemas"]["AuthUser.Kind"];
         };
         /** @enum {string} */
         FeedbackReference: "GENERAL" | "MINIGAME" | "ROOMS" | "ACCOUNT" | "INTERFACE" | "CHANGELOG" | "OTHER";
@@ -1289,20 +1299,20 @@ export interface components {
             incoming: components["schemas"]["FriendRequestResponse"][];
             outgoing: components["schemas"]["FriendRequestResponse"][];
         };
-        /** @description Manifiesto de un minijuego mas su configuracion por defecto, tal como lo exporta el registro TypeScript. */
+        /** @description Manifiesto de un minijuego mas su configuracion por defecto, tal como lo exporta el registro TypeScript. Los nulos no salen en el JSON, así que el OpenAPI marca esos campos como opcionales y no anulables. */
         GameManifest: {
             id: string;
             name: string;
             icon: string;
             description: string;
-            experimental?: boolean | null;
-            recommended?: boolean | null;
+            experimental?: boolean;
+            recommended?: boolean;
             /** Format: int32 */
             minPlayers: number;
             /** Format: int32 */
-            maxPlayers?: number | null;
+            maxPlayers?: number;
             /** Format: int32 */
-            presenceGraceMs?: number | null;
+            presenceGraceMs?: number;
             profileStats: components["schemas"]["GameManifest.ProfileStatsDefinition"];
             defaultConfig: {
                 [key: string]: Record<string, never>;
@@ -1311,20 +1321,24 @@ export interface components {
         "GameManifest.DerivedMetricDefinition": {
             key: string;
             label: string;
-            kind: string;
+            /** @enum {string} */
+            kind: "PERCENT" | "AVERAGE";
             numerator: string;
             denominator: string[];
-            format?: string | null;
+            /** @enum {string} */
+            format?: "NUMBER" | "DURATION_MS";
         };
         "GameManifest.MetricDefinition": {
             key: string;
             label: string;
-            aggregation: string;
-            format?: string | null;
+            /** @enum {string} */
+            aggregation: "SUM" | "MAX" | "MIN";
+            /** @enum {string} */
+            format?: "NUMBER" | "DURATION_MS";
         };
         "GameManifest.ProfileStatsDefinition": {
             metrics: components["schemas"]["GameManifest.MetricDefinition"][];
-            derivedMetrics?: components["schemas"]["GameManifest.DerivedMetricDefinition"][] | null;
+            derivedMetrics?: components["schemas"]["GameManifest.DerivedMetricDefinition"][];
         };
         "GamesController.GamesResponse": {
             games: components["schemas"]["GameManifest"][];
@@ -1399,12 +1413,12 @@ export interface components {
             name: string;
             icon: string;
             description: string;
-            experimental?: boolean | null;
-            recommended?: boolean | null;
+            experimental?: boolean;
+            recommended?: boolean;
             /** Format: int32 */
             minPlayers: number;
             /** Format: int32 */
-            maxPlayers?: number | null;
+            maxPlayers?: number;
             profileStats: components["schemas"]["GameManifest.ProfileStatsDefinition"];
             stats: components["schemas"]["ProfileResponse.GameStats"];
         };
@@ -1457,11 +1471,11 @@ export interface components {
             user: components["schemas"]["PublicProfileResponse.User"];
             visibility: components["schemas"]["ProfileVisibility"];
             friendship: components["schemas"]["PublicProfile.Friendship"];
-            requestId?: string | null;
+            requestId?: string;
             private: boolean;
-            progress?: components["schemas"]["ProfileResponse.Progress"] | null;
-            stats?: components["schemas"]["PublicProfileResponse.Stats"] | null;
-            achievements?: components["schemas"]["AchievementsResponse"] | null;
+            progress?: components["schemas"]["ProfileResponse.Progress"];
+            stats?: components["schemas"]["PublicProfileResponse.Stats"];
+            achievements?: components["schemas"]["AchievementsResponse"];
         };
         "PublicProfileResponse.Stats": {
             globalStats: components["schemas"]["ProfileResponse.GlobalStats"];
@@ -1472,7 +1486,7 @@ export interface components {
             id: string;
             username: string;
             avatar: components["schemas"]["AvatarRef"];
-            createdAt?: string | null;
+            createdAt?: string;
         };
         RegisterRequest: {
             username: string;

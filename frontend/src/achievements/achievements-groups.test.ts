@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { AchievementResponse } from '../lib/api-contract';
 import { groupAchievements, unlockedDate } from './achievements-groups';
 
-const make = (id: string, family: string): AchievementResponse => ({ id, family, gameId: null, name: id, description: '', unlockedAt: null });
+const make = (id: string, family: AchievementResponse['family']): AchievementResponse => ({ id, family, gameId: null, name: id, description: '', unlockedAt: null });
 
 describe('achievements-groups', () => {
   it('groupsInOrder', () => {

@@ -1823,6 +1823,14 @@ paths:
                 $ref: "#/components/schemas/ApiError"
 components:
   schemas:
+    AchievementFamily:
+      type: string
+      description: "Familia de un logro: hito general, de un minijuego o secreto (oculto\
+        \ hasta conseguirlo)."
+      enum:
+      - GENERAL
+      - GAME
+      - SECRET
     AchievementResponse:
       required:
       - description
@@ -1836,7 +1844,7 @@ components:
         id:
           type: string
         family:
-          type: string
+          $ref: "#/components/schemas/AchievementFamily"
         gameId:
           type: string
           nullable: true
@@ -2099,6 +2107,11 @@ components:
           format: int32
         status:
           type: string
+          enum:
+          - IN_PROGRESS
+          - COMPLETED
+          - ABANDONED
+          - INTERRUPTED
         startedAt:
           type: string
         endedAt:
@@ -2109,7 +2122,8 @@ components:
           items:
             $ref: "#/components/schemas/AdminGameHistoryItem.Participant"
       description: "`AdminGameHistoryItem` de `shared/admin.ts`; los nulos se emiten\
-        \ explícitos, como Node."
+        \ explícitos, como Node. `status` es el enum de Postgres como texto: sus valores\
+        \ solo documentan el contrato, no se validan al leer."
     AdminGameHistoryItem.Participant:
       required:
       - displayName
@@ -2183,6 +2197,10 @@ components:
           format: int32
         status:
           type: string
+          enum:
+          - ACTIVE
+          - CLOSED
+          - INTERRUPTED
         closeReason:
           type: string
           nullable: true
@@ -2195,7 +2213,8 @@ components:
           type: string
           nullable: true
       description: "`AdminRoomHistoryItem` de `shared/admin.ts`; los nulos se emiten\
-        \ explícitos, como Node."
+        \ explícitos, como Node. `status` es el enum de Postgres como texto: sus valores\
+        \ solo documentan el contrato, no se validan al leer."
     AdminRoomsPage:
       required:
       - items
@@ -2302,7 +2321,7 @@ components:
         email:
           type: string
         role:
-          type: string
+          $ref: "#/components/schemas/UserRole"
         gamesPlayed:
           type: integer
           format: int32
@@ -2383,15 +2402,14 @@ components:
           $ref: "#/components/schemas/AuthUser.Kind"
         email:
           type: string
-          nullable: true
+          nullable: false
         role:
-          nullable: true
-          allOf:
-          - $ref: "#/components/schemas/UserRole"
+          $ref: "#/components/schemas/UserRole"
         avatar:
           $ref: "#/components/schemas/AvatarRef"
-      description: Identidad autenticada (usuario registrado o invitado); es la misma
-        que viaja en la cookie de sesión.
+      description: "Identidad autenticada (usuario registrado o invitado); es la misma\
+        \ que viaja en la cookie de sesión. Sin `email` ni `role` (invitados) las\
+        \ claves no salen: en el OpenAPI son opcionales, nunca `null`."
     AuthUser.Kind:
       type: string
       enum:
@@ -2432,11 +2450,19 @@ components:
       properties:
         type:
           type: string
+          enum:
+          - NEW
+          - MINIGAMES
+          - BALANCE
+          - INTERFACE
+          - IMPROVEMENTS
+          - BUGS
+          - TECHNICAL
         text:
           type: string
         highlight:
           type: boolean
-          nullable: true
+          nullable: false
       description: "Un cambio de una entrada del changelog (changelogChangeSchema\
         \ en shared). `highlight` solo vale `true` o `null`: un `false` se normaliza\
         \ a `null` y la clave no sale en el JSON."
@@ -2469,7 +2495,7 @@ components:
           type: string
         summary:
           type: string
-          nullable: true
+          nullable: false
         date:
           type: string
         published:
@@ -2643,6 +2669,11 @@ components:
       properties:
         status:
           type: string
+          enum:
+          - AVAILABLE
+          - IN_PROGRESS
+          - FINISHED
+          - ABANDONED
         position:
           type: integer
           format: int32
@@ -2694,6 +2725,11 @@ components:
           format: int64
         status:
           type: string
+          enum:
+          - AVAILABLE
+          - IN_PROGRESS
+          - FINISHED
+          - ABANDONED
         result:
           nullable: true
           allOf:
@@ -2764,7 +2800,7 @@ components:
         id:
           type: string
         reference:
-          type: string
+          $ref: "#/components/schemas/FeedbackReference"
         gameId:
           type: string
           nullable: true
@@ -2775,9 +2811,9 @@ components:
           type: string
           nullable: true
         type:
-          type: string
+          $ref: "#/components/schemas/FeedbackType"
         status:
-          type: string
+          $ref: "#/components/schemas/FeedbackStatus"
         description:
           type: string
         author:
@@ -2787,7 +2823,8 @@ components:
         updatedAt:
           type: string
       description: "Vista pública de un feedback; los nulos se emiten explícitos,\
-        \ como hace Node."
+        \ como hace Node. Los textos enumerados documentan en el OpenAPI su enum (el\
+        \ `name()` que se emite)."
     FeedbackItemResponse.Author:
       required:
       - displayName
@@ -2801,7 +2838,7 @@ components:
         displayName:
           type: string
         kind:
-          type: string
+          $ref: "#/components/schemas/AuthUser.Kind"
     FeedbackReference:
       type: string
       enum:
@@ -2975,21 +3012,21 @@ components:
           type: string
         experimental:
           type: boolean
-          nullable: true
+          nullable: false
         recommended:
           type: boolean
-          nullable: true
+          nullable: false
         minPlayers:
           type: integer
           format: int32
         maxPlayers:
           type: integer
           format: int32
-          nullable: true
+          nullable: false
         presenceGraceMs:
           type: integer
           format: int32
-          nullable: true
+          nullable: false
         profileStats:
           $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
         defaultConfig:
@@ -2997,7 +3034,8 @@ components:
           additionalProperties:
             type: object
       description: "Manifiesto de un minijuego mas su configuracion por defecto, tal\
-        \ como lo exporta el registro TypeScript."
+        \ como lo exporta el registro TypeScript. Los nulos no salen en el JSON, así\
+        \ que el OpenAPI marca esos campos como opcionales y no anulables."
     GameManifest.DerivedMetricDefinition:
       required:
       - denominator
@@ -3013,6 +3051,9 @@ components:
           type: string
         kind:
           type: string
+          enum:
+          - PERCENT
+          - AVERAGE
         numerator:
           type: string
         denominator:
@@ -3021,7 +3062,10 @@ components:
             type: string
         format:
           type: string
-          nullable: true
+          nullable: false
+          enum:
+          - NUMBER
+          - DURATION_MS
     GameManifest.MetricDefinition:
       required:
       - aggregation
@@ -3035,9 +3079,16 @@ components:
           type: string
         aggregation:
           type: string
+          enum:
+          - SUM
+          - MAX
+          - MIN
         format:
           type: string
-          nullable: true
+          nullable: false
+          enum:
+          - NUMBER
+          - DURATION_MS
     GameManifest.ProfileStatsDefinition:
       required:
       - metrics
@@ -3049,7 +3100,7 @@ components:
             $ref: "#/components/schemas/GameManifest.MetricDefinition"
         derivedMetrics:
           type: array
-          nullable: true
+          nullable: false
           items:
             $ref: "#/components/schemas/GameManifest.DerivedMetricDefinition"
     GamesController.GamesResponse:
@@ -3243,17 +3294,17 @@ components:
           type: string
         experimental:
           type: boolean
-          nullable: true
+          nullable: false
         recommended:
           type: boolean
-          nullable: true
+          nullable: false
         minPlayers:
           type: integer
           format: int32
         maxPlayers:
           type: integer
           format: int32
-          nullable: true
+          nullable: false
         profileStats:
           $ref: "#/components/schemas/GameManifest.ProfileStatsDefinition"
         stats:
@@ -3379,21 +3430,15 @@ components:
           $ref: "#/components/schemas/PublicProfile.Friendship"
         requestId:
           type: string
-          nullable: true
+          nullable: false
         private:
           type: boolean
         progress:
-          nullable: true
-          allOf:
-          - $ref: "#/components/schemas/ProfileResponse.Progress"
+          $ref: "#/components/schemas/ProfileResponse.Progress"
         stats:
-          nullable: true
-          allOf:
-          - $ref: "#/components/schemas/PublicProfileResponse.Stats"
+          $ref: "#/components/schemas/PublicProfileResponse.Stats"
         achievements:
-          nullable: true
-          allOf:
-          - $ref: "#/components/schemas/AchievementsResponse"
+          $ref: "#/components/schemas/AchievementsResponse"
     PublicProfileResponse.Stats:
       required:
       - games
@@ -3421,7 +3466,7 @@ components:
           $ref: "#/components/schemas/AvatarRef"
         createdAt:
           type: string
-          nullable: true
+          nullable: false
       description: "Sin email: solo lo público de la cuenta; sin `createdAt` si el\
         \ perfil es privado."
     RegisterRequest:

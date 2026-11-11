@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.application.daily.DailyOverview;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 /**
@@ -19,6 +20,8 @@ public record DailyOverviewResponse(
     String icon,
     int roundCount,
     long players,
+    @Schema(type = "string", allowableValues = {"AVAILABLE", "IN_PROGRESS", "FINISHED", "ABANDONED"},
+        requiredMode = Schema.RequiredMode.REQUIRED)
     String status,
     @JsonInclude(JsonInclude.Include.ALWAYS) @Nullable Result result) {
 

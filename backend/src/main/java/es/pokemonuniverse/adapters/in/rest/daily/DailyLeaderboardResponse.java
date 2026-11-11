@@ -5,6 +5,7 @@ import es.pokemonuniverse.application.daily.DailyLeaderboard;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 /**
@@ -22,7 +23,13 @@ public record DailyLeaderboardResponse(String date, String gameId, long total, L
   /** La fila propia; {@code position}, {@code score}, {@code correct} y {@code rounds} son {@code null} salvo en {@code FINISHED}. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record Me(String status, @Nullable Integer position, @Nullable Integer score, @Nullable Integer correct,
+  public record Me(
+      @Schema(type = "string", allowableValues = {"AVAILABLE", "IN_PROGRESS", "FINISHED", "ABANDONED"},
+          requiredMode = Schema.RequiredMode.REQUIRED)
+      String status,
+      @Nullable Integer position,
+      @Nullable Integer score,
+      @Nullable Integer correct,
       @Nullable List<Integer> rounds) {}
 
   static DailyLeaderboardResponse of(DailyLeaderboard board) {

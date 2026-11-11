@@ -2,15 +2,17 @@ package es.pokemonuniverse.adapters.in.rest.achievements;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.application.achievements.AchievementView;
+import es.pokemonuniverse.domain.achievements.AchievementFamily;
 import es.pokemonuniverse.domain.time.IsoTimestamps;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /** Un logro de la cuenta; {@code gameId} y {@code unlockedAt} salen siempre, con {@code null} si no aplican. */
 @Serdeable
 public record AchievementResponse(
     String id,
-    String family,
+    @Schema(implementation = AchievementFamily.class, requiredMode = Schema.RequiredMode.REQUIRED) String family,
     @JsonInclude(JsonInclude.Include.ALWAYS) @Nullable String gameId,
     String name,
     String description,

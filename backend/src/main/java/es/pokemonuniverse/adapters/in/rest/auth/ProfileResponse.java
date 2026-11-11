@@ -8,6 +8,7 @@ import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import es.pokemonuniverse.domain.progression.Experience;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Map;
 
@@ -64,10 +65,10 @@ public record ProfileResponse(Profile profile) {
       String name,
       String icon,
       String description,
-      @Nullable Boolean experimental,
-      @Nullable Boolean recommended,
+      @Nullable @Schema(nullable = false) Boolean experimental,
+      @Nullable @Schema(nullable = false) Boolean recommended,
       int minPlayers,
-      @Nullable Integer maxPlayers,
+      @Nullable @Schema(nullable = false) Integer maxPlayers,
       GameManifest.ProfileStatsDefinition profileStats,
       GameStats stats) {}
 

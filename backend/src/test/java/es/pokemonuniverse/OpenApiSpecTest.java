@@ -12,6 +12,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,27 @@ class OpenApiSpecTest {
       assertTrue(schemas.containsKey("UserResponse") && schemas.containsKey("FeedbackController.FeedbackResponse"));
       assertTrue(text.contains("UserResponse") && register.get("201").toString().contains("UserResponse"));
       assertTrue(logout.containsKey("204") && !logout.containsKey("200"));
+    }
+  }
+
+  /** Los opcionales que no salen si son nulos no se documentan anulables, y los textos enumerados llevan su enum. */
+  @Test
+  void specIsAsStrictAsShared() throws IOException {
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream("META-INF/swagger/" + SPEC)) {
+      Map<String, Object> spec = new Yaml().load(in);
+      var schemas = (Map<?, ?>) ((Map<?, ?>) spec.get("components")).get("schemas");
+      var authUser = (Map<?, ?>) schemas.get("AuthUser");
+      var props = (Map<?, ?>) authUser.get("properties");
+      for (String key : new String[] {"email", "role"}) {
+        assertTrue(!((List<?>) authUser.get("required")).contains(key), key + " debe ser opcional");
+        assertTrue(!Boolean.TRUE.equals(((Map<?, ?>) props.get(key)).get("nullable")), key + " no debe ser anulable");
+      }
+      var feedback = (Map<?, ?>) ((Map<?, ?>) schemas.get("FeedbackItemResponse")).get("properties");
+      assertEquals("#/components/schemas/FeedbackStatus", ((Map<?, ?>) feedback.get("status")).get("$ref"));
+      var adminRoom = (Map<?, ?>) schemas.get("AdminRoomHistoryItem");
+      assertEquals(List.of("ACTIVE", "CLOSED", "INTERRUPTED"),
+          ((Map<?, ?>) ((Map<?, ?>) adminRoom.get("properties")).get("status")).get("enum"));
+      assertTrue(((List<?>) adminRoom.get("required")).contains("status"));
     }
   }
 

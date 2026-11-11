@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.serde.annotation.Serdeable;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 /**
@@ -43,16 +44,17 @@ public record PublicProfileResponse(Profile profile) {
       User user,
       ProfileVisibility visibility,
       PublicProfile.Friendship friendship,
-      @Nullable String requestId,
+      @Nullable @Schema(nullable = false) String requestId,
       @JsonProperty("private") boolean isPrivate,
-      ProfileResponse.@Nullable Progress progress,
-      @Nullable Stats stats,
-      @Nullable AchievementsResponse achievements) {}
+      @Schema(nullable = false) ProfileResponse.@Nullable Progress progress,
+      @Nullable @Schema(nullable = false) Stats stats,
+      @Nullable @Schema(nullable = false) AchievementsResponse achievements) {}
 
   /** Sin email: solo lo público de la cuenta; sin {@code createdAt} si el perfil es privado. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  public record User(String id, String username, AvatarRef avatar, @Nullable String createdAt) {}
+  public record User(String id, String username, AvatarRef avatar,
+      @Nullable @Schema(nullable = false) String createdAt) {}
 
   @Serdeable
   public record Stats(ProfileResponse.GlobalStats globalStats, List<ProfileResponse.ProfileGame> games) {}
