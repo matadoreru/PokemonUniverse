@@ -95,7 +95,8 @@ su propio misterio, y las preguntas y respuestas van dentro de la app, sin llama
     - `gameId`, `phase`, `lap` y `maxLaps`;
     - `playerIds`, `turnPlayerId` y `turnStep`;
     - `currentQuestion`, con el texto, las respuestas recibidas y `answeredPlayerIds`; nulo fuera de `ANSWERING` y
-      `DECIDING`;
+      `DECIDING`. En `ANSWERING` las respuestas van vacías (solo se publica quién ha respondido; la propia llega en
+      `ownAnswer`) y salen en `DECIDING`;
     - `history`, de jugador a lista de entradas;
     - `solvedPlayerIds` en orden de acierto y `questionsAsked` por jugador;
     - `scores`, `turnEndsAt` y `results`.

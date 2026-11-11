@@ -5014,6 +5014,7 @@ test('quién soy: cinco jugadores en el móvil, cartas desplazables y el Pokémo
     expect(ultimaCaja!.x).toBeGreaterThanOrEqual(caja!.x - 1);
     expect(ultimaCaja!.x + ultimaCaja!.width).toBeLessThanOrEqual(caja!.x + caja!.width + 1);
     expect(ultimaCaja!.x + ultimaCaja!.width).toBeLessThanOrEqual(SIZES[2].w);
+    // Solo a 390×844 a propósito: la fila desplazable de cartas solo existe por debajo de 1024 px.
     await otro.page.screenshot({ path: 'screenshots/juego-who-am-i-cinco-jugadores-desplazado-390x844.png', animations: 'disabled' });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
