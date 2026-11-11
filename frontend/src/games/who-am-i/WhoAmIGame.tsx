@@ -3,10 +3,12 @@ import { POKEMON_TYPE_LABELS, WHO_AM_I_ANSWERS, WHO_AM_I_MAX_QUESTION_LENGTH } f
 import { ArrowLeft, Check, CheckCircle2, Clock3, Eye, Hourglass, MessageCircleQuestion, Search, Send, SkipForward, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
 import { answerLabel, freshAnnouncement, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
+import { useDraft, type DraftKey } from '../../hooks/useDraft';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { gameDraftKey } from '../../room/game-kit/game-draft';
 import { guessSprite } from '../../room/guess-kit';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from '../../room/social-kit';
@@ -55,14 +57,15 @@ function AnswerProgress({ question, responderIds, showAnswers, nameOf }: { quest
 }
 
 /** Campo de la pregunta: contador `n/120`, «Enviar» y, al lado, «Adivinar» (abre el buscador). */
-function AskForm({ fieldRef, canGuess, onAsk, onGuess }: { fieldRef: RefObject<HTMLInputElement | null>; canGuess: boolean; onAsk(text: string): Promise<void>; onGuess(): void }) {
-  const [text, setText] = useState('');
+function AskForm({ fieldRef, canGuess, draft, onAsk, onGuess }: { fieldRef: RefObject<HTMLInputElement | null>; canGuess: boolean; draft: DraftKey | null; onAsk(text: string): Promise<void>; onGuess(): void }) {
+  // La pregunta a medio escribir es un borrador del turno: vuelve tras recargar y se borra al enviarla.
+  const [text, setText, clearText] = useDraft(draft, { maxLength: WHO_AM_I_MAX_QUESTION_LENGTH });
   const [busy, setBusy] = useState(false);
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const value = text.trim();
     if (!value || busy) return;
-    void sendWithBusy(setBusy, () => onAsk(value));
+    void sendWithBusy(setBusy, () => onAsk(value), clearText);
   };
   return <form className={s.ask} onSubmit={submit}>
     <div className={s.askField}>
@@ -227,7 +230,7 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
       inputLabel="Buscar tu Pokémon" onSelect={(pokemonId) => send({ type: 'GUESS_SELF', pokemonId })} />;
   } else if (ownTurn && step === 'ASKING' && player?.canAsk) {
     content = { icon: MessageCircleQuestion, tone: 'warn', kicker: 'Tu turno', title: 'Pregunta sobre tu Pokémon', text: 'Los demás responden con Sí, No, A medias o No lo sé. Cuantas menos preguntas, más puntos.' };
-    body = <AskForm key={turnKey} fieldRef={fieldRef} canGuess={canGuess} onAsk={(text) => send({ type: 'ASK_QUESTION', text })} onGuess={() => setGuessingKey(turnKey)} />;
+    body = <AskForm key={turnKey} fieldRef={fieldRef} canGuess={canGuess} draft={gameDraftKey(room, 'who-am-i-question', turnKey)} onAsk={(text) => send({ type: 'ASK_QUESTION', text })} onGuess={() => setGuessingKey(turnKey)} />;
   } else if (ownTurn && step === 'DECIDING' && question) {
     content = {
       icon: Target, tone: 'warn', kicker: 'Tu pregunta', title: '¿Adivinas o pasas?', text: questionText,

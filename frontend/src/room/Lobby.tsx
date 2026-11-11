@@ -176,7 +176,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     </Panel>
   );
 
-  const chatPanel = <LobbyChat className={wide ? s.sidePanel ?? '' : ''} messages={chat} members={room.members} selfId={selfId} selfRole={roomRole} onSend={onSendChat} onDelete={onDeleteChatMessage} onSetMute={onSetChatMute} active={chatVisible} />;
+  const chatPanel = <LobbyChat className={wide ? s.sidePanel ?? '' : ''} messages={chat} members={room.members} selfId={selfId} selfRole={roomRole} onSend={onSendChat} onDelete={onDeleteChatMessage} onSetMute={onSetChatMute} active={chatVisible} roomCode={room.code} />;
   const tabs: TabItem<LobbyTab>[] = wide ? BASE_TABS : [...BASE_TABS, {
     key: 'chat', label: 'Chat', icon: MessageCircle,
     ...(unread > 0 ? { badge: <>{unread > 99 ? '99+' : unread}<span className="sr-only"> sin leer</span></> } : {}),

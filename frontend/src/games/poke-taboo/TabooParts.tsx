@@ -2,6 +2,7 @@ import type { PokeTabooHint, PokeTabooSecretPokemon } from '@pokemon-universe/sh
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import { Ban, LockKeyhole, Send, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react';
+import { useDraft, type DraftKey } from '../../hooks/useDraft';
 import { guessSprite } from '../../room/guess-kit';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, Row } from '../../ui';
 import { forbiddenHintMessage, TABOO_HINT_MAX, TABOO_MAX_HINTS, tabooForbiddenWords, tabooHintProblem } from './presentation';
@@ -85,16 +86,18 @@ export function TabooHintList({ hints, title, emptyTitle, emptyText, help, fresh
  * enviar (el foco no cae al `body`) y, tras enviar, el foco vuelve a él. Si el servidor rechaza, el texto se conserva; el
  * error lo dice el aviso global de la sala (un dueño por error).
  */
-export function TabooComposer({ secret, canSend, hintCount, fieldRef, onProblem, onSend }: {
+export function TabooComposer({ secret, canSend, hintCount, fieldRef, draft, onProblem, onSend }: {
   secret: PokeTabooSecretPokemon | null;
   canSend: boolean;
   hintCount: number;
   fieldRef: RefObject<HTMLInputElement | null>;
+  /** Borrador de la pista a medio escribir (sobrevive a una recarga en el mismo turno). */
+  draft: DraftKey | null;
   /** Avisa a la pantalla de la palabra prohibida (para su región viva). */
   onProblem(word: string | null): void;
   onSend(text: string): Promise<void>;
 }) {
-  const [text, setText] = useState('');
+  const [text, setText, clearText] = useDraft(draft, { maxLength: TABOO_HINT_MAX });
   const [busy, setBusy] = useState(false);
   const sending = useRef(false);
   const problem = tabooHintProblem(text, secret);
@@ -109,7 +112,7 @@ export function TabooComposer({ secret, canSend, hintCount, fieldRef, onProblem,
     setBusy(true);
     try {
       await onSend(text.trim());
-      setText('');
+      clearText();
     } catch {
       // Rechazada (cooldown, nombre en otro idioma, sin conexión): el aviso global lo dice; el texto se queda para corregirlo.
     } finally {

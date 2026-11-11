@@ -5,8 +5,10 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type R
 import { hintCountdownLabel, hitCueRound, lettersToAnnounce, messageMetrics, newLettersAnnouncement, splitWords } from './presentation';
 import { useNow, useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
+import { useDraft, type DraftKey } from '../../hooks/useDraft';
 import { Chip, Field, Icon, Pill, UnownGlyph } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { gameDraftKey } from '../../room/game-kit/game-draft';
 import { attemptsText, guessSeconds, ordinal, pointsWord } from '../../room/guess-kit';
 import { GamePanel, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { guessSearchAutoFocus } from '../../room/guess-kit/presentation';
@@ -57,8 +59,9 @@ function UnownAlphabet({ alphabet }: { alphabet: readonly UnownAlphabetEntry[] }
  * Campo de respuesta con Enviar: desactivado mientras dura el bloqueo tras un fallo. Tras un fallo el texto se queda
  * para corregirlo; al acertar el formulario desaparece.
  */
-function UnownAnswerForm({ roundNumber, cooling, fieldRef, onGuess }: { roundNumber: number; cooling: boolean; fieldRef: RefObject<HTMLInputElement | null>; onGuess(text: string): Promise<void> }) {
-  const [text, setText] = useState('');
+function UnownAnswerForm({ roundNumber, cooling, fieldRef, draft, onGuess }: { roundNumber: number; cooling: boolean; fieldRef: RefObject<HTMLInputElement | null>; draft: DraftKey | null; onGuess(text: string): Promise<void> }) {
+  // Borrador de la ronda: vuelve tras recargar; tras un fallo se queda (como el texto) y al cambiar de ronda se borra.
+  const [text, setText] = useDraft(draft, { maxLength: UNOWN_MAX_GUESS_LENGTH });
   const [busy, setBusy] = useState(false);
   // Con ratón o teclado, el campo toma el foco al empezar la ronda (sin desplazar); en táctil abriría el teclado.
   useEffect(() => { if (guessSearchAutoFocus()) fieldRef.current?.focus({ preventScroll: true }); }, [fieldRef]);
@@ -194,7 +197,7 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
     content = { icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Esperando al servidor…', text: 'La ronda empieza en un momento.' };
   }
   const bottom = <SocialPlate titleRef={titleRef} content={content}>
-    {canGuess && <UnownAnswerForm key={game.roundNumber} roundNumber={game.roundNumber} cooling={cooldownMs > 0} fieldRef={fieldRef}
+    {canGuess && <UnownAnswerForm key={game.roundNumber} roundNumber={game.roundNumber} cooling={cooldownMs > 0} fieldRef={fieldRef} draft={gameDraftKey(room, 'unown-answer', game.roundNumber)}
       onGuess={(text) => onAction({ type: 'GUESS_UNOWN', text })} />}
   </SocialPlate>;
 

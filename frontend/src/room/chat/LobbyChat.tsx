@@ -2,6 +2,7 @@ import { CHAT_MESSAGE_MAX_LENGTH, hasRoomPermission, type ChatMessage, type Room
 import { MessageSquare, MessageSquareOff, Trash2 } from 'lucide-react';
 import { useRef, useState, type RefObject } from 'react';
 import { ChatComposer, ChatLog, Dialog, Panel, Pill, StateBox, type ChatLogItem } from '../../ui';
+import { draftKey, useDraft } from '../../hooks/useDraft';
 import { playerColor } from '../../lib/player-color';
 import { ignoreFailure } from '../room-command';
 import s from './LobbyChat.module.css';
@@ -74,16 +75,18 @@ interface Props {
   className?: string;
   /** El panel está a la vista (en el móvil, con la pestaña «Chat» abierta): al abrirse, la lista baja a lo último. */
   active?: boolean;
+  /** Código de la sala: el mensaje a medio escribir se guarda como borrador y vuelve tras recargar. */
+  roomCode?: string;
 }
 
 /**
  * Chat del lobby: la lista y el campo de escribir en el panel «Chat». No es región viva (el `Lobby` anuncia los
  * mensajes) y no enseña errores: el fallo de una orden ya sale en el aviso global de la sala.
  */
-export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelete, onSetMute, titleRef, className, active = true }: Props) {
+export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelete, onSetMute, titleRef, className, active = true, roomCode }: Props) {
   const ownTitleRef = useRef<HTMLHeadingElement>(null);
   const title = titleRef ?? ownTitleRef;
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useDraft(draftKey(['chat', roomCode], 0), { maxLength: CHAT_MESSAGE_MAX_LENGTH });
   const [busy, setBusy] = useState(false);
   const [moderating, setModerating] = useState<number | null>(null);
   const self = members.find((member) => member.id === selfId);

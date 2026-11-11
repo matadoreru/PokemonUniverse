@@ -6,6 +6,7 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from './ImpostorParts';
 import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from './presentation';
 import { validateImpostorClue } from './validation';
+import { useDraft } from '../../hooks/useDraft';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useReducedMotion } from '../../lib/motion';
 import { useServerOffset } from '../../hooks/useServerTime';
@@ -13,6 +14,7 @@ import { useSfxCue } from '../../hooks/useSfxCue';
 import { useDelayElapsed } from '../../hooks/useTimedVisibility';
 import { MomentCutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { gameDraftKey } from '../../room/game-kit/game-draft';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
@@ -35,7 +37,8 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   const config = room.selectedGameConfig as PokemonImpostorConfig;
   const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
   const people: ImpostorPeople = useMemo(() => ({ members, colors, selfId, nameOf, outIds: new Set(game.eliminatedIds) }), [colors, members, nameOf, selfId, game.eliminatedIds]);
-  const [clueText, setClueText] = useState('');
+  // La pista a medio escribir es un borrador de la fase: vuelve tras recargar y se borra al enviarla o al cambiar de fase.
+  const [clueText, setClueText, clearClue] = useDraft(gameDraftKey(room, 'impostor-clue', `${game.roundNumber}:${game.votingRound}:${game.phase}`));
   const [voteDraft, setVoteDraft] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showGuess, setShowGuess] = useState(false);
@@ -52,7 +55,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   const reducedMotion = useReducedMotion();
   const eliminationRoleShown = useDelayElapsed(CUTIN_DELAYED_LINE_MS, elimination ? `${game.roundNumber}:${elimination.playerId}` : 'none', reducedMotion);
 
-  useEffect(() => { setClueText(''); setVoteDraft(null); }, [game.phase, game.roundNumber, game.votingRound]);
+  useEffect(() => { setVoteDraft(null); }, [game.phase, game.roundNumber, game.votingRound]);
   useEffect(() => { if (!player.canGuessPokemon) setShowGuess(false); }, [player.canGuessPokemon]);
 
   // Foco: llega tu turno, envías la pista, gastas el intento o confirmas el voto (el control enfocado desaparece).
@@ -63,7 +66,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   async function submitClue() {
     const action = impostorClueAction(player, clueText, clueError, clueLength);
     if (!action || submitting) return;
-    await sendWithBusy(setSubmitting, () => onAction(action));
+    await sendWithBusy(setSubmitting, () => onAction(action), clearClue);
   }
   async function submitVote() {
     const action = impostorVoteAction(player, voteDraft);

@@ -12,6 +12,7 @@ import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { gameDraftKey } from '../../room/game-kit/game-draft';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from '../../room/guess-kit';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from '../../room/social-kit';
 import type { ActiveGameProps } from '../../room/room-command';
@@ -127,7 +128,7 @@ export function PokeTabooGame({ room, selfId, onAction }: ActiveGameProps) {
       icon: PenLine, tone: 'info', kicker: 'Pistas de texto', title: 'Escribe una pista', text: 'Describe por voz; si hace falta, escribe pistas sin su nombre.',
     }}>
       <TabooComposer key={game.roundNumber} secret={secret} canSend={player?.role === 'DESCRIPTOR' && player.canSendHint} hintCount={game.hints.length} fieldRef={fieldRef}
-        onProblem={onProblem} onSend={(text) => onAction({ type: 'SEND_HINT', text })} />
+        draft={gameDraftKey(room, 'taboo-hint', game.roundNumber)} onProblem={onProblem} onSend={(text) => onAction({ type: 'SEND_HINT', text })} />
     </SocialPlate>;
   } else if (role === 'guesser' || role === 'watcher') {
     bottom = <GuessPanel kind={canGuess ? 'guess' : role === 'watcher' ? 'watching' : 'waiting'} titleRef={titleRef} question="Busca el Pokémon descrito" guessText={SCORING} gameName={GAME_NAME}
