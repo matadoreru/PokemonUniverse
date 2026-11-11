@@ -14,7 +14,10 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
-/** Traducción literal del TS que antes estaba en {@code pokemon-trivia/rules.ts}, más el formato {@code toLocaleString('es-ES')}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code pokemon-trivia/rules.ts}, más el formato
+ * {@code toLocaleString('es-ES')}.
+ */
 public final class PokemonTriviaRules {
 
   /**

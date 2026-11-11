@@ -4,8 +4,8 @@ import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 
 /**
- * Traducción literal del TS que antes estaba en {@code pokemon-bingo/rules.ts}. Las reglas de condición que el motor TS reexportaba de
- * {@code pokemon/conditions/rules.ts} están en {@code domain/pokemon/conditions/ConditionRules}.
+ * Traducción literal del TS que antes estaba en {@code pokemon-bingo/rules.ts}. Las reglas de condición que el motor TS
+ * reexportaba de {@code pokemon/conditions/rules.ts} están en {@code domain/pokemon/conditions/ConditionRules}.
  */
 public final class PokemonBingoRules {
 

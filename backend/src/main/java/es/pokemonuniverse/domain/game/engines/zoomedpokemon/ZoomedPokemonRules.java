@@ -21,8 +21,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Traducción literal del TS que antes estaba en {@code zoomed-pokemon/rules.ts}. {@code alphaBounds}, {@code localAlphaDensity} y
- * {@code validFocusPoint} (y sus umbrales) ya están portados en
+ * Traducción literal del TS que antes estaba en {@code zoomed-pokemon/rules.ts}. {@code alphaBounds},
+ * {@code localAlphaDensity} y {@code validFocusPoint} (y sus umbrales) ya están portados en
  * {@link es.pokemonuniverse.domain.game.assets.FocusPoints}: los usa el renderizador de imágenes, no el motor.
  */
 public final class ZoomedPokemonRules {
