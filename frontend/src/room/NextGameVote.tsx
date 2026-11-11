@@ -109,7 +109,8 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
   </Panel>;
 
   return <div className={cx('content-row', s.screen)}>
-    {!active && resolvedName && <Cutin key={vote.resolvedOptionId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" />}
+    {/* Sin región viva propia: el título de la placa ya dice «La sala ha elegido…». */}
+    {!active && resolvedName && <Cutin key={vote.resolvedOptionId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" live={false} />}
     <ScreenSplit fill top={top} side={side} bottom={action} />
   </div>;
 }

@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, sessionModesOf, toggleSelectedGame } from './GameSelectionConfig';
 import { NextGameVote } from './NextGameVote';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 const games: MiniGameManifest[] = [
   { id: 'one', name: 'Juego uno', icon: '①', description: 'Primera opción.', minPlayers: 1, profileStats: { metrics: [] } },
@@ -191,6 +192,9 @@ describe('game selection UI', () => {
     expect(active).toMatch(/role="status" aria-live="polite">Elige una carta</);
     expect(result).toMatch(/role="status" aria-live="polite">La sala ha elegido Juego dos</);
     expect(result).not.toMatch(/aria-live="polite">[^<]*empieza en/);
+    // El cut-in del ganador solo se ve: lo dice ya el título de la placa.
+    expectSingleLiveRegion(active);
+    expectSingleLiveRegion(result);
   });
 
   it('shows each allowed mode of a game as its own vote option, keyed by option id', () => {
