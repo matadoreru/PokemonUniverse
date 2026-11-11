@@ -52,7 +52,7 @@ export function GameHelpButton({ room }: { room: RoomView }) {
   }), []);
   const sections = gameHelpSections(help?.rules ?? null, shortcuts ?? []);
   return <>
-    {help && <Pill size="small" variant="ghost" icon={HelpCircle} aria-label="Cómo se juega" title="Cómo se juega" aria-keyshortcuts={HELP_KEY} aria-haspopup="dialog" onClick={() => setShortcuts(currentShortcuts())} />}
+    {help && <Pill size="round" variant="ghost" icon={HelpCircle} aria-label="Cómo se juega" title="Cómo se juega" aria-keyshortcuts={HELP_KEY} aria-haspopup="dialog" onClick={() => setShortcuts(currentShortcuts())} />}
     <HelpDialog open={shortcuts !== null && sections.length > 0} title={help ? `Cómo se juega · ${help.name}` : 'Atajos de teclado'} onClose={() => setShortcuts(null)} sections={sections} />
   </>;
 }

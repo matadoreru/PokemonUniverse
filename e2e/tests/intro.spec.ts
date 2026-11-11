@@ -69,6 +69,13 @@ test('intro de partida: reglas, «¡Listo!» de los dos y «Cómo se juega» en 
     await ayuda.getByRole('button', { name: 'Entendido' }).click();
     await expect(ayuda).toBeHidden();
 
+    // En el móvil la «?» de la placa es un objetivo táctil de 44 × 44 px, como «Salir».
+    await invitado.page.setViewportSize({ width: 390, height: 844 });
+    const caja = await invitado.page.getByRole('button', { name: 'Cómo se juega' }).boundingBox();
+    expect(caja, '«?» visible a 390 px').not.toBeNull();
+    expect(Math.min(caja!.width, caja!.height), '«?» de al menos 44 px').toBeGreaterThanOrEqual(44);
+    await invitado.page.setViewportSize({ width: 1280, height: 720 });
+
     for (const { errors } of jugadores) expect(errors, 'sin errores de consola').toEqual([]);
   } finally {
     await sala.cerrar();
