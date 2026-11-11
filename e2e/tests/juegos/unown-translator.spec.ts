@@ -101,6 +101,10 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     await expect(campo(host.page)).toHaveValue('ZZZZZZ');
     await expect(host.page.getByTestId('unown-send')).toBeDisabled();
     await expect(mensaje(host.page).getByRole('img', { name: 'glifo oculto' }).first()).toBeVisible();
+    // Lo escrito es un borrador de la ronda (sessionStorage): sobrevive a una recarga.
+    await host.page.reload();
+    await host.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
+    await expect(campo(host.page)).toHaveValue('ZZZZZZ', { timeout: 15_000 });
     await campo(host.page).fill('');
     await capturarTamanos(host.page, 'juego-unown-translator-ronda', { sigue: mensaje(host.page) });
 

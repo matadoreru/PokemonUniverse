@@ -62,6 +62,19 @@ test('pokemon-trivia: tres preguntas con atajos, la revelación de cada una y la
       // El host responde con el atajo 1: su respuesta queda bloqueada (en texto) y el foco va al título de la placa.
       // El atajo no depende de dónde esté el foco (salvo en un campo): se quita del control que lo tenga.
       await host.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+      if (ronda === 1) {
+        // «?» abre la lista de atajos de la pantalla (las opciones y «Confirmar» con Intro); con ella abierta, «1» no elige.
+        await host.page.keyboard.press('?');
+        const ayuda = host.page.getByRole('dialog', { name: 'Atajos de teclado' });
+        await expect(ayuda).toBeVisible();
+        await expect(ayuda.getByRole('listitem').filter({ hasText: 'Confirmar respuesta' }).locator('kbd')).toHaveText('Intro');
+        await expect(ayuda.getByRole('listitem').filter({ has: host.page.locator('kbd', { hasText: /^1$/ }) })).toHaveCount(1);
+        await host.page.keyboard.press('1');
+        await expect(host.page.locator('[data-trivia-card][aria-pressed="true"]')).toHaveCount(0);
+        await host.page.keyboard.press('Escape');
+        await expect(ayuda).toBeHidden();
+        await host.page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+      }
       // Como en Shiny Quiz: el atajo solo elige; Enter confirma.
       await host.page.keyboard.press('1');
       await expect(host.page.getByText('Has seleccionado')).toBeVisible();
