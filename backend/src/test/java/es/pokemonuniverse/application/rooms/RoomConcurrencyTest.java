@@ -152,7 +152,7 @@ class RoomConcurrencyTest {
     var events = new RecordingEvents();
     var manager = RoomTestKit.coordinator(RoomTestKit.registry(), events, RoomAuditSink.NO_OP,
         GameResultsPersister.NO_OP, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time,
-        new SeededRandom(7), schedulers, RoomTestKit.NO_INTRO);
+        new SeededRandom(7), schedulers, RoomSettings.DEFAULTS);
     var room = manager.store.get(manager.create(guest("p1", "Host"), "s1", null).code());
     RoomTestKit.join(manager, guest("p2", "Ana"), "s2", room.code);
     manager.selectGame("p1", "higher-lower");

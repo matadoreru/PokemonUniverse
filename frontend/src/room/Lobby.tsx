@@ -9,6 +9,7 @@ import { Badge, Card, Chip, cx, Field, Icon, Notice, Panel, Pill, StateBox, TabP
 import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
+import { GameRulesButton } from './GameRulesButton';
 import { allowedModesOf, compatibleSelectedGameIds, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, rotationGameConfig, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
 import { connectedCount, emptyRoomState, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
 import { useRoomLinkShare } from './room-link';
@@ -231,6 +232,8 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
                     </span>
                   )}
                 </Card>
+                {/* «?» con las reglas, hermano de la carta (no cabe un botón dentro de otro): pulsarlo no la elige. */}
+                <GameRulesButton game={game} className={s.rules} />
               </li>
             );
           })}

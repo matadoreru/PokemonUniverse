@@ -19,10 +19,6 @@ describe('phaseScreenKey', () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it('la intro es otra pantalla que la partida que abre', () => {
-    expect(phaseScreenKey(room('GAME_INTRO', 0, 'a'))).not.toBe(phaseScreenKey(room('ROUND_ACTIVE', 0, 'a')));
-  });
-
   it('la votación y su recuento son la misma pantalla', () => {
     expect(phaseScreenKey(room('NEXT_GAME_VOTE', 1))).toBe(phaseScreenKey(room('NEXT_GAME_VOTE_RESULTS', 1)));
   });

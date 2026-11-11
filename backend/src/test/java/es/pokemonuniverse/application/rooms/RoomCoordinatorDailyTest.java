@@ -113,7 +113,7 @@ class RoomCoordinatorDailyTest {
   final RecordingPersister persister = new RecordingPersister();
   final RecordingDailyRuns runs = new RecordingDailyRuns();
   final GameRegistry registry = RoomTestKit.registry();
-  RoomCoordinator manager = build(RoomTestKit.NO_INTRO);
+  RoomCoordinator manager = build(RoomSettings.DEFAULTS);
 
   private RoomCoordinator build(RoomSettings settings) {
     return RoomTestKit.coordinator(registry, events, audit, persister, UserGameConfigPreferences.NO_OP,
@@ -208,38 +208,6 @@ class RoomCoordinatorDailyTest {
   }
 
   /**
-   * El reto también tiene intro: el motor empieza al pulsar «¡Listo!» (o al vencer su plazo) y la partida es la misma
-   * que sin intro, extracción a extracción del azar del reto. Durante la intro nada se observa ni consume ese azar.
-   */
-  @Test
-  void dailyHasAnIntroAndStaysDeterministic() {
-    var reference = new CountingSupplier();
-    var direct = start("pokedex-distance", reference);
-    var directState = direct.game.state;
-    int directCalls = reference.calls;
-
-    manager = build(RoomSettings.DEFAULTS);
-    var gameRandom = new CountingSupplier();
-    var room = start("pokedex-distance", gameRandom);
-    assertEquals(RoomPhase.GAME_INTRO, room.phase);
-    assertEquals(RoomPhase.GAME_INTRO, lastState().phase());
-    assertEquals(List.of(ASH.id()), lastState().intro().playerIds());
-    assertNull(lastState().game());
-    int observed = runs.observed.size();
-    int launchCalls = gameRandom.calls;
-    manager.view(room, ASH.id());
-    manager.disconnect(ASH.id(), "socket-ash");
-    manager.join(ASH, "socket-ash-2", json("\"" + room.code + "\""));
-    assertEquals(launchCalls, gameRandom.calls, "la intro no consume azar del reto");
-    assertEquals(observed, runs.observed.size(), "la intro no se observa");
-    manager.setIntroReady(ASH.id(), json("{\"gameInstanceId\":\"" + room.game.resultId + "\"}"));
-    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
-    assertEquals(directCalls, gameRandom.calls);
-    assertEquals(directState, room.game.state);
-    assertEquals(0, random.nextCalls);
-  }
-
-  /**
    * «Siguiente» también vale en el reto: en los juegos del reto adelanta los revelados sin consumir más azar ni
    * cambiar el resultado, que es el mismo que dejando vencer cada plazo.
    */
@@ -252,7 +220,7 @@ class RoomCoordinatorDailyTest {
     // Learnset Guess no entra: el catálogo dorado gen1-2 no trae learnsets y el reto no puede ni arrancar.
     // Con los motores reales (el registro de los demás tests solo trae Higher or Lower y Pokédex Distance).
     manager = RoomTestKit.coordinator(RoomTestKit.REAL_REGISTRY, events, audit, persister,
-        UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time, random, time, RoomTestKit.NO_INTRO,
+        UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time, random, time, RoomSettings.DEFAULTS,
         RoomTestKit.Hooks.NONE.withDailyRuns(runs).withExperience(userId -> XP));
     for (var entry : actions.entrySet()) {
       var gameId = entry.getKey();
@@ -298,16 +266,6 @@ class RoomCoordinatorDailyTest {
     }
     assertEquals(RoomPhase.GAME_RESULTS, room.phase);
     return skipped;
-  }
-
-  @Test
-  void dailyIntroEndsOnItsDeadline() {
-    manager = build(RoomSettings.DEFAULTS);
-    var room = start("higher-lower");
-    assertEquals(RoomPhase.GAME_INTRO, room.phase);
-    time.advance(RoomSettings.DEFAULT_GAME_INTRO_MS + RoomCoordinator.DEADLINE_TOLERANCE_MS);
-    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
-    finishByTimeouts(room);
   }
 
   @Test
@@ -479,7 +437,7 @@ class RoomCoordinatorDailyTest {
   @Test
   void reconnectGraceExpiryMidRunCallsAbandoned() {
     // Gracia de reconexión corta: vence antes que cualquier plazo de la ronda.
-    manager = build(new RoomSettings(8, 1_000).withGameIntroMs(0));
+    manager = build(new RoomSettings(8, 1_000));
     var room = start("higher-lower");
     manager.disconnect(ASH.id(), "socket-ash");
     time.advance(1_000 + RoomCoordinator.DEADLINE_TOLERANCE_MS);

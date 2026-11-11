@@ -15,7 +15,7 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-/* Reglas: lista numerada, como en la intro. */
+/* Reglas: lista numerada. */
 .rules {
   display: flex;
   flex-direction: column;

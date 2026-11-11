@@ -17,7 +17,7 @@ export function skipAnnouncement(state: Pick<GameSkipStateView, 'votes' | 'requi
 
 /**
  * «Saltar minijuego»: conmutador (`aria-pressed`) con el recuento de votos. La región viva empieza vacía y solo habla
- * cuando cambia el recuento o el voto propio: al montarse (junto al recuento de listos de la intro) no repite nada.
+ * cuando cambia el recuento o el voto propio: al montarse no repite nada.
  */
 export function SkipGameControl({ state, connected, onSetVote }: SkipGameControlProps) {
   const [pending, setPending] = useState(false);

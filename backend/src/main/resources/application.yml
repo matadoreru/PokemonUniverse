@@ -75,8 +75,6 @@ pu:
   reconnect-grace-ms: ${RECONNECT_GRACE_MS:30000}
   # Resultados de una partida: si queda sesión y el host no sigue antes, la sala sigue sola pasado este plazo.
   results-auto-continue-ms: ${ROOM_RESULTS_AUTO_CONTINUE_MS:20000}
-  # Intro de cada partida (nombre, reglas y «¡Listo!»): termina antes si todos los jugadores conectados están listos.
-  game-intro-ms: ${ROOM_GAME_INTRO_MS:8000}
   # Correo saliente (recuperar contraseña). Sin SMTP_HOST el correo solo se registra en el log.
   mail:
     host: ${SMTP_HOST:}

@@ -3524,7 +3524,6 @@ components:
         \ y las fases de sesión."
       enum:
       - LOBBY
-      - GAME_INTRO
       - GAME_STARTING
       - ROUND_ACTIVE
       - ROUND_RESULTS

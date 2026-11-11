@@ -189,7 +189,7 @@ export const renderTrack = cachedRender((track) =>
 
 /**
  * Vestíbulo y votación del siguiente juego → `lobby`; resultados del juego y de la sesión →
- * `results`; la intro y todas las fases internas del juego (también sus rondas de resultados y
+ * `results`; todas las fases internas del juego (también sus rondas de resultados y
  * votaciones) → `game`, para que la música no cambie en cada ronda. Sin sala → silencio.
  */
 export function musicTrackFor(phase: RoomPhase | null | undefined): MusicTrack | null {

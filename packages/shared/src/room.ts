@@ -4,7 +4,7 @@ import type { AvatarRef } from './avatar.js';
 import type { DailyGameId, DailyRoomInfo } from './daily.js';
 import type { GamePhase, MiniGameManifest } from './games/contracts.js';
 
-export type RoomPhase = 'LOBBY' | 'GAME_INTRO' | GamePhase | 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS' | 'SESSION_RESULTS';
+export type RoomPhase = 'LOBBY' | GamePhase | 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS' | 'SESSION_RESULTS';
 export type MemberRole = 'PLAYER' | 'SPECTATOR';
 export const ROOM_ROLES = ['HOST', 'CO_HOST', 'MEMBER'] as const;
 export type RoomRole = (typeof ROOM_ROLES)[number];
@@ -151,16 +151,6 @@ export interface GameSkipStateView {
 }
 
 /**
- * La intro de una partida: termina en `endsAt` o antes, cuando todos los `playerIds` (los jugadores conectados de la
- * partida; los espectadores no cuentan) están en `readyPlayerIds`. Mientras dura, `game` es `null`.
- */
-export interface GameIntroView {
-  endsAt: number;
-  playerIds: string[];
-  readyPlayerIds: string[];
-}
-
-/**
  * «Siguiente» en un revelado (el resultado de una ronda, de una votación…): cuando todos los `playerIds` (los jugadores
  * conectados de la partida; los espectadores no cuentan) están en `readyPlayerIds`, al revelado le queda 1 s.
  */
@@ -208,8 +198,6 @@ export interface RoomView {
    * terminado o es el reto diario) o fuera de los resultados. Ausente en vistas antiguas.
    */
   resultsEndsAt?: number | null;
-  /** En `GAME_INTRO`, su plazo y quién está listo; `null` fuera de la intro. Ausente en vistas antiguas. */
-  intro?: GameIntroView | null;
   /** En un revelado que admite «Siguiente», quién cuenta y quién lo ha pulsado; `null` fuera de ellos. Ausente en vistas antiguas. */
   revealSkip?: RevealSkipView | null;
   /** Enabled custom categories owned by the host; used for lobby validation only. */
@@ -243,8 +231,6 @@ export interface ClientToServerEvents {
   'room:continue-session': (_: unknown, ack: SocketAck) => void;
   'room:return-lobby': (_: unknown, ack: SocketAck) => void;
   'room:end-session': (_: unknown, ack: SocketAck) => void;
-  /** «¡Listo!» en la intro de la partida `gameInstanceId`; tardío (la intro ya terminó), no hace nada. */
-  'room:intro-ready': (payload: { gameInstanceId: string }, ack: SocketAck) => void;
   /** «Siguiente» en el revelado `actionEpoch` de la partida `gameInstanceId`; tardío (ya terminó), no hace nada. */
   'room:reveal-next': (payload: { gameInstanceId: string; actionEpoch: string }, ack: SocketAck) => void;
   'game:skip-vote:set': (payload: SetGameSkipVoteRequest, ack: SocketAck) => void;

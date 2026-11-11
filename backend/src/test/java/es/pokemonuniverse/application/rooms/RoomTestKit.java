@@ -39,9 +39,6 @@ final class RoomTestKit {
       {"generations":[1],"categories":["ATTACK"],"showPreviousValue":true,"answerVisibility":"LIVE",
        "difficulty":"NORMAL","roundSeconds":10,"rounds":1}""";
 
-  /** Los valores por defecto sin intro: la partida empieza al lanzarla, como antes de la intro (E1). */
-  static final RoomSettings NO_INTRO = RoomSettings.DEFAULTS.withGameIntroMs(0);
-
   final ManualTime time;
   final SeededRandom random;
   final RecordingEvents events = new RecordingEvents();
@@ -59,7 +56,7 @@ final class RoomTestKit {
 
   /** Con ganchos opcionales propios (experiencia, filtro del chat, partidas del reto). */
   RoomTestKit(Hooks hooks, String... fakeGames) {
-    this(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, registry(fakeGames), NO_INTRO,
+    this(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, registry(fakeGames), RoomSettings.DEFAULTS,
         hooks);
   }
 
@@ -68,7 +65,7 @@ final class RoomTestKit {
   }
 
   RoomTestKit(long start, UserGameConfigPreferences preferences, HostContentProvider host, GameRegistry registry) {
-    this(start, preferences, host, registry, NO_INTRO);
+    this(start, preferences, host, registry, RoomSettings.DEFAULTS);
   }
 
   /** Con otra {@link RoomSettings}, p. ej. una gracia de reconexión más corta que la de presencia. */

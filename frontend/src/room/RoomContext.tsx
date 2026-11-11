@@ -49,8 +49,6 @@ interface RoomContextValue {
   returnLobby(): Promise<void>;
   endSession(): Promise<void>;
   setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
-  /** «¡Listo!» en la intro de la partida `gameInstanceId` (`room:intro-ready`), con aviso global. */
-  introReady(gameInstanceId: string): Promise<void>;
   /** «Siguiente» en el revelado `actionEpoch` de la partida `gameInstanceId` (`room:reveal-next`), con aviso global. */
   revealNext(gameInstanceId: string, actionEpoch: string): Promise<void>;
   /** `room:invite`, con aviso global: el lobby solo captura para soltar su botón. */
@@ -201,7 +199,6 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     async returnLobby() { await emit('room:return-lobby', {}); },
     async endSession() { await emit('room:end-session', {}); },
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
-    async introReady(gameInstanceId) { await emit('room:intro-ready', { gameInstanceId }); },
     async revealNext(gameInstanceId, actionEpoch) { await emit('room:reveal-next', { gameInstanceId, actionEpoch }); },
     async inviteFriend(userId) { await emit('room:invite', { userId }); },
     subscribe,

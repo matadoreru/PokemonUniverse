@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { gameWinCue, resolveCue, roomRevealKey, shouldCue } from './useSfxCue';
+import { gameStartCue, gameWinCue, resolveCue, roomRevealKey, shouldCue } from './useSfxCue';
 
 describe('useSfxCue', () => {
   it('traduce los nombres antiguos al catálogo', () => {
@@ -33,5 +33,18 @@ describe('useSfxCue', () => {
     expect(gameWinCue(null, 'p1')).toBeNull();
     // Fuera del reto lo da `ResultsShell`: la sala no lo duplica.
     expect(gameWinCue(room('type-duel', results('p1'), 'GAME_RESULTS', null), 'p1')).toBeNull();
+  });
+
+  it('game.start: una clave por partida en juego y ninguna fuera de ella', () => {
+    const base = { gamesPlayed: 1, selectedGameId: 'shiny-vote', game: { gameId: 'shiny-vote' }, gameSkipState: { gameInstanceId: 'a' } };
+    expect(gameStartCue({ ...base, phase: 'ROUND_ACTIVE' })).toBe('a');
+    expect(gameStartCue({ ...base, phase: 'ROUND_RESULTS' })).toBe('a');
+    // Saltar la partida y empezar otra cambia la clave (vuelve a sonar).
+    expect(gameStartCue({ ...base, phase: 'ROUND_ACTIVE', gameSkipState: { gameInstanceId: 'b' } })).toBe('b');
+    expect(gameStartCue({ ...base, phase: 'ROUND_ACTIVE', gameSkipState: null })).toBe('shiny-vote:1');
+    for (const phase of ['LOBBY', 'GAME_RESULTS', 'NEXT_GAME_VOTE', 'NEXT_GAME_VOTE_RESULTS', 'SESSION_RESULTS'] as const) {
+      expect(gameStartCue({ ...base, phase })).toBeNull();
+    }
+    expect(gameStartCue(null)).toBeNull();
   });
 });

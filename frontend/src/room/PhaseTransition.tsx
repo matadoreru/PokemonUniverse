@@ -19,8 +19,6 @@ export function phaseScreenKey(room: PhaseKeyRoom): string {
     case 'LOBBY': return 'lobby';
     case 'NEXT_GAME_VOTE':
     case 'NEXT_GAME_VOTE_RESULTS': return `vote:${room.gamesPlayed}`;
-    // La intro es su propia pantalla: al empezar la partida, la entrada vuelve a correr.
-    case 'GAME_INTRO': return `intro:${room.gameSkipState?.gameInstanceId ?? room.gamesPlayed}`;
     case 'GAME_RESULTS': return `results:${room.gamesPlayed}`;
     case 'SESSION_RESULTS': return 'session';
     default: return `game:${room.gameSkipState?.gameInstanceId ?? room.gamesPlayed}`;

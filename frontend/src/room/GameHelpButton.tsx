@@ -1,19 +1,16 @@
-import type { RoomPhase, RoomView } from '@pokemon-universe/shared/public';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { HelpCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Pill } from '../ui';
-import { activeGameManifest } from './game-intro';
+import { activeGameManifest, gameInPlay } from './active-game';
 import { HELP_KEY, screenShortcuts, type ShortcutEntry } from './game-kit/shortcut-help';
 import { bindShortcuts } from './game-kit/shortcuts';
 import { ShortcutList } from './game-kit/ShortcutList';
 import { HelpDialog, HelpRules, type HelpSection } from './HelpDialog';
 
-/** Fases sin partida en juego (o con sus reglas ya a la vista, como la intro): sin «Cómo se juega». */
-const PHASES_WITHOUT_HELP: ReadonlySet<RoomPhase> = new Set(['LOBBY', 'GAME_INTRO', 'GAME_RESULTS', 'NEXT_GAME_VOTE', 'NEXT_GAME_VOTE_RESULTS', 'SESSION_RESULTS']);
-
 /** Las reglas del juego en curso, si la sala está en una de sus fases y el manifiesto las trae. */
 export function gameHelpRules(room: RoomView): { name: string; rules: string[] } | null {
-  if (PHASES_WITHOUT_HELP.has(room.phase)) return null;
+  if (!gameInPlay(room.phase)) return null;
   const manifest = activeGameManifest(room);
   return manifest && manifest.howTo.length > 0 ? { name: manifest.name, rules: manifest.howTo } : null;
 }

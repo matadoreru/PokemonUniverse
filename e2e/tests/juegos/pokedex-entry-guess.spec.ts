@@ -23,8 +23,6 @@ test('pokedex-entry-guess: buscador cargando, con error y reintento', async ({ b
       else await route.fallback();
     });
     await iniciarPartida(host.page, [invitado.page]);
-    // Los dos pasan la intro: el buscador se pide al montar la pantalla del juego.
-    await esperarPartida([host.page, invitado.page]);
 
     // La bandeja de carga no es región viva (la pantalla tiene una sola): se busca por su `aria-busy`.
     const cargando = invitado.page.locator('[aria-busy="true"]').filter({ hasText: 'Cargando Pokémon…' });

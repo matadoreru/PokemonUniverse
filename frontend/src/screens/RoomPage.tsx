@@ -3,8 +3,6 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { GameLoad } from '../components/LoadingFallback';
 import { DailyResultsScreen } from '../daily/DailyResultsScreen';
-import { GameIntro } from '../room/GameIntro';
-import { GameSkipSlot } from '../room/game-kit/GameSkipSlot';
 import { Lobby } from '../room/Lobby';
 import { NextGameVote } from '../room/NextGameVote';
 import { SessionResults } from '../room/SessionResults';
@@ -50,7 +48,6 @@ function RoomPhaseScreen({ room, userId }: { room: RoomView; userId: string }) {
   // Un fallo al cargar el código del juego enseña su error con «Reintentar»; otra fase u otro juego lo olvida.
   const loadKey = `${room.phase}:${activeGameId}`;
   if (room.phase === 'GAME_RESULTS') return <>{endDialog}<GameLoad resetKey={loadKey}><gameClient.Results room={room} selfId={userId} onLobby={() => run(context.continueSession())} onEnd={askEnd} /></GameLoad></>;
-  if (room.phase === 'GAME_INTRO') return <GameIntro room={room} selfId={userId} onReady={context.introReady} skip={<GameSkipSlot />} />;
   if (room.phase === 'SESSION_RESULTS') return <SessionResults room={room} selfId={userId} onLobby={() => run(context.returnLobby())} onLeave={() => run(context.leaveRoom().then(() => navigate('/play')))} />;
   return <GameLoad resetKey={loadKey}><gameClient.ActiveGame key={room.gameSkipState?.gameInstanceId} room={room} selfId={userId} onAction={context.gameAction} /></GameLoad>;
 }

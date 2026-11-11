@@ -19,7 +19,7 @@ describe('configuraciones por defecto del registro', () => {
   });
 });
 
-/** «Cómo se juega» de la intro y de la ayuda: tres frases cortas y no vacías, que la web muestra tal cual. */
+/** «Cómo se juega» de la ayuda: tres frases cortas y no vacías, que la web muestra tal cual. */
 describe('howTo del registro', () => {
   const manifests = registry as Array<{ id: string; howTo?: unknown }>;
   it.each(manifests.map((game) => [game.id, game.howTo] as const))('%s tiene tres frases', (_id, howTo) => {

@@ -23,7 +23,8 @@ import { applyPace } from '../../games/common/pace-presets';
 import { playerColor } from '../../lib/player-color';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { ResultsShell } from '../../room/game-kit/ResultsShell';
-import { GameIntro } from '../../room/GameIntro';
+import { GameArt } from '../../games/GameArt';
+import { GameRulesButton } from '../../room/GameRulesButton';
 import { GameHelpButton } from '../../room/GameHelpButton';
 import { RevealNextControl } from '../../room/RevealNextControl';
 import { SkipGameControl } from '../../room/SkipGameControl';
@@ -47,6 +48,7 @@ import type { CutinTone } from '../Cutin';
 import type { ForcedState } from '../cx';
 import { ConfirmDialog, Dialog } from '../Dialog';
 import { Field, SelectField, TextArea } from '../Field';
+import { HelpDot } from '../HelpDot';
 import { HudPlate } from '../HudPlate';
 import { Icon } from '../Icon';
 import { Panel } from '../Panel';
@@ -1369,37 +1371,31 @@ function ScreenSplitSection() {
   );
 }
 
-/* Intro de partida (E1) y «Cómo se juega» (Q2), con una sala ficticia de Pokémon Trivia. */
-const INTRO_TRIVIA = roomManifest({ id: 'pokemon-trivia', name: 'Pokémon Trivia', howTo: [
+/* «Cómo se juega» bajo demanda (E1): «?» en la placa de la sala y en cada carta del lobby, con Pokémon Trivia. */
+const HELP_TRIVIA = roomManifest({ id: 'pokemon-trivia', name: 'Pokémon Trivia', howTo: [
   'Responded preguntas sobre tipos, generaciones, estadísticas y medidas.',
   'Cada acierto vale 100 puntos, y hasta 100 más cuanto antes respondáis.',
   'Solo hay una respuesta por pregunta: en cuanto elegís, queda bloqueada.',
 ] });
-const INTRO_MEMBERS = [roomMember({ id: 'misty', displayName: 'Misty', isHost: true, roomRole: 'HOST' }), roomMember({ id: 'ash', displayName: 'Ash' }),
-  roomMember({ id: 'brock', displayName: 'Brock' }), roomMember({ id: 'gary', displayName: 'Gary', role: 'SPECTATOR' })];
+const HELP_ROOM = roomView({ phase: 'ROUND_ACTIVE', selectedGameId: 'pokemon-trivia', availableGames: [HELP_TRIVIA],
+  members: [roomMember({ id: 'misty', displayName: 'Misty', isHost: true, roomRole: 'HOST' }), roomMember({ id: 'ash', displayName: 'Ash' })] });
 
-function introRoom(readyPlayerIds: string[], now: number) {
-  return roomView({ phase: 'GAME_INTRO', selectedGameId: 'pokemon-trivia', availableGames: [INTRO_TRIVIA], members: INTRO_MEMBERS, serverNow: now,
-    gameSkipState: { gameInstanceId: '00000000-0000-4000-8000-000000000001', voterIds: [], votes: 0, requiredVotes: 3, currentUserVoted: false, canVote: true },
-    intro: { endsAt: now + 6_000, playerIds: ['misty', 'ash', 'brock'], readyPlayerIds } });
-}
-
-function GameIntroSection() {
-  // Hora fija al montar: la cuenta atrás corre, pero no depende de cuándo se capture.
-  const [now] = useState(() => Date.now());
+function GameHelpSection() {
   return (
-    <Section name="game-intro" title="Intro de partida y «Cómo se juega»">
-      <Fig id="game-intro-reading" caption="Intro · nadie listo todavía (jugador: «¡Listo!» activo)" wide>
-        <div className={s.introFrame}><GameIntro room={introRoom([], now)} selfId="ash" onReady={asyncNoop} /></div>
+    <Section name="game-help" title="«Cómo se juega» y HelpDot">
+      <Fig id="help-dot" caption="HelpDot · «?» de esquina: disco de 28 px con 44 px de área (normal, hover, foco y pulsado)">
+        <span className={s.iconRow}>
+          {STATES.map((st) => <HelpDot key={st.key} aria-label={`Cómo se juega (${st.label})`} {...force(st.forced)} />)}
+        </span>
       </Fig>
-      <Fig id="game-intro-ready" caption="Intro · ya listo, esperando al resto (Misty también)" wide>
-        <div className={s.introFrame}><GameIntro room={introRoom(['misty', 'ash'], now)} selfId="ash" onReady={asyncNoop} /></div>
-      </Fig>
-      <Fig id="game-intro-spectator" caption="Intro · espectador: la ve, pero no cuenta" wide>
-        <div className={s.introFrame}><GameIntro room={introRoom(['ash'], now)} selfId="gary" onReady={asyncNoop} /></div>
+      <Fig id="game-rules-card" caption="Carta del lobby con su «?» hermano (abajo a la derecha): abre las reglas sin elegir la carta">
+        <div className={s.rulesCell}>
+          <Card size="sm" art={<GameArt gameId="pokemon-trivia" size={32} />} name="Pokémon Trivia" state="selected" onSelect={() => undefined} />
+          <GameRulesButton game={HELP_TRIVIA} className={s.rulesDot} />
+        </div>
       </Fig>
       <Fig id="game-help-button" caption="«Cómo se juega» · píldora «?» de la placa de la sala (abre el diálogo de ayuda con las reglas)">
-        <GameHelpButton room={{ ...introRoom([], now), phase: 'ROUND_ACTIVE', intro: null }} />
+        <GameHelpButton room={HELP_ROOM} />
       </Fig>
     </Section>
   );
@@ -1630,7 +1626,7 @@ export function Gallery() {
       <ActionPlateSection />
       <ScreenSection />
       <ScreenSplitSection />
-      <GameIntroSection />
+      <GameHelpSection />
       <RevealNextSection />
       <AuctionSection />
       <GamePiecesSection />

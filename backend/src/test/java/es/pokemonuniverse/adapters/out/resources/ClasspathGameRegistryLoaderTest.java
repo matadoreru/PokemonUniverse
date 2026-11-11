@@ -52,7 +52,7 @@ class ClasspathGameRegistryLoaderTest {
     assertEquals(List.of(), withoutGrace);
   }
 
-  /** «Cómo se juega» de la intro y de la ayuda: tres frases cortas y no vacías en cada juego. */
+  /** «Cómo se juega» de la ayuda: tres frases cortas y no vacías en cada juego. */
   @Test
   void everyManifestHasThreeShortHowToSentences() {
     var wrong = registry.list().stream().filter(manifest -> manifest.howTo() == null || manifest.howTo().size() != 3

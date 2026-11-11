@@ -26,8 +26,7 @@ public class RoomBeans {
 
   @Singleton
   RoomSettings roomSettings(PuConfig config) {
-    return new RoomSettings(config.roomMaxPlayers(), config.reconnectGraceMs(), config.resultsAutoContinueMs(),
-        config.gameIntroMs());
+    return new RoomSettings(config.roomMaxPlayers(), config.reconnectGraceMs(), config.resultsAutoContinueMs());
   }
 
   /** Sin BD no hay {@link UserGameConfigService}: ni se lee ni se guarda nada. */

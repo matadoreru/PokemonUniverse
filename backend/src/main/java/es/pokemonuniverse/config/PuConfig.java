@@ -26,11 +26,10 @@ public class PuConfig {
   private final int roomMaxPlayers;
   private final long reconnectGraceMs;
   private final long resultsAutoContinueMs;
-  private final long gameIntroMs;
 
   /** Con los valores por defecto de sala de Node ({@code ROOM_MAX_PLAYERS=8}, {@code RECONNECT_GRACE_MS=30000}). */
   public PuConfig(Auth auth, String webOrigin, boolean rateLimitDisabled, String avatarStorageDir, String commitSha) {
-    this(auth, webOrigin, rateLimitDisabled, avatarStorageDir, commitSha, 8, 30_000, 20_000, 8_000);
+    this(auth, webOrigin, rateLimitDisabled, avatarStorageDir, commitSha, 8, 30_000, 20_000);
   }
 
   @ConfigurationInject
@@ -42,8 +41,7 @@ public class PuConfig {
       String commitSha,
       @Min(2) @Max(100) int roomMaxPlayers,
       @Min(5_000) @Max(300_000) long reconnectGraceMs,
-      @Min(5_000) @Max(600_000) long resultsAutoContinueMs,
-      @Min(0) @Max(120_000) long gameIntroMs) {
+      @Min(5_000) @Max(600_000) long resultsAutoContinueMs) {
     this.auth = auth;
     this.webOrigin = webOrigin;
     this.rateLimitDisabled = rateLimitDisabled;
@@ -52,7 +50,6 @@ public class PuConfig {
     this.roomMaxPlayers = roomMaxPlayers;
     this.reconnectGraceMs = reconnectGraceMs;
     this.resultsAutoContinueMs = resultsAutoContinueMs;
-    this.gameIntroMs = gameIntroMs;
   }
 
   /** {@code ROOM_MAX_PLAYERS}: capacidad por defecto de una sala nueva (2–100). */
@@ -68,11 +65,6 @@ public class PuConfig {
   /** {@code ROOM_RESULTS_AUTO_CONTINUE_MS}: espera de los resultados antes de que la sesión siga sola (5 s–10 min). */
   public long resultsAutoContinueMs() {
     return resultsAutoContinueMs;
-  }
-
-  /** {@code ROOM_GAME_INTRO_MS}: intro de cada partida antes de la primera ronda (0–2 min; 0 la quita). */
-  public long gameIntroMs() {
-    return gameIntroMs;
   }
 
   public Auth auth() {

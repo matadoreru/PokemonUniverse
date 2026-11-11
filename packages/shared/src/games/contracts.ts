@@ -25,7 +25,7 @@ export interface MiniGameManifest {
   name: string;
   icon: string;
   description: string;
-  /** «Cómo se juega»: tres frases cortas (qué hacer, cómo se puntúa y un consejo), en la intro y en la ayuda. */
+  /** «Cómo se juega»: tres frases cortas (qué hacer, cómo se puntúa y un consejo), en la ayuda de la partida y del lobby. */
   howTo: string[];
   /** Marks recently introduced games that may still receive rule or balance changes. */
   experimental?: boolean;

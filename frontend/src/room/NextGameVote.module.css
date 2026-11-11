@@ -85,8 +85,15 @@
   }
 }
 .cell {
+  position: relative;
   display: flex;
   min-width: 0;
+}
+/* «?» de las reglas, hermano de la carta, en su esquina superior derecha (las insignias van centradas bajo el nombre). */
+.rules {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
 }
 .cell > * {
   flex: 1 1 auto;

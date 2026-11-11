@@ -1502,7 +1502,7 @@ export interface components {
          * @description `RoomPhase` de `room.ts`: el lobby, cualquier fase de un minijuego y las fases de sesión.
          * @enum {string}
          */
-        RoomPhase: "LOBBY" | "GAME_INTRO" | "GAME_STARTING" | "ROUND_ACTIVE" | "ROUND_RESULTS" | "TIEBREAKER_ACTIVE" | "ROLE_REVEAL" | "CLUE_PHASE" | "VOTING" | "VOTE_RESULTS" | "ELIMINATION" | "SELECTING_TYPES" | "TYPE_REVEAL" | "INVALID_COMBINATION" | "POKEMON_SEARCH" | "TURN_ACTIVE" | "CHOICE_REVEAL" | "DISCUSSION" | "REVOTE" | "GAME_RESULTS" | "NEXT_GAME_VOTE" | "NEXT_GAME_VOTE_RESULTS" | "SESSION_RESULTS";
+        RoomPhase: "LOBBY" | "GAME_STARTING" | "ROUND_ACTIVE" | "ROUND_RESULTS" | "TIEBREAKER_ACTIVE" | "ROLE_REVEAL" | "CLUE_PHASE" | "VOTING" | "VOTE_RESULTS" | "ELIMINATION" | "SELECTING_TYPES" | "TYPE_REVEAL" | "INVALID_COMBINATION" | "POKEMON_SEARCH" | "TURN_ACTIVE" | "CHOICE_REVEAL" | "DISCUSSION" | "REVOTE" | "GAME_RESULTS" | "NEXT_GAME_VOTE" | "NEXT_GAME_VOTE_RESULTS" | "SESSION_RESULTS";
         /**
          * @description Rol de permisos en la sala (`ROOM_ROLES`), independiente del rol en el minijuego.
          * @enum {string}

@@ -4,7 +4,7 @@
  * los tres tamaños del botón con su recuento «N/M».
  */
 import { expect, test, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, crearSalaConJugadores, esperarPartida, fijarJuegoDelDia, iniciarPartida, nuevaCuenta, pasarIntro, registrarPorApi, seleccionarJuego, SIZES, type CuentaE2E, type Jugador } from '../src/helpers.js';
+import { borrarCuentas, capture, collectErrors, comprobarBdE2E, crearSalaConJugadores, esperarPartida, fijarJuegoDelDia, iniciarPartida, nuevaCuenta, registrarPorApi, seleccionarJuego, SIZES, type CuentaE2E, type Jugador } from '../src/helpers.js';
 import { capturarTamanos, sinScorePop } from '../src/juegos.js';
 
 const siguiente = (page: Page) => page.getByTestId('reveal-next').getByRole('button');
@@ -82,8 +82,6 @@ test.describe('reto diario', () => {
       await page.goto('/play');
       await page.getByRole('region', { name: 'Reto diario' }).getByRole('button', { name: 'Jugar', exact: true }).click();
       await expect(page).toHaveURL(/\/room$/);
-      await expect(page.getByTestId('game-intro')).toBeVisible({ timeout: 15_000 });
-      await pasarIntro([page]);
       const mayor = page.getByRole('button', { name: 'Mayor', exact: true });
       // Una ronda por tamaño: el revelado dura 3 s, así que cada captura va en su propio revelado.
       for (const { w, h } of SIZES) {

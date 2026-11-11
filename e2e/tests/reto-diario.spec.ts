@@ -6,7 +6,7 @@
  * partida normal. Cuentas nuevas por tamaño (un intento por cuenta y día), borradas al terminar cada prueba.
  */
 import { expect, test, type Browser, type Page } from '@playwright/test';
-import { borrarCuentas, capture, checkLayout, collectErrors, comprobarBdE2E, createRoom, DESKTOP, fijarJuegoDelDia, jugarHigherLowerHastaElFinal, loginAsGuest, nuevaCuenta, pasarIntro, psql, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
+import { borrarCuentas, capture, checkLayout, collectErrors, comprobarBdE2E, createRoom, DESKTOP, fijarJuegoDelDia, jugarHigherLowerHastaElFinal, loginAsGuest, nuevaCuenta, psql, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
 
 const JUEGO = 'Higher or Lower';
 const cuentas: CuentaE2E[] = [];
@@ -53,9 +53,6 @@ async function empezarReto(page: Page): Promise<void> {
   await expect(jugar).toBeEnabled();
   await jugar.click();
   await expect(page).toHaveURL(/\/room$/);
-  // El reto también tiene intro: su único jugador la termina con «¡Listo!».
-  await expect(page.getByTestId('game-intro')).toBeVisible({ timeout: 15_000 });
-  await pasarIntro([page]);
   await expect(page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 15_000 });
   await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toHaveCount(0);
   // La placa lleva «Reto diario» (a menos de 640 px oculta el texto de toda placa y deja solo «Salir»).

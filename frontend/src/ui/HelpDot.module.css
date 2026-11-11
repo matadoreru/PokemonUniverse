@@ -1,0 +1,42 @@
+/* Botón «?» de esquina: disco de 28 px a la vista y 44 px de área pulsable (::after). Estados también como clase. */
+.dot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: var(--ol-2) solid var(--navy);
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--navy);
+  font: 800 var(--fs-15) / 1 var(--font-display);
+  box-shadow: var(--sh-hard-3);
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  flex: none;
+}
+.dot::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+}
+.dot:hover,
+.dot.hover {
+  transform: translateY(-1px);
+  background: var(--white);
+}
+.dot:focus-visible,
+.dot.focus {
+  outline: var(--ol-3) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.dot:active,
+.dot.active {
+  transform: translateY(2px);
+  box-shadow: none;
+}

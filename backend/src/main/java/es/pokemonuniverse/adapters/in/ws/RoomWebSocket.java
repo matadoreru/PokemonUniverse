@@ -226,7 +226,6 @@ public class RoomWebSocket {
       case "room:continue-session" -> current(connection, () -> coordinator.continueSession(playerId));
       case "room:return-lobby" -> current(connection, () -> coordinator.returnLobby(playerId));
       case "room:end-session" -> current(connection, () -> coordinator.endSession(playerId));
-      case "room:intro-ready" -> current(connection, () -> coordinator.setIntroReady(playerId, payload));
       case "room:reveal-next" -> current(connection, () -> coordinator.setRevealNext(playerId, payload));
       case "game:skip-vote:set" -> current(connection, () -> coordinator.setGameSkipVote(playerId, payload));
       case "game:action" -> current(connection, () -> coordinator.gameAction(playerId, payload));

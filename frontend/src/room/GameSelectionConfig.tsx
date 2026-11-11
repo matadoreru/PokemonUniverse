@@ -8,6 +8,7 @@ import { GameArt } from '../games/GameArt';
 import { summarizeGameConfig } from './game-config-summary';
 import { SessionModesProvider, type SessionModes } from '../games/common/GameModeField';
 import g from './GameSelectionConfig.module.css';
+import { GameRulesButton } from './GameRulesButton';
 import { playerRangeLabel } from './lobby-state';
 
 export function gameAvailabilityReason(game: MiniGameManifest, playerCount: number): string | null {
@@ -188,7 +189,10 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
     const sessionModes = sessionModesOf(room, editingGame.id, onAllowedModes);
     return <Panel key={editingGame.id} variant="cream" as="div">
       <div className={g.editorHead}>
-        <h3 className={g.title}><GameArt gameId={editingGame.id} size={22} /> Ajustes de {editingGame.name}</h3>
+        <div className={g.editorTitle}>
+          <h3 className={g.title}><GameArt gameId={editingGame.id} size={22} /> Ajustes de {editingGame.name}</h3>
+          <GameRulesButton game={editingGame} />
+        </div>
         <Chip tone={skipReason ? 'neutral' : reason ? 'bad' : 'ok'} icon={skipReason ? undefined : <Icon icon={reason ? AlertCircle : Check} size={18} />}>{skipReason ? 'Se omitirá' : reason ? 'Revisar' : 'Listo'}</Chip>
       </div>
       <p className={g.editorLead}>

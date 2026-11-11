@@ -344,7 +344,7 @@ class RoomCoordinatorTest {
   @Test
   @DisplayName("a shorter reconnect grace ends the presence grace when the player leaves")
   void presenceGraceEndsEarlyWhenThePlayerLeaves() {
-    var kit = new RoomTestKit(new RoomSettings(8, 5_000).withGameIntroMs(0));
+    var kit = new RoomTestKit(new RoomSettings(8, 5_000));
     var room = distanceRound(kit, 60);
     kit.manager.disconnect("p3", "socket-p3");
     select(kit, "p1", "bulbasaur");
@@ -1028,7 +1028,7 @@ class RoomCoordinatorTest {
   @Test
   @DisplayName("the results deadline comes from the room settings")
   void resultsDeadlineFromSettings() {
-    var kit = new RoomTestKit(new RoomSettings(8, 30_000, 60_000).withGameIntroMs(0), "shiny-vote");
+    var kit = new RoomTestKit(new RoomSettings(8, 30_000, 60_000), "shiny-vote");
     var room = finishedFakeGame(kit, "{\"type\":\"INFINITE\"}");
     assertEquals(Long.valueOf(kit.time.now() + 60_000), room.resultsEndsAt);
   }
@@ -1594,7 +1594,7 @@ class RoomCoordinatorTest {
       var kit = new RoomTestKit("shiny-vote", "pokemon-bingo");
       var random = new SeededRandom(seed);
       var manager = RoomTestKit.coordinator(kit.registry, kit.events, kit.audit, kit.persister,
-          UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, kit.time, random, kit.time, RoomTestKit.NO_INTRO);
+          UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, kit.time, random, kit.time, RoomSettings.DEFAULTS);
       var room = manager.store.get(manager.create(guest("host", "Host"), "h", null).code());
       RoomTestKit.join(manager, guest("guest", "Ana"), "g", room.code);
       room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote", "pokemon-bingo"));
@@ -1941,7 +1941,7 @@ class RoomCoordinatorTest {
     assertEquals(Set.of("code", "phase", "hostId", "maxPlayers", "members", "availableGames", "selectedGameId",
         "selectedGameConfig", "gameConfigs", "customizedGameIds", "sessionMode", "gameSelectionMode", "allowedModes",
         "nextGameVote", "gameSkipState", "gamesPlayed", "sessionStandings", "sessionHistory", "roomInstanceId", "revision",
-        "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "resultsEndsAt", "intro", "revealSkip",
+        "gameCatalogVersion", "gameActionEpoch", "game", "gamePlayerState", "serverNow", "resultsEndsAt", "revealSkip",
         "hostCustomCategoryCount",
         "hostWouldYouRatherPromptCount", "daily"), keys);
     var serialized = serialize(second);

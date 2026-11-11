@@ -156,6 +156,13 @@
   gap: var(--sp-2);
   margin-bottom: var(--sp-1);
 }
+/* Título del editor y su «?» de reglas, juntos a la izquierda (el estado va a la derecha). */
+.editorTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
 .editorLead {
   font: 700 var(--fs-13) / 1.35 var(--font-text);
   color: var(--ink-2);

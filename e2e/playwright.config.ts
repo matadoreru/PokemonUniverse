@@ -49,15 +49,12 @@ export default defineConfig({
       // lee los correos de su API en :8025). ROOM_RESULTS_AUTO_CONTINUE_MS alarga a 2 min la espera de los resultados
       // antes de que la sesión siga sola (20 s en producción): así ningún spec compite con ella mientras captura los
       // resultados a tres tamaños o pulsa «Continuar sesión». La cuenta atrás se sigue viendo (sesion.spec.ts).
-      // ROOM_GAME_INTRO_MS alarga a 20 s la intro de cada partida (8 s en producción): los helpers pulsan «¡Listo!» por
-      // cada jugador (`pasarIntro`, `listoAutomatico`), así que un arranque que se lo salta se nota, y intro.spec.ts
-      // tiene tiempo de capturarla a tres tamaños.
       command: 'npm run dev:backend',
       url: 'http://localhost:8080/health',
       cwd: '..',
       reuseExistingServer: !process.env.CI,
       timeout: 240_000,
-      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8', ROOM_RESULTS_AUTO_CONTINUE_MS: '120000', ROOM_GAME_INTRO_MS: '20000', SMTP_HOST: 'localhost', SMTP_PORT: '1025' },
+      env: { PORT: '8080', MICRONAUT_ENVIRONMENTS: 'dev', RATE_LIMIT_DISABLED: 'true', COOKIE_SECURE: 'false', ROOM_MAX_PLAYERS: '8', ROOM_RESULTS_AUTO_CONTINUE_MS: '120000', SMTP_HOST: 'localhost', SMTP_PORT: '1025' },
     },
     {
       command: 'npm run dev -w @pokemon-universe/web',

@@ -128,15 +128,6 @@ public final class RoomCommandParsers {
     return new SetGameSkipVoteRequest(id, wants.getBooleanValue());
   }
 
-  /** {@code room:intro-ready} {@code { gameInstanceId }} (estricto): el id de la partida cuya intro se confirma. */
-  public static String introReadyRequest(@Nullable JsonNode raw) {
-    var id = raw == null || !raw.isObject() ? null : raw.get("gameInstanceId");
-    if (id == null || !id.isString() || !UUID.matcher(id.getStringValue()).matches() || raw.size() != 1) {
-      throw new RoomException("Petición de «¡Listo!» no válida.");
-    }
-    return id.getStringValue();
-  }
-
   /** {@code room:reveal-next} {@code { gameInstanceId, actionEpoch }}: el revelado (partida y época) en el que se pulsa. */
   public record RevealNextRequest(String gameInstanceId, String actionEpoch) {}
 

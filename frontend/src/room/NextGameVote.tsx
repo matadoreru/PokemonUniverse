@@ -10,6 +10,7 @@ import { gameAvailabilityReason } from './GameSelectionConfig';
 import { summarizeGameConfig } from './game-config-summary';
 import { voteActionStatus, voteOptionName, votesLabel } from './next-game-vote';
 import { sessionPodium } from './session-results';
+import { GameRulesButton } from './GameRulesButton';
 import s from './NextGameVote.module.css';
 
 export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; selfId: string; onVote(optionId: string): Promise<void>; onEnd(): void }) {
@@ -80,6 +81,8 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
             {!unavailableReason && <span className={s.config}>{modeText ?? summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
             {!active && <span className={s.tally}><Badge tone={winner ? 'yellow' : 'cream'}><Icon icon={Vote} size={18} />{votesLabel(tally)}</Badge></span>}
           </Card>
+          {/* «?» con las reglas, hermano de la carta: pulsarlo no cambia el voto. */}
+          <GameRulesButton game={game} className={s.rules} />
         </li>;
       })}
     </ul>

@@ -1,10 +1,11 @@
 import { WifiOff } from 'lucide-react';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useRoomMusic } from '../audio/useRoomMusic';
 import { useAuth } from '../auth/AuthContext';
-import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
+import { gameStartCue, gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { useFeedbackTarget } from '../components/feedback-target';
 import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
@@ -49,6 +50,15 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
   return slot ? createPortal(region, slot) : region;
 }
 
+/**
+ * `game.start` una vez al empezar cada partida, sin nada en pantalla. Se monta con la sala: como `useSfxCue` no suena en
+ * el primer render, recargar o volver a una partida ya empezada no lo repite.
+ */
+function GameStartCue({ room }: { room: RoomView }) {
+  useSfxCue('game.start', gameStartCue(room));
+  return null;
+}
+
 function RoomSessionContent() {
   const { connected, room, setGameSkipVote, leaveRoom, holdRoomSession } = useRoom();
   // Estas rutas enganchan la pestaña a la sesión de sala; al salir de ellas el asiento sigue con esta conexión.
@@ -77,10 +87,11 @@ function RoomSessionContent() {
       confirmLabel={daily ? 'Abandonar el reto' : 'Salir'} onConfirm={leave}>
       <p>{daily ? ABANDON_DAILY_TEXT : 'Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.'}</p>
     </ConfirmDialog>
-    {/* En la intro y en los juegos rediseñados el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
+    {/* En los juegos rediseñados el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
     {room?.gameSkipState && !daily && skipRowInLayout(room) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
+    {room && <GameStartCue room={room} />}
     <Outlet />
     <ConnectionNotice connected={connected} />
     {/* El aviso de errores de la sala (`RoomNotice`), la placa «Amigos», su panel y las invitaciones van en `Layout`:

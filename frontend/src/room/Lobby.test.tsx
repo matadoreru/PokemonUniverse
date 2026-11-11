@@ -85,18 +85,35 @@ describe('lobby information hierarchy', () => {
 });
 
 describe('lobby how to play', () => {
-  it('no game card offers «Cómo se juega» and badges sit in the corner', () => {
+  it('badges sit in the corner and the selected card only carries its order', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
       room={room} selfId="guest" onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
+    // Sin reglas en el manifiesto no hay «?».
     expect(markup).not.toContain('Cómo se juega');
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>TOP<\/span>/);
     expect(markup).toMatch(/class="[^"]*corner[^"]*"><span[^>]*>BETA<\/span>/);
     // La elegida solo lleva su número en la esquina: sin insignia «Seleccionado» que agrande la carta.
     expect(markup).not.toContain('Seleccionado');
     expect(markup).toMatch(/class="[^"]*tick[^"]*" aria-hidden="true">1</);
+  });
+
+  it('each card with rules has a «?» sibling of its toggle, never nested inside it', () => {
+    const withRules = { ...room, availableGames: room.availableGames.map((game) => ({ ...game, howTo: ['Una.', 'Dos.', 'Tres.'] })) };
+    const markup = renderToStaticMarkup(<MemoryRouter><Lobby
+      room={withRules} selfId="host" onReady={noOp} onStart={noOp}
+      onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+      onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
+    /></MemoryRouter>);
+    for (const name of ['Pokédex Distance', 'Shiny Quiz']) {
+      const help = markup.indexOf(`aria-label="Cómo se juega: ${name}"`);
+      expect(help).toBeGreaterThan(0);
+      // La carta (botón conmutador) se cierra antes de que empiece el «?».
+      const card = markup.lastIndexOf('aria-pressed=', help);
+      expect(markup.slice(card, help)).toContain('</button>');
+    }
   });
 
   it('shows a guest read-only cards, their own ready pill and no start pill', () => {

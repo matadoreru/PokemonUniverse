@@ -126,6 +126,7 @@
   }
 }
 .cell {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -168,6 +169,12 @@
   background: var(--navy);
   color: var(--white);
   pointer-events: none;
+}
+/* «?» de las reglas, hermano de la carta, en su esquina inferior derecha: arriba van el orden y TOP/BETA. */
+.rules {
+  position: absolute;
+  right: var(--sp-2);
+  bottom: var(--sp-2);
 }
 /* Insignias TOP / Experimental en la esquina superior derecha de la carta (la carta ya es `position: relative`). */
 .corner {

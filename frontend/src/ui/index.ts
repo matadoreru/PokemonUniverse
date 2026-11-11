@@ -72,3 +72,5 @@ export { ChatComposer, submitChat } from './ChatComposer';
 export type { ChatComposerProps } from './ChatComposer';
 export { UnownGlyph } from './UnownGlyph';
 export type { UnownGlyphProps, UnownGlyphSize } from './UnownGlyph';
+export { HelpDot } from './HelpDot';
+export type { HelpDotProps } from './HelpDot';

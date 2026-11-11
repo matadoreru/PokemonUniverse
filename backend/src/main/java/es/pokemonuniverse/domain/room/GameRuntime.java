@@ -29,13 +29,6 @@ public final class GameRuntime {
   /** Participantes cuya gracia expiró o que salieron de esta instancia. */
   public final Set<String> departedParticipantIds = new LinkedHashSet<>();
   public boolean resultsApplied;
-  /**
-   * Fin de la intro (fase de sala {@code GAME_INTRO}): hasta entonces el motor no ha empezado ({@code start}).
-   * {@code null} sin intro o cuando ya terminó.
-   */
-  public @Nullable Long introEndsAt;
-  /** Jugadores que pulsaron «¡Listo!» en la intro. */
-  public final Set<String> introReadyIds = new LinkedHashSet<>();
   /** {@code actionEpoch} del revelado al que pertenecen los «Siguiente» de {@link #revealNextIds}. */
   public @Nullable String revealNextEpoch;
   /** Jugadores que pulsaron «Siguiente» en el revelado {@link #revealNextEpoch}. */

@@ -53,15 +53,9 @@ final class RoomViews {
         vote.tallies == null ? null : new LinkedHashMap<>(vote.tallies), vote.nextTransitionAt);
     var game = room.game;
     var daily = room.daily;
-    // En la intro el motor aún no ha empezado: su estado no se proyecta (ni pública ni privada ni época).
-    var intro = game != null && room.phase == RoomPhase.GAME_INTRO && game.introEndsAt != null
-        ? new RoomView.IntroView(game.introEndsAt, RoomCoordinator.introPlayerIds(room, game),
-            List.copyOf(game.introReadyIds))
-        : null;
-    var live = room.phase == RoomPhase.GAME_INTRO ? null : game;
-    var revealEpoch = live == null ? null : RoomCoordinator.revealEpoch(room, live);
+    var revealEpoch = game == null ? null : RoomCoordinator.revealEpoch(room, game);
     var revealSkip = revealEpoch == null ? null : new RoomView.RevealSkipView(
-        RoomCoordinator.introPlayerIds(room, live), RoomCoordinator.revealReadyIds(live, revealEpoch));
+        RoomCoordinator.gamePlayerIds(room, game), RoomCoordinator.revealReadyIds(game, revealEpoch));
     return RoomView.builder()
         .roomInstanceId(room.historyId)
         .revision(room.revision)
@@ -94,13 +88,12 @@ final class RoomViews {
             new RoomView.SessionStandingView(participant.identity.id(), participant.identity.displayName(),
                 participant.identity.avatar(), participant.sessionPoints)).toList())
         .sessionHistory(List.copyOf(room.sessionHistory))
-        .gameActionEpoch(live != null ? live.engine.getLifecycle(live.state).actionEpoch() : null)
-        .game(live != null ? toTree.apply(live.engine.getPublicState(live.state, context)) : null)
+        .gameActionEpoch(game != null ? game.engine.getLifecycle(game.state).actionEpoch() : null)
+        .game(game != null ? toTree.apply(game.engine.getPublicState(game.state, context)) : null)
         .gamePlayerState(null)
         // La hora de la sala (la del contexto), con su desfase: la web cuenta los plazos con ella.
         .serverNow(context.now())
         .resultsEndsAt(room.phase == RoomPhase.GAME_RESULTS ? room.resultsEndsAt : null)
-        .intro(intro)
         .revealSkip(revealSkip)
         .hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount)
@@ -139,7 +132,7 @@ final class RoomViews {
     return shared.forMember(GameSkip.stateView(room, playerId),
         shared.nextGameVote() == null ? null
             : shared.nextGameVote().withOwnVote(vote == null ? null : vote.votes.get(playerId)),
-        room.game != null && room.phase != RoomPhase.GAME_INTRO ? toTree.apply(room.game.engine.getPlayerState(room.game.state, playerId, context)) : null);
+        room.game != null ? toTree.apply(room.game.engine.getPlayerState(room.game.state, playerId, context)) : null);
   }
 
   /** Revisión y {@code updatedAt} ya actualizados por el coordinador. */

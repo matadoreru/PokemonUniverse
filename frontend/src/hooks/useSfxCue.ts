@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
+import type { RoomPhase } from '@pokemon-universe/shared/public';
 import { audio, type SoundId } from '../audio';
+import { gameInPlay } from '../room/active-game';
 
 /** Nombres de los efectos antiguos (el módulo de sonido anterior): los juegos que los piden siguen funcionando. */
 export type LegacyCue = 'tick' | 'hit' | 'miss' | 'reveal' | 'win' | 'clang';
@@ -33,6 +35,24 @@ export const SELF_REVEAL_GAMES: ReadonlySet<string> = new Set(['pokedex-distance
 export function roomRevealKey(game: { gameId?: string; phase?: string; roundNumber?: number } | null | undefined): string | null {
   if (!game || game.phase !== 'ROUND_RESULTS' || !game.gameId || SELF_REVEAL_GAMES.has(game.gameId)) return null;
   return `${game.gameId}:${game.roundNumber ?? 0}`;
+}
+
+interface StartCueRoom {
+  phase: RoomPhase;
+  gamesPlayed: number;
+  game?: unknown;
+  selectedGameId: string;
+  gameSkipState?: { gameInstanceId: string } | null;
+}
+
+/**
+ * Clave del `game.start` de la sala: la partida en juego (su `gameInstanceId`, o el juego y el número de partida si la
+ * vista no lo trae) y `null` fuera de una partida. Cambia al empezar cada partida, también tras saltar una.
+ */
+export function gameStartCue(room: StartCueRoom | null | undefined): string | null {
+  if (!room || !gameInPlay(room.phase)) return null;
+  const gameId = (room.game as { gameId?: string } | null | undefined)?.gameId ?? room.selectedGameId;
+  return room.gameSkipState?.gameInstanceId ?? `${gameId}:${room.gamesPlayed}`;
 }
 
 interface WinCueRoom {

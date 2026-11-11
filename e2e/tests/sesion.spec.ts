@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { anadirJuegos, capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, pasarIntro, seleccionarJuego, SIZES, terminarSesion, type Jugador } from '../src/helpers.js';
+import { anadirJuegos, capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, terminarSesion, type Jugador } from '../src/helpers.js';
 
 /**
  * Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más.
@@ -22,12 +22,6 @@ async function capturarPantalla(page: Page, nombre: string, sigue: Locator): Pro
     expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
   }
   await page.setViewportSize({ width: 1280, height: 720 });
-}
-
-/** La partida que sigue a la votación o a «Continuar sesión» empieza con su intro: se espera y la pasan los dos. */
-async function esperarIntro(pages: readonly Page[]): Promise<void> {
-  for (const page of pages) await expect(page.getByTestId('game-intro')).toBeVisible({ timeout: 20_000 });
-  await pasarIntro(pages);
 }
 
 /** Juegos que necesitan datos que la BD local puede no tener (los `UNAVAILABLE` de `src/juegos.ts`): no se votan. */
@@ -223,8 +217,7 @@ test('sesión: modos que se juegan y votación entre los modos de un juego', asy
     await confirmar(invitado.page).click();
     for (const page of pages) await expect(page.getByText('La sala ha elegido Higher or Lower · Racha infinita')).toBeVisible({ timeout: 10_000 });
 
-    // Arranca Higher or Lower en Racha infinita (la placa lo dice) sin tocar el modo de los ajustes del lobby; antes, su intro.
-    await esperarIntro(pages);
+    // Arranca Higher or Lower en Racha infinita (la placa lo dice) sin tocar el modo de los ajustes del lobby.
     await expect(host.page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByRole('heading', { name: 'Elige el siguiente minijuego' })).toHaveCount(0);
     await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible();
@@ -291,7 +284,6 @@ test('sesión: por orden, cada modo marcado ocupa su turno en la cola', async ({
     for (const page of pages) await page.getByRole('button', { name: 'Mayor', exact: true }).click({ timeout: 20_000 });
     await host.page.getByRole('button', { name: 'Continuar sesión' }).click({ timeout: 20_000 });
     await expect(host.page.getByText('Higher or Lower · Racha infinita').first()).toBeVisible({ timeout: 20_000 });
-    await esperarIntro(pages);
     await expect(host.page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 20_000 });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
