@@ -1,12 +1,14 @@
 package es.pokemonuniverse.application.avatar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.adapters.out.storage.AvatarImageProcessor;
 import es.pokemonuniverse.adapters.out.storage.FilesystemAvatarStorage;
+import es.pokemonuniverse.application.errors.BadRequestException;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -42,7 +44,7 @@ class AvatarServiceTest {
   private void rejects(String message, Executable action) {
     var error = assertThrows(AvatarValidationException.class, action);
     assertEquals(message, error.getMessage());
-    assertEquals(400, error.status());
+    assertInstanceOf(BadRequestException.class, error);
   }
 
   private static boolean near(int rgb, Color expected) {
