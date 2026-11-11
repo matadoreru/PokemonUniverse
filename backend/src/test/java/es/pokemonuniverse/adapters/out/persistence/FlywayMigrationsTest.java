@@ -1,6 +1,7 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -114,6 +115,23 @@ class FlywayMigrationsTest {
     assertEquals(String.join("\n\n", schema(fresh)), String.join("\n\n", schema(prisma)));
   }
 
+  /** V16 borra el historial de Prisma de una BD de Prisma (baseline 1) y no falla en una BD creada por Flyway. */
+  @Test
+  void v16DropsThePrismaHistory() throws Exception {
+    var prisma = createDatabase();
+    applyPrismaMigrations(dataSource(prisma));
+    FlywayMigrations.configure(dataSource(prisma)).target("15").load().migrate();
+    assertTrue(tableExists(prisma, "_prisma_migrations"));
+
+    FlywayMigrations.migrate(dataSource(prisma));
+    assertFalse(tableExists(prisma, "_prisma_migrations"));
+
+    var fresh = createDatabase();
+    FlywayMigrations.migrate(dataSource(fresh));
+    assertTrue(history(fresh).stream().anyMatch(r -> r.startsWith("16|16|borrar prisma migrations|SQL|true")),
+        history(fresh).toString());
+  }
+
   @Test
   void schemaVersionIsTheLatestSuccessfulFlywayMigration() throws Exception {
     var fresh = createDatabase();
@@ -131,11 +149,12 @@ class FlywayMigrationsTest {
     assertEquals("2 add x", reader(fresh).latestMigration());
   }
 
+  /** Sin historial de Flyway la versión es {@code unknown}, aunque quede el historial de Prisma: ya no se lee. */
   @Test
-  void schemaVersionFallsBackToPrismaThenUnknown() throws Exception {
+  void schemaVersionIsUnknownWithoutFlywayHistory() throws Exception {
     var prisma = createDatabase();
     applyPrismaMigrations(dataSource(prisma));
-    assertEquals(lastPrismaMigration(), reader(prisma).latestMigration());
+    assertEquals(SchemaVersionReader.UNKNOWN, reader(prisma).latestMigration());
 
     assertEquals(SchemaVersionReader.UNKNOWN, reader(createDatabase()).latestMigration());
   }
@@ -239,9 +258,11 @@ class FlywayMigrationsTest {
     }
   }
 
-  private static String lastPrismaMigration() throws IOException {
-    var scripts = prismaMigrationScripts();
-    return scripts.getLast().getParent().getFileName().toString();
+  private static boolean tableExists(String db, String table) throws SQLException {
+    try (var c = dataSource(db).getConnection(); var st = c.createStatement();
+        var rs = st.executeQuery("select to_regclass('public.\"" + table + "\"')")) {
+      return rs.next() && rs.getString(1) != null;
+    }
   }
 
   /** Como {@code prisma migrate deploy}: cada {@code migration.sql} en orden y su fila en {@code _prisma_migrations}. */

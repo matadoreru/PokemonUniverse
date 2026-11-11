@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * La BD de Test Resources la crea Flyway desde vacía ({@code V1__baseline.sql} y las siguientes), así que
- * {@code schemaVersion} es la versión actual de Flyway con su descripción ({@code "1 baseline"} mientras no haya V2). Los casos de baseline sobre Prisma, {@code V2}, fallback a Prisma y {@code unknown} están en
- * {@code FlywayMigrationsTest}, con BD propias.
+ * {@code schemaVersion} es la versión actual de Flyway con su descripción. Los casos de baseline sobre Prisma, {@code V2}
+ * y {@code unknown} están en {@code FlywayMigrationsTest}, con BD propias.
  */
 @MicronautTest(transactional = false)
 class HealthControllerTest {

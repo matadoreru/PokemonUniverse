@@ -249,9 +249,8 @@ docker compose exec -T postgres psql -U pokemon -d pokemon_universe_restore_test
 docker compose exec -T postgres dropdb -U pokemon pokemon_universe_restore_test
 ```
 
-**Historiales de esquema.** La BD de producción conserva `_prisma_migrations`, la tabla de historial de Prisma: el corte
-2D no la borra (no hay `V2__` que lo haga) y `/api/health` la usa como respaldo de `schemaVersion` si falta la de
-Flyway. No la borres a mano. Al restaurar un dump sobre la BD que usa el backend, `flyway_schema_history` decide qué
+**Historiales de esquema.** `V16__borrar_prisma_migrations.sql` borra `_prisma_migrations`, la tabla de historial de
+Prisma que conservaba la BD de producción; `/api/health` lee solo `flyway_schema_history`. Al restaurar un dump sobre la BD que usa el backend, `flyway_schema_history` decide qué
 pasa en el siguiente arranque: si el dump la trae, Flyway sigue desde la versión registrada; si no la trae (un dump
 anterior a la etapa 1 o de solo algunas tablas), Flyway registra en silencio el esquema restaurado como versión 1
 (`baseline-on-migrate`), sin ejecutar `V1__baseline.sql` ni comprobar que coincide, y aplica encima las `V2__…`

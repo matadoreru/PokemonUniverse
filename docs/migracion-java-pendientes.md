@@ -43,9 +43,9 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
    Socket.IO); desde 2D es el único y Socket.IO está retirado de la web y de nginx.
 9. Mover la web a `frontend/` e incluir dentro `shared/public` (hecho en 2D).
 10. Retirar Node y `prisma migrate deploy`; Flyway pasa a ser el único dueño del esquema y se permiten `V2__` y
-    posteriores (hecho en 2D). **Corrección:** la tabla `_prisma_migrations` no se elimina. Se conserva porque no hay
-    `V2__` que la borre, es el respaldo de `schemaVersion` en `/api/health` y no estorba; una `V2__` futura puede
-    borrarla. Ver «Historiales de esquema» en [`DEPLOY.md`](../DEPLOY.md#4-backups).
+    posteriores (hecho en 2D). La tabla `_prisma_migrations` se conservó tras el corte y la borra
+    `V16__borrar_prisma_migrations.sql`; `schemaVersion` en `/api/health` ya no la usa de respaldo. Ver «Historiales de
+    esquema» en [`DEPLOY.md`](../DEPLOY.md#4-backups).
 
 ### 2A: núcleo de salas (hecho el 2026-10-31)
 
@@ -266,8 +266,8 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
    tres interruptores de `compose.yaml` valen `true` fijo y `scripts/test-deploy-rollback.sh` solo simula despliegues
    sin Node (tres escenarios). Un rollback a través del corte deja de estar soportado. El test se ejecuta en CI
    (`.github/workflows/deploy-scripts.yml`, con shellcheck) cuando cambian `scripts/**` o `compose.yaml`.
-5. **Deuda técnica.** La de «Deuda técnica conocida» más abajo; además, borrar `_prisma_migrations` con una `V2__` si
-   se quiere, y decidir cuándo retirar el oráculo Node (`apps/server`) cuando ya no hagan falta sus fixtures.
+5. **Deuda técnica.** La de «Deuda técnica conocida» más abajo; `_prisma_migrations` ya la borra `V16`; queda decidir
+   cuándo retirar el oráculo Node (`apps/server`) cuando ya no hagan falta sus fixtures.
 
 ## Riesgos abiertos
 
