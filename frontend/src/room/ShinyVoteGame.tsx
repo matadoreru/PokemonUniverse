@@ -154,7 +154,8 @@ export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; self
         onSettled={cards.onSettled}
       />;
     })}</div>
-    : <div className={s.grid} data-count={4} role="status" aria-label="Cargando opciones">{Array.from({ length: 4 }, (_, index) => <span key={index} className={s.ghostCard}><span className={s.skeleton} /></span>)}</div>;
+    // Sin rol: la región viva es la de la placa («Preparando la ronda»); el esqueleto solo dice que está ocupado.
+    : <div className={s.grid} data-count={4} aria-busy="true"><span className="sr-only">Cargando opciones</span>{Array.from({ length: 4 }, (_, index) => <span key={index} className={s.ghostCard}><span className={s.skeleton} /></span>)}</div>;
 
   const top = <div className={s.top}>
     <ShinyGameHeader roundNumber={game.roundNumber} totalRounds={game.totalRounds} voteVisibility={game.voteVisibility} candidateMode={config.candidateMode} timer={timer} candidates={survival && game.options.length > 0 ? game.options.length : null} />

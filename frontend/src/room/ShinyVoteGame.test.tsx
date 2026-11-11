@@ -242,7 +242,10 @@ describe('Shiny Quiz UI', () => {
 
   it('deja una superficie de carga estable mientras se prepara la ronda', () => {
     const html = render(publicGame({ phase: 'GAME_STARTING', options: [], roundEndsAt: null }), player({ canVote: false }));
-    expect(html).toContain('aria-label="Cargando opciones"');
+    // El esqueleto no es otra región viva: la de la placa es la única también mientras carga.
+    expectSingleLiveRegion(html);
+    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('Cargando opciones');
     expect(html).toContain('Preparando la ronda');
   });
 
