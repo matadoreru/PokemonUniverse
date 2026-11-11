@@ -1,4 +1,6 @@
 import type { CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { cx } from './cx';
 import s from './Confetti.module.css';
 
@@ -47,8 +49,17 @@ export function confettiPieces(count: number, seed = 1): ConfettiPiece[] {
  * Lluvia de confeti para celebrar (p. ej. un acierto exacto): papelitos que caen desde arriba de la pantalla con solo
  * `transform` y `opacity`, en una capa fija que no recibe clics ni crea desplazamiento. Es decorativa (`aria-hidden`):
  * el acierto lo dice el texto de la pantalla. Con «reducir movimiento» no se pinta. Para repetirla, cambia su `key`.
+ * A toda la pantalla se monta en el `body` (tras el primer render): así ningún contenedor con `container-type` o
+ * `transform` la encierra.
  */
 export function Confetti({ count = 60, seed = 1, contained = false, className }: { count?: number; seed?: number; /** Dentro de su contenedor posicionado en vez de toda la pantalla (galería). */ contained?: boolean; className?: string | undefined }) {
+  const [body, setBody] = useState<HTMLElement | null>(null);
+  useEffect(() => { if (!contained) setBody(document.body); }, [contained]);
+  const layer = <ConfettiLayer count={count} seed={seed} contained={contained} className={className} />;
+  return body ? createPortal(layer, body) : layer;
+}
+
+function ConfettiLayer({ count, seed, contained, className }: { count: number; seed: number; contained: boolean; className: string | undefined }) {
   return <div className={cx(s.layer, contained && s.contained, className)} aria-hidden="true" data-testid="confetti">
     {confettiPieces(count, seed).map((piece, index) => <i key={index} className={s.piece} style={{
       left: `${piece.x}%`,
