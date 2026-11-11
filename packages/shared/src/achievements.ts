@@ -21,6 +21,3 @@ export interface AchievementsUnlocked {
   achievements: AchievementUnlock[];
   records: PersonalRecord[];
 }
-
-/** Logros del catálogo (el catálogo vive en Java). */
-export const ACHIEVEMENT_TOTAL = 48;

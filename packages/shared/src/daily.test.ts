@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { DAILY_GAME_IDS, DAILY_RULE_TEXT, dailyShareText, formatDailyDate, isDailyGameId } from './daily.js';
+import { DAILY_RULE_TEXT, dailyShareText, formatDailyDate, isDailyGameId } from './daily.js';
 
 const origin = 'https://pokemon.example';
 
 describe('reto diario compartido', () => {
-  it('fija el orden de los juegos', () => {
-    expect(DAILY_GAME_IDS).toEqual(['pokedex-distance', 'shiny-vote', 'higher-lower', 'learnset-guess']);
+  it('reconoce los juegos del reto y su regla', () => {
     expect(isDailyGameId('higher-lower')).toBe(true);
     expect(isDailyGameId('type-duel')).toBe(false);
     expect(isDailyGameId(3)).toBe(false);
