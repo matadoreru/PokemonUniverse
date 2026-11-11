@@ -237,7 +237,14 @@
   .hudMeta > span {
     white-space: nowrap;
   }
+  /* El `title` no se ve en táctil: el título baja a dos líneas antes de cortarse. */
   .heading {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
     font-size: var(--fs-22);
   }
 }
