@@ -15,6 +15,7 @@ import { useRoom } from './RoomContext';
 import { RoomPlatePortal } from './RoomPlate';
 import { skipRowInLayout } from './game-skip-slot';
 import { SkipGameControl } from './SkipGameControl';
+import { ShortcutHelp } from './game-kit/ShortcutHelp';
 
 /**
  * Región `status` del aviso de conexión: siempre montada para que se anuncie el cambio; vacía no se ve. Con aviso es una
@@ -82,6 +83,8 @@ function RoomSessionContent() {
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />
     </div>}
     <Outlet />
+    {/* «?»: atajos de la pantalla actual, solo si tiene alguno. */}
+    {room && <ShortcutHelp />}
     <ConnectionNotice connected={connected} />
     {/* El aviso de errores de la sala (`RoomNotice`), la placa «Amigos», su panel y las invitaciones van en `Layout`:
         existen en toda página. */}

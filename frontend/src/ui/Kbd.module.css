@@ -1,0 +1,26 @@
+/* Tecla de un atajo: crema con contorno navy y el borde de abajo más grueso, como una tecla. */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75em;
+  min-height: 1.6em;
+  padding: 0 var(--sp-1);
+  border: var(--ol-2) solid var(--navy);
+  border-bottom-width: var(--ol-3);
+  border-radius: var(--r-badge);
+  background: var(--cream);
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1 var(--font-text);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+/* Solo con ratón o panel táctil. */
+.fine {
+  display: none;
+}
+@media (pointer: fine) {
+  .fine {
+    display: inline-flex;
+  }
+}

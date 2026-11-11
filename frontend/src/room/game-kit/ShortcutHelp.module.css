@@ -1,0 +1,36 @@
+/* Ayuda de atajos: una fila por atajo, las teclas a la izquierda y lo que hacen a la derecha. */
+.list {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: 32px;
+}
+.keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.or {
+  font: 700 var(--fs-13) / 1 var(--font-text);
+  color: var(--ink-2);
+}
+.label {
+  min-width: 0;
+  font: 700 var(--fs-15) / 1.3 var(--font-text);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}

@@ -16,6 +16,8 @@ export { Tabs, TabPanel, nextTab } from './Tabs';
 export type { TabItem, TabsProps, TabPanelProps } from './Tabs';
 export { Segmented } from './Segmented';
 export type { SegmentedOption, SegmentedProps } from './Segmented';
+export { Kbd } from './Kbd';
+export type { KbdProps } from './Kbd';
 export { Field, SelectField, TextArea } from './Field';
 export type { FieldProps, SelectFieldProps, TextAreaProps } from './Field';
 export { Slider } from './Slider';

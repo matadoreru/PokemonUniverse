@@ -20,7 +20,7 @@ interface PillBase extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'childr
   icon?: LucideIcon;
   loading?: boolean;
   block?: boolean;
-  /** Insignia de número en la esquina (atajos 1–4). */
+  /** Tecla del atajo en la esquina (atajos 1–4), como `<kbd>`. */
   badge?: string;
   /** Solo galería: estado forzado. */
   forced?: ForcedState;
@@ -59,7 +59,7 @@ export function Pill(props: PillProps) {
     >
       {icon && <Icon icon={icon} size={size === 'small' ? 18 : size === 'round' ? 22 : 24} className={s.icon} />}
       {children != null && children !== false && <span className={cx(s.label, WHITE_INK_PILLS.includes(variant) && 'ol')}>{children}</span>}
-      {badge && <span className={s.badge}>{badge}</span>}
+      {badge && <kbd className={s.badge}>{badge}</kbd>}
       {loading && (
         <span className={s.dots} aria-hidden="true">
           <i />

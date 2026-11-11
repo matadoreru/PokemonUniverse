@@ -5,10 +5,11 @@
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
-import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Search, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, SlidersHorizontal, WifiOff, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Search, Send, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, SlidersHorizontal, WifiOff, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { SettingsPanel } from '../../components/SettingsDialog';
+import { ShortcutList } from '../../room/game-kit/ShortcutHelp';
 import type { TextPreference } from '../../preferences/preferences';
 import { Avatar } from '../../components/Avatar';
 import { AvatarStack } from '../../components/AvatarStack';
@@ -56,6 +57,7 @@ import { Screen, ScreenHeader, type ScreenWidth } from '../Screen';
 import { ScreenSplit } from '../ScreenSplit';
 import { ScreenTransition } from '../ScreenTransition';
 import { Segmented } from '../Segmented';
+import { Kbd } from '../Kbd';
 import { Slider } from '../Slider';
 import { StateBox } from '../StateBox';
 import { Notice } from '../Notice';
@@ -391,6 +393,22 @@ function SegmentedSection() {
       </Fig>
       <Fig id="segmented-block" caption="A todo el ancho (block): las opciones se reparten el sitio" cream>
         <SegmentedBlockDemo />
+      </Fig>
+    </Section>
+  );
+}
+
+function KbdSection() {
+  return (
+    <Section name="kbd" title="Kbd">
+      <Fig id="kbd-keys" caption="Teclas de atajo: números, letras, Intro y «?»">
+        <span className={s.iconRow}><Kbd>1</Kbd><Kbd>A</Kbd><Kbd>Intro</Kbd><Kbd>?</Kbd></span>
+      </Fig>
+      <Fig id="kbd-pill" caption="En un botón, solo con ratón (fineOnly): «Confirmar» con Intro; en táctil no se ve">
+        <Pill variant="yellow" size="main" icon={Send} aria-keyshortcuts="Enter">Confirmar respuesta <Kbd fineOnly>Intro</Kbd></Pill>
+      </Fig>
+      <Fig id="kbd-help" caption="Ayuda de atajos («?»): contenido del diálogo" cream>
+        <ShortcutList entries={[{ keys: ['A', '1'], label: 'Opción A: Pikachu' }, { keys: ['B', '2'], label: 'Opción B: Raichu' }, { keys: ['Enter'], label: 'Confirmar voto' }]} />
       </Fig>
     </Section>
   );
@@ -1499,6 +1517,7 @@ export function Gallery() {
       <IconSection />
       <TabsSection />
       <SegmentedSection />
+      <KbdSection />
       <FieldSection />
       <SliderSection />
       <ToggleSection />

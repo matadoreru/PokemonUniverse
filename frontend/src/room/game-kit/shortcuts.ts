@@ -8,6 +8,8 @@
  * - Con el foco dentro de un diálogo abierto (p. ej. «Cómo se juega») no hay atajos del juego.
  * - Las teclas con Ctrl, Alt o Meta, las mantenidas (`repeat`) y las que otro ya atendió (`defaultPrevented`) no son
  *   atajo.
+ * - Con el foco dentro de un diálogo abierto (ajustes, ayuda de atajos, confirmaciones) los atajos de la pantalla de
+ *   debajo no actúan: pulsar «1» ahí no responde la ronda.
  */
 
 /** Tipos de `input` en los que no se escribe: con el foco en ellos los atajos siguen vivos. */
@@ -67,6 +69,12 @@ export function controlTarget(target: unknown): boolean {
   if (tag === 'A' && attributeOf(element, 'href') !== null) return true;
   const role = attributeOf(element, 'role');
   return role !== null && CONTROL_ROLES.has(role);
+}
+
+/** ¿El foco está dentro de un `<dialog>` abierto? */
+export function dialogTarget(target: unknown): boolean {
+  const element = shortcutElement(target);
+  return typeof element?.closest === 'function' && element.closest('dialog[open]') != null;
 }
 
 /** Lo que necesita `shortcutKey` del evento de teclado. */

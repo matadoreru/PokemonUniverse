@@ -8,7 +8,7 @@ import {
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { Chip, Pill, ScorePop } from '../../ui';
+import { Chip, Kbd, Pill, ScorePop } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameScreen } from '../../room/game-kit/GameScreen';
 import { GuessPanel, type GuessPlateContent } from '../../room/guess-kit';
@@ -100,7 +100,7 @@ function plateContent({ kind, game, player, verdict, countdown, optionCount, dra
     case 'answer': return {
       icon: MousePointerClick, tone: draft ? 'warn' : 'info', kicker: draft ? 'Has seleccionado' : 'Tu respuesta', title: draft ? triviaOptionLabel(game.options, draft) : 'Elige una opción',
       text: <span className={s.shortcuts}>Atajos: 1–{optionCount} · Enter confirma</span>,
-      aside: <Pill variant="yellow" size="main" icon={Send} disabled={!draft} loading={submitting} aria-keyshortcuts="Enter" onClick={onConfirm}>Confirmar respuesta</Pill>,
+      aside: <Pill variant="yellow" size="main" icon={Send} disabled={!draft} loading={submitting} aria-keyshortcuts="Enter" onClick={onConfirm}>Confirmar respuesta <Kbd fineOnly>Intro</Kbd></Pill>,
     };
     case 'locked': return { icon: Check, tone: 'ok', kicker: 'Respuesta bloqueada', title: `${triviaOptionLabel(game.options, player!.answer!.optionId)} bloqueada`, text: 'Esperando al resto de entrenadores.' };
     case 'watching': return { icon: Eye, tone: 'info', kicker: 'Sin respuesta esta ronda', title: 'Estás observando', text: 'Los espectadores no responden: el marcador se ve en directo y la solución, al revelar.' };

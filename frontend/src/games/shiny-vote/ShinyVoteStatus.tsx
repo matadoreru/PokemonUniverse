@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useId, useRef, type ReactNode, type Ref } from 'react';
 import { Check, CheckCircle2, Clock3, Eye, Hourglass, MousePointerClick, Send, Sparkles, TimerOff, UserX, XCircle } from 'lucide-react';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
-import { ActionPlate, cx, Pill, type ActionPlateTone } from '../../ui';
+import { ActionPlate, cx, Kbd, Pill, type ActionPlateTone } from '../../ui';
 import { SHINY_CARDS_LOADING } from './reveal';
 import { roundsLabel } from '../../lib/format';
 import s from './ShinyVote.module.css';
@@ -154,5 +154,5 @@ function shinyPlate({ active, loading, revealed, participant, selectedOption, ow
     title: loading ? SHINY_CARDS_LOADING : selectedOption ? <OptionIdentity id={selectedOption.id} name={selectedOption.pokemonName} /> : 'Selecciona uno de los Pokémon',
     text: <span className={s.shortcuts}>Atajos: A–F o 1–6 · Enter confirma</span>,
     wideAside: true,
-    aside: <Pill variant="yellow" size="main" icon={Send} disabled={!selectedOption} loading={submitting} aria-keyshortcuts="Enter" onClick={onConfirm}>Confirmar voto</Pill> };
+    aside: <Pill variant="yellow" size="main" icon={Send} disabled={!selectedOption} loading={submitting} aria-keyshortcuts="Enter" onClick={onConfirm}>Confirmar voto <Kbd fineOnly>Intro</Kbd></Pill> };
 }
