@@ -11,7 +11,7 @@ import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useDelayElapsed } from '../../hooks/useTimedVisibility';
-import { Cutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../../ui';
+import { MomentCutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
@@ -124,7 +124,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {/* Una sola región viva, siempre montada: solo cambia su texto. La expulsión también va aquí (el cut-in solo se ve). */}
     <p className="sr-only" role="status" aria-live="polite">{elimination ? impostorEliminationAnnouncement(elimination, people.nameOf(elimination.playerId), eliminationRoleShown) : impostorAnnouncement(game, player, selfId, people.nameOf)}</p>
-    {elimination && eliminationCutIn && <Cutin key={`${game.roundNumber}:${elimination.playerId}`} tone="yellow" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} live={false} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
+    {elimination && eliminationCutIn && <MomentCutin key={`${game.roundNumber}:${elimination.playerId}`} tone="yellow" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
   </div>;
 }
 

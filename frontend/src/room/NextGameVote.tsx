@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { Badge, Card, Chip, Cutin, cx, Icon, Panel, Pill, Row, ScreenSplit } from '../ui';
+import { Badge, Card, Chip, MomentCutin, cx, Icon, Panel, Pill, Row, ScreenSplit } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { gameAvailabilityReason } from './GameSelectionConfig';
 import { summarizeGameConfig } from './game-config-summary';
@@ -111,7 +111,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
 
   return <div className={cx('content-row', s.screen)}>
     {/* Sin región viva propia: el título de la placa ya dice «La sala ha elegido…». */}
-    {!active && resolvedName && <Cutin key={vote.resolvedOptionId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" live={false} />}
+    {!active && resolvedName && <MomentCutin key={vote.resolvedOptionId} tone="ok" title={resolvedName} subtitle="Siguiente minijuego" />}
     <ScreenSplit fill top={top} side={side} bottom={action} />
   </div>;
 }

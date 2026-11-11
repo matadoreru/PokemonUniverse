@@ -165,15 +165,18 @@ test.describe('pokemon-impostor: eliminación', () => {
       for (const page of pages) await expect(banda(page), 'el cut-in sigue a la vista tras la captura').toBeVisible({ timeout: 500 });
       for (const { id, problems } of medidas) expect(problems, `${id}: encaje y legibilidad`).toEqual([]);
 
-      // La capa no intercepta: en su centro, el puntero llega al contenido de debajo.
+      // La expulsión dura 3,2 s y se puede saltar (`MomentCutin`): en su centro, el puntero llega a la banda.
       const encima = await banda(host.page).evaluate((el) => {
         const r = el.getBoundingClientRect();
         const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-        return hit ? hit.closest('[data-layer="cutin"]') !== null : true;
+        return hit ? hit.closest('[data-layer="cutin"]') !== null : false;
       });
-      expect(encima, 'el cut-in no intercepta el puntero').toBe(false);
+      expect(encima, 'el cut-in largo intercepta el puntero para saltarlo').toBe(true);
       expect(await animacionDe(banda(host.page)), 'cut-in con movimiento').toBe('reveal-cut-in-enter');
       expect(await animacionDe(banda(host.page).getByText(/^…era/)), 'línea del rol con movimiento').toBe('motion-enter-up');
+      // En el anfitrión, un clic la salta antes de tiempo.
+      await banda(host.page).click();
+      await expect(banda(host.page)).toBeHidden({ timeout: 500 });
       const reducida = pages[1]!;
       expect(await animacionDe(banda(reducida)), 'cut-in con reducción de movimiento').toBe('none');
       expect(await animacionDe(banda(reducida).getByText(/^…era/)), 'línea del rol con reducción de movimiento').toBe('none');

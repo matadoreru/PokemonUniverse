@@ -6,7 +6,7 @@ import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocu
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { Cutin, cx, ScreenSplit } from '../../ui';
+import { MomentCutin, cx, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
 import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
@@ -95,7 +95,7 @@ export function HigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
     announcement={announcement} titleRef={titleRef} onAnswer={submit} endless={endless} eliminated={eliminated} streak={selfStreak} />;
 
   return <div className={cx('content-row', s.screen)}>
-    {milestone && <Cutin key={game.roundNumber} tone="yellow" title={milestone.title} subtitle={milestone.subtitle} live={false} />}
+    {milestone && <MomentCutin key={game.roundNumber} tone="yellow" title={milestone.title} subtitle={milestone.subtitle} />}
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
   </div>;
 }

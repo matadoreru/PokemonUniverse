@@ -8,7 +8,7 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
-import { Badge, Card, Chip, Confetti, Cutin, cx, Icon, Panel, Row, ScoreValue, ScreenSplit } from '../../ui';
+import { Badge, Card, Chip, Confetti, MomentCutin, cx, Icon, Panel, Row, ScoreValue, ScreenSplit } from '../../ui';
 import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
@@ -176,7 +176,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
     {/* Sin región viva propia: el acierto exacto ya lo dice el aviso de la pantalla. */}
-    {exactHitNow && <Cutin key={roundKey} tone="yellow" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} live={false} />}
+    {exactHitNow && <MomentCutin key={roundKey} tone="yellow" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} />}
     {/* Clavo: la elección propia era exactamente el objetivo; al revelar, confeti (decorativo, sin movimiento no sale). */}
     {distanceExactAtReveal(game, selfId) && <Confetti key={`confeti-${roundKey}`} seed={game.roundNumber + game.tiebreakDepth * 31} />}
   </div>;

@@ -7,7 +7,7 @@ import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoFocusKey, bin
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { Chip, ConfirmDialog, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../../ui';
+import { Chip, ConfirmDialog, MomentCutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from '../../room/guess-kit';
@@ -132,7 +132,7 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
     {rivalDialog}
     {moveDialog}
     {/* Sin región viva propia: el bingo lo dice la región de la pantalla. */}
-    {kind === 'bingo' && winnerName && <Cutin key={game.bingoAt ?? 0} tone="yellow" title="¡BINGO!" subtitle={game.winnerId === selfId ? '¡Has completado tu tablero!' : `${winnerName} ha completado el tablero`} live={false} />}
+    {kind === 'bingo' && winnerName && <MomentCutin key={game.bingoAt ?? 0} tone="yellow" title="¡BINGO!" confetti={game.winnerId === selfId} subtitle={game.winnerId === selfId ? '¡Has completado tu tablero!' : `${winnerName} ha completado el tablero`} />}
     <div className={cx('content-row', s.screen)} data-testid="pokemon-bingo-screen">
       <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
       <ScreenSplit fill top={top} side={side} bottom={bottom} />
