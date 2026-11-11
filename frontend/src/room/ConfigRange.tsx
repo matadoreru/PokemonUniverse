@@ -27,8 +27,6 @@ interface Props {
   max: number;
   step?: number;
   disabled?: boolean;
-  /** Sin efecto desde Arcade DS (el deslizador del catálogo tiene un solo tono); se conserva por compatibilidad. */
-  accent?: 'berry' | 'aqua' | 'electric';
   formatValue?: (value: number) => string;
   hint?: string;
   onCommit(value: number): Promise<void>;
