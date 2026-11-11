@@ -49,7 +49,29 @@
   margin-top: 6px;
 }
 
-/* Esqueleto de 3 filas que late con opacidad: el único bucle permitido. */
+/*
+ * Latido del esqueleto de carga, solo con opacidad: el único bucle permitido. Lo componen los esqueletos de fuera
+ * (`composes: pulse from '…/ui/StateBox.module.css'`); cada uno fija su tramo con `--pulse-from` y `--pulse-to` según
+ * su fondo. Sin movimiento no late: se queda en la opacidad que fije la pieza.
+ */
+.pulse {
+  animation: ghost var(--t-pulse) ease-in-out infinite alternate;
+}
+@keyframes ghost {
+  from {
+    opacity: var(--pulse-from, 0.35);
+  }
+  to {
+    opacity: var(--pulse-to, 0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
+
+/* Esqueleto de 3 filas que late. */
 .ghost {
   display: flex;
   flex-direction: column;
@@ -57,33 +79,24 @@
   padding: var(--sp-1) 0;
 }
 .row {
+  composes: pulse;
   display: block;
   width: 100%;
   height: 36px;
   border-radius: var(--r-franja);
   background: var(--white);
-  animation: ghost 900ms ease-in-out infinite alternate;
 }
 .row.onCream {
   background: var(--navy);
 }
 .row:nth-child(2) {
-  animation-delay: 300ms;
+  animation-delay: calc(var(--t-pulse) / 3);
 }
 .row:nth-child(3) {
-  animation-delay: 600ms;
-}
-@keyframes ghost {
-  from {
-    opacity: 0.35;
-  }
-  to {
-    opacity: 0.6;
-  }
+  animation-delay: calc(var(--t-pulse) * 2 / 3);
 }
 @media (prefers-reduced-motion: reduce) {
   .row {
-    animation: none;
     opacity: 0.45;
   }
 }

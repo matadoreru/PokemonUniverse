@@ -147,17 +147,14 @@
   filter: grayscale(0.7);
 }
 .skeleton {
+  composes: pulse from '../../ui/StateBox.module.css';
+  --pulse-from: 0.18;
+  --pulse-to: 0.3;
   position: absolute;
   inset: var(--sp-2);
   border-radius: var(--r-badge);
   background: var(--navy);
   opacity: 0.18;
-  animation: ghost var(--t-pulse) ease-in-out infinite alternate;
-}
-@keyframes ghost {
-  to {
-    opacity: 0.3;
-  }
 }
 /* Ronda aún sin cartas: siluetas crema con el mismo contorno. */
 .ghostCard {
@@ -372,9 +369,6 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .skeleton {
-    animation: none;
-  }
   .sprite {
     transition: none;
   }
