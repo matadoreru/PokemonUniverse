@@ -2,7 +2,6 @@ package es.pokemonuniverse.domain.game.engines.higherlower;
 
 import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerConfig.HigherLowerCategory;
@@ -114,7 +113,7 @@ public final class HigherLowerRules {
    * necesita un {@link java.text.Collator}.
    */
   public static GameResults buildHigherLowerResults(HigherLowerState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) throw new EngineException("Results unavailable");
+    Scoring.requireFinished(state.phase(), "Results unavailable");
     var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
         playerId -> state.playerStats().get(playerId));
     Comparator<Scoring.ScoreEntry<HigherLowerStats>> compare = (left, right) -> {

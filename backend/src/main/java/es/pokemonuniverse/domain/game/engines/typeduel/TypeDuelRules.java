@@ -1,8 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.typeduel;
 
 import es.pokemonuniverse.domain.game.Scoring;
-import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
@@ -101,7 +99,7 @@ public final class TypeDuelRules {
    * motores, regla 21).
    */
   public static GameResults buildTypeDuelResults(TypeDuelState state) {
-    if (state.phase() != GamePhase.GAME_RESULTS) throw new EngineException("Results unavailable");
+    Scoring.requireFinished(state.phase(), "Results unavailable");
     boolean coop = state.config().mode() == TypeDuelMode.COOP;
     // COOP: la clasificación (y la de la sesión) usa la aportación de cada uno; no hay ganador individual.
     int groupTotal = state.contributions().values().stream().mapToInt(Integer::intValue).sum();

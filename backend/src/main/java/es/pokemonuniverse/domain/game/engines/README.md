@@ -68,8 +68,10 @@ proyección, el orden de claves del cable y los mensajes de error. Un cambio de 
   `@JsonInclude(ALWAYS)`. Un `null` de TS debe salir como `null`. Un `?:` de TS se marca `NON_ABSENT`/`NON_NULL` campo
   a campo.
 - **PRNG**: hay que consumir `context.random()` el mismo número de veces y en el mismo orden que el TS. Se usa
-  `Randoms.randomItem`/`shuffled`/`contentDeck` y se conserva el `Math.min(Math.floor(r * n), n - 1)`. Una extracción
-  de más o de menos aparece como desajuste dorado.
+  `Randoms.randomItem`/`randomIndex`/`shuffled`/`takeRandom`/`contentDeck` (y `preferUnused`, que no extrae) y se
+  conserva el `Math.min(Math.floor(r * n), n - 1)`. Una extracción de más o de menos aparece como desajuste dorado.
+- **Plazos**: `Timing.deadlineReached` trata un plazo nulo como `Infinity` (nunca vence) y
+  `Timing.deadlinePassedOrMissing` como `0` (ya vencido). No se intercambian: hay que copiar la semántica del TS.
 - **Ciclo de vida**: `TimedLifecycle.builder(phase)` lleva exactamente los campos que `timedGameLifecycle` lee del
   estado TS, incluido `spectatorIds` si el estado lo tiene. El ciclo activo → resultados → siguiente usa
   `Timing.advanceTimedRound` con un `TimedRoundStrategy` `static final` cuando el TS lo usa. Si el TS escribe su propio
