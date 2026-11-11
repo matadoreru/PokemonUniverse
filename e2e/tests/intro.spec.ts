@@ -1,8 +1,8 @@
 /**
  * Intro de partida (E1, `frontend/src/room/GameIntro.tsx`) y «Cómo se juega» (Q2, `GameHelpButton.tsx`) contra el `/ws`
  * de Java (`npm run test:e2e -- intro`): antes de la primera ronda la sala enseña el juego, sus tres reglas, la cuenta
- * atrás y «¡Listo!»; empieza cuando los dos jugadores lo pulsan. Ya en partida, la píldora «?» de la placa y la tecla
- * «?» abren las reglas en un diálogo.
+ * atrás y «¡Listo!»; empieza cuando los dos jugadores lo pulsan. Ya en partida, la píldora «?» de la placa abre las
+ * reglas en el diálogo de ayuda.
  */
 import { expect, test } from '@playwright/test';
 import { botonListo, capturarATresTamaños, crearSalaConJugadores, iniciarPartida, seleccionarJuego, type Jugador } from '../src/helpers.js';
@@ -44,20 +44,20 @@ test('intro de partida: reglas, «¡Listo!» de los dos y «Cómo se juega» en 
       await expect(page.getByRole('button', { name: 'Mayor', exact: true })).toBeVisible({ timeout: 10_000 });
     }
 
-    // «Cómo se juega»: la píldora «?» de la placa y la tecla «?».
+    // «Cómo se juega»: la píldora «?» de la placa abre el diálogo de ayuda con las reglas.
     const ayuda = invitado.page.getByRole('dialog', { name: 'Cómo se juega · Higher or Lower' });
     await invitado.page.getByRole('button', { name: 'Cómo se juega' }).click();
     await expect(ayuda).toBeVisible();
+    await expect(ayuda.getByRole('heading', { name: 'Reglas' })).toBeVisible();
     await expect(ayuda.getByRole('listitem')).toHaveCount(3);
     await capturarATresTamaños(invitado.page, 'como-se-juega');
-    await invitado.page.keyboard.press('Escape');
-    await expect(ayuda).toBeHidden();
-    await invitado.page.locator('body').focus();
-    await invitado.page.keyboard.press('?');
-    await expect(ayuda).toBeVisible();
     // Con el diálogo abierto, los atajos del juego no llegan a la pantalla de debajo.
     await invitado.page.keyboard.press('1');
     await expect(ayuda).toBeVisible();
+    await expect(invitado.page.getByText('0 / 2 respuestas')).toBeVisible();
+    await invitado.page.keyboard.press('Escape');
+    await expect(ayuda).toBeHidden();
+    await invitado.page.getByRole('button', { name: 'Cómo se juega' }).click();
     await ayuda.getByRole('button', { name: 'Entendido' }).click();
     await expect(ayuda).toBeHidden();
 

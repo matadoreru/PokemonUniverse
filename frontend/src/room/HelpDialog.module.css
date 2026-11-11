@@ -1,4 +1,21 @@
-/* Reglas del diálogo «Cómo se juega»: lista numerada, como en la intro. */
+/* Diálogo de ayuda: secciones apiladas, cada una con su título. */
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.sectionTitle {
+  font: 800 var(--fs-15) / 1.2 var(--font-text);
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+/* Reglas: lista numerada, como en la intro. */
 .rules {
   display: flex;
   flex-direction: column;

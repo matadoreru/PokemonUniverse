@@ -1304,7 +1304,7 @@ function GameIntroSection() {
       <Fig id="game-intro-spectator" caption="Intro · espectador: la ve, pero no cuenta" wide>
         <div className={s.introFrame}><GameIntro room={introRoom(['ash'], now)} selfId="gary" onReady={asyncNoop} /></div>
       </Fig>
-      <Fig id="game-help-button" caption="«Cómo se juega» · píldora «?» de la placa de la sala (abre el diálogo; también con la tecla «?»)">
+      <Fig id="game-help-button" caption="«Cómo se juega» · píldora «?» de la placa de la sala (abre el diálogo de ayuda con las reglas)">
         <GameHelpButton room={{ ...introRoom([], now), phase: 'ROUND_ACTIVE', intro: null }} />
       </Fig>
     </Section>

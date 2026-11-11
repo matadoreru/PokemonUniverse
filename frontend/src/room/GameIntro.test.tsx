@@ -79,7 +79,6 @@ describe('«Cómo se juega»', () => {
   it('la píldora «?» tiene nombre accesible y el diálogo lleva las tres reglas', () => {
     const html = renderToStaticMarkup(createElement(GameHelpButton, { room: { ...intro([]), phase: 'ROUND_ACTIVE' } }));
     expect(html).toContain('aria-label="Cómo se juega"');
-    expect(html).toContain('aria-keyshortcuts="?"');
     expect(renderToStaticMarkup(createElement(GameHelpButton, { room: intro([]) }))).toBe('');
   });
 });
