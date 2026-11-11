@@ -22,12 +22,14 @@ export interface SegmentedProps<T extends string | number> {
   hint?: string | undefined;
   /** Con `showLabel` o `hint`, va en el envoltorio que agrupa etiqueta, grupo y ayuda; si no, en el propio grupo. */
   className?: string;
+  /** A todo el ancho: las opciones se reparten el sitio y un texto largo («Muy grande») parte en dos líneas. */
+  block?: boolean;
   /** Solo galería: estado forzado de la opción activa. */
   forced?: ForcedState;
 }
 
 /** Selector de un valor entre 2–5: grupo de radio con foco itinerante y flechas circulares. */
-export function Segmented<T extends string | number>({ value, options, onChange, label, showLabel, hint, className, forced }: SegmentedProps<T>) {
+export function Segmented<T extends string | number>({ value, options, onChange, label, showLabel, hint, className, block = false, forced }: SegmentedProps<T>) {
   const labelId = useId();
   const hintId = useId();
   const wrapped = Boolean(showLabel || hint);
@@ -46,7 +48,7 @@ export function Segmented<T extends string | number>({ value, options, onChange,
   };
   const group = (
     <div
-      className={cx(s.seg, !wrapped && className)}
+      className={cx(s.seg, block && s.block, !wrapped && className)}
       role="radiogroup"
       {...(showLabel ? { 'aria-labelledby': labelId } : { 'aria-label': label })}
       {...(hint ? { 'aria-describedby': hintId } : {})}

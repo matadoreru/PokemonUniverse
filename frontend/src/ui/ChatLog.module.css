@@ -18,10 +18,8 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .list {
-    scroll-behavior: smooth;
-  }
+:root:not([data-motion="reduce"]) .list {
+  scroll-behavior: smooth;
 }
 .msg {
   position: relative;

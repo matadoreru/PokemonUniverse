@@ -109,7 +109,7 @@ async function placasCaben(page: Page, id: string, w: number): Promise<void> {
 async function capturarCabecera(page: Page, nombre: string, { perfil, admin = false }: { perfil?: string; admin?: boolean } = {}): Promise<void> {
   await capturarATresTamaños(page, nombre, {
     antes: async () => {
-      await expect(page.getByRole('button', { name: 'Ajustes de sonido' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Ajustes', exact: true })).toBeVisible();
       await expect(page.getByRole('link', { name: 'Ir al inicio' })).toBeVisible();
       await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveCount(0);
       await expect(page.getByRole('button', { name: /^Más opciones/ })).toHaveCount(0);

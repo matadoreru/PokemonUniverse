@@ -65,10 +65,8 @@
     opacity: var(--pulse-to, 0.6);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .pulse {
-    animation: none;
-  }
+:root[data-motion="reduce"] .pulse {
+  animation: none;
 }
 
 /* Esqueleto de 3 filas que late. */
@@ -95,8 +93,6 @@
 .row:nth-child(3) {
   animation-delay: calc(var(--t-pulse) * 2 / 3);
 }
-@media (prefers-reduced-motion: reduce) {
-  .row {
-    opacity: 0.45;
-  }
+:root[data-motion="reduce"] .row {
+  opacity: 0.45;
 }

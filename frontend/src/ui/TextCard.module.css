@@ -127,12 +127,10 @@
   font-variant-numeric: tabular-nums;
   color: var(--navy);
 }
-@media (prefers-reduced-motion: reduce) {
-  .button {
-    transition: none;
-  }
-  .button:hover,
-  .button:active {
-    transform: none;
-  }
+:root[data-motion="reduce"] .button {
+  transition: none;
+}
+:root[data-motion="reduce"] .button:hover,
+:root[data-motion="reduce"] .button:active {
+  transform: none;
 }

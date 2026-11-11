@@ -1,3 +1,5 @@
+// Primero: los ajustes de movimiento y texto van en <html> antes del primer pintado.
+import './preferences/install';
 import { lazy, StrictMode, Suspense, type ComponentType, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';

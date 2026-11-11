@@ -1,6 +1,6 @@
 import { useEffect, type CSSProperties } from 'react';
 import { audio } from '../audio';
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useReducedMotion } from '../lib/motion';
 import { useTimedVisibility } from '../hooks/useTimedVisibility';
 import { cx } from './cx';
 import s from './ScorePop.module.css';
@@ -34,7 +34,7 @@ export interface ScorePopProps {
  * decorativo (`aria-hidden`): el cambio de puntos se anuncia en el texto de la pantalla.
  */
 export function ScorePop({ points, color, reducedMotion, className, self, placement }: ScorePopProps) {
-  const prefersReduced = usePrefersReducedMotion();
+  const prefersReduced = useReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
   const key = `${points}|${color ?? ''}`;
   const visible = useTimedVisibility(SCORE_POP_MS, key);

@@ -59,8 +59,6 @@
     transform: scaleX(var(--ratio, 0));
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .grow {
-    animation: none;
-  }
+:root[data-motion="reduce"] .grow {
+  animation: none;
 }

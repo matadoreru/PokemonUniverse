@@ -97,10 +97,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes motion-fade-in { from { opacity: 0; } to { opacity: 1; } }
 /* Con reducción de movimiento no se mueven (y su nombre calculado es `none`); el fallo se queda en un fundido de 120 ms.
    El resto baja a 0 ms con los tokens. */
-@media (prefers-reduced-motion: reduce) {
-  .motion-bump, .motion-enter-up, .motion-enter-left, .motion-enter-right { animation: none; }
-  .motion-shake { animation: motion-fade-in var(--t-fade) var(--ease) both; }
-}
+:root[data-motion="reduce"] .motion-bump, :root[data-motion="reduce"] .motion-enter-up, :root[data-motion="reduce"] .motion-enter-left, :root[data-motion="reduce"] .motion-enter-right { animation: none; }
+:root[data-motion="reduce"] .motion-shake { animation: motion-fade-in var(--t-fade) var(--ease) both; }
 
 /* Modo estático de los E2E (spec §3.4): .static lo apaga todo. */
 body.static *, body.static *::before, body.static *::after { animation: none !important; transition: none !important; }

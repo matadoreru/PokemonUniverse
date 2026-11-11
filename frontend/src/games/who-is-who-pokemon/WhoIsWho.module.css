@@ -113,10 +113,8 @@
   left: 0;
   transition: transform 80ms linear;
 }
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    transition: none;
-  }
+:root[data-motion="reduce"] .cursor {
+  transition: none;
 }
 :global(body.static) .cursor {
   transition: none;

@@ -6,7 +6,7 @@ import { useAuth } from '../auth/AuthContext';
 import { ActionToastStack, cx, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
-import { AudioButton } from './AudioButton';
+import { SettingsButton } from './SettingsButton';
 import { useAchievementToasts } from '../achievements/AchievementToasts';
 import { FriendsButton } from '../friends/FriendsButton';
 import { FriendsDrawer } from '../friends/FriendsDrawer';
@@ -54,7 +54,7 @@ export function AppHeader({ user, level = null, onLogout }: { user: AuthUser | n
         <div id={HEADER_ROOM_ID} className="order-last flex w-full min-w-0 empty:hidden sm:order-none sm:w-auto sm:flex-1" />
         <HudPlate className={s.hud ?? ''}>
           <PillLink nav to="/" size="round" icon={House} aria-label="Ir al inicio" title="Inicio" />
-          <AudioButton />
+          <SettingsButton />
           {/* «Amigos»: solo con una cuenta registrada (lo decide `FriendsProvider`). */}
           <FriendsButton />
           {user && <PillLink nav to={feedback} size="round" icon={MessageSquareWarning} aria-label="Enviar feedback" title="Enviar feedback" />}

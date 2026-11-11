@@ -25,13 +25,11 @@
     transform: translateY(8px);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .even {
-    animation: fade-even var(--t-fade) linear backwards;
-  }
-  .odd {
-    animation: fade-odd var(--t-fade) linear backwards;
-  }
+:root[data-motion="reduce"] .even {
+  animation: fade-even var(--t-fade) linear backwards;
+}
+:root[data-motion="reduce"] .odd {
+  animation: fade-odd var(--t-fade) linear backwards;
 }
 @keyframes fade-even {
   from {

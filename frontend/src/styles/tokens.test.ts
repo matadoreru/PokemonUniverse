@@ -49,8 +49,8 @@ describe('tokens.css ↔ tokens.ts', () => {
       expect(m![1] === 'navy' ? colors.navy : colors.white, t).toBe(typeInk[t]);
     }
   });
-  it('la escala tipográfica del CSS es la cerrada', () => {
-    for (const n of fontSizes) expect(rootBlock).toContain(`--fs-${n}: ${n}px;`);
+  it('la escala tipográfica del CSS es la cerrada, en rem (el mismo valor a 16 px)', () => {
+    for (const n of fontSizes) expect(rootBlock).toContain(`--fs-${n}: ${n / 16}rem;`);
     const declarados = [...rootBlock.matchAll(/--fs-(\d+):/g)].map((m) => Number(m[1]));
     expect(declarados).toEqual([...fontSizes]);
   });
@@ -178,7 +178,7 @@ describe('escala tipográfica (§3.2)', () => {
     const sizes = tailwind.theme.fontSize as Record<string, [string, { lineHeight: string }]>;
     const claves = Object.keys(sizes).map(Number).sort((a, b) => a - b);
     expect(claves).toEqual([...fontSizes]);
-    for (const n of fontSizes) expect(sizes[String(n)]![0]).toBe(`${n}px`);
+    for (const n of fontSizes) expect(sizes[String(n)]![0]).toBe(`${n / 16}rem`);
   });
 });
 
@@ -231,25 +231,25 @@ describe('reducción de movimiento (§3.4)', () => {
     const p = path.join(dir, e.name);
     return e.isDirectory() ? hojas(p) : e.name.endsWith('.css') ? [p] : [];
   });
-  /** Cuerpos de los bloques `@media (prefers-reduced-motion: reduce)` de una hoja (sin anidar más de un nivel). */
-  const bloquesReduce = (texto: string): string[] =>
-    [...texto.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{((?:[^{}]|\{[^{}]*\})*)\}/g)].map((m) => m[1]!);
+  /** Reglas de movimiento reducido de una hoja: `:root[data-motion="reduce"] …` (E8), con su selector y su cuerpo. */
+  const reglasReduce = (texto: string): string[] =>
+    [...texto.matchAll(/(:root\[data-motion="reduce"\][^{]*)\{([^}]*)\}/g)].map((m) => `${m[1]!}{${m[2]!}}`);
 
   it('sin regla global con !important: los fundidos de 120 ms siguen vivos', () => {
-    expect(bloquesReduce(styles).length).toBeGreaterThan(0);
-    for (const bloque of bloquesReduce(styles)) expect(bloque).not.toContain('!important');
+    expect(reglasReduce(styles).length).toBeGreaterThan(0);
+    for (const regla of reglasReduce(styles)) expect(regla).not.toContain('!important');
   });
   it('las clases motion-* se apagan con su propio reduce', () => {
-    const apagadas = bloquesReduce(styles).join('\n');
+    const apagadas = reglasReduce(styles).join('\n');
     for (const clase of ['motion-bump', 'motion-enter-up', 'motion-enter-left', 'motion-enter-right']) {
       expect(apagadas, clase).toMatch(new RegExp(`\\.${clase}\\b[^{]*\\{[^}]*animation:\\s*none`));
     }
   });
   it('el fallo (motion-shake) queda en un fundido de 120 ms', () => {
-    expect(bloquesReduce(styles).join('\n')).toMatch(/\.motion-shake\b[^{]*\{[^}]*animation:\s*motion-fade-in var\(--t-fade\)/);
+    expect(reglasReduce(styles).join('\n')).toMatch(/\.motion-shake\b[^{]*\{[^}]*animation:\s*motion-fade-in var\(--t-fade\)/);
   });
   it('--t-pop y --t-pulse bajan a 0 con reducción y con la clase static', () => {
-    const reduce = bloquesReduce(css).join('\n');
+    const reduce = reglasReduce(css).join('\n');
     const stat = css.slice(css.indexOf('.static {'), css.indexOf('}', css.indexOf('.static {')));
     for (const token of ['--t-pop', '--t-pulse']) {
       expect(reduce, token).toContain(`${token}: 0ms;`);
@@ -262,7 +262,7 @@ describe('reducción de movimiento (§3.4)', () => {
     const sinCubrir = hojas(root).filter((f) => {
       const texto = readFileSync(f, 'utf8');
       const conLiteral = [...texto.matchAll(literal)].some((m) => /\b\d*\.?\d+m?s\b/.test(m[1]!.replace(/var\([^)]*\)/g, '')));
-      return conLiteral && !texto.includes('prefers-reduced-motion');
+      return conLiteral && !texto.includes('[data-motion="reduce"]');
     }).map((f) => path.relative(root, f));
     expect(sinCubrir).toEqual([]);
   });

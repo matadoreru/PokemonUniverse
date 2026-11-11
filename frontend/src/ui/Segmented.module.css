@@ -54,6 +54,16 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+/* A todo el ancho: las opciones se reparten el sitio y el texto largo parte línea en vez de desbordar. */
+.block {
+  display: flex;
+  width: 100%;
+}
+.block .opt {
+  padding: var(--sp-1) var(--sp-2);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 /* Con etiqueta visible o ayuda: la tipografía de las etiquetas y ayudas de los paneles de ajustes, sobre crema. */
 .field {
   display: flex;

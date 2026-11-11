@@ -13,7 +13,7 @@ import { member, roomView } from '../../room/test-support/room-view';
 vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 const motion = vi.hoisted(() => ({ reduced: false }));
-vi.mock('../../hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => motion.reduced }));
+vi.mock('../../lib/motion', () => ({ useReducedMotion: () => motion.reduced }));
 
 const SECRET = 'Snorlax';
 

@@ -2,7 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { AudioSettings } from '../audio';
-import { AudioSettingsPanel, audioPatchFor } from './AudioSettingsDialog';
+import { AudioSettingsPanel, audioPatchFor, DisplaySettingsPanel } from './SettingsDialog';
 
 const on: AudioSettings = { muted: false, master: 75, music: 50, sfx: 35, ui: 100 };
 
@@ -33,5 +33,16 @@ describe('audioPatchFor', () => {
   it('maps a changed slider to an audio.update patch', () => {
     expect(audioPatchFor('music', 100)).toEqual({ music: 100 });
     expect(audioPatchFor('master', 35)).toEqual({ master: 35 });
+  });
+});
+
+describe('DisplaySettingsPanel', () => {
+  it('draws Movimiento and Texto as radio groups with the current choice checked', () => {
+    const out = renderToStaticMarkup(createElement(DisplaySettingsPanel, { preferences: { motion: 'reduce', text: 'xlarge' }, onPatch: () => undefined }));
+    expect(out.match(/role="radiogroup"/g)).toHaveLength(2);
+    for (const label of ['Movimiento', 'Texto', 'Sistema', 'Reducido', 'Completo', 'Normal', 'Grande', 'Muy grande']) expect(out).toContain(`>${label}<`);
+    expect(out).toMatch(/aria-checked="true"[^>]*>Reducido</);
+    expect(out).toMatch(/aria-checked="true"[^>]*>Muy grande</);
+    expect(out.match(/aria-checked="true"/g)).toHaveLength(2);
   });
 });

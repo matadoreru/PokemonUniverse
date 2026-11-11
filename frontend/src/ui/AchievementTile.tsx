@@ -1,6 +1,6 @@
 import { Lock } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useReducedMotion } from '../lib/motion';
 import { cx } from './cx';
 import { Icon } from './Icon';
 import s from './AchievementTile.module.css';
@@ -22,7 +22,7 @@ export interface AchievementTileProps {
  * «Bloqueado: <nombre>». En un logro secreto, quien la usa pasa el texto de relleno en `name` y `description`.
  */
 export function AchievementTile({ name, description, state, art, date, fresh = false }: AchievementTileProps) {
-  const reduced = usePrefersReducedMotion();
+  const reduced = useReducedMotion();
   const locked = state !== 'unlocked';
   return (
     <li className={cx(s.tile, locked && s.locked, state === 'secret' && s.secret, fresh && !reduced && s.fresh)} {...(locked ? { 'aria-label': `Bloqueado: ${name}` } : {})}>

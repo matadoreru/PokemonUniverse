@@ -7,7 +7,8 @@
  */
 import { loadSfx, type Channel, type SfxFile, type SoundId } from './catalog';
 import { channelGains, rampTo } from './mixer';
-import { loadSettings, migrateLegacy, sanitizeSettings, saveSettings, type AudioSettings, type StorageLike } from './settings';
+import { loadSettings, migratePreferences, saveSettings } from '../preferences/preferences';
+import { sanitizeSettings, type AudioSettings, type StorageLike } from './settings';
 import { playSound, soundDuration, type AudioContextLike, type GainLike } from './synth';
 import { variationFor } from './variation';
 import { VoicePool } from './voices';
@@ -81,7 +82,7 @@ export function createAudio(deps: AudioDeps, cfg: SfxFile = loadSfx()): Audio {
   const pool = new VoicePool(cfg.limits.maxVoices, cfg.limits.defaultCooldownMs);
   const listeners = new Set<() => void>();
   const recent: SoundId[] = [];
-  migrateLegacy(deps.storage);
+  migratePreferences(deps.storage);
   let settings: AudioSettings = loadSettings(deps.storage);
   let ctx: AudioContextLike | null = null;
   let channels: Record<Channel, GainLike> | null = null;

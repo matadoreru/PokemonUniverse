@@ -76,13 +76,11 @@
   }
 }
 /* Con reducción de movimiento, solo el fundido de 120 ms (§3.4). */
-@media (prefers-reduced-motion: reduce) {
-  .enterOdd {
-    animation: clue-fade-odd var(--t-fade) var(--ease) backwards;
-  }
-  .enterEven {
-    animation: clue-fade-even var(--t-fade) var(--ease) backwards;
-  }
+:root[data-motion="reduce"] .enterOdd {
+  animation: clue-fade-odd var(--t-fade) var(--ease) backwards;
+}
+:root[data-motion="reduce"] .enterEven {
+  animation: clue-fade-even var(--t-fade) var(--ease) backwards;
 }
 
 /* Placa de la ronda: ronda y juego arriba, el título debajo; el plazo y «Saltar minijuego» a la derecha. */

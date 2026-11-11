@@ -36,8 +36,6 @@
     transform: scale(1.06);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .urgent .num {
-    animation: none;
-  }
+:root[data-motion="reduce"] .urgent .num {
+  animation: none;
 }

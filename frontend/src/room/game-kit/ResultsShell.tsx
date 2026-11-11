@@ -6,7 +6,7 @@ import { announcement } from '../../achievements/achievements-state';
 import { useAchievements } from '../../achievements/AchievementsContext';
 import { audio } from '../../audio';
 import { Avatar } from '../../components/Avatar';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useReducedMotion } from '../../lib/motion';
 import { Badge, Confetti, cx, Icon, Panel, Row, ScorePop } from '../../ui';
 import type { RoomMembers } from '../room-members';
 import s from './ResultsShell.module.css';
@@ -121,7 +121,7 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
 export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, noWinner, aside, actions, fillLarge = false, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; /** Ver `ResultsStandings`. */ noWinner?: boolean; aside?: ReactNode; actions?: ReactNode; /** Ver arriba: pantalla llena en escritorio grande. */ fillLarge?: boolean; children?: ReactNode }) {
   // Única dueña del sonido del final de una partida (la sala ya no da su `game.win`, salvo en el reto diario). Solo al
   // montar: un cambio posterior de `won` o de la clasificación no repite el sonido ni el confeti.
-  const reduced = usePrefersReducedMotion();
+  const reduced = useReducedMotion();
   const [celebration] = useState(() => resultsCelebration({ won, podium, standings, selfId, noWinner, winnersNeedPoints }));
   useEffect(() => {
     if (celebration) audio.play(celebration === 'win' ? 'game.win' : 'game.podium');

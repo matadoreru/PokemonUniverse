@@ -78,10 +78,8 @@
 .left {
   background: var(--ink-2);
 }
-@media (prefers-reduced-motion: no-preference) {
-  .reconnecting {
-    animation: blink 1s ease-in-out infinite alternate;
-  }
+:root:not([data-motion="reduce"]) .reconnecting {
+  animation: blink 1s ease-in-out infinite alternate;
 }
 @keyframes blink {
   to {

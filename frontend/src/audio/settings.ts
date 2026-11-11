@@ -1,7 +1,7 @@
 /**
  * Ajustes de audio del jugador (spec §8): silencio y cuatro volúmenes de 0 a 100 en pasos de 5. Apagado por
- * defecto en la primera visita. Viven en `localStorage`; toda lectura y escritura va en try/catch
- * para que el modo privado o un almacenamiento bloqueado nunca rompan la pantalla.
+ * defecto en la primera visita. Se guardan en la sección `audio` de los ajustes del jugador (`preferences/preferences.ts`),
+ * que valida con `sanitizeSettings`.
  */
 
 /** Volumen de 0 a 100, en múltiplos de `VOLUME_STEP` (los ajustes antiguos en pasos de 25 siguen valiendo). */
@@ -22,6 +22,7 @@ export interface StorageLike {
   removeItem(key: string): void;
 }
 
+/** Clave antigua de los ajustes de audio: ahora viven en la sección `audio` de los ajustes (`preferences/preferences.ts`). */
 export const AUDIO_STORAGE_KEY = 'pokemon-universe-audio';
 /** Clave del sonido antiguo (el módulo de sonido anterior): `'on'` u `'off'`. */
 export const LEGACY_SFX_KEY = 'pokemon-universe-sfx';
@@ -52,45 +53,4 @@ export function sanitizeSettings(raw: unknown): AudioSettings {
     if (isStep(v)) out[k] = v;
   }
   return out;
-}
-
-function read(storage: StorageLike | null, key: string): string | null {
-  try {
-    return storage?.getItem(key) ?? null;
-  } catch {
-    return null;
-  }
-}
-
-export function loadSettings(storage: StorageLike | null): AudioSettings {
-  const raw = read(storage, AUDIO_STORAGE_KEY);
-  if (raw === null) return { ...DEFAULT_SETTINGS };
-  try {
-    return sanitizeSettings(JSON.parse(raw));
-  } catch {
-    return { ...DEFAULT_SETTINGS };
-  }
-}
-
-export function saveSettings(storage: StorageLike | null, s: AudioSettings): void {
-  try {
-    storage?.setItem(AUDIO_STORAGE_KEY, JSON.stringify(s));
-  } catch {
-    // Sin almacenamiento: los ajustes duran lo que la pestaña.
-  }
-}
-
-/**
- * Migra la clave antigua: solo si aún no hay ajustes nuevos, `'on'` activa el sonido con los
- * volúmenes por defecto. La clave antigua se borra siempre, para que no vuelva a migrarse.
- */
-export function migrateLegacy(storage: StorageLike | null): void {
-  const legacy = read(storage, LEGACY_SFX_KEY);
-  if (legacy === null) return;
-  if (read(storage, AUDIO_STORAGE_KEY) === null && legacy === 'on') saveSettings(storage, { ...DEFAULT_SETTINGS, muted: false });
-  try {
-    storage?.removeItem(LEGACY_SFX_KEY);
-  } catch {
-    // Si no se puede borrar, la próxima visita ya tiene ajustes nuevos y no se re-migra.
-  }
 }

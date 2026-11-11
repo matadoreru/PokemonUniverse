@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CHANNELS, createAudio, type AudioDeps, type MusicPlayerLike } from './engine';
 import { SOUND_IDS, loadSfx } from './catalog';
+import { PREFERENCES_KEY } from '../preferences/preferences';
 import { AUDIO_STORAGE_KEY, DEFAULT_SETTINGS, stepGain, type StorageLike } from './settings';
 
 // ---------------------------------------------------------------- dobles de Web Audio
@@ -282,7 +283,7 @@ describe('motor de audio', () => {
     expect(calls).toBe(1);
     expect(t.audio.settings()).not.toBe(first);
     expect(t.audio.settings().music).toBe(25);
-    expect(JSON.parse(t.storage.data.get(AUDIO_STORAGE_KEY)!)).toMatchObject({ music: 25, muted: true });
+    expect(JSON.parse(t.storage.data.get(PREFERENCES_KEY)!).audio).toMatchObject({ music: 25, muted: true });
     t.audio.toggleMute();
     expect(t.audio.settings().muted).toBe(false);
     off();

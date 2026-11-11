@@ -45,10 +45,8 @@
 .action {
   min-height: 44px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .toast {
-    animation: none;
-  }
+:root[data-motion="reduce"] .toast {
+  animation: none;
 }
 /* Pila de `ActionToastStack`: popover manual sin el aspecto del agente de usuario, fijo abajo a la derecha. */
 .stack {

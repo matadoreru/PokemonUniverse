@@ -23,8 +23,8 @@ function avisosDeAudio(page: Page): string[] {
 }
 
 async function abrirAjustes(page: Page) {
-  await page.getByRole('button', { name: 'Ajustes de sonido' }).click();
-  const dialogo = page.getByRole('dialog', { name: 'Ajustes de sonido' });
+  await page.getByRole('button', { name: 'Ajustes', exact: true }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Ajustes' });
   await expect(dialogo).toBeVisible();
   return dialogo;
 }
@@ -37,7 +37,7 @@ test('primera visita: apagado y un clic no desbloquea el audio', async ({ page }
   await expect(empezar).toBeVisible();
   await expect.poll(() => estado(page).then((e) => e.muted)).toBe(true);
   // El enlace no navega: solo importa el gesto.
-  await page.getByRole('button', { name: 'Ajustes de sonido' }).click();
+  await page.getByRole('button', { name: 'Ajustes', exact: true }).click();
   await page.keyboard.press('Escape');
   const e = await estado(page);
   expect(e.muted).toBe(true);
@@ -66,7 +66,7 @@ test('activar el sonido en los ajustes desbloquea y registra los efectos', async
   // Un botón de la cabecera hecho con `Pill` suena como `ui.confirm` (o `ui.tap` si es ghost o cream).
   await dialogo.getByRole('button', { name: 'Cerrar' }).click();
   await expect(dialogo).toBeHidden();
-  await page.getByRole('button', { name: 'Ajustes de sonido' }).click();
+  await page.getByRole('button', { name: 'Ajustes', exact: true }).click();
   await expect.poll(() => estado(page).then((e) => e.recent.some((id) => id === 'ui.tap' || id === 'ui.confirm'))).toBe(true);
   expect((await estado(page)).recent).toEqual(expect.arrayContaining(['ui.open']));
 

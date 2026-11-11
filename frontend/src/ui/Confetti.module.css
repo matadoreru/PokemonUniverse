@@ -34,8 +34,6 @@
     transform: translate3d(var(--drift), 105vh, 0) rotate(var(--spin));
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .layer {
-    display: none;
-  }
+:root[data-motion="reduce"] .layer {
+  display: none;
 }

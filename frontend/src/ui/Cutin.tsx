@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 import { audio } from '../audio';
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useReducedMotion } from '../lib/motion';
 import { useDelayElapsed, useTimedVisibility } from '../hooks/useTimedVisibility';
 import { cx } from './cx';
 import s from './Cutin.module.css';
@@ -123,7 +123,7 @@ export function isSkipKey(e: Pick<KeyboardEvent, 'key' | 'code' | 'repeat' | 'al
  * y la `delayedLine` se monta al momento.
  */
 export function Cutin({ holdMs = CUTIN_HOLD_MS, reducedMotion, onDone, ...content }: CutinProps) {
-  const prefersReduced = usePrefersReducedMotion();
+  const prefersReduced = useReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
   const armKey = `${content.tone}|${content.title}`;
   const visible = useTimedVisibility(holdMs, armKey, onDone);

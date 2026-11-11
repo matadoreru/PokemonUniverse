@@ -322,7 +322,7 @@ describe('Global header accessibility', () => {
     expect(markup).not.toContain('Novedades');
     expect(markup).not.toContain('Más opciones');
     expect(markup).toContain('aria-label="Ir al inicio"');
-    expect(markup).toContain('aria-label="Ajustes de sonido"');
+    expect(markup).toContain('aria-label="Ajustes"');
     expect(markup).toContain('aria-label="Enviar feedback"');
     expect(markup).toContain('aria-label="Abrir perfil de Eru"');
     expect(markup).toContain('aria-label="Cerrar sesión"');
@@ -330,7 +330,7 @@ describe('Global header accessibility', () => {
     const admin = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user: { ...user, role: 'ADMIN' as const }, onLogout: () => undefined })));
     expect(admin).toContain('aria-label="Abrir panel de administración"');
     const loggedOut = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(AppHeader, { user: null, onLogout: () => undefined })));
-    expect(loggedOut).toContain('aria-label="Ajustes de sonido"');
+    expect(loggedOut).toContain('aria-label="Ajustes"');
     expect(loggedOut).not.toContain('Enviar feedback');
   });
 });

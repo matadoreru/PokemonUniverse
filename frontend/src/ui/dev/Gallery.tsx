@@ -5,10 +5,11 @@
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
-import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Search, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, Volume2, WifiOff, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Search, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, SlidersHorizontal, WifiOff, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
+import { SettingsPanel } from '../../components/SettingsDialog';
+import type { TextPreference } from '../../preferences/preferences';
 import { Avatar } from '../../components/Avatar';
 import { AvatarStack } from '../../components/AvatarStack';
 import { GenerationSelector } from '../../components/GenerationSelector';
@@ -353,6 +354,11 @@ function TabsSection() {
   );
 }
 
+function SegmentedBlockDemo() {
+  const [value, setValue] = useState<TextPreference>('xlarge');
+  return <div className="w-72"><Segmented block showLabel value={value} onChange={setValue} label="Texto" options={[{ value: 'normal', label: 'Normal' }, { value: 'large', label: 'Grande' }, { value: 'xlarge', label: 'Muy grande' }]} /></div>;
+}
+
 function SegmentedDemo({ forced, disabledOption, showLabel, hint }: { forced?: ForcedState; disabledOption?: boolean; showLabel?: boolean; hint?: string }) {
   const [value, setValue] = useState(60);
   const options = [
@@ -382,6 +388,9 @@ function SegmentedSection() {
       </Fig>
       <Fig id="segmented-label-hint-focus" caption="Sobre crema con etiqueta y ayuda · foco" cream>
         <SegmentedDemo showLabel hint="Cuanto antes aciertes, más puntos." forced="focus" />
+      </Fig>
+      <Fig id="segmented-block" caption="A todo el ancho (block): las opciones se reparten el sitio" cream>
+        <SegmentedBlockDemo />
       </Fig>
     </Section>
   );
@@ -875,11 +884,11 @@ function HudSection() {
           <span className={s.text}>3 salas abiertas · 12 partidas hoy</span>
         </HudPlate>
       </Fig>
-      <Fig id="hudplate-header" caption="Cabecera: logotipo, sonido, novedades sin leer y salir" wide>
+      <Fig id="hudplate-header" caption="Cabecera: logotipo, ajustes, novedades sin leer y salir" wide>
         <span className={s.iconRow}>
           <HudPlate>
             <span className="ol2 font-display text-26">Pokémon Universe</span>
-            <Pill variant="cream" size="round" icon={Volume2} aria-label="Ajustes de sonido (ejemplo)" />
+            <Pill variant="cream" size="round" icon={SlidersHorizontal} aria-label="Ajustes (ejemplo)" />
           </HudPlate>
           <HudPlate>
             <span className="relative inline-flex">
@@ -911,8 +920,8 @@ function DialogSection({ onToast }: { onToast(): void }) {
           Terminar sesión
         </Pill>
       </Fig>
-      <Fig id="dialog-audio" caption="Ajustes de sonido (contenido del diálogo)" cream>
-        <AudioSettingsPanel settings={{ muted: false, master: 75, music: 50, sfx: 75, ui: 25 }} onPatch={noop} />
+      <Fig id="dialog-audio" caption="Ajustes: sonido, movimiento y texto (contenido del diálogo)" cream>
+        <SettingsPanel audio={{ muted: false, master: 75, music: 50, sfx: 75, ui: 25 }} display={{ motion: 'system', text: 'large' }} onAudio={noop} onDisplay={noop} />
       </Fig>
       <Dialog
         open={open}

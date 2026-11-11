@@ -212,9 +212,7 @@
   display: flex;
   max-width: calc(100% - var(--sp-2));
 }
-@media (prefers-reduced-motion: reduce) {
-  .revealing,
-  .flip {
-    animation: none;
-  }
+:root[data-motion="reduce"] .revealing,
+:root[data-motion="reduce"] .flip {
+  animation: none;
 }

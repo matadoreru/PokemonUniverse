@@ -416,10 +416,8 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .band {
-    animation: none;
-  }
+:root[data-motion="reduce"] .band {
+  animation: none;
 }
 :global(body.static) .band {
   animation: none;

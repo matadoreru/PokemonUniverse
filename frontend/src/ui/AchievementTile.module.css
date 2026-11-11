@@ -72,8 +72,6 @@
     transform: none;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .fresh {
-    animation: none;
-  }
+:root[data-motion="reduce"] .fresh {
+  animation: none;
 }

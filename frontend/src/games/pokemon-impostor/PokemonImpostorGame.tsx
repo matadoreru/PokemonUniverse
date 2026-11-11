@@ -7,7 +7,7 @@ import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate
 import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from './presentation';
 import { validateImpostorClue } from './validation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
-import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useReducedMotion } from '../../lib/motion';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useDelayElapsed } from '../../hooks/useTimedVisibility';
@@ -49,7 +49,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   const eliminationCutIn = elimination ? impostorEliminationCutIn(elimination, people.nameOf(elimination.playerId)) : null;
   useSfxCue('game.eliminate', elimination ? `${game.roundNumber}:${game.votingRound}` : null);
   // El rol de la placa sigue la misma pausa que el cut-in: no está en el DOM hasta pasado 1 s.
-  const reducedMotion = usePrefersReducedMotion();
+  const reducedMotion = useReducedMotion();
   const eliminationRoleShown = useDelayElapsed(CUTIN_DELAYED_LINE_MS, elimination ? `${game.roundNumber}:${elimination.playerId}` : 'none', reducedMotion);
 
   useEffect(() => { setClueText(''); setVoteDraft(null); }, [game.phase, game.roundNumber, game.votingRound]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { audio, type SoundId } from '../audio';
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useReducedMotion } from '../lib/motion';
 import { Confetti } from './Confetti';
 import { Cutin, type CutinProps } from './Cutin';
 
@@ -27,7 +27,7 @@ export function momentVisible(skippedKey: string | null, armKey: string): boolea
  * mostrar, también tras saltarlo; para repetir el mismo, móntalo con `key`.
  */
 export function MomentCutin({ confetti = false, confettiSeed = 1, cue = null, skippable = true, onDone, reducedMotion, ...cutin }: MomentCutinProps) {
-  const prefersReduced = usePrefersReducedMotion();
+  const prefersReduced = useReducedMotion();
   const reduced = reducedMotion ?? prefersReduced;
   const armKey = `${cutin.tone}|${cutin.title}`;
   const [skipped, setSkipped] = useState<string | null>(null);

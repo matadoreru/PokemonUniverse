@@ -5,7 +5,7 @@ import { AchievementTile } from './AchievementTile';
 import type { AchievementTileProps } from './AchievementTile';
 
 const motion = vi.hoisted(() => ({ reduced: false }));
-vi.mock('../hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => motion.reduced }));
+vi.mock('../lib/motion', () => ({ useReducedMotion: () => motion.reduced }));
 
 const render = (props: Partial<AchievementTileProps> = {}) =>
   renderToStaticMarkup(createElement(AchievementTile, { name: 'Primera victoria', description: 'Gana una partida', state: 'unlocked', art: 'X', ...props }));

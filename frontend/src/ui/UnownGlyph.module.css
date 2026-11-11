@@ -73,9 +73,7 @@
     transform: none;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .letter,
-  .tile {
-    animation: none;
-  }
+:root[data-motion="reduce"] .letter,
+:root[data-motion="reduce"] .tile {
+  animation: none;
 }

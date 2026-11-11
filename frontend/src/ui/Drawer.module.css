@@ -82,9 +82,7 @@
     border-left: 0;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .drawer[open],
-  .drawer::backdrop {
-    animation: none;
-  }
+:root[data-motion="reduce"] .drawer[open],
+:root[data-motion="reduce"] .drawer::backdrop {
+  animation: none;
 }

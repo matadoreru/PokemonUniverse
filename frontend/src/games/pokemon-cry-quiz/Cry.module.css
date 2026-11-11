@@ -51,11 +51,9 @@
     transform: scaleY(1);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .on > i {
-    animation: none;
-    transform: scaleY(1);
-  }
+:root[data-motion="reduce"] .on > i {
+  animation: none;
+  transform: scaleY(1);
 }
 :global(body.static) .on > i {
   transform: scaleY(1);

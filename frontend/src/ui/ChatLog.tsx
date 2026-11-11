@@ -1,6 +1,7 @@
 import { ChevronDown, Shield } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
+import { prefersReducedMotion } from '../lib/motion';
 import { cx } from './cx';
 import { Pill } from './Pill';
 import s from './ChatLog.module.css';
@@ -51,8 +52,7 @@ export function becameVisible(previous: boolean, next: boolean): boolean {
 }
 
 function scrollToEnd(el: HTMLElement, smooth: boolean) {
-  const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  el.scrollTo({ top: el.scrollHeight, behavior: smooth && !reduced ? 'smooth' : 'auto' });
+  el.scrollTo({ top: el.scrollHeight, behavior: smooth && !prefersReducedMotion() ? 'smooth' : 'auto' });
 }
 
 /**

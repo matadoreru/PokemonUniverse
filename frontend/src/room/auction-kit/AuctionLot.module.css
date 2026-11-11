@@ -362,11 +362,9 @@
   white-space: nowrap;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .amount,
-  .fresh {
-    animation: none;
-  }
+:root[data-motion="reduce"] .amount,
+:root[data-motion="reduce"] .fresh {
+  animation: none;
 }
 
 @media (max-width: 1023px) {
