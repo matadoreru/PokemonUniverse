@@ -1,11 +1,12 @@
 import { Suspense, type ReactNode } from 'react';
 import { Panel, StateBox } from '../ui';
 import { LoadErrorBoundary, loadErrorView } from './LoadErrorBoundary';
+import s from './LoadingFallback.module.css';
 
 /** Carga de una pantalla perezosa: el esqueleto de `StateBox` dentro de un `Panel`, a lo ancho del armazón. */
 export function RouteLoadingFallback() {
   return (
-    <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+    <div className={s.frame}>
       <Panel status={{ kind: 'loading', title: 'Cargando pantalla…' }} />
     </div>
   );
@@ -18,7 +19,7 @@ export function RouteLoadingFallback() {
 export function GameLoadingFallback({ compact = false }: { compact?: boolean }) {
   if (compact) return <StateBox kind="loading" title="Cargando minijuego…" onCream />;
   return (
-    <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+    <div className={s.frame}>
       <Panel status={{ kind: 'loading', title: 'Cargando minijuego…' }} />
     </div>
   );
@@ -31,7 +32,7 @@ export function GameLoadingFallback({ compact = false }: { compact?: boolean }) 
 export function RouteLoadError({ attempts, retry }: { attempts: number; retry(): void }) {
   const view = loadErrorView('pantalla', attempts);
   return (
-    <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+    <div className={s.frame}>
       <Panel status={{ kind: 'error', title: view.title, text: view.text, action: { label: view.actionLabel, onClick: retry } }} />
     </div>
   );
@@ -43,7 +44,7 @@ export function GameLoadError({ attempts, retry, compact = false }: { attempts: 
   const status = { kind: 'error', title: view.title, text: view.text, action: { label: view.actionLabel, onClick: retry } } as const;
   if (compact) return <StateBox {...status} onCream />;
   return (
-    <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-4 lg:p-6">
+    <div className={s.frame}>
       <Panel status={status} />
     </div>
   );

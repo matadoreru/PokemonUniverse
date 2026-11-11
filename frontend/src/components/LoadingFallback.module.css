@@ -1,0 +1,7 @@
+/* Hueco de la carga o del error de una pantalla perezosa: el ancho y los márgenes del armazón (como `Screen`). */
+.frame {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: var(--gutter);
+}
