@@ -3,7 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const SIZE_LABEL = 'Máximo de colores visibles';
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -22,17 +22,17 @@ export function PokemonPaletteGuessConfigPanel({ config, disabled, onChange }: {
   const value = config as PokemonPaletteGuessConfig;
   const update = (next: Partial<PokemonPaletteGuessConfig>) => void onChange({ ...value, ...next });
   const toggleHint = (hint: PokemonPaletteHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((kind) => kind !== hint), hint] : value.hintKinds.filter((kind) => kind !== hint) });
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon cuya paleta haya sido persistida por DataSync." onChange={(generations) => update({ generations })} />
     <Segmented<number> label={SIZE_LABEL} showLabel hint="Se mostrarán todos los colores dominantes disponibles hasta este máximo; nunca se descartará un Pokémon por tener menos." value={value.paletteSize} options={SIZES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(paletteSize) => update({ paletteSize })} />
-    <div className={s.ranges}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Visibles públicamente desde el inicio.' : 'Solo se mostrará la paleta.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
-    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
-      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
-      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
+    {value.hintsEnabled && <div className={c.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={c.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={c.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
     </div>}
     <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;

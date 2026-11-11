@@ -3,6 +3,7 @@ import { ShieldCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Icon, Segmented } from '../../ui';
+import c from '../ConfigPanel.module.css';
 import s from './BluffAuction.module.css';
 
 const times = [20, 30, 45, 60] as const;
@@ -15,9 +16,9 @@ const rounds = [5, 10, 15, 20] as const;
  */
 export function PokemonBluffAuctionConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonBluffAuctionConfig;
-  return <fieldset disabled={disabled} className={s.config}>
+  return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="La condición y el buscador usarán únicamente especies normales de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <Segmented label="Tiempo inicial para demostrar" showLabel hint="Cada acierto añade 5 segundos y cada fallo quita 3." value={value.demonstrationSeconds}
         options={times.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))}
         onChange={(demonstrationSeconds) => void onChange({ ...value, demonstrationSeconds })} />
@@ -31,7 +32,7 @@ export function PokemonBluffAuctionConfigPanel({ config, disabled, onChange }: {
       <Icon icon={ShieldCheck} size={22} />
       <div>
         <strong className={s.infoTitle}>Solo especies normales</strong>
-        <p className={s.help}>Este modo excluye regionales, Mega, Gigamax y cualquier variante que comparta número de Pokédex. Las condiciones se verifican con datos autoritativos.</p>
+        <p className={c.help}>Este modo excluye regionales, Mega, Gigamax y cualquier variante que comparta número de Pokédex. Las condiciones se verifican con datos autoritativos.</p>
       </div>
     </div>
   </fieldset>;

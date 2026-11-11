@@ -1,29 +1,8 @@
 /* Ajustes de Pokédle Race en el lobby. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  min-width: 0;
-}
-.ranges,
 .kinds {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--sp-4);
-}
-.kinds {
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   gap: var(--sp-2);
-}
-.head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-2);
-}
-.label {
-  font: 800 var(--fs-13) / 1.2 var(--font-text);
-  color: var(--ink-2);
 }
 .help {
   margin-top: calc(-1 * var(--sp-2));
@@ -34,12 +13,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
-}
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
 }
 .note {
   padding: var(--sp-3);

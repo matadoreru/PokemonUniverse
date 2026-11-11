@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { cx, Field, Segmented, Toggle } from '../../ui';
+import c from '../ConfigPanel.module.css';
 import s from './TeamAuction.module.css';
 
 const budgets = [10, 20, 30, 50] as const;
@@ -27,11 +28,11 @@ export function PokemonTeamAuctionConfigPanel({ config, disabled, onChange }: { 
   useEffect(() => { setDraft(String(value.initialBudget)); }, [value.initialBudget]);
   const preset = (budgets as readonly number[]).includes(value.initialBudget) ? String(value.initialBudget) : CUSTOM;
   const draftValid = parseBudget(draft) !== null;
-  return <fieldset disabled={disabled} className={s.config}>
+  return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="La pool contiene exactamente seis lotes por jugador. Las formas alternativas cuentan como Pokémon independientes." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label} id="team-auction-budget">Presupuesto inicial por jugador</span>
+    <div className={c.pair}>
+      <div className={c.group}>
+        <span className={c.label} id="team-auction-budget">Presupuesto inicial por jugador</span>
         <div className={s.budgetRow}>
           <Segmented label="Presupuesto inicial por jugador" value={preset}
             options={[...budgets.map((budget) => ({ value: String(budget), label: String(budget), disabled })), { value: CUSTOM, label: 'Otro', disabled }]}
@@ -41,7 +42,7 @@ export function PokemonTeamAuctionConfigPanel({ config, disabled, onChange }: { 
             onChange={(event) => { setDraft(event.target.value); const initialBudget = parseBudget(event.target.value); if (initialBudget !== null && initialBudget !== value.initialBudget) void onChange({ ...value, initialBudget }); }}
             onBlur={() => setDraft(String(value.initialBudget))} />
         </div>
-        <p className={s.help}>Las pujas empiezan en 1 y pueden saltar directamente a cualquier cantidad que puedas pagar.</p>
+        <p className={c.help}>Las pujas empiezan en 1 y pueden saltar directamente a cualquier cantidad que puedas pagar.</p>
       </div>
       <ConfigRange label="Tiempo por turno" value={value.bidSeconds ?? 20} min={0} max={120} disabled={disabled}
         formatValue={(seconds) => (seconds === 0 ? 'Sin límite' : `${seconds} s`)} hint="Al agotarse el tiempo, pasas ese lote. Usa 0 para jugar sin límite."

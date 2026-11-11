@@ -1,10 +1,4 @@
 /* Ajustes de Learnset Guess en el lobby. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-5);
-  min-width: 0;
-}
 /* Learnset de referencia: aviso informativo (no se elige, sale de las generaciones). */
 .reference {
   display: flex;
@@ -47,10 +41,4 @@
   margin-top: var(--sp-1);
   font: 700 var(--fs-13) / 1.35 var(--font-text);
   color: var(--ink-2);
-}
-.toggles,
-.ranges {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--sp-4);
 }

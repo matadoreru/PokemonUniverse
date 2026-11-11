@@ -13,6 +13,7 @@ import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, cx, Segmented, Toggle } from '../../ui';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 const categoryLabels: Record<HigherLowerCategory, string> = {
@@ -62,16 +63,16 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
   const visibilities = HIGHER_LOWER_VISIBILITIES.map((visibility) => ({ value: visibility, label: higherLowerVisibilityLabels[visibility], disabled }));
   const onlyCategory = value.categories.length === 1 ? value.categories[0] : null;
 
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GameModeField gameId="higher-lower" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{CATEGORIES_LABEL}</span>
+    <div className={c.group}>
+      <span className={c.label} aria-hidden="true">{CATEGORIES_LABEL}</span>
       <div className={s.categories} role="group" aria-label={CATEGORIES_LABEL}>{HIGHER_LOWER_CATEGORIES.map((category) => <Toggle key={category} label={categoryLabels[category]} checked={value.categories.includes(category)}
         disabled={disabled} className={cx(s.category)} {...(onlyCategory === category ? { hint: 'Al menos una' } : {})} onChange={() => toggleCategory(category)} />)}</div>
     </div>
 
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{DIFFICULTY_LABEL}</span>
+    <div className={c.group}>
+      <span className={c.label} aria-hidden="true">{DIFFICULTY_LABEL}</span>
       <div className={s.difficulties} role="group" aria-label={DIFFICULTY_LABEL}>{HIGHER_LOWER_DIFFICULTIES.map((difficulty, index) => {
         const copy = difficultyCopy[difficulty];
         return <Card key={difficulty} size="sm" name={copy.label} art={<DifficultyPips level={index + 1} />} state={value.difficulty === difficulty ? 'selected' : 'idle'} disabled={disabled}
@@ -84,7 +85,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
 
     <div className={s.pair}>
-      <div className={s.group}>
+      <div className={c.group}>
         <Toggle label="Mostrar el valor del anterior Pokémon" hint="Si no, los dos valores salen al revelar" checked={value.showPreviousValue} disabled={disabled} onChange={(showPreviousValue) => void onChange({ ...value, showPreviousValue })} />
       </div>
       <Segmented<HigherLowerAnswerVisibility> label={VISIBILITY_LABEL} showLabel hint={value.answerVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} value={value.answerVisibility} options={visibilities} onChange={(answerVisibility) => void onChange({ ...value, answerVisibility })} />

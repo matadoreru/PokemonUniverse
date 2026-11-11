@@ -1,25 +1,4 @@
 /* Ajustes de Pokémon Connections en el lobby. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  min-width: 0;
-}
-.pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--sp-4);
-}
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.label {
-  font: 800 var(--fs-13) / 1.2 var(--font-text);
-  color: var(--ink-2);
-}
 .note {
   display: flex;
   align-items: center;

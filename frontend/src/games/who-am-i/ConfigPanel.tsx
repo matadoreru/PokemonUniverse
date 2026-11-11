@@ -1,7 +1,7 @@
 import type { WhoAmIConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
-import s from './WhoAmI.module.css';
+import c from '../ConfigPanel.module.css';
 
 const seconds = (value: number) => `${value} segundos`;
 
@@ -11,10 +11,10 @@ const seconds = (value: number) => `${value} segundos`;
  */
 export function WhoAmIConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as WhoAmIConfig;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="A cada jugador le toca un Pokémon de estas generaciones, y solo puede adivinar entre ellos." onChange={(generations) => void onChange({ ...value, generations })} />
     <ConfigRange label="Número de vueltas" value={value.maxLaps} min={3} max={20} disabled={disabled} formatValue={(laps) => `${laps} vueltas`} onCommit={(maxLaps) => onChange({ ...value, maxLaps })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo para preguntar" value={value.askSeconds} min={20} max={90} disabled={disabled} formatValue={seconds} onCommit={(askSeconds) => onChange({ ...value, askSeconds })} />
       <ConfigRange label="Tiempo para responder" value={value.answerSeconds} min={10} max={60} disabled={disabled} formatValue={seconds} onCommit={(answerSeconds) => onChange({ ...value, answerSeconds })} />
     </div>

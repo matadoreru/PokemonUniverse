@@ -3,7 +3,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Segmented } from '../../ui';
 import { CustomWouldYouRatherPromptManager } from './CustomPromptManager';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const sources: Array<{ id: SubjectivePromptSource; title: string; detail: string }> = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Dilemas normales, adultos y de humor oscuro.' },
@@ -23,15 +23,15 @@ export function WouldYouRatherConfigPanel({ config, disabled, room, selfId, onCh
   const isHost = room.hostId === selfId;
   const registeredHost = isHost && user?.kind === 'USER';
   const source = sources.find((entry) => entry.id === value.promptSource) ?? sources[0]!;
-  return <fieldset disabled={disabled} className={s.panel}>
-    <div className={s.pair}>
+  return <fieldset disabled={disabled} className={c.panel}>
+    <div className={c.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo para votar y predecir" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La ronda termina antes si todos han enviado su papeleta." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
     <Segmented label="Fuente de dilemas" showLabel hint={source.detail} value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
     {registeredHost
       ? <CustomWouldYouRatherPromptManager disabled={disabled} />
-      : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar dilemas personales de forma permanente.' : `Los dilemas personales pertenecen al host. Hay ${room.hostWouldYouRatherPromptCount ?? 0} activos.`}</p>}
-    <p className={s.note}>La papeleta combina tu elección y tu predicción. Se bloquea al enviarla y permanece secreta hasta el resultado. Acertar la mayoría vale {WOULD_YOU_RATHER_PREDICTION_POINTS} puntos; formar parte de ella, {WOULD_YOU_RATHER_MAJORITY_POINTS}.</p>
+      : <p className={c.note}>{isHost ? 'Crea una cuenta para guardar dilemas personales de forma permanente.' : `Los dilemas personales pertenecen al host. Hay ${room.hostWouldYouRatherPromptCount ?? 0} activos.`}</p>}
+    <p className={c.note}>La papeleta combina tu elección y tu predicción. Se bloquea al enviarla y permanece secreta hasta el resultado. Acertar la mayoría vale {WOULD_YOU_RATHER_PREDICTION_POINTS} puntos; formar parte de ella, {WOULD_YOU_RATHER_MAJORITY_POINTS}.</p>
   </fieldset>;
 }

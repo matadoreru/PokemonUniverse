@@ -7,6 +7,7 @@ import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, Icon, Segmented } from '../../ui';
 import { SHINY_REVEAL_DURATION_LABEL, shinyRevealSecondsLabel } from './reveal';
 import { SHINY_VOTE_VISIBILITY_LABEL, shinyVisibilityLabels } from './vote-visibility';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 const CANDIDATE_MODE_LABEL = 'Opciones de Pokémon';
@@ -25,10 +26,10 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
   const value = config as ShinyVoteConfig;
   const counts = OPTION_COUNTS.map((count) => ({ value: count, label: String(count), disabled }));
   const visibilities = SHINY_VOTE_VISIBILITIES.map((visibility) => ({ value: visibility, label: shinyVisibilityLabels[visibility], disabled }));
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GameModeField gameId="shiny-vote" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{CANDIDATE_MODE_LABEL}</span>
+      <span className={c.label} aria-hidden="true">{CANDIDATE_MODE_LABEL}</span>
       <div className={s.modes} role="group" aria-label={CANDIDATE_MODE_LABEL}>{CANDIDATE_MODES.map((mode) => <Card key={mode.value} size="sm" art={<Icon icon={mode.icon} size={32} />} name={mode.label}
         state={value.candidateMode === mode.value ? 'selected' : 'idle'} disabled={disabled} onSelect={() => { if (value.candidateMode !== mode.value) void onChange({ ...value, candidateMode: mode.value }); }} />)}</div>
     </div>

@@ -1,15 +1,4 @@
-/* ¿Quién soy?: ajustes del lobby, las cartas de los jugadores, las pistas, la acción del turno y los resultados. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  min-width: 0;
-}
-.pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--sp-4);
-}
+/* ¿Quién soy?: las cartas de los jugadores, las pistas, la acción del turno y los resultados. */
 
 /*
  * Cualquier texto de una pregunta (la que está en curso, las del historial y el título): una pregunta de 120

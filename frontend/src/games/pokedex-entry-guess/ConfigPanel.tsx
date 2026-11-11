@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Toggle } from '../../ui';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -24,17 +25,17 @@ export function PokedexEntryGuessConfigPanel({ config, disabled, onChange }: { c
     if (Object.values(hints).some(Boolean)) update({ hints });
   }
   const reference = Math.max(...value.generations);
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GenerationSelector selected={value.generations} label="Generaciones del objetivo" onChange={(generations) => update({ generations })} />
     <p className={s.note}><strong>Generación de referencia: {reference}</strong>Se prioriza una entrada de esta generación o la más reciente anterior. Si aún no existía en español, como ocurre en Gen 1 y 2, se usa la primera posterior disponible.</p>
-    <div className={s.ranges}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Visibles desde el inicio de cada ronda.' : 'Solo se mostrará la entrada Pokédex.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
-    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
-      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
-      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => toggleHint(hint.key, on)} />)}</div>
+    {value.hintsEnabled && <div className={c.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={c.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={c.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => toggleHint(hint.key, on)} />)}</div>
     </div>}
     <p className={s.note}>Solo se usan formas base: el dataset actual no ofrece entradas españolas propias y distinguibles para regionales o Gigamax.</p>
     <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />

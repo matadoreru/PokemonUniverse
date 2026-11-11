@@ -3,7 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Chip, Toggle } from '../../ui';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const STATS_LABEL = 'Stats mostradas';
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -23,27 +23,27 @@ export function GuessFromStatsConfigPanel({ config, disabled, onChange }: { conf
   const value = config as GuessFromStatsConfig;
   const update = (next: Partial<GuessFromStatsConfig>) => void onChange({ ...value, ...next });
   const statCount = Object.values(value.stats).filter(Boolean).length;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => update({ generations })} />
-    <div className={s.ranges}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
-    <div className={s.group} role="group" aria-label={STATS_LABEL}>
-      <div className={s.head}>
-        <span className={s.label} aria-hidden="true">{STATS_LABEL}</span>
+    <div className={c.group} role="group" aria-label={STATS_LABEL}>
+      <div className={c.head}>
+        <span className={c.label} aria-hidden="true">{STATS_LABEL}</span>
         <Chip tone={statCount < 2 ? 'bad' : 'ok'}>{statCount} activas</Chip>
       </div>
-      <p className={s.help}>Los valores visibles definen todas las respuestas correctas.</p>
-      <div className={s.kinds}>{statOptions.map((stat) => <Toggle key={stat.key} label={stat.label} checked={value.stats[stat.key]} disabled={disabled} onChange={(on) => update({ stats: { ...value.stats, [stat.key]: on } })} />)}</div>
-      {statCount < 2 && <p className={s.note} role="alert">Selecciona al menos 2 estadísticas.</p>}
+      <p className={c.help}>Los valores visibles definen todas las respuestas correctas.</p>
+      <div className={c.kinds}>{statOptions.map((stat) => <Toggle key={stat.key} label={stat.label} checked={value.stats[stat.key]} disabled={disabled} onChange={(on) => update({ stats: { ...value.stats, [stat.key]: on } })} />)}</div>
+      {statCount < 2 && <p className={c.note} role="alert">Selecciona al menos 2 estadísticas.</p>}
     </div>
     <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'También forman parte de la equivalencia.' : 'Solo se mostrarán las stats seleccionadas.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
-    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
-      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
-      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => update({ hints: { ...value.hints, [hint.key]: on } })} />)}</div>
+    {value.hintsEnabled && <div className={c.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={c.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={c.kinds}>{hintOptions.map((hint) => <Toggle key={hint.key} label={hint.label} checked={value.hints[hint.key]} disabled={disabled} onChange={(on) => update({ hints: { ...value.hints, [hint.key]: on } })} />)}</div>
     </div>}
-    <p className={s.note}>Las formas con ID y Base Stats propios participan. Si dos formas son indistinguibles por la información pública, ambas se aceptan.</p>
+    <p className={c.note}>Las formas con ID y Base Stats propios participan. Si dos formas son indistinguibles por la información pública, ambas se aceptan.</p>
     <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

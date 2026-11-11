@@ -5,6 +5,7 @@ import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { DISTANCE_SELECTION_VISIBILITY_LABEL, distanceSelectionVisibilityLabels } from '../../room/pokedex-distance-selection';
 import { Segmented } from '../../ui';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 /**
@@ -15,7 +16,7 @@ export function PokedexDistanceConfigPanel({ config, disabled, onChange }: { con
   const value = config as PokedexDistanceConfig;
   const shown = useModeShown('pokedex-distance', value.mode);
   const options = POKEDEX_DISTANCE_SELECTION_VISIBILITIES.map((visibility) => ({ value: visibility, label: distanceSelectionVisibilityLabels[visibility], disabled }));
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GameModeField gameId="pokedex-distance" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
     <Segmented<PokedexDistanceSelectionVisibility> label={DISTANCE_SELECTION_VISIBILITY_LABEL} showLabel hint={value.selectionVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} className={s.group ?? ''} value={value.selectionVisibility} options={options} onChange={(selectionVisibility) => void onChange({ ...value, selectionVisibility })} />

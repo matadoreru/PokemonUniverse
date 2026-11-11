@@ -1,15 +1,4 @@
-/* Traductor Unown: ajustes del lobby, el mensaje cifrado, la leyenda del alfabeto y la revelación. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  min-width: 0;
-}
-.pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--sp-4);
-}
+/* Traductor Unown: el mensaje cifrado, la leyenda del alfabeto y la revelación. */
 
 /*
  * El mensaje: las palabras bajan de línea, pero cada una es un bloque que no se parte. Debajo, en su propia fila,

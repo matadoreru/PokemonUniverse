@@ -3,7 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const IMAGE_LABEL = 'Imagen';
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -27,22 +27,22 @@ export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { confi
   const update = (next: Partial<ZoomedPokemonConfig>) => void onChange({ ...value, ...next });
   const toggleHint = (hint: ZoomedPokemonHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((item) => item !== hint), hint] : value.hintKinds.filter((item) => item !== hint) });
   const mode = modes.find((option) => option.value === value.imageMode) ?? modes[0]!;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GenerationSelector selected={value.generations} onChange={(generations) => update({ generations })} />
     <Segmented<ZoomedPokemonImageMode> label={IMAGE_LABEL} showLabel hint={`${mode.description}${value.imageMode === 'ARTWORK' ? ' El servidor validará que exista al menos un artwork para estas generaciones al empezar.' : ''}`} value={value.imageMode} options={modes.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(imageMode) => update({ imageMode })} />
-    <div className={s.ranges}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La cámara se aleja cada cuarto de ronda: cuanto antes aciertes, más bonificación." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
-    <div className={s.toggles}>
+    <div className={c.pair}>
       <Toggle label="Formas y variantes" hint="Regionales, Mega y Gigamax cuando el catálogo tiene su clave e imagen propias." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => update({ includeForms })} />
       <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Visibles desde el primer segundo.' : 'Solo se muestra el recorte.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
     </div>
-    {value.hintsEnabled && <div className={s.group} role="group" aria-label={HINT_KINDS_LABEL}>
-      <span className={s.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
-      <div className={s.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
+    {value.hintsEnabled && <div className={c.group} role="group" aria-label={HINT_KINDS_LABEL}>
+      <span className={c.label} aria-hidden="true">{HINT_KINDS_LABEL}</span>
+      <div className={c.kinds}>{hintOptions.map((hint) => <Toggle key={hint.id} label={hint.label} checked={value.hintKinds.includes(hint.id)} disabled={disabled} onChange={(on) => toggleHint(hint.id, on)} />)}</div>
     </div>}
-    <p className={s.note}>Nunca se usa la altura ni el peso como pista.</p>
+    <p className={c.note}>Nunca se usa la altura ni el peso como pista.</p>
     <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
   </fieldset>;
 }

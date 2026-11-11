@@ -3,7 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const VERSION_LABEL = 'Versión del grito';
 const versions: Array<{ value: PokemonCryQuizConfig['cryVersion']; label: string; detail: string }> = [
@@ -20,11 +20,11 @@ export function PokemonCryQuizConfigPanel({ config, disabled, onChange }: { conf
   const value = config as PokemonCryQuizConfig;
   const update = (next: Partial<PokemonCryQuizConfig>) => void onChange({ ...value, ...next });
   const version = versions.find((option) => option.value === value.cryVersion) ?? versions[0]!;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon con un grito persistido en el catálogo local." onChange={(generations) => update({ generations })} />
     <Segmented<PokemonCryQuizConfig['cryVersion']> label={VERSION_LABEL} showLabel hint={version.detail} value={value.cryVersion} options={versions.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(cryVersion) => update({ cryVersion })} />
     <Toggle label="Formas regionales" hint="Incluye únicamente formas con grito propio disponible." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => update({ includeRegionalForms })} />
-    <div className={s.ranges}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>

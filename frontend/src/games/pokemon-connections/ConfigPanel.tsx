@@ -4,6 +4,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Icon, Segmented } from '../../ui';
 import { CONNECTIONS_TIME, connectionsSnapSeconds, connectionsTimeLabel } from './presentation';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 const groupSizes = [3, 4, 5] as const;
@@ -17,15 +18,15 @@ const groupCounts = [3, 4, 5] as const;
 export function PokemonConnectionsConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonConnectionsConfig;
   const groupCount = Math.min(5, Math.max(3, Math.round(value.pokemonCount / value.groupSize)));
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="Cada puzle se genera al azar solo con Pokémon de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <Segmented label="Pokémon por grupo" showLabel value={value.groupSize} options={groupSizes.map((size) => ({ value: size, label: String(size), disabled }))}
         onChange={(groupSize) => void onChange({ ...value, groupSize, pokemonCount: groupSize * groupCount })} />
       <Segmented label="Total del tablero" showLabel value={value.pokemonCount} options={groupCounts.map((count) => ({ value: count * value.groupSize, label: `${count * value.groupSize} (${count} grupos)`, disabled }))}
         onChange={(pokemonCount) => void onChange({ ...value, pokemonCount })} />
     </div>
-    <div className={s.pair}>
+    <div className={c.pair}>
       <ConfigRange label="Errores permitidos" value={value.mistakesAllowed} min={1} max={10} disabled={disabled} formatValue={(mistakes) => (mistakes === 1 ? '1 error' : `${mistakes} errores`)} onCommit={(mistakesAllowed) => onChange({ ...value, mistakesAllowed })} />
       <ConfigRange label="Tiempo por puzle" value={connectionsSnapSeconds(value.roundSeconds)} min={CONNECTIONS_TIME.min} max={CONNECTIONS_TIME.max} step={CONNECTIONS_TIME.step} disabled={disabled} formatValue={connectionsTimeLabel} hint="El puzle se cierra antes si todos terminan." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>

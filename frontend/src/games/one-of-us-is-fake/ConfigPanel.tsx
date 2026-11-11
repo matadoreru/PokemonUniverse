@@ -4,7 +4,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Segmented, Toggle } from '../../ui';
 import { CustomCategoryManager } from './CustomCategoryManager';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const categorySources: Array<{ id: SubjectivePromptSource; title: string; detail: string }> = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Categorías incluidas y listas para jugar.' },
@@ -26,9 +26,9 @@ export function OneOfUsIsFakeConfigPanel({ config, disabled, room, selfId, onCha
   const isHost = room.hostId === selfId;
   const registeredHost = isHost && user?.kind === 'USER';
   const source = categorySources.find((entry) => entry.id === value.categorySource) ?? categorySources[0]!;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada elección debe existir en este pool; la interpretación de la categoría siempre es libre." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={30} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo para elegir" value={value.selectionSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={seconds} hint="La revelación empieza antes si todos han elegido." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
       <ConfigRange label="Tiempo de debate y voto" value={value.discussionSeconds} min={30} max={600} step={15} disabled={disabled} formatValue={minutes} hint="Con empate hay otra vuelta con el mismo tiempo." onCommit={(discussionSeconds) => onChange({ ...value, discussionSeconds })} />
@@ -37,7 +37,7 @@ export function OneOfUsIsFakeConfigPanel({ config, disabled, room, selfId, onCha
     <Segmented label="Fuente de categorías" showLabel hint={source.detail} value={value.categorySource} options={categorySources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(categorySource) => void onChange({ ...value, categorySource })} />
     {registeredHost
       ? <CustomCategoryManager disabled={disabled} />
-      : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar categorías personales de forma permanente.' : `Las categorías personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}
+      : <p className={c.note}>{isHost ? 'Crea una cuenta para guardar categorías personales de forma permanente.' : `Las categorías personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}
     <Toggle label="Formas regionales" hint="Cada forma se considera una elección exacta e independiente." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => void onChange({ ...value, includeRegionalForms })} />
   </fieldset>;
 }

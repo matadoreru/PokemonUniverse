@@ -2,7 +2,7 @@ import { TYPE_DUEL_COOP_SECONDS_RANGE, type TypeDuelConfig } from '@pokemon-univ
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { GameModeField, useModeShown } from '../../room/GameModeField';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 /**
  * Ajustes de Type Duel: el modo (`GameModeField`), generaciones y los tiempos de elegir tipo y de buscar (en
@@ -15,10 +15,10 @@ export function TypeDuelConfigPanel({ config, disabled, onChange }: { config: un
   // Al azar o por votación con los dos modos marcados se ven los ajustes de ambos.
   const shown = useModeShown('type-duel', value.mode);
   const coop = shown('COOP') && !shown('CLASSIC');
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panelLoose}>
     <GameModeField gameId="type-duel" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} />
-    <div className={s.ranges}>
+    <div className={c.pair}>
       {shown('CLASSIC') && <ConfigRange label="Tiempo para elegir tipo" value={value.typeSelectSeconds} min={5} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Los dos tipos se revelan a la vez." onCommit={(typeSelectSeconds) => onChange({ ...value, typeSelectSeconds })} />}
       {shown('CLASSIC') && <ConfigRange label="Tiempo para buscar" value={value.searchSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Tras un intento fallido, 1 segundo de espera." onCommit={(searchSeconds) => onChange({ ...value, searchSeconds })} />}
       {shown('COOP') && <ConfigRange label="Tiempo de búsqueda conjunta" value={value.coopSeconds} min={TYPE_DUEL_COOP_SECONDS_RANGE.min} max={TYPE_DUEL_COOP_SECONDS_RANGE.max} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Lo que dura cada ronda: todos buscan a la vez los Pokémon con esos tipos." onCommit={(coopSeconds) => onChange({ ...value, coopSeconds })} />}

@@ -1,0 +1,55 @@
+/* Lo común de los paneles de ajustes de los juegos en el lobby; lo propio de cada juego va en su módulo. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+/* Paneles con controles más altos (tarjetas, interruptores en rejilla): más aire entre bloques. */
+.panelLoose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+/* Dos ajustes lado a lado cuando hay ancho; en columna en el panel estrecho. */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+/* Etiqueta de un bloque y su cuenta en un `Chip`, en la misma línea. */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.label {
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  color: var(--ink-2);
+}
+.help {
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.note {
+  padding: var(--sp-3);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-card);
+  background: var(--cream-2);
+  font: 700 var(--fs-13) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+/* Interruptores de un grupo (qué pistas salen, qué stats), en rejilla cuando hay ancho. */
+.kinds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-3);
+}

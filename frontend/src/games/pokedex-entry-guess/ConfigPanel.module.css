@@ -1,29 +1,4 @@
 /* Ajustes de Pokédex Entry Guess en el lobby. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-5);
-  min-width: 0;
-}
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.label {
-  font: 800 var(--fs-13) / 1.2 var(--font-text);
-  color: var(--ink-2);
-}
-.ranges,
-.kinds {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  gap: var(--sp-4);
-}
-.kinds {
-  gap: var(--sp-3);
-}
 .note {
   padding: var(--sp-3);
   border: var(--ol-2) solid var(--navy);

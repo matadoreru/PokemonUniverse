@@ -4,7 +4,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Segmented, Toggle } from '../../ui';
 import { CustomCategoryManager } from '../one-of-us-is-fake/CustomCategoryManager';
-import s from './ConfigPanel.module.css';
+import c from '../ConfigPanel.module.css';
 
 const sources: Array<{ id: SubjectivePromptSource; title: string; detail: string }> = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Preguntas direccionales incluidas y listas para jugar.' },
@@ -26,16 +26,16 @@ export function SecretRankingConfigPanel({ config, disabled, room, selfId, onCha
   const isHost = room.hostId === selfId;
   const registeredHost = isHost && user?.kind === 'USER';
   const source = sources.find((entry) => entry.id === value.promptSource) ?? sources[0]!;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada ronda usa cinco Pokémon distintos del pool seleccionado." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo para ordenar" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La ronda termina antes si todos han bloqueado su ranking." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
     <Segmented label="Fuente de preguntas" showLabel hint={source.detail} value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
     {registeredHost
       ? <CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="De más valiente a menos valiente" emptyText="Todavía no has creado preguntas personales." newLabel="Nueva pregunta" editLabel="Editar pregunta" noun="pregunta" />
-      : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar preguntas personales de forma permanente.' : `Las preguntas personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}
+      : <p className={c.note}>{isHost ? 'Crea una cuenta para guardar preguntas personales de forma permanente.' : `Las preguntas personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}
     <Toggle label="Incluir formas alternativas" hint="Las formas regionales y alternativas se ordenan como Pokémon independientes." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => void onChange({ ...value, includeForms })} />
   </fieldset>;
 }

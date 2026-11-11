@@ -6,6 +6,7 @@ import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/api-errors';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Field, Icon, StateBox, Toggle } from '../../ui';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 interface FilterOption { value: string; label: string; count: number }
@@ -20,8 +21,8 @@ function MultiFilter({ label, allLabel, options, selected, disabled, onChange }:
   const needle = query.trim().toLocaleLowerCase('es');
   const visible = options.filter((option) => option.label.toLocaleLowerCase('es').includes(needle));
   return <section className={s.filter} aria-labelledby={headingId}>
-    <div className={s.head}>
-      <span id={headingId} className={s.label}>{label}</span>
+    <div className={c.head}>
+      <span id={headingId} className={c.label}>{label}</span>
       <Chip tone={selected.length ? 'info' : 'neutral'}>{selected.length === 0 ? allLabel : `${selected.length} ${selected.length === 1 ? 'elegido' : 'elegidos'}`}</Chip>
     </div>
     <Field label={`Buscar ${label.toLocaleLowerCase('es')}`} hideLabel icon={Search} value={query} placeholder="Buscar" disabled={disabled} onChange={(event) => setQuery(event.target.value)} />
@@ -32,7 +33,7 @@ function MultiFilter({ label, allLabel, options, selected, disabled, onChange }:
         return <Toggle key={option.value} label={`${option.label} · ${option.count.toLocaleString('es-ES')}`} checked={active} disabled={disabled}
           onChange={(next) => onChange(next ? [...selected, option.value] : selected.filter((item) => item !== option.value))} />;
       })}
-      {visible.length === 0 && needle && <p className={s.help}>Ninguna opción contiene «{query.trim()}».</p>}
+      {visible.length === 0 && needle && <p className={c.help}>Ninguna opción contiene «{query.trim()}».</p>}
     </div>
   </section>;
 }
@@ -67,22 +68,22 @@ export function TcgHigherLowerConfigPanel({ config, disabled, onChange }: { conf
   const rarities = useMemo(() => options?.rarities.map((rarity) => ({ value: rarity.value, label: rarity.value, count: rarity.cardCount })) ?? [], [options]);
   const updatePrice = (key: 'minPrice' | 'maxPrice', raw: string) => void onChange({ ...value, [key]: raw.trim() === '' ? null : raw });
   const enough = eligible !== null && eligible >= 2;
-  return <fieldset disabled={disabled} className={s.panel}>
+  return <fieldset disabled={disabled} className={c.panel}>
     {loadError && <StateBox kind="error" title="Catálogo TCG no disponible" text={loadError} />}
     <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" description="Incluye cartas protagonizadas por al menos un Pokémon de las generaciones elegidas. Las cartas de Entrenador sin Pokémon quedan fuera." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <MultiFilter label="Sets" allLabel="Todos los sets" options={sets} selected={value.setIds} disabled={disabled} onChange={(setIds) => void onChange({ ...value, setIds })} />
       <MultiFilter label="Rareza" allLabel="Todas las rarezas" options={rarities} selected={value.rarities} disabled={disabled} onChange={(raritiesValue) => void onChange({ ...value, rarities: raritiesValue })} />
     </div>
     <div className={s.field}>
-      <span className={s.label}>Rango de precio</span>
-      <div className={s.pair}>
+      <span className={c.label}>Rango de precio</span>
+      <div className={c.pair}>
         <Field label="Mínimo" type="number" min="0" step="0.01" value={value.minPrice ?? ''} placeholder="Sin límite" disabled={disabled} onChange={(event) => updatePrice('minPrice', event.target.value)} />
         <Field label="Máximo" type="number" min="0" step="0.01" value={value.maxPrice ?? ''} placeholder="Sin límite" disabled={disabled} onChange={(event) => updatePrice('maxPrice', event.target.value)} />
       </div>
     </div>
     <Toggle label="Mostrar rareza de las cartas" hint="Si se oculta, la rareza se desvela después de responder." checked={value.showRarity} disabled={disabled} onChange={(showRarity) => void onChange({ ...value, showRarity })} />
-    <div className={s.pair}>
+    <div className={c.pair}>
       <ConfigRange label="Tiempo por comparación" value={value.roundSeconds} min={5} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La ronda se revela antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={5} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
@@ -91,7 +92,7 @@ export function TcgHigherLowerConfigPanel({ config, disabled, onChange }: { conf
       : enough
         ? <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>{eligible.toLocaleString('es-ES')} cartas elegibles</Chip>
         : <Chip tone="bad" icon={<Icon icon={XCircle} size={18} />}>No hay suficientes cartas</Chip>}
-      {eligible !== null && !enough && <span className={s.help}>Hacen falta dos cartas con una misma fuente, variante y moneda. Amplía los filtros antes de iniciar.</span>}
+      {eligible !== null && !enough && <span className={c.help}>Hacen falta dos cartas con una misma fuente, variante y moneda. Amplía los filtros antes de iniciar.</span>}
     </p>
   </fieldset>;
 }

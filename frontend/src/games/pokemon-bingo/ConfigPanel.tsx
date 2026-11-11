@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Segmented, Toggle } from '../../ui';
 import { bingoClock } from './presentation';
+import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
 const groups: Array<{ title: string; keys: BingoFamilyKey[] }> = [
@@ -23,21 +24,21 @@ export function PokemonBingoConfigPanel({ config, disabled, onChange }: { config
   const value = config as PokemonBingoConfig; const validation = validateGameConfigReadiness('pokemon-bingo', value);
   const active = BINGO_FAMILY_KEYS.filter((key) => value.families[key]).length;
   const side = (key: 'width' | 'height', label: string) => <Segmented label={label} showLabel value={value[key]} options={SIDES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(size) => void onChange({ ...value, [key]: size })} />;
-  return <fieldset disabled={disabled} className={s.panel}>
-    <div className={s.pair}>
+  return <fieldset disabled={disabled} className={c.panel}>
+    <div className={c.pair}>
       {side('width', 'Anchura del tablero')}
       {side('height', 'Altura del tablero')}
     </div>
-    <p className={s.help}>{value.width} × {value.height} · {value.width * value.height} casillas</p>
+    <p className={c.help}>{value.width} × {value.height} · {value.width * value.height} casillas</p>
     <ConfigRange label="Tiempo total" value={value.durationSeconds} min={60} max={300} step={30} disabled={disabled} formatValue={(seconds) => `${bingoClock(seconds * 1_000)} minutos`} onCommit={(durationSeconds) => onChange({ ...value, durationSeconds })} />
     <GenerationSelector selected={value.generations} label="Generaciones válidas" onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.head}>
-      <span className={s.label}>Familias de condiciones</span>
+    <div className={c.head}>
+      <span className={c.label}>Familias de condiciones</span>
       <Chip tone={active === 0 ? 'bad' : 'ok'}>{active} activas</Chip>
     </div>
-    <p className={s.help}>Los valores numéricos se generan desde la distribución del pool.</p>
-    <div className={s.groups}>{groups.map((group) => <div key={group.title} className={s.group} role="group" aria-label={`Familias: ${group.title}`}>
-      <span className={s.label} aria-hidden="true">{group.title}</span>
+    <p className={c.help}>Los valores numéricos se generan desde la distribución del pool.</p>
+    <div className={s.groups}>{groups.map((group) => <div key={group.title} className={c.group} role="group" aria-label={`Familias: ${group.title}`}>
+      <span className={c.label} aria-hidden="true">{group.title}</span>
       <div className={s.kinds}>{group.keys.map((key) => <Toggle key={key} label={bingoFamilyLabels[key]} checked={value.families[key]} disabled={disabled} onChange={(on) => void onChange({ ...value, families: { ...value.families, [key]: on } })} />)}</div>
     </div>)}</div>
     <Segmented label="Máximo de condiciones por casilla" showLabel hint="Con máximo 2 se mantiene una mezcla de casillas simples y combinadas." value={value.maxConditionsPerCell} options={([1, 2] as const).map((count) => ({ value: count, label: count === 1 ? '1 condición' : '2 condiciones', disabled }))} onChange={(maxConditionsPerCell) => void onChange({ ...value, maxConditionsPerCell })} />
