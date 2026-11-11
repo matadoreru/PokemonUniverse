@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import es.pokemonuniverse.adapters.out.persistence.UserEntity;
 import es.pokemonuniverse.application.errors.UnauthorizedException;
 import java.util.ArrayList;
@@ -54,10 +55,11 @@ class AuthServiceLoginTimingTest {
   @Test
   void dummyHashIsAWellFormedCost12Hash() {
     assertTrue(PasswordHasher.DUMMY_HASH.startsWith("$2b$12$"), PasswordHasher.DUMMY_HASH);
-    assertEquals(60, PasswordHasher.DUMMY_HASH.length());
-    var start = System.nanoTime();
+    var result = BCrypt.verifyer(BCrypt.Version.VERSION_2B)
+        .verify("0123456789".toCharArray(), PasswordHasher.DUMMY_HASH.toCharArray());
+    assertTrue(result.validFormat, result.formatErrorMessage);
+    assertEquals(12, result.details.cost);
+    assertFalse(result.verified);
     assertFalse(new PasswordHasher().matches("0123456789", PasswordHasher.DUMMY_HASH));
-    // Con coste 12 bcrypt tarda cientos de ms; un rechazo por formato tardaría microsegundos.
-    assertTrue(System.nanoTime() - start > 10_000_000L, "el hash ficticio no ejecutó bcrypt");
   }
 }
