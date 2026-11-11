@@ -37,7 +37,7 @@ const SOCKET_IO = /\/socket\.io\//;
 /** Estado de un jugador de Pokédex Distance que ya ha elegido con las elecciones ocultas (`pokedex-distance-selection.ts`). */
 const DISTANCE_PICKED = '✓ Ya ha elegido';
 
-/** Lo que el backend Java dice de un juego sin motor portado: nunca debe salir. */
+/** Lo que el backend decía de un juego sin motor; ya no puede salir (el registro exige un motor por manifiesto). */
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
 
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */

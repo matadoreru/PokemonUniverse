@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Registro de minijuegos exportado desde el registro TypeScript más los motores ya portados a Java. Clase de dominio
- * pura: la carga desde {@code games/registry.json} vive en {@code adapters.out.resources.ClasspathGameRegistryLoader}.
- * Los 28 manifiestos se publican siempre; solo los juegos con motor pueden jugarse en el servidor Java.
+ * Registro de minijuegos: los manifiestos de {@code games/registry.json} y el motor de cada uno. Clase de dominio pura:
+ * la carga vive en {@code adapters.out.resources.ClasspathGameRegistryLoader}, que falla al arrancar si algún manifiesto
+ * no tiene motor. Los tests pueden construir registros sin motores o con solo algunos.
  */
 public final class GameRegistry {
 
@@ -43,13 +43,9 @@ public final class GameRegistry {
     this.engines = Map.copyOf(engines);
   }
 
-  /** Motor portado del minijuego, si existe. */
+  /** Motor del minijuego, si existe. */
   public Optional<GameEngine<?, ?, ?, ?>> engine(String id) {
     return id == null ? Optional.empty() : Optional.ofNullable(engines.get(id));
-  }
-
-  public boolean isPorted(String id) {
-    return id != null && engines.containsKey(id);
   }
 
   /** Copia del registro con los motores dados. */

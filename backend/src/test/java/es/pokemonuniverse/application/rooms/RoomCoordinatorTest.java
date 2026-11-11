@@ -1669,26 +1669,18 @@ class RoomCoordinatorTest {
     assertEquals("CLASSIC", room.gameConfigs.get("higher-lower").get("mode").getStringValue());
   }
 
-  // ------------------------------------------------------------------------------- juegos sin motor y vistas
+  // ------------------------------------------------------------------------------- juegos desconocidos y vistas
 
   @Test
-  @DisplayName("rejects games without a Java engine while keeping their registry defaults")
-  void rejectsUnportedGames() {
+  @DisplayName("rejects unknown games and keeps the registry defaults of the kit games without engine")
+  void rejectsUnknownGames() {
     var kit = new RoomTestKit();
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     var shinyDefault = RoomTestKit.tree(RoomTestKit.REAL_REGISTRY.get("shiny-vote").orElseThrow().defaultConfig());
     assertTrue(JsonTree.equal(shinyDefault, room.gameConfigs.get("shiny-vote")));
-    assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.updateGameConfig("host", "shiny-vote", shinyDefault));
     assertMessage("Minijuego desconocido.", () -> kit.manager.updateGameConfig("host", "missing", shinyDefault));
-    assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.updateGameSelection("host",
-        json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"shiny-vote\"]}")));
-    kit.manager.selectGame("host", "shiny-vote");
-    kit.manager.setReady("guest", true);
-    assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.startGame("host"));
-    kit.manager.selectGame("host", "higher-lower");
-    room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "shiny-vote"));
-    assertMessage(RoomCoordinator.NOT_PORTED, () -> kit.manager.startGame("host"));
-    room.gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower"));
+    assertMessage("Minijuego desconocido: missing", () -> kit.manager.updateGameSelection("host",
+        json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"missing\"]}")));
     assertEquals(RoomPhase.LOBBY, room.phase);
     assertEquals(List.of("higher-lower"), kit.manager.playableGameIds(room, List.of("higher-lower", "tcg-higher-lower")));
     assertEquals(Set.of(), Set.copyOf(kit.manager.view(room, "host").customizedGameIds()));

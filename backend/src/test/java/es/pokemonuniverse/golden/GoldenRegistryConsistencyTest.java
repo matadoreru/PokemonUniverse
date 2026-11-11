@@ -28,9 +28,9 @@ class GoldenRegistryConsistencyTest {
   void everyGoldenDirectoryIsAPortedEngineAndViceVersa() throws IOException, URISyntaxException {
     var registry = GoldenManifests.registry();
     var golden = goldenDirectories();
-    var notPorted = golden.stream().filter(id -> !registry.isPorted(id)).toList();
+    var notPorted = golden.stream().filter(id -> registry.engine(id).isEmpty()).toList();
     assertEquals(List.of(), notPorted, "Fixtures doradas de motores que producción no registra");
-    var ported = registry.list().stream().map(GameManifest::id).filter(registry::isPorted).sorted().toList();
+    var ported = registry.list().stream().map(GameManifest::id).filter(id -> registry.engine(id).isPresent()).sorted().toList();
     var withoutGolden = ported.stream().filter(id -> !golden.contains(id)).toList();
     assertEquals(List.of(), withoutGolden, "Motores registrados en producción sin fixtures doradas");
   }

@@ -22,19 +22,16 @@ class ClasspathGameRegistryLoaderTest {
   @Inject ObjectMapper mapper;
 
   @Test
-  void loadsTwentyEightGames() {
+  void loadsThirtyOneGames() {
     assertEquals(31, registry.list().size());
     assertEquals(31, registry.manifests().size());
     assertTrue(registry.get("pokedex-distance").isPresent());
   }
 
   @Test
-  void registersThePortedEnginesWithTheirManifests() {
-    assertTrue(registry.isPorted("higher-lower"));
-    assertTrue(registry.isPorted("pokedex-distance"));
-    assertTrue(registry.isPorted("shiny-vote"));
-    assertTrue(registry.isPorted("sketchmon"));
-    assertFalse(registry.isPorted("juego-inexistente"));
+  void registersTheEnginesWithTheirManifests() {
+    assertTrue(registry.engine("higher-lower").isPresent());
+    assertTrue(registry.engine("sketchmon").isPresent());
     assertTrue(registry.engine("juego-inexistente").isEmpty());
     assertEquals(registry.get("higher-lower").orElseThrow(), registry.engine("higher-lower").orElseThrow().manifest());
     assertThrows(IllegalStateException.class, () -> new GameRegistry(List.of(), java.util.Map.of("higher-lower",
@@ -42,10 +39,21 @@ class ClasspathGameRegistryLoaderTest {
   }
 
   @Test
-  void everyManifestHasAPortedEngine() {
-    var notPorted = registry.list().stream().map(GameManifest::id).filter(id -> !registry.isPorted(id)).toList();
-    assertEquals(List.of(), notPorted);
-    assertEquals(31, registry.list().stream().filter(game -> registry.engine(game.id()).isPresent()).count());
+  void everyManifestHasAnEngine() {
+    var missing = registry.list().stream().map(GameManifest::id).filter(id -> registry.engine(id).isEmpty()).toList();
+    assertEquals(List.of(), missing);
+  }
+
+  @Test
+  void aManifestWithoutEngineFailsAtStartup() throws Exception {
+    var json = """
+        [{"id":"a","name":"A","icon":"x","description":"d","minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}}]
+        """;
+    var manifests = ClasspathGameRegistryLoader.load(mapper,
+        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
+    var error = assertThrows(IllegalStateException.class,
+        () -> ClasspathGameRegistryLoader.requireEveryEngine(manifests));
+    assertEquals("Manifiestos sin motor en el registro: [a]", error.getMessage());
   }
 
   @Test

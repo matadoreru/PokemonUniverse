@@ -93,8 +93,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class RoomCoordinator {
 
-  /** Juego registrado cuyo motor aún no existe en Java (etapa 2). */
-  public static final String NOT_PORTED = "Este minijuego todavía no está disponible en el servidor Java.";
   /** Comandos de lobby y de sesión en una sala del reto diario. */
   public static final String DAILY_UNAVAILABLE = "Not available in the daily challenge";
   static final long NEXT_GAME_VOTE_MS = 15_000;
@@ -129,7 +127,7 @@ public class RoomCoordinator {
   private final GameAssetService assets;
   private final @Nullable TcgCardCatalog tcgCards;
   private final Map<String, JsonNode> defaultConfigs = new LinkedHashMap<>();
-  /** Motores portados con los tipos borrados, uno por juego. */
+  /** Motores con los tipos borrados, uno por juego. */
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
   /** Experiencia de las cuentas al entrar (nivel del avatar); sin BD, ninguna. */
   private UserExperienceReader experience = UserExperienceReader.NONE;
@@ -725,7 +723,7 @@ public class RoomCoordinator {
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_CONFIG);
       assertLobby(room);
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
-      var engine = engine(gameId).orElseThrow(() -> new RoomException(NOT_PORTED));
+      var engine = engine(gameId).orElseThrow();
       var parsed = toTree(engine.parseConfig(config));
       // Cambiar el modo de la configuración devuelve los modos marcados a su valor por defecto. El lobby ya no lo
       // cambia (marca los modos con room:update-allowed-modes); queda como defensa para otros clientes.
@@ -759,12 +757,11 @@ public class RoomCoordinator {
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_SELECTION);
       assertLobby(room);
       var parsed = RoomCommandParsers.gameSelectionMode(mode, room.selectedGameId);
-      // Solo se comprueba que el juego exista y esté portado: los jugadores conectados se miran al empezar, así el
+      // Solo se comprueba que el juego exista: los jugadores conectados se miran al empezar, así el
       // host puede elegir juegos de 4 antes de que entren los demás.
       var manifests = new ArrayList<GameManifest>();
       for (var gameId : parsed.gameIds()) {
         var game = registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido: " + gameId));
-        if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
         manifests.add(game);
       }
       for (var game : manifests) ensureGameConfig(room, game);
@@ -1059,8 +1056,7 @@ public class RoomCoordinator {
 
   private Optional<String> gameConfigReadinessReason(LiveRoom room, String gameId) {
     if (registry.get(gameId).isEmpty()) return Optional.of("Minijuego desconocido.");
-    var engine = engine(gameId).orElse(null);
-    if (engine == null) return Optional.of(NOT_PORTED);
+    var engine = engine(gameId).orElseThrow();
     Object parsed;
     try {
       parsed = engine.parseConfig(room.gameConfigs.get(gameId));
@@ -1087,14 +1083,13 @@ public class RoomCoordinator {
   }
 
   /**
-   * Al empezar: todos los juegos elegidos existen, están portados y tienen una configuración válida, y al menos uno
+   * Al empezar: todos los juegos elegidos existen y tienen una configuración válida, y al menos uno
    * admite a los conectados. Con un solo juego elegido, {@link #launchGame} da el motivo exacto (mínimo o máximo).
    */
   private void assertRotationReady(LiveRoom room) {
     var gameIds = room.gameSelectionMode.gameIds();
     for (var gameId : gameIds) {
       var module = registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido: " + gameId));
-      if (!registry.isPorted(gameId)) throw new RoomException(NOT_PORTED);
       var configReason = gameConfigReadinessReason(room, gameId);
       if (configReason.isPresent()) throw new RoomException(module.name() + ": " + configReason.get());
     }
@@ -1182,8 +1177,7 @@ public class RoomCoordinator {
     var players = room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED)
         .map(member -> new GamePlayer(member.identity.id(), member.identity.displayName(), true, true)).toList();
     var module = registry.get(room.selectedGameId).orElseThrow(() -> new RoomException("Unknown game"));
-    var engine = engine(room.selectedGameId)
-        .orElseThrow(() -> new RoomException(NOT_PORTED));
+    var engine = engine(room.selectedGameId).orElseThrow();
     if (launch == null && players.size() < module.minPlayers()) {
       throw new RoomException("Se necesitan al menos " + module.minPlayers() + " jugadores.");
     }
@@ -1973,7 +1967,7 @@ public class RoomCoordinator {
     return Double.isFinite(value) && value == Math.rint(value);
   }
 
-  /** {@code configSchema.parse(raw)} para un juego portado; un juego sin motor guarda su configuración tal cual. */
+  /** {@code configSchema.parse(raw)}; sin motor (solo en los registros parciales de los tests) se guarda tal cual. */
   private JsonNode normalizedConfig(GameManifest manifest, JsonNode raw) {
     var engine = engines.get(manifest.id());
     return engine != null ? toTree(engine.parseConfig(raw)) : raw;

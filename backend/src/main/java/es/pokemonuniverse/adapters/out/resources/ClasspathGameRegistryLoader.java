@@ -64,10 +64,17 @@ public class ClasspathGameRegistryLoader {
         throw new IllegalStateException("Falta el recurso " + RESOURCE);
       }
       var manifests = load(mapper, in);
-      return manifests.withEngines(portedEngines(manifests));
+      return requireEveryEngine(manifests.withEngines(portedEngines(manifests)));
     } catch (IOException e) {
       throw new IllegalStateException("No se pudo leer " + RESOURCE, e);
     }
+  }
+
+  /** Cada manifiesto publicado tiene que poder jugarse: sin su motor, el servidor no arranca. */
+  static GameRegistry requireEveryEngine(GameRegistry registry) {
+    var missing = registry.list().stream().map(GameManifest::id).filter(id -> registry.engine(id).isEmpty()).toList();
+    if (!missing.isEmpty()) throw new IllegalStateException("Manifiestos sin motor en el registro: " + missing);
+    return registry;
   }
 
   static GameRegistry load(ObjectMapper mapper, InputStream in) throws IOException {
