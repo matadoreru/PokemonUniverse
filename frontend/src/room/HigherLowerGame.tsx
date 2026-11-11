@@ -1,5 +1,5 @@
 import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState, type RoomView } from '@pokemon-universe/shared/public';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSidebar } from '../games/higher-lower/HigherLowerParts';
@@ -11,16 +11,9 @@ import { GameSkipSlot } from './GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
 import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
 import { useFocusOnTransition } from './focus-transition';
+import { useChoiceShortcuts } from './useChoiceShortcuts';
+import { usePendingAction } from './usePendingAction';
 import s from '../games/higher-lower/HigherLower.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
-
-/** Los atajos 1–3 no se disparan mientras se escribe en un campo. */
-function ignoresGameShortcuts(target: EventTarget | null): boolean {
-  if (!(target instanceof Element)) return false;
-  return Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
-}
 
 /**
  * Higher or Lower (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, la stat y el tiempo, el duelo de dos
@@ -38,7 +31,6 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
   const game = room.game as HigherLowerPublicState;
   const config = room.selectedGameConfig as Partial<HigherLowerConfig> | null;
   const player = room.gamePlayerState as HigherLowerPlayerState | null;
-  const [pending, setPending] = useState<HigherLowerChoice | null>(null);
   const offset = useServerOffset(room.serverNow);
   const active = game.phase === 'ROUND_ACTIVE';
   const remaining = Math.ceil(useRemainingMs(game.roundEndsAt ?? game.nextTransitionAt, offset) / 1000);
@@ -64,28 +56,16 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(higherLowerFocusKey(kind, game.roundNumber), titleRef);
 
-  const submit = useCallback(async (choice: HigherLowerChoice) => {
-    if (!canAnswer || pending) return;
-    setPending(choice);
-    try {
-      await onAction({ type: 'ANSWER', choice }).catch(ignoreFailure);
-    } finally {
-      setPending(null);
-    }
-  }, [canAnswer, onAction, pending]);
+  const { pending, submit: send } = usePendingAction((choice: HigherLowerChoice) => onAction({ type: 'ANSWER', choice }));
+  const submit = (choice: HigherLowerChoice) => {
+    if (canAnswer) void send(choice);
+  };
 
-  useEffect(() => {
-    if (!canAnswer || pending) return undefined;
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || ignoresGameShortcuts(event.target)) return;
-      const choice = higherLowerChoiceFromShortcut(event.key);
-      if (!choice) return;
-      event.preventDefault();
-      void submit(choice);
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canAnswer, pending, submit]);
+  useChoiceShortcuts(canAnswer && !pending, (key) => {
+    const choice = higherLowerChoiceFromShortcut(key);
+    if (choice) submit(choice);
+    return choice !== null;
+  });
 
   const roundMs = Math.max(1, (config?.roundSeconds ?? 20) * 1_000);
   const timer = active
@@ -111,7 +91,7 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
   const announcement = [higherLowerAnnouncement({ kind, roundNumber: game.roundNumber, category, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant, endless, eliminated }), milestone?.spoken].filter(Boolean).join(' ');
   const bottom = <HigherLowerPlate kind={kind} answer={answer?.choice ?? null} pending={pending} correctAnswer={lastRound?.correctAnswer ?? null} outcome={selfOutcome}
     participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={eliminated ? 'Eliminado' : higherLowerVerdict(selfOutcome, participant)}
-    announcement={announcement} titleRef={titleRef} onAnswer={(choice) => void submit(choice)} endless={endless} eliminated={eliminated} streak={selfStreak} />;
+    announcement={announcement} titleRef={titleRef} onAnswer={submit} endless={endless} eliminated={eliminated} streak={selfStreak} />;
 
   return <div className={cx('content-row', s.screen)}>
     {milestone && <RevealCutIn key={game.roundNumber} tone="electric" title={milestone.title} subtitle={milestone.subtitle} live={false} />}

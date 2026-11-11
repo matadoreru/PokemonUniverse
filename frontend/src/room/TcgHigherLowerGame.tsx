@@ -1,5 +1,5 @@
 import type { RoomView, TcgHigherLowerChoice, TcgHigherLowerConfig, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { HigherLowerHud } from '../games/higher-lower/HigherLowerParts';
 import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgPlateKind, tcgVerdict } from '../games/tcg-higher-lower/presentation';
@@ -8,19 +8,12 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { cx, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
+import { useChoiceShortcuts } from './useChoiceShortcuts';
+import { usePendingAction } from './usePendingAction';
 import { GameSkipSlot } from './GameSkipSlot';
 import { higherLowerRevealCountdown } from './higher-lower-labels';
 import hl from '../games/higher-lower/HigherLower.module.css';
 import s from '../games/tcg-higher-lower/TcgHigherLower.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
-
-/** Los atajos 1–3 no se disparan mientras se escribe en un campo. */
-function ignoresGameShortcuts(target: EventTarget | null): boolean {
-  if (!(target instanceof Element)) return false;
-  return Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
-}
 
 /**
  * Higher or Lower: Cartas (spec §2 y §6 «Juegos»), con el lenguaje de Higher or Lower. Arriba se mira: la placa con la
@@ -35,7 +28,6 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: { room: RoomView;
   const game = room.game as TcgHigherLowerPublicState;
   const config = room.selectedGameConfig as Partial<TcgHigherLowerConfig> | null;
   const player = room.gamePlayerState as TcgHigherLowerPlayerState | null;
-  const [pending, setPending] = useState<TcgHigherLowerChoice | null>(null);
   const offset = useServerOffset(room.serverNow);
   const active = game.phase === 'ROUND_ACTIVE';
   const remaining = Math.ceil(useRemainingMs(game.roundEndsAt ?? game.nextTransitionAt, offset) / 1000);
@@ -55,28 +47,16 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: { room: RoomView;
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(tcgFocusKey(kind, game.roundNumber), titleRef);
 
-  const submit = useCallback(async (choice: TcgHigherLowerChoice) => {
-    if (!canAnswer || pending) return;
-    setPending(choice);
-    try {
-      await onAction({ type: 'ANSWER', choice }).catch(ignoreFailure);
-    } finally {
-      setPending(null);
-    }
-  }, [canAnswer, onAction, pending]);
+  const { pending, submit: send } = usePendingAction((choice: TcgHigherLowerChoice) => onAction({ type: 'ANSWER', choice }));
+  const submit = (choice: TcgHigherLowerChoice) => {
+    if (canAnswer) void send(choice);
+  };
 
-  useEffect(() => {
-    if (!canAnswer || pending || answer) return undefined;
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || ignoresGameShortcuts(event.target)) return;
-      const choice = tcgChoiceFromShortcut(event.key);
-      if (!choice) return;
-      event.preventDefault();
-      void submit(choice);
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [answer, canAnswer, pending, submit]);
+  useChoiceShortcuts(canAnswer && !pending && !answer, (key) => {
+    const choice = tcgChoiceFromShortcut(key);
+    if (choice) submit(choice);
+    return choice !== null;
+  });
 
   const roundMs = Math.max(1, (config?.roundSeconds ?? 15) * 1_000);
   const timer = active
@@ -104,7 +84,7 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: { room: RoomView;
   });
   const bottom = <TcgPlate kind={kind} answer={answer?.choice ?? null} pending={pending} correctAnswer={lastRound?.correctAnswer ?? null} outcome={selfOutcome}
     participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={tcgVerdict(selfOutcome, participant)}
-    titleRef={titleRef} onAnswer={(choice) => void submit(choice)} />;
+    titleRef={titleRef} onAnswer={submit} />;
 
   return <div className={cx('content-row', hl.screen)} data-testid="tcg-higher-lower-screen">
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
