@@ -214,43 +214,6 @@
   pointer-events: none;
 }
 
-/* Pestaña Configuración: el ConfigPanel del juego enmarcado en un panel crema con su cabecera. */
-.configHead {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--sp-3);
-}
-.configHead > .headText {
-  flex: 1 1 12rem;
-}
-.gameTile {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border: var(--ol-2-5) solid var(--navy);
-  border-radius: var(--r-badge);
-  background: var(--sky-2);
-  font-size: var(--fs-26);
-  line-height: 1;
-}
-.configLead {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1) var(--sp-2);
-  margin-top: 2px;
-  font: 700 var(--fs-13) / 1.35 var(--font-text);
-  color: var(--ink-2);
-}
-.configBody {
-  margin-top: var(--sp-4);
-  padding-top: var(--sp-4);
-  border-top: var(--ol-2) dashed var(--navy-3);
-}
-
 /* Pestaña Modo y sesión. */
 .section + .section {
   margin-top: var(--sp-5);

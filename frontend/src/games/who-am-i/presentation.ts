@@ -35,12 +35,6 @@ export function questionsText(n: number): string {
   return `${n} ${n === 1 ? 'pregunta' : 'preguntas'}`;
 }
 
-/** Resumen de las respuestas en texto: «2 Sí · 1 No lo sé» (sin las que no salen); vacío si no hay ninguna. */
-export function answerSummary(entries: readonly WhoAmIAnswerEntry[]): string {
-  const counts = answerCounts(entries);
-  return WHO_AM_I_ANSWERS.filter((answer) => counts[answer] > 0).map((answer) => `${counts[answer]} ${answerLabel(answer)}`).join(' · ');
-}
-
 /** Lo que la región viva compara entre un estado y el siguiente. `turnKey` cambia en cada turno (vuelta y jugador). */
 export interface WhoAmIAnnounceSnapshot {
   turnKey: string | null;

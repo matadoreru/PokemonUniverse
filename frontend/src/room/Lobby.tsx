@@ -1,4 +1,4 @@
-import { formatPendingReadyNames, gameModeCount, gameModeName, hasRoomPermission, playerCountReadinessReason, supportsPlayerCount, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
+import { gameModeCount, gameModeName, hasRoomPermission, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
@@ -9,8 +9,8 @@ import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Ta
 import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
-import { allowedModesOf, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
-import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
+import { allowedModesOf, compatibleSelectedGameIds, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, rotationGameConfig, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
+import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
 import { ignoreFailure } from './room-command';
@@ -19,8 +19,6 @@ import s from './Lobby.module.css';
 interface Props {
   room: RoomView;
   selfId: string;
-  /** Sin uso: la salida vive en la placa de la sala de la cabecera (RoomPlate). Se mantiene porque RoomPage aún lo pasa. */
-  onLeave(): void;
   onReady(ready: boolean): Promise<void>;
   onStart(): Promise<void>;
   onGameConfig(gameId: string, config: unknown): Promise<void>;
@@ -126,40 +124,25 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const kick = (playerId: string) => { void onKick(playerId).catch(ignoreFailure); };
   const setChatMute = (playerId: string, muted: boolean) => { void onSetChatMute(playerId, muted).catch(ignoreFailure); };
 
-  const rotationConfig = (gameId: string): unknown => room.gameConfigs?.[gameId] ?? (gameId === room.selectedGameId ? room.selectedGameConfig : {});
-  // Con varios juegos, un requisito de jugadores (rango del manifest o paridad de impostores) excluye el juego, como en el servidor.
-  const rotationPlayable = (gameId: string): boolean => {
-    const manifest = room.availableGames.find((game) => game.id === gameId);
-    return Boolean(manifest && supportsPlayerCount(manifest, connectedPlayers)
-      && playerCountReadinessReason(gameId, rotationConfig(gameId), connectedPlayers) === null);
-  };
   const selectedGameIds = room.gameSelectionMode.gameIds;
-  const compatibleGameIds = selectedGameIds.filter(rotationPlayable);
+  const compatibleGameIds = compatibleSelectedGameIds(room, connectedPlayers);
   // Cada modo marcado es una opción más al azar o por votación y un turno más de la cola por orden.
   const pairCount = compatibleGameIds.reduce((count, gameId) => count + Math.max(1, allowedModesOf(room, gameId).length), 0);
   const slots = queueSlots(room);
   const configReason = (selectedGameIds.length === 1 ? selectedGameIds : compatibleGameIds).map((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
     if (!manifest) return null;
-    const reason = clientGameRegistry.get(gameId).validateConfig(rotationConfig(gameId), room);
+    const reason = clientGameRegistry.get(gameId).validateConfig(rotationGameConfig(room, gameId), room);
     return reason ? (selectedGameIds.length === 1 ? reason : `${manifest.name}: ${reason}`) : null;
   }).find((reason) => reason !== null) ?? null;
-  // Un solo juego: el motivo exacto (mínimo o máximo de jugadores), como el servidor.
-  const onlyManifest = selectedGameIds.length === 1 ? room.availableGames.find((game) => game.id === selectedGameIds[0]) : undefined;
-  const playerCountReason = onlyManifest
-    ? connectedPlayers < onlyManifest.minPlayers
-      ? `Se necesitan al menos ${onlyManifest.minPlayers} jugadores conectados.`
-      : onlyManifest.maxPlayers !== undefined && connectedPlayers > onlyManifest.maxPlayers
-        ? `Este juego admite un máximo de ${onlyManifest.maxPlayers} jugadores.`
-        : null
-    : compatibleGameIds.length === 0 ? 'Ningún minijuego elegido admite el número actual de jugadores.' : null;
-  const startReason = !canStart
-    ? 'Solo el host puede iniciar la partida.'
-    : selectedGameIds.length === 0
-      ? 'Elige al menos un minijuego para empezar.'
-      : pendingReady.length > 0
-        ? `Falta por confirmar: ${formatPendingReadyNames(pendingReady.map((member) => member.displayName))}.`
-        : playerCountReason ?? configReason;
+  const startReason = lobbyStartReason({
+    canStart,
+    selectedGames: selectedGameIds.map((gameId) => room.availableGames.find((game) => game.id === gameId)),
+    compatibleCount: compatibleGameIds.length,
+    pendingReadyNames: pendingReady.map((member) => member.displayName),
+    connectedPlayers,
+    configReason,
+  });
   const status = lobbyActionStatus({ canStart, ready: Boolean(self?.ready), startReason, hostName: hostMember?.displayName });
   const visibleGames = filterGames(room.availableGames, gameQuery);
   const readOnlyChip = <Chip icon={<Icon icon={LockKeyhole} size={18} />}>Solo lectura</Chip>;

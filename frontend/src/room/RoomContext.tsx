@@ -31,8 +31,6 @@ interface RoomContextValue {
    * Jugar enseña el error en el panel del reto. Si la sala actual es un reto ya en resultados, antes la cierra sin aviso.
    */
   startDaily(): Promise<RoomView>;
-  selectGame(gameId: string): Promise<void>;
-  updateConfig(config: unknown): Promise<void>;
   updateGameConfig(gameId: string, config: unknown): Promise<void>;
   updateSession(mode: SessionMode): Promise<void>;
   updateGameSelection(mode: GameSelectionMode): Promise<void>;
@@ -174,12 +172,6 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
       const current = projectionRef.current.view();
       if (current?.daily && current.phase === 'GAME_RESULTS') await leave(false);
       const response = await emit('daily:start', {}, false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room;
-    },
-    async selectGame(gameId) { await emit('room:select-game', { gameId }); },
-    async updateConfig(config) {
-      const gameId = projectionRef.current.view()?.selectedGameId;
-      if (!gameId) { await emit('room:update-config', { config }); return; }
-      await optimisticEmit('room:update-config', { config }, { kind: 'config', gameId, config });
     },
     async updateGameConfig(gameId, config) {
       await optimisticEmit('room:update-game-config', { gameId, config }, { kind: 'config', gameId, config });

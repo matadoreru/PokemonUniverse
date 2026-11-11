@@ -30,7 +30,7 @@ const chatProps = { chat: [] as ChatMessage[], chatHistoryVersion: 0, onSendChat
 describe('lobby information hierarchy', () => {
   it('shows game cards without descriptions and separates the lobby into accessible tabs', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
-      room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      room={room} selfId="host" onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
@@ -68,7 +68,7 @@ describe('lobby information hierarchy', () => {
 
   it('gives the host the red start pill and game cards as toggle buttons, without the ready pill', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
-      room={room} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      room={room} selfId="host" onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
@@ -88,7 +88,7 @@ describe('lobby information hierarchy', () => {
 describe('lobby how to play', () => {
   it('no game card offers «Cómo se juega» and badges sit in the corner', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
-      room={room} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      room={room} selfId="guest" onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
@@ -102,7 +102,7 @@ describe('lobby how to play', () => {
 
   it('shows a guest read-only cards, their own ready pill and no start pill', () => {
     const markup = renderToStaticMarkup(<MemoryRouter><Lobby
-      room={{ ...room, members: room.members.map((member) => member.id === 'guest' ? { ...member, ready: false } : member) }} selfId="guest" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      room={{ ...room, members: room.members.map((member) => member.id === 'guest' ? { ...member, ready: false } : member) }} selfId="guest" onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
@@ -118,7 +118,7 @@ describe('lobby how to play', () => {
 
 describe('lobby game modes', () => {
   const render = (gameConfigs: Record<string, unknown>) => renderToStaticMarkup(<MemoryRouter><Lobby
-    room={{ ...room, gameConfigs }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+    room={{ ...room, gameConfigs }} selfId="host" onReady={noOp} onStart={noOp}
     onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
     onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
   /></MemoryRouter>);
@@ -138,7 +138,7 @@ describe('lobby game modes', () => {
 
   it('en las tres formas de sesión el chip dice los modos que se juegan', () => {
     const chance = (allowedModes: Record<string, string[]>, type: 'RANDOM' | 'ORDER' = 'RANDOM') => renderToStaticMarkup(<MemoryRouter><Lobby
-      room={{ ...room, gameConfigs: {}, allowedModes, gameSelectionMode: { type, gameIds: room.gameSelectionMode.gameIds } }} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+      room={{ ...room, gameConfigs: {}, allowedModes, gameSelectionMode: { type, gameIds: room.gameSelectionMode.gameIds } }} selfId="host" onReady={noOp} onStart={noOp}
       onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
       onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
     /></MemoryRouter>);
@@ -173,7 +173,7 @@ describe('lobby impostor parity', () => {
     gameConfigs: { 'pokemon-impostor': { impostorCount: 2 } }, gameSelectionMode: { type: 'ORDER', gameIds: ['pokemon-impostor'] },
   };
   const render = (value: RoomView) => renderToStaticMarkup(<MemoryRouter><Lobby
-    room={value} selfId="host" onLeave={() => undefined} onReady={noOp} onStart={noOp}
+    room={value} selfId="host" onReady={noOp} onStart={noOp}
     onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
     onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
   /></MemoryRouter>);
@@ -212,7 +212,7 @@ describe('lobby impostor parity', () => {
     expect(markup).toMatch(/<button[^>]*aria-describedby="start-help"[^>]*disabled=""[^>]*>(?:(?!<\/button>).)*Empezar partida/);
     expect(markup).toContain('0 elegidos');
     // Un invitado sigue viendo que solo el host puede empezar.
-    expect(renderToStaticMarkup(<MemoryRouter><Lobby room={empty} selfId="p2" onLeave={() => undefined} onReady={noOp} onStart={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp} onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps} /></MemoryRouter>)).not.toContain('Elige al menos un minijuego para empezar.');
+    expect(renderToStaticMarkup(<MemoryRouter><Lobby room={empty} selfId="p2" onReady={noOp} onStart={noOp} onGameConfig={noOp} onSession={noOp} onGameSelection={noOp} onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps} /></MemoryRouter>)).not.toContain('Elige al menos un minijuego para empezar.');
   });
 
   it('starts a rotation with one compatible game, the excluded one is skipped', () => {
@@ -246,7 +246,7 @@ describe('lobby chat', () => {
   const message = (seq: number, authorId: string, authorName: string, text: string): ChatMessage => ({ seq, authorId, authorName, text, sentAt: 0 });
   const reconnecting: RoomView = { ...room, members: room.members.map((member) => member.id === 'host' ? { ...member, presence: 'TEMPORARILY_DISCONNECTED' as const, connected: false } : member) };
   const render = (props: { room?: RoomView; selfId?: string; chat?: ChatMessage[] } = {}) => renderToStaticMarkup(<MemoryRouter><Lobby
-    room={props.room ?? room} selfId={props.selfId ?? 'guest'} onLeave={() => undefined} onReady={noOp} onStart={noOp}
+    room={props.room ?? room} selfId={props.selfId ?? 'guest'} onReady={noOp} onStart={noOp}
     onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
     onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps} chat={props.chat ?? []}
   /></MemoryRouter>);

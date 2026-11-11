@@ -1,4 +1,4 @@
-import type { MiniGameManifest, RoomMemberView } from '@pokemon-universe/shared/public';
+import { formatPendingReadyNames, type MiniGameManifest, type RoomMemberView } from '@pokemon-universe/shared/public';
 
 /** Texto de búsqueda sin tildes ni mayúsculas. */
 export function normalizeSearch(value: string): string {
@@ -41,4 +41,33 @@ export function lobbyActionStatus({ canStart, ready, startReason, hostName }: { 
   return ready
     ? { kicker: 'Tu estado', title: 'Estás listo', text: `${hostName ?? 'El host'} empezará la partida cuando esté todo preparado.`, ok: true }
     : { kicker: 'Tu estado', title: '¿Preparado?', text: `Márcate listo para que ${hostName ?? 'el host'} pueda empezar.`, ok: false };
+}
+
+/**
+ * Por qué el host no puede empezar todavía (o `null` si puede), en este orden: permiso, algún juego elegido, los
+ * pendientes de confirmar, el número de jugadores y la configuración (`configReason`, ya calculado). Con un solo juego,
+ * el motivo exacto (mínimo o máximo de jugadores), como el servidor; si no, solo cuando ninguno admite a los conectados.
+ */
+export function lobbyStartReason({ canStart, selectedGames, compatibleCount, pendingReadyNames, connectedPlayers, configReason }: {
+  canStart: boolean;
+  /** Manifiestos de los juegos elegidos (los que la sala conoce). */
+  selectedGames: readonly (Pick<MiniGameManifest, 'minPlayers' | 'maxPlayers'> | undefined)[];
+  /** Cuántos de los elegidos admiten a los conectados. */
+  compatibleCount: number;
+  pendingReadyNames: readonly string[];
+  connectedPlayers: number;
+  configReason: string | null;
+}): string | null {
+  if (!canStart) return 'Solo el host puede iniciar la partida.';
+  if (selectedGames.length === 0) return 'Elige al menos un minijuego para empezar.';
+  if (pendingReadyNames.length > 0) return `Falta por confirmar: ${formatPendingReadyNames(pendingReadyNames)}.`;
+  const only = selectedGames.length === 1 ? selectedGames[0] : undefined;
+  const playerCountReason = only
+    ? connectedPlayers < only.minPlayers
+      ? `Se necesitan al menos ${only.minPlayers} jugadores conectados.`
+      : only.maxPlayers !== undefined && connectedPlayers > only.maxPlayers
+        ? `Este juego admite un máximo de ${only.maxPlayers} jugadores.`
+        : null
+    : compatibleCount === 0 ? 'Ningún minijuego elegido admite el número actual de jugadores.' : null;
+  return playerCountReason ?? configReason;
 }

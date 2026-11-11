@@ -247,10 +247,13 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
   </div>;
 }
 
-/** Juegos de la selección que admiten a los conectados (los que puede sacar el modo). */
-export function compatibleSelectedCount(room: RoomView, playerCount: number): number {
+/**
+ * Juegos de la selección que admiten a los conectados (los que puede sacar el modo): un requisito de jugadores (rango
+ * del manifest o paridad de impostores) excluye el juego, como en el servidor.
+ */
+export function compatibleSelectedGameIds(room: RoomView, playerCount: number): string[] {
   return room.gameSelectionMode.gameIds.filter((gameId) => {
     const game = room.availableGames.find((candidate) => candidate.id === gameId);
     return Boolean(game && supportsPlayerCount(game, playerCount) && playerCountReadinessReason(gameId, rotationGameConfig(room, gameId), playerCount) === null);
-  }).length;
+  });
 }
