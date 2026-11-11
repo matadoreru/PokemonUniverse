@@ -17,6 +17,8 @@ type FriendListener = (payload: never) => void;
 
 interface RoomContextValue {
   room: RoomView | null;
+  /** Id de la cuenta de esta pestaña (el jugador propio en `room.members`); `null` sin sesión. */
+  selfId: string | null;
   connected: boolean;
   error: string | null;
   clearError(): void;
@@ -49,6 +51,8 @@ interface RoomContextValue {
   setGameSkipVote(request: SetGameSkipVoteRequest): Promise<void>;
   /** «¡Listo!» en la intro de la partida `gameInstanceId` (`room:intro-ready`), con aviso global. */
   introReady(gameInstanceId: string): Promise<void>;
+  /** «Siguiente» en el revelado `actionEpoch` de la partida `gameInstanceId` (`room:reveal-next`), con aviso global. */
+  revealNext(gameInstanceId: string, actionEpoch: string): Promise<void>;
   /** `room:invite`, con aviso global: el lobby solo captura para soltar su botón. */
   inviteFriend(userId: string): Promise<void>;
   /**
@@ -165,7 +169,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
   }, [emit, syncChat]);
 
   const value = useMemo<RoomContextValue>(() => ({
-    room, connected, error, clearError: () => setError(null),
+    room, selfId: user?.id ?? null, connected, error, clearError: () => setError(null),
     async createRoom() { const response = await emit('room:create', {}, false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room; },
     async joinRoom(code, options) { const response = await emit('room:join', { code }, options?.reportError ?? false); const view = projectionRef.current.setAuthoritative(response.room, true); setRoom(view); syncChat(view); return response.room; },
     // Fuera de la sala, su error ya no viene a cuento (con `reportError: false` el aviso no se limpió al empezar).
@@ -198,6 +202,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     async endSession() { await emit('room:end-session', {}); },
     async setGameSkipVote(request) { await emit('game:skip-vote:set', request); },
     async introReady(gameInstanceId) { await emit('room:intro-ready', { gameInstanceId }); },
+    async revealNext(gameInstanceId, actionEpoch) { await emit('room:reveal-next', { gameInstanceId, actionEpoch }); },
     async inviteFriend(userId) { await emit('room:invite', { userId }); },
     subscribe,
     holdRoomSession,
@@ -208,7 +213,7 @@ export function RoomProvider({ children, active = true }: PropsWithChildren<{ ac
     async sendChat(text) { await emit('room:chat:send', { text }); },
     async deleteChatMessage(seq) { await emit('room:chat:delete', { seq }); },
     async setChatMute(playerId, muted) { await emit('room:chat:mute', { playerId, muted }); },
-  }), [chat.messages, chatHistoryVersion, connected, emit, error, holdRoomSession, leave, optimisticEmit, room, subscribe, syncChat]);
+  }), [chat.messages, chatHistoryVersion, connected, emit, error, holdRoomSession, leave, optimisticEmit, room, subscribe, syncChat, user?.id]);
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
 }
 

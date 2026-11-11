@@ -1,7 +1,14 @@
 /*
- * Hueco de «Saltar minijuego» en la pantalla del juego. Contiene los textos `sr-only` (absolutos) de `SkipGameControl`:
- * sin un antepasado posicionado su caja sale del `main` y alarga la página (unos 1 500 px en el móvil).
+ * Hueco de «Siguiente» y «Saltar minijuego» en la pantalla del juego, en una fila (parten línea si no caben). Contiene
+ * los textos `sr-only` (absolutos) de `SkipGameControl`: sin un antepasado posicionado su caja sale del `main` y alarga
+ * la página (unos 1 500 px en el móvil).
  */
 .slot {
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  min-width: 0;
 }

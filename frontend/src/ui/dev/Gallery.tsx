@@ -23,6 +23,9 @@ import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { ResultsShell } from '../../room/game-kit/ResultsShell';
 import { GameIntro } from '../../room/GameIntro';
 import { GameHelpButton } from '../../room/GameHelpButton';
+import { RevealNextControl } from '../../room/RevealNextControl';
+import { SkipGameControl } from '../../room/SkipGameControl';
+import { GuessStreakChip } from '../../room/guess-kit';
 import { manifest as roomManifest, member as roomMember, roomView } from '../../room/test-support/room-view';
 import type { ResultsStanding } from '../../room/game-kit/ResultsShell';
 import type { PokemonType } from '../../styles/tokens';
@@ -1371,6 +1374,33 @@ function GameIntroSection() {
   );
 }
 
+/* «Siguiente» en los revelados (E2) junto a «Saltar minijuego», y la racha de los juegos de adivinar (E6). */
+const REVEAL_SKIP_STATE = { gameInstanceId: '00000000-0000-4000-8000-000000000002', voterIds: [], votes: 0, requiredVotes: 3, currentUserVoted: false, canVote: true };
+
+function RevealNextSection() {
+  const [ready, setReady] = useState<string[]>(['misty']);
+  const reveal = { playerIds: ['misty', 'ash', 'brock'], readyPlayerIds: ready };
+  return (
+    <Section name="reveal-next" title="«Siguiente» en los revelados y rachas">
+      <Fig id="reveal-next-idle" caption="Revelado · jugador sin pulsar (al pulsar queda marcado)">
+        <div className="flex flex-wrap items-center gap-2">
+          <RevealNextControl reveal={reveal} selfId="ash" connected onNext={async () => setReady((ids) => ids.includes('ash') ? ids : [...ids, 'ash'])} />
+          <SkipGameControl state={REVEAL_SKIP_STATE} connected onSetVote={asyncNoop} />
+        </div>
+      </Fig>
+      <Fig id="reveal-next-ready" caption="Revelado · ya pulsado, esperando al resto">
+        <RevealNextControl reveal={{ playerIds: ['misty', 'ash', 'brock'], readyPlayerIds: ['misty', 'ash'] }} selfId="ash" connected onNext={asyncNoop} />
+      </Fig>
+      <Fig id="reveal-next-offline" caption="Revelado · sin conexión (desactivado); los espectadores no lo ven">
+        <RevealNextControl reveal={reveal} selfId="brock" connected={false} onNext={asyncNoop} />
+      </Fig>
+      <Fig id="guess-streak" caption="Racha · «Racha ×N» en la placa de la ronda, desde el segundo acierto seguido">
+        <div className="flex flex-wrap items-center gap-2"><GuessStreakChip streak={2} /><GuessStreakChip streak={5} /></div>
+      </Fig>
+    </Section>
+  );
+}
+
 /* Piezas que comparten los minijuegos (F4): buscador, temporizador de servidor, deslizador, avatar y resultados. */
 const SELECTOR_POKEMON = ['Pikachu', 'Pichu', 'Raichu', 'Pikachu Libre', 'Pikachu Coqueta', 'Chikorita', 'Chinchou'].map((name) => ({ id: name.toLowerCase(), name, sprite: '' }));
 const asyncNoop = async () => undefined;
@@ -1561,6 +1591,7 @@ export function Gallery() {
       <ScreenSection />
       <ScreenSplitSection />
       <GameIntroSection />
+      <RevealNextSection />
       <AuctionSection />
       <GamePiecesSection />
       <ToastStack toasts={toasts} onClose={close} />

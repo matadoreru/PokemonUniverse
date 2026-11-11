@@ -160,6 +160,15 @@ export interface GameIntroView {
   readyPlayerIds: string[];
 }
 
+/**
+ * «Siguiente» en un revelado (el resultado de una ronda, de una votación…): cuando todos los `playerIds` (los jugadores
+ * conectados de la partida; los espectadores no cuentan) están en `readyPlayerIds`, al revelado le queda 1 s.
+ */
+export interface RevealSkipView {
+  playerIds: string[];
+  readyPlayerIds: string[];
+}
+
 export interface RoomView {
   code: string;
   phase: RoomPhase;
@@ -201,6 +210,8 @@ export interface RoomView {
   resultsEndsAt?: number | null;
   /** En `GAME_INTRO`, su plazo y quién está listo; `null` fuera de la intro. Ausente en vistas antiguas. */
   intro?: GameIntroView | null;
+  /** En un revelado que admite «Siguiente», quién cuenta y quién lo ha pulsado; `null` fuera de ellos. Ausente en vistas antiguas. */
+  revealSkip?: RevealSkipView | null;
   /** Enabled custom categories owned by the host; used for lobby validation only. */
   hostCustomCategoryCount?: number;
   /** Enabled custom Would You Rather pairs owned by the host; used for lobby validation only. */
@@ -234,6 +245,8 @@ export interface ClientToServerEvents {
   'room:end-session': (_: unknown, ack: SocketAck) => void;
   /** «¡Listo!» en la intro de la partida `gameInstanceId`; tardío (la intro ya terminó), no hace nada. */
   'room:intro-ready': (payload: { gameInstanceId: string }, ack: SocketAck) => void;
+  /** «Siguiente» en el revelado `actionEpoch` de la partida `gameInstanceId`; tardío (ya terminó), no hace nada. */
+  'room:reveal-next': (payload: { gameInstanceId: string; actionEpoch: string }, ack: SocketAck) => void;
   'game:skip-vote:set': (payload: SetGameSkipVoteRequest, ack: SocketAck) => void;
   'game:action': (payload: GameActionRequest, ack: SocketAck) => void;
   'who-is-who:cursor': (payload: unknown, ack?: SocketAck) => void;
