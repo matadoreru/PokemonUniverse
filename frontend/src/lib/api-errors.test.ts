@@ -57,6 +57,8 @@ describe('looksSpanish', () => {
     'The selected generations have no Pokémon',
     'Pokémon is not in the configured pool',
     'Results are unavailable before Pokédex Absurda finishes',
+    'PokéAPI request failed',
+    'PokéAPI',
     '[{"code":"too_big","message":"Too big"}]',
     '',
   ])('«%s» no está en español', (text) => {
@@ -82,6 +84,14 @@ describe('apiErrorMessage', () => {
     expect(apiErrorMessage(new ApiError('Internal server error', { status: 500 }))).toBe('El servidor ha tenido un problema. Inténtalo de nuevo en unos segundos.');
     expect(apiErrorMessage(new ApiError('Invalid JSON', { status: 400 }), { fallback: 'No se pudo guardar.' })).toBe('No se pudo guardar.');
     expect(apiErrorMessage(undefined)).toBe(GENERIC_MESSAGE);
+  });
+
+  it('con un texto de reserva propio, solo 401, 403 y 429 usan la frase del código', () => {
+    const fallback = 'No se pudo cargar el catálogo TCG.';
+    for (const status of [404, 409, 413, 500, 503]) expect(apiErrorMessage(new ApiError('Internal server error', { status }), { fallback }), String(status)).toBe(fallback);
+    expect(apiErrorMessage(new ApiError('Too many requests', { status: 429 }), { fallback })).toBe(statusMessage(429));
+    expect(apiErrorMessage(new ApiError('Authentication required', { status: 401 }), { fallback })).toBe(statusMessage(401));
+    expect(apiErrorMessage(new ApiError('Forbidden', { status: 403 }), { fallback })).toBe(statusMessage(403));
   });
 
   it('nunca enseña inglés, ni siquiera sin código', () => {

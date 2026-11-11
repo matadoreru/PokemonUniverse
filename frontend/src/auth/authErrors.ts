@@ -1,4 +1,4 @@
-import { apiErrorMessage, errorText, NETWORK_MESSAGE } from '../lib/api-errors';
+import { apiErrorMessage, errorText } from '../lib/api-errors';
 
 /**
  * Errores de acceso en español. `api()` lanza un `ApiError` con el mensaje del backend (AuthService, los manejadores de
@@ -60,7 +60,7 @@ export function authError(error: unknown): AuthError {
   const raw = errorText(error);
   if (Object.hasOwn(SPANISH, raw)) return { field: SPANISH[raw] ?? null, message: raw };
   // Solo pasa el español de la lista, porque lleva su campo; lo demás, traducido o el genérico.
-  return { field: null, message: apiErrorMessage(error, { translations: TRANSLATED, network: NETWORK_MESSAGE, spanish: false, status: false, fallback: GENERIC }) };
+  return { field: null, message: apiErrorMessage(error, { translations: TRANSLATED, spanish: false, status: false, fallback: GENERIC }) };
 }
 
 /** Texto en español para un error de acceso (mensaje del servidor, del navegador o un `Error`). */

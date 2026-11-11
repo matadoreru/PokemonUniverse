@@ -5,6 +5,8 @@ const api = vi.hoisted(() => vi.fn());
 vi.mock('../lib/api', () => ({ api }));
 
 const { cachedPokemonPool, clearPokemonPoolCache, fetchPokemonPool, POOL_CACHE_MS, poolErrorMessage, pokemonPoolPath, rememberPokemonPool } = await import('./usePokemonPool');
+// `lib/api` está simulado: el `ApiError` de verdad, para los casos con código y fallo de red.
+const { ApiError } = await vi.importActual<typeof import('../lib/api')>('../lib/api');
 
 const pool: PokemonSearchOption[] = [
   { id: 'abra', name: 'Abra', sprite: '/api/pokemon/abra/sprite' },
@@ -41,6 +43,9 @@ describe('usePokemonPool', () => {
     expect(poolErrorMessage('raro')).toBe('No se pudo cargar el buscador de Pokémon. Comprueba la conexión.');
     expect(poolErrorMessage(new Error('Generaciones no válidas'))).toBe('Generaciones no válidas');
     expect(poolErrorMessage(new Error('Too many requests'))).toBe('Demasiadas peticiones seguidas. Espera unos segundos y pulsa «Reintentar».');
+    expect(poolErrorMessage(new ApiError('Failed to fetch', { network: true }))).toBe('No se pudo cargar el buscador de Pokémon. Comprueba la conexión.');
+    expect(poolErrorMessage(new ApiError('Internal server error', { status: 500 }))).toBe('No se pudo cargar el buscador de Pokémon. Comprueba la conexión.');
+    expect(poolErrorMessage(new ApiError('Too many requests', { status: 429 }))).toBe('Demasiadas peticiones seguidas. Espera unos segundos y pulsa «Reintentar».');
     for (const generic of ['', '  ', 'Request failed', 'Internal Server Error', 'Internal server error', 'Bad Gateway', 'Service Unavailable', 'Authentication required', 'Invalid request']) {
       expect(poolErrorMessage(new Error(generic)), generic).toBe('No se pudo cargar el buscador de Pokémon. Comprueba la conexión.');
     }

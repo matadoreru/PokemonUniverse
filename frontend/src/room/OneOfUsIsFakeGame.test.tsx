@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { OneOfUsIsFakeConfigPanel } from '../games/one-of-us-is-fake/ConfigPanel';
 import { categoryErrorMessage } from '../games/one-of-us-is-fake/CustomCategoryManager';
+import { ApiError } from '../lib/api';
 import { OneOfUsIsFakeGame } from './OneOfUsIsFakeGame';
 import { OneOfUsIsFakeResults } from './OneOfUsIsFakeResults';
 
@@ -253,5 +254,8 @@ describe('One of Us Is Fake: resultados, ajustes y gestor', () => {
     // Los textos en inglés del servidor tampoco se enseñan.
     expect(categoryErrorMessage(new Error('Internal server error'), 'No se pudo guardar.')).toBe('No se pudo guardar.');
     expect(categoryErrorMessage(new Error('Authentication required'), 'No se pudo guardar.')).toBe('No se pudo guardar.');
+    expect(categoryErrorMessage(new ApiError('Failed to fetch', { network: true }), 'Sin conexión.')).toBe('Sin conexión.');
+    expect(categoryErrorMessage(new ApiError('Internal server error', { status: 500 }), 'No se pudo guardar.')).toBe('No se pudo guardar.');
+    expect(categoryErrorMessage(new ApiError('Ya tienes una categoría igual o equivalente.', { status: 409 }), 'x')).toBe('Ya tienes una categoría igual o equivalente.');
   });
 });
