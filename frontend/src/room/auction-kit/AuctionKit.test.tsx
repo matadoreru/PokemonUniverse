@@ -1,7 +1,7 @@
 import { Hourglass } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { GUESS_SIDE_FIT } from '../guess-kit';
+import { GAME_SIDE_FIT } from '../game-kit/GameScreen';
 import { AuctionAward, AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidLog, turnOrderEntries, type BidBlockInput, type BidControlsProps } from '.';
 import { expectSingleLiveRegion } from '../test-support/live-regions';
 
@@ -154,8 +154,8 @@ describe('auction-kit: lateral y marco', () => {
   });
 
   it('historial: sin ninguna puja no llena el alto de la columna lateral; con pujas, sí', () => {
-    expect(GUESS_SIDE_FIT).not.toBe('');
-    const fit = new RegExp(`<section class="[^"]*\\b${GUESS_SIDE_FIT}\\b`);
+    expect(GAME_SIDE_FIT).not.toBe('');
+    const fit = new RegExp(`<section class="[^"]*\\b${GAME_SIDE_FIT}\\b`);
     const entries = bidLog([{ playerId: 'p1', type: 'BID', amount: 3 }], () => 'Ana');
     expect(renderToStaticMarkup(<BidHistory views={[{ key: 'round', label: 'Ronda', entries: [], emptyText: 'Nada' }]} />)).toMatch(fit);
     expect(renderToStaticMarkup(<BidHistory views={[{ key: 'round', label: 'Ronda', entries, emptyText: 'Nada' }]} />)).not.toMatch(fit);

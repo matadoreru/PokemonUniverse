@@ -4,9 +4,10 @@ import { describeZoomedHint, zoomedSourceLabel, zoomLabel } from '../games/zoome
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Chip, cx, Icon } from '../ui';
 import {
-  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import { GamePanel, GameScreen } from './game-kit/GameScreen';
 import type { ActiveGameProps } from './room-command';
 import s from '../games/zoomed-pokemon/Zoomed.module.css';
 
@@ -57,10 +58,10 @@ export function ZoomedPokemonGame({ room, selfId, onAction }: ActiveGameProps) {
   const clue = lastRound
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.imageUrl }]} details={<>Generación {lastRound.pokemon.generation} · {zoomedSourceLabel(lastRound.imageSourceType)}</>}
       clueTitle={`Así empezó · Zoom ${zoomLabel(firstZoom)}`} clue={<ZoomViewport className={s.revealCrop} source={lastRound.initialCropUrl} sourceType={lastRound.imageSourceType} alt={`Recorte inicial, zoom ${zoomLabel(firstZoom)}`} />} />
-    : <GuessClue label="Recorte ampliado del Pokémon misterioso" variant="dark" className={s.stage}>
+    : <GamePanel label="Recorte ampliado del Pokémon misterioso" variant="dark" className={s.stage}>
       <ZoomViewport source={game.imageUrl ?? ''} sourceType={game.imageSourceType ?? 'SPRITE'} alt="Detalle ampliado del Pokémon misterioso" />
       {active && <span className={s.next}>{nextZoom}</span>}
-    </GuessClue>;
+    </GamePanel>;
 
   const hints = active && game.visibleHints.length > 0
     ? <GuessHints hints={game.visibleHints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describeZoomedHint(hint) }))} />
@@ -77,6 +78,6 @@ export function ZoomedPokemonGame({ room, selfId, onAction }: ActiveGameProps) {
   const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME}
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }

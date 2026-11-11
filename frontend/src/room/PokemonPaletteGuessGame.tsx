@@ -4,9 +4,10 @@ import { describePaletteHint, paletteSwatches } from '../games/pokemon-palette-g
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { cx } from '../ui';
 import {
-  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import { GamePanel, GameScreen } from './game-kit/GameScreen';
 import type { ActiveGameProps } from './room-command';
 import s from '../games/pokemon-palette-guess/Palette.module.css';
 
@@ -57,9 +58,9 @@ export function PokemonPaletteGuessGame({ room, selfId, onAction }: ActiveGamePr
   const clue = lastRound
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation}</>}
       clueTitle="Su paleta" clue={<PaletteClue className={s.reveal} colors={lastRound.palette} weights={lastRound.paletteWeights} />} />
-    : <GuessClue label={`Paleta de ${game.colors.length} colores dominantes`} className={s.stage}>
+    : <GamePanel label={`Paleta de ${game.colors.length} colores dominantes`} className={s.stage}>
       <PaletteClue colors={game.colors} weights={game.colorWeights} />
-    </GuessClue>;
+    </GamePanel>;
 
   const hints = active && game.hints.length > 0
     ? <GuessHints hints={game.hints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describePaletteHint(hint) }))} />
@@ -76,6 +77,6 @@ export function PokemonPaletteGuessGame({ room, selfId, onAction }: ActiveGamePr
   const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME} solvedTitle="¡Paleta acertada!"
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la paleta ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }

@@ -83,7 +83,7 @@ type PlateContent = GuessPlateContent;
 /**
  * Pantalla inferior de los juegos de adivinar: el buscador (con el aviso del último fallo o de la espera), el acierto
  * con su puesto y sus puntos, observar, esperar al servidor o el veredicto de la revelación. Ninguna región viva propia:
- * lo que hay que anunciar lo dice la de `GuessScreen` (`guessAnnouncement`).
+ * lo que hay que anunciar lo dice la de `GameScreen` (`guessAnnouncement`).
  */
 export function GuessPanel(props: GuessPanelProps) {
   const { kind, titleRef, selector, cooldownMs = 0, compact = false } = props;

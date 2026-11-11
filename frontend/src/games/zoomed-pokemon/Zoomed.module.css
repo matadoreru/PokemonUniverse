@@ -1,6 +1,6 @@
 /*
  * Zoomed Pokémon: el recorte ampliado llena la zona de la pista y escala con ella (unidades del contenedor del cuerpo
- * de `GuessClue`): a 1920 crece, a 390 cabe en la franja. El recorte lo hace el servidor por etapas (×5, ×3.5, ×2.5,
+ * de `GamePanel`): a 1920 crece, a 390 cabe en la franja. El recorte lo hace el servidor por etapas (×5, ×3.5, ×2.5,
  * ×1.7): aquí solo cambia la imagen, sin escalas ni transformaciones propias.
  */
 .stage > div {

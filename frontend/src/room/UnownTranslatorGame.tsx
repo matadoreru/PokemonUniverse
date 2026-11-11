@@ -7,7 +7,8 @@ import { useNow, useRemainingMs, useServerOffset } from '../hooks/useServerTime'
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Field, Icon, Pill, UnownGlyph } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
-import { attemptsText, GuessClue, GuessScreen, guessSeconds, ordinal, pointsWord, type GuessTimer } from './guess-kit';
+import { attemptsText, guessSeconds, ordinal, pointsWord } from './guess-kit';
+import { GamePanel, GameScreen, type GameTimer } from './game-kit/GameScreen';
 import { guessSearchAutoFocus } from './guess-kit/presentation';
 import { ResponseProgress, SocialPlate, type SocialPlateContent } from './social-kit';
 import { hiddenLettersText, UnownRoundReveal } from './UnownTranslatorResults';
@@ -135,16 +136,16 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
 
   const mode = gameModeName('unown-translator', lastRound?.mode ?? game.mode);
   const meta = mode ? <Chip tone="info">{mode}</Chip> : null;
-  const timer: GuessTimer = active
+  const timer: GameTimer = active
     ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: config?.roundSeconds ? config.roundSeconds * 1_000 : undefined }
     : { deadline: game.nextTransitionAt, serverOffset: offset, label: next };
 
   const clue = lastRound
     ? <UnownRoundReveal round={lastRound} />
-    : <GuessClue label="Mensaje cifrado" className={s.stage}>
+    : <GamePanel label="Mensaje cifrado" className={s.stage}>
       <UnownMessage tokens={game.tokens} />
       {active && <span className={s.next}><Chip tone="neutral" icon={<Icon icon={Clock3} size={18} />}>{hintCountdownLabel(game.nextHintAt, serverNow, game.tokens.some((token) => token.kind === 'GLYPH'))}</Chip></span>}
-    </GuessClue>;
+    </GamePanel>;
   const hints = active ? <UnownAlphabet alphabet={game.alphabet} /> : null;
 
   const side = lastRound
@@ -198,6 +199,6 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
   </SocialPlate>;
 
   const heading = lastRound ? `¡Decía ${lastRound.answer}!` : QUESTION;
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} testId="unown-screen" />;
 }

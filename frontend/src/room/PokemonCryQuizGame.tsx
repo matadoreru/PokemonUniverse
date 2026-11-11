@@ -5,9 +5,10 @@ import { CRY_PLAY_FAILED, cryAnnouncement, cryAudioEvents, cryVersionLabel, rele
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Chip, cx, Pill } from '../ui';
 import {
-  GuessAttemptsFeed, GuessClue, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  GuessAttemptsFeed, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import { GamePanel, GameScreen } from './game-kit/GameScreen';
 import type { ActiveGameProps } from './room-command';
 import s from '../games/pokemon-cry-quiz/Cry.module.css';
 
@@ -81,9 +82,9 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: ActiveGameProps) 
   const clue = lastRound
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {cryVersionLabel(lastRound.cryVersion)}</>}
       clueTitle="Su grito" clue={<CryPlayer source={lastRound.cryUrl} replay onError={setAudioError} />} />
-    : <GuessClue label="Grito del Pokémon misterioso" variant="dark" className={s.stage}>
+    : <GamePanel label="Grito del Pokémon misterioso" variant="dark" className={s.stage}>
       {game.cryUrl && <CryPlayer source={game.cryUrl} onError={setAudioError} />}
-    </GuessClue>;
+    </GamePanel>;
 
   const side = lastRound
     ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
@@ -97,6 +98,6 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: ActiveGameProps) 
     watchingText="Puedes escuchar el grito y seguir el marcador."
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el grito ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
     announcement={cryAnnouncement(announcement, audioError)} clue={clue} side={side} bottom={bottom} />;
 }

@@ -1,9 +1,8 @@
 /**
  * Kit de los juegos de adivinar (Arcade DS F6): Who's That, Zoomed, Palette, Cry, Pokédex Entry y Guess from Stats
- * comparten el marco, la placa de la acción, el marcador, los intentos, las pistas y la revelación.
+ * comparten la placa de la acción, el marcador, los intentos, las pistas y la revelación. El marco de la pantalla es el
+ * de todos los juegos (`room/game-kit/GameScreen.tsx`).
  */
-export { GuessScreen, GuessClue, GUESS_SIDE_FIT } from './GuessScreen';
-export type { GuessScreenProps, GuessTimer } from './GuessScreen';
 export { GuessPanel } from './GuessPanel';
 export type { GuessPanelProps, GuessPlateContent, GuessSelectorProps } from './GuessPanel';
 export { GuessPlayersPanel, GuessAttemptsFeed, GuessRevealBoard } from './GuessSidePanels';

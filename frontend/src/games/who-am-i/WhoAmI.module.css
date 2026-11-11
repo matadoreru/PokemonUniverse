@@ -32,8 +32,8 @@
  * bajar sin que nada lo tape. Las cartas van en una sola fila que se desplaza en horizontal: la lista es la que se
  * desplaza (el cuerpo del panel recorta en horizontal), con encaje suave por carta, y las columnas son estrechas para
  * que con cuatro o más cartas asome la siguiente y se vea que hay más.
- * Estructura (`GuessScreen` + `ScreenSplit`): la pantalla > `p` de la región viva y la rejilla; la rejilla > arriba
- * (> arriba de `GuessScreen` > placa de la ronda, escena), lateral (`aside`) y placa de la acción (`data-layer`).
+ * Estructura (`GameScreen` + `ScreenSplit`): la pantalla > `p` de la región viva y la rejilla; la rejilla > arriba
+ * (> arriba de `GameScreen` > placa de la ronda, escena), lateral (`aside`) y placa de la acción (`data-layer`).
  * Las dos envolturas de arriba se disuelven (`display: contents`) para ordenar sus piezas con la placa de la acción.
  */
 @media (max-width: 1023px) {

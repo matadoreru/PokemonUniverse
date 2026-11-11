@@ -7,7 +7,8 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Badge, Chip, cx, Dialog, Icon, Panel, Row, RowButton, StateBox } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
-import { GuessPanel, GuessScreen, guessSprite, type GuessPlateContent } from './guess-kit';
+import { GuessPanel, guessSprite, type GuessPlateContent } from './guess-kit';
+import { GameScreen } from './game-kit/GameScreen';
 import { PokeddleBoard, PokeddleLegend } from './PokeddleBoard';
 import { playerColor } from './player-color';
 import type { PokemonSearchOption } from './pokemon-search';
@@ -149,7 +150,7 @@ export function PokeddleRaceGame({ room, selfId, onAction }: ActiveGameProps) {
     {rival && <PokeddleBoard board={rival} clues={game.enabledClues} mode="rival" owner={rivalName} title="Sus intentos" />}
   </Dialog>;
 
-  return <>{dialog}<GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.maxRounds} heading={heading}
+  return <>{dialog}<GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.maxRounds} heading={heading}
     meta={<Chip tone="neutral" icon={<Icon icon={Users} size={18} />}>{game.activePlayerIds.length} en carrera</Chip>}
     timer={timer} announcement={announcement} clue={clue} side={<RacePanel game={game} members={members} colors={colors} selfId={selfId} onOpen={setRivalId} />} bottom={bottom} className={s.screen} /></>;
 }

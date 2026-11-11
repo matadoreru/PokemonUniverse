@@ -1,5 +1,5 @@
 /*
- * Marco de las subastas sobre el de adivinar (`GuessScreen`): solo lo que cambia en las subastas.
+ * Marco de las subastas sobre el marco de juego (`GameScreen`): solo lo que cambia en las subastas.
  */
 
 /* Móvil y tableta: la pantalla de abajo justo tras la escena y el lateral después. Sigue pegada al fondo si no cabe,

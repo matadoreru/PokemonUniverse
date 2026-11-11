@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import { cx } from '../../ui';
-import { GuessScreen, type GuessTimer } from '../guess-kit';
+import { GameScreen, type GameTimer } from '../game-kit/GameScreen';
 import s from './SocialScreen.module.css';
 
-/** Plazo de la cabecera (el mismo que el del kit de adivinar): `{ deadline, serverOffset, label, totalMs? }`. */
-export type SocialTimer = GuessTimer;
+/** Plazo de la cabecera (el del marco de juego, `GameTimer`): `{ deadline, serverOffset, label, totalMs? }`. */
+export type SocialTimer = GameTimer;
 
 export interface SocialScreenProps {
   /** Nombre del juego (kicker de la cabecera; en el móvil, solo para lectores). */
@@ -32,7 +32,7 @@ export interface SocialScreenProps {
 }
 
 /**
- * Marco de los juegos sociales y de votación (spec §2 y §6 «Juegos»). Es el marco del kit de adivinar (`GuessScreen`)
+ * Marco de los juegos sociales y de votación (spec §2 y §6 «Juegos»). Es el marco de juego (`GameScreen`)
  * con las fases de la ronda bajo la placa: arriba la placa (ronda, juego, título, «Saltar minijuego» y plazo), las fases
  * y la escena; abajo la acción (buscador, escritura, papeleta o veredicto); al lado, el progreso del grupo. En escritorio
  * llena el alto del `main` sin scroll de página; en el móvil la acción queda pegada al fondo.
@@ -41,5 +41,5 @@ export interface SocialScreenProps {
  * Quien lo use añade su id a `GAMES_WITH_SKIP_IN_SCREEN` (`room/game-skip-slot.ts`).
  */
 export function SocialScreen({ stage, className, ...rest }: SocialScreenProps) {
-  return <GuessScreen {...rest} clue={stage} hints={null} className={cx(s.screen, className)} testId="social-screen" />;
+  return <GameScreen {...rest} clue={stage} hints={null} className={cx(s.screen, className)} testId="social-screen" />;
 }

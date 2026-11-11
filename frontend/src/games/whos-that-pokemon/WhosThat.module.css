@@ -1,6 +1,6 @@
 /*
  * ¿Quién es ese Pokémon?: la silueta llena la zona de la pista y escala con ella (unidades del contenedor del cuerpo de
- * `GuessClue`): a 1920 crece, a 390 cabe en la franja con tope de alto. Detrás, un foco de luz decorativo.
+ * `GamePanel`): a 1920 crece, a 390 cabe en la franja con tope de alto. Detrás, un foco de luz decorativo.
  */
 .stage > div {
   position: relative;

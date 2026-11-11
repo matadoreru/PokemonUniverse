@@ -1,5 +1,5 @@
 /*
- * Marco de los juegos de adivinar: alto del `main` como `SessionScreen`, sin scroll de página en escritorio. Arriba la
+ * Marco de las pantallas de juego: alto del `main` como `SessionScreen`, sin scroll de página en escritorio. Arriba la
  * placa de la ronda, la pista (que crece con el sitio libre) y las pistas adicionales; abajo la acción; al lado, el
  * marcador y los intentos.
  */
@@ -149,7 +149,7 @@
     min-height: 8rem;
     max-height: none;
   }
-  /* Un panel lateral sin contenido (`GUESS_SIDE_FIT`, p. ej. un historial vacío) mide lo que necesita: no llena el resto. */
+  /* Un panel lateral sin contenido (`GAME_SIDE_FIT`, p. ej. un historial vacío) mide lo que necesita: no llena el resto. */
   .side > .sideFit {
     flex: 0 1 auto;
     min-height: 0;

@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import { cx } from '../../ui';
-import { GuessScreen, type GuessTimer } from '../guess-kit';
+import { GameScreen, type GameTimer } from '../game-kit/GameScreen';
 import s from './AuctionScreen.module.css';
 
-/** Plazo de la cabecera (el del kit de adivinar): `{ deadline, serverOffset, label, totalMs? }`; `deadline: null`, sin plazo. */
-export type AuctionTimer = GuessTimer;
+/** Plazo de la cabecera (el del marco de juego, `GameTimer`): `{ deadline, serverOffset, label, totalMs? }`; `deadline: null`, sin plazo. */
+export type AuctionTimer = GameTimer;
 
 export interface AuctionScreenProps {
   /** Nombre del juego (kicker de la cabecera; en el móvil, solo para lectores). */
@@ -36,7 +36,7 @@ export interface AuctionScreenProps {
 }
 
 /**
- * Marco de los juegos de subasta (spec §2 y §6 «Juegos»): el marco del kit de adivinar (`GuessScreen`) con el lote en la
+ * Marco de los juegos de subasta (spec §2 y §6 «Juegos»): el marco de juego (`GameScreen`) con el lote en la
  * escena. Arriba la placa (lote, juego, título, «Saltar minijuego» y el plazo del turno) y el lote; abajo los controles
  * de la puja; al lado, los presupuestos y el historial. En escritorio llena el alto del `main` sin scroll de página; en
  * el móvil los controles quedan pegados al fondo.
@@ -46,7 +46,7 @@ export interface AuctionScreenProps {
  */
 export function AuctionScreen({ stage, roundLabel, roundNumber, totalRounds, className, pinBottom = true, ...rest }: AuctionScreenProps) {
   // La insignia y el `h1` parten en dos líneas en el móvil; en el móvil y la tableta la pantalla de abajo va tras la escena.
-  return <GuessScreen {...rest} roundNumber={roundNumber} totalRounds={totalRounds} className={cx(s.screen, !pinBottom && s.unpinned, className)}
+  return <GameScreen {...rest} roundNumber={roundNumber} totalRounds={totalRounds} className={cx(s.screen, !pinBottom && s.unpinned, className)}
     roundLabel={<span className={s.roundLabel}>{roundLabel ?? <>Ronda {roundNumber} de {totalRounds}</>}</span>}
     clue={stage} hints={null} testId="auction-screen" />;
 }

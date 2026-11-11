@@ -9,7 +9,8 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Pill, ScorePop } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
-import { GuessPanel, GuessScreen, type GuessPlateContent } from './guess-kit';
+import { GuessPanel, type GuessPlateContent } from './guess-kit';
+import { GameScreen } from './game-kit/GameScreen';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
 import type { ActiveGameProps } from './room-command';
@@ -17,7 +18,7 @@ import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
 
 /**
- * Pokémon Trivia (spec §2 y §6 «Juegos»), con el marco del kit (`GuessScreen`: placa de la ronda con el plazo y
+ * Pokémon Trivia (spec §2 y §6 «Juegos»), con el marco del kit (`GameScreen`: placa de la ronda con el plazo y
  * «Saltar», una sola región viva). Arriba, la pregunta en un `Panel` y las opciones en `Card`s grandes con su atajo
  * (teclas 1–4). Abajo, la placa: elegir y confirmar (como Shiny Quiz), la respuesta bloqueada, observar o, al revelar, el veredicto con los puntos. Al
  * lado, el marcador (quién ha respondido, en texto) o, al revelar, qué eligió cada uno.
@@ -82,7 +83,7 @@ export function PokemonTriviaGame({ room, selfId, onAction }: ActiveGameProps) {
   const selected = player?.answer?.optionId ?? draft;
   const content = plateContent({ kind, game, player, verdict, countdown: `${last ? 'Clasificación' : 'Siguiente pregunta'} en ${Math.max(0, transition)}s`, optionCount: game.options.length, draft, submitting, onConfirm: confirm });
 
-  return <GuessScreen gameName="Pokémon Trivia" roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} className={s.screen}
+  return <GameScreen gameName="Pokémon Trivia" roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} className={s.screen}
     meta={<Chip tone="neutral">{triviaDifficultyLabels[game.difficulty]}</Chip>}
     timer={timer} announcement={triviaAnnouncement({ kind, game, player, verdict })}
     clue={<TriviaBoard game={game} result={result} selected={selected} pending={submitting} canAnswer={canAnswer} members={members} selfId={selfId} onSelect={selectOption} />}

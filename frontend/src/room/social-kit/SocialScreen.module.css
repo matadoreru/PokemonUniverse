@@ -1,4 +1,4 @@
-/* Marco de los juegos sociales: el de `GuessScreen`, con la escena (pregunta o recuento) en el hueco de la pista. */
+/* Marco de los juegos sociales: el de `GameScreen`, con la escena (pregunta o recuento) en el hueco de la pista. */
 .screen {
   min-width: 0;
 }

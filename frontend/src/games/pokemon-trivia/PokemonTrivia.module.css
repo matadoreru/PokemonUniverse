@@ -1,5 +1,5 @@
 /*
- * Pokémon Trivia (spec §2 y §6 «Juegos»), dentro del marco del kit (`GuessScreen`): la pregunta en un panel azul noche
+ * Pokémon Trivia (spec §2 y §6 «Juegos»), dentro del marco del kit (`GameScreen`): la pregunta en un panel azul noche
  * y las opciones en cartas que llenan el alto libre en escritorio; en el móvil, la pregunta y una rejilla de 2 columnas
  * (3 con tres opciones) con las cartas a la vista sobre la placa pegada al fondo.
  */

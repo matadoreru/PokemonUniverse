@@ -1,6 +1,6 @@
 /*
  * Adivina el Grito: la zona de la pista es un ecualizador decorativo que llena el sitio libre (unidades del contenedor
- * del cuerpo de `GuessClue`) y, debajo, el botón grande para reproducir el grito. Mientras suena, las barras laten
+ * del cuerpo de `GamePanel`) y, debajo, el botón grande para reproducir el grito. Mientras suena, las barras laten
  * (solo `transform`; quietas con la reducción de movimiento y con `body.static`).
  */
 .stage > div {

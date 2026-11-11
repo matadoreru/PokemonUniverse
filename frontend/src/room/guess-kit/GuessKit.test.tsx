@@ -1,11 +1,10 @@
 import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen, type GuessPanelProps } from '.';
+import { GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, type GuessPanelProps } from '.';
 import {
   guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSearchAutoFocus, guessSolvedOrders, guessVerdict,
 } from './presentation';
-import { expectSingleLiveRegion } from '../test-support/live-regions';
 import { member } from '../test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
@@ -219,17 +218,5 @@ describe('guess-kit: paneles', () => {
     expect(html.match(/data-testid="answer-detail"/g)).toHaveLength(6);
     expect(html.indexOf('/rotom-f.png')).toBeLessThan(html.indexOf('PS 55'));
     expect(html).toContain('aria-label="Respuestas válidas"');
-  });
-
-  it('marco: una sola región viva (siempre montada) con el anuncio, la ronda, el juego y el título', () => {
-    const html = renderToStaticMarkup(<GuessScreen gameName="¿Quién es ese Pokémon?" roundNumber={2} totalRounds={5} heading="Reconoce su silueta"
-      timer={{ deadline: 30_000, serverOffset: 0, label: 'Tiempo' }} announcement="Ronda 2 terminada: era Lucario."
-      clue={<p>pista</p>} side={<p>lado</p>} bottom={<p>abajo</p>} />);
-    expectSingleLiveRegion(html);
-    expect(html).toContain('aria-live="polite">Ronda 2 terminada: era Lucario.</p>');
-    expect(html).toContain('Ronda 2 de 5');
-    expect(html).toMatch(/<h1[^>]*>Reconoce su silueta<\/h1>/);
-    const silent = renderToStaticMarkup(<GuessScreen gameName="x" roundNumber={1} totalRounds={1} heading="h" timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={null} side={null} bottom={null} />);
-    expectSingleLiveRegion(silent);
   });
 });

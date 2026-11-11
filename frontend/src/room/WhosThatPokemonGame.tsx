@@ -4,9 +4,10 @@ import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Chip, Icon } from '../ui';
 import {
-  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
 } from './guess-kit';
+import { GamePanel, GameScreen } from './game-kit/GameScreen';
 import type { ActiveGameProps } from './room-command';
 import s from '../games/whos-that-pokemon/WhosThat.module.css';
 
@@ -34,10 +35,10 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: ActiveGameProps)
   const clue = lastRound
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {whoPokemonScoringLabel()}</>}
       clueTitle="Así era su silueta" clue={<span className={s.revealShadow}><img src={guessSprite(lastRound.pokemon.sprite)} alt="" /></span>} />
-    : <GuessClue label="Silueta misteriosa normalizada" className={s.stage}>
+    : <GamePanel label="Silueta misteriosa normalizada" className={s.stage}>
       <span className={s.mark} aria-hidden="true">?</span>
       {game.silhouetteSprite && <img className={s.silhouette} src={game.silhouetteSprite} alt="Silueta de un Pokémon misterioso" />}
-    </GuessClue>;
+    </GamePanel>;
 
   const hints = active && config?.hintsEnabled
     ? <GuessHints hints={game.visibleHints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describeWhosThatHint(hint) }))} emptyText="La primera pista aparecerá durante la ronda."
@@ -55,6 +56,6 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: ActiveGameProps)
   const bottom = <GuessPanel {...round.panel} question={GAME_NAME} guessText={whoPokemonScoringLabel()} gameName={GAME_NAME}
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }

@@ -2,13 +2,13 @@ import type { ReactNode } from 'react';
 import { ServerTimer } from '../../components/ServerTimer';
 import { Badge, cx, Panel, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from '../GameSkipSlot';
-import s from './GuessScreen.module.css';
+import s from './GameScreen.module.css';
 
 /** Clase para un panel de la columna lateral que, aunque sea el último, no debe llenar el alto sobrante (vacío). */
-export const GUESS_SIDE_FIT: string = s.sideFit ?? '';
+export const GAME_SIDE_FIT: string = s.sideFit ?? '';
 
 /** Plazo de la cabecera: el de la ronda («Tiempo») o el de la siguiente fase («Siguiente ronda», «Clasificación»). */
-export interface GuessTimer {
+export interface GameTimer {
   deadline: number | null;
   serverOffset: number;
   label: string;
@@ -16,7 +16,7 @@ export interface GuessTimer {
   totalMs?: number | undefined;
 }
 
-export interface GuessScreenProps {
+export interface GameScreenProps {
   /** Nombre del juego (kicker de la cabecera). */
   gameName: string;
   roundNumber: number;
@@ -29,13 +29,13 @@ export interface GuessScreenProps {
   roundLabel?: ReactNode;
   /** Fases de la ronda (`PhaseRail` del kit social), entre la placa de la ronda y la pista; `null` si no hay. */
   phases?: ReactNode;
-  timer: GuessTimer;
+  timer: GameTimer;
   /**
    * Texto de la única región viva de la pantalla (siempre montada, solo para lectores): ver `guessAnnouncement`.
    * Ningún otro elemento de la pantalla lleva `role="status"` ni `aria-live`.
    */
   announcement: string;
-  /** Zona de la pista (`GuessClue` con la silueta, el recorte, la paleta…) o, en la revelación, `GuessRoundReveal`. */
+  /** Zona de la pista (`GamePanel` con la silueta, el recorte, la paleta…) o, en la revelación, `GuessRoundReveal`. */
   clue: ReactNode;
   /** Pistas adicionales (`GuessHints`), bajo la pista; `null` si no hay. */
   hints?: ReactNode;
@@ -49,15 +49,16 @@ export interface GuessScreenProps {
 }
 
 /**
- * Marco de los juegos de adivinar (spec §2 y §6 «Juegos»): `ScreenSplit fill` con, arriba, la placa de la ronda (ronda
- * N de M, nombre del juego, título, plazo y «Saltar minijuego»), la pista y las pistas adicionales; abajo, la placa
- * de la acción; al lado, el marcador y los intentos (o los puntos de la ronda).
+ * Marco de las pantallas de juego (spec §2 y §6 «Juegos»), el de los kits de adivinar, social y de subasta:
+ * `ScreenSplit fill` con, arriba, la placa de la ronda (ronda N de M, nombre del juego, título, plazo y «Saltar
+ * minijuego»), la pista y las pistas adicionales; abajo, la placa de la acción; al lado, el marcador y los intentos (o
+ * los puntos de la ronda).
  *
  * En escritorio llena el alto del `main` sin scroll de página y la pista crece con el sitio que quede; en el móvil la
  * pista va arriba con el plazo y la placa de la acción pegada al fondo. El mismo marco sirve a la ronda y a la
  * revelación: así la región viva no se vuelve a montar al cambiar de fase.
  */
-export function GuessScreen({ gameName, roundNumber, totalRounds, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId }: GuessScreenProps) {
+export function GameScreen({ gameName, roundNumber, totalRounds, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId }: GameScreenProps) {
   const top = <div className={s.top}>
     <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
       <div className={s.hudMain}>
@@ -88,7 +89,7 @@ export function GuessScreen({ gameName, roundNumber, totalRounds, heading, meta,
  * de alto) y centra su contenido. El cuerpo es un contenedor de tamaño (`container-type: size`): la pista escala con
  * `cqw`/`cqh` (p. ej. `width: min(92cqw, 92cqh)`), así a 1920 crece y a 390 cabe sin desplazar.
  */
-export function GuessClue({ title, right, label, variant = 'cream', className, children }: { title?: ReactNode; right?: ReactNode; /** Nombre accesible de la zona (si no hay `title`). */ label?: string; variant?: 'cream' | 'dark' | 'blue'; className?: string | undefined; children: ReactNode }) {
+export function GamePanel({ title, right, label, variant = 'cream', className, children }: { title?: ReactNode; right?: ReactNode; /** Nombre accesible de la zona (si no hay `title`). */ label?: string; variant?: 'cream' | 'dark' | 'blue'; className?: string | undefined; children: ReactNode }) {
   return <Panel variant={variant} as="section" {...(title ? { title } : {})} {...(right ? { right } : {})} {...(label ? { 'aria-label': label } : {})} className={cx(s.cluePanel, className)} bodyClassName={cx(s.clueBody)}>
     {children}
   </Panel>;

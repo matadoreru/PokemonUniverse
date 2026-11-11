@@ -3,7 +3,7 @@ import { useRef, type RefObject } from 'react';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useFocusOnTransition } from '../focus-transition';
-import type { GuessTimer } from './GuessScreen';
+import type { GameTimer } from '../game-kit/GameScreen';
 import { useRoomMembers } from '../room-members';
 import {
   guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessVerdict,
@@ -78,7 +78,7 @@ export interface GuessRound<L> {
   /** Segundos que faltan para la siguiente transición (pista, zoom, ronda), redondeados hacia arriba. */
   transitionRemaining: number;
   announcement: string;
-  timer: GuessTimer;
+  timer: GameTimer;
   panel: GuessRoundPanelProps;
 }
 
@@ -105,7 +105,7 @@ export function useGuessRound<L extends GuessRoundResultLike>({ room, selfId, ga
   const last = game.roundNumber >= game.totalRounds;
   const next = last ? 'Clasificación' : 'Siguiente ronda';
   const announcement = guessAnnouncement({ kind, roundNumber: game.roundNumber, answer: lastRound ? answer(lastRound) : null, solveOrder: player?.solveOrder ?? null, roundPoints: player?.roundPoints ?? 0, lastWrong: ownLast?.guessedPokemon.name ?? null, attemptCount: player?.attemptCount ?? 0 });
-  const timer: GuessTimer = active
+  const timer: GameTimer = active
     ? { deadline: game.roundEndsAt, serverOffset: offset, label: 'Tiempo', totalMs: roundSeconds ? roundSeconds * 1_000 : undefined }
     : { deadline: game.nextTransitionAt, serverOffset: offset, label: next };
 

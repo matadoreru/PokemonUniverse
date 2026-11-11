@@ -1,7 +1,7 @@
 /*
  * Adivina por la Paleta: la barra de colores (cada franja tan ancha como su peso) llena la zona de la pista y, debajo,
  * la leyenda con el nombre y el porcentaje de cada color en texto (≥13 px; el color nunca va solo). Escala con el
- * contenedor del cuerpo de `GuessClue`: a 1920 la barra y la leyenda crecen, a 390 caben en la franja.
+ * contenedor del cuerpo de `GamePanel`: a 1920 la barra y la leyenda crecen, a 390 caben en la franja.
  */
 .stage > div {
   place-items: stretch;

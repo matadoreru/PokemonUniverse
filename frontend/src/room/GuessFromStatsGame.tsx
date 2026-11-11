@@ -5,9 +5,10 @@ import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } fr
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Bar, cx, TypeBadge } from '../ui';
 import {
-  GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
+  GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import { GamePanel, GameScreen } from './game-kit/GameScreen';
 import type { ActiveGameProps } from './room-command';
 import s from '../games/guess-from-stats/Stats.module.css';
 
@@ -59,9 +60,9 @@ export function GuessFromStatsGame({ room, selfId, onAction }: ActiveGameProps) 
   const clue = lastRound
     ? <GuessRoundReveal answers={lastRound.answers.map((answer) => ({ id: answer.id, name: answer.name, sprite: answer.sprite, detail: <AnswerSheet pokemon={answer} big={!several} /> }))}
       details={several ? <>Todas coinciden exactamente con lo que se mostró.</> : <>Generación {lastRound.answers[0]?.generation}</>} className={s.scene} />
-    : <GuessClue label="Estadísticas del Pokémon misterioso" className={s.stage}>
+    : <GamePanel label="Estadísticas del Pokémon misterioso" className={s.stage}>
       <StatRows stats={game.visibleStats} />
-    </GuessClue>;
+    </GamePanel>;
 
   const hints = active && game.hints.length > 0
     ? <GuessHints hints={game.hints.map((hint, index) => ({ key: `${hint.kind}-${index}`, label: describeStatsHint(hint) }))} />
@@ -78,6 +79,6 @@ export function GuessFromStatsGame({ room, selfId, onAction }: ActiveGameProps) 
   const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME}
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }
