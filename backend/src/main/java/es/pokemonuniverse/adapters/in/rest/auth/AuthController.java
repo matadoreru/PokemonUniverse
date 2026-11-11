@@ -3,11 +3,11 @@ package es.pokemonuniverse.adapters.in.rest.auth;
 import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.registeredUserId;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
+import es.pokemonuniverse.adapters.in.rest.RequestValidation;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
 import es.pokemonuniverse.application.auth.AuthService;
 import es.pokemonuniverse.application.auth.GuestAvatarCleanup;
-import es.pokemonuniverse.application.auth.IdentityTokens;
 import es.pokemonuniverse.application.auth.PasswordResetService;
 import es.pokemonuniverse.application.errors.UnauthorizedException;
 import es.pokemonuniverse.application.ports.AvatarStorage;
@@ -31,11 +31,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
-import java.time.Instant;
 import java.util.Optional;
-import java.util.Set;
 
 @Tag(name = "auth")
 @Controller("/api/auth")
@@ -43,7 +40,6 @@ import java.util.Set;
 public class AuthController {
 
   private final AuthService auth;
-  private final IdentityTokens tokens;
   private final SessionCookies cookies;
   private final Validator validator;
   private final GuestAvatarCleanup guestAvatars;
@@ -51,11 +47,10 @@ public class AuthController {
   private final ProfileService profiles;
   private final PasswordResetService passwordReset;
 
-  public AuthController(AuthService auth, IdentityTokens tokens, SessionCookies cookies, Validator validator,
+  public AuthController(AuthService auth, SessionCookies cookies, Validator validator,
       GuestAvatarCleanup guestAvatars, AvatarStorage avatars, ProfileService profiles,
       PasswordResetService passwordReset) {
     this.auth = auth;
-    this.tokens = tokens;
     this.cookies = cookies;
     this.validator = validator;
     this.guestAvatars = guestAvatars;
@@ -175,11 +170,8 @@ public class AuthController {
         .orElseThrow(AuthController::registeredRequired);
   }
 
-  /** Valida el cuerpo ya normalizado; el manejador global da formato al fallo con la ruta del campo. */
   private <T> T valid(T normalized) {
-    Set<jakarta.validation.ConstraintViolation<T>> violations = validator.validate(normalized);
-    if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
-    return normalized;
+    return RequestValidation.valid(validator, normalized);
   }
 
   /** La sesión es de una cuenta que ya no existe: el mismo 401 que sin sesión. */
@@ -188,7 +180,6 @@ public class AuthController {
   }
 
   private HttpResponse<UserResponse> session(MutableHttpResponse<UserResponse> response) {
-    cookies.establish(response, tokens.sign(response.body().user(), Instant.now()));
-    return response;
+    return cookies.establishFor(response, response.body().user());
   }
 }

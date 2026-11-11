@@ -8,10 +8,9 @@ import es.pokemonuniverse.adapters.in.rest.RequestTooLargeHandler;
 import es.pokemonuniverse.adapters.in.rest.ValidationErrorResponse;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
-import es.pokemonuniverse.application.auth.AuthService;
 import es.pokemonuniverse.application.auth.GuestAvatarCleanup;
-import es.pokemonuniverse.application.auth.IdentityTokens;
 import es.pokemonuniverse.application.avatar.AvatarAssignment;
+import es.pokemonuniverse.application.avatar.AvatarUploads;
 import es.pokemonuniverse.application.avatar.AvatarService;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
@@ -38,7 +37,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -62,19 +60,15 @@ public class AvatarController {
 
   static final String UNSUPPORTED_TYPE = "Usa una imagen JPEG, PNG o WEBP.";
 
-  private final AvatarService avatars;
+  private final AvatarUploads uploads;
   private final AvatarAssignment assignment;
-  private final AuthService auth;
-  private final IdentityTokens tokens;
   private final SessionCookies cookies;
   private final GuestAvatarCleanup guestAvatars;
 
-  public AvatarController(AvatarService avatars, AvatarAssignment assignment, AuthService auth, IdentityTokens tokens,
-      SessionCookies cookies, GuestAvatarCleanup guestAvatars) {
-    this.avatars = avatars;
+  public AvatarController(AvatarUploads uploads, AvatarAssignment assignment, SessionCookies cookies,
+      GuestAvatarCleanup guestAvatars) {
+    this.uploads = uploads;
     this.assignment = assignment;
-    this.auth = auth;
-    this.tokens = tokens;
     this.cookies = cookies;
     this.guestAvatars = guestAvatars;
   }
@@ -101,15 +95,10 @@ public class AvatarController {
     // Se leen todos los valores: repetido en la query, qs lo convierte en array (el parámetro solo lo documenta).
     var name = AvatarRequests.displayName(request.getParameters().getAll("displayName"));
     if (!AvatarRequests.isImage(contentType)) throw unsupported();
-    var stored = avatars.processAndStore(body, contentType);
-    try {
-      var response = session(HttpResponse.created(new UserResponse(auth.guest(name, stored))));
-      guestAvatars.removePriorGuestAvatar(current, stored.value());
-      return response;
-    } catch (RuntimeException e) {
-      avatars.remove(stored.value());
-      throw e;
-    }
+    var guest = uploads.uploadForGuest(name, body, contentType);
+    var response = session(HttpResponse.created(new UserResponse(guest)));
+    guestAvatars.removePriorGuestAvatar(current, ((AvatarRef.Custom) guest.avatar()).value());
+    return response;
   }
 
   @Operation(operationId = "resetAvatar", summary = "Volver al avatar por defecto")
@@ -141,13 +130,7 @@ public class AvatarController {
     var contentType = request.getHeaders().get(HttpHeaders.CONTENT_TYPE);
     rejectOversize(contentType, body);
     if (!AvatarRequests.isImage(contentType)) throw unsupported();
-    var stored = avatars.processAndStore(body, contentType);
-    try {
-      return session(HttpResponse.ok(new UserResponse(assignment.apply(userId, stored))));
-    } catch (RuntimeException e) {
-      avatars.remove(stored.value());
-      throw e;
-    }
+    return session(HttpResponse.ok(new UserResponse(uploads.uploadForUser(userId, body, contentType))));
   }
 
   /** {@code express.raw} solo lee (y limita) los tipos de imagen; el resto de cuerpos llega como si no hubiera. */
@@ -162,7 +145,6 @@ public class AvatarController {
   }
 
   private HttpResponse<UserResponse> session(MutableHttpResponse<UserResponse> response) {
-    cookies.establish(response, tokens.sign(response.body().user(), Instant.now()));
-    return response;
+    return cookies.establishFor(response, response.body().user());
   }
 }
