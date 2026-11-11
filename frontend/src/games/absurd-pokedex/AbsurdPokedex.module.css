@@ -133,8 +133,11 @@
   outline: var(--ol-2) solid var(--navy);
   font-weight: 800;
 }
+/* Sobre crema, el color del jugador no da contraste de texto: va en el subrayado y el nombre, en azul noche. */
 .authorName {
-  color: var(--player);
+  color: var(--navy);
+  text-decoration: underline 3px var(--player);
+  text-underline-offset: 3px;
 }
 .official .entry {
   outline: var(--ol-3) solid var(--navy);

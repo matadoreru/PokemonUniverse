@@ -20,7 +20,7 @@ describe('DistanceRuler', () => {
   const html = renderToStaticMarkup(createElement(DistanceRuler, { round, members, selfId: 'p2' }));
 
   it('pinta cada marcador con el color de su jugador y marca el propio', () => {
-    expect(html).toContain('--player:var(--info)');
+    expect(html).toContain('--player:var(--blue-l)');
     expect(html).toContain('--player:var(--yellow)');
     expect(html.match(/data-self="true"/g)).toHaveLength(1);
     expect(html).toContain('data-tone="ok"');

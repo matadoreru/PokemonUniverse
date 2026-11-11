@@ -58,9 +58,9 @@ describe('LobbyChat', () => {
 
   it('pinta el autor con el color de su orden en la sala y en neutro si ya salió', () => {
     const html = render('leo', 'MEMBER');
-    expect(html).toContain('--player:var(--info)');
+    expect(html).toContain('--player:var(--blue-l)');
     const items = html.match(/<li[^>]*>(?:(?!<\/li>).)*<\/li>/g) ?? [];
-    expect(items.find((item) => item.includes('Leo'))).toContain(`--player:var(--red)`);
+    expect(items.find((item) => item.includes('Leo'))).toContain(`--player:var(--type-ice)`);
     expect(items.find((item) => item.includes('Sam'))).not.toContain('--player');
   });
 });

@@ -698,11 +698,11 @@ function RowSection() {
 }
 
 const CHAT_ITEMS: ChatLogItem[] = [
-  { id: 'c1', author: 'Misty', authorTone: 'var(--info)', time: '18:03', text: 'Hola a todos, ¿empezamos?', own: false },
+  { id: 'c1', author: 'Misty', authorTone: 'var(--blue-l)', time: '18:03', text: 'Hola a todos, ¿empezamos?', own: false },
   { id: 'c2', author: 'Ash', authorTone: 'var(--yellow)', time: '18:04', text: 'Listo para jugar', own: true },
-  { id: 'c3', author: 'Entrenadora con un nombre larguísimo de verdad', authorTone: 'var(--red)', time: '18:05', text: 'Soy un nombre largo recortado con title', own: false },
-  { id: 'c4', author: 'Brock', authorTone: 'var(--ok)', time: '18:06', text: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', own: false },
-  { id: 'c5', author: 'Misty', authorTone: 'var(--info)', time: '18:07', text: 'Eso es una *** y no se dice', own: false },
+  { id: 'c3', author: 'Entrenadora con un nombre larguísimo de verdad', authorTone: 'var(--type-fairy)', time: '18:05', text: 'Soy un nombre largo recortado con title', own: false },
+  { id: 'c4', author: 'Brock', authorTone: 'var(--type-ice)', time: '18:06', text: 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss', own: false },
+  { id: 'c5', author: 'Misty', authorTone: 'var(--blue-l)', time: '18:07', text: 'Eso es una *** y no se dice', own: false },
 ];
 
 function ChatComposerDemo({ initial, busy, disabledReason }: { initial: string; busy?: boolean; disabledReason?: string }) {
