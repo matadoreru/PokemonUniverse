@@ -40,7 +40,9 @@
 /*
  * Móvil y tableta: nada queda debajo de la placa de la acción. La placa deja de ir pegada al fondo y va justo después
  * de la placa de la ronda, antes que las cartas y que «Tus pistas»: la acción se ve sin desplazar y lo demás se lee al
- * bajar sin que nada lo tape. Las cartas van en una sola fila que se desplaza en horizontal dentro de su panel.
+ * bajar sin que nada lo tape. Las cartas van en una sola fila que se desplaza en horizontal: la lista es la que se
+ * desplaza (el cuerpo del panel recorta en horizontal), con encaje suave por carta, y las columnas son estrechas para
+ * que con cuatro o más cartas asome la siguiente y se vea que hay más.
  * Estructura (`GuessScreen` + `ScreenSplit`): la pantalla > `p` de la región viva y la rejilla; la rejilla > arriba
  * (> arriba de `GuessScreen` > placa de la ronda, escena), lateral (`aside`) y placa de la acción (`data-layer`).
  * Las dos envolturas de arriba se disuelven (`display: contents`) para ordenar sus piezas con la placa de la acción.
@@ -78,11 +80,22 @@
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: minmax(8.5rem, 1fr);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    /* Sitio para el contorno de la carta del turno (4 px + 2 px de separación), que la lista ya recorta al desplazarse. */
+    padding: var(--sp-2);
+    scroll-padding-inline: var(--sp-2);
+    scrollbar-width: thin;
+    scrollbar-color: var(--navy-2) transparent;
+  }
+  .seat {
+    scroll-snap-align: start;
   }
 }
 @media (max-width: 639px) {
   .cards {
-    grid-auto-columns: minmax(6.25rem, 1fr);
+    grid-auto-columns: minmax(5.5rem, 1fr);
     gap: var(--sp-2);
   }
 }
@@ -207,6 +220,33 @@
 }
 .progress > li > span {
   white-space: normal;
+}
+
+/* Responder: el Pokémon del que pregunta (sprite pequeño y nombre) encima de los cuatro botones. */
+.answering {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.asker {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  margin: 0;
+  font: 600 var(--fs-15) / 1.3 var(--font-text);
+}
+.askerSprite {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.askerText {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Resultados: los Pokémon revelados de todos, cada uno con su jugador. */

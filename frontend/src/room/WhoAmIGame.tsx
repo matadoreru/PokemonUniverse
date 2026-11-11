@@ -39,8 +39,9 @@ export function WhoAmIHistory({ entries, nameOf, testId, emptyText }: { entries:
 }
 
 /**
- * Quién ha respondido a la pregunta en curso: en `ANSWERING`, solo el hecho («Respondió» o «Pendiente»); en `DECIDING`,
- * la respuesta de cada uno. Responden todos los jugadores salvo el del turno.
+ * Quién ha respondido a la pregunta en curso: en `ANSWERING`, solo el hecho («Respondió» o «Sin respuesta»; el servidor
+ * no publica qué respondió nadie hasta `DECIDING`); en `DECIDING`, la respuesta de cada uno. Responden todos los
+ * jugadores salvo el del turno; un desconectado no responde nunca, de ahí «Sin respuesta» y no «Pendiente».
  */
 function AnswerProgress({ question, responderIds, showAnswers, nameOf }: { question: WhoAmICurrentQuestion; responderIds: readonly string[]; showAnswers: boolean; nameOf(id: string): string }) {
   const answers = new Map(question.answers.map((entry) => [entry.playerId, entry.answer]));
@@ -49,7 +50,7 @@ function AnswerProgress({ question, responderIds, showAnswers, nameOf }: { quest
     {responderIds.map((id) => {
       const answer = answers.get(id);
       const done = answered.has(id) || answer !== undefined;
-      const text = showAnswers ? (answer ? answerLabel(answer) : 'Sin respuesta') : done ? 'Respondió' : 'Pendiente';
+      const text = showAnswers ? (answer ? answerLabel(answer) : 'Sin respuesta') : done ? 'Respondió' : 'Sin respuesta';
       return <li key={id}><Chip tone={done ? 'ok' : 'neutral'} icon={<Icon icon={done ? Check : Hourglass} size={18} />}>{`${nameOf(id)} · ${text}`}</Chip></li>;
     })}
   </ul>;
@@ -90,6 +91,17 @@ function AnswerButtons({ ownAnswer, canAnswer, onAnswer }: { ownAnswer: WhoAmIAn
     {WHO_AM_I_ANSWERS.map((value) => <Pill key={value} variant={ownAnswer === value ? 'yellow' : 'cream'} aria-pressed={ownAnswer === value} loading={sending === value}
       disabled={!canAnswer || sending !== null} onClick={() => answer(value)}>{answerLabel(value)}</Pill>)}
   </div>;
+}
+
+/**
+ * El Pokémon del que pregunta, encima de las respuestas: en el móvil la placa va antes que las cartas y así se responde
+ * sin buscar su carta. Viene de `others[turnPlayerId]`, que nunca trae el Pokémon propio.
+ */
+function AskerPokemon({ name, pokemon }: { name: string; pokemon: WhoAmIPokemon }) {
+  return <p className={s.asker} data-testid="who-am-i-asker">
+    <img className={s.askerSprite} src={guessSprite(pokemon.sprite)} alt="" />
+    <span className={s.askerText}>{`El Pokémon de ${name}: `}<strong>{pokemon.name}</strong></span>
+  </p>;
 }
 
 /** La carta de un jugador: los demás con su Pokémon; la propia con «?» (o con `self` si ya acertó). */
@@ -235,7 +247,12 @@ export function WhoAmIGame({ room, selfId, onAction }: { room: RoomView; selfId:
     body = <AnswerProgress question={question} responderIds={responderIds} showAnswers={false} nameOf={nameOf} />;
   } else if (active && step === 'ANSWERING' && question && participating && (player.canAnswer || player.ownAnswer)) {
     content = { icon: MessageCircleQuestion, tone: player.ownAnswer ? 'ok' : 'warn', kicker: player.ownAnswer ? 'Respuesta enviada' : `Pregunta de ${turnName} sobre su Pokémon`, title: player.ownAnswer ? 'Esperando a los demás' : `Responde a ${turnName}`, text: questionText };
-    body = <AnswerButtons key={turnKey} ownAnswer={player.ownAnswer} canAnswer={player.canAnswer} onAnswer={(answer) => send({ type: 'ANSWER_QUESTION', answer })} />;
+    // Nunca el propio: solo si el turno es de otro, y de `others`.
+    const asker = game.turnPlayerId && game.turnPlayerId !== selfId ? player.others[game.turnPlayerId] ?? null : null;
+    body = <div className={s.answering}>
+      {asker && <AskerPokemon name={turnName} pokemon={asker} />}
+      <AnswerButtons key={turnKey} ownAnswer={player.ownAnswer} canAnswer={player.canAnswer} onAnswer={(answer) => send({ type: 'ANSWER_QUESTION', answer })} />
+    </div>;
   } else if (active) {
     const offline = participating && !ownTurn && step === 'ANSWERING' && !player.canAnswer;
     content = {

@@ -101,7 +101,8 @@ describe('¿Quién soy?: pantalla', () => {
   });
 
   it('tras responder, tu respuesta queda marcada', () => {
-    const html = render(publicGame({ turnPlayerId: 'p2', turnStep: 'ANSWERING', currentQuestion: { text: '¿Soy azul?', answers: [{ playerId: 'p1', answer: 'PARTLY' }], answeredPlayerIds: ['p1'] } }), playerState({ ownAnswer: 'PARTLY' }));
+    // En `ANSWERING` el servidor no publica las respuestas: la propia llega solo en `ownAnswer`.
+    const html = render(publicGame({ turnPlayerId: 'p2', turnStep: 'ANSWERING', currentQuestion: { text: '¿Soy azul?', answers: [], answeredPlayerIds: ['p1'] } }), playerState({ ownAnswer: 'PARTLY' }));
     expect(html).toMatch(/aria-pressed="true"[^>]*>(?:<[^>]+>)*A medias/);
   });
 
@@ -113,9 +114,31 @@ describe('¿Quién soy?: pantalla', () => {
   });
 
   it('si no es tu turno ni respondes, ves la pregunta en curso y quién ha respondido', () => {
-    const html = render(publicGame({ turnPlayerId: 'p2', turnStep: 'ANSWERING', currentQuestion: { text: '¿Soy azul?', answers: [{ playerId: 'p3', answer: 'NO' }], answeredPlayerIds: ['p3'] } }), null, 'p9');
+    const html = render(publicGame({ turnPlayerId: 'p2', turnStep: 'ANSWERING', currentQuestion: { text: '¿Soy azul?', answers: [], answeredPlayerIds: ['p3'] } }), null, 'p9');
     expect(html).toContain('¿Soy azul?');
-    expect(html).toContain('Respondió');
+    expect(html).toContain('Leo · Respondió');
+    expect(html).toContain('Eru · Sin respuesta');
+  });
+
+  it('esperando las respuestas a tu pregunta, quien aún no ha respondido sale «Sin respuesta» (nunca «Pendiente»)', () => {
+    const html = render(publicGame({ turnStep: 'ANSWERING', currentQuestion: { text: '¿Soy legendario?', answers: [], answeredPlayerIds: ['p2'] } }), playerState());
+    expect(html).toContain('Ana · Respondió');
+    expect(html).toContain('Leo · Sin respuesta');
+    expect(html).not.toContain('Pendiente');
+  });
+
+  it.each([
+    ['con el estado bien formado', playerState({ canAnswer: true })],
+    ['aunque el propio Pokémon llegue de más en `others`', playerState({ canAnswer: true, others: { p1: MEWTWO, p2: BULBASAUR, p3: SQUIRTLE } })],
+  ])('al responder, la placa enseña el Pokémon del que pregunta %s, y nunca el propio', (_label, player) => {
+    const html = render(publicGame({ turnPlayerId: 'p2', turnStep: 'ANSWERING', currentQuestion: { text: '¿Soy azul?', answers: [], answeredPlayerIds: [] } }), player);
+    const start = html.indexOf('data-testid="who-am-i-asker"');
+    const asker = html.slice(start, html.indexOf('</p>', start));
+    expect(start).toBeGreaterThan(0);
+    expect(asker).toContain('El Pokémon de Ana: <strong>Bulbasaur</strong>');
+    expect(asker).toContain('/bulbasaur.png');
+    expect(html).not.toContain('Mewtwo');
+    expect(html).not.toContain('/mewtwo.png');
   });
 
   it('el historial muestra los intentos fallidos como «Probó con …» y las respuestas con su autor', () => {

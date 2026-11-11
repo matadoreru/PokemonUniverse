@@ -4912,9 +4912,12 @@ test('quién soy: preguntar, responder, adivinar y clasificación', async ({ bro
     await respuestas(b.page).getByRole('button', { name: 'Sí', exact: true }).click();
     await expect(respuestas(b.page).getByRole('button', { name: 'Sí', exact: true })).toHaveAttribute('aria-pressed', 'true');
     await expect(a.page.getByText(`${b.name} · Respondió`)).toBeVisible();
-    await expect(a.page.getByText(`${c.name} · Pendiente`)).toBeVisible();
+    await expect(a.page.getByText(`${c.name} · Sin respuesta`)).toBeVisible();
     await expect(a.page.getByText(`${b.name} · Sí`)).toHaveCount(0);
     await expect(c.page.getByText(`${b.name} · Sí`)).toHaveCount(0);
+    // Quien responde ve en la placa el Pokémon del que pregunta; el que pregunta no ve ninguno.
+    await expect(c.page.getByTestId('who-am-i-asker')).toContainText(asignados.get(a.name)!);
+    await expect(a.page.getByTestId('who-am-i-asker')).toHaveCount(0);
     await capturarTamanos(c.page, 'juego-who-am-i-responder', { sigue: respuestas(c.page) });
     await respuestas(c.page).getByRole('button', { name: 'A medias', exact: true }).click();
 
@@ -4959,6 +4962,59 @@ test('quién soy: preguntar, responder, adivinar y clasificación', async ({ bro
     for (const [nombre, pokemon] of asignados) await expect(host.page.getByText(`Era ${pokemon} · Acertó`).first(), nombre).toBeVisible();
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-who-am-i-clasificacion');
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+/**
+ * ¿Quién soy? con cinco jugadores en el móvil (390×844): las cartas van en una fila que se desplaza en horizontal y la
+ * última se alcanza; quien responde ve en la placa el Pokémon del que pregunta (por si su carta queda fuera de la vista).
+ */
+test('quién soy: cinco jugadores en el móvil, cartas desplazables y el Pokémon del que pregunta', async ({ browser }) => {
+  test.setTimeout(240_000);
+  const sala = await crearSalaConJugadores(browser, 5, { width: SIZES[2].w, height: SIZES[2].h });
+  try {
+    const { host, invitados, jugadores } = sala;
+    const paginas = jugadores.map((j) => j.page);
+    await seleccionarJuego(host.page, '¿Quién soy?');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    await ajustarRango(host.page, 'Tiempo para preguntar', 'End', '90');
+    await ajustarRango(host.page, 'Tiempo para responder', 'End', '60');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(paginas);
+    for (const page of paginas) await expect(page.getByTestId('who-am-i-cards')).toBeVisible({ timeout: 20_000 });
+
+    const campo = (page: Page) => page.getByRole('textbox', { name: 'Escribe una pregunta de sí o no' });
+    const pregunta = await primeraVisible(paginas, campo);
+    const a = jugadores.find((j) => j.page === pregunta)!;
+    const otro = jugadores.find((j) => j !== a)!;
+    await campo(a.page).fill('¿Soy de tipo agua?');
+    await a.page.getByRole('button', { name: 'Enviar' }).click();
+    const respuestas = otro.page.getByRole('group', { name: 'Tu respuesta' });
+    await expect(respuestas).toBeVisible({ timeout: 10_000 });
+    // La placa enseña el Pokémon del que pregunta: el mismo que su carta.
+    await expect(otro.page.getByTestId('who-am-i-asker')).toContainText(await pokemonDe(otro.page, a.name));
+
+    // Cinco cartas no caben en 390: la fila se desplaza dentro de su lista y la última se alcanza entera.
+    await otro.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    const cartas = otro.page.getByTestId('who-am-i-cards');
+    const medidas = await cartas.evaluate((el) => ({ scroll: el.scrollWidth, client: el.clientWidth, overflowX: getComputedStyle(el).overflowX }));
+    expect(medidas.overflowX).toBe('auto');
+    expect(medidas.scroll).toBeGreaterThan(medidas.client);
+    await capturarTamanos(otro.page, 'juego-who-am-i-cinco-jugadores', { sigue: respuestas });
+    await otro.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+    const ultima = cartas.locator(':scope > li').last();
+    await ultima.scrollIntoViewIfNeeded();
+    const caja = await cartas.boundingBox();
+    const ultimaCaja = await ultima.boundingBox();
+    expect(caja && ultimaCaja).toBeTruthy();
+    expect(ultimaCaja!.x).toBeGreaterThanOrEqual(caja!.x - 1);
+    expect(ultimaCaja!.x + ultimaCaja!.width).toBeLessThanOrEqual(caja!.x + caja!.width + 1);
+    expect(ultimaCaja!.x + ultimaCaja!.width).toBeLessThanOrEqual(SIZES[2].w);
+    await otro.page.screenshot({ path: 'screenshots/juego-who-am-i-cinco-jugadores-desplazado-390x844.png', animations: 'disabled' });
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
