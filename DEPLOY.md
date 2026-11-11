@@ -291,7 +291,8 @@ backup ni healthcheck rompe las garantías anteriores.
 ### Salas activas
 
 En la arquitectura actual las salas y sus temporizadores viven en memoria. Reiniciar `backend` conserva cuentas y
-estadísticas, pero termina las salas activas: al arrancar, el proceso nuevo las marca `INTERRUPTED` en el historial. Programa el despliegue entre sesiones y avisa a los jugadores. Para hacer
+estadísticas, pero termina las salas activas: al arrancar, el proceso nuevo las marca `INTERRUPTED` en el historial. Programa el despliegue entre sesiones y avisa a los jugadores. Lo mismo pasa si
+el backend se queda sin memoria: la JVM sale con `-XX:+ExitOnOutOfMemoryError` y `restart: unless-stopped` lo reinicia. Para hacer
 rolling deployments sin perder salas hay que implementar el adaptador Redis documentado en `docs/architecture.md`.
 
 ## 6. Desarrollo local con Docker

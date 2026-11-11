@@ -45,4 +45,7 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5m --retries=3 \
   CMD wget -qO- http://127.0.0.1:8080/health/readiness || exit 1
 # webp-imageio llama a System.load: acceso nativo explícito (sin el aviso de Java 24+ y sin fallo cuando se bloquee).
-ENTRYPOINT ["java", "--enable-native-access=ALL-UNNAMED", "-jar", "/app/app.jar"]
+# Con un OutOfMemoryError la JVM sale (código distinto de 0) y el `restart: unless-stopped` de compose reinicia el
+# contenedor, en vez de seguir sirviendo degradada. En el ENTRYPOINT y no en JAVA_TOOL_OPTIONS: un JAVA_TOOL_OPTIONS
+# puesto en el entorno del contenedor no lo quita.
+ENTRYPOINT ["java", "--enable-native-access=ALL-UNNAMED", "-XX:+ExitOnOutOfMemoryError", "-jar", "/app/app.jar"]
