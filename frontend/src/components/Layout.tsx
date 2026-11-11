@@ -3,7 +3,7 @@ import { House, LogOut, MessageSquareWarning, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { ActionToastStack, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
+import { ActionToastStack, cx, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
 import { AudioButton } from './AudioButton';
@@ -27,6 +27,9 @@ export const HEADER_NOTICES_ID = 'app-header-notices';
  * Vacío no ocupa sitio; a menos de 640 px baja a su propia fila bajo la placa del HUD para no solaparse con ella.
  */
 export const HEADER_ROOM_ID = 'app-header-room';
+
+/** El `main` del armazón: destino de «Saltar al contenido». */
+export const MAIN_ID = 'contenido';
 
 
 /**
@@ -128,9 +131,11 @@ export function Layout() {
   const { pathname } = useLocation();
   return (
     <FeedbackTargetProvider>
+      {/* Primer elemento de la página: salta la cabecera y lleva el foco al `main` (sin tocar la URL ni el historial). */}
+      <a href={`#${MAIN_ID}`} className={s.skip} onClick={(event) => { event.preventDefault(); document.getElementById(MAIN_ID)?.focus(); }}>Saltar al contenido</a>
       <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
         <AppHeader user={user} level={level} onLogout={() => void logout().then(() => navigate('/'))} />
-        <main className="relative min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
+        <main id={MAIN_ID} tabIndex={-1} className={cx('relative min-h-0 overflow-y-auto [scrollbar-gutter:stable]', s.main)}>
           {/* Hueco de avisos flotantes (conexión de la sala): capa de alto cero pegada arriba, bajo la cabecera. */}
           <div id={HEADER_NOTICES_ID} className="sticky top-0 z-toast h-0" />
           <ScreenTransition routeKey={pathname} focusHeading>

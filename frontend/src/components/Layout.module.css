@@ -29,3 +29,40 @@
     padding-inline: var(--sp-2);
   }
 }
+
+/* «Saltar al contenido»: fuera de la rejilla del armazón (no ocupa fila) y oculto hasta recibir el foco con el teclado;
+   entonces aparece arriba a la izquierda, sobre la cabecera, como una píldora amarilla. */
+.skip {
+  position: fixed;
+  top: var(--sp-2);
+  left: var(--sp-2);
+  z-index: var(--z-toast);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: var(--ol-3) solid var(--navy);
+  border-radius: var(--r-pill);
+  background: var(--yellow);
+  box-shadow: var(--sh-hard-4);
+  color: var(--navy);
+  font: 800 var(--fs-15) / 1.3 var(--font-text);
+  text-decoration: none;
+}
+.skip:not(:focus) {
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.skip:focus-visible {
+  outline-color: var(--focus-ring-on-yellow);
+}
+/* El destino del salto recibe el foco por programa: sin anillo alrededor de toda la pantalla. */
+.main:focus {
+  outline: none;
+}
