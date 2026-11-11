@@ -102,6 +102,8 @@ jobs:
             sleep 10
           done
           kill "$pid" 2> /dev/null || true
+          # La aplicación es un JVM hijo de Gradle: se para también por su clase principal.
+          pkill -f 'es\.pokemonuniverse\.Application' 2> /dev/null || true
           fuser -k -TERM 8080/tcp 2> /dev/null || true
           for _ in $(seq 1 30); do
             curl -fsS http://localhost:8080/health > /dev/null 2>&1 || break
