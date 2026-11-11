@@ -5,7 +5,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { borrarCuentas, capture, collectErrors, comprobarBdE2E, crearSalaConJugadores, esperarPartida, fijarJuegoDelDia, iniciarPartida, nuevaCuenta, pasarIntro, registrarPorApi, seleccionarJuego, SIZES, type CuentaE2E, type Jugador } from '../src/helpers.js';
-import { capturarTamanos } from '../src/juegos.js';
+import { capturarTamanos, sinScorePop } from '../src/juegos.js';
 
 const siguiente = (page: Page) => page.getByTestId('reveal-next').getByRole('button');
 
@@ -96,6 +96,8 @@ test.describe('reto diario', () => {
         // En el móvil Higher or Lower lleva «Siguiente» con «Saltar minijuego», bajo el marcador: se llega desplazando.
         await siguiente(page).scrollIntoViewIfNeeded();
         await expect(siguiente(page), `${w}×${h}: «Siguiente» a la vista`).toBeInViewport({ ratio: 1 });
+        // El «+N» del acierto (400 ms) pasa sobre la insignia de racha del marcador: se captura cuando ya se ha ido.
+        await sinScorePop(page);
         await capture(page, 'siguiente-reto-diario');
       }
       // Con un solo jugador, pulsarlo deja el revelado en 1 s.
