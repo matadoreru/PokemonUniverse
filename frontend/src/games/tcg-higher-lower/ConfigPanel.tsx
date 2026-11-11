@@ -3,6 +3,7 @@ import { CheckCircle2, CircleDashed, Search, XCircle } from 'lucide-react';
 import { useEffect, useId, useMemo, useState } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { api } from '../../lib/api';
+import { apiErrorMessage } from '../../lib/api-errors';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Field, Icon, StateBox, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
@@ -48,7 +49,7 @@ export function TcgHigherLowerConfigPanel({ config, disabled, onChange }: { conf
   const [eligible, setEligible] = useState<number | null>(null);
   useEffect(() => {
     let alive = true;
-    const load = () => void api<TcgFilterOptions>('/tcg/options').then((data) => { if (alive) { setOptions(data); setLoadError(''); } }).catch((error: unknown) => { if (alive) setLoadError(error instanceof Error ? error.message : 'No se pudo cargar el catálogo TCG.'); });
+    const load = () => void api<TcgFilterOptions>('/tcg/options').then((data) => { if (alive) { setOptions(data); setLoadError(''); } }).catch((error: unknown) => { if (alive) setLoadError(apiErrorMessage(error, { fallback: 'No se pudo cargar el catálogo TCG.' })); });
     load();
     const timer = window.setInterval(load, 10_000);
     return () => { alive = false; window.clearInterval(timer); };

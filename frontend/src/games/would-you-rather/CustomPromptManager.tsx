@@ -2,6 +2,7 @@ import type { CustomWouldYouRatherPromptView } from '@pokemon-universe/shared/pu
 import { CheckCircle2, FileJson, Pencil, Plus, Power, Save, Trash2, Upload, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
+import { apiErrorMessage } from '../../lib/api-errors';
 import { Chip, cx, Dialog, Field, Icon, Pill, StateBox, TextArea } from '../../ui';
 import { parseWouldYouRatherImportJson, WOULD_YOU_RATHER_JSON_EXAMPLE } from './json-import';
 import s from './CustomPromptManager.module.css';
@@ -28,14 +29,14 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
   useEffect(() => {
     let active = true;
     void api<{ prompts: CustomWouldYouRatherPromptView[] }>('/would-you-rather-prompts').then((body) => { if (active) setPrompts(body.prompts); })
-      .catch((caught: unknown) => { if (active) setError(caught instanceof Error ? caught.message : 'No se pudieron cargar tus dilemas.'); })
+      .catch((caught: unknown) => { if (active) setError(apiErrorMessage(caught, { fallback: 'No se pudieron cargar tus dilemas.' })); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, []);
 
   const run = async (id: string, operation: () => Promise<void>) => {
     setBusyId(id); setError('');
-    try { await operation(); } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo guardar el cambio.'); }
+    try { await operation(); } catch (caught) { setError(apiErrorMessage(caught, { fallback: 'No se pudo guardar el cambio.' })); }
     finally { setBusyId(''); }
   };
   const create = async () => {
