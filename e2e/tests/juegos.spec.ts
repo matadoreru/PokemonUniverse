@@ -1047,9 +1047,9 @@ test('pokedex-entry-guess: buscador cargando, con error y reintento', async ({ b
     });
     await iniciarPartida(host.page, [invitado.page]);
 
-    const cargando = invitado.page.getByRole('status').filter({ hasText: 'Cargando Pokémon…' });
+    // La bandeja de carga no es región viva (la pantalla tiene una sola): se busca por su `aria-busy`.
+    const cargando = invitado.page.locator('[aria-busy="true"]').filter({ hasText: 'Cargando Pokémon…' });
     await expect(cargando).toBeVisible({ timeout: 20_000 });
-    await expect(cargando).toHaveAttribute('aria-busy', 'true');
     estado = 'fallar';
     for (const route of retenidas.splice(0)) await route.abort('connectionrefused').catch(() => undefined);
 
