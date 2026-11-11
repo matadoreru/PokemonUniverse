@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code officialSecretRankingPrompts} de {@code secret-ranking/prompts.ts}: las preguntas en el mismo orden (el orden
- * alimenta la elección aleatoria) con ids {@code secret-ranking-official-NN}.
+ * {@code officialSecretRankingPrompts}, antes en {@code secret-ranking/prompts.ts}: las preguntas en el mismo orden (el
+ * orden alimenta la elección aleatoria) con ids {@code secret-ranking-official-NN}.
  */
 public final class SecretRankingPrompts {
 

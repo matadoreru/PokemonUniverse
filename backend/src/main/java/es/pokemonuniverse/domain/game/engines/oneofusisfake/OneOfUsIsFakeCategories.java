@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code officialSubjectiveCategories} de {@code one-of-us-is-fake/categories.ts}: las categorías en el mismo orden (el
- * orden alimenta la elección aleatoria) con ids {@code official-NN}. Son textos subjetivos, nunca reglas de validación.
+ * {@code officialSubjectiveCategories}, antes en {@code one-of-us-is-fake/categories.ts}: las categorías en el mismo
+ * orden (el orden alimenta la elección aleatoria) con ids {@code official-NN}. Son textos subjetivos, nunca reglas de
+ * validación.
  */
 public final class OneOfUsIsFakeCategories {
 

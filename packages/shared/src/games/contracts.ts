@@ -20,17 +20,6 @@ export type GamePhase =
 
 export type PokemonCryVersion = 'LATEST' | 'LEGACY';
 
-export interface SubjectiveCategory {
-  id: string;
-  text: string;
-}
-
-export interface WouldYouRatherPromptPair {
-  id: string;
-  optionA: string;
-  optionB: string;
-}
-
 export interface MiniGameManifest {
   id: string;
   name: string;

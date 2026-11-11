@@ -56,7 +56,7 @@ class SecretRankingEngineTest {
     assertThrows(IllegalArgumentException.class, () -> new SecretRankingEngine(other));
   }
 
-  /** Mismo número de preguntas, en el mismo orden, que {@code secret-ranking/prompts.ts}. */
+  /** Mismo número de preguntas, en el mismo orden, que tenía {@code secret-ranking/prompts.ts}. */
   @Test
   void officialPromptsMatchTheTypeScriptList() {
     var prompts = SecretRankingPrompts.OFFICIAL;

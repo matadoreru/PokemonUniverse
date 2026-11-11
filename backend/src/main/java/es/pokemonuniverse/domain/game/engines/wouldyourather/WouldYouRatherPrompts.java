@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code officialWouldYouRatherPrompts} de {@code would-you-rather/prompts.ts}: las parejas en el mismo orden (el orden
- * alimenta la elección aleatoria) con ids {@code would-you-rather-official-NN}.
+ * {@code officialWouldYouRatherPrompts}, antes en {@code would-you-rather/prompts.ts}: las parejas en el mismo orden
+ * (el orden alimenta la elección aleatoria) con ids {@code would-you-rather-official-NN}.
  */
 public final class WouldYouRatherPrompts {
 

@@ -52,7 +52,7 @@ class WouldYouRatherEngineTest {
     assertThrows(IllegalArgumentException.class, () -> new WouldYouRatherEngine(other));
   }
 
-  /** Mismo número de parejas, en el mismo orden, que {@code would-you-rather/prompts.ts}. */
+  /** Mismo número de parejas, en el mismo orden, que tenía {@code would-you-rather/prompts.ts}. */
   @Test
   void officialPromptsMatchTheTypeScriptList() {
     var prompts = WouldYouRatherPrompts.OFFICIAL;

@@ -68,7 +68,7 @@ class OneOfUsIsFakeEngineTest {
     assertThrows(IllegalArgumentException.class, () -> new OneOfUsIsFakeEngine(other));
   }
 
-  /** Mismo número de categorías, en el mismo orden, que {@code one-of-us-is-fake/categories.ts}. */
+  /** Mismo número de categorías, en el mismo orden, que tenía {@code one-of-us-is-fake/categories.ts}. */
   @Test
   void officialCategoriesMatchTheTypeScriptList() {
     var categories = OneOfUsIsFakeCategories.OFFICIAL;

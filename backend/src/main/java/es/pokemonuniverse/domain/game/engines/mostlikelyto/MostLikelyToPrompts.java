@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code officialMostLikelyToPrompts} de {@code most-likely-to/prompts.ts}: las preguntas en el mismo orden (el orden
- * alimenta la elección aleatoria) con ids {@code most-likely-to-official-NN}.
+ * {@code officialMostLikelyToPrompts}, antes en {@code most-likely-to/prompts.ts}: las preguntas en el mismo orden (el
+ * orden alimenta la elección aleatoria) con ids {@code most-likely-to-official-NN}.
  */
 public final class MostLikelyToPrompts {
 

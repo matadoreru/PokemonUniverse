@@ -64,7 +64,7 @@ class MostLikelyToEngineTest {
     assertThrows(IllegalArgumentException.class, () -> new MostLikelyToEngine(other));
   }
 
-  /** Mismo número de preguntas, en el mismo orden, que {@code most-likely-to/prompts.ts}. */
+  /** Mismo número de preguntas, en el mismo orden, que tenía {@code most-likely-to/prompts.ts}. */
   @Test
   void officialPromptsMatchTheTypeScriptList() {
     var prompts = MostLikelyToPrompts.OFFICIAL;
