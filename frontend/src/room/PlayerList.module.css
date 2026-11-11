@@ -28,6 +28,12 @@
   color: var(--ink);
   font-weight: 800;
 }
+/* «Ya ha elegido» con su tic delante (el estado no va solo en el texto gris). */
+.picked {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
 .points {
   white-space: nowrap;
 }

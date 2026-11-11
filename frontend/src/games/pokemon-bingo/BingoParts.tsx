@@ -36,7 +36,7 @@ export function BingoBoard({ board, width, height, selectedCellId = null, onSele
       const assigned = cell.assignment;
       const selected = cell.id === selectedCellId;
       const solutions = showSolutions ? cell.possibleSolutions : [];
-      return <Card key={cell.id} size="fill" name={condition} decorativeSprite state={selected ? 'selected' : 'idle'}
+      return <Card key={cell.id} size="fill" name={condition} decorativeSprite state={selected ? 'selected' : 'idle'} selectedMark
         {...(assigned ? { sprite: guessSprite(assigned.sprite) } : { art: <Icon icon={Plus} size={24} /> })}
         attrs={{
           'data-bingo-cell': cell.id,

@@ -96,9 +96,11 @@ export type DistanceCellTone = Extract<Tone, 'ok' | 'info' | 'neutral' | 'bad'> 
 
 export interface DistanceCell {
   text: string;
-  /** ✓ acierto exacto, ✗ cayó en esa ronda: el estado nunca va solo con color. */
-  /** Marca además del color: acierto exacto (`hit`) o ronda en la que cayó (`fell`); la pinta un icono. */
-  mark: 'hit' | 'fell' | null;
+  /**
+   * Marca además del color (el estado nunca va solo con él): acierto exacto (`hit`), a 10 o menos (`close`) o ronda en
+   * la que cayó (`fell`); la pinta un icono.
+   */
+  mark: 'hit' | 'close' | 'fell' | null;
   tone: DistanceCellTone;
   /** Texto completo para lectores de pantalla y `title`. */
   label: string;
@@ -117,7 +119,7 @@ export function distanceCell(record: DistanceRoundRecord, playerId: string): Dis
     return { text, mark: 'fell', tone: 'bad', label: `${round}: ${what}, cayó${note ? ` (${note})` : ''}` };
   }
   if (distance === 0) return { text, mark: 'hit', tone: 'ok', label: `${round}: ${what}` };
-  if (distance !== null && distance <= DISTANCE_CLOSE_MAX) return { text, mark: null, tone: 'info', label: `${round}: ${what}` };
+  if (distance !== null && distance <= DISTANCE_CLOSE_MAX) return { text, mark: 'close', tone: 'info', label: `${round}: ${what}` };
   return { text, mark: null, tone: 'neutral', label: `${round}: ${what}` };
 }
 
@@ -145,6 +147,6 @@ export function distanceResultsTitle(pointsMode: boolean, winnerId: string | nul
 /** Leyenda de la tabla «Distancia por ronda»: en `POINTS` nadie cae ni hay desempates. */
 export function distanceTableFootnote(pointsMode: boolean): string {
   return pointsMode
-    ? 'Distancia al número de Pokédex objetivo. ✓ acierto exacto · en azul, a 10 o menos · — sin respuesta.'
-    : 'Distancia al número de Pokédex objetivo. ✓ acierto exacto · en azul, a 10 o menos · ✗ ronda en la que cayó · — sin respuesta o no jugaba. D1, D2… son los desempates.';
+    ? 'Distancia al número de Pokédex objetivo. ✓ acierto exacto · ≈ a 10 o menos · — sin respuesta.'
+    : 'Distancia al número de Pokédex objetivo. ✓ acierto exacto · ≈ a 10 o menos · ✗ ronda en la que cayó · — sin respuesta o no jugaba. D1, D2… son los desempates.';
 }

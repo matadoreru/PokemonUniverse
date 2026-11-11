@@ -46,7 +46,7 @@ describe('textos de visibilidad de Pokédex Distance', () => {
   });
 
   it('confirma la elección oculta sin revelarla', () => {
-    expect(DISTANCE_HIDDEN_PICKED_LABEL).toBe('✓ Ya ha elegido');
+    expect(DISTANCE_HIDDEN_PICKED_LABEL).toBe('Ya ha elegido');
   });
 
   it('el espectador solo sigue las selecciones en directo en LIVE', () => {

@@ -174,7 +174,7 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
           const meta = selection
             ? <span className={s.clip}>→ {selection.pokemonName}</span>
             : status && status.kind !== 'picked' && member.role === 'PLAYER'
-              ? <span className={status.kind === 'out' ? s.away : undefined}>{distanceMemberStatusLabels[status.kind]}</span>
+              ? <span className={status.kind === 'out' ? s.away : status.kind === 'hidden-picked' ? s.picked : undefined}>{status.kind === 'hidden-picked' && <Icon icon={Check} size={18} />}{distanceMemberStatusLabels[status.kind]}</span>
               : <>
                   {/* Tu fila ya va en otro color: «(tú)» solo para lectores de pantalla. */}
                   {member.id === selfId && <span className="sr-only">(tú)</span>}

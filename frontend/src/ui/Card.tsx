@@ -57,6 +57,11 @@ export interface CardProps {
    * seleccionada lleva su tic; así el hueco del sprite mide lo mismo en reposo, elegida y al revelar.
    */
   marks?: 'line' | 'corner';
+  /**
+   * Con `marks="line"`: la elegida lleva también el tic de esquina, para que «elegida» no sea solo el tinte y el
+   * contorno. No hace falta si la carta ya marca su elección de otra forma (el número de orden del lobby).
+   */
+  selectedMark?: boolean;
   /** Capa sobre el hueco del sprite, abajo a la derecha (p. ej. los avatares de quién la eligió): no ocupa alto. */
   artOverlay?: ReactNode;
   onSelect?: () => void;
@@ -113,7 +118,7 @@ function CornerMark({ state }: { state: CardState }) {
 }
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
-export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', flip = false, attrs, decorativeSprite, eager = false, action, disabled, art, marks = 'line', artOverlay, onSelect, children }: CardProps) {
+export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', flip = false, attrs, decorativeSprite, eager = false, action, disabled, art, marks = 'line', selectedMark = false, artOverlay, onSelect, children }: CardProps) {
   // Suena al empezar a girar (`revealing` o `flip`): la carta se da la vuelta delante del jugador. A propósito, una carta
   // que se monta ya girada no suena: llega con una pantalla de revelado entera (varias cartas a la vez), que ya tiene su
   // `game.reveal` común (`roomRevealKey`); sonar aquí lo duplicaría una vez por carta.
@@ -136,7 +141,7 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
         ) : (
           <span className={s.placeholder} aria-hidden="true">?</span>
         )}
-        {marks === 'corner' && <CornerMark state={state} />}
+        {(marks === 'corner' || (selectedMark && state === 'selected')) && <CornerMark state={state} />}
         {artOverlay != null && <span className={s.overlay}>{artOverlay}</span>}
       </span>
       {/* Llena, el nombre largo se recorta con elipsis: `title` deja leerlo entero. */}

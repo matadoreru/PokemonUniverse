@@ -1,7 +1,7 @@
 import { gameModeLabel, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
-import { Check, Crosshair, Target, X } from 'lucide-react';
+import { Check, Crosshair, EqualApproximately, type LucideIcon, Target, X } from 'lucide-react';
 import { cx, Icon, Panel } from '../../ui';
-import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
+import { distanceBestLabel, distanceCell, type DistanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
 import { ResultsHostActions } from '../../room/game-kit/ResultsRecords';
 import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
 import { useRoomMembers } from '../../room/room-members';
@@ -14,6 +14,9 @@ const CELL_TONE: Record<NonNullable<DistanceCellTone>, string | undefined> = {
   neutral: s.far,
   bad: s.fell,
 };
+
+/** Icono de cada marca de celda (el mismo «≈» de «cerca» que en Pokeddle). */
+const CELL_MARK: Record<NonNullable<DistanceCell['mark']>, LucideIcon> = { hit: Check, close: EqualApproximately, fell: X };
 
 /**
  * Resultados de Pokédex Distance: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
@@ -65,7 +68,7 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: GameRes
         </tr></thead>
         <tbody>{standings.map((standing) => <tr key={standing.playerId}>
           <th scope="row" className={s.nameCell}><span className={s.truncate} title={nameOf(standing.playerId)}>{nameOf(standing.playerId)}</span></th>
-          {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={cell.tone ? CELL_TONE[cell.tone] : s.muted} title={cell.label}><span aria-hidden="true" className={s.cellValue}>{cell.mark && <Icon icon={cell.mark === 'hit' ? Check : X} size={18} />}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
+          {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={cell.tone ? CELL_TONE[cell.tone] : s.muted} title={cell.label}><span aria-hidden="true" className={s.cellValue}>{cell.mark && <Icon icon={CELL_MARK[cell.mark]} size={18} />}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
         </tr>)}</tbody>
       </table>
     </div>

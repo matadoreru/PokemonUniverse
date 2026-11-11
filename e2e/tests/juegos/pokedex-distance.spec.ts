@@ -7,7 +7,7 @@ import { animacionDe, conMovimiento, crearSalaConJugadores, iniciarPartida, psql
 import { capturarTamanos, SELECTOR_PATH, esSelector, elegirPokemon, capturarAnotando, elegirModo, ajustarRango, comprobarChipDeCarta, capturarMostrando, comprobarTituloDeCabecera, comprobarAlturaDeCartas } from '../../src/juegos.js';
 
 /** Estado de un jugador de Pokédex Distance que ya ha elegido con las elecciones ocultas (`pokedex-distance-selection.ts`). */
-const DISTANCE_PICKED = '✓ Ya ha elegido';
+const DISTANCE_PICKED = 'Ya ha elegido';
 
 test('pokedex-distance: elección de los rivales oculta y panel de visibilidad', async ({ browser }) => {
   test.setTimeout(120_000);
@@ -47,7 +47,7 @@ test('pokedex-distance: elección de los rivales oculta y panel de visibilidad',
     // El buscador se desmonta al elegir: el foco va al título de la placa, no se pierde en `body`.
     await expect(confirmada).toBeFocused();
     expect(await eligeAntes!.page.evaluate(() => document.activeElement === document.body)).toBe(false);
-    const yaHaElegido = host.page.getByText('✓ Ya ha elegido', { exact: true });
+    const yaHaElegido = host.page.getByText(DISTANCE_PICKED, { exact: true });
     await expect(yaHaElegido).toHaveCount(1, { timeout: 10_000 });
     await expect(host.page.getByText(/→ Pikachu/)).toHaveCount(0);
     await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible();

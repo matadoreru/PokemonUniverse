@@ -17,8 +17,11 @@ export function distanceExactAtReveal(game: Pick<PokedexDistancePublicState, 'ph
   return game.phase === 'ROUND_RESULTS' && game.lastRound?.selections[selfId]?.distance === 0;
 }
 
-/** Estado de un jugador que ya ha elegido cuando las elecciones de los rivales están ocultas. */
-export const DISTANCE_HIDDEN_PICKED_LABEL = '✓ Ya ha elegido';
+/**
+ * Estado de un jugador que ya ha elegido cuando las elecciones de los rivales están ocultas. El tic lo pinta la lista
+ * con `Icon` (decorativo): el texto es lo que se lee.
+ */
+export const DISTANCE_HIDDEN_PICKED_LABEL = 'Ya ha elegido';
 
 export type DistanceMemberStatus =
   | { kind: 'picked'; pokemonName: string; sprite: string }

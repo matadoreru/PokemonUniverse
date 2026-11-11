@@ -1,6 +1,6 @@
 import { TCG_HIGHER_LOWER_SAME_POINTS, type RoomMemberView, type TcgCardPublicView, type TcgHigherLowerChoice, type TcgHigherLowerOutcome, type TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, XCircle } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, X, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
@@ -52,16 +52,16 @@ export function TcgPriceStrip({ previous, current, currency, correctAnswer }: { 
 }
 
 /**
- * Resultado de un jugador al revelar, con texto: qué eligió (`Chip` con su flecha) y si acertó («✓ +1», «✗ Fallo» o
- * «✗ Sin respuesta»), en dos chips que bajan de línea si no caben.
+ * Resultado de un jugador al revelar, con texto: qué eligió (`Chip` con su flecha) y si acertó (tic y «+1», o aspa y
+ * «Fallo» o «Sin respuesta»), en dos chips que bajan de línea si no caben.
  */
 export function TcgOutcomeChips({ outcome }: { outcome: TcgHigherLowerOutcome | undefined }) {
   return <>
     {outcome?.choice && <span data-tcg-choice><Chip tone="info" icon={<Icon icon={TCG_CHOICE_ICONS[outcome.choice]} size={18} />}>Eligió {tcgChoiceLabels[outcome.choice]}</Chip></span>}
-    <Chip tone={outcome?.correct ? 'ok' : 'bad'}>
+    <Chip tone={outcome?.correct ? 'ok' : 'bad'} icon={<Icon icon={outcome?.correct ? Check : X} size={18} />}>
       <span className={hl.outcome} data-outcome={outcome?.correct ? 'hit' : 'miss'}>{outcome?.correct
-        ? <><span aria-hidden="true">✓</span> +{outcome.awardedPoints}<span className="sr-only"> {tcgOutcomeStatus(outcome)}</span></>
-        : <><span aria-hidden="true">✗</span> {tcgOutcomeStatus(outcome)}</>}</span>
+        ? <>+{outcome.awardedPoints}<span className="sr-only"> {tcgOutcomeStatus(outcome)}</span></>
+        : tcgOutcomeStatus(outcome)}</span>
     </Chip>
   </>;
 }

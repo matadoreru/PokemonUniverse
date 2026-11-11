@@ -281,7 +281,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
             { type: 'GAME_COUNT', icon: Hash, name: room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas', mode: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode : { type: 'GAME_COUNT', target: 5 } },
             { type: 'POINT_TARGET', icon: Trophy, name: room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos', mode: { type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 } },
           ] satisfies { type: SessionMode['type']; icon: typeof Hash; name: string; mode: SessionMode }[]).map((choice) => (
-            <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.name} state={room.sessionMode.type === choice.type ? 'selected' : 'idle'} {...(canEditSession ? { onSelect: () => session(choice.mode) } : {})}>
+            <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.name} state={room.sessionMode.type === choice.type ? 'selected' : 'idle'} selectedMark {...(canEditSession ? { onSelect: () => session(choice.mode) } : {})}>
             </Card>
           ))}
         </div>

@@ -85,9 +85,11 @@ describe('TcgHigherLowerGame', () => {
     expect(html).toContain('Eligió Más');
     expect(html).toContain('Eligió Menos');
     expect(html.match(/data-tcg-choice/g)).toHaveLength(2);
-    expect(html).toContain('<span aria-hidden="true">✓</span> +1<span class="sr-only"> acierto</span>');
-    expect(html).toContain('<span aria-hidden="true">✗</span> Fallo');
-    expect(html).toContain('<span aria-hidden="true">✗</span> Sin respuesta');
+    // Tic o aspa de `Icon` (no un carácter) delante del texto del resultado.
+    expect(html).toMatch(/lucide-check[^"]*"[^>]*>.*?<\/svg><span class="[^"]*outcome[^"]*" data-outcome="hit">\+1<span class="sr-only"> acierto<\/span><\/span>/);
+    expect(html).toMatch(/lucide-x[^"]*"[^>]*>.*?<\/svg><span class="[^"]*outcome[^"]*" data-outcome="miss">Fallo<\/span>/);
+    expect(html).toMatch(/data-outcome="miss">Sin respuesta<\/span>/);
+    expect(html).not.toMatch(/[✓✗]/);
     expect(html).toContain('Racha 2');
     expect(html).toContain('Siguiente ronda en');
     expect(html).toContain('Sin conexión');

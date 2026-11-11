@@ -75,14 +75,14 @@ describe('Pokédex Distance: resultados', () => {
   it('marks each table cell with tone, symbol and an accessible label', () => {
     const [tie, tiebreak, second] = history as [DistanceRoundRecord, DistanceRoundRecord, DistanceRoundRecord];
     expect(distanceCell(second, 'p1')).toEqual({ text: '0', mark: 'hit', tone: 'ok', label: 'R2: acierto exacto' });
-    expect(distanceCell(tiebreak, 'p1')).toEqual({ text: '3', mark: null, tone: 'info', label: 'R1 · D1: a 3' });
+    expect(distanceCell(tiebreak, 'p1')).toEqual({ text: '3', mark: 'close', tone: 'info', label: 'R1 · D1: a 3' });
     expect(distanceCell(tie, 'p1')).toEqual({ text: '40', mark: null, tone: 'neutral', label: 'R1: a 40' });
     expect(distanceCell(tiebreak, 'p2')).toEqual({ text: '90', mark: 'fell', tone: 'bad', label: 'R1 · D1: a 90, cayó' });
     expect(distanceCell(record(1, 0, { p1: null }, ['p1']), 'p1')).toEqual({ text: '—', mark: 'fell', tone: 'bad', label: 'R1: sin respuesta, cayó' });
     expect(distanceCell(tiebreak, 'p3')).toEqual({ text: '—', mark: null, tone: null, label: 'R1 · D1: no jugaba' });
     expect(distanceCell(second, 'p3').tone).toBe('bad');
-    expect(distanceCell(record(1, 0, { p1: 10 }, []), 'p1').tone).toBe('info');
-    expect(distanceCell(record(1, 0, { p1: 11 }, []), 'p1').tone).toBe('neutral');
+    expect(distanceCell(record(1, 0, { p1: 10 }, []), 'p1')).toMatchObject({ tone: 'info', mark: 'close' });
+    expect(distanceCell(record(1, 0, { p1: 11 }, []), 'p1')).toMatchObject({ tone: 'neutral', mark: null });
   });
 
   it('writes the stats line with plurals and tiebreaks only when there are any', () => {
@@ -121,5 +121,11 @@ describe('distanceResultsTitle y distanceTableFootnote', () => {
   it('la leyenda de Por puntos no habla de caídas ni desempates', () => {
     expect(distanceTableFootnote(true)).not.toMatch(/cayó|desempate/);
     expect(distanceTableFootnote(false)).toContain('cayó');
+  });
+  it('la leyenda nombra la marca de «cerca», no solo su color', () => {
+    for (const points of [true, false]) {
+      expect(distanceTableFootnote(points)).toContain('≈ a 10 o menos');
+      expect(distanceTableFootnote(points)).not.toMatch(/en azul/);
+    }
   });
 });

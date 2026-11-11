@@ -57,7 +57,10 @@
     height: 144px;
   }
 }
-/* Punto de presencia: el estado también va en el `title` y en el texto de la lista. */
+/*
+ * Punto de presencia: el estado también va en el `title` y en el texto de la lista. Además del color cambia la forma:
+ * lleno conectado, medio lleno al reconectar y hueco (un aro) fuera de la sala.
+ */
 .presence {
   position: absolute;
   right: -2px;
@@ -73,10 +76,10 @@
   background: var(--ok);
 }
 .reconnecting {
-  background: var(--warn);
+  background: linear-gradient(90deg, var(--warn) 50%, var(--navy) 50%);
 }
 .left {
-  background: var(--ink-2);
+  background: radial-gradient(circle, var(--cream) 0 40%, var(--ink-2) 41%);
 }
 :root:not([data-motion="reduce"]) .reconnecting {
   animation: blink 1s ease-in-out infinite alternate;
