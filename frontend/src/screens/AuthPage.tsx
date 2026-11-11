@@ -7,6 +7,7 @@ import { authError, type AuthError, type AuthField } from '../auth/authErrors';
 import { LegalLine } from '../components/LegalLine';
 import { cx, Field, Icon, Panel, Pill, PillLink, Screen, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 type Mode = 'login' | 'register' | 'guest';
 const ID = 'acceso';
@@ -36,7 +37,7 @@ export const ACCOUNT_BENEFITS: { icon: LucideIcon; text: string }[] = [
 
 export function AccountBenefits({ onRegister }: { onRegister(): void }) {
   return (
-    <section aria-labelledby={`${ID}-ventajas`} className={cx('flex flex-col gap-2 rounded-[var(--r-card)] border-2 border-dashed px-4 py-3', tone.borderNavy)}>
+    <section aria-labelledby={`${ID}-ventajas`} className={cx('flex flex-col gap-2 px-4 py-3', shape.dashedCard, tone.borderNavy)}>
       <h2 id={`${ID}-ventajas`} className={cx('font-display text-15 font-extrabold', tone.textNavy)}>Con una cuenta gratis, además:</h2>
       <ul className="grid gap-1 sm:grid-cols-2 sm:gap-x-4">
         {ACCOUNT_BENEFITS.map(({ icon, text }) => (
@@ -116,7 +117,7 @@ export function AuthPage() {
               {mode === 'login' && <PillLink to="/auth/recuperar" variant="cream" size="small" className="self-start">¿Has olvidado la contraseña?</PillLink>}
               {/* Aviso compacto (sin icono en pantallas bajas): con el enlace de recuperar, el panel de 1280×720 no cabe con el aviso grande. */}
               {error && !error.field && (
-                <div ref={errorBox} tabIndex={-1} className={cx('[&>div]:min-h-0 [&>div]:py-0 [@media(max-height:800px)]:[&_svg]:hidden rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+                <div ref={errorBox} tabIndex={-1} className={cx('[&>div]:min-h-0 [&>div]:py-0 [@media(max-height:800px)]:[&_svg]:hidden', shape.focusBox)}>
                   <StateBox kind="error" title={FAILED[mode]} text={error.message} onCream />
                 </div>
               )}

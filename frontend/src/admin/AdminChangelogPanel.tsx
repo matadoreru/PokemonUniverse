@@ -16,6 +16,7 @@ import { apiErrorMessage } from '../lib/api-errors';
 import { Chip, ConfirmDialog, cx, Field, Panel, Pill, SelectField, TextArea, ToastStack, Toggle, useToasts, type StateBoxProps } from '../ui';
 import { ListDetail, rowControlId, SelectRow, useListDetail } from './AdminParts';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 export interface ChangelogForm {
   id: string | null;
@@ -203,7 +204,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
                 <legend className="font-display text-22 font-extrabold">Cambios</legend>
                 <p className={cx('text-15 font-bold', tone.textInk2)}>Agrupa cada nota por su tipo. Marca como destacados hasta {MAX_CHANGELOG_HIGHLIGHTS} cambios: salen arriba, en «Lo destacado».</p>
                 {form.content.map((change, index) => (
-                  <div className={cx('grid gap-2 rounded-[var(--r-franja)] border-[2.5px] p-3 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-start', tone.borderNavy, tone.bgCream2)} key={index}>
+                  <div className={cx('grid gap-2 p-3 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-start', shape.franja, tone.borderNavy, tone.bgCream2)} key={index}>
                     <SelectField label={`Tipo del cambio ${index + 1}`} hideLabel value={change.type} onChange={(value) => updateChange(index, { type: value as ChangelogCategory })} options={CATEGORY_OPTIONS} />
                     <TextArea label={`Texto del cambio ${index + 1}`} hideLabel rows={3} value={change.text} onChange={(text) => updateChange(index, { text })} placeholder="Describe el cambio para los jugadores" error={invalid.includes(index) ? 'Describe el cambio antes de guardar.' : null} />
                     <Pill size="round" variant="danger" icon={Trash2} disabled={form.content.length === 1} aria-label={`Eliminar cambio ${index + 1}`} title="Eliminar cambio" onClick={() => { setForm((current) => ({ ...current, content: current.content.filter((_, changeIndex) => changeIndex !== index) })); setInvalid([]); }} />

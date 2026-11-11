@@ -10,6 +10,7 @@ import { parseRoomLinkCode, ROOM_LINK_PARAM } from '../room/room-link';
 import { normalizeRoomCode, ROOM_CODE_LENGTH, roomErrorMessage } from '../room/roomCode';
 import { ConfirmDialog, cx, Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 type Busy = 'create' | 'join' | 'leave' | 'daily' | null;
 const CODE_ID = 'room-code';
@@ -133,7 +134,7 @@ export function PlayPage() {
       <Screen width="narrow">
         <Panel variant="cream" aria-labelledby="sala-activa-title" className="w-full">
           <div className="flex flex-col items-center gap-4 px-2 pb-2 pt-3 text-center 2xl:gap-6 2xl:px-6 2xl:pb-5 2xl:pt-6">
-            <span className={cx('grid h-16 w-16 place-items-center rounded-full border-[3px] 2xl:h-20 2xl:w-20', tone.borderNavy, tone.bgYellow, tone.textNavy)}><Icon icon={isDaily ? CalendarDays : DoorOpen} size={32} className="2xl:h-10 2xl:w-10" /></span>
+            <span className={cx('grid h-16 w-16 place-items-center 2xl:h-20 2xl:w-20', shape.disc, tone.borderNavy, tone.bgYellow, tone.textNavy)}><Icon icon={isDaily ? CalendarDays : DoorOpen} size={32} className="2xl:h-10 2xl:w-10" /></span>
             <h1 id="sala-activa-title" className={cx('font-display text-26 font-extrabold sm:text-34 2xl:text-44', tone.textNavy)}>{isDaily ? 'Tienes un reto diario en curso' : 'Ya tienes una sala activa'}</h1>
             {/* La sala del reto es privada: no hay código que enseñar. */}
             {!isDaily && <p className={cx('flex flex-wrap items-baseline justify-center gap-x-2 text-15 font-bold 2xl:text-18', tone.textInk2)}>

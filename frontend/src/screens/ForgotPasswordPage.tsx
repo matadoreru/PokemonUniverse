@@ -4,6 +4,7 @@ import { authError, type AuthError } from '../auth/authErrors';
 import { LegalLine } from '../components/LegalLine';
 import { cx, Field, Panel, Pill, PillLink, Screen, StateBox } from '../ui';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 const ID = 'recuperar';
 
@@ -43,7 +44,7 @@ export function ForgotPasswordPage() {
             <p className={cx('mt-1 text-15 font-bold 2xl:mt-2 2xl:text-18', tone.textInk2)}>Te enviamos un enlace para elegir una nueva.</p>
           </div>
           {sent ? (
-            <div ref={sentBox} tabIndex={-1} data-testid="recuperar-enviado" className={cx('flex flex-col gap-4 rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+            <div ref={sentBox} tabIndex={-1} data-testid="recuperar-enviado" className={cx('flex flex-col gap-4', shape.focusBox)}>
               <StateBox kind="empty" title="Revisa tu correo" text="Si existe una cuenta, te hemos enviado un enlace a su email. Caduca en 30 minutos." onCream />
               <PillLink to="/auth" variant="yellow" block>Entrar</PillLink>
             </div>
@@ -51,7 +52,7 @@ export function ForgotPasswordPage() {
             <form ref={form} className="flex flex-col gap-4" onSubmit={submit} onInput={() => error?.field && setError(null)}>
               <Field label="Email o usuario" name="identifier" required autoComplete="username" autoCapitalize="none" spellCheck={false} maxLength={254} error={error?.field === 'identifier' ? error.message : null} />
               {error && !error.field && (
-                <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+                <div ref={errorBox} tabIndex={-1} className={shape.focusBox}>
                   <StateBox kind="error" title="No se pudo pedir el enlace" text={error.message} onCream />
                 </div>
               )}

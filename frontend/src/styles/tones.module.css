@@ -47,7 +47,3 @@
 .borderRedText {
   border-color: var(--red-text);
 }
-/* Anillo de foco propio (elementos con `tabIndex` sobre crema). */
-.focusNavy:focus-visible {
-  outline-color: var(--navy);
-}

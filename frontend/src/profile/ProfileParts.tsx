@@ -9,6 +9,7 @@ import { formatDerivedMetric, formatStoredMetric, gameWinRate, globalWinRate, so
 import { Bar, cx, Panel, Pill, Row, Screen, StateBox, TabPanel, Tabs } from '../ui';
 import { GameArt } from '../games/GameArt';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 type ProfileGame = UserProfileResponse['games'][number];
 
@@ -53,7 +54,7 @@ function GameMetrics({ game, id }: { game: ProfileGame; id: string }) {
     ...(profileStats.derivedMetrics ?? []).map((metric): [string, string] => [metric.label, formatDerivedMetric(metric, stats.metrics)]),
   ];
   return (
-    <dl id={id} className={cx('mx-2 grid grid-cols-2 gap-x-4 gap-y-3 rounded-b-[var(--r-franja)] border-x-[2.5px] border-b-[2.5px] px-4 pb-3 pt-4 sm:grid-cols-3', tone.borderNavy, tone.bgCream2, tone.textInk)}>
+    <dl id={id} className={cx('mx-2 grid grid-cols-2 gap-x-4 gap-y-3 px-4 pb-3 pt-4 sm:grid-cols-3', shape.franjaFoot, tone.borderNavy, tone.bgCream2, tone.textInk)}>
       {items.map(([label, value]) => (
         <div key={label} className="min-w-0">
           <dt className={cx('text-13 font-bold', tone.textInk2)}>{label}</dt>

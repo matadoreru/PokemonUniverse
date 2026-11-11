@@ -16,6 +16,16 @@ const STYLE_RULES = [
   { re: /(?:^|[\s:!])shadow-(?:card|pop)(?=$|\s)/, message: 'Sombra heredada (borrada en F9): usa los tokens `--sh-*` en un CSS Module.' },
 ];
 
+/*
+ * Parte H: fuera de `ui/`, Tailwind no da forma. Rechaza `rounded*`, `border*` y `shadow*` (con o sin variantes como
+ * `md:` o `hover:`, y con `!`) como clase entera: `drop-shadow-*` (filtro), las clases de CSS Modules y palabras como
+ * `bordered` no casan. Solo se admite la maqueta de tablas (`border-collapse`, `border-separate`, `border-spacing-*`).
+ */
+const SHAPE_RULE = {
+  re: /(?:^|\s)!?(?:[\w[\]&@().:>_*-]+:)?!?(?:rounded|border|shadow)(?!-(?:collapse|separate|spacing)(?:$|[\s-]))(?:-\S*)?(?=$|\s)/,
+  message: 'Sin `rounded*`, `border*` ni `shadow*` de Tailwind fuera de `ui/`: la forma sale de un componente de `ui/` o de un CSS Module sobre `--r-*`, `--ol-*` y `--sh-*`.',
+};
+
 /** Literales de texto de una expresión (sin entrar en `parent`). */
 function stringParts(node, out = []) {
   if (!node || typeof node.type !== 'string') return out;
@@ -29,26 +39,32 @@ function stringParts(node, out = []) {
   return out;
 }
 
+/** Regla que revisa cada literal de `className` y de los argumentos de `cx(…)` contra `rules`. */
+function classLiteralRule(rules) {
+  return {
+    meta: { type: 'problem', schema: [] },
+    create(context) {
+      // Un `cx()` dentro de `className` se recorre dos veces: cada literal se revisa una sola.
+      const seen = new WeakSet();
+      function check(node) {
+        for (const part of stringParts(node)) {
+          if (seen.has(part.node)) continue;
+          seen.add(part.node);
+          for (const rule of rules) if (rule.re.test(part.text)) context.report({ node: part.node, message: rule.message });
+        }
+      }
+      return {
+        JSXAttribute(node) { if (node.name.type === 'JSXIdentifier' && /className$/i.test(node.name.name)) check(node.value); },
+        CallExpression(node) { if (node.callee.type === 'Identifier' && node.callee.name === 'cx') node.arguments.forEach(check); },
+      };
+    },
+  };
+}
+
 const arcade = {
   rules: {
-    'no-arbitrary-style': {
-      meta: { type: 'problem', schema: [] },
-      create(context) {
-        // Un `cx()` dentro de `className` se recorre dos veces: cada literal se revisa una sola.
-        const seen = new WeakSet();
-        function check(node) {
-          for (const part of stringParts(node)) {
-            if (seen.has(part.node)) continue;
-            seen.add(part.node);
-            for (const rule of STYLE_RULES) if (rule.re.test(part.text)) context.report({ node: part.node, message: rule.message });
-          }
-        }
-        return {
-          JSXAttribute(node) { if (node.name.type === 'JSXIdentifier' && /className$/i.test(node.name.name)) check(node.value); },
-          CallExpression(node) { if (node.callee.type === 'Identifier' && node.callee.name === 'cx') node.arguments.forEach(check); },
-        };
-      },
-    },
+    'no-arbitrary-style': classLiteralRule(STYLE_RULES),
+    'no-tailwind-shape': classLiteralRule([SHAPE_RULE]),
     'no-raw-lucide': {
       meta: { type: 'problem', schema: [] },
       create(context) {
@@ -92,6 +108,6 @@ export default tseslint.config(
     files: ['frontend/src/**/*.tsx'],
     ignores: ['**/*.test.tsx', 'frontend/src/ui/**'],
     plugins: { arcade },
-    rules: { 'arcade/no-raw-lucide': 'error' },
+    rules: { 'arcade/no-raw-lucide': 'error', 'arcade/no-tailwind-shape': 'error' },
   },
 );

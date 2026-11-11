@@ -15,6 +15,7 @@ import { api } from '../lib/api';
 import type { FeedbackCreateResponse } from '../lib/api-contract';
 import { cx, Chip, Icon, Panel, Pill, PillLink, Screen, ScreenHeader, Segmented, SelectField, StateBox, TextArea } from '../ui';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 interface GameOption extends MiniGameManifest { defaultConfig: unknown }
 
@@ -126,7 +127,7 @@ export function FeedbackPage() {
       {sent ? (
         <Panel variant="cream" title="Mensaje enviado" className="w-full" bodyClassName="px-5 py-7 sm:px-8 2xl:py-10">
           <div className="flex flex-col items-center text-center" role="status">
-            <span className={cx('grid h-16 w-16 place-items-center rounded-full border-[3px]', tone.borderNavy, tone.bgOk, tone.textNavy)} aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
+            <span className={cx('grid h-16 w-16 place-items-center', shape.disc, tone.borderNavy, tone.bgOk, tone.textNavy)} aria-hidden="true"><Icon icon={CheckCircle2} size={32} /></span>
             <h3 ref={thanks} tabIndex={-1} className={cx('mt-4 font-display text-34 font-extrabold outline-none', tone.textInk)}>Gracias por avisar</h3>
             <p className={cx('mt-2 max-w-[48ch] text-18 font-semibold', tone.textInk2)}>
               Tu {sent.type === 'BUG' ? 'reporte' : 'sugerencia'} sobre <strong className={cx(tone.textInk)}>{sent.gameName ?? FEEDBACK_REFERENCE_LABELS[sent.reference]}</strong> ya está en la bandeja de administración.
@@ -182,7 +183,7 @@ export function FeedbackPage() {
                 placeholder={PLACEHOLDER[type]}
               />
               {error && (
-                <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+                <div ref={errorBox} tabIndex={-1} className={shape.focusBox}>
                   <StateBox kind="error" title="No se pudo enviar el feedback" text={error} onCream />
                 </div>
               )}

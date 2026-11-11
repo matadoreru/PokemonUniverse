@@ -1,6 +1,7 @@
 /// <reference types="node" />
 /**
- * Reglas locales de lint del sistema (F9, `eslint.config.mjs`): `arcade/no-arbitrary-style` y `arcade/no-raw-lucide`.
+ * Reglas locales de lint del sistema (F9, `eslint.config.mjs`): `arcade/no-arbitrary-style`, `arcade/no-raw-lucide` y
+ * `arcade/no-tailwind-shape` (parte H).
  * Se pasan por la configuración real con `ESLint#lintText`, así que también se prueba a qué archivos se aplican (por
  * ejemplo, que `ui/` puede pintar lucide). Solo cuentan los avisos de `arcade/*`.
  */
@@ -33,12 +34,45 @@ describe('arcade/no-arbitrary-style', () => {
     expect(await arcade(conClase(clase))).toContain('arcade/no-arbitrary-style');
   });
 
-  it.each(['text-left', 'text-13', 'z-hud', 'border-[2.5px]', 'shadow-none', 'drop-shadow-[0_3px_0_var(--navy)]'])('admite `%s`', async (clase) => {
+  it.each(['text-left', 'text-13', 'z-hud', 'drop-shadow-[0_3px_0_var(--navy)]'])('admite `%s`', async (clase) => {
     expect(await arcade(conClase(clase))).toEqual([]);
+  });
+
+  // Fuera de `ui/` estas las rechaza `no-tailwind-shape`; esta regla no.
+  it.each(['border-[2.5px]', 'shadow-none'])('no rechaza `%s` por estilo arbitrario', async (clase) => {
+    expect(await arcade(conClase(clase))).not.toContain('arcade/no-arbitrary-style');
   });
 
   it('también mira los literales de `cx(…)`', async () => {
     expect(await arcade("import { cx } from '../ui';\nexport const c = cx('flex', 'text-[11px]');\n")).toContain('arcade/no-arbitrary-style');
+  });
+});
+
+describe('arcade/no-tailwind-shape', () => {
+  it.each([
+    'rounded', 'rounded-full', 'rounded-b-[var(--r-franja)]', 'border', 'border-2 border-dashed', 'border-x-[2.5px]',
+    'shadow-none', 'md:rounded-lg', 'hover:border-2', 'focus-visible:md:shadow-[0_3px_0_var(--navy)]', '!border', '[&>div]:border-0',
+    'flex gap-2 rounded-[var(--r-card)] px-4',
+  ])('rechaza `%s` fuera de `ui/`', async (clase) => {
+    expect(await arcade(conClase(clase))).toContain('arcade/no-tailwind-shape');
+  });
+
+  it.each(['flex gap-2', 'border-collapse', 'border-separate', 'border-spacing-2', 'drop-shadow-[0_3px_0_var(--navy)]', 'outline-offset-2', 'bordered'])('admite `%s`', async (clase) => {
+    expect(await arcade(conClase(clase))).not.toContain('arcade/no-tailwind-shape');
+  });
+
+  it('mira los argumentos de `cx(…)`, los ternarios y las plantillas', async () => {
+    expect(await arcade("import { cx } from '../ui';\nexport const c = (on: boolean) => cx('flex', on && 'rounded-full');\n")).toContain('arcade/no-tailwind-shape');
+    expect(await arcade('export const A = ({ on }: { on: boolean }) => <div className={on ? "border-2" : "flex"} />;\n')).toContain('arcade/no-tailwind-shape');
+    expect(await arcade('export const A = ({ r }: { r: string }) => <div className={`flex rounded-${r}`} />;\n')).toContain('arcade/no-tailwind-shape');
+  });
+
+  it('no mira las clases de CSS Modules', async () => {
+    expect(await arcade("import s from './A.module.css';\nexport const A = () => <div className={s.border} />;\n")).toEqual([]);
+  });
+
+  it('no se aplica dentro de `ui/`', async () => {
+    expect(await arcade(conClase('rounded-full border-2'), 'frontend/src/ui/Prueba.tsx')).toEqual([]);
   });
 });
 

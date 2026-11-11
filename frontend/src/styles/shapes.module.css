@@ -1,0 +1,53 @@
+/*
+ * Formas de token para las pantallas maquetadas con Tailwind (acceso, perfil, administración, novedades…). Tailwind
+ * solo maqueta (spec §11, parte H): radios, bordes y sombras salen de aquí sobre `--r-*`, `--ol-*` y `--sh-*`. El
+ * color del borde lo pone `tones.module.css` (`borderNavy`, `borderRedText`), por eso aquí solo van grosor y estilo.
+ */
+
+/* Caja que recibe el foco por programa (avisos y errores de los formularios): esquinas de carta y anillo azul noche. */
+.focusBox {
+  border-radius: var(--r-card);
+  outline-offset: 2px;
+}
+.focusBox:focus-visible {
+  outline: var(--ol-3) solid var(--navy);
+}
+
+/* Franja: esquinas de franja y contorno de 2,5 px (avisos de error, filas del editor). */
+.franja {
+  border-style: solid;
+  border-width: var(--ol-2-5);
+  border-radius: var(--r-franja);
+}
+/* Pie de franja: sin borde arriba, pegado a la cabecera que lo abre (las estadísticas del perfil). */
+.franjaFoot {
+  border-style: solid;
+  border-width: 0 var(--ol-2-5) var(--ol-2-5);
+  border-radius: 0 0 var(--r-franja) var(--r-franja);
+}
+/* Carta discontinua (la lista de ventajas del acceso). */
+.dashedCard {
+  border-style: dashed;
+  border-width: var(--ol-2);
+  border-radius: var(--r-card);
+}
+/* Disco con contorno de 3 px (iconos grandes, el recorte del avatar). */
+.disc {
+  border-style: solid;
+  border-width: var(--ol-3);
+  border-radius: 50%;
+}
+/* Contorno de 3 px sin tocar el radio (el avatar grande del perfil). */
+.ring3 {
+  border-style: solid;
+  border-width: var(--ol-3);
+}
+/* Rombo de las listas de cambios: contorno de 2 px. */
+.diamond {
+  border-style: solid;
+  border-width: var(--ol-2);
+}
+/* Punto redondo de las listas compactas. */
+.dot {
+  border-radius: 50%;
+}

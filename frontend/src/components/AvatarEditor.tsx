@@ -6,6 +6,7 @@ import { authErrorMessage } from '../auth/authErrors';
 import { cx, Dialog, Pill, Slider } from '../ui';
 import { Avatar } from './Avatar';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 const MAX_CLIENT_BYTES = 5 * 1024 * 1024;
 
@@ -50,7 +51,7 @@ export function AvatarEditor({ name, avatar, level, onSaved }: { name: string; a
 
   return <>
     <span className="relative inline-flex shrink-0">
-      <Avatar name={name} avatar={avatar} level={level} size="xxl" className={cx('border-[3px]', tone.borderNavy)} />
+      <Avatar name={name} avatar={avatar} level={level} size="xxl" className={cx(shape.ring3, tone.borderNavy)} />
       <span className="absolute -bottom-1 -right-1" data-layer>
         <Pill size="round" variant="yellow" icon={Camera} aria-label="Cambiar avatar" title="Cambiar avatar" onClick={() => setOpen(true)} />
       </span>
@@ -64,7 +65,7 @@ export function AvatarEditor({ name, avatar, level, onSaved }: { name: string; a
             {avatar.type === 'CUSTOM' && <Pill variant="danger" icon={Trash2} loading={busy} onClick={() => void removeAvatar()}>Quitar mi imagen</Pill>}
           </div>
         : <div className="mt-3 grid gap-5 sm:grid-cols-[14rem_minmax(0,1fr)]">
-            <div className={cx('mx-auto h-56 w-56 overflow-hidden rounded-full border-[3px]', tone.borderNavy, tone.bgNavy)}><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div>
+            <div className={cx('mx-auto h-56 w-56 overflow-hidden', shape.disc, tone.borderNavy, tone.bgNavy)}><img ref={imageRef} src={source} alt="Previsualización del recorte" className="h-full w-full object-cover" style={{ transform: `translate(${offsetX * .35}%, ${offsetY * .35}%) scale(${zoom})` }} /></div>
             <div className="flex min-w-0 flex-col gap-3">
               <Slider label="Zoom" value={zoom} onChange={setZoom} min={1} max={3} step={0.1} valueText={(v) => `${v.toFixed(1)}×`} disabled={busy} />
               <Slider label="Mover horizontalmente" value={offsetX} onChange={setOffsetX} min={-100} max={100} step={1} disabled={busy} />

@@ -1,6 +1,7 @@
 import { CHANGELOG_CATEGORIES, CHANGELOG_CATEGORY_LABELS, type ChangelogChange, type ChangelogCategory, type ChangelogEntry } from '@pokemon-universe/shared/public';
 import { cx, Badge, Chip, HighlightCard, Icon as UiIcon, PatchHero, SectionRule } from '../ui';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 import { changelogCategories } from './categories';
 
 export function formatChangelogDate(value: string): string {
@@ -47,7 +48,7 @@ export function PatchNotes({ entry, latest = false }: { entry: ChangelogEntry; l
         return <section key={type} aria-labelledby={`${entryId}-${type}`} className="min-w-0">
           <SectionRule id={`${entryId}-${type}`} tone={category.tone} icon={category.icon} label={CHANGELOG_CATEGORY_LABELS[type]} count={changes.length} />
           <ul className={cx('mt-4 grid gap-3 text-18 font-semibold leading-snug', tone.textInk)}>
-            {changes.map((change, index) => <li className="flex gap-3" key={`${type}-${index}`}><span className={cx('mt-[.45em] h-2.5 w-2.5 shrink-0 rotate-45 border-2', tone.borderNavy, tone.bgYellow)} aria-hidden="true" /><span className="min-w-0">{change.text}</span></li>)}
+            {changes.map((change, index) => <li className="flex gap-3" key={`${type}-${index}`}><span className={cx('mt-[.45em] h-2.5 w-2.5 shrink-0 rotate-45', shape.diamond, tone.borderNavy, tone.bgYellow)} aria-hidden="true" /><span className="min-w-0">{change.text}</span></li>)}
           </ul>
         </section>;
       })}
@@ -83,7 +84,7 @@ export function PatchPreview({ entry, limit }: { entry: ChangelogEntry; limit: n
         return <section key={type} aria-labelledby={`${entry.id}-compact-${type}`}>
           <h4 id={`${entry.id}-compact-${type}`}><Chip tone={category.chip} icon={<UiIcon icon={category.icon} size={18} />}>{CHANGELOG_CATEGORY_LABELS[type]}</Chip></h4>
           <ul className="mt-2 grid gap-1.5 text-15">
-            {changes.map((change, index) => <li className="flex gap-2" key={`${type}-${index}`}><span className={cx('mt-[.55em] h-1.5 w-1.5 shrink-0 rounded-full', tone.bgYellow)} aria-hidden="true" /><span>{change.text}</span></li>)}
+            {changes.map((change, index) => <li className="flex gap-2" key={`${type}-${index}`}><span className={cx('mt-[.55em] h-1.5 w-1.5 shrink-0', shape.dot, tone.bgYellow)} aria-hidden="true" /><span>{change.text}</span></li>)}
           </ul>
         </section>;
       })}

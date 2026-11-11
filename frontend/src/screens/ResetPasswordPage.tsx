@@ -5,6 +5,7 @@ import { authError, INVALID_LINK_MESSAGE, isInvalidResetLink, passwordsMatch, ty
 import { LegalLine } from '../components/LegalLine';
 import { cx, Field, Panel, Pill, PillLink, Screen, StateBox } from '../ui';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 const ID = 'nueva-contrasena';
 
@@ -66,7 +67,7 @@ export function ResetPasswordPage() {
             <p className={cx('mt-1 text-15 font-bold 2xl:mt-2 2xl:text-18', tone.textInk2)}>Al guardarla entrarás directamente.</p>
           </div>
           {linkInvalid ? (
-            <div ref={invalidBox} tabIndex={-1} data-testid="enlace-no-valido" className={cx('flex flex-col gap-4 rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+            <div ref={invalidBox} tabIndex={-1} data-testid="enlace-no-valido" className={cx('flex flex-col gap-4', shape.focusBox)}>
               <StateBox kind="error" title="Enlace no válido" text={INVALID_LINK_MESSAGE} onCream />
               <PillLink to="/auth/recuperar" variant="yellow" block>Pedir otro enlace</PillLink>
             </div>
@@ -75,7 +76,7 @@ export function ResetPasswordPage() {
               <Field label="Contraseña nueva" name="password" type="password" minLength={10} maxLength={128} required autoComplete="new-password" hint="Mínimo 10 caracteres." error={fieldError('password')} />
               <Field label="Repite la contraseña" name="passwordRepeat" type="password" required autoComplete="new-password" error={fieldError('passwordRepeat')} />
               {error && !error.field && (
-                <div ref={errorBox} tabIndex={-1} className={cx('rounded-[var(--r-card)] outline-offset-2 focus-visible:outline focus-visible:outline-[3px]', tone.focusNavy)}>
+                <div ref={errorBox} tabIndex={-1} className={shape.focusBox}>
                   <StateBox kind="error" title="No se pudo guardar la contraseña" text={error.message} onCream />
                 </div>
               )}

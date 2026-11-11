@@ -5,6 +5,7 @@ import { ConfirmDialog, cx, Panel, Pill, StateBox } from '../ui';
 import { adminListStatus, formatAdminDate, formatCount, formatDuration } from './admin-format';
 import { Detail, DetailGrid, StatusChip } from './AdminParts';
 import tone from '../styles/tones.module.css';
+import shape from '../styles/shapes.module.css';
 
 export type SyncSource = 'pokemon' | 'tcg' | 'all';
 
@@ -66,7 +67,7 @@ export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry 
                 <Detail label="Omitidos">{formatCount(item.skipped)}</Detail>
                 <Detail label="Próxima">{formatAdminDate(item.nextSyncAt)}</Detail>
               </DetailGrid>
-              {item.error && <p className={cx('rounded-[var(--r-franja)] border-[2.5px] px-3 py-2 text-15 font-bold', tone.borderRedText, tone.bgCream2, tone.textRedText)} role="status">{item.error}</p>}
+              {item.error && <p className={cx('px-3 py-2 text-15 font-bold', shape.franja, tone.borderRedText, tone.bgCream2, tone.textRedText)} role="status">{item.error}</p>}
             </Panel>
           ))}
         </div>
