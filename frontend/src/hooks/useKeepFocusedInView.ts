@@ -29,6 +29,29 @@ export function keyboardViewportHeight({ layoutHeight, visualHeight, scale, edit
 }
 
 /**
+ * Lleva el campo a la vista dentro de su `main` y, si una capa pegada abajo (la placa de acción de `ScreenSplit`) lo
+ * sigue tapando, desplaza un poco más hasta dejarlo encima de ella.
+ */
+function revealField(field: HTMLElement): void {
+  field.scrollIntoView({ block: 'nearest' });
+  const scroller = field.closest('main');
+  for (let attempt = 0; attempt < 3 && scroller; attempt += 1) {
+    const box = field.getBoundingClientRect();
+    const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    if (!hit || field.contains(hit) || hit.contains(field)) return;
+    // La capa que tapa es la pegada (`sticky` o `fixed`) que contiene el punto, no el botón que haya dentro.
+    let layer: Element = hit;
+    for (let node: Element | null = hit; node && node !== scroller; node = node.parentElement) {
+      const position = getComputedStyle(node).position;
+      if (position === 'sticky' || position === 'fixed') { layer = node; break; }
+    }
+    const cover = layer.getBoundingClientRect();
+    if (cover.top >= box.bottom) return;
+    scroller.scrollBy({ top: box.bottom - cover.top + 8 });
+  }
+}
+
+/**
  * Que el teclado virtual no tape el campo en el que se escribe. Se monta una vez en el armazón (`Layout`): cuando la
  * vista visible encoge con un campo de texto enfocado (el teclado se abre o crece), el campo se desplaza lo justo
  * dentro del `main` para quedar a la vista (`block: 'nearest'`), sea el buscador de Pokémon, una respuesta escrita o
@@ -56,7 +79,7 @@ export function useKeepFocusedInView(): void {
       if (shrank && editing) {
         cancelAnimationFrame(frame);
         // Tras el reflujo del nuevo alto: el `main` ya mide lo que queda sobre el teclado.
-        frame = requestAnimationFrame(() => focused.scrollIntoView({ block: 'nearest' }));
+        frame = requestAnimationFrame(() => revealField(focused));
       }
     };
     // Al salir del campo (el teclado se cierra), la app vuelve a `100dvh`.

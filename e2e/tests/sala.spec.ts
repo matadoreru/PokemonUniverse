@@ -1,5 +1,5 @@
 import { expect, test as base, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { capture, capturarATresTamaños, cartaDeJuego, collectErrors, conmutarJuego, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, SIZES, uniqueName } from '../src/helpers.js';
+import { capture, capturarATresTamaños, cartaDeJuego, collectErrors, conmutarJuego, crearSalaConJugadores, createRoom, joinRoom, loginAsGuest, esperarPartida, sinTapar, SIZES, uniqueName } from '../src/helpers.js';
 
 interface Jugador {
   context: BrowserContext;
@@ -357,6 +357,8 @@ test('a 390 px, el campo del chat sigue a la vista cuando el teclado encoge la p
     // Sin el hook el campo queda casi 300 px por debajo; con él, a ras del fondo del `main` (unos px de margen).
     return box.top >= main.top - 1 && box.bottom <= main.bottom + 4;
   }), { message: 'el campo del chat queda dentro del main visible', timeout: 3_000 }).toBe(true);
+  // Ni la placa «Iniciar partida» (pegada abajo) ni otra capa lo tapan.
+  expect(await sinTapar(campo), 'el campo del chat no queda tapado').toBe(true);
   await expect(campo).toBeFocused();
   expect(await host.page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 1), 'sin scroll de documento').toBe(true);
   // En Android la vista entera encoge: la app no fija ningún alto propio (eso queda para iOS).
