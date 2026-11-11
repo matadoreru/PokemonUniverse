@@ -1,20 +1,21 @@
 package es.pokemonuniverse.adapters.in.rest.auth;
 
+import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.registeredUserId;
+
 import es.pokemonuniverse.adapters.in.rest.ApiError;
-import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.adapters.in.rest.identity.SessionCookies;
 import es.pokemonuniverse.application.auth.AuthService;
 import es.pokemonuniverse.application.auth.GuestAvatarCleanup;
 import es.pokemonuniverse.application.auth.IdentityTokens;
 import es.pokemonuniverse.application.auth.PasswordResetService;
+import es.pokemonuniverse.application.errors.UnauthorizedException;
 import es.pokemonuniverse.application.ports.AvatarStorage;
 import es.pokemonuniverse.application.profile.ProfileService;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.profile.ProfileVisibility;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Body;
@@ -40,8 +41,6 @@ import java.util.Set;
 @Controller("/api/auth")
 @ExecuteOn(TaskExecutors.BLOCKING)
 public class AuthController {
-
-  private static final String REGISTERED_REQUIRED = "Registered account required";
 
   private final AuthService auth;
   private final IdentityTokens tokens;
@@ -149,9 +148,8 @@ public class AuthController {
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get("/profile")
   public ProfileResponse profile(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
-    return profiles.profileOf(user.id()).map(ProfileResponse::from).orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    return profiles.profileOf(registeredUserId(current)).map(ProfileResponse::from)
+        .orElseThrow(AuthController::registeredRequired);
   }
 
   @Operation(summary = "Cambiar quién puede ver el perfil (nivel, estadísticas y logros)")
@@ -161,10 +159,9 @@ public class AuthController {
   @Patch("/profile")
   public ProfileSettingsResponse updateProfile(@Body ProfileSettingsRequest body,
       @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    var userId = registeredUserId(current);
     var visibility = ProfileVisibility.valueOf(valid(body).profileVisibility());
-    if (!profiles.changeVisibility(user.id(), visibility)) throw new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED);
+    if (!profiles.changeVisibility(userId, visibility)) throw registeredRequired();
     return new ProfileSettingsResponse(visibility);
   }
 
@@ -173,10 +170,9 @@ public class AuthController {
   @ApiResponse(responseCode = "401", description = "Cuenta registrada requerida", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get("/progress")
   public ProgressResponse progress(@Parameter(hidden = true) @Identity Optional<AuthUser> current) {
-    var user = current.filter(u -> u.kind() == AuthUser.Kind.USER)
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
-    return profiles.progressOf(user.id()).map(p -> new ProgressResponse(ProfileResponse.Progress.from(p)))
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED));
+    return profiles.progressOf(registeredUserId(current))
+        .map(p -> new ProgressResponse(ProfileResponse.Progress.from(p)))
+        .orElseThrow(AuthController::registeredRequired);
   }
 
   /** Valida el cuerpo ya normalizado; el manejador global da formato al fallo con la ruta del campo. */
@@ -184,6 +180,11 @@ public class AuthController {
     Set<jakarta.validation.ConstraintViolation<T>> violations = validator.validate(normalized);
     if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
     return normalized;
+  }
+
+  /** La sesión es de una cuenta que ya no existe: el mismo 401 que sin sesión. */
+  private static UnauthorizedException registeredRequired() {
+    return new UnauthorizedException(UnauthorizedException.REGISTERED_REQUIRED);
   }
 
   private HttpResponse<UserResponse> session(MutableHttpResponse<UserResponse> response) {

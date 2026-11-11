@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
 @Requires(beans = DailyResultRepository.class)
 public class DailyChallengeService {
 
-  public static final String REGISTERED_REQUIRED = "Registered account required";
   public static final String ALREADY_PLAYED = "Daily challenge already played";
   /** El catálogo vigente está vacío (p. ej. antes de la primera sincronización): no se fija el día. */
   public static final String CATALOG_UNAVAILABLE = "Daily challenge unavailable: the Pokémon catalog is empty";
@@ -97,7 +96,7 @@ public class DailyChallengeService {
    * arranque falla, la fila se borra y la cuenta puede reintentar.
    */
   public RoomView start(AuthUser identity, String connectionId) {
-    if (identity.kind() != AuthUser.Kind.USER) throw new RoomException(REGISTERED_REQUIRED);
+    if (identity.kind() != AuthUser.Kind.USER) throw new RoomException(UnauthorizedException.REGISTERED_REQUIRED);
     // Antes de fijar el día: quien está en otra sala no escribe nada.
     if (rooms.occupancyOf(identity.id()) != RoomOccupancy.NONE) throw new RoomException(LEAVE_ROOM_FIRST);
 
@@ -216,7 +215,7 @@ public class DailyChallengeService {
   }
 
   private static String registeredId(AuthUser user) {
-    if (user.kind() != AuthUser.Kind.USER) throw new UnauthorizedException(REGISTERED_REQUIRED);
+    if (user.kind() != AuthUser.Kind.USER) throw new UnauthorizedException(UnauthorizedException.REGISTERED_REQUIRED);
     return user.id();
   }
 

@@ -1,10 +1,10 @@
 package es.pokemonuniverse.adapters.in.rest;
 
 import es.pokemonuniverse.application.errors.InvalidInputException;
+import es.pokemonuniverse.application.errors.UnauthorizedException;
 import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.json.tree.JsonNode;
 import java.util.List;
 import java.util.Map;
@@ -16,15 +16,14 @@ import java.util.Optional;
  */
 public final class UserContentRequests {
 
-  private static final String REGISTERED_REQUIRED = "Registered account required";
   private static final int MAX_ID_LENGTH = 128;
 
   private UserContentRequests() {}
 
-  /** {@code requireUser}: 401 sin sesión o con sesión de invitado. */
+  /** 401 sin sesión o con sesión de invitado; el id de la cuenta registrada si no. */
   public static String registeredUserId(Optional<AuthUser> current) {
     return current.filter(user -> user.kind() == AuthUser.Kind.USER)
-        .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, REGISTERED_REQUIRED))
+        .orElseThrow(() -> new UnauthorizedException(UnauthorizedException.REGISTERED_REQUIRED))
         .id();
   }
 

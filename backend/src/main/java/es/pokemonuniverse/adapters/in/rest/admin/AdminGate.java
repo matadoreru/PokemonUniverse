@@ -3,6 +3,7 @@ package es.pokemonuniverse.adapters.in.rest.admin;
 import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.adapters.in.rest.identity.IdentityFilter;
 import es.pokemonuniverse.application.admin.AdminService;
+import es.pokemonuniverse.application.errors.UnauthorizedException;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.annotation.Order;
@@ -25,7 +26,6 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 @Order(200)
 public class AdminGate {
 
-  static final String REGISTERED_REQUIRED = "Registered account required";
   static final String ADMIN_REQUIRED = "Administrator access required";
 
   private final AdminService admin;
@@ -39,7 +39,7 @@ public class AdminGate {
   public @Nullable HttpResponse<?> requireAdmin(HttpRequest<?> request) {
     var user = request.getAttribute(IdentityFilter.ATTRIBUTE, AuthUser.class)
         .filter(identity -> identity.kind() == AuthUser.Kind.USER);
-    if (user.isEmpty()) return HttpResponse.status(HttpStatus.UNAUTHORIZED).body(ApiError.of(REGISTERED_REQUIRED));
+    if (user.isEmpty()) return HttpResponse.status(HttpStatus.UNAUTHORIZED).body(ApiError.of(UnauthorizedException.REGISTERED_REQUIRED));
     if (!admin.isAdmin(user.get().id())) {
       return HttpResponse.status(HttpStatus.FORBIDDEN).body(ApiError.of(ADMIN_REQUIRED));
     }
