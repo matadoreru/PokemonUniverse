@@ -79,9 +79,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Port literal de {@code apps/server/src/rooms/manager.ts}: el coordinador autoritativo de salas.
+ * Coordinador autoritativo de salas: crea y cierra salas, aplica los comandos de los jugadores y sus temporizadores.
  *
- * <p>Concurrencia (constraint 9): Node es de un solo hilo y cada manejador muta la sala sin {@code await}; aquí cada
+ * <p>Concurrencia: las salas se mutan desde varios hilos (conexiones y temporizadores), así que cada
  * método público, callback de temporizador y evento de conexión toma el {@link LiveRoom#lock} de la sala que toca
  * ({@code ReentrantLock}, reentrante para las llamadas internas). La búsqueda jugador → sala usa los mapas concurrentes
  * de {@link RoomStore} y se revalida tras tomar el lock (la sala puede haberse borrado o el jugador haberse ido). Ningún

@@ -125,13 +125,10 @@ tasks.register<VerifyOpenApi>("verifyOpenApi") {
 
 tasks.named("check") { dependsOn("verifyOpenApi") }
 
-// Reenvía -Dpu.exportFixture al JVM de los tests (ExportJavaSessionFixture solo corre con "true").
-val exportFixture = providers.systemProperty("pu.exportFixture").orElse("false")
 // Reenvía -Dupdate (ConfigMessagesSnapshotTest reescribe su instantánea con "true").
 val updateSnapshots = providers.systemProperty("update").orElse("false")
 tasks.named<Test>("test") {
   // webp-imageio carga su libwebp con System.load (acceso nativo restringido desde Java 24).
   jvmArgs("--enable-native-access=ALL-UNNAMED")
-  systemProperty("pu.exportFixture", exportFixture.get())
   systemProperty("update", updateSnapshots.get())
 }

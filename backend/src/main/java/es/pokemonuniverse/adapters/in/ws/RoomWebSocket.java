@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Transporte de salas {@code /ws}, el {@code io.on('connection')} + {@code RoomManager.bind} de Node.
+ * Transporte de salas {@code /ws}: autentica la conexión y lleva sus mensajes al coordinador de salas.
  *
  * <p>El event loop solo verifica la cookie, parsea el mensaje (≤ 32 KiB), aplica el límite de eventos y encola: cada
  * conexión ejecuta apertura, comandos y cierre en orden en un hilo virtual propio ({@link WsSessions.Connection#enqueue}),

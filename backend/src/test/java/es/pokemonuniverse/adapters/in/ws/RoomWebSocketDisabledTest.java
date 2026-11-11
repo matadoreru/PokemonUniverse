@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-/** Con {@code pu.rooms.enabled=false} (producción en 2A), {@code /ws} cierra con 4403 sin tocar el coordinador. */
+/** Con {@code pu.rooms.enabled=false}, {@code /ws} cierra con 4403 sin tocar el coordinador. */
 @MicronautTest(transactional = false)
 @Property(name = "spec.name", value = "RoomWebSocketDisabledTest")
 @Property(name = "pu.rooms.enabled", value = "false")
