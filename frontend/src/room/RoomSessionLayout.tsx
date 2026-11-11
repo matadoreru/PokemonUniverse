@@ -68,7 +68,7 @@ function RoomSessionContent() {
   useFeedbackTarget(room ? (room.game as { gameId?: string } | null)?.gameId ?? room.selectedGameId : null, room?.code);
   // Revelación común a los minijuegos al entrar en resultados de ronda (salvo los que ya piden la suya).
   useSfxCue('game.reveal', roomRevealKey(room?.game as { gameId?: string; phase?: string; roundNumber?: number } | null | undefined));
-  // Victoria común al llegar a los resultados de la partida si ganó el jugador local (salvo los que ya la dan).
+  // Victoria del reto diario (su pantalla de resultados no monta `ResultsShell`, que la da en el resto).
   useSfxCue('game.win', gameWinCue(room, user?.id));
   // Si falla, el error ya sale en el aviso de la sala y se sigue en ella.
   const leave = () => void leaveRoom().then(() => navigate('/play')).catch(() => undefined);

@@ -35,27 +35,22 @@ export function roomRevealKey(game: { gameId?: string; phase?: string; roundNumb
   return `${game.gameId}:${game.roundNumber ?? 0}`;
 }
 
-/**
- * Juegos cuya pantalla de resultados ya monta `ResultsShell` con `won` (que da su propio `game.win`): la sala no suma
- * el suyo para no duplicarlo.
- */
-export const SELF_WIN_GAMES: ReadonlySet<string> = new Set(['pokedex-distance']);
-
 interface WinCueRoom {
   phase?: string;
   gamesPlayed?: number;
   game?: unknown;
+  daily?: unknown;
 }
 
 /**
- * Clave del `game.win` común de la sala: cambia al entrar en los resultados de la partida si el jugador local ganó
- * (`results.winnerId` o su fila con `won`, que cubre los empates y los equipos) y es `null` en otro caso. Un juego
- * sin ganador en sus resultados no suena.
+ * Clave del `game.win` de la sala en el reto diario: cambia al entrar en sus resultados si el jugador local ganó
+ * (`results.winnerId` o su fila con `won`) y es `null` en otro caso. Fuera del reto el `game.win` (y el
+ * `game.podium`) los da solo `ResultsShell`, que sabe quién ganó en cada juego; la pantalla del reto no lo monta.
  */
 export function gameWinCue(room: WinCueRoom | null | undefined, selfId: string | null | undefined): string | null {
-  if (!room || room.phase !== 'GAME_RESULTS' || !selfId) return null;
+  if (!room || room.phase !== 'GAME_RESULTS' || !room.daily || !selfId) return null;
   const game = room.game as { gameId?: string; results?: { winnerId?: string | null; standings?: readonly { playerId: string; won?: boolean }[] } | null } | null | undefined;
-  if (!game?.gameId || SELF_WIN_GAMES.has(game.gameId)) return null;
+  if (!game?.gameId) return null;
   const results = game.results;
   if (!results) return null;
   const won = results.winnerId === selfId || (results.standings ?? []).some((s) => s.playerId === selfId && s.won === true);

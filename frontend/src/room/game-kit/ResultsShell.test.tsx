@@ -50,6 +50,18 @@ describe('ResultsShell', () => {
     expectSingleLiveRegion(html);
     expect(html).toContain('<p class="sr-only" role="status" aria-live="polite"></p>');
   });
+  it('confeti solo para quien gana; trofeo con rebote y la celebración en `data-celebration`', () => {
+    const won = shell({ won: true, standings: STANDINGS, selfId: 'a' });
+    expect(won).toContain('data-testid="confetti"');
+    expect(won).toContain('data-celebration="win"');
+    expect(won).toMatch(/class="[^"]*motion-bump/);
+    const second = shell({ standings: STANDINGS, selfId: 'b' });
+    expect(second).not.toContain('data-testid="confetti"');
+    expect(second).toContain('data-celebration="podium"');
+    const fourth = shell({ standings: STANDINGS, selfId: 'd' });
+    expect(fourth).not.toContain('data-celebration');
+    expect(shell({ won: true, noWinner: true })).not.toContain('data-testid="confetti"');
+  });
   it('puntos con etiqueta propia', () => {
     expect(shell({ standings: STANDINGS.slice(0, 1), pointsLabel: (points) => `${points} puntos` })).toContain('12 puntos');
   });

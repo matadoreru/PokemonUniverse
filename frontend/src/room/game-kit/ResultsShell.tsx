@@ -1,12 +1,13 @@
 import type { AvatarRef } from '@pokemon-universe/shared/public';
 import { Crown, Trophy } from 'lucide-react';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { AchievementNotice } from '../../achievements/AchievementNotice';
 import { announcement } from '../../achievements/achievements-state';
 import { useAchievements } from '../../achievements/AchievementsContext';
 import { audio } from '../../audio';
 import { Avatar } from '../../components/Avatar';
-import { Badge, cx, Icon, Panel, Row, ScorePop } from '../../ui';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { Badge, Confetti, cx, Icon, Panel, Row, ScorePop } from '../../ui';
 import type { RoomMembers } from '../room-members';
 import s from './ResultsShell.module.css';
 
@@ -14,6 +15,31 @@ import s from './ResultsShell.module.css';
 export function resultsCue({ podium, won }: { podium: boolean; won: boolean }): 'game.win' | 'game.podium' | null {
   if (won) return 'game.win';
   return podium ? 'game.podium' : null;
+}
+
+/** Lo que mira `resultsCelebration`: el `won` del juego y la clasificación que pinta la pantalla. */
+export interface CelebrationInput {
+  won: boolean;
+  /** Forzar `game.podium` aunque la clasificación no lo diga. */
+  podium?: boolean | undefined;
+  standings?: readonly Pick<ResultsStanding, 'id' | 'position' | 'points'>[] | undefined;
+  selfId?: string | undefined;
+  noWinner?: boolean | undefined;
+  winnersNeedPoints?: boolean | undefined;
+}
+
+/**
+ * Celebración de los resultados de una partida para el jugador local: `win` si ganó (lo dice el juego con `won`, que
+ * cubre empates y equipos), `podium` si quedó 2.º o 3.º en la clasificación (con `winnersNeedPoints`, solo con puntos)
+ * y nada en otro caso o en las partidas cooperativas (`noWinner`).
+ */
+export function resultsCelebration({ won, podium = false, standings, selfId, noWinner = false, winnersNeedPoints = false }: CelebrationInput): 'win' | 'podium' | null {
+  if (noWinner) return null;
+  if (won) return 'win';
+  if (podium) return 'podium';
+  const own = selfId === undefined ? undefined : standings?.find((standing) => standing.id === selfId);
+  if (!own || own.position < 2 || own.position > 3) return null;
+  return winnersNeedPoints && own.points <= 0 ? null : 'podium';
 }
 
 /** Puesto de la clasificación de unos resultados. */
@@ -91,12 +117,13 @@ export function ResultsStandings({ standings, selfId, pointsLabel = defaultPoint
  * siempre montada, anuncia esos logros: las pantallas de resultados no tienen otra.
  */
 export function ResultsShell({ title, subtitle, won = false, podium = false, standings, selfId, pointsLabel, winnersNeedPoints, noWinner, aside, actions, fillLarge = false, children }: { title: string; subtitle: string; won?: boolean; podium?: boolean; standings?: readonly ResultsStanding[]; selfId?: string; pointsLabel?: (points: number) => string; /** Ver `ResultsStandings`. */ winnersNeedPoints?: boolean; /** Ver `ResultsStandings`. */ noWinner?: boolean; aside?: ReactNode; actions?: ReactNode; /** Ver arriba: pantalla llena en escritorio grande. */ fillLarge?: boolean; children?: ReactNode }) {
-  // Solo al montar: un cambio posterior de `won` no repite el sonido.
-  const initial = useRef({ podium, won });
+  // Única dueña del sonido del final de una partida (la sala ya no da su `game.win`, salvo en el reto diario). Solo al
+  // montar: un cambio posterior de `won` o de la clasificación no repite el sonido ni el confeti.
+  const reduced = usePrefersReducedMotion();
+  const [celebration] = useState(() => resultsCelebration({ won, podium, standings, selfId, noWinner, winnersNeedPoints }));
   useEffect(() => {
-    const cue = resultsCue(initial.current);
-    if (cue) audio.play(cue);
-  }, []);
+    if (celebration) audio.play(celebration === 'win' ? 'game.win' : 'game.podium');
+  }, [celebration]);
   const achievements = useAchievements();
   const spoken = achievements.visible && achievements.queue.shownIn === 'GAME_RESULTS' ? announcement(achievements.queue) : '';
   const wide = aside != null;
@@ -105,7 +132,7 @@ export function ResultsShell({ title, subtitle, won = false, podium = false, sta
     <p className="sr-only" role="status" aria-live="polite">{spoken}</p>
     <Panel variant="dark" as="div" className={cx(wide && s.widePanel)} bodyClassName={cx(s.body, wide && s.wideBody)}>
       <header className={cx(s.head, wide && s.wideHead)}>
-        <span className={s.trophy}><Icon icon={Trophy} size={32} /></span>
+        <span className={cx(s.trophy, 'motion-bump')} data-celebration={celebration ?? undefined}><Icon icon={Trophy} size={32} /></span>
         <span className={s.headText}>
           <span className={s.subtitle}>{subtitle}</span>
           <h1 className={s.title}>{title}</h1>
@@ -119,5 +146,7 @@ export function ResultsShell({ title, subtitle, won = false, podium = false, sta
         : <><AchievementNotice />{ranking}{children}</>}
       {actions && <div className={cx(s.actions, wide && s.wideActions)}>{actions}</div>}
     </Panel>
+    {/* Confeti solo para quien gana, nunca con reducción de movimiento. */}
+    {celebration === 'win' && !reduced && <Confetti />}
   </section>;
 }

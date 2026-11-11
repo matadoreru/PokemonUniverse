@@ -18,9 +18,9 @@ describe('useSfxCue', () => {
     expect(roomRevealKey({ gameId: 'pokedex-distance', phase: 'ROUND_RESULTS', roundNumber: 2 })).toBeNull();
     expect(roomRevealKey(null)).toBeNull();
   });
-  it('el game.win de la sala solo al ganador local en los resultados de la partida', () => {
+  it('el game.win de la sala solo en el reto diario y al ganador local de sus resultados', () => {
     const results = (winnerId: string | null, standings: { playerId: string; won?: boolean }[] = []) => ({ winnerId, standings });
-    const room = (gameId: string, r: unknown, phase = 'GAME_RESULTS') => ({ phase, gamesPlayed: 3, game: { gameId, results: r } });
+    const room = (gameId: string, r: unknown, phase = 'GAME_RESULTS', daily: unknown = { date: '2026-11-11' }) => ({ phase, gamesPlayed: 3, daily, game: { gameId, results: r } });
     expect(gameWinCue(room('type-duel', results('p1')), 'p1')).toBe('type-duel:3');
     expect(gameWinCue(room('type-duel', results('p2')), 'p1')).toBeNull();
     // Empate o equipo: sin winnerId pero con su fila ganadora.
@@ -31,7 +31,7 @@ describe('useSfxCue', () => {
     expect(gameWinCue(room('type-duel', results('p1'), 'ROUND_RESULTS'), 'p1')).toBeNull();
     expect(gameWinCue(room('type-duel', results('p1')), null)).toBeNull();
     expect(gameWinCue(null, 'p1')).toBeNull();
-    // Pokédex Distance ya lo da su ResultsShell con `won`.
-    expect(gameWinCue(room('pokedex-distance', results('p1')), 'p1')).toBeNull();
+    // Fuera del reto lo da `ResultsShell`: la sala no lo duplica.
+    expect(gameWinCue(room('type-duel', results('p1'), 'GAME_RESULTS', null), 'p1')).toBeNull();
   });
 });
