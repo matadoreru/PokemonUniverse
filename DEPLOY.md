@@ -92,7 +92,7 @@ Un tag git `v*` (por ejemplo `v0.9.0`) reconstruye las dos imágenes para amd64 
 despliega. La imagen nativa experimental (GraalVM, ≈ 10 min) se construye solo a mano: Actions → «Backend native image
 (experimental)» → Run workflow. Lanzar `main.yml`
 a mano (`workflow_dispatch`) fuerza las dos builds; solo hace falta si el job `retag` avisa de que falta un `:pre`
-(la primera ejecución ya lo construye todo porque aún no hay ningún Main verde). Los cambios en `main.yml` o en
+(por ejemplo, si nunca se ha publicado esa imagen). Los cambios en `main.yml` o en
 `.github/actions/` reconstruyen las dos imágenes.
 
 ### Tiempos del despliegue a PRE
@@ -250,11 +250,11 @@ docker compose exec -T postgres dropdb -U pokemon pokemon_universe_restore_test
 ```
 
 **Historiales de esquema.** `V16__borrar_prisma_migrations.sql` borra `_prisma_migrations`, la tabla de historial de
-Prisma que conservaba la BD de producción; `/api/health` lee solo `flyway_schema_history`. Al restaurar un dump sobre la BD que usa el backend, `flyway_schema_history` decide qué
-pasa en el siguiente arranque: si el dump la trae, Flyway sigue desde la versión registrada; si no la trae (un dump
-anterior a la etapa 1 o de solo algunas tablas), Flyway registra en silencio el esquema restaurado como versión 1
-(`baseline-on-migrate`), sin ejecutar `V1__baseline.sql` ni comprobar que coincide, y aplica encima las `V2__…`
-siguientes. Restaura solo dumps completos de este mismo esquema.
+Prisma que conservaba la BD de producción; `/api/health` lee solo `flyway_schema_history`. Al restaurar un dump sobre la
+BD que usa el backend, `flyway_schema_history` decide qué pasa en el siguiente arranque: si el dump la trae, Flyway
+sigue desde la versión registrada; si no la trae (un dump anterior a la etapa 1 o de solo algunas tablas), Flyway
+registra en silencio el esquema restaurado como versión 1 (`baseline-on-migrate`), sin ejecutar `V1__baseline.sql` ni
+comprobar que coincide, y aplica encima las `V2__…` siguientes. Restaura solo dumps completos de este mismo esquema.
 
 ## 5. Desplegar y volver atrás
 
@@ -273,10 +273,11 @@ handshake de `/ws` (101 y, sin sesión, cierre 4401 «Authentication required»;
 `ROOMS_ENABLED=false`). Si algo falla, vuelve a las imágenes exactas anteriores de `backend` y `web`. El mismo script
 sirve a mano contra cualquier stack: `./scripts/smoke-check.sh http://127.0.0.1:8080 https://pokemon.example.com`.
 
-`scripts/test-deploy-rollback.sh` simula `deploy.sh` con un `docker` falso (y la configuración real de
-`docker compose config`) en tres escenarios: despliegue correcto, `up` fallido y humo fallido. Falla si algún
-`compose up` arranca Java con salas, interrupción de salas o sincronización apagadas (el `.env` simulado es uno de antes
-del corte, con `PU_ROOMS_ENABLED=false`) o si un fallo no vuelve a las imágenes exactas anteriores.
+`scripts/test-deploy-rollback.sh` simula `deploy.sh` con un `docker` falso (y la configuración real de `docker compose
+config`) en cuatro escenarios: despliegue correcto, `up` fallido, humo fallido y `up` fallido sin snapshot local
+(`docker image tag` falla, y el rollback vuelve al tag anterior del backend). Falla si algún `compose up` arranca Java
+con salas, interrupción de salas o sincronización apagadas (el `.env` simulado es uno de antes del corte, con
+`PU_ROOMS_ENABLED=false`) o si un fallo no vuelve a las imágenes anteriores de `backend` y `web`.
 
 El rollback a través del corte 2D (volver a un SHA con Node) ya no está soportado: producción pasó el corte y
 `deploy.sh` ya no busca ni arranca el contenedor `server`. La imagen web anterior al corte tampoco arranca sin él
@@ -291,9 +292,10 @@ backup ni healthcheck rompe las garantías anteriores.
 ### Salas activas
 
 En la arquitectura actual las salas y sus temporizadores viven en memoria. Reiniciar `backend` conserva cuentas y
-estadísticas, pero termina las salas activas: al arrancar, el proceso nuevo las marca `INTERRUPTED` en el historial. Programa el despliegue entre sesiones y avisa a los jugadores. Lo mismo pasa si
-el backend se queda sin memoria: la JVM sale con `-XX:+ExitOnOutOfMemoryError` y `restart: unless-stopped` lo reinicia. Para hacer
-rolling deployments sin perder salas hay que implementar el adaptador Redis documentado en `docs/architecture.md`.
+estadísticas, pero termina las salas activas: al arrancar, el proceso nuevo las marca `INTERRUPTED` en el historial.
+Programa el despliegue entre sesiones y avisa a los jugadores. Lo mismo pasa si el backend se queda sin memoria: la JVM
+sale con `-XX:+ExitOnOutOfMemoryError` y `restart: unless-stopped` lo reinicia. Para hacer rolling deployments sin
+perder salas hay que implementar el adaptador Redis documentado en `docs/architecture.md`.
 
 ## 6. Desarrollo local con Docker
 

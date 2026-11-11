@@ -139,9 +139,10 @@ Plan: `docs/superpowers/plans/2026-11-03-etapa-2d-corte.md`. En un mismo desplie
 - **Compose.** Sin servicio `server`: `backend` solo depende de `postgres` y fija `ROOMS_ENABLED`,
   `INTERRUPT_STALE_ROOMS` y `BACKEND_DATA_SYNC_ENABLED` a `true` fijo. Los artworks van dentro de la imagen.
 - **Esquema.** Flyway es el único dueño (ver «Esquema» arriba); `_prisma_migrations` la borra `V16`.
-- **CI y despliegue.** Sin imagen, workflow ni job de Node.
-  `scripts/deploy.sh` para el contenedor Node del despliegue anterior antes de arrancar Java y lo borra cuando pasa
-  `scripts/smoke-check.sh`, de modo que Node y Java nunca sirven salas ni sincronizan a la vez.
+- **CI y despliegue.** Sin imagen, workflow ni job de Node. Durante el corte, `scripts/deploy.sh` paraba el
+  contenedor Node del despliegue anterior antes de arrancar Java y lo borraba cuando pasaba `scripts/smoke-check.sh`,
+  de modo que Node y Java nunca servían salas ni sincronizaban a la vez. Ese código se retiró cuando producción pasó
+  el corte: el script ya no busca Node y un rollback a través del corte no está soportado.
 
 ## Local data authority
 

@@ -1,8 +1,9 @@
 # Migración a Java: estado y pendientes
 
-Estado: **migración completada en local**. Etapa 1 implementada el 2026-10-31; 2A, 2B y 2C fusionadas en `main`; el
-corte 2D (Java único backend) implementado el 2026-11-03 en la rama `etapa-2d-corte`. Nada se ha subido ni desplegado:
-lo que queda está en [«Qué queda»](#qué-queda). Diseño en
+Estado: **migración completada y desplegada**. Etapa 1 implementada el 2026-10-31; 2A, 2B y 2C fusionadas en `main`; el
+corte 2D (Java único backend) implementado el 2026-11-03 y en producción. Todo está en `main` con push, la CI se
+ejecuta en cada push desde el 2026-10-31 y el oráculo Node está retirado. Lo que queda está en
+[«Qué queda»](#qué-queda). Diseño en
 [`superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md`](superpowers/specs/2026-10-31-separacion-frontend-backend-java-design.md);
 estructura vigente en [`architecture.md`](architecture.md#backend-java-etapa-1).
 
@@ -17,9 +18,9 @@ derivados de él, métricas, logs JSON, límites de peticiones, imagen JVM en Co
 
 - Hecho: `npm run typecheck`, `npm run lint`, `npm test`, `./gradlew check`; pila Compose local con las rutas Java y la
   cookie aceptada por Node (informe de la tarea 15); E2E 12/12 en verde con el backend arrancado por Playwright (tarea 16).
-- **Sin ejecución real de CI.** Los workflows solo se han validado con actionlint. La primera subida a `main` los
-  ejercita y construye las imágenes (aún no hay Main verde; desde 2D son dos, web y backend). Hasta entonces los tiempos «después» de
-  [`DEPLOY.md`](../DEPLOY.md) son estimaciones y hay que sustituirlos por los medidos.
+- CI real: el primer Main verde es del 2026-10-31 y desde entonces corre en cada push a `main` (dos imágenes, web y
+  backend). Los tiempos medidos del despliegue a PRE están en [`DEPLOY.md`](../DEPLOY.md) («Tiempos del despliegue a
+  PRE»).
 - Local: `e2e/playwright.config.ts` usa `reuseExistingServer`; si otro proceso ocupa el puerto 5173 (en esta máquina, el Vite
   de otro proyecto) Playwright lo reutiliza y las pruebas fallan o prueban otra aplicación. Se ejecutaron en el 5174.
 
@@ -184,9 +185,10 @@ dejan de saltarse.
 Implementado en la rama `etapa-2d-corte` (plan `superpowers/plans/2026-11-03-etapa-2d-corte.md`; resumen en
 [`architecture.md`](architecture.md#corte-2d-java-único-servidor)): la web habla solo con Java y se movió a `frontend/`;
 Flyway es el único dueño del esquema; compose sin Node, con salas, interrupción de salas y data-sync encendidos en el
-backend y los artworks en su imagen; nginx manda `/api/` y `/ws` a Java; CI sin imagen de Node (el oráculo corre en el
-job `oracle`); `deploy.sh` para Node antes de arrancar Java en el primer despliegue y tiene un rollback que nunca deja
-a los dos con salas o sincronización (`scripts/test-deploy-rollback.sh`).
+backend y los artworks en su imagen; nginx manda `/api/` y `/ws` a Java; CI sin imagen de Node (el oráculo corría en el
+job `oracle`, retirado después junto con el servidor Node); `deploy.sh` paraba Node antes de arrancar Java en el primer
+despliegue y tenía un rollback que nunca dejaba a los dos con salas o sincronización. Ese código solo del corte se
+retiró cuando producción pasó el corte (ver «Qué queda», punto 3).
 
 Lista de comprobación (todo junto, en un mismo despliegue):
 
@@ -234,8 +236,8 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   `backend/assets/pokemon-artworks` → `/app/pokemon-artworks` en la imagen.)
 - [x] Prueba de humo arm64 del codificador WebP: ejecutar una subida de avatar en la imagen `linux/arm64` (QEMU en CI o
   máquina arm64); hoy solo se comprobó en amd64. (Tarea 5 de 2D: job `webp-arm64` de `backend.yml`, que codifica con
-  `WebpEncoderSmoke` en la imagen `linux/arm64` con `--read-only` y `/tmp` `noexec`. **Todavía no se ha ejecutado**:
-  corre en la primera ejecución real de CI.)
+  `WebpEncoderSmoke` en la imagen `linux/arm64` con `--read-only` y `/tmp` `noexec`. En verde en la ejecución
+  41657262671 del 2026-11-03; desde entonces solo corre en PRs y cuando se publica arm64, con tags `v*` o a mano.)
 - [ ] Imagen nativa: AWT (ImageIO), ICU4J, los SPI de TwelveMonkeys y `webp-imageio` (JNI con `System.load` y Kotlin
   stdlib) necesitan metadatos; ver el riesgo «Imagen nativa». Sigue desplegándose la imagen JVM. (No bloquea el corte:
   pasa a «Qué queda».)
@@ -253,38 +255,41 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 ## Qué queda
 
-1. **Imagen nativa.** Compila pero falla al arrancar (metadatos de Hibernate/ByteBuddy, AWT, ICU4J, TwelveMonkeys y
-   `webp-imageio`); el job `backend-native` es experimental y no bloqueante. Se despliega la imagen JVM.
-2. **Primer push y primera ejecución real de CI.** Los workflows solo se han validado con actionlint. La primera
-   ejecución de `main.yml` construye las dos imágenes, ejecuta por primera vez `webp-arm64` y el job `oracle`, y da los
-   tiempos reales que sustituyen a las estimaciones de `DEPLOY.md` (ver «Métricas de CI»).
-3. **Despliegue a PRE y a producción, a cargo del usuario.** Hecho: producción ya pasó el corte 2D (la recuperación de
-   contraseña, solo en Java y posterior a 2D, funciona en PRO). Programar cada despliegue entre sesiones
-   (`DEPLOY.md` §5); tras un rollback de emergencia, redesplegar el SHA anterior.
-4. **Código solo del corte en `scripts/deploy.sh`:** retirado (rama `limpieza-corte`). Ya no se busca ni se para el
-   contenedor Node (`legacy_server_container`), no existen `rollback_across_cutover` ni `PU_CUTOVER_ROLLBACK_JAVA`, los
-   tres interruptores de `compose.yaml` valen `true` fijo y `scripts/test-deploy-rollback.sh` solo simula despliegues
-   sin Node (tres escenarios). Un rollback a través del corte deja de estar soportado. El test se ejecuta en CI
-   (`.github/workflows/deploy-scripts.yml`, con shellcheck) cuando cambian `scripts/**` o `compose.yaml`.
-5. **Deuda técnica.** La de «Deuda técnica conocida» más abajo; `_prisma_migrations` ya la borra `V16`; queda decidir
-   cuándo retirar el oráculo Node (`apps/server`) cuando ya no hagan falta sus fixtures.
+1. **Imagen nativa (parte G, pendiente: el usuario la retoma).** Compila pero falla al arrancar (metadatos de
+   Hibernate/ByteBuddy, AWT, ICU4J, TwelveMonkeys y `webp-imageio`); se construye solo a mano
+   (`backend-native.yml`). Se despliega la imagen JVM.
+2. **CI: hecho.** Primer push y primera ejecución real de `main.yml` el 2026-10-31; desde entonces corre en cada push
+   y despliega a PRE. `webp-arm64` y el job `oracle` (ya retirado) pasaron en la ejecución 41657262671. El 2026-11-11
+   Main falló dos veces porque `JpaGameResultsPersisterTest.sendsOnePushPerUserAfterCommit` usaba la hora real: entre
+   las 03:00 y las 05:00 de Madrid el perdedor también desbloqueaba «Búho nocturno». El test fija ahora el `Clock`
+   inyectado a mediodía UTC, como `RoomHistoryWriterAchievementsTest`.
+3. **Despliegue a PRE y a producción, a cargo del usuario.** Producción ya pasó el corte 2D (la recuperación de
+   contraseña, solo en Java y posterior a 2D, funciona en PRO). El código solo del corte está retirado de
+   `scripts/deploy.sh`: ya no se busca ni se para el contenedor Node (`legacy_server_container`), no existen
+   `rollback_across_cutover` ni `PU_CUTOVER_ROLLBACK_JAVA` y los tres interruptores de `compose.yaml` valen `true` fijo.
+   Un rollback a través del corte deja de estar soportado; un despliegue fallido vuelve a las imágenes exactas
+   anteriores (`DEPLOY.md` §5). `scripts/test-deploy-rollback.sh` lo simula y se ejecuta en CI
+   (`.github/workflows/deploy-scripts.yml`, con shellcheck) cuando cambian `scripts/**` o `compose.yaml`. Programar
+   cada despliegue entre sesiones.
+4. **Esquema: hecho.** `V16__borrar_prisma_migrations.sql` borra `_prisma_migrations` y `/api/health` lee solo
+   `flyway_schema_history`.
+5. **Deuda técnica.** La de «Deuda técnica conocida» más abajo.
 
 ## Riesgos abiertos
 
 | Riesgo | Detalle |
 | --- | --- |
-| Imagen nativa | Compila (UBI-micro) pero **falla al arrancar**: faltan metadatos de reflexión de Hibernate/ByteBuddy. El job `backend-native` de `main.yml` es no bloqueante y está fuera de la cadena de `deploy-pre`; nunca se ha comprobado su healthcheck. Se despliega la imagen JVM. Desde 2B, además, AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos en la imagen nativa; sin verificar. Desde 2C, los SPI de ImageIO de TwelveMonkeys y `webp-imageio` (JNI con `System.load` de su `.so` y Kotlin stdlib) también. |
+| Imagen nativa | Compila (UBI-micro) pero **falla al arrancar**: faltan metadatos de reflexión de Hibernate/ByteBuddy. Se construye solo a mano (`backend-native.yml`), fuera de la cadena de `deploy-pre`; nunca se ha comprobado su healthcheck. Se despliega la imagen JVM. Desde 2B, además, AWT (ImageIO) e ICU4J necesitan su `resource-config`/metadatos en la imagen nativa; sin verificar. Desde 2C, los SPI de ImageIO de TwelveMonkeys y `webp-imageio` (JNI con `System.load` de su `.so` y Kotlin stdlib) también. |
 | E2E fuera de CI | Playwright necesita un catálogo sembrado (`npm run db:seed`, descarga de PokéAPI); ningún workflow lo ejecuta. |
 | Micronaut 5.1 | Versión reciente (5.1.5); hay que vigilar versiones de parche y la compatibilidad de Micronaut Data/Serialization. |
-| Imagen base | `eclipse-temurin:25-jre-alpine` ha de ser multiarquitectura (amd64/arm64); se comprueba al construir en CI, no está verificado de antemano. La libwebp de `webp-imageio` 0.11.0 está enlazada contra glibc, pero solo pide símbolos que musl exporta: en amd64 se comprobó codificando en la imagen Alpine (también con `/tmp` `noexec`); en arm64 solo se revisaron los símbolos, falta ejecutarla. |
-| Primer despliegue | La imagen `pokemon-universe-backend` debe existir en GHCR antes de `docker compose pull`; la primera ejecución de `main.yml` la crea. |
+| Imagen base | `eclipse-temurin:25-jre-alpine` (amd64/arm64). La libwebp de `webp-imageio` 0.11.0 está enlazada contra glibc, pero solo pide símbolos que musl exporta: se comprobó codificando en la imagen Alpine en amd64 y, con `webp-arm64`, en arm64 (ejecución 41657262671). Un push normal publica solo amd64; arm64 sale con los tags `v*`. |
 | Contadores de límite | Los límites de peticiones viven en memoria: válidos con una sola instancia del backend. |
 | Observabilidad expuesta | `/health` y `/prometheus` no tienen autenticación; es seguro solo mientras nginx no los enrute. |
 
 ## Deuda técnica conocida
 
 - El procesamiento incremental de anotaciones está desactivado para que el OpenAPI sea determinista; ralentiza la compilación.
-- CI: los pushes en cola esperan a un build nativo en curso (concurrencia serie); un push solo de documentación
+- CI: un push solo de documentación
   redespliega PRE con imágenes idénticas; volver a lanzar un Main antiguo reetiqueta el `:pre` actual; las listas de rutas de
   los filtros están duplicadas entre workflows.
 - Deuda de 2B (aplazada en las revisiones):
@@ -412,6 +417,6 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 ## Métricas de CI
 
-Pendientes. Antes (medido, `docker.yml`): ≈ 8:15 por push. Después: solo estimaciones en `DEPLOY.md`; completar con la
-primera ejecución real de `main.yml` (frontend con su job `oracle`, backend con `webp-arm64`, retag, deploy-pre y job
-nativo por separado).
+Antes (medido, `docker.yml`): ≈ 8:15 por push. Después (medido, ejecución 41665973669 con las dos imágenes
+reconstruidas): **3:16 de push a PRE**; desglose en `DEPLOY.md` («Tiempos del despliegue a PRE»). Los Main recientes
+con cambios de backend tardan unos 5–6 min (Gradle check ≈ 3:40).
