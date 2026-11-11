@@ -7,7 +7,7 @@ import {
   otherTeam, previousTurnGuess, secretsReady, TEAM_COLOR, TEAM_NAME, whoAnnouncement, whoFocusKey, whoHeading, whoRole, whoRoundLabel, type WhoRole,
 } from '../games/who-is-who-pokemon/presentation';
 import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel } from '../games/who-is-who-pokemon/WhoIsWhoParts';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
 import { type ActiveGameProps, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';

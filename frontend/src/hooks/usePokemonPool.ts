@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '../lib/api';
 import { apiErrorMessage } from '../lib/api-errors';
 import type { PokemonSelectorResponse } from '../lib/api-contract';
-import type { PokemonSearchOption } from '../room/pokemon-search';
+import type { PokemonSearchOption } from '../room/game-kit/pokemon-search';
 
 interface PokemonPoolQuery {
   generations: readonly number[];

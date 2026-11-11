@@ -1,6 +1,6 @@
 import { Send } from 'lucide-react';
 import { useEffect, useRef, useState, type Ref } from 'react';
-import { useRefocusAfterReject } from '../../room/focus-transition';
+import { useRefocusAfterReject } from '../../room/game-kit/focus-transition';
 import { Pill, TextArea } from '../../ui';
 import s from './PokemonRedFlag.module.css';
 

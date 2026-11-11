@@ -12,7 +12,7 @@ import { member, roomView } from './test-support/room-view';
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 // El buscador de verdad necesita el pool: aquí se pinta un sustituto que enseña su etiqueta, los bloqueados y si se enfoca solo.
-vi.mock('./PokemonSelector', () => ({
+vi.mock('./game-kit/PokemonSelector', () => ({
   PokemonSelector: ({ inputLabel, locked, autoFocus }: { inputLabel: string; locked: ReadonlySet<string>; autoFocus?: boolean }) => createElement('input', { 'aria-label': inputLabel, 'data-locked': [...locked].join(','), 'data-autofocus': String(Boolean(autoFocus)) }),
 }));
 

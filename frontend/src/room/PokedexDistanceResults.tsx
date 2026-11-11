@@ -2,8 +2,8 @@ import { gameModeLabel, type PokedexDistancePublicState } from '@pokemon-univers
 import { Crosshair, Target } from 'lucide-react';
 import { cx, Icon, Panel } from '../ui';
 import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
-import { ResultsHostActions } from './ResultsRecords';
-import { ResultsShell, standingRows } from './ResultsShell';
+import { ResultsHostActions } from './game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from './game-kit/ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import s from './PokedexDistanceResults.module.css';

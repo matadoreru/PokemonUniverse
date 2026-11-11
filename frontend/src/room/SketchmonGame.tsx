@@ -12,7 +12,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from './guess-kit';
 import { useSketchPad } from './SketchmonCanvas';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';

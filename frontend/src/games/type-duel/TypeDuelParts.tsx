@@ -6,7 +6,7 @@ import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, TypeBadge, TypeOption } from '../../ui';
-import { sharesPosition } from '../../room/results-ties';
+import { sharesPosition } from '../../room/game-kit/results-ties';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { typeDuelMemberStatus, typeGridMove, typeLabel, type TypeDuelPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';

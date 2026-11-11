@@ -6,7 +6,7 @@ import { hintCountdownLabel, hitCueRound, lettersToAnnounce, messageMetrics, new
 import { useNow, useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Field, Icon, Pill, UnownGlyph } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { attemptsText, guessSeconds, ordinal, pointsWord } from './guess-kit';
 import { GamePanel, GameScreen, type GameTimer } from './game-kit/GameScreen';
 import { guessSearchAutoFocus } from './guess-kit/presentation';

@@ -6,12 +6,12 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Badge, Chip, cx, Dialog, Icon, Panel, Row, RowButton, StateBox } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { GuessPanel, guessSprite, type GuessPlateContent } from './guess-kit';
 import { GameScreen } from './game-kit/GameScreen';
 import { PokeddleBoard, PokeddleLegend } from './PokeddleBoard';
 import { playerColor } from './player-color';
-import type { PokemonSearchOption } from './pokemon-search';
+import type { PokemonSearchOption } from './game-kit/pokemon-search';
 import {
   pokeddleAnnouncement, pokeddleAttemptsText, pokeddleFocusKey, pokeddleMatchCount, pokeddlePlateKind, pokeddleRivalStatus, pokeddleVisibleSecret,
   type PokeddlePlateKind, type PokeddleRivalStatus,

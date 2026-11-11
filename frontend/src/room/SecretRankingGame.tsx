@@ -9,7 +9,7 @@ import {
 } from '../games/secret-ranking/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Bar, Chip, cx, Icon, Panel, Pill, Row, StateBox } from '../ui';
-import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition';
+import { useFocusOnTransition, useRefocusAfterReject } from './game-kit/focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, socialFocusKey, type SocialPlateContent } from './social-kit';
 import type { ActiveGameProps } from './room-command';

@@ -6,7 +6,7 @@ import { redFlagAnnouncement, sendRedFlagDraft, redFlagCurrentStep, redFlagHeadi
 import { RedFlagWriter } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import type { ActiveGameProps } from './room-command';
 import { guessSprite, pointsWord } from './guess-kit';
 import { useRoomMembers } from './room-members';

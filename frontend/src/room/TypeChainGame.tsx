@@ -7,7 +7,7 @@ import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, cx, Icon, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
 import type { ActiveGameProps } from './room-command';
 import { useRoomMembers } from './room-members';

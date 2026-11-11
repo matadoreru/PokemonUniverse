@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { sendWithBusy } from './room-command';
+import { sendWithBusy } from '../room-command';
 
 /**
  * Envío de una orden de una en una: `pending` es la que va en camino (o `null`) y `submit` no hace nada mientras otra

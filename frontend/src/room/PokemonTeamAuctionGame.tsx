@@ -12,7 +12,7 @@ import { Card, Chip, Pill, type ChipProps } from '../ui';
 import {
   AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
 } from './auction-kit';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { useRoomMembers } from './room-members';
 import type { ActiveGameProps } from './room-command';
 

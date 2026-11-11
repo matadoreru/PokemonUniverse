@@ -4,8 +4,8 @@ import { Avatar } from '../components/Avatar';
 import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../ui';
 import { useRoomMembers } from './room-members';
 import { impostorFinishText } from './pokemon-impostor-texts';
-import { ResultsHostActions } from './ResultsRecords';
-import { ResultsShell } from './ResultsShell';
+import { ResultsHostActions } from './game-kit/ResultsRecords';
+import { ResultsShell } from './game-kit/ResultsShell';
 import type { GameResultsProps } from './room-command';
 import s from '../games/pokemon-impostor/PokemonImpostorResults.module.css';
 

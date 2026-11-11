@@ -12,7 +12,7 @@ import { useSfxCue } from '../hooks/useSfxCue';
 import { useServerOffset } from '../hooks/useServerTime';
 import { Badge, Bar, Chip, cx, Icon, Panel, Row, type ChipProps } from '../ui';
 import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, amountText, bidBlock, bidEpoch, bidLog, type BudgetEntry } from './auction-kit';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { GuessPanel } from './guess-kit';
 import { useRoomMembers } from './room-members';
 import type { ActiveGameProps } from './room-command';

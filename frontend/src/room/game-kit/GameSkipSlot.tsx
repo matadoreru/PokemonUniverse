@@ -1,6 +1,6 @@
-import { cx } from '../ui';
-import { useRoom } from './RoomContext';
-import { SkipGameControl } from './SkipGameControl';
+import { cx } from '../../ui';
+import { useRoom } from '../RoomContext';
+import { SkipGameControl } from '../SkipGameControl';
 import s from './GameSkipSlot.module.css';
 
 /**

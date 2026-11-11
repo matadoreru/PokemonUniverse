@@ -6,9 +6,9 @@ import { answerLabel, freshAnnouncement, lockedGuessIds, questionsText, turnHead
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Field, Icon, Panel, Pill } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { guessSprite } from './guess-kit';
-import { PokemonSelector } from './PokemonSelector';
+import { PokemonSelector } from './game-kit/PokemonSelector';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
 import { type ActiveGameProps, ignoreFailure, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';

@@ -2,9 +2,9 @@ import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POI
 import { Equal, Search, ShieldAlert, ShieldQuestion } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
-import { sharesPosition } from './results-ties';
-import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, standingRows } from './ResultsShell';
+import { sharesPosition } from './game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from './game-kit/ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import { plural, roundsLabel } from '../lib/format';

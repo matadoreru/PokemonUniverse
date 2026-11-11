@@ -1,7 +1,7 @@
 import { CheckCircle2, Eye, Lock, Scale, Vote } from 'lucide-react';
 import { useRef, useState, type ReactNode, type Ref } from 'react';
 import { useRunoffVote } from '../../hooks/useRunoffVote';
-import { useRefocusAfterReject } from '../focus-transition';
+import { useRefocusAfterReject } from '../game-kit/focus-transition';
 import { Card, Chip, cx, Icon, Pill, TextCard } from '../../ui';
 import { ballotState } from './presentation';
 import { SocialPlate, type SocialPlateContent } from './SocialPlate';

@@ -2,9 +2,9 @@ import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, t
 import { Equal, Sparkles, Target, Users } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
-import { sharesPosition } from './results-ties';
-import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, standingRows } from './ResultsShell';
+import { sharesPosition } from './game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from './game-kit/ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import { roundsLabel } from '../lib/format';

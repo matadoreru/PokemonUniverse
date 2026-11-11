@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { BingoBoard } from '../games/pokemon-bingo/BingoParts';
 import { bingoProgressText, bingoStatsLine } from '../games/pokemon-bingo/presentation';
 import { Chip, Icon, Panel, TabPanel, Tabs } from '../ui';
-import { ResultsHostActions } from './ResultsRecords';
-import { ResultsShell, standingRows } from './ResultsShell';
+import { ResultsHostActions } from './game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from './game-kit/ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 

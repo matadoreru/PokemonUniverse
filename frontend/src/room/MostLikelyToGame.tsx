@@ -5,10 +5,10 @@ import { mostLikelyAnnouncement, mostLikelyCurrentStep, mostLikelyHeading, mostL
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, Icon } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
 import { useRoomMembers } from './room-members';
-import { PokemonSelector } from './PokemonSelector';
+import { PokemonSelector } from './game-kit/PokemonSelector';
 import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
   type BallotOption, type SocialPlateContent, type TallyOption,

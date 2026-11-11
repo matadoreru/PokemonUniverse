@@ -4,7 +4,7 @@ import { AlertTriangle, CheckCircle2, CircleDashed, Gamepad2, Link2, Skull, Time
 import type { CSSProperties, ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { ServerTimer } from '../../components/ServerTimer';
-import { GameSkipSlot } from '../../room/GameSkipSlot';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../room/player-color';
 import { Badge, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';

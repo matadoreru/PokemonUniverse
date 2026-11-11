@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { PokemonSelector } from './PokemonSelector';
 import { resultFocusTarget, selectorView } from './pokemon-selector-state';
-import { liveRegions } from './test-support/live-regions';
+import { liveRegions } from '../test-support/live-regions';
 
 const base = { loading: false, loadError: '', query: '', resultCount: 0 };
 const POKEMON = [

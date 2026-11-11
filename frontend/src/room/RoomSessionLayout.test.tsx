@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { RoomPlate, roomPlateHeading } from './RoomPlate';
 import { RoomNotice } from './RoomNotice';
 import { ConnectionNoticeRegion, RoomSessionLayout } from './RoomSessionLayout';
-import { GameSkipSlot } from './GameSkipSlot';
+import { GameSkipSlot } from './game-kit/GameSkipSlot';
 import { manifest, roomView } from './test-support/room-view';
 
 const context = vi.hoisted(() => ({ room: null as RoomView | null, connected: true as boolean, error: null as string | null, clearError: vi.fn(), setGameSkipVote: vi.fn(), leaveRoom: vi.fn(), holdRoomSession: vi.fn(() => () => undefined) }));

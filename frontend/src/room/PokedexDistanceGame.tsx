@@ -12,11 +12,11 @@ import { Badge, Card, Chip, Confetti, Cutin, cx, Icon, Panel, Row, ScreenSplit }
 import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
-import { GameSkipSlot } from './GameSkipSlot';
-import { useFocusOnTransition } from './focus-transition';
+import { GameSkipSlot } from './game-kit/GameSkipSlot';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { PlayerList } from './PlayerList';
 import { useRoomMembers } from './room-members';
-import { PokemonSelector } from './PokemonSelector';
+import { PokemonSelector } from './game-kit/PokemonSelector';
 import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distancePointsText, distanceScoreboard, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from './PokedexDistanceGame.module.css';

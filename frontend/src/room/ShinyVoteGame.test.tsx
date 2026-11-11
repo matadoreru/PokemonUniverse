@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { shinyCardState } from '../games/shiny-vote/ShinyOptionCard';
 import { shinyRanking } from '../games/shiny-vote/ShinyGameSidebar';
 import { shinyStatusAnnouncement } from '../games/shiny-vote/ShinyVoteStatus';
-import { shouldMoveFocusOnTransition } from './focus-transition';
+import { shouldMoveFocusOnTransition } from './game-kit/focus-transition';
 import { ShinyVoteGame } from './ShinyVoteGame';
 import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';

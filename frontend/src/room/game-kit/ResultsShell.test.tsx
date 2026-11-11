@@ -1,9 +1,9 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { PLAYER_COLORS, playerColor } from './player-color';
+import { PLAYER_COLORS, playerColor } from '../player-color';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
-import { expectSingleLiveRegion } from './test-support/live-regions';
+import { expectSingleLiveRegion } from '../test-support/live-regions';
 
 const STANDINGS: ResultsStanding[] = [
   { id: 'a', position: 1, name: 'Misty', points: 12, color: 'var(--info)', meta: '3 aciertos' },

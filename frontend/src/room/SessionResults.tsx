@@ -3,7 +3,7 @@ import { Crown, LogOut, RotateCcw, Trophy } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { audio } from '../audio';
 import { cx, Icon, Panel, Pill, ScreenSplit } from '../ui';
-import { resultsCue, ResultsStandings } from './ResultsShell';
+import { resultsCue, ResultsStandings } from './game-kit/ResultsShell';
 import { joinNames } from '../lib/format';
 import { sessionPodium } from './session-results';
 import s from './SessionResults.module.css';

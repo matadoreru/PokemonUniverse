@@ -1,5 +1,5 @@
 import type { GamePhase } from '@pokemon-universe/shared/public';
-import { bindShortcuts, shortcutKey, type ShortcutEvent, type ShortcutTarget } from '../shortcuts';
+import { bindShortcuts, shortcutKey, type ShortcutEvent, type ShortcutTarget } from '../game-kit/shortcuts';
 import { joinNames } from '../../lib/format';
 
 /**

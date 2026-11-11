@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { Badge, Card, Field, Panel, StateBox } from '../ui';
+import { Badge, Card, Field, Panel, StateBox } from '../../ui';
 import { searchPokemonOptions, type PokemonSearchOption } from './pokemon-search';
 import { resultFocusTarget, selectorView } from './pokemon-selector-state';
 import s from './PokemonSelector.module.css';

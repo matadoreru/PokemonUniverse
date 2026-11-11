@@ -7,7 +7,7 @@ import {
 } from '../games/would-you-rather/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, Icon, Pill } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { pointsWord } from './guess-kit';
 import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialScreen, VoteTally, socialFocusKey, type ChoiceOption, type TallyOption } from './social-kit';
 import type { ActiveGameProps } from './room-command';

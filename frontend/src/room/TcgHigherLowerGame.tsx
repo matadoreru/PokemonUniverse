@@ -7,10 +7,10 @@ import { TcgDuelCard, TcgPlate, TcgPriceStrip, TcgSidebar } from '../games/tcg-h
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { cx, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
-import { useChoiceShortcuts } from './useChoiceShortcuts';
-import { usePendingAction } from './usePendingAction';
-import { GameSkipSlot } from './GameSkipSlot';
+import { useFocusOnTransition } from './game-kit/focus-transition';
+import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
+import { usePendingAction } from './game-kit/usePendingAction';
+import { GameSkipSlot } from './game-kit/GameSkipSlot';
 import { higherLowerRevealCountdown } from './higher-lower-labels';
 import type { ActiveGameProps } from './room-command';
 import { useRoomMembers } from './room-members';

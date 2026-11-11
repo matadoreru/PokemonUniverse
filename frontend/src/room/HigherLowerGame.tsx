@@ -6,12 +6,12 @@ import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocu
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Cutin, cx, ScreenSplit } from '../ui';
-import { GameSkipSlot } from './GameSkipSlot';
+import { GameSkipSlot } from './game-kit/GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
 import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
-import { useFocusOnTransition } from './focus-transition';
-import { useChoiceShortcuts } from './useChoiceShortcuts';
-import { usePendingAction } from './usePendingAction';
+import { useFocusOnTransition } from './game-kit/focus-transition';
+import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
+import { usePendingAction } from './game-kit/usePendingAction';
 import type { ActiveGameProps } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/higher-lower/HigherLower.module.css';

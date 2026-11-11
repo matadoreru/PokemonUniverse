@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { ServerTimer } from '../../components/ServerTimer';
 import { Badge, cx, Panel, ScreenSplit } from '../../ui';
-import { GameSkipSlot } from '../GameSkipSlot';
+import { GameSkipSlot } from './GameSkipSlot';
 import s from './GameScreen.module.css';
 
 /** Clase para un panel de la columna lateral que, aunque sea el último, no debe llenar el alto sobrante (vacío). */

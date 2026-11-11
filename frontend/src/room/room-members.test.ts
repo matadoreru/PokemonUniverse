@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { playerColor } from './player-color';
 import { roomMembers } from './room-members';
-import { standingRows } from './ResultsShell';
+import { standingRows } from './game-kit/ResultsShell';
 import { member } from './test-support/room-view';
 
 const MEMBERS = [member({ id: 'p1', displayName: 'Misty', ready: true }), member({ id: 'p2', displayName: 'Ash', ready: true }), member({ id: 'p3', displayName: 'Brock', ready: true })];

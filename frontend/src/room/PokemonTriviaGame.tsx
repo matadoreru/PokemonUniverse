@@ -8,11 +8,11 @@ import {
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Pill, ScorePop } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { GuessPanel, type GuessPlateContent } from './guess-kit';
 import { GameScreen } from './game-kit/GameScreen';
-import { useChoiceShortcuts } from './useChoiceShortcuts';
-import { usePendingAction } from './usePendingAction';
+import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
+import { usePendingAction } from './game-kit/usePendingAction';
 import type { ActiveGameProps } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-trivia/PokemonTrivia.module.css';

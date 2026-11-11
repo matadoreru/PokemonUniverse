@@ -1,8 +1,8 @@
 import { gameModeLabel, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Target } from 'lucide-react';
 import { shinyRecords } from '../games/shiny-vote/presentation';
-import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, standingRows } from './ResultsShell';
+import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from './game-kit/ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import { roundsLabel } from '../lib/format';

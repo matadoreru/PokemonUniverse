@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { PokemonSearchOption } from '../room/pokemon-search';
+import type { PokemonSearchOption } from '../room/game-kit/pokemon-search';
 
 const api = vi.hoisted(() => vi.fn());
 vi.mock('../lib/api', () => ({ api }));

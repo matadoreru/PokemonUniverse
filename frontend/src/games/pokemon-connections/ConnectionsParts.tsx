@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../room/player-color';
-import { sharesPosition } from '../../room/results-ties';
+import { sharesPosition } from '../../room/game-kit/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../../ui';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { connectionsRevealOrder, connectionsRoundLine, connectionsStatusLabels, connectionsStatusTone } from './presentation';

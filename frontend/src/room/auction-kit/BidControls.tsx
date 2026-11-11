@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Coins, Crown, Eye, Gavel, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type Ref } from 'react';
 import { ActionPlate, cx, Dialog, Field, Pill } from '../../ui';
-import { useRefocusAfterReject } from '../focus-transition';
+import { useRefocusAfterReject } from '../game-kit/focus-transition';
 import { sendWithBusy } from '../room-command';
 import { bindChoiceShortcuts } from '../social-kit';
 import { bidDraftError, bidShortcutsLive, bidSteps, clampBid, parseBid, safeAmount, type BidBlock, type BidBlockReason } from './presentation';

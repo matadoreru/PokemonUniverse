@@ -1,6 +1,6 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
 import { playerColor } from './player-color';
-import type { ResultsStanding } from './ResultsShell';
+import type { ResultsStanding } from './game-kit/ResultsShell';
 
 export interface SessionPodium {
   /** Clasificación con puestos de competición: los empatados comparten puesto (1, 1, 3…). */

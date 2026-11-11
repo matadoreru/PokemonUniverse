@@ -3,9 +3,9 @@ import { Equal, Medal, Puzzle, Timer } from 'lucide-react';
 import { connectionsStatsLine } from '../games/pokemon-connections/presentation';
 import { Chip, Icon } from '../ui';
 import { guessSeconds, guessTop } from './guess-kit';
-import { sharesPosition } from './results-ties';
-import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, standingRows } from './ResultsShell';
+import { sharesPosition } from './game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from './game-kit/ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 

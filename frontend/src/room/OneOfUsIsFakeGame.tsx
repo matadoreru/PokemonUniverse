@@ -6,10 +6,10 @@ import { fakeAnnouncement, fakeCurrentStep, fakeHeading, fakeSteps, fakeTallySum
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon, Panel } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
+import { useFocusOnTransition } from './game-kit/focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
 import { useRoomMembers, type RoomMembers } from './room-members';
-import { PokemonSelector } from './PokemonSelector';
+import { PokemonSelector } from './game-kit/PokemonSelector';
 import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, tallyOutcome,
   type BallotOption, type SocialPlateContent, type TallyOption,

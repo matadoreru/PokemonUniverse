@@ -7,8 +7,8 @@ import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, 
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, cx, Icon, Pill, ScorePop, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './focus-transition';
-import { GameSkipSlot } from './GameSkipSlot';
+import { useFocusOnTransition } from './game-kit/focus-transition';
+import { GameSkipSlot } from './game-kit/GameSkipSlot';
 import { GuessPanel, type GuessPlateContent } from './guess-kit';
 import { type ActiveGameProps, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';

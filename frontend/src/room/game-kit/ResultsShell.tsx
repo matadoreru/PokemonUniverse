@@ -1,13 +1,13 @@
 import type { AvatarRef } from '@pokemon-universe/shared/public';
 import { Crown, Trophy } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
-import { AchievementNotice } from '../achievements/AchievementNotice';
-import { announcement } from '../achievements/achievements-state';
-import { useAchievements } from '../achievements/AchievementsContext';
-import { audio } from '../audio';
-import { Avatar } from '../components/Avatar';
-import { Badge, cx, Icon, Panel, Row, ScorePop } from '../ui';
-import type { RoomMembers } from './room-members';
+import { AchievementNotice } from '../../achievements/AchievementNotice';
+import { announcement } from '../../achievements/achievements-state';
+import { useAchievements } from '../../achievements/AchievementsContext';
+import { audio } from '../../audio';
+import { Avatar } from '../../components/Avatar';
+import { Badge, cx, Icon, Panel, Row, ScorePop } from '../../ui';
+import type { RoomMembers } from '../room-members';
 import s from './ResultsShell.module.css';
 
 /** Efecto del final: el podio de la sesión da `game.win` al campeón y `game.podium` al resto; los resultados de una partida solo `game.win` al ganador. */

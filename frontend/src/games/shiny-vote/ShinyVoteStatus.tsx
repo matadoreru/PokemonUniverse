@@ -2,7 +2,7 @@ import type { ShinyOption, ShinyOptionId, ShinyVote } from '@pokemon-universe/sh
 import type { LucideIcon } from 'lucide-react';
 import { useRef, type ReactNode, type Ref } from 'react';
 import { Check, CheckCircle2, Clock3, Eye, Hourglass, MousePointerClick, Send, Sparkles, TimerOff, UserX, XCircle } from 'lucide-react';
-import { useFocusOnTransition } from '../../room/focus-transition';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { cx, Icon, Panel, Pill } from '../../ui';
 import { SHINY_CARDS_LOADING } from './reveal';
 import { roundsLabel } from '../../lib/format';

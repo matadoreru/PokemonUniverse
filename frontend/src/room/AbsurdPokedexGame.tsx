@@ -7,7 +7,7 @@ import { absurdAnnouncement, absurdCurrentStep, absurdHeading, absurdModeTitle, 
 import { autoSendDelay, createAnswerSender } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon, Panel, Pill, TextArea } from '../ui';
-import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition';
+import { useFocusOnTransition, useRefocusAfterReject } from './game-kit/focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
 import { useRoomMembers } from './room-members';
 import { type ActiveGameProps, type GameAction, ignoreFailure } from './room-command';

@@ -1,7 +1,7 @@
 import { isSessionComplete, type RoomView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { RotateCcw, StopCircle } from 'lucide-react';
-import { cx, Icon, Panel, Pill } from '../ui';
+import { cx, Icon, Panel, Pill } from '../../ui';
 import s from './ResultsRecords.module.css';
 
 /** Un récord de la partida. */

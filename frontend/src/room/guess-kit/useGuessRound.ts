@@ -2,7 +2,7 @@ import type { GamePhase, RoomMemberView, RoomView } from '@pokemon-universe/shar
 import { useRef, type RefObject } from 'react';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
-import { useFocusOnTransition } from '../focus-transition';
+import { useFocusOnTransition } from '../game-kit/focus-transition';
 import type { GameTimer } from '../game-kit/GameScreen';
 import { useRoomMembers } from '../room-members';
 import {

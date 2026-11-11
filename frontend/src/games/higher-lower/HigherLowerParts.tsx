@@ -6,7 +6,7 @@ import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
 import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { playerColor } from '../../room/player-color';
-import { sharesPosition } from '../../room/results-ties';
+import { sharesPosition } from '../../room/game-kit/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop } from '../../ui';
 import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, type HigherLowerPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';

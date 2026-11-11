@@ -9,7 +9,7 @@
   min-width: 0;
 }
 .tray {
-  composes: cream from '../ui/surfaces.module.css';
+  composes: cream from '../../ui/surfaces.module.css';
   min-width: 0;
   padding: var(--sp-2);
   border: var(--ol-2-5) solid var(--navy);
