@@ -1,9 +1,8 @@
 import type { PokeTabooConfig, PokeTabooPlayerState, PokeTabooPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Check, Clock3, Eye, Hourglass, Mic, PenLine, Trophy, X } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import {
   TABOO_STEPS, TURN_STATUS_TEXT, tabooAnnouncement, tabooCurrentStep, tabooHeading, tabooRevealSummary, tabooRole, tabooRoundLabel,
   tabooTurnStatus, tabooVerdict, type TabooTurnStatus,
@@ -84,7 +83,7 @@ export function PokeTabooGame({ room, selfId, onAction }: { room: RoomView; self
     stage = <div className={s.pair}>
       <GuessRoundReveal answers={[{ id: result.pokemon.id, name: result.pokemon.name, sprite: result.pokemon.sprite }]} kicker={`Turno ${game.roundNumber} · resultado`}
         details={<><span className={s.revealSummary} data-testid="taboo-reveal-summary">{tabooRevealSummary(result, nameOf)}</span>
-          <span className={s.revealFacts}>{result.pokemon.types.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type]} size="sm" />)}<span>Generación {result.pokemon.generation}</span></span></>} className={s.reveal} />
+          <span className={s.revealFacts}>{result.pokemon.types.map((type) => <TypeBadge key={type} type={type} label={POKEMON_TYPE_LABELS[type]} size="sm" />)}<span>Generación {result.pokemon.generation}</span></span></>} className={s.reveal} />
       <TabooHintList hints={game.hints} title={hintsTitle} fresh={false} className={s.sideHints}
         emptyTitle="Sin pistas escritas" emptyText={`${describerName ?? 'Quien describía'} lo describió solo por voz.`} />
     </div>;

@@ -1,5 +1,5 @@
 import type { GamePhase, GameResults, PokemonType, TypeDuelAttempt, TypeDuelPlayerState, TypeDuelPublicState, TypeDuelRoundResult } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 
 /** Pantalla inferior de Type Duel: qué placa toca. */
 export type TypeDuelPlateKind = 'pick' | 'locked' | 'reveal' | 'search' | 'watching' | 'invalid' | 'result' | 'waiting';
@@ -23,7 +23,7 @@ export function typeDuelPlateKind(phase: GamePhase, player: Pick<TypeDuelPlayerS
 }
 
 /** Nombre de un tipo en español. */
-export const typeLabel = (type: PokemonType) => pokemonTypeLabels[type];
+export const typeLabel = (type: PokemonType) => POKEMON_TYPE_LABELS[type];
 
 /** Chip de la fase en la placa de la ronda. */
 export function typeDuelPhaseLabel(phase: GamePhase): string {

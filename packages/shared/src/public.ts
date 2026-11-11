@@ -10,6 +10,7 @@ export * from './feedback.js';
 export * from './room.js';
 export * from './achievements.js';
 export * from './pokemon/types.js';
+export * from './pokemon/labels.js';
 export * from './pokemon/sprite-path.js';
 export * from './pokemon/conditions/rules.js';
 export * from './tcg/types.js';

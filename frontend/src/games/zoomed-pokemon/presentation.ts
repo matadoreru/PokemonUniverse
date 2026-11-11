@@ -1,14 +1,12 @@
-import type { PokemonLegendaryStatus, ZoomedPokemonHint } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
-
-const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'No legendario', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
+import type { ZoomedPokemonHint } from '@pokemon-universe/shared/public';
+import { LEGENDARY_STATUS_LABELS, POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 
 /** Texto de una pista adicional de Zoomed Pokémon (los de siempre). */
 export function describeZoomedHint(hint: ZoomedPokemonHint): string {
   if (hint.kind === 'GENERATION') return `Generación ${hint.value}`;
-  if (hint.kind === 'TYPE') return hint.values.map((type) => pokemonTypeLabels[type]).join(' / ');
+  if (hint.kind === 'TYPE') return hint.values.map((type) => POKEMON_TYPE_LABELS[type]).join(' / ');
   if (hint.kind === 'TYPE_COUNT') return hint.value === 1 ? 'Monotipo' : `${hint.value} tipos`;
-  if (hint.kind === 'CATEGORY') return categoryLabels[hint.value];
+  if (hint.kind === 'CATEGORY') return LEGENDARY_STATUS_LABELS[hint.value];
   if (hint.stages <= 1) return 'No evoluciona';
   if (hint.stage === 1) return 'Pokémon base';
   if (hint.stage >= hint.stages) return 'Evolución final';

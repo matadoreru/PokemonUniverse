@@ -1,9 +1,8 @@
 import type { AbsurdPokedexConfig, AbsurdPokedexPlayerState, AbsurdPokedexPokemon, AbsurdPokedexPublicState, PokemonType, RoomView } from '@pokemon-universe/shared/public';
-import { ABSURD_POKEDEX_MAX_ENTRY_LENGTH, absurdPokedexScoringLabel } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, ABSURD_POKEDEX_MAX_ENTRY_LENGTH, absurdPokedexScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, Send, Trophy, Vote, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type Ref } from 'react';
 import { Avatar } from '../components/Avatar';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { absurdAnnouncement, absurdCurrentStep, absurdHeading, absurdModeTitle, absurdSteps, absurdVotePayload, createDraftScheduler, fooledNames, sendAbsurdDraft, sortedRoundEntries, toggleFunny } from '../games/absurd-pokedex/presentation';
 import { autoSendDelay, createAnswerSender } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
@@ -18,7 +17,7 @@ import s from '../games/absurd-pokedex/AbsurdPokedex.module.css';
 const GAME_NAME = 'Pokédex Absurda';
 const ignoreFailure = () => undefined;
 
-const typeLabel = (type: string) => pokemonTypeLabels[type as PokemonType] ?? type;
+const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 
 /** La ficha del Pokémon de la ronda: sprite, nombre, `#número` y tipos. */
 function PokemonSheet({ pokemon, className }: { pokemon: AbsurdPokedexPokemon; className?: string }) {

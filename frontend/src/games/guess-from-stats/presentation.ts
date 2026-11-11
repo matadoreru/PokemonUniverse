@@ -1,5 +1,5 @@
-import type { GuessFromStatsHint, GuessFromStatsPokemonReveal, GuessFromStatsVisibleStat, PokemonLegendaryStatus } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
+import type { GuessFromStatsHint, GuessFromStatsPokemonReveal, GuessFromStatsVisibleStat } from '@pokemon-universe/shared/public';
+import { LEGENDARY_STATUS_LABELS, POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 
 type StatKey = GuessFromStatsVisibleStat['key'];
 
@@ -12,18 +12,17 @@ export function statMax(key: StatKey): number {
   return key === 'bst' ? 780 : 255;
 }
 
-const categoryLabels: Record<PokemonLegendaryStatus, string> = { NORMAL: 'No legendario', LEGENDARY: 'Legendario', MYTHICAL: 'Mítico' };
 const evolutionLabels = { BASE: 'Pokémon base', MIDDLE: 'Evolución intermedia', FINAL: 'Evolución final', NO_EVOLUTION: 'No evoluciona' } as const;
 
 /** Texto de una pista adicional de Guess from Stats (los de siempre). */
 export function describeStatsHint(hint: GuessFromStatsHint): string {
   if (hint.kind === 'GENERATION') return `Generación ${hint.value}`;
-  if (hint.kind === 'TYPES') return `Tipo ${hint.value.map((type) => pokemonTypeLabels[type]).join(' / ')}`;
+  if (hint.kind === 'TYPES') return `Tipo ${hint.value.map((type) => POKEMON_TYPE_LABELS[type]).join(' / ')}`;
   if (hint.kind === 'TYPE_COUNT') return hint.value === 1 ? 'Monotipo' : 'Doble tipo';
   if (hint.kind === 'EVOLUTION') return evolutionLabels[hint.value];
   if (hint.kind === 'HEIGHT') return `Altura ${(hint.decimeters / 10).toFixed(1)} m`;
   if (hint.kind === 'WEIGHT') return `Peso ${(hint.hectograms / 10).toFixed(1)} kg`;
-  return categoryLabels[hint.value];
+  return LEGENDARY_STATUS_LABELS[hint.value];
 }
 
 /** Las siete estadísticas de una respuesta, en el orden de la ficha. */

@@ -1,7 +1,7 @@
 import type { PokemonType, RoomMemberView, SketchmonDrawerPokemon, SketchmonGalleryEntry, SketchmonHint, SketchmonStroke } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import { Check, Eraser, EyeOff, LockKeyhole, PaintBucket, Pencil, Redo2, Sparkles, Trash2, TriangleAlert, Undo2, X } from 'lucide-react';
 import type { KeyboardEvent, ReactNode, Ref } from 'react';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 import { useRemainingMs } from '../../hooks/useServerTime';
 import { GuessHints, guessSprite } from '../../room/guess-kit';
 import { SketchmonCanvasSurface, type SketchPad } from '../../room/SketchmonCanvas';
@@ -10,7 +10,7 @@ import { nextPaletteIndex, SKETCH_COLORS, SKETCH_TOOLS, SKETCH_WIDTHS, sketchCol
 import s from './Sketchmon.module.css';
 
 const TOOL_ICON = { PENCIL: Pencil, ERASER: Eraser, FILL: PaintBucket } as const;
-const typeLabel = (type: string) => pokemonTypeLabels[type as PokemonType] ?? type;
+const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 
 /**
  * El Pokémon secreto de quien dibuja (solo se monta con su estado propio: nunca llega al DOM de los demás): la carta

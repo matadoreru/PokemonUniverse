@@ -1,8 +1,7 @@
 import type { PokemonType, RoomView, WhoAmIAnswer, WhoAmIConfig, WhoAmICurrentQuestion, WhoAmIHistoryEntry, WhoAmIPlayerState, WhoAmIPokemon, WhoAmIPublicState } from '@pokemon-universe/shared/public';
-import { WHO_AM_I_ANSWERS, WHO_AM_I_MAX_QUESTION_LENGTH } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, WHO_AM_I_ANSWERS, WHO_AM_I_MAX_QUESTION_LENGTH } from '@pokemon-universe/shared/public';
 import { ArrowLeft, Check, CheckCircle2, Clock3, Eye, Hourglass, MessageCircleQuestion, Search, Send, SkipForward, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { answerLabel, freshAnnouncement, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from '../games/who-am-i/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
@@ -18,7 +17,7 @@ type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<v
 const ignoreFailure = () => undefined;
 /** Plazo de `DECIDING` (`DECIDE_MS` del motor): no es configurable. */
 const DECIDE_MS = 20_000;
-const typeLabel = (type: string) => pokemonTypeLabels[type as PokemonType] ?? type;
+const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 const cardTypes = (pokemon: WhoAmIPokemon) => pokemon.types.map((type) => ({ type: type as PokemonType, label: typeLabel(type) }));
 
 /** Historial de un jugador, de la pista más reciente a la más antigua: cada pregunta con sus respuestas y cada fallo. */

@@ -1,5 +1,5 @@
 import type { GamePhase, PokeddleBoardRow, PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePokemonReveal, PokeddlePublicBoard, PokeddleRacePlayerState } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 
 /** Lo que dice una casilla del tablero: acierto, parcial, fallo, o fallo con el objetivo por encima o por debajo. */
 export type PokeddleFeedbackSemantic = 'higher' | 'lower' | 'match' | 'partial' | 'none';
@@ -103,7 +103,7 @@ export function formatPokeddleFeedback(key: PokeddleClueKey, entry: PokeddleFeed
     // La unidad va en la cabecera de la columna («Peso (kg)»): la casilla solo lleva la cifra.
     if (key === 'height' || key === 'weight') short = (entry.value / 10).toFixed(1);
   }
-  else if (entry.kind === 'TYPES') value = entry.value.map((type) => pokemonTypeLabels[type] ?? formatPokemonWords(type)).join(' / ');
+  else if (entry.kind === 'TYPES') value = entry.value.map((type) => POKEMON_TYPE_LABELS[type] ?? formatPokemonWords(type)).join(' / ');
   else if (entry.kind === 'EVOLUTION') {
     const single = entry.value.stages <= 1;
     value = single ? 'Sin evolución · No tiene etapas evolutivas' : `Etapa ${entry.value.stage}/${entry.value.stages}`;

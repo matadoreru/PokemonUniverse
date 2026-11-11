@@ -1,8 +1,8 @@
 import type { PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePublicBoard } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, EqualApproximately, Minus, X } from 'lucide-react';
 import { memo, useMemo, type CSSProperties } from 'react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { Badge, Chip, cx, Icon, Panel, StateBox, TypeBadge } from '../ui';
 import { guessSprite } from './guess-kit';
 import { formatPokeddleFeedback, getPokeddleColumns, latestGuessRound, POKEDDLE_LEGEND, pokeddleAttemptsText, type PokeddleColumn, type PokeddleFeedbackSemantic } from './pokeddle-presentation';
@@ -45,7 +45,7 @@ function Cell({ column, entry }: { column: PokeddleColumn; entry: PokeddleFeedba
     <span className={s.cellLabel} aria-hidden="true">{column.label}</span>
     <span className={s.value} aria-hidden="true">
       {entry.kind === 'TYPES'
-        ? <span className={s.types}>{entry.value.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type] ?? type} size="sm" />)}</span>
+        ? <span className={s.types}>{entry.value.map((type) => <TypeBadge key={type} type={type} label={POKEMON_TYPE_LABELS[type] ?? type} size="sm" />)}</span>
         : shown.short}
     </span>
     <span className={s.result} aria-hidden="true"><Icon icon={POKEDDLE_ICONS[shown.semantic]} size={18} /><span className={s.resultWord}>{shown.result}</span></span>

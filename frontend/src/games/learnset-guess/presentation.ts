@@ -1,8 +1,8 @@
 import type { GamePhase, GameResults, LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetMoveGroup, LearnsetMoveHint, LearnsetRoundResult, MoveCategory, PokemonType } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 
 /** Nombre de un tipo en español (el color del tipo nunca va solo). */
-export const typeLabel = (type: PokemonType) => pokemonTypeLabels[type];
+export const typeLabel = (type: PokemonType) => POKEMON_TYPE_LABELS[type];
 
 /** Nombre de la categoría de un movimiento. */
 export const categoryLabel: Record<MoveCategory, string> = { physical: 'Físico', special: 'Especial', status: 'Estado' };

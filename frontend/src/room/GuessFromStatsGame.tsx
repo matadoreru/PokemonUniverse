@@ -1,6 +1,6 @@
 import type { GuessFromStatsConfig, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, RoomView } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Bar, cx, TypeBadge } from '../ui';
@@ -31,7 +31,7 @@ export function StatRows({ stats, label = 'Estadísticas base', compact = false 
 /** Ficha completa de una respuesta en la revelación: sus tipos y sus siete estadísticas. */
 function AnswerSheet({ pokemon, big = false }: { pokemon: GuessFromStatsPokemonReveal; /** Una sola respuesta: a ≥1600 crece con la losa. */ big?: boolean }) {
   return <div className={cx(s.sheet, big && s.big)}>
-    <span className={s.types}>{pokemon.types.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type]} size="sm" />)}</span>
+    <span className={s.types}>{pokemon.types.map((type) => <TypeBadge key={type} type={type} label={POKEMON_TYPE_LABELS[type]} size="sm" />)}</span>
     <StatRows stats={fullStats(pokemon)} label={`Estadísticas de ${pokemon.name}`} compact />
   </div>;
 }

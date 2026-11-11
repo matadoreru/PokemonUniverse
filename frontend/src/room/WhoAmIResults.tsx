@@ -1,7 +1,6 @@
 import type { PokemonType, RoomView, WhoAmIPublicState } from '@pokemon-universe/shared/public';
-import { whoAmIScoringLabel } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, whoAmIScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, X } from 'lucide-react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { questionsText, WHO_AM_I_NAME } from '../games/who-am-i/presentation';
 import { Card, Chip, Icon, Panel } from '../ui';
 import { guessSprite } from './guess-kit';
@@ -11,7 +10,7 @@ import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from '../games/who-am-i/WhoAmI.module.css';
 
-const typeLabel = (type: string) => pokemonTypeLabels[type as PokemonType] ?? type;
+const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 
 /**
  * Resultados de ¿Quién soy?: la clasificación del catálogo (posición, puntos, si acertó y cuántas preguntas hizo cada

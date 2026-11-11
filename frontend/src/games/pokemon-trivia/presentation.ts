@@ -1,4 +1,4 @@
-import { POKEMON_TRIVIA_QUESTION_TYPES, type GameResults, type PokemonTriviaOption, type PokemonTriviaOptionDetails, type PokemonTriviaOptionId, type PokemonTriviaPlayerState, type PokemonTriviaPublicState, type PokemonTriviaQuestionType, type PokemonTriviaRoundResult } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, POKEMON_TRIVIA_QUESTION_TYPES, type GameResults, type PokemonTriviaOption, type PokemonTriviaOptionDetails, type PokemonTriviaOptionId, type PokemonTriviaPlayerState, type PokemonTriviaPublicState, type PokemonTriviaQuestionType, type PokemonTriviaRoundResult } from '@pokemon-universe/shared/public';
 
 /** Nombre de cada categoría de pregunta (ajustes, cabecera y resultados). */
 export const triviaCategoryLabels: Record<PokemonTriviaQuestionType, string> = {
@@ -7,7 +7,6 @@ export const triviaCategoryLabels: Record<PokemonTriviaQuestionType, string> = {
 
 export const triviaDifficultyLabels: Record<PokemonTriviaPublicState['difficulty'], string> = { EASY: 'Fácil', NORMAL: 'Normal', HARD: 'Difícil' };
 
-const typeLabels: Record<string, string> = { normal: 'Normal', fire: 'Fuego', water: 'Agua', electric: 'Eléctrico', grass: 'Planta', ice: 'Hielo', fighting: 'Lucha', poison: 'Veneno', ground: 'Tierra', flying: 'Volador', psychic: 'Psíquico', bug: 'Bicho', rock: 'Roca', ghost: 'Fantasma', dragon: 'Dragón', dark: 'Siniestro', steel: 'Acero', fairy: 'Hada' };
 const decimal = (value: number) => (value / 10).toLocaleString('es-ES');
 
 /** El dato que compara la pregunta, en texto («Ataque 84», «1,7 m», «Fuego · Volador»). */
@@ -24,7 +23,7 @@ export function triviaComparedValue(type: PokemonTriviaQuestionType | null, deta
     case 'WEIGHT': return details.weightHectograms !== undefined ? `${decimal(details.weightHectograms)} kg` : null;
     case 'DEX_NUMBER': return `Pokédex N.º ${details.nationalDexNumber}`;
     case 'GENERATION': return `Generación ${details.generation}`;
-    case 'TYPE': return details.types.map((type) => typeLabels[type] ?? type).join(' · ');
+    case 'TYPE': return details.types.map((type) => (POKEMON_TYPE_LABELS as Partial<Record<string, string>>)[type] ?? type).join(' · ');
     default: return null;
   }
 }

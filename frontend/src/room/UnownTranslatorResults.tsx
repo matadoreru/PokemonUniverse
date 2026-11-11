@@ -1,7 +1,6 @@
 import type { MoveCategory, PokemonType, RoomView, UnownTranslatorPublicState, UnownTranslatorRoundResult } from '@pokemon-universe/shared/public';
-import { unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, EyeOff, Zap } from 'lucide-react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { categoryLabel } from '../games/learnset-guess/presentation';
 import { Card, Chip, cx, Icon, Panel, TypeBadge } from '../ui';
 import { guessSprite, guessTop } from './guess-kit';
@@ -12,7 +11,7 @@ import { ResultsShell, type ResultsStanding } from './ResultsShell';
 import s from '../games/unown-translator/UnownTranslator.module.css';
 
 const GAME_NAME = 'Traductor Unown';
-const typeLabel = (type: string) => pokemonTypeLabels[type as PokemonType] ?? type;
+const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 const moveCategoryLabel = (category: string) => categoryLabel[category as MoveCategory] ?? category;
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 

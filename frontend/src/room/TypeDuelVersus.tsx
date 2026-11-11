@@ -1,6 +1,6 @@
 import type { PokemonType } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { CSSProperties, ReactNode } from 'react';
-import { pokemonTypeLabels } from '../components/pokemon-type-labels';
 import { Chip, cx, TypeBadge } from '../ui';
 import { typeDuelSolutionsText } from './type-duel-result';
 import s from '../games/type-duel/TypeDuel.module.css';
@@ -28,7 +28,7 @@ export function TypeDuelVersus({ duelists, requiredTypes, solutionCount, impossi
       {requiredTypes && (requiredTypes.length === 1
         // Mismo tipo en los dos lados: las insignias ya lo dicen, solo falta aclarar que es un monotipo exacto.
         ? <Chip tone="warn">Monotipo</Chip>
-        : <span className={s.target}><span>Objetivo exacto:</span>{requiredTypes.map((type) => <TypeBadge key={type} type={type} label={pokemonTypeLabels[type]} size="sm" />)}</span>)}
+        : <span className={s.target}><span>Objetivo exacto:</span>{requiredTypes.map((type) => <TypeBadge key={type} type={type} label={POKEMON_TYPE_LABELS[type]} size="sm" />)}</span>)}
       {impossible}
     </div>
   </div>;
@@ -38,6 +38,6 @@ function Duelist({ duelist, className }: { duelist: TypeDuelDuelist; className: 
   return <div className={cx(s.duelist, className)}>
     {duelist.avatar && <span className={s.duelistAvatar} aria-hidden="true">{duelist.avatar}</span>}
     <strong className={cx(s.duelistName, 'ol')} title={duelist.name}>{duelist.name}</strong>
-    {duelist.type && <TypeBadge type={duelist.type} label={pokemonTypeLabels[duelist.type]} size="lg" />}
+    {duelist.type && <TypeBadge type={duelist.type} label={POKEMON_TYPE_LABELS[duelist.type]} size="lg" />}
   </div>;
 }

@@ -4,6 +4,7 @@
  * `<figure data-gallery="<componente>-<estado>">` que el E2E captura uno a uno. Con `?static` en la URL se añade la
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
@@ -19,7 +20,6 @@ import { playerColor } from '../../room/player-color';
 import { PokemonSelector } from '../../room/PokemonSelector';
 import { ResultsShell } from '../../room/ResultsShell';
 import type { ResultsStanding } from '../../room/ResultsShell';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
 import { Badge, Chip, TypeBadge, TypeOption } from '../Badge';
@@ -477,17 +477,17 @@ function TypeBadgeSection() {
   return (
     <Section name="typebadge" title="TypeBadge (18 tipos)">
       {TYPES.map((type) => (
-        <Fig key={type} id={`typebadge-${type}`} caption={pokemonTypeLabels[type]}>
+        <Fig key={type} id={`typebadge-${type}`} caption={POKEMON_TYPE_LABELS[type]}>
           <span className={s.iconRow}>
-            <TypeBadge type={type} label={pokemonTypeLabels[type]} />
-            <TypeBadge type={type} label={pokemonTypeLabels[type]} size="sm" />
+            <TypeBadge type={type} label={POKEMON_TYPE_LABELS[type]} />
+            <TypeBadge type={type} label={POKEMON_TYPE_LABELS[type]} size="sm" />
           </span>
         </Fig>
       ))}
       <Fig id="typesize-lg" caption="Grande (lg): la revelación del VS">
         <span className={s.iconRow}>
-          <TypeBadge type="fire" label={pokemonTypeLabels.fire} size="lg" />
-          <TypeBadge type="ghost" label={pokemonTypeLabels.ghost} size="lg" />
+          <TypeBadge type="fire" label={POKEMON_TYPE_LABELS.fire} size="lg" />
+          <TypeBadge type="ghost" label={POKEMON_TYPE_LABELS.ghost} size="lg" />
         </span>
       </Fig>
     </Section>
@@ -509,8 +509,8 @@ function TypeOptionSection() {
       {states.map((state) => (
         <Fig key={state.id} id={`typeoption-${state.id}`} caption={state.caption}>
           <span className={s.iconRow}>
-            <TypeOption type="fire" label={pokemonTypeLabels.fire} pressed={false} {...state.props} />
-            <TypeOption type="dark" label={pokemonTypeLabels.dark} pressed={false} {...state.props} />
+            <TypeOption type="fire" label={POKEMON_TYPE_LABELS.fire} pressed={false} {...state.props} />
+            <TypeOption type="dark" label={POKEMON_TYPE_LABELS.dark} pressed={false} {...state.props} />
           </span>
         </Fig>
       ))}
@@ -723,10 +723,10 @@ const CARD_STATES: { state: CardState; label: string }[] = [
   { state: 'wrong', label: 'Incorrecta' },
   { state: 'revealing', label: 'Revelándose' },
 ];
-const PIKACHU_TYPES = [{ type: 'electric' as const, label: pokemonTypeLabels.electric }];
+const PIKACHU_TYPES = [{ type: 'electric' as const, label: POKEMON_TYPE_LABELS.electric }];
 const BULBASAUR_TYPES = [
-  { type: 'grass' as const, label: pokemonTypeLabels.grass },
-  { type: 'poison' as const, label: pokemonTypeLabels.poison },
+  { type: 'grass' as const, label: POKEMON_TYPE_LABELS.grass },
+  { type: 'poison' as const, label: POKEMON_TYPE_LABELS.poison },
 ];
 
 function CardSection() {

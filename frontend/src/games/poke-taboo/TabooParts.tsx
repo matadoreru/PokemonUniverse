@@ -1,7 +1,7 @@
 import type { PokeTabooHint, PokeTabooSecretPokemon } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import { Ban, LockKeyhole, Send, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
 import { guessSprite } from '../../room/guess-kit';
 import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, Row } from '../../ui';
 import { forbiddenHintMessage, TABOO_HINT_MAX, TABOO_MAX_HINTS, tabooForbiddenWords, tabooHintProblem } from './presentation';
@@ -31,7 +31,7 @@ export function TabooSecretPanel({ pokemon, className }: { pokemon: PokeTabooSec
     className={cx(s.secret, className)} bodyClassName={cx(s.secretBody)}>
     <div className={s.secretGrid} data-testid="taboo-secret">
       <div className={s.secretCard}>
-        <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} types={pokemon.types.map((type) => ({ type, label: pokemonTypeLabels[type] }))} size="sm" eager attrs={{ 'data-testid': 'taboo-secret-card' }} />
+        <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} types={pokemon.types.map((type) => ({ type, label: POKEMON_TYPE_LABELS[type] }))} size="sm" eager attrs={{ 'data-testid': 'taboo-secret-card' }} />
       </div>
       <div className={s.secretInfo}>
         <section className={s.forbidden} aria-labelledby="taboo-forbidden-title">

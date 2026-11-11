@@ -1,5 +1,5 @@
 import type { PokemonType, TypeChainElimination, TypeChainEvent, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
-import { pokemonTypeLabels } from '../../components/pokemon-type-labels';
+import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 
 /** Espera tras un intento que no vale (la del motor, `TYPE_CHAIN` en `packages/shared`): textos de ayuda y aviso. */
 export const TYPE_CHAIN_COOLDOWN_SECONDS = 1;
@@ -25,7 +25,7 @@ export const typeChainEliminationLabels: Record<TypeChainElimination['reason'], 
   DISCONNECTED: 'se desconectó en su turno',
 };
 
-export const typeLabel = (type: PokemonType) => pokemonTypeLabels[type] ?? type;
+export const typeLabel = (type: PokemonType) => POKEMON_TYPE_LABELS[type] ?? type;
 
 /** Tipo de la cadena en texto («Psíquico»), o un genérico mientras el servidor lo elige. */
 export const chainTypeText = (type: PokemonType | null) => (type ? typeLabel(type) : 'la cadena');
