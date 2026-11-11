@@ -1,0 +1,459 @@
+[
+  {
+    "condition": {
+      "kind": "GENERATION",
+      "generation": 2
+    },
+    "description": "Generación 2"
+  },
+  {
+    "condition": {
+      "kind": "DEX",
+      "operator": "GT",
+      "value": 53
+    },
+    "description": "Pokédex > 53"
+  },
+  {
+    "condition": {
+      "kind": "DEX",
+      "operator": "LT",
+      "value": 7
+    },
+    "description": "Pokédex < 7"
+  },
+  {
+    "condition": {
+      "kind": "DEX",
+      "operator": "RANGE",
+      "value": 51,
+      "max": 126
+    },
+    "description": "Pokédex 51–126"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "normal"
+    },
+    "description": "Tipo Normal"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "fire"
+    },
+    "description": "Tipo Fuego"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "water"
+    },
+    "description": "Tipo Agua"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "electric"
+    },
+    "description": "Tipo Eléctrico"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "grass"
+    },
+    "description": "Tipo Planta"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "ice"
+    },
+    "description": "Tipo Hielo"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "fighting"
+    },
+    "description": "Tipo Lucha"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "poison"
+    },
+    "description": "Tipo Veneno"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "ground"
+    },
+    "description": "Tipo Tierra"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "flying"
+    },
+    "description": "Tipo Volador"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "psychic"
+    },
+    "description": "Tipo Psíquico"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "bug"
+    },
+    "description": "Tipo Bicho"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "rock"
+    },
+    "description": "Tipo Roca"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "ghost"
+    },
+    "description": "Tipo Fantasma"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "dragon"
+    },
+    "description": "Tipo Dragón"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "dark"
+    },
+    "description": "Tipo Siniestro"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "steel"
+    },
+    "description": "Tipo Acero"
+  },
+  {
+    "condition": {
+      "kind": "TYPE",
+      "pokemonType": "fairy"
+    },
+    "description": "Tipo Hada"
+  },
+  {
+    "condition": {
+      "kind": "TYPE_COMBINATION",
+      "pokemonTypes": [
+        "poison",
+        "flying"
+      ]
+    },
+    "description": "Veneno + Volador"
+  },
+  {
+    "condition": {
+      "kind": "TYPE_COUNT",
+      "count": 1
+    },
+    "description": "Monotipo"
+  },
+  {
+    "condition": {
+      "kind": "TYPE_COUNT",
+      "count": 2
+    },
+    "description": "Doble tipo"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "hp",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "HP > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "attack",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "Ataque > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "defense",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "Defensa > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "specialAttack",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "At. Especial > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "specialDefense",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "Def. Especial > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "speed",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "Velocidad > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "baseStatTotal",
+      "operator": "GT",
+      "value": 80
+    },
+    "description": "Total stats > 80"
+  },
+  {
+    "condition": {
+      "kind": "STAT",
+      "stat": "speed",
+      "operator": "LT",
+      "value": 45
+    },
+    "description": "Velocidad < 45"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 17
+    },
+    "description": "Altura < 1,7 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 17
+    },
+    "description": "Peso > 1,7 kg"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 20
+    },
+    "description": "Altura < 2 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 20
+    },
+    "description": "Peso > 2 kg"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 5
+    },
+    "description": "Altura < 0,5 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 5
+    },
+    "description": "Peso > 0,5 kg"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 4600
+    },
+    "description": "Altura < 460 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 4600
+    },
+    "description": "Peso > 460 kg"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 12345
+    },
+    "description": "Altura < 1234,5 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 12345
+    },
+    "description": "Peso > 1234,5 kg"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 123456
+    },
+    "description": "Altura < 12.345,6 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 123456
+    },
+    "description": "Peso > 12.345,6 kg"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "heightDecimeters",
+      "operator": "LT",
+      "value": 9999
+    },
+    "description": "Altura < 999,9 m"
+  },
+  {
+    "condition": {
+      "kind": "PHYSICAL",
+      "metric": "weightHectograms",
+      "operator": "GT",
+      "value": 9999
+    },
+    "description": "Peso > 999,9 kg"
+  },
+  {
+    "condition": {
+      "kind": "EVOLUTION",
+      "status": "BASE"
+    },
+    "description": "Pokémon base"
+  },
+  {
+    "condition": {
+      "kind": "EVOLUTION",
+      "status": "MIDDLE"
+    },
+    "description": "Evolución intermedia"
+  },
+  {
+    "condition": {
+      "kind": "EVOLUTION",
+      "status": "FINAL"
+    },
+    "description": "Evolución final"
+  },
+  {
+    "condition": {
+      "kind": "EVOLUTION",
+      "status": "NONE"
+    },
+    "description": "No evoluciona"
+  },
+  {
+    "condition": {
+      "kind": "LEGENDARY",
+      "status": "NORMAL"
+    },
+    "description": "No legendario"
+  },
+  {
+    "condition": {
+      "kind": "LEGENDARY",
+      "status": "LEGENDARY"
+    },
+    "description": "Legendario"
+  },
+  {
+    "condition": {
+      "kind": "LEGENDARY",
+      "status": "MYTHICAL"
+    },
+    "description": "Mítico"
+  },
+  {
+    "condition": {
+      "kind": "COLOR",
+      "color": "light-blue"
+    },
+    "description": "Color principal: Light Blue"
+  },
+  {
+    "condition": {
+      "kind": "COLOR",
+      "color": "red"
+    },
+    "description": "Color principal: Red"
+  },
+  {
+    "condition": {
+      "kind": "ABILITY",
+      "ability": "cuerpo-puro"
+    },
+    "description": "Puede tener Cuerpo Puro"
+  },
+  {
+    "condition": {
+      "kind": "ABILITY",
+      "ability": "Vista Lince"
+    },
+    "description": "Puede tener Vista Lince"
+  }
+]

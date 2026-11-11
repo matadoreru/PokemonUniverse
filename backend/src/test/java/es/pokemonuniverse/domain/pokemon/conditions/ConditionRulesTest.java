@@ -7,6 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
+import es.pokemonuniverse.golden.WebContracts;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -136,5 +140,48 @@ class ConditionRulesTest {
     assertTrue(ConditionRules.pokemonMatchesBingoCell(pokemon("venusaur"), cell));
     assertFalse(ConditionRules.pokemonMatchesBingoCell(pokemon("ivysaur"), cell));
     assertEquals("STAT:baseStatTotal:GT:500&TYPE:grass", ConditionRules.bingoCellKey(cell.conditions()));
+  }
+
+  /**
+   * La web describe las casillas con su propio {@code describeBingoCondition}: graba
+   * {@code web-contracts/conditions-cases.json} (cada condición como la manda el cable y su texto), que lee
+   * {@code packages/shared/src/pokemon/conditions/rules.test.ts}.
+   */
+  @Test
+  void describesConditionsLikeTheWeb() throws IOException {
+    var conditions = new ArrayList<Condition>();
+    conditions.add(new Condition.Generation(2));
+    conditions.add(new Condition.Dex(ConditionOperator.GT, 53));
+    conditions.add(new Condition.Dex(ConditionOperator.LT, 7));
+    conditions.add(Condition.Dex.range(51, 126));
+    for (var type : List.of("normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground",
+        "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy")) {
+      conditions.add(new Condition.Type(type));
+    }
+    conditions.add(new Condition.TypeCombination(List.of("poison", "flying")));
+    conditions.add(new Condition.TypeCount(1));
+    conditions.add(new Condition.TypeCount(2));
+    for (var stat : List.of("hp", "attack", "defense", "specialAttack", "specialDefense", "speed", "baseStatTotal")) {
+      conditions.add(new Condition.Stat(stat, ConditionOperator.GT, 80));
+    }
+    conditions.add(new Condition.Stat("speed", ConditionOperator.LT, 45));
+    for (int value : List.of(17, 20, 5, 4600, 12345, 123456, 9999)) {
+      conditions.add(new Condition.Physical("heightDecimeters", ConditionOperator.LT, value));
+      conditions.add(new Condition.Physical("weightHectograms", ConditionOperator.GT, value));
+    }
+    for (var status : ConditionEvolutionStatus.values()) conditions.add(new Condition.Evolution(status));
+    for (var status : List.of("NORMAL", "LEGENDARY", "MYTHICAL")) conditions.add(new Condition.Legendary(status));
+    conditions.add(new Condition.Color("light-blue"));
+    conditions.add(new Condition.Color("red"));
+    conditions.add(new Condition.Ability("cuerpo-puro"));
+    conditions.add(new Condition.Ability("Vista Lince"));
+    var cases = new ArrayList<LinkedHashMap<String, Object>>();
+    for (var condition : conditions) {
+      var entry = new LinkedHashMap<String, Object>();
+      entry.put("condition", condition);
+      entry.put("description", ConditionRules.describeBingoCondition(condition));
+      cases.add(entry);
+    }
+    WebContracts.check("conditions-cases.json", cases);
   }
 }
