@@ -1,13 +1,8 @@
-import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
+import type { GuessAttemptOutcome, GuessedPokemon, PokemonGuessHintWithTypes } from '../guess-types.js';
 
-export interface PokemonPaletteAttempt { playerId: string; guessedPokemon: { id: string; name: string; sprite: string }; attemptedAt: number }
-export type PokemonPaletteHint =
-  | { kind: 'GENERATION'; value: number }
-  | { kind: 'TYPE'; values: PokemonType[] }
-  | { kind: 'TYPE_COUNT'; value: number }
-  | { kind: 'EVOLUTION'; stage: number; stages: number }
-  | { kind: 'CATEGORY'; value: PokemonLegendaryStatus };
+export interface PokemonPaletteAttempt { playerId: string; guessedPokemon: GuessedPokemon; attemptedAt: number }
+export type PokemonPaletteHint = PokemonGuessHintWithTypes;
 export interface PokemonPaletteSolve { solveOrder: number; solvedAt: number; elapsedMs: number; speedPoints: number; placementBonus: number; points: number; attempts: number }
 
 export interface PokemonPaletteGuessPublicState {
@@ -16,6 +11,6 @@ export interface PokemonPaletteGuessPublicState {
   lastRound: ({ pokemon: { name: string; sprite: string; generation: number }; palette: string[]; paletteWeights: number[]; solves: Record<string, PokemonPaletteSolve>; attemptCounts: Record<string, number> }) | null; results: GameResults | null;
 }
 
-export interface PokemonPaletteGuessPlayerState { role: 'PLAYER' | 'SPECTATOR'; canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null;
+export interface PokemonPaletteGuessPlayerState { role: 'PLAYER' | 'SPECTATOR'; canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: GuessAttemptOutcome | null;
   /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
   attempts?: PokemonPaletteAttempt[] }

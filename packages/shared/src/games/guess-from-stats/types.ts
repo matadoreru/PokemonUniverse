@@ -1,5 +1,6 @@
 import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
+import type { GuessAttemptOutcome } from '../guess-types.js';
 import type { GuessFromStatsField } from './config.js';
 
 export interface GuessFromStatsVisibleStat { key: GuessFromStatsField; value: number }
@@ -30,7 +31,7 @@ export interface GuessFromStatsPublicState {
   roundStartedAt: number | null; roundEndsAt: number | null; nextTransitionAt: number | null; lastRound: GuessFromStatsRoundResult | null; results: GameResults | null;
 }
 export interface GuessFromStatsPlayerState {
-  canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null;
+  canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: GuessAttemptOutcome | null;
   /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
   attempts?: GuessFromStatsAttempt[];
 }

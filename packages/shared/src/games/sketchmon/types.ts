@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
+import type { GuessedPokemon } from '../guess-types.js';
 
 export const SKETCHMON_COLORS = [
   '#182033', '#ffffff', '#7b8496', '#e24671', '#ef4444', '#f97316', '#e1a817',
@@ -20,7 +21,7 @@ export interface SketchmonStroke {
 
 export interface SketchmonAttempt {
   playerId: string;
-  guessedPokemon: { id: string; name: string; sprite: string };
+  guessedPokemon: GuessedPokemon;
   attemptedAt: number;
 }
 

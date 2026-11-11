@@ -1,16 +1,11 @@
-import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
+import type { GuessAttemptOutcome, GuessedPokemon, PokemonGuessHintWithTypes } from '../guess-types.js';
 
-export type ZoomedPokemonHint =
-  | { kind: 'GENERATION'; value: number }
-  | { kind: 'TYPE'; values: PokemonType[] }
-  | { kind: 'TYPE_COUNT'; value: number }
-  | { kind: 'EVOLUTION'; stage: number; stages: number }
-  | { kind: 'CATEGORY'; value: PokemonLegendaryStatus };
+export type ZoomedPokemonHint = PokemonGuessHintWithTypes;
 
 export interface ZoomedPokemonAttempt {
   playerId: string;
-  guessedPokemon: { id: string; name: string; sprite: string };
+  guessedPokemon: GuessedPokemon;
   attemptedAt: number;
 }
 
@@ -61,7 +56,7 @@ export interface ZoomedPokemonPlayerState {
   cooldownUntil: number | null;
   roundPoints: number;
   attemptCount: number;
-  lastAttempt: { result: 'CORRECT' | 'INCORRECT'; attemptedAt: number } | null;
+  lastAttempt: GuessAttemptOutcome | null;
   /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
   attempts?: ZoomedPokemonAttempt[];
 }

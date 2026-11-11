@@ -1,9 +1,10 @@
 import type { PokemonLegendaryStatus, PokemonType } from '../../pokemon/types.js';
 import type { GamePhase, GameResults } from '../contracts.js';
+import type { GuessedPokemon } from '../guess-types.js';
 
 export interface PokeTabooAttempt {
   playerId: string;
-  guessedPokemon: { id: string; name: string; sprite: string };
+  guessedPokemon: GuessedPokemon;
   attemptedAt: number;
 }
 
