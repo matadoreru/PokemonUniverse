@@ -349,14 +349,14 @@ export function botonListo(page: Page): Locator {
 
 /**
  * Intro de partida (E1): cada página que la muestra pulsa «¡Listo!» y luego se espera a que todas pasen a la primera
- * ronda. La intro termina antes cuando todos los jugadores conectados están listos; si una página no llega a verla
- * (otro arranque, o ya había terminado), sigue sin esperar.
+ * ronda. La intro termina antes cuando todos los jugadores conectados están listos; si una página ya no la ve (ya
+ * terminó, o no la hubo), sigue sin esperar.
  */
 export async function pasarIntro(pages: readonly Page[]): Promise<void> {
+  // Fuera del lobby la intro ya está pintada (no es perezosa); si no se ve, ya terminó o no la hubo.
   for (const page of pages) {
-    const visible = await page.getByTestId('game-intro').waitFor({ state: 'visible', timeout: 10_000 }).then(() => true, () => false);
     // Con `listoAutomatico`, el manejador pulsa antes que este clic, que entonces ya no encuentra «¡Listo!»: espera corta.
-    if (visible && await botonListo(page).isVisible()) await botonListo(page).click({ timeout: 1_000 }).catch(() => undefined);
+    if (await botonListo(page).isVisible()) await botonListo(page).click({ timeout: 1_000 }).catch(() => undefined);
   }
   for (const page of pages) await expect(page.getByTestId('game-intro')).toBeHidden({ timeout: 30_000 });
 }

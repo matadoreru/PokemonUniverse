@@ -105,16 +105,17 @@
   background: var(--cream);
   box-shadow: var(--sh-hard-4);
   color: var(--ink);
-  animation: rule-in var(--t-reveal) var(--ease) both;
+  animation: rule-in var(--t-screen) var(--ease) both;
 }
+/* Escalonadas tras la cabecera: nunca más de dos animaciones a la vez. */
 .rule:nth-child(1) {
-  animation-delay: 120ms;
+  animation-delay: 240ms;
 }
 .rule:nth-child(2) {
-  animation-delay: 210ms;
+  animation-delay: 360ms;
 }
 .rule:nth-child(3) {
-  animation-delay: 300ms;
+  animation-delay: 480ms;
 }
 @media (min-width: 1024px) {
   .rule {
