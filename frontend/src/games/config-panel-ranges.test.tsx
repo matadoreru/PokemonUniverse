@@ -124,7 +124,7 @@ function renderRanges(Panel: Panel, config: unknown): Map<string, Range> {
 
 /**
  * Todos los paneles de configuración, con cada deslizador (en cualquier modo) y el campo del esquema que edita. Sus
- * límites tienen que ser los del campo Zod, que son los que acepta Java (\`config-cases.test.ts\`).
+ * límites tienen que ser los del campo Zod, que son los que acepta Java (`config-cases.test.ts`).
  */
 const panels: Record<string, { Panel: Panel; config: object; shape: Record<string, unknown>; fields: Record<string, string> }> = {
   'absurd-pokedex': { Panel: AbsurdPokedexConfigPanel, config: defaultAbsurdPokedexConfig, shape: absurdPokedexConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para escribir': 'writeSeconds', 'Tiempo para votar': 'voteSeconds' } },
@@ -150,7 +150,7 @@ const panels: Record<string, { Panel: Panel; config: object; shape: Record<strin
   'shiny-vote': { Panel: ShinyVoteConfigPanel, config: defaultShinyVoteConfig, shape: shinyVoteConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds', 'Duración de la revelación': 'revealSeconds' } },
   'sketchmon': { Panel: SketchmonConfigPanel, config: defaultSketchmonConfig, shape: sketchmonConfigSchema.shape, fields: { 'Vueltas': 'laps' } },
   'tcg-higher-lower': { Panel: TcgHigherLowerConfigPanel, config: defaultTcgHigherLowerConfig, shape: tcgHigherLowerConfigSchema.shape, fields: { 'Tiempo por comparación': 'roundSeconds', 'Número de rondas': 'rounds' } },
-  'type-chain': { Panel: TypeChainConfigPanel, config: defaultTypeChainConfig, shape: typeChainConfigSchema.shape, fields: {  } },
+  'type-chain': { Panel: TypeChainConfigPanel, config: defaultTypeChainConfig, shape: typeChainConfigSchema.shape, fields: {} },
   'type-duel': { Panel: TypeDuelConfigPanel, config: defaultTypeDuelConfig, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo para elegir tipo': 'typeSelectSeconds', 'Tiempo para buscar': 'searchSeconds', 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
   'unown-translator': { Panel: UnownTranslatorConfigPanel, config: defaultUnownTranslatorConfig, shape: unownTranslatorConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por ronda': 'roundSeconds', 'Tiempo entre letras': 'hintSeconds' } },
   'who-am-i': { Panel: WhoAmIConfigPanel, config: defaultWhoAmIConfig, shape: whoAmIConfigSchema.shape, fields: { 'Número de vueltas': 'maxLaps', 'Tiempo para preguntar': 'askSeconds', 'Tiempo para responder': 'answerSeconds' } },
@@ -168,7 +168,7 @@ const modeSliders: { game: string; mode: string; labels: string[] }[] = [
   { game: 'higher-lower', mode: 'ENDLESS', labels: ['Tiempo por ronda'] },
 ];
 
-/** La configuración por defecto de \`game\` en cada uno de sus modos (o sin modo). */
+/** La configuración por defecto de `game` en cada uno de sus modos (o sin modo). */
 const modeConfigs = (game: string): [string, object][] => {
   const { config } = panels[game]!;
   return (gameModeCatalog(game)?.modes ?? ['—']).map((mode) => [mode, mode === '—' ? config : { ...config, mode }]);
