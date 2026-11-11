@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingState;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
-import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -174,7 +174,7 @@ public final class UnownTranslatorTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable UnownTranslatorRoundResult lastRound) implements TimedGameState {
+      @Nullable UnownTranslatorRoundResult lastRound) implements GuessingState {
 
     public UnownTranslatorState {
       playerIds = frozenList(playerIds);

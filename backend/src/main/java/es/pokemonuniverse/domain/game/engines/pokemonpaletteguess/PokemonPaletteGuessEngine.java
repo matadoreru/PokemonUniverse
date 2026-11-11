@@ -253,18 +253,9 @@ public final class PokemonPaletteGuessEngine implements
   @Override
   public GameActionResult<PokemonPaletteGuessState> handleAction(PokemonPaletteGuessState state, String playerId,
       PokemonPaletteGuessAction action, GameContext context) {
-    if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "No hay una ronda activa.");
-    if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
-      return GameActionResult.reject(state, "Estás observando esta ronda.");
-    }
-    if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
-    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
-      return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
-    }
-    var cooldown = state.cooldownUntil().get(playerId);
-    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
-      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
-    }
+    var rejected = GuessingRound.precheck(state, playerId, context, "Ya has acertado esta ronda.",
+        expired -> resolveRound(expired, context));
+    if (rejected != null) return rejected;
     var found = context.pokemon().byId(action.pokemonId());
     if (found.isEmpty() || !state.poolIds().contains(found.get().id())) {
       return GameActionResult.reject(state, "Ese Pokémon no pertenece al pool configurado.");

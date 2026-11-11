@@ -1,13 +1,40 @@
 package es.pokemonuniverse.domain.game.engine.infra;
 
+import es.pokemonuniverse.domain.game.engine.GameActionResult;
+import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import io.micronaut.core.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /** Traducción literal de {@code games/infrastructure/guessing-round.ts}: contabilidad común de aciertos. */
 public final class GuessingRound {
 
   private GuessingRound() {}
+
+  /**
+   * Guardas comunes de la acción de adivinar, en este orden: ronda activa, jugador requerido, sin acierto previo,
+   * plazo ({@link Timing#deadlinePassedOrMissing}: sin plazo cuenta como vencido) y cooldown. Devuelve el rechazo de
+   * la primera que falla, o {@code null} si la acción sigue. {@code onExpired} da el estado con el que se rechaza el
+   * intento tardío (en casi todos los juegos, la ronda ya resuelta) y solo se evalúa en ese rechazo.
+   */
+  public static <S extends GuessingState> @Nullable GameActionResult<S> precheck(S state, String playerId,
+      GameContext context, String alreadySolvedMessage, UnaryOperator<S> onExpired) {
+    if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "No hay una ronda activa.");
+    if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
+      return GameActionResult.reject(state, "Estás observando esta ronda.");
+    }
+    if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, alreadySolvedMessage);
+    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
+      return GameActionResult.reject(onExpired.apply(state), "El tiempo ha terminado.");
+    }
+    var cooldown = state.cooldownUntil().get(playerId);
+    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
+      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
+    }
+    return null;
+  }
 
   /** Las respuestas aceptadas y la política de puntos siguen siendo del juego. */
   public static <T extends GuessSolveStats<T>> T recordGuessSolve(T stats, int attemptCount, int solveOrder,

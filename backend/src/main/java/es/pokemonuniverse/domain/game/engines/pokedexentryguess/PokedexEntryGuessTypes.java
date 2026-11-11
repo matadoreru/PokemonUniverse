@@ -10,7 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
 import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
 import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
-import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingState;
 import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
@@ -119,7 +119,7 @@ public final class PokedexEntryGuessTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable PokedexEntryGuessRoundResult lastRound) implements TimedGameState {
+      @Nullable PokedexEntryGuessRoundResult lastRound) implements GuessingState {
 
     public PokedexEntryGuessState {
       playerIds = frozenList(playerIds);

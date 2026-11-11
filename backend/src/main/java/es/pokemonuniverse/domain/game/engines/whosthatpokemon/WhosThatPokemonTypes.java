@@ -10,8 +10,8 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
 import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
 import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingState;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
-import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -125,7 +125,7 @@ public final class WhosThatPokemonTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable WhosThatPokemonRoundResult lastRound) implements TimedGameState {
+      @Nullable WhosThatPokemonRoundResult lastRound) implements GuessingState {
 
     public WhosThatPokemonState {
       playerIds = frozenList(playerIds);

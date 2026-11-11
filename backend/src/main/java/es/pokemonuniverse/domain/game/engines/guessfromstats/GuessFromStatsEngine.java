@@ -38,6 +38,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 /** Traducción literal de {@code guess-from-stats/server.ts}. */
 public final class GuessFromStatsEngine
@@ -240,18 +241,9 @@ public final class GuessFromStatsEngine
   @Override
   public GameActionResult<GuessFromStatsState> handleAction(GuessFromStatsState state, String playerId,
       GuessFromStatsAction action, GameContext context) {
-    if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "No hay una ronda activa.");
-    if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
-      return GameActionResult.reject(state, "Estás observando esta ronda.");
-    }
-    if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
-    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
-      return GameActionResult.reject(state, "El tiempo ha terminado.");
-    }
-    var cooldown = state.cooldownUntil().get(playerId);
-    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
-      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
-    }
+    var rejected = GuessingRound.precheck(state, playerId, context, "Ya has acertado esta ronda.",
+        UnaryOperator.identity());
+    if (rejected != null) return rejected;
     var found = context.pokemon().byId(action.pokemonId());
     if (found.isEmpty() || !state.poolIds().contains(found.get().id())) {
       return GameActionResult.reject(state, "Ese Pokémon no pertenece al pool configurado.");

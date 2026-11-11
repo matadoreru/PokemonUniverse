@@ -285,19 +285,9 @@ public final class ZoomedPokemonEngine
   @Override
   public GameActionResult<ZoomedPokemonState> handleAction(ZoomedPokemonState state, String playerId,
       ZoomedPokemonAction action, GameContext context) {
-    if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "No hay una ronda activa.");
-    if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
-      return GameActionResult.reject(state, "Estás observando esta ronda.");
-    }
-    if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya has acertado esta ronda.");
-    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
-      // Rechazo que también resuelve la ronda, como el { state: resolveRound(...), accepted: false } de TS.
-      return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
-    }
-    var cooldown = state.cooldownUntil().get(playerId);
-    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
-      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
-    }
+    var rejected = GuessingRound.precheck(state, playerId, context, "Ya has acertado esta ronda.",
+        expired -> resolveRound(expired, context));
+    if (rejected != null) return rejected;
     var found = context.pokemon().byId(action.pokemonId());
     if (found.isEmpty() || !state.guessPoolIds().contains(found.get().id())) {
       return GameActionResult.reject(state, "Ese Pokémon o forma no pertenece al pool configurado.");

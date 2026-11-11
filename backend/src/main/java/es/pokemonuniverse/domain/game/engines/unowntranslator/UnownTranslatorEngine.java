@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
@@ -257,19 +258,9 @@ public final class UnownTranslatorEngine implements
   @Override
   public GameActionResult<UnownTranslatorState> handleAction(UnownTranslatorState state, String playerId,
       UnownTranslatorAction action, GameContext context) {
-    if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "No hay una ronda activa.");
-    if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
-      return GameActionResult.reject(state, "Estás observando esta ronda.");
-    }
-    if (state.solves().containsKey(playerId)) return GameActionResult.reject(state, "Ya lo has descifrado.");
-    if (Timing.deadlinePassedOrMissing(context.now(), state.roundEndsAt())) {
-      // Rechazo que también resuelve la ronda, como en Zoomed Pokémon.
-      return GameActionResult.reject(resolveRound(state, context), "El tiempo ha terminado.");
-    }
-    var cooldown = state.cooldownUntil().get(playerId);
-    if (Timing.cooldownRemainingMs(context.now(), cooldown) > 0) {
-      return GameActionResult.reject(state, Timing.cooldownMessage(context.now(), cooldown));
-    }
+    var rejected = GuessingRound.precheck(state, playerId, context, "Ya lo has descifrado.",
+        expired -> resolveRound(expired, context));
+    if (rejected != null) return rejected;
     var guess = ((UnownTranslatorAction.Guess) action).text();
     var message = currentMessage(state);
     var attemptCounts = new LinkedHashMap<>(state.attemptCounts());

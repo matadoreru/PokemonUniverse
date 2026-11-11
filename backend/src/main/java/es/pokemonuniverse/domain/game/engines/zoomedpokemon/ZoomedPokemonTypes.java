@@ -10,7 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog.Source;
 import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
 import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
-import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
+import es.pokemonuniverse.domain.game.engine.infra.GuessingState;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -194,7 +194,7 @@ public final class ZoomedPokemonTypes {
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
-      @Nullable ZoomedPokemonRoundResult lastRound) implements TimedGameState {
+      @Nullable ZoomedPokemonRoundResult lastRound) implements GuessingState {
 
     public ZoomedPokemonState {
       playerIds = frozenList(playerIds);
