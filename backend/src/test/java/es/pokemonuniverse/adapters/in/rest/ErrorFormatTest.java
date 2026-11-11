@@ -85,6 +85,15 @@ class ErrorFormatTest {
   }
 
   @Test
+  void errorSubclassUsesOurShape() {
+    var ex = call(HttpRequest.GET("/test-errors/error"));
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, ex.getStatus());
+    var json = body(ex);
+    assertEquals("fallo", json.get("error"), json.toString());
+    assertFalse(json.containsKey("_links"), json.toString());
+  }
+
+  @Test
   void routingErrorsKeepTheirStatus() {
     assertEquals(HttpStatus.NOT_FOUND, call(HttpRequest.GET("/no-such-route")).getStatus());
   }

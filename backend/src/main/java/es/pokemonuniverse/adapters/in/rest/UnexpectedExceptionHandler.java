@@ -9,10 +9,13 @@ import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Último recurso: 500 con mensaje genérico en prod y el real en el resto de entornos. */
+/**
+ * Último recurso: 500 con mensaje genérico en prod y el real en el resto de entornos. Cubre {@link Throwable} y no
+ * solo {@link Exception}: un {@link Error} (p. ej. {@code AssertionError}) también se registra y sale con esta forma.
+ */
 @Produces
 @Singleton
-public class UnexpectedExceptionHandler implements ExceptionHandler<Exception, HttpResponse<ApiError>> {
+public class UnexpectedExceptionHandler implements ExceptionHandler<Throwable, HttpResponse<ApiError>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(UnexpectedExceptionHandler.class);
 
@@ -23,7 +26,7 @@ public class UnexpectedExceptionHandler implements ExceptionHandler<Exception, H
   }
 
   @Override
-  public HttpResponse<ApiError> handle(HttpRequest request, Exception exception) {
+  public HttpResponse<ApiError> handle(HttpRequest request, Throwable exception) {
     LOG.error("Unhandled error on {} {}", request.getMethod(), request.getPath(), exception);
     String message = prod || exception.getMessage() == null ? "Internal server error" : exception.getMessage();
     return HttpResponse.serverError(ApiError.of(message));

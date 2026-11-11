@@ -48,6 +48,12 @@ class TestErrorsController {
     throw new java.io.IOException("disk");
   }
 
+  /** Un {@code Error} (no {@code Exception}) también debe salir por el 500 JSON. */
+  @Get("/error")
+  String error() {
+    throw new AssertionError("fallo");
+  }
+
   @Get("/boom")
   String boom() {
     throw new IllegalStateException("kaboom");
