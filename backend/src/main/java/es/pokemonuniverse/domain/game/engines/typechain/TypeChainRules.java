@@ -12,7 +12,10 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/** Traducción literal del TS que antes estaba en {@code type-chain/rules.ts}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code type-chain/rules.ts}. La web conserva allí una copia de
+ * {@code TYPE_CHAIN_MIN_TYPE_POKEMON}: si cambia aquí, hay que cambiarla también allí.
+ */
 public final class TypeChainRules {
 
   private TypeChainRules() {}

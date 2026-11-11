@@ -19,7 +19,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-/** Traducción literal del TS que antes estaba en {@code pokemon-impostor/rules.ts}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code pokemon-impostor/rules.ts}. La web conserva allí una copia de
+ * {@code IMPOSTOR_CLUE_MAX_CODE_POINTS}: si cambia aquí, hay que cambiarla también allí.
+ */
 public final class PokemonImpostorRules {
 
   /** {@code IMPOSTOR_MAX_VOTING_ROUNDS}: solo una revotación; un empate en la segunda es {@code DEADLOCK}. */

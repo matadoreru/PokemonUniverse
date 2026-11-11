@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal del TS que antes estaba en {@code pokedex-distance/rules.ts}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code pokedex-distance/rules.ts}. La web conserva allí una copia de
+ * {@code MAX_TIEBREAK_DEPTH}: si cambia aquí, hay que cambiarla también allí.
+ */
 public final class PokedexDistanceRules {
 
   /**

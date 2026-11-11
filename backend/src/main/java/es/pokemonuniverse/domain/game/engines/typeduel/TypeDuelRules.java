@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal del TS que antes estaba en {@code type-duel/rules.ts}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code type-duel/rules.ts}. La web conserva allí una copia de
+ * {@code TYPE_DUEL_MAX_INVALID_COMBINATIONS}: si cambia aquí, hay que cambiarla también allí.
+ */
 public final class TypeDuelRules {
 
   public static final int WIN_POINTS = 5;

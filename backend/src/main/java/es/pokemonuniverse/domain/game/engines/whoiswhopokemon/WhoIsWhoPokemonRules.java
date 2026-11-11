@@ -9,7 +9,8 @@ import java.util.LinkedHashMap;
 
 /**
  * Traducción literal del TS que antes estaba en {@code who-is-who-pokemon/rules.ts}; el {@code choose} de su
- * {@code server.ts} es {@code Randoms.takeRandom}.
+ * {@code server.ts} es {@code Randoms.takeRandom}. La web conserva allí una copia de {@code WHO_IS_WHO_WIN_POINTS}:
+ * si cambia aquí, hay que cambiarla también allí.
  */
 public final class WhoIsWhoPokemonRules {
 

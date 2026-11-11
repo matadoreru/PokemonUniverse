@@ -241,6 +241,7 @@ public final class GuessFromStatsEngine
   @Override
   public GameActionResult<GuessFromStatsState> handleAction(GuessFromStatsState state, String playerId,
       GuessFromStatsAction action, GameContext context) {
+    // Único motor de adivinar que rechaza por plazo con el estado sin resolver, como hacía el TS.
     var rejected = GuessingRound.precheck(state, playerId, context, "Ya has acertado esta ronda.",
         UnaryOperator.identity());
     if (rejected != null) return rejected;
