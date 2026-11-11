@@ -96,6 +96,29 @@ class FeedbackControllerTest {
     assertEquals(Map.of("error", "Authentication required"), error(e));
   }
 
+  private HttpClientResponseException failRaw(String cookie, String rawBody) {
+    var req = HttpRequest.POST("/api/feedback", rawBody).contentType("application/json");
+    if (cookie != null) req = req.header("Cookie", cookie);
+    var finalReq = req;
+    return assertThrows(HttpClientResponseException.class, () -> client.toBlocking().exchange(finalReq, String.class));
+  }
+
+  /** Como Node: la autenticación se comprueba antes de leer el cuerpo, así que un anónimo nunca ve un 400. */
+  @Test
+  void anonymousWithMalformedBodyIs401() {
+    for (var raw : List.of("{\"type\":", "", "[]", "{\"type\":\"NOPE\"}")) {
+      var e = failRaw(null, raw);
+      assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus(), raw);
+      assertEquals(Map.of("error", "Authentication required"), error(e), raw);
+    }
+  }
+
+  @Test
+  void guestWithMalformedBodyIs400() {
+    var e = failRaw(cookie(AuthUser.Kind.GUEST, "guest-fb-raw"), "{\"type\":");
+    assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+  }
+
   @Test
   @SuppressWarnings("unchecked")
   void guestCanSubmitGeneral() throws Exception {
