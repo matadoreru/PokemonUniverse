@@ -5,6 +5,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { capture, collectErrors, conMovimiento, crearSalaConJugadores, esperarPartida, iniciarPartida, seleccionarJuego, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { sinScorePop } from '../src/juegos.js';
 
 /** Los dos tamaños del criterio de aceptación de E8. */
 const TAMANOS = [{ w: 1280, h: 720 }, { w: 390, h: 844 }] as const;
@@ -108,6 +109,7 @@ test('texto muy grande: sala, Would You Rather y sus resultados', async ({ brows
       await page.getByTestId('wyr-confirm').click();
     }
     await expect(host.page.getByRole('heading', { name: 'Quien mejor leyó la sala' })).toBeVisible({ timeout: 30_000 });
+    await sinScorePop(host.page);
     await capturarGrande(host.page, 'texto-grande-resultados');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {

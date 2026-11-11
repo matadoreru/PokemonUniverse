@@ -15,11 +15,11 @@
   white-space: nowrap;
   vertical-align: middle;
 }
-/* Solo con ratón o panel táctil. */
+/* Solo con ratón o panel táctil y a partir de 640 px: en una ventana estrecha el botón no tiene sitio para la tecla. */
 .fine {
   display: none;
 }
-@media (pointer: fine) {
+@media (pointer: fine) and (min-width: 640px) {
   .fine {
     display: inline-flex;
   }

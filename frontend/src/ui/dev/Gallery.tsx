@@ -404,8 +404,8 @@ function KbdSection() {
       <Fig id="kbd-keys" caption="Teclas de atajo: números, letras, Intro y «?»">
         <span className={s.iconRow}><Kbd>1</Kbd><Kbd>A</Kbd><Kbd>Intro</Kbd><Kbd>?</Kbd></span>
       </Fig>
-      <Fig id="kbd-pill" caption="En un botón, solo con ratón (fineOnly): «Confirmar» con Intro; en táctil no se ve">
-        <Pill variant="yellow" size="main" icon={Send} aria-keyshortcuts="Enter">Confirmar respuesta <Kbd fineOnly>Intro</Kbd></Pill>
+      <Fig id="kbd-pill" caption="En un botón, solo con ratón (fineOnly): «Confirmar» con Intro; en táctil o por debajo de 640 px no se ve" wide>
+        <Pill variant="yellow" icon={Send} aria-keyshortcuts="Enter">Confirmar respuesta <Kbd fineOnly>Intro</Kbd></Pill>
       </Fig>
       <Fig id="kbd-help" caption="Ayuda de atajos («?»): contenido del diálogo" cream>
         <ShortcutList entries={[{ keys: ['A', '1'], label: 'Opción A: Pikachu' }, { keys: ['B', '2'], label: 'Opción B: Raichu' }, { keys: ['Enter'], label: 'Confirmar voto' }]} />

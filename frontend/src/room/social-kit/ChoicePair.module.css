@@ -86,6 +86,15 @@
   .help {
     display: none;
   }
+  /* Con el texto Grande o Muy grande (E8), lado a lado partirían las palabras: una encima de otra y la lista se desplaza. */
+  :root[data-text] .options {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-2);
+  }
+  :root[data-text] .versus {
+    position: static;
+    transform: none;
+  }
 }
 @media (min-width: 1024px) and (max-height: 800px) {
   .help {

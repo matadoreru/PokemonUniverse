@@ -37,18 +37,18 @@ export interface ShortcutSource {
   textContent: string | null;
   /** `false` si el control no se ve (oculto, en otra pestaña o en un panel cerrado). */
   visible: boolean;
-  disabled: boolean;
 }
 
 /**
  * Filas de la ayuda a partir de los controles: uno por fila, con su nombre accesible (o su texto) y sus teclas, sin los
- * ocultos ni los deshabilitados; dos controles iguales (mismas teclas y nombre) cuentan una vez.
+ * ocultos; dos controles iguales (mismas teclas y nombre) cuentan una vez. Los deshabilitados sí salen: «Confirmar» con
+ * Intro está apagado hasta elegir, pero es un atajo de la pantalla.
  */
 export function shortcutEntries(sources: Iterable<ShortcutSource>): ShortcutEntry[] {
   const seen = new Set<string>();
   const out: ShortcutEntry[] = [];
   for (const source of sources) {
-    if (!source.visible || source.disabled) continue;
+    if (!source.visible) continue;
     const keys = (source.getAttribute('aria-keyshortcuts') ?? '').split(/\s+/).filter(Boolean);
     const label = (source.getAttribute('aria-label') ?? source.textContent ?? '').replace(/\s+/g, ' ').trim();
     if (keys.length === 0 || !label) continue;
@@ -73,6 +73,5 @@ export function screenShortcuts(root: ParentNode): ShortcutEntry[] {
     getAttribute: (name: string) => el.getAttribute(name),
     textContent: textWithoutKeys(el),
     visible: el.getClientRects().length > 0 && !el.closest('[hidden], [inert]'),
-    disabled: el.matches(':disabled') || el.getAttribute('aria-disabled') === 'true',
   })));
 }

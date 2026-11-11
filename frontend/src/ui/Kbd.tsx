@@ -5,7 +5,8 @@ import s from './Kbd.module.css';
 export interface KbdProps {
   children: ReactNode;
   /**
-   * Solo con puntero fino (ratón o panel táctil, `@media (pointer: fine)`): en táctil un atajo de teclado no sirve. Es
+   * Solo con puntero fino (ratón o panel táctil, `@media (pointer: fine)`) y desde 640 px: en táctil un atajo de
+   * teclado no sirve y en una ventana estrecha no cabe. Es
    * decorativa (`aria-hidden`): el control ya dice su atajo con `aria-keyshortcuts` y su nombre no cambia.
    */
   fineOnly?: boolean;
