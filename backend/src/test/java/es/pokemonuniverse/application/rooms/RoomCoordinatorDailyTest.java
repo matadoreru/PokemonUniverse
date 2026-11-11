@@ -178,7 +178,7 @@ class RoomCoordinatorDailyTest {
     assertEquals(RoomPhase.of(room.game.engine.getLifecycle(room.game.state).phase()), view.phase());
     assertEquals(RoomPhase.ROUND_ACTIVE, view.phase());
     assertEquals(1, view.maxPlayers());
-    assertEquals(new SessionMode.GameCount(1), view.sessionMode());
+    assertEquals(new SessionMode.GameCount(1, false), view.sessionMode());
     assertEquals("POINTS", room.game.configTree.get("mode").getStringValue());
     assertEquals(List.of(ASH.id()), room.game.participantIds);
     assertEquals(new RoomView.DailyView("pokedex-distance", "2026-11-07", 5, null), view.daily());

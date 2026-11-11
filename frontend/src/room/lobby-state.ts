@@ -1,4 +1,14 @@
-import { formatPendingReadyNames, type MiniGameManifest, type RoomMemberView } from '@pokemon-universe/shared/public';
+import { formatPendingReadyNames, type MiniGameManifest, type RoomMemberView, type SessionMode } from '@pokemon-universe/shared/public';
+
+/** El modo por partidas con otro número de partidas; conserva «La última partida vale doble». */
+export function withGameCountTarget(mode: SessionMode, target: number): SessionMode {
+  return mode.type === 'GAME_COUNT' ? { ...mode, target } : { type: 'GAME_COUNT', target };
+}
+
+/** El modo por partidas con la última partida doble o sin ella; los otros modos no tienen la opción (`null`). */
+export function withDoubleLastGame(mode: SessionMode, doubleLastGame: boolean): SessionMode | null {
+  return mode.type === 'GAME_COUNT' ? { ...mode, doubleLastGame } : null;
+}
 
 /** Texto de búsqueda sin tildes ni mayúsculas. */
 export function normalizeSearch(value: string): string {

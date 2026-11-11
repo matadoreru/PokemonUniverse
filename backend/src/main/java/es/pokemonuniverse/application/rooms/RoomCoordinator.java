@@ -490,7 +490,7 @@ public class RoomCoordinator {
         var room = new LiveRoom(random.uuid(), code, identity.id(), 1, daily.gameId,
             Map.of(daily.gameId, launch.config()), clock.now());
         room.daily = daily;
-        room.sessionMode = new SessionMode.GameCount(1);
+        room.sessionMode = new SessionMode.GameCount(1, false);
         room.lock.lock();
         try {
           room.members.put(identity.id(), member(identity, connectionId, MemberRole.PLAYER, RoomRole.HOST));
@@ -1193,7 +1193,8 @@ public class RoomCoordinator {
     game.resultsApplied = true;
     room.gamesPlayed += 1;
     var gameResults = game.engine.getResults(game.state);
-    var sessionPoints = Scoring.sessionPointsForResults(gameResults);
+    int multiplier = SessionMode.pointsMultiplier(room.sessionMode, room.gamesPlayed);
+    var sessionPoints = Scoring.sessionPointsForResults(gameResults, multiplier);
     for (var standing : gameResults.standings()) {
       var member = room.members.get(standing.playerId());
       int points = sessionPoints.getOrDefault(standing.playerId(), 0);
@@ -1214,7 +1215,7 @@ public class RoomCoordinator {
     for (var standing : gameResults.standings()) rawPoints.put(standing.playerId(), standing.points());
     room.sessionHistory.add(new SessionGameSummary(room.gamesPlayed, game.gameId,
         winnerIds(gameResults),
-        Scoring.SESSION_SCORING_VERSION, sessionPoints, rawPoints));
+        Scoring.SESSION_SCORING_VERSION, sessionPoints, rawPoints, multiplier > 1 ? multiplier : null));
     if (room.sessionHistory.size() > MAX_SESSION_HISTORY) {
       room.sessionHistory.subList(0, room.sessionHistory.size() - MAX_SESSION_HISTORY).clear();
     }

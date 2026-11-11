@@ -35,6 +35,31 @@ class RoomCommandParsersTest {
   }
 
   @Test
+  void sessionModeDoubleLastGameIsAnOptionalBooleanOfGameCount() {
+    assertEquals(new SessionMode.GameCount(5, false),
+        RoomCommandParsers.sessionMode(json("{\"type\":\"GAME_COUNT\",\"target\":5}")));
+    assertEquals(new SessionMode.GameCount(5, true),
+        RoomCommandParsers.sessionMode(json("{\"type\":\"GAME_COUNT\",\"target\":5,\"doubleLastGame\":true}")));
+    // Los otros modos no tienen la opción: se descarta como cualquier clave desconocida.
+    assertEquals(new SessionMode.PointTarget(50),
+        RoomCommandParsers.sessionMode(json("{\"type\":\"POINT_TARGET\",\"target\":50,\"doubleLastGame\":true}")));
+    assertEquals(new SessionMode.Infinite(),
+        RoomCommandParsers.sessionMode(json("{\"type\":\"INFINITE\",\"doubleLastGame\":true}")));
+    assertEquals("""
+        [
+          {
+            "expected": "boolean",
+            "code": "invalid_type",
+            "path": [
+              "doubleLastGame"
+            ],
+            "message": "Invalid input: expected boolean, received string"
+          }
+        ]""", error(() -> RoomCommandParsers.sessionMode(
+            json("{\"type\":\"GAME_COUNT\",\"target\":5,\"doubleLastGame\":\"yes\"}"))));
+  }
+
+  @Test
   void sessionModeBoundsAndDiscriminator() {
     assertEquals(new SessionMode.Infinite(), RoomCommandParsers.sessionMode(json("{\"type\":\"INFINITE\",\"x\":1}")));
     assertEquals(new SessionMode.PointTarget(10_000),

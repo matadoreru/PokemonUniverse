@@ -236,6 +236,11 @@
   max-width: 16rem;
   margin-top: var(--sp-3);
 }
+/* «La última partida vale doble»: debajo del número de partidas, con sitio para la ayuda. */
+.doubleLast {
+  max-width: 32rem;
+  margin-top: var(--sp-3);
+}
 .endSession {
   margin-top: var(--sp-4);
 }

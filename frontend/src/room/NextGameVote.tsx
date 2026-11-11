@@ -1,5 +1,5 @@
-import { gameModeCatalog, supportsPlayerCount, type RoomView } from '@pokemon-universe/shared/public';
-import { Check, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
+import { gameCountsDouble, gameModeCatalog, supportsPlayerCount, type RoomView } from '@pokemon-universe/shared/public';
+import { Check, Flame, StopCircle, Trophy, UsersRound, Vote } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
@@ -50,6 +50,7 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
         <span className={s.eyebrow}>Partida {room.gamesPlayed} completada</span>
         <h1 className={s.title}>Elige el siguiente minijuego</h1>
         <p className={s.lead}>El más votado será el próximo. En caso de empate, decide el azar.</p>
+        {gameCountsDouble(room.sessionMode, room.gamesPlayed + 1) && <span className={s.double}><Badge><Icon icon={Flame} size={18} />Última partida: vale doble</Badge></span>}
       </div>
       <div className={s.clock}>
         {active ? <ServerTimer deadline={vote.endsAt} serverOffset={serverOffset} label="Para votar" /> : <Badge tone="yellow"><Icon icon={Check} size={18} />Elegido</Badge>}

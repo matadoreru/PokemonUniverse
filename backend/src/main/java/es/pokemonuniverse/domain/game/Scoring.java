@@ -89,10 +89,17 @@ public final class Scoring {
   }
 
   public static Map<String, Integer> sessionPointsForResults(GameResults results) {
+    return sessionPointsForResults(results, 1);
+  }
+
+  /** Puntos de sesión por puesto multiplicados por {@code multiplier} (2 en una última partida que vale doble). */
+  public static Map<String, Integer> sessionPointsForResults(GameResults results, int multiplier) {
+    if (multiplier < 1) throw new IllegalArgumentException("Invalid session points multiplier");
     int count = results.standings().size();
     var points = new LinkedHashMap<String, Integer>();
     for (var standing : results.standings()) {
-      points.put(standing.playerId(), standing.points() > 0 ? pointsForPosition(count, standing.position()) : 0);
+      points.put(standing.playerId(),
+          standing.points() > 0 ? pointsForPosition(count, standing.position()) * multiplier : 0);
     }
     return points;
   }

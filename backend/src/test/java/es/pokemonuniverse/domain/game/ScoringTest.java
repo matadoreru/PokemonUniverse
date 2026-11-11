@@ -90,6 +90,13 @@ class ScoringTest {
   }
 
   @Test
+  void doublesTheSessionAwardsOfALastGameThatCountsDouble() {
+    assertEquals(Map.of("a", 12, "b", 6, "c", 0), Scoring.sessionPointsForResults(scaled(1), 2));
+    assertEquals(Scoring.sessionPointsForResults(scaled(1)), Scoring.sessionPointsForResults(scaled(1), 1));
+    assertThrows(IllegalArgumentException.class, () -> Scoring.sessionPointsForResults(scaled(1), 0));
+  }
+
+  @Test
   void requireFinishedThrowsTheGameMessageOutsideGameResults() {
     Scoring.requireFinished(GamePhase.GAME_RESULTS, "x");
     var error = assertThrows(EngineException.class, () -> Scoring.requireFinished(GamePhase.ROUND_RESULTS, "Antes"));

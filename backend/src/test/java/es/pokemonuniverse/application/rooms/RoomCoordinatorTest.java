@@ -662,7 +662,7 @@ class RoomCoordinatorTest {
     assertTrue(invalid.getMessage().startsWith("Configuración de Higher or Lower no válida"), invalid.getMessage());
     kit.manager.updateSession("cohost", json("{\"type\":\"GAME_COUNT\",\"target\":5}"));
     assertEquals("higher-lower", room.selectedGameId);
-    assertEquals(new SessionMode.GameCount(5), room.sessionMode);
+    assertEquals(new SessionMode.GameCount(5, false), room.sessionMode);
     assertMessage("No tienes permiso para realizar esta acción.", () -> kit.manager.startGame("cohost"));
     assertMessage("No tienes permiso para realizar esta acción.", () -> kit.manager.kick("cohost", "member"));
     assertMessage("No tienes permiso para realizar esta acción.",
@@ -894,7 +894,7 @@ class RoomCoordinatorTest {
     room.gamesPlayed = 100;
     for (int index = 0; index < 100; index++) {
       room.sessionHistory.add(new SessionGameSummary(index + 1, "higher-lower", List.of("host"), null,
-          Map.of("host", 1, "guest", 0), null));
+          Map.of("host", 1, "guest", 0), null, null));
     }
     kit.selectHigherLower("host");
     kit.startReady(room, "host");
@@ -930,6 +930,49 @@ class RoomCoordinatorTest {
     assertMessage("Cannot end the session during a game", () -> kit.manager.endSession("host"));
     kit.manager.returnLobby("host");
     assertEquals(0, room.gamesPlayed);
+  }
+
+  @Test
+  @DisplayName("doubles the session points of the last game when the session asks for it")
+  void lastGameCountsDouble() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.selectGame("host", "shiny-vote");
+    kit.manager.updateSession("host", json("{\"type\":\"GAME_COUNT\",\"target\":2,\"doubleLastGame\":true}"));
+    assertEquals(new SessionMode.GameCount(2, true), kit.manager.view(room, "host").sessionMode());
+    kit.startReady(room, "host");
+    kit.manager.action("host", json("{\"type\":\"SCORE\",\"points\":3}"));
+    kit.manager.action("host", json("{\"type\":\"FINISH\"}"));
+    assertEquals(4, room.sessionParticipants.get("host").sessionPoints); // 1.ª partida: 2 jugadores, 1.º = 2 × 2
+    assertNull(room.sessionHistory.getLast().pointsMultiplier());
+    assertFalse(serialize(kit.manager.view(room, "host").sessionHistory().getLast()).contains("pointsMultiplier"));
+    kit.manager.continueSession("host");
+    kit.manager.action("guest", json("{\"type\":\"SCORE\",\"points\":1}"));
+    kit.manager.action("host", json("{\"type\":\"FINISH\"}"));
+    var last = room.sessionHistory.getLast();
+    assertEquals(Integer.valueOf(2), last.pointsMultiplier());
+    assertEquals(8, last.points().get("guest")); // la última vale doble: 4 × 2
+    assertEquals(Integer.valueOf(1), last.rawPoints().get("guest")); // los puntos del juego no se tocan
+    assertEquals(8, room.sessionParticipants.get("guest").sessionPoints);
+    assertEquals(8, room.members.get("guest").sessionPoints);
+    assertEquals(4, room.sessionParticipants.get("host").sessionPoints);
+    assertTrue(serialize(kit.manager.view(room, "host").sessionHistory().getLast()).contains("\"pointsMultiplier\":2"));
+    kit.manager.continueSession("host");
+    assertEquals(RoomPhase.SESSION_RESULTS, room.phase);
+  }
+
+  @Test
+  @DisplayName("without the option the last game of a game-count session counts once")
+  void lastGameCountsOnceByDefault() {
+    var kit = new RoomTestKit("shiny-vote");
+    var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
+    kit.manager.selectGame("host", "shiny-vote");
+    kit.manager.updateSession("host", json("{\"type\":\"GAME_COUNT\",\"target\":1}"));
+    kit.startReady(room, "host");
+    kit.manager.action("host", json("{\"type\":\"SCORE\",\"points\":3}"));
+    kit.manager.action("host", json("{\"type\":\"FINISH\"}"));
+    assertEquals(4, room.sessionParticipants.get("host").sessionPoints);
+    assertNull(room.sessionHistory.getLast().pointsMultiplier());
   }
 
   @Test
@@ -1964,7 +2007,7 @@ class RoomCoordinatorTest {
       var f = activeSkipFixture(2, 10);
       var room = f.room();
       room.gamesPlayed = 1;
-      var history = new SessionGameSummary(1, "shiny-vote", List.of("skip-p1"), null, Map.of("skip-p1", 7), null);
+      var history = new SessionGameSummary(1, "shiny-vote", List.of("skip-p1"), null, Map.of("skip-p1", 7), null, null);
       room.sessionHistory.add(history);
       room.members.get("skip-p1").sessionPoints = 7;
       room.sessionParticipants.get("skip-p1").sessionPoints = 7;

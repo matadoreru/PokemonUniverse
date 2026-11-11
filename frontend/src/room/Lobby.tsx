@@ -1,16 +1,16 @@
 import { gameModeCount, gameModeName, hasRoomPermission, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, UserPlus, Flag, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
+import { Check, CheckCircle2, UserPlus, Flag, Flame, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
 import { canInviteFriend } from '../friends/FriendsDrawer';
 import { clientGameRegistry } from '../games/registry';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, type TabItem } from '../ui';
+import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, Toggle, type TabItem } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
 import { allowedModesOf, compatibleSelectedGameIds, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, rotationGameConfig, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
-import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel } from './lobby-state';
+import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
 import { ignoreFailure } from './room-command';
@@ -271,14 +271,18 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
         <div className={s.choices}>
           {([
             { type: 'INFINITE', icon: InfinityIcon, name: 'Infinita', mode: { type: 'INFINITE' } },
-            { type: 'GAME_COUNT', icon: Hash, name: room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas', mode: { type: 'GAME_COUNT', target: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode.target : 5 } },
+            { type: 'GAME_COUNT', icon: Hash, name: room.sessionMode.type === 'GAME_COUNT' ? `${room.sessionMode.target} partidas` : 'Por partidas', mode: room.sessionMode.type === 'GAME_COUNT' ? room.sessionMode : { type: 'GAME_COUNT', target: 5 } },
             { type: 'POINT_TARGET', icon: Trophy, name: room.sessionMode.type === 'POINT_TARGET' ? `${room.sessionMode.target} puntos` : 'Por puntos', mode: { type: 'POINT_TARGET', target: room.sessionMode.type === 'POINT_TARGET' ? room.sessionMode.target : 50 } },
           ] satisfies { type: SessionMode['type']; icon: typeof Hash; name: string; mode: SessionMode }[]).map((choice) => (
             <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.name} state={room.sessionMode.type === choice.type ? 'selected' : 'idle'} {...(canEditSession ? { onSelect: () => session(choice.mode) } : {})}>
             </Card>
           ))}
         </div>
-        {room.sessionMode.type === 'GAME_COUNT' && sessionTarget !== null && <Field className={cx(s.target)} label="Número de partidas" type="number" min={1} max={100} disabled={!canEditSession} value={sessionTarget} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 1 && target <= 100) session({ type: 'GAME_COUNT', target }); }} />}
+        {room.sessionMode.type === 'GAME_COUNT' && sessionTarget !== null && <Field className={cx(s.target)} label="Número de partidas" type="number" min={1} max={100} disabled={!canEditSession} value={sessionTarget} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 1 && target <= 100) session(withGameCountTarget(room.sessionMode, target)); }} />}
+        {/* Solo en el modo por partidas; la opción la ve y la cambia quien puede editar la sesión, el resto solo si está activa. */}
+        {room.sessionMode.type === 'GAME_COUNT' && (canEditSession
+          ? <Toggle className={cx(s.doubleLast)} label="La última partida vale doble" hint="Da el doble de puntos de sesión: permite remontar al final." checked={room.sessionMode.doubleLastGame === true} onChange={(doubleLastGame) => { const mode = withDoubleLastGame(room.sessionMode, doubleLastGame); if (mode) session(mode); }} />
+          : room.sessionMode.doubleLastGame === true && <p className={s.readonly}><Icon icon={Flame} size={18} />La última partida vale doble.</p>)}
         {room.sessionMode.type === 'POINT_TARGET' && sessionTarget !== null && <Field className={cx(s.target)} label="Puntos para ganar" type="number" min={5} max={10000} step={5} disabled={!canEditSession} value={sessionTarget} onChange={(event) => { const target = Number(event.target.value); if (Number.isInteger(target) && target >= 5 && target <= 10000) session({ type: 'POINT_TARGET', target }); }} />}
         {hasRoomPermission(roomRole, 'END_SESSION') && room.gamesPlayed > 0 && <Pill variant="danger" icon={Flag} className={s.endSession} onClick={onEndSession}>Finalizar sesión y ver clasificación</Pill>}
       </section>

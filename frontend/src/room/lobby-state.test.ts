@@ -1,5 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, normalizeSearch, playerRangeLabel } from './lobby-state';
+import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, normalizeSearch, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
+
+describe('la última partida vale doble', () => {
+  it('cambiar el número de partidas conserva la opción', () => {
+    expect(withGameCountTarget({ type: 'GAME_COUNT', target: 5, doubleLastGame: true }, 7)).toEqual({ type: 'GAME_COUNT', target: 7, doubleLastGame: true });
+    expect(withGameCountTarget({ type: 'GAME_COUNT', target: 5 }, 7)).toEqual({ type: 'GAME_COUNT', target: 7 });
+    expect(withGameCountTarget({ type: 'INFINITE' }, 3)).toEqual({ type: 'GAME_COUNT', target: 3 });
+  });
+
+  it('solo el modo por partidas tiene la opción', () => {
+    expect(withDoubleLastGame({ type: 'GAME_COUNT', target: 5 }, true)).toEqual({ type: 'GAME_COUNT', target: 5, doubleLastGame: true });
+    expect(withDoubleLastGame({ type: 'GAME_COUNT', target: 5, doubleLastGame: true }, false)).toEqual({ type: 'GAME_COUNT', target: 5, doubleLastGame: false });
+    expect(withDoubleLastGame({ type: 'POINT_TARGET', target: 50 }, true)).toBeNull();
+    expect(withDoubleLastGame({ type: 'INFINITE' }, true)).toBeNull();
+  });
+});
 
 const games = [
   { name: 'Pokédex Distance', description: 'Elige el número más cercano.' },

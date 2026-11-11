@@ -115,6 +115,29 @@ describe('lobby how to play', () => {
   });
 });
 
+describe('la última partida vale doble en el lobby', () => {
+  const render = (sessionMode: RoomView['sessionMode'], selfId: string) => renderToStaticMarkup(<MemoryRouter><Lobby
+    room={{ ...room, sessionMode }} selfId={selfId} onReady={noOp} onStart={noOp}
+    onGameConfig={noOp} onSession={noOp} onGameSelection={noOp}
+    onSetRoomRole={noOp} onTransferHost={noOp} onKick={noOp} onEndSession={() => undefined} {...chatProps}
+  /></MemoryRouter>);
+  const toggle = /<button[^>]*role="switch"[^>]*aria-checked="(true|false)"[^>]*>(?:(?!<\/button>).)*La última partida vale doble/;
+
+  it('quien edita la sesión tiene el interruptor solo en el modo por partidas, apagado por defecto', () => {
+    expect(render({ type: 'GAME_COUNT', target: 5 }, 'host').match(toggle)?.[1]).toBe('false');
+    expect(render({ type: 'GAME_COUNT', target: 5, doubleLastGame: true }, 'host').match(toggle)?.[1]).toBe('true');
+    expect(render({ type: 'POINT_TARGET', target: 50 }, 'host')).not.toContain('La última partida vale doble');
+    expect(render({ type: 'INFINITE' }, 'host')).not.toContain('La última partida vale doble');
+  });
+
+  it('el resto no tiene interruptor y solo lee la opción si está activa', () => {
+    expect(render({ type: 'GAME_COUNT', target: 5 }, 'guest')).not.toContain('La última partida vale doble');
+    const markup = render({ type: 'GAME_COUNT', target: 5, doubleLastGame: true }, 'guest');
+    expect(markup).not.toMatch(toggle);
+    expect(markup).toContain('La última partida vale doble.');
+  });
+});
+
 describe('lobby game modes', () => {
   const render = (gameConfigs: Record<string, unknown>) => renderToStaticMarkup(<MemoryRouter><Lobby
     room={{ ...room, gameConfigs }} selfId="host" onReady={noOp} onStart={noOp}

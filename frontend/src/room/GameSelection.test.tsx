@@ -198,6 +198,15 @@ describe('game selection UI', () => {
     expectSingleLiveRegion(result);
   });
 
+  it('la votación de la última partida dice que vale doble si la sesión lo pide', () => {
+    const base = room('NEXT_GAME_VOTE');
+    const render = (sessionMode: RoomView['sessionMode'], gamesPlayed: number) => renderToStaticMarkup(createElement(NextGameVote, { room: { ...base, sessionMode, gamesPlayed }, selfId: 'p1', onVote: async () => undefined, onEnd: () => undefined }));
+    expect(render({ type: 'GAME_COUNT', target: 3, doubleLastGame: true }, 2)).toContain('Última partida: vale doble');
+    expect(render({ type: 'GAME_COUNT', target: 3, doubleLastGame: true }, 1)).not.toContain('Última partida: vale doble');
+    expect(render({ type: 'GAME_COUNT', target: 3 }, 2)).not.toContain('Última partida: vale doble');
+    expect(render({ type: 'INFINITE' }, 2)).not.toContain('Última partida: vale doble');
+  });
+
   it('shows each allowed mode of a game as its own vote option, keyed by option id', () => {
     const higherLower = realGames[1]!;
     const base = room('NEXT_GAME_VOTE_RESULTS');

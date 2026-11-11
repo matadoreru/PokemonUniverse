@@ -71,6 +71,8 @@ export interface SessionStandingView {
 export interface SessionGameSummaryView {
   scoringVersion?: 'POSITION_V1';
   rawPoints?: Record<string, number>;
+  /** Solo en una partida que valió doble (2): `points` ya lo lleva aplicado y `rawPoints` no. */
+  pointsMultiplier?: number;
   gameNumber: number;
   gameId: string;
   winnerIds: string[];
@@ -79,8 +81,13 @@ export interface SessionGameSummaryView {
 
 export type SessionMode =
   | { type: 'INFINITE' }
-  | { type: 'GAME_COUNT'; target: number }
+  | { type: 'GAME_COUNT'; target: number; /** «La última partida vale doble»; ausente es `false`. */ doubleLastGame?: boolean }
   | { type: 'POINT_TARGET'; target: number };
+
+/** La partida `gameNumber` (empieza en 1) da el doble de puntos de sesión: la última, si la sesión lo pide. Copia de `SessionMode.pointsMultiplier`. */
+export function gameCountsDouble(mode: SessionMode, gameNumber: number): boolean {
+  return mode.type === 'GAME_COUNT' && mode.doubleLastGame === true && gameNumber >= mode.target;
+}
 
 export function isSessionComplete(mode: SessionMode, gamesPlayed: number, sessionPoints: Iterable<number>): boolean {
   if (mode.type === 'INFINITE') return false;

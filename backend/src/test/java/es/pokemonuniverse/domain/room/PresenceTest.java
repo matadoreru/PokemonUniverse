@@ -105,8 +105,8 @@ class PresenceTest {
   @DisplayName("evaluates isSessionComplete for each session mode")
   void sessionComplete() {
     assertFalse(SessionMode.isComplete(new SessionMode.Infinite(), 1_000, List.of(1_000)));
-    assertTrue(SessionMode.isComplete(new SessionMode.GameCount(2), 2, List.of()));
-    assertFalse(SessionMode.isComplete(new SessionMode.GameCount(2), 1, List.of()));
+    assertTrue(SessionMode.isComplete(new SessionMode.GameCount(2, false), 2, List.of()));
+    assertFalse(SessionMode.isComplete(new SessionMode.GameCount(2, false), 1, List.of()));
     assertTrue(SessionMode.isComplete(new SessionMode.PointTarget(5), 0, List.of(1, 5)));
     assertFalse(SessionMode.isComplete(new SessionMode.PointTarget(5), 0, List.of(4)));
   }

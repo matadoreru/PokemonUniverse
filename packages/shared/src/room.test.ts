@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPendingReadyNames, hasRoomPermission, isSessionComplete, ROOM_PERMISSIONS } from './room.js';
+import { formatPendingReadyNames, gameCountsDouble, hasRoomPermission, isSessionComplete, ROOM_PERMISSIONS } from './room.js';
 
 describe('room permissions', () => {
   it('gives the Host every room permission', () => {
@@ -36,6 +36,17 @@ describe('session completion', () => {
     expect(isSessionComplete({ type: 'GAME_COUNT', target: 3 }, 3, [0])).toBe(true);
     expect(isSessionComplete({ type: 'POINT_TARGET', target: 20 }, 1, [19, 4])).toBe(false);
     expect(isSessionComplete({ type: 'POINT_TARGET', target: 20 }, 1, [19, 20])).toBe(true);
+  });
+});
+
+describe('last game counts double', () => {
+  it('only doubles the last game of a game-count session that asks for it', () => {
+    expect(gameCountsDouble({ type: 'GAME_COUNT', target: 3, doubleLastGame: true }, 3)).toBe(true);
+    expect(gameCountsDouble({ type: 'GAME_COUNT', target: 3, doubleLastGame: true }, 2)).toBe(false);
+    expect(gameCountsDouble({ type: 'GAME_COUNT', target: 3, doubleLastGame: false }, 3)).toBe(false);
+    expect(gameCountsDouble({ type: 'GAME_COUNT', target: 3 }, 3)).toBe(false);
+    expect(gameCountsDouble({ type: 'POINT_TARGET', target: 3 }, 3)).toBe(false);
+    expect(gameCountsDouble({ type: 'INFINITE' }, 3)).toBe(false);
   });
 });
 

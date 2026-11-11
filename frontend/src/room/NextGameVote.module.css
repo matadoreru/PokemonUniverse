@@ -49,6 +49,11 @@
   font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
   color: var(--sky-2);
 }
+/* «Última partida: vale doble», debajo de la explicación. */
+.double {
+  display: flex;
+  margin-top: var(--sp-2);
+}
 .clock {
   display: flex;
   align-items: center;

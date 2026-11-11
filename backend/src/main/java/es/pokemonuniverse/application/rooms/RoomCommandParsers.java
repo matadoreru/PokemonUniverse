@@ -60,7 +60,8 @@ public final class RoomCommandParsers {
     var type = discriminator(raw, SESSION_TYPES, issues);
     return switch (type) {
       case "INFINITE" -> new SessionMode.Infinite();
-      case "GAME_COUNT" -> new SessionMode.GameCount(integer(raw, "target", 1, 100, issues));
+      case "GAME_COUNT" -> new SessionMode.GameCount(integer(raw, "target", 1, 100, issues),
+          optionalBoolean(raw, "doubleLastGame", issues));
       default -> new SessionMode.PointTarget(integer(raw, "target", 5, 10_000, issues));
     };
   }
@@ -195,6 +196,17 @@ public final class RoomCommandParsers {
     if (value > max) issues.tooBig("number", max, path, "Too big: expected number to be <=" + max);
     if (!issues.isEmpty()) throw new RoomException(issues.stringify());
     return (int) value;
+  }
+
+  /** {@code z.boolean().optional()} que vale {@code false} si falta. */
+  private static boolean optionalBoolean(JsonNode raw, String key, ZodIssues issues) {
+    var node = raw.get(key);
+    if (node == null) return false;
+    if (!node.isBoolean()) {
+      issues.invalidType("boolean", node, List.of(key));
+      throw new RoomException(issues.stringify());
+    }
+    return node.getBooleanValue();
   }
 
   private static List<String> gameIds(JsonNode raw, ZodIssues issues) {

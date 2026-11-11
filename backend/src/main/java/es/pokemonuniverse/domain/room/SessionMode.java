@@ -17,11 +17,20 @@ public sealed interface SessionMode {
   @Serdeable
   record Infinite() implements SessionMode {}
 
+  /** {@code doubleLastGame}: la última partida da el doble de puntos de sesión (remontada opcional). */
   @Serdeable
-  record GameCount(int target) implements SessionMode {}
+  record GameCount(int target, boolean doubleLastGame) implements SessionMode {}
 
   @Serdeable
   record PointTarget(int target) implements SessionMode {}
+
+  /**
+   * Multiplicador de los puntos de sesión de la partida {@code gameNumber} (empieza en 1): 2 en la última de una sesión
+   * por número de partidas con «La última partida vale doble»; 1 en el resto.
+   */
+  static int pointsMultiplier(SessionMode mode, int gameNumber) {
+    return mode instanceof GameCount count && count.doubleLastGame() && gameNumber >= count.target() ? 2 : 1;
+  }
 
   /** {@code isSessionComplete(mode, gamesPlayed, sessionPoints)}. */
   static boolean isComplete(SessionMode mode, int gamesPlayed, Iterable<Integer> sessionPoints) {
