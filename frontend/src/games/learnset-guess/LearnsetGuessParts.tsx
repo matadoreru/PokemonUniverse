@@ -11,6 +11,7 @@ import { revealedLearnsetFlags } from '../../room/learnset-reveal';
 import { GuessHints } from '../../room/guess-kit';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
 import { categoryLabel, learnsetClueOrder, learnsetStageText, moveText, ordinal, typeLabel, type LearnsetPlateKind } from './presentation';
+import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './LearnsetGuess.module.css';
 
 // Los sprites llegan como ruta del proxy opaco (`/api/pokemon/{id}/sprite`); se sirven desde el origen de la API.
@@ -122,7 +123,7 @@ export function LearnsetAttempts({ attempts, members, colors, className, own = f
         ? <span><strong>Todavía no has fallado.</strong> Cada fallo te enseña otro grupo de movimientos, pero el acierto vale {MANUAL_REVEAL_STEP} puntos menos.</span>
         : <span><strong>Todavía no hay intentos incorrectos.</strong> Cuanto antes aciertes, más puntos: cada pista nueva resta uno.</span>}</p>
       : <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
-        const name = members.get(attempt.playerId)?.displayName ?? 'Entrenador';
+        const name = members.get(attempt.playerId)?.displayName ?? UNKNOWN_PLAYER_NAME;
         return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`}>
           <Row name={attempt.pokemonName} color={playerColor(colors.get(attempt.playerId) ?? 0)}
             avatar={<img className={s.attemptSprite} src={learnsetSprite(attempt.sprite)} alt="" />}

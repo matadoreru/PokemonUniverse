@@ -10,6 +10,7 @@ import { playerColor } from '../../room/player-color';
 import { sharesPosition } from '../../room/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
 import { HIGHER_LOWER_CHOICE_ORDER, higherLowerMemberStatus, higherLowerRanking, type HigherLowerPlateKind } from './presentation';
+import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './HigherLower.module.css';
 
 // Los sprites llegan como ruta del proxy opaco (`/api/pokemon/{id}/sprite`, sin el número de Pokédex); se sirven desde
@@ -71,7 +72,7 @@ export function HigherLowerDuelCard({ side, pokemon, category, flip, leader }: {
 }
 
 function memberName(member: RoomMemberView | undefined) {
-  return member?.displayName ?? 'Entrenador';
+  return member?.displayName ?? UNKNOWN_PLAYER_NAME;
 }
 
 /** Resultado de un jugador con texto (además del ✓/✗ y del color): «✓ +2 acierto», «✗ Fallo» o «✗ Sin respuesta». */

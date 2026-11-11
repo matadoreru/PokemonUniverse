@@ -9,6 +9,7 @@ import { sharesPosition } from '../../room/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { formatTcgPrice, TCG_CHOICE_ORDER, tcgChoiceLabels, tcgCurrencySymbol, tcgMemberStatus, tcgOutcomeStatus, tcgPriceDiff, type TcgPlateKind } from './presentation';
+import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import hl from '../higher-lower/HigherLower.module.css';
 import s from './TcgHigherLower.module.css';
 
@@ -80,7 +81,7 @@ export function TcgSidebar({ game, lastRound, members, colors, selfId, className
   className?: string | undefined;
 }) {
   const answered = game.answeredIds.filter((id) => game.playerIds.includes(id)).length;
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const nameOf = (id: string) => members.get(id)?.displayName ?? UNKNOWN_PLAYER_NAME;
   const ranking = higherLowerRanking(game, nameOf);
   const points = (id: string) => game.scores[id] ?? 0;
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}

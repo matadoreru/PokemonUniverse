@@ -3,10 +3,11 @@ import { Check, CircleDashed, Eye, UserX, X } from 'lucide-react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../room/player-color';
 import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './ShinyVote.module.css';
 
 function memberName(member: RoomMemberView | undefined) {
-  return member?.displayName ?? 'Entrenador';
+  return member?.displayName ?? UNKNOWN_PLAYER_NAME;
 }
 
 /** Marcador ordenado por puntos (empates por nombre) con la posición compartida en los empates. */

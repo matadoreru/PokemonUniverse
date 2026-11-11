@@ -5,6 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
 import { playerColor } from '../player-color';
 import { attemptsText, guessSeconds, guessSprite, ordinal, type GuessAttemptLike, type GuessRevealLine, type GuessRevealSolveLike, type GuessScoreLine } from './presentation';
+import { UNKNOWN_PLAYER_NAME } from '../room-members';
 import s from './GuessSide.module.css';
 
 const offline = (member: RoomMemberView) => member.presence !== undefined && member.presence !== 'CONNECTED';
@@ -45,7 +46,7 @@ export function GuessAttemptsFeed({ attempts, members, colors, title = 'Intentos
   return <Panel title={title} variant="dark" scroll scrollLabel="Intentos públicos de la ronda" {...(className ? { className } : {})} right={<Badge tone="cream">{attempts.length}</Badge>}
     status={ordered.length === 0 ? { kind: 'empty', title: 'Todavía no hay intentos incorrectos.', text: emptyText, live: false } : null}>
     <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
-      const name = members.get(attempt.playerId)?.displayName ?? 'Entrenador';
+      const name = members.get(attempt.playerId)?.displayName ?? UNKNOWN_PLAYER_NAME;
       return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} data-testid="guess-attempt">
         <Row name={attempt.guessedPokemon.name} color={playerColor(colors.get(attempt.playerId) ?? 0)}
           avatar={<img className={s.attemptSprite} src={guessSprite(attempt.guessedPokemon.sprite)} alt="" />}
