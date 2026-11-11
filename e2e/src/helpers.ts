@@ -81,16 +81,19 @@ export async function capture(page: Page, name: string, opts: CaptureOptions = {
 export interface CapturaATresTamanos extends CaptureOptions {
   /** Se ejecuta en cada tamaño tras cambiar la vista y antes de capturar (desplazar, comprobar que algo se ve…). */
   antes?: (tamano: (typeof SIZES)[number]) => Promise<void>;
+  /** Se ejecuta en cada tamaño justo después de capturar. */
+  despues?: (tamano: (typeof SIZES)[number]) => Promise<void>;
   /** Vuelve a 1280×720 al acabar (por defecto, `true`); con `false` la página se queda a 390×844. */
   restaurar?: boolean;
 }
 
 /** `capture()` a los tres tamaños de revisión (`SIZES`), en ese orden. */
-export async function capturarATresTamaños(page: Page, name: string, { antes, restaurar = true, ...opts }: CapturaATresTamanos = {}): Promise<void> {
+export async function capturarATresTamaños(page: Page, name: string, { antes, despues, restaurar = true, ...opts }: CapturaATresTamanos = {}): Promise<void> {
   for (const tamano of SIZES) {
     await page.setViewportSize({ width: tamano.w, height: tamano.h });
     if (antes) await antes(tamano);
     await capture(page, name, opts);
+    if (despues) await despues(tamano);
   }
   if (restaurar) await page.setViewportSize({ width: 1280, height: 720 });
 }

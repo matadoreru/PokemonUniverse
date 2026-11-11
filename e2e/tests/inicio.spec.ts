@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, expectNoHorizontalScroll, loginAsGuest, nuevaCuenta, promoverAAdmin, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
+import { borrarCuentas, capture, capturarATresTamaños, collectErrors, comprobarBdE2E, expectNoHorizontalScroll, loginAsGuest, nuevaCuenta, promoverAAdmin, registrarPorApi, SIZES, uniqueName, type CuentaE2E } from '../src/helpers.js';
 
 for (const { w, h } of SIZES) {
   test(`portada a ${w}×${h}`, async ({ page }) => {
@@ -107,19 +107,20 @@ async function placasCaben(page: Page, id: string, w: number): Promise<void> {
  * Se mide la cabecera: el `main` lleva `data-layout-ignore` durante la medición.
  */
 async function capturarCabecera(page: Page, nombre: string, { perfil, admin = false }: { perfil?: string; admin?: boolean } = {}): Promise<void> {
-  for (const { w, h } of SIZES) {
-    await page.setViewportSize({ width: w, height: h });
-    await expect(page.getByRole('button', { name: 'Ajustes de sonido' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Ir al inicio' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /^Más opciones/ })).toHaveCount(0);
-    if (perfil) await expect(page.getByRole('link', { name: `Abrir perfil de ${perfil}` })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Enviar feedback' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Abrir panel de administración' })).toHaveCount(admin ? 1 : 0);
-    await page.locator('main').evaluate((main) => main.setAttribute('data-layout-ignore', ''));
-    await capture(page, nombre);
-    await placasCaben(page, `${nombre}-${w}`, w);
-  }
+  await capturarATresTamaños(page, nombre, {
+    antes: async () => {
+      await expect(page.getByRole('button', { name: 'Ajustes de sonido' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Ir al inicio' })).toBeVisible();
+      await expect(page.getByRole('link', { name: /^Novedades/ })).toHaveCount(0);
+      await expect(page.getByRole('button', { name: /^Más opciones/ })).toHaveCount(0);
+      if (perfil) await expect(page.getByRole('link', { name: `Abrir perfil de ${perfil}` })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Enviar feedback' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Abrir panel de administración' })).toHaveCount(admin ? 1 : 0);
+      await page.locator('main').evaluate((main) => main.setAttribute('data-layout-ignore', ''));
+    },
+    despues: ({ w }) => placasCaben(page, `${nombre}-${w}`, w),
+    restaurar: false,
+  });
 }
 
 test('cabecera de invitado', async ({ page }) => {
