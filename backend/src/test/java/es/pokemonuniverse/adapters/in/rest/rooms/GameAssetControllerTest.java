@@ -63,7 +63,7 @@ class GameAssetControllerTest {
         Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
         GameCatalogProvider catalog, GameAssetService assets) {
       super(registry, json, events, audit, results, userGameConfigs, hostContent, clock, random, schedulers, settings,
-          catalog, assets);
+          catalog, assets, null);
     }
 
     @Override

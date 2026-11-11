@@ -3,12 +3,15 @@ package es.pokemonuniverse.application.rooms;
 import es.pokemonuniverse.adapters.out.resources.ClasspathGameRegistryLoader;
 import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.assets.LoadedAsset;
+import es.pokemonuniverse.application.time.Clock;
+import es.pokemonuniverse.application.time.RandomSource;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
+import es.pokemonuniverse.domain.room.GamePick;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.PresenceStatus;
 import es.pokemonuniverse.golden.GoldenCatalogs;
@@ -68,8 +71,30 @@ final class RoomTestKit {
     this.time = new ManualTime(start);
     this.random = new SeededRandom(42);
     this.registry = registry;
-    this.manager = new RoomCoordinator(registry, MAPPER, events, audit, persister, preferences, host, time, random,
-        time, settings, () -> GameCatalogs.of(CATALOG), ASSETS);
+    this.manager = coordinator(registry, events, audit, persister, preferences, host, time, random, time, settings);
+  }
+
+  /** Coordinador de los tests: catálogo dorado, recursos sin red y sin catálogo TCG. */
+  static RoomCoordinator coordinator(GameRegistry registry, RoomEvents events, RoomAuditSink audit,
+      GameResultsPersister results, UserGameConfigPreferences preferences, HostContentProvider host, Clock clock,
+      RandomSource random, RoomSchedulers schedulers, RoomSettings settings) {
+    return new RoomCoordinator(registry, MAPPER, events, audit, results, preferences, host, clock, random, schedulers,
+        settings, () -> GameCatalogs.of(CATALOG), ASSETS, null);
+  }
+
+  /** {@code room:join} con el código ya como texto. */
+  static RoomView join(RoomCoordinator manager, AuthUser identity, String connectionId, String code) {
+    return manager.join(identity, connectionId, JsonNode.createStringNode(code));
+  }
+
+  /** Juegos de {@code gameIds} con algún par jugable con los conectados de ahora. */
+  static List<String> playableGameIds(RoomCoordinator manager, LiveRoom room, List<String> gameIds) {
+    return manager.playablePicks(room, gameIds).stream().map(GamePick::gameId).distinct().toList();
+  }
+
+  /** {@code room:set-ready} con un booleano. */
+  static void setReady(RoomCoordinator manager, String playerId, boolean ready) {
+    manager.setReady(playerId, JsonNode.createBooleanNode(ready));
   }
 
   /** Registro de los tests de sala: los motores reales de Higher or Lower y Pokédex Distance y los falsos pedidos. */
@@ -126,7 +151,7 @@ final class RoomTestKit {
     var created = manager.create(people[0], "socket-" + people[0].id(), JsonNode.createNumberNode(maxPlayers));
     var room = manager.store.get(created.code());
     for (int index = 1; index < people.length; index++) {
-      manager.join(people[index], "socket-" + people[index].id(), room.code);
+      join(manager, people[index], "socket-" + people[index].id(), room.code);
     }
     return room;
   }
@@ -135,7 +160,7 @@ final class RoomTestKit {
   void startReady(LiveRoom room, String playerId) {
     for (var member : List.copyOf(room.members.values())) {
       if (member.presence == PresenceStatus.CONNECTED && !member.identity.id().equals(room.hostId)) {
-        manager.setReady(member.identity.id(), true);
+        setReady(manager, member.identity.id(), true);
       }
     }
     manager.startGame(playerId);
@@ -187,7 +212,7 @@ final class RoomTestKit {
         JsonNode.createNumberNode(Math.max(8, playerCount)));
     var room = kit.manager.store.get(created.code());
     for (int index = 1; index < people.size(); index++) {
-      kit.manager.join(people.get(index), "skip-socket-" + (index + 1), room.code);
+      join(kit.manager, people.get(index), "skip-socket-" + (index + 1), room.code);
     }
     kit.manager.selectGame(people.get(0).id(), "higher-lower");
     var config = new LinkedHashMap<String, Object>(asMap(room.gameConfigs.get("higher-lower")));

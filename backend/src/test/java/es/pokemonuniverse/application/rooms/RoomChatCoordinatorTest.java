@@ -180,7 +180,7 @@ class RoomChatCoordinatorTest {
     kit.manager.setChatMute("host", "a", JsonNode.createBooleanNode(true));
     assertEquals(1, room.chat.history().size()); // silenciar no borra
     kit.manager.leave("a");
-    kit.manager.join(guest("a", "Ana"), "socket-a2", room.code);
+    RoomTestKit.join(kit.manager, guest("a", "Ana"), "socket-a2", room.code);
     assertTrue(mutedInView(kit, room, "host", "a"));
     assertEquals("You are muted in this chat", error(() -> kit.manager.sendChat("a", text("otra vez"))));
   }
@@ -214,7 +214,7 @@ class RoomChatCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"));
     kit.manager.sendChat("host", text("uno"));
     kit.manager.sendChat("host", text("dos"));
-    kit.manager.join(guest("a", "Ana"), "socket-a", room.code);
+    RoomTestKit.join(kit.manager, guest("a", "Ana"), "socket-a", room.code);
     var joined = kit.events.named("room:chat:history").getLast();
     assertEquals("a", joined.memberId());
     assertEquals("socket-a", joined.connectionId());

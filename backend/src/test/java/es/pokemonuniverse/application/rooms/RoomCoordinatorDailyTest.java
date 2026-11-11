@@ -114,8 +114,8 @@ class RoomCoordinatorDailyTest {
   RoomCoordinator manager = build(RoomSettings.DEFAULTS);
 
   private RoomCoordinator build(RoomSettings settings) {
-    var manager = new RoomCoordinator(registry, MAPPER, events, audit, persister, UserGameConfigPreferences.NO_OP,
-        HostContentProvider.EMPTY, time, random, time, settings, () -> GameCatalogs.of(CATALOG), RoomTestKit.ASSETS);
+    var manager = RoomTestKit.coordinator(registry, events, audit, persister, UserGameConfigPreferences.NO_OP,
+        HostContentProvider.EMPTY, time, random, time, settings);
     manager.useDailyRuns(runs);
     manager.useExperience(userId -> XP);
     return manager;
@@ -237,7 +237,7 @@ class RoomCoordinatorDailyTest {
         Map.entry("room:chat:send", () -> manager.sendChat(id, JsonNode.createStringNode("hola"))),
         Map.entry("room:chat:delete", () -> manager.deleteChatMessage(id, JsonNode.createNumberNode(1))),
         Map.entry("room:chat:mute", () -> manager.setChatMute(id, "misty", JsonNode.createBooleanNode(true))),
-        Map.entry("room:set-ready", () -> manager.setReady(id, true)),
+        Map.entry("room:set-ready", () -> RoomTestKit.setReady(manager, id, true)),
         Map.entry("room:start-game", () -> manager.startGame(id)),
         Map.entry("room:continue-session", () -> manager.continueSession(id)),
         Map.entry("room:return-lobby", () -> manager.returnLobby(id)),
@@ -256,7 +256,7 @@ class RoomCoordinatorDailyTest {
   @Test
   void othersCannotJoinOrInviteIntoDailyRoom() {
     var room = start("higher-lower");
-    assertRejects("Room not found", () -> manager.join(MISTY, "socket-misty", room.code));
+    assertRejects("Room not found", () -> RoomTestKit.join(manager, MISTY, "socket-misty", room.code));
     assertNull(manager.store.roomForPlayer(MISTY.id()));
     assertEquals(1, room.members.size());
     // roomOf no da la sala (nadie invita a ella); dailyRunOf sí, y es lo que rechaza room:invite desde ella.
@@ -264,7 +264,7 @@ class RoomCoordinatorDailyTest {
     assertTrue(manager.dailyRunOf(ASH.id()).isPresent());
 
     manager.disconnect(ASH.id(), "socket-ash");
-    var rejoined = manager.join(ASH, "socket-ash-2", room.code);
+    var rejoined = RoomTestKit.join(manager, ASH, "socket-ash-2", room.code);
     assertEquals(room.code, rejoined.code());
     assertEquals(PresenceStatus.CONNECTED, room.members.get(ASH.id()).presence);
 
@@ -282,7 +282,7 @@ class RoomCoordinatorDailyTest {
     passDeadline(room);
     manager.updateIdentityAvatar(ASH.id(), new AvatarRef.Custom("pikachu", 1));
     manager.disconnect(ASH.id(), "socket-ash");
-    manager.join(ASH, "socket-ash-2", room.code);
+    RoomTestKit.join(manager, ASH, "socket-ash-2", room.code);
     assertNull(room.game.finishReason);
     // Cada difusión sube la revisión una vez, también las que no llegan a nadie (jugador desconectado).
     assertTrue(room.revision >= 5);

@@ -71,7 +71,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit();
     assertTrue(kit.manager.roomOf("host").isEmpty());
     var created = kit.manager.create(guest("host", "Host"), "socket-host", JsonNode.createNumberNode(3));
-    kit.manager.join(guest("ana", "Ana"), "socket-ana", created.code());
+    RoomTestKit.join(kit.manager, guest("ana", "Ana"), "socket-ana", created.code());
     kit.manager.selectGame("host", "higher-lower");
 
     var summary = kit.manager.roomOf("ana").orElseThrow();
@@ -101,16 +101,16 @@ class RoomCoordinatorTest {
     assertEquals("pokedex-distance", created.selectedGameId());
     assertMessage("Already in a room", () -> kit.manager.create(host, "socket-host-2", null));
 
-    var guestView = kit.manager.join(guest("ana", "Ana"), "socket-ana", created.code().toLowerCase() + " ");
+    var guestView = RoomTestKit.join(kit.manager, guest("ana", "Ana"), "socket-ana", created.code().toLowerCase() + " ");
     assertEquals(List.of("host", "ana"), guestView.members().stream().map(RoomView.MemberView::id).toList());
-    assertMessage("Room is full", () -> kit.manager.join(guest("carlos", "Carlos"), "socket-carlos", created.code()));
+    assertMessage("Room is full", () -> RoomTestKit.join(kit.manager, guest("carlos", "Carlos"), "socket-carlos", created.code()));
 
     var other = kit.manager.create(guest("solo", "Solo"), "socket-solo", null);
     assertEquals(8, other.maxPlayers());
-    assertMessage("Leave your current room first", () -> kit.manager.join(guest("solo", "Solo"), "socket-solo",
+    assertMessage("Leave your current room first", () -> RoomTestKit.join(kit.manager, guest("solo", "Solo"), "socket-solo",
         created.code()));
-    assertMessage("Room not found", () -> kit.manager.join(guest("x", "X"), "socket-x", "ZZZZZZ"));
-    assertTrue(rejects(() -> kit.manager.join(guest("x", "X"), "socket-x", "abc")).getMessage()
+    assertMessage("Room not found", () -> RoomTestKit.join(kit.manager, guest("x", "X"), "socket-x", "ZZZZZZ"));
+    assertTrue(rejects(() -> RoomTestKit.join(kit.manager, guest("x", "X"), "socket-x", "abc")).getMessage()
         .contains("Invalid string: must match pattern /^[A-Z2-9]{6}$/"));
     assertMessage("Room capacity must be an integer of at least 2",
         () -> kit.manager.create(guest("y", "Y"), "socket-y", JsonNode.createNumberNode(1)));
@@ -190,8 +190,8 @@ class RoomCoordinatorTest {
     var guestUser = guest("guest", "Guest");
     var created = kit.manager.create(host, "host-1", JsonNode.createNumberNode(8));
     var room = kit.manager.store.get(created.code());
-    kit.manager.join(guestUser, "guest-1", room.code);
-    kit.manager.setReady(guestUser.id(), true);
+    RoomTestKit.join(kit.manager, guestUser, "guest-1", room.code);
+    RoomTestKit.setReady(kit.manager, guestUser.id(), true);
     kit.manager.disconnect(host.id(), "host-1");
     assertEquals(host.id(), room.hostId);
     assertEquals(PresenceStatus.TEMPORARILY_DISCONNECTED, room.members.get(host.id()).presence);
@@ -224,13 +224,13 @@ class RoomCoordinatorTest {
     var host = guest("timer-host", "Host");
     var guestUser = guest("timer-guest", "Guest");
     var room = kit.manager.store.get(kit.manager.create(host, "timer-host-socket", JsonNode.createNumberNode(8)).code());
-    kit.manager.join(guestUser, "timer-old", room.code);
+    RoomTestKit.join(kit.manager, guestUser, "timer-old", room.code);
     kit.manager.disconnect(guestUser.id(), "timer-old");
     var previous = room.members.get(guestUser.id());
     kit.time.advance(10_000);
     kit.manager.kick(host.id(), guestUser.id());
     assertNull(previous.disconnectTimer);
-    kit.manager.join(guestUser, "timer-new", room.code);
+    RoomTestKit.join(kit.manager, guestUser, "timer-new", room.code);
     kit.manager.disconnect(guestUser.id(), "timer-new");
     var replacement = room.members.get(guestUser.id());
     kit.time.advance(20_000);
@@ -618,7 +618,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit();
     var created = kit.manager.create(guest("host", "Host"), "socket-host", JsonNode.createNumberNode(8));
     var room = kit.manager.store.get(created.code());
-    kit.manager.join(guest("guest", "Guest"), "socket-guest", room.code);
+    RoomTestKit.join(kit.manager, guest("guest", "Guest"), "socket-guest", room.code);
     assertMessage("No tienes permiso para realizar esta acción.", () -> kit.manager.selectGame("guest", "higher-lower"));
     assertMessage("Unknown game", () -> kit.manager.selectGame("host", "missing-game"));
     assertEquals("pokedex-distance", room.selectedGameId);
@@ -677,7 +677,7 @@ class RoomCoordinatorTest {
     var oldHost = guest("old-host", "Eru");
     var nextHost = guest("next-host", "Pedro");
     var room = kit.manager.store.get(kit.manager.create(oldHost, "old-socket", JsonNode.createNumberNode(8)).code());
-    kit.manager.join(nextHost, "next-socket", room.code);
+    RoomTestKit.join(kit.manager, nextHost, "next-socket", room.code);
     assertMessage("Ya eres el Host.", () -> kit.manager.transferHost(oldHost.id(), oldHost.id()));
     assertMessage("Solo puedes transferir el Host a un jugador conectado.",
         () -> kit.manager.transferHost(oldHost.id(), "ghost"));
@@ -723,11 +723,11 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     assertMessage("Falta por confirmar: Ana.", () -> kit.manager.startGame("host"));
     assertMessage("El host inicia la partida y no necesita marcarse como listo.",
-        () -> kit.manager.setReady("host", true));
+        () -> RoomTestKit.setReady(kit.manager, "host", true));
     assertMessage("Estado de preparación inválido.",
         () -> kit.manager.setReady("guest", JsonNode.createStringNode("yes")));
 
-    kit.manager.setReady("guest", true);
+    RoomTestKit.setReady(kit.manager, "guest", true);
     assertTrue(room.members.get("guest").ready);
     kit.manager.selectGame("host", "higher-lower");
     assertTrue(room.members.get("guest").ready);
@@ -1072,7 +1072,7 @@ class RoomCoordinatorTest {
         json("{\"gameInstanceId\":\"00000000-0000-4000-8000-000000000999\",\"actionEpoch\":\"x\",\"action\":null}")));
     kit.selectHigherLower("host");
     kit.startReady(room, "host");
-    kit.manager.join(guest("late", "Late"), "socket-late", room.code);
+    RoomTestKit.join(kit.manager, guest("late", "Late"), "socket-late", room.code);
     assertEquals(MemberRole.SPECTATOR, room.members.get("late").role);
     assertMessage("You cannot act in the current game", () -> kit.manager.action("late", answer("HIGHER")));
   }
@@ -1124,9 +1124,9 @@ class RoomCoordinatorTest {
     kit.manager.updateGameSelection("host", json("{\"type\":\"RANDOM\",\"gameIds\":[]}"));
     kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[]}"));
     kit.manager.updateSession("host", json("{\"type\":\"GAME_COUNT\",\"target\":3}"));
-    kit.manager.setReady("guest", false);
+    RoomTestKit.setReady(kit.manager, "guest", false);
     kit.manager.leave("guest");
-    kit.manager.join(guest("late", "Late"), "socket-late", room.code);
+    RoomTestKit.join(kit.manager, guest("late", "Late"), "socket-late", room.code);
     kit.manager.transferHost("host", "late");
     kit.manager.transferHost("late", "host");
     assertEquals(new GameSelectionMode.Order(List.of()), room.gameSelectionMode);
@@ -1231,7 +1231,7 @@ class RoomCoordinatorTest {
     kit.manager.updateGameSelection("host",
         json("{\"type\":\"RANDOM\",\"gameIds\":[\"pokemon-impostor\",\"higher-lower\",\"pokedex-distance\"]}"));
     assertEquals(List.of("higher-lower", "pokedex-distance"),
-        kit.manager.playableGameIds(room, List.of("pokemon-impostor", "higher-lower", "pokedex-distance")));
+        RoomTestKit.playableGameIds(kit.manager, room, List.of("pokemon-impostor", "higher-lower", "pokedex-distance")));
     kit.startReady(room, "host");
     assertNotEquals(RoomPhase.LOBBY, room.phase);
     assertNotEquals("pokemon-impostor", room.selectedGameId);
@@ -1348,7 +1348,7 @@ class RoomCoordinatorTest {
     var room = kit.room(10, people.toArray(AuthUser[]::new));
     room.gameSelectionMode = new GameSelectionMode.Vote(List.of("pokemon-bingo", "whos-that-pokemon", "zoomed-pokemon"));
     assertTrue(kit.manager.beginNextGameVote(room));
-    kit.manager.join(guest("guest-8", "Guest 8"), "socket-guest-8", room.code);
+    RoomTestKit.join(kit.manager, guest("guest-8", "Guest 8"), "socket-guest-8", room.code);
     assertMessage("Ese minijuego ya no admite el número actual de jugadores.",
         () -> kit.manager.voteNextGame("host", "pokemon-bingo"));
   }
@@ -1434,11 +1434,10 @@ class RoomCoordinatorTest {
     for (long seed = 1; seed <= 12; seed++) {
       var kit = new RoomTestKit("shiny-vote", "pokemon-bingo");
       var random = new SeededRandom(seed);
-      var manager = new RoomCoordinator(kit.registry, RoomTestKit.MAPPER, kit.events, kit.audit, kit.persister,
-          UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, kit.time, random, kit.time, RoomSettings.DEFAULTS,
-          () -> GameCatalogs.of(RoomTestKit.CATALOG), RoomTestKit.ASSETS);
+      var manager = RoomTestKit.coordinator(kit.registry, kit.events, kit.audit, kit.persister,
+          UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, kit.time, random, kit.time, RoomSettings.DEFAULTS);
       var room = manager.store.get(manager.create(guest("host", "Host"), "h", null).code());
-      manager.join(guest("guest", "Ana"), "g", room.code);
+      RoomTestKit.join(manager, guest("guest", "Ana"), "g", room.code);
       room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote", "pokemon-bingo"));
       manager.beginNextGameVote(room);
       var options = room.nextGameVote.optionIds;
@@ -1682,7 +1681,8 @@ class RoomCoordinatorTest {
     assertMessage("Minijuego desconocido: missing", () -> kit.manager.updateGameSelection("host",
         json("{\"type\":\"RANDOM\",\"gameIds\":[\"higher-lower\",\"missing\"]}")));
     assertEquals(RoomPhase.LOBBY, room.phase);
-    assertEquals(List.of("higher-lower"), kit.manager.playableGameIds(room, List.of("higher-lower", "tcg-higher-lower")));
+    assertEquals(List.of("higher-lower"), RoomTestKit.playableGameIds(kit.manager, room,
+        List.of("higher-lower", "tcg-higher-lower")));
     assertEquals(Set.of(), Set.copyOf(kit.manager.view(room, "host").customizedGameIds()));
   }
 
@@ -1773,7 +1773,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit();
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     var first = kit.events.lastStateFor("host");
-    kit.manager.setReady("guest", true);
+    RoomTestKit.setReady(kit.manager, "guest", true);
     var second = kit.events.lastStateFor("host");
     assertTrue(second.revision() > first.revision());
     assertEquals(room.historyId, second.roomInstanceId());
@@ -1895,7 +1895,7 @@ class RoomCoordinatorTest {
       var kit = f.kit();
       f.setVote("skip-p2", true);
       kit.manager.finalDisconnect(f.room(), "skip-p2", true);
-      kit.manager.join(f.people().get(1), "skip-rejoined", f.room().code);
+      RoomTestKit.join(kit.manager, f.people().get(1), "skip-rejoined", f.room().code);
       var state = kit.manager.view(f.room(), "skip-p2").gameSkipState();
       assertEquals(0, state.votes());
       assertEquals(2, state.requiredVotes());
@@ -2178,7 +2178,7 @@ class RoomCoordinatorTest {
       f.room().members.get("skip-p2").role = MemberRole.SPECTATOR;
       assertTrue(kit.manager.view(f.room(), "skip-p2").gameSkipState().canVote());
       f.setVote("skip-p2", true);
-      kit.manager.join(guest("skip-watcher", "Watcher"), "skip-watcher-socket", f.room().code);
+      RoomTestKit.join(kit.manager, guest("skip-watcher", "Watcher"), "skip-watcher-socket", f.room().code);
       var watcher = kit.manager.view(f.room(), "skip-watcher").gameSkipState();
       assertEquals(2, watcher.requiredVotes());
       assertFalse(watcher.currentUserVoted());

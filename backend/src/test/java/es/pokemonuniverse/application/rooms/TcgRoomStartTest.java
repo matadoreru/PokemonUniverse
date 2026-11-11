@@ -40,9 +40,9 @@ class TcgRoomStartTest {
   private LiveRoom lobby(String prefix) {
     var host = guest(prefix + "-host", "Host");
     var room = rooms.store.get(rooms.create(host, prefix + "-h", null).code());
-    rooms.join(guest(prefix + "-guest", "Ana"), prefix + "-g", room.code);
+    RoomTestKit.join(rooms, guest(prefix + "-guest", "Ana"), prefix + "-g", room.code);
     rooms.selectGame(host.id(), TcgHigherLowerEngine.ID);
-    rooms.setReady(prefix + "-guest", true);
+    RoomTestKit.setReady(rooms, prefix + "-guest", true);
     return room;
   }
 

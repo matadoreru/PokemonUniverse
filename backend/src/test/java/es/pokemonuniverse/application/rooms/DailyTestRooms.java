@@ -36,7 +36,7 @@ public final class DailyTestRooms {
     this.manager = new RoomCoordinator(registry(), MAPPER, new RecordingEvents(), new RecordingAudit(),
         new RecordingPersister(), UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time,
         new SeededRandom(42), time, RoomSettings.DEFAULTS, () -> GameCatalogs.of(RoomTestKit.CATALOG),
-        RoomTestKit.ASSETS) {
+        RoomTestKit.ASSETS, null) {
       @Override
       public RoomView startDaily(AuthUser identity, String connectionId, DailyLaunch launch) {
         var gate = startGate;

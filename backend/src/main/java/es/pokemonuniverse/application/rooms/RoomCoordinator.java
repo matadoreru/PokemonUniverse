@@ -137,14 +137,6 @@ public class RoomCoordinator {
   /** Partidas del reto diario; sin él, nadie las registra. */
   private DailyRunListener dailyRuns = DailyRunListener.NONE;
 
-  public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
-      GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
-      Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
-      GameCatalogProvider catalog, GameAssetService assets) {
-    this(registry, json, events, audit, results, userGameConfigs, hostContent, clock, random, schedulers, settings,
-        catalog, assets, null);
-  }
-
   /**
    * {@code tcgCards}: el catálogo TCG en memoria que comparten todas las salas (no se fija por partida: Node pasa la
    * misma instancia, cuyo {@code refresh} sustituye la lista). Sin BD no hay catálogo y {@code tcg-higher-lower}
@@ -493,11 +485,6 @@ public class RoomCoordinator {
         }
       }
     });
-  }
-
-  /** Atajo para pruebas y transporte: código ya extraído como texto. */
-  public RoomView join(AuthUser identity, String connectionId, String code) {
-    return join(identity, connectionId, JsonNode.createStringNode(code));
   }
 
   /**
@@ -973,10 +960,6 @@ public class RoomCoordinator {
     });
   }
 
-  public void setReady(String playerId, boolean ready) {
-    setReady(playerId, JsonNode.createBooleanNode(ready));
-  }
-
   // ---------------------------------------------------------------------------------------- rotación y arranque
 
   private <T> T randomItem(List<T> items) {
@@ -998,11 +981,6 @@ public class RoomCoordinator {
 
   private int connectedPlayerCount(LiveRoom room) {
     return (int) room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED).count();
-  }
-
-  List<String> playableGameIds(LiveRoom room, List<String> gameIds) {
-    int playerCount = connectedPlayerCount(room);
-    return gameIds.stream().filter(gameId -> playable(room, new GamePick(gameId, null), playerCount)).toList();
   }
 
   /**
@@ -1064,7 +1042,7 @@ public class RoomCoordinator {
       return Optional.of(e.getMessage() != null ? e.getMessage() : "Configuración inválida.");
     }
     // Sin recuento de jugadores: en una rotación, lo que depende de los conectados excluye el juego en
-    // playableGameIds (como el rango del manifiesto) en vez de bloquear la sala.
+    // playablePicks (como el rango del manifiesto) en vez de bloquear la sala.
     var staticReason = GameConfigReadiness.validate(gameId, toTree(parsed), readinessContext(room, 0));
     if (staticReason.isPresent()) return staticReason;
     return engine.checkAvailability(parsed, context(room, catalogSnapshot()));
