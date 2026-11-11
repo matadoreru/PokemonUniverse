@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
-import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
-import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -69,23 +69,9 @@ public final class WhosThatPokemonTypes {
     }
   }
 
-  /** {@code 'CORRECT' | 'INCORRECT'}. */
-  public enum WhosThatPokemonAttemptOutcome { CORRECT, INCORRECT }
-
-  /** {@code { id, name, sprite }} ({@code reveal} de {@code server.ts}). */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record WhosThatPokemonPokemonSummary(String id, String name, String sprite) {
-
-    static WhosThatPokemonPokemonSummary of(Pokemon pokemon) {
-      return new WhosThatPokemonPokemonSummary(pokemon.id(), pokemon.name(), pokemon.sprite());
-    }
-  }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record WhosThatPokemonAttempt(String playerId, WhosThatPokemonPokemonSummary guessedPokemon,
-      long attemptedAt) {}
+  public record WhosThatPokemonAttempt(String playerId, GuessPokemonSummary guessedPokemon, long attemptedAt) {}
 
   /**
    * {@code WhosThatPokemonSolve}. Cuatro enteros contiguos: fuera de este record solo se construye con {@link #of}, que
@@ -102,52 +88,6 @@ public final class WhosThatPokemonTypes {
     }
   }
 
-  /**
-   * {@code WhosThatPokemonPlayerStats}. Muchos contadores contiguos: fuera de este record solo se construye con
-   * {@link #ZERO}, {@link #withSolve} ({@code recordGuessSolve}) y los métodos con nombre.
-   */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record WhosThatPokemonPlayerStats(int correct, int missed, int totalAttempts, int firstTry, int roundFirsts,
-      long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds)
-      implements GuessSolveStats<WhosThatPokemonPlayerStats> {
-
-    static final WhosThatPokemonPlayerStats ZERO = new WhosThatPokemonPlayerStats(0, 0, 0, 0, 0, 0, 0, 0);
-
-    @Override
-    public WhosThatPokemonPlayerStats withSolve(int correct, int totalAttempts, int firstTry, int roundFirsts,
-        long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) {
-      return new WhosThatPokemonPlayerStats(correct, missed, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Ronda resuelta sin acierto. */
-    WhosThatPokemonPlayerStats afterMiss() {
-      return new WhosThatPokemonPlayerStats(correct, missed + 1, totalAttempts, firstTry, roundFirsts,
-          solveTimeTotalMs, bestTimeMs, pointsFromRounds);
-    }
-
-    /** Intento fallido. */
-    WhosThatPokemonPlayerStats afterWrongAttempt() {
-      return new WhosThatPokemonPlayerStats(correct, missed, totalAttempts + 1, firstTry, roundFirsts,
-          solveTimeTotalMs, bestTimeMs, pointsFromRounds);
-    }
-
-    /** {@code { ...entry.stats }} con las claves de TS, en su orden. */
-    Map<String, Number> toMap() {
-      var mapped = new LinkedHashMap<String, Number>();
-      mapped.put("correct", correct);
-      mapped.put("missed", missed);
-      mapped.put("totalAttempts", totalAttempts);
-      mapped.put("firstTry", firstTry);
-      mapped.put("roundFirsts", roundFirsts);
-      mapped.put("solveTimeTotalMs", solveTimeTotalMs);
-      mapped.put("bestTimeMs", bestTimeMs);
-      mapped.put("pointsFromRounds", pointsFromRounds);
-      return mapped;
-    }
-  }
-
   /** {@code { id, name, sprite, generation }} del Pokémon revelado (solo en el estado). */
   public record WhosThatPokemonRoundPokemon(String id, String name, String sprite, int generation) {}
 
@@ -160,11 +100,6 @@ public final class WhosThatPokemonTypes {
       attemptCounts = frozenMap(attemptCounts);
     }
   }
-
-  /** {@code { result: 'CORRECT' | 'INCORRECT'; attemptedAt }}. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record WhosThatPokemonLastAttempt(WhosThatPokemonAttemptOutcome result, long attemptedAt) {}
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
@@ -183,9 +118,9 @@ public final class WhosThatPokemonTypes {
       Map<String, Integer> attemptCounts,
       Map<String, WhosThatPokemonSolve> solves,
       Map<String, Long> cooldownUntil,
-      Map<String, WhosThatPokemonLastAttempt> lastAttemptResult,
+      Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
-      Map<String, WhosThatPokemonPlayerStats> playerStats,
+      Map<String, GuessPlayerStats> playerStats,
       int revealedHintCount,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
@@ -237,9 +172,9 @@ public final class WhosThatPokemonTypes {
       private Map<String, Integer> attemptCounts = Map.of();
       private Map<String, WhosThatPokemonSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
-      private Map<String, WhosThatPokemonLastAttempt> lastAttemptResult = Map.of();
+      private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
-      private Map<String, WhosThatPokemonPlayerStats> playerStats = Map.of();
+      private Map<String, GuessPlayerStats> playerStats = Map.of();
       private int revealedHintCount;
       private Long roundStartedAt;
       private Long roundEndsAt;
@@ -272,14 +207,14 @@ public final class WhosThatPokemonTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
-      public Builder lastAttemptResult(Map<String, WhosThatPokemonLastAttempt> value) {
+      public Builder lastAttemptResult(Map<String, GuessLastAttempt> value) {
         lastAttemptResult = value;
         return this;
       }
 
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
-      public Builder playerStats(Map<String, WhosThatPokemonPlayerStats> value) { playerStats = value; return this; }
+      public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
       public Builder revealedHintCount(int value) { revealedHintCount = value; return this; }
 
@@ -338,7 +273,7 @@ public final class WhosThatPokemonTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record WhosThatPokemonPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
       @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable WhosThatPokemonLastAttempt lastAttempt,
+      @Nullable GuessLastAttempt lastAttempt,
       @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<WhosThatPokemonAttempt> attempts) {}
 
   /** {@code whosThatPokemonActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */

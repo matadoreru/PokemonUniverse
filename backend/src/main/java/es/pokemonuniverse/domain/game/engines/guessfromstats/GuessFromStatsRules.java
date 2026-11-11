@@ -2,17 +2,16 @@ package es.pokemonuniverse.domain.game.engines.guessfromstats;
 
 import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsEvolution;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsHint;
-import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPlayerStats;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsState;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsVisibleStat;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -131,9 +130,9 @@ public final class GuessFromStatsRules {
   public static GameResults buildGuessFromStatsResults(GuessFromStatsState state) {
     Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
     var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
-        playerId -> state.playerStats().getOrDefault(playerId, GuessFromStatsPlayerStats.ZERO));
-    Comparator<Scoring.ScoreEntry<GuessFromStatsPlayerStats>> compare = Comparator
-        .<Scoring.ScoreEntry<GuessFromStatsPlayerStats>>comparingInt(entry -> -entry.points())
+        playerId -> state.playerStats().getOrDefault(playerId, GuessPlayerStats.ZERO));
+    Comparator<Scoring.ScoreEntry<GuessPlayerStats>> compare = Comparator
+        .<Scoring.ScoreEntry<GuessPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> -entry.stats().roundFirsts())
         .thenComparingInt(entry -> -entry.stats().correct())
         .thenComparingInt(entry -> entry.stats().totalAttempts())
@@ -141,18 +140,6 @@ public final class GuessFromStatsRules {
     return Scoring.buildRankedResults(entries, compare,
         entry -> entry.points() + ":" + entry.stats().roundFirsts() + ":" + entry.stats().correct() + ":"
             + entry.stats().totalAttempts(),
-        entry -> {
-          var stats = entry.stats();
-          var mapped = new LinkedHashMap<String, Number>();
-          mapped.put("correct", stats.correct());
-          mapped.put("missed", stats.missed());
-          mapped.put("totalAttempts", stats.totalAttempts());
-          mapped.put("firstTry", stats.firstTry());
-          mapped.put("roundFirsts", stats.roundFirsts());
-          mapped.put("solveTimeTotalMs", stats.solveTimeTotalMs());
-          mapped.put("bestTimeMs", stats.bestTimeMs());
-          mapped.put("pointsFromRounds", stats.pointsFromRounds());
-          return mapped;
-        });
+        entry -> entry.stats().toMap());
   }
 }

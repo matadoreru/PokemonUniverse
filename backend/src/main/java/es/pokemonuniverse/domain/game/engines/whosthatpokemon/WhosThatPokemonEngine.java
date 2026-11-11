@@ -12,6 +12,10 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.AssetTokens;
+import es.pokemonuniverse.domain.game.engine.infra.GuessAttemptOutcome;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
@@ -20,12 +24,8 @@ import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonAction;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonAttempt;
-import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonAttemptOutcome;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonHint;
-import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonLastAttempt;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPlayerState;
-import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPlayerStats;
-import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPokemonSummary;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPublicPokemon;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPublicState;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonRoundPokemon;
@@ -181,7 +181,7 @@ public final class WhosThatPokemonEngine implements
     var playerStats = new LinkedHashMap<>(state.playerStats());
     for (var playerId : state.playerIds()) {
       if (!state.solves().containsKey(playerId)) {
-        playerStats.put(playerId, playerStats.getOrDefault(playerId, WhosThatPokemonPlayerStats.ZERO).afterMiss());
+        playerStats.put(playerId, playerStats.getOrDefault(playerId, GuessPlayerStats.ZERO).afterMiss());
       }
     }
     var lastRound = new WhosThatPokemonRoundResult(
@@ -225,9 +225,9 @@ public final class WhosThatPokemonEngine implements
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var assetToken = AssetTokens.randomToken(context);
     var scores = new LinkedHashMap<String, Integer>();
-    var playerStats = new LinkedHashMap<String, WhosThatPokemonPlayerStats>();
+    var playerStats = new LinkedHashMap<String, GuessPlayerStats>();
     for (var id : playerIds) scores.put(id, 0);
-    for (var id : playerIds) playerStats.put(id, WhosThatPokemonPlayerStats.ZERO);
+    for (var id : playerIds) playerStats.put(id, GuessPlayerStats.ZERO);
     return WhosThatPokemonState.builder()
         .phase(GamePhase.GAME_STARTING)
         .config(config)
@@ -268,7 +268,7 @@ public final class WhosThatPokemonEngine implements
     }
     var guessed = found.get();
     int attemptCount = state.attemptCounts().getOrDefault(playerId, 0) + 1;
-    var stats = state.playerStats().getOrDefault(playerId, WhosThatPokemonPlayerStats.ZERO);
+    var stats = state.playerStats().getOrDefault(playerId, GuessPlayerStats.ZERO);
     var attemptCounts = new LinkedHashMap<>(state.attemptCounts());
     attemptCounts.put(playerId, attemptCount);
     var lastAttemptResult = new LinkedHashMap<>(state.lastAttemptResult());
@@ -282,8 +282,7 @@ public final class WhosThatPokemonEngine implements
       int points = score.totalPoints();
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, WhosThatPokemonSolve.of(solveOrder, context.now(), elapsedMs, score, attemptCount));
-      lastAttemptResult.put(playerId,
-          new WhosThatPokemonLastAttempt(WhosThatPokemonAttemptOutcome.CORRECT, context.now()));
+      lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.CORRECT, context.now()));
       var scores = new LinkedHashMap<>(state.scores());
       scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
       playerStats.put(playerId, GuessingRound.recordGuessSolve(stats, attemptCount, solveOrder, elapsedMs, points));
@@ -297,9 +296,8 @@ public final class WhosThatPokemonEngine implements
       return GameActionResult.accept(resolveIfComplete(next, context));
     }
     var attempts = new ArrayList<>(state.attempts());
-    attempts.add(new WhosThatPokemonAttempt(playerId, WhosThatPokemonPokemonSummary.of(guessed), context.now()));
-    lastAttemptResult.put(playerId,
-        new WhosThatPokemonLastAttempt(WhosThatPokemonAttemptOutcome.INCORRECT, context.now()));
+    attempts.add(new WhosThatPokemonAttempt(playerId, GuessPokemonSummary.of(guessed), context.now()));
+    lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.INCORRECT, context.now()));
     playerStats.put(playerId, stats.afterWrongAttempt());
     return GameActionResult.accept(state.toBuilder()
         .attempts(attempts)

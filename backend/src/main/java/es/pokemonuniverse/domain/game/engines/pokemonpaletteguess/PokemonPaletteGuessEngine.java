@@ -9,6 +9,10 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessAttemptOutcome;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
@@ -18,20 +22,16 @@ import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessConfig.PokemonPaletteHintKind;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteAttempt;
-import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteAttemptOutcome;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteGuessAction;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteGuessPlayerState;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteGuessPublicState;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteGuessState;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteHint;
-import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteLastAttempt;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPalettePublicRoundResult;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteRole;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteRoundResult;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteSolve;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteSolvedPlayer;
-import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteStats;
-import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteSummary;
 import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPaletteGuessTypes.PokemonPaletteTarget;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.json.tree.JsonNode;
@@ -197,7 +197,7 @@ public final class PokemonPaletteGuessEngine implements
     var playerStats = new LinkedHashMap<>(state.playerStats());
     for (var playerId : state.playerIds()) {
       if (!state.solves().containsKey(playerId)) {
-        playerStats.put(playerId, playerStats.getOrDefault(playerId, PokemonPaletteStats.ZERO).afterMiss());
+        playerStats.put(playerId, playerStats.getOrDefault(playerId, GuessPlayerStats.ZERO).afterMiss());
       }
     }
     var palette = visiblePalette(target, state.config().paletteSize());
@@ -227,10 +227,10 @@ public final class PokemonPaletteGuessEngine implements
     }
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var scores = new LinkedHashMap<String, Integer>();
-    var playerStats = new LinkedHashMap<String, PokemonPaletteStats>();
+    var playerStats = new LinkedHashMap<String, GuessPlayerStats>();
     for (var id : playerIds) {
       scores.put(id, 0);
-      playerStats.put(id, PokemonPaletteStats.ZERO);
+      playerStats.put(id, GuessPlayerStats.ZERO);
     }
     return PokemonPaletteGuessState.builder()
         .phase(GamePhase.GAME_STARTING)
@@ -271,7 +271,7 @@ public final class PokemonPaletteGuessEngine implements
     }
     var guessed = found.get();
     int attempts = state.attemptCounts().getOrDefault(playerId, 0) + 1;
-    var stats = state.playerStats().getOrDefault(playerId, PokemonPaletteStats.ZERO);
+    var stats = state.playerStats().getOrDefault(playerId, GuessPlayerStats.ZERO);
     var attemptCounts = new LinkedHashMap<>(state.attemptCounts());
     attemptCounts.put(playerId, attempts);
     var lastAttemptResult = new LinkedHashMap<>(state.lastAttemptResult());
@@ -284,7 +284,7 @@ public final class PokemonPaletteGuessEngine implements
           context.now(), solveOrder);
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, PokemonPaletteSolve.of(solveOrder, context.now(), elapsedMs, score, attempts));
-      lastAttemptResult.put(playerId, new PokemonPaletteLastAttempt(PokemonPaletteAttemptOutcome.CORRECT, context.now()));
+      lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.CORRECT, context.now()));
       var scores = new LinkedHashMap<>(state.scores());
       scores.put(playerId, state.scores().getOrDefault(playerId, 0) + score.totalPoints());
       playerStats.put(playerId,
@@ -299,8 +299,8 @@ public final class PokemonPaletteGuessEngine implements
       return GameActionResult.accept(resolveIfComplete(next, context));
     }
     var attemptList = new ArrayList<>(state.attempts());
-    attemptList.add(new PokemonPaletteAttempt(playerId, PokemonPaletteSummary.of(guessed), context.now()));
-    lastAttemptResult.put(playerId, new PokemonPaletteLastAttempt(PokemonPaletteAttemptOutcome.INCORRECT, context.now()));
+    attemptList.add(new PokemonPaletteAttempt(playerId, GuessPokemonSummary.of(guessed), context.now()));
+    lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.INCORRECT, context.now()));
     playerStats.put(playerId, stats.afterWrongAttempt());
     return GameActionResult.accept(state.toBuilder()
         .attempts(attemptList)

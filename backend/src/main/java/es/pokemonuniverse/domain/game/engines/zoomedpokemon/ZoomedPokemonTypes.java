@@ -8,8 +8,9 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog.Source;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
-import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -73,21 +74,9 @@ public final class ZoomedPokemonTypes {
     }
   }
 
-  /** {@code 'CORRECT' | 'INCORRECT'}. */
-  public enum ZoomedPokemonAttemptOutcome { CORRECT, INCORRECT }
-
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record ZoomedPokemonPokemonSummary(String id, String name, String sprite) {
-
-    static ZoomedPokemonPokemonSummary of(Pokemon pokemon) {
-      return new ZoomedPokemonPokemonSummary(pokemon.id(), pokemon.name(), pokemon.sprite());
-    }
-  }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record ZoomedPokemonAttempt(String playerId, ZoomedPokemonPokemonSummary guessedPokemon, long attemptedAt) {}
+  public record ZoomedPokemonAttempt(String playerId, GuessPokemonSummary guessedPokemon, long attemptedAt) {}
 
   /** Etapa de zoom del acierto: índice, aumento y bonus ({@code zoomStage}, {@code zoom}, {@code zoomBonus}). */
   public record ZoomStage(int index, double zoom, int bonus) {}
@@ -179,11 +168,6 @@ public final class ZoomedPokemonTypes {
     }
   }
 
-  /** {@code { result: 'CORRECT' | 'INCORRECT'; attemptedAt }}. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record ZoomedPokemonLastAttempt(ZoomedPokemonAttemptOutcome result, long attemptedAt) {}
-
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
    * {@link #toBuilder()} (setters con nombre: el constructor posicional de 22 campos no se usa en el motor).
@@ -203,7 +187,7 @@ public final class ZoomedPokemonTypes {
       Map<String, Integer> attemptCounts,
       Map<String, ZoomedPokemonSolve> solves,
       Map<String, Long> cooldownUntil,
-      Map<String, ZoomedPokemonLastAttempt> lastAttemptResult,
+      Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
       Map<String, ZoomedPokemonPlayerStats> playerStats,
       int currentZoomStage,
@@ -260,7 +244,7 @@ public final class ZoomedPokemonTypes {
       private Map<String, Integer> attemptCounts = Map.of();
       private Map<String, ZoomedPokemonSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
-      private Map<String, ZoomedPokemonLastAttempt> lastAttemptResult = Map.of();
+      private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
       private Map<String, ZoomedPokemonPlayerStats> playerStats = Map.of();
       private int currentZoomStage;
@@ -299,7 +283,7 @@ public final class ZoomedPokemonTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
-      public Builder lastAttemptResult(Map<String, ZoomedPokemonLastAttempt> value) {
+      public Builder lastAttemptResult(Map<String, GuessLastAttempt> value) {
         lastAttemptResult = value;
         return this;
       }
@@ -380,7 +364,7 @@ public final class ZoomedPokemonTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record ZoomedPokemonPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
       @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable ZoomedPokemonLastAttempt lastAttempt,
+      @Nullable GuessLastAttempt lastAttempt,
       @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<ZoomedPokemonAttempt> attempts) {}
 
   /** {@code zoomedPokemonActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */

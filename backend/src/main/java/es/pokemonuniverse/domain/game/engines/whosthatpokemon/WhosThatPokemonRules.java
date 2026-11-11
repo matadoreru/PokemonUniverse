@@ -2,9 +2,9 @@ package es.pokemonuniverse.domain.game.engines.whosthatpokemon;
 
 import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonHint;
-import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPlayerStats;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonState;
 import es.pokemonuniverse.domain.json.JsNumbers;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
@@ -73,9 +73,9 @@ public final class WhosThatPokemonRules {
   public static GameResults buildWhoPokemonResults(WhosThatPokemonState state) {
     Scoring.requireFinished(state.phase(), "Results are unavailable before the game finishes");
     var entries = Scoring.scoreEntries(state.playerIds(), state.scores(),
-        playerId -> state.playerStats().getOrDefault(playerId, WhosThatPokemonPlayerStats.ZERO));
-    Comparator<Scoring.ScoreEntry<WhosThatPokemonPlayerStats>> compare = Comparator
-        .<Scoring.ScoreEntry<WhosThatPokemonPlayerStats>>comparingInt(entry -> -entry.points())
+        playerId -> state.playerStats().getOrDefault(playerId, GuessPlayerStats.ZERO));
+    Comparator<Scoring.ScoreEntry<GuessPlayerStats>> compare = Comparator
+        .<Scoring.ScoreEntry<GuessPlayerStats>>comparingInt(entry -> -entry.points())
         .thenComparingInt(entry -> -entry.stats().correct())
         .thenComparing(Scoring.ScoreEntry::playerId);
     return Scoring.buildRankedResults(entries, compare, Scoring.ScoreEntry::points, entry -> entry.stats().toMap());

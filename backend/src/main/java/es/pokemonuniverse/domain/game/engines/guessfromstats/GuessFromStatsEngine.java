@@ -9,6 +9,10 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.GuessAttemptOutcome;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
@@ -16,12 +20,8 @@ import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsAction;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsAttempt;
-import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsAttemptOutcome;
-import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsLastAttempt;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPlayerState;
-import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPlayerStats;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPokemonReveal;
-import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPokemonSummary;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPreparedRound;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPublicSolve;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPublicState;
@@ -172,7 +172,7 @@ public final class GuessFromStatsEngine
     var result = new LinkedHashMap<String, GuessFromStatsPublicSolve>();
     state.solves().forEach((playerId, solve) -> context.pokemon().byId(solve.submittedPokemonId()).ifPresent(pokemon ->
         result.put(playerId, new GuessFromStatsPublicSolve(solve.solveOrder(), solve.solvedAt(), solve.elapsedMs(),
-            solve.points(), solve.attempts(), GuessFromStatsPokemonSummary.of(pokemon)))));
+            solve.points(), solve.attempts(), GuessPokemonSummary.of(pokemon)))));
     return result;
   }
 
@@ -187,7 +187,7 @@ public final class GuessFromStatsEngine
     var playerStats = new LinkedHashMap<>(state.playerStats());
     for (var playerId : state.playerIds()) {
       if (!state.solves().containsKey(playerId)) {
-        playerStats.put(playerId, playerStats.getOrDefault(playerId, GuessFromStatsPlayerStats.ZERO).afterMiss());
+        playerStats.put(playerId, playerStats.getOrDefault(playerId, GuessPlayerStats.ZERO).afterMiss());
       }
     }
     var lastRound = new GuessFromStatsRoundResult(answers, prepared.visibleStats(), prepared.hints(),
@@ -214,10 +214,10 @@ public final class GuessFromStatsEngine
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var pool = pool(config, context);
     var scores = new LinkedHashMap<String, Integer>();
-    var playerStats = new LinkedHashMap<String, GuessFromStatsPlayerStats>();
+    var playerStats = new LinkedHashMap<String, GuessPlayerStats>();
     for (var id : playerIds) {
       scores.put(id, 0);
-      playerStats.put(id, GuessFromStatsPlayerStats.ZERO);
+      playerStats.put(id, GuessPlayerStats.ZERO);
     }
     return GuessFromStatsState.builder()
         .phase(GamePhase.GAME_STARTING)
@@ -260,7 +260,7 @@ public final class GuessFromStatsEngine
     var prepared = activeRound(state);
     if (prepared == null) return GameActionResult.reject(state, "La respuesta no está disponible.");
     int attemptCount = state.attemptCounts().getOrDefault(playerId, 0) + 1;
-    var stats = state.playerStats().getOrDefault(playerId, GuessFromStatsPlayerStats.ZERO);
+    var stats = state.playerStats().getOrDefault(playerId, GuessPlayerStats.ZERO);
     var attemptCounts = new LinkedHashMap<>(state.attemptCounts());
     attemptCounts.put(playerId, attemptCount);
     var playerStats = new LinkedHashMap<>(state.playerStats());
@@ -272,7 +272,7 @@ public final class GuessFromStatsEngine
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, new GuessFromStatsSolve(solveOrder, context.now(), elapsedMs, points, attemptCount,
           guessed.id()));
-      lastAttemptResult.put(playerId, new GuessFromStatsLastAttempt(GuessFromStatsAttemptOutcome.CORRECT, context.now()));
+      lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.CORRECT, context.now()));
       var scores = new LinkedHashMap<>(state.scores());
       scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
       playerStats.put(playerId, GuessingRound.recordGuessSolve(stats, attemptCount, solveOrder, elapsedMs, points));
@@ -286,8 +286,8 @@ public final class GuessFromStatsEngine
       return GameActionResult.accept(resolveIfComplete(next, context));
     }
     var attempts = new ArrayList<>(state.attempts());
-    attempts.add(new GuessFromStatsAttempt(playerId, GuessFromStatsPokemonSummary.of(guessed), context.now()));
-    lastAttemptResult.put(playerId, new GuessFromStatsLastAttempt(GuessFromStatsAttemptOutcome.INCORRECT, context.now()));
+    attempts.add(new GuessFromStatsAttempt(playerId, GuessPokemonSummary.of(guessed), context.now()));
+    lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.INCORRECT, context.now()));
     playerStats.put(playerId, stats.afterWrongAttempt());
     return GameActionResult.accept(state.toBuilder()
         .attempts(attempts.subList(Math.max(0, attempts.size() - MAX_RECENT_ATTEMPTS), attempts.size()))

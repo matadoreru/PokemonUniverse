@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
-import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
@@ -90,18 +92,6 @@ public final class GuessFromStatsTypes {
   /** {@code GuessFromStatsEvolution}. */
   public enum GuessFromStatsEvolution { BASE, MIDDLE, FINAL, NO_EVOLUTION }
 
-  /** {@code 'CORRECT' | 'INCORRECT'}. */
-  public enum GuessFromStatsAttemptOutcome { CORRECT, INCORRECT }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record GuessFromStatsPokemonSummary(String id, String name, String sprite) {
-
-    static GuessFromStatsPokemonSummary of(Pokemon pokemon) {
-      return new GuessFromStatsPokemonSummary(pokemon.id(), pokemon.name(), pokemon.sprite());
-    }
-  }
-
   /** {@code GuessFromStatsPokemonReveal}: el resumen más generación, tipos y estadísticas; solo con {@link #of}. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -121,7 +111,7 @@ public final class GuessFromStatsTypes {
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record GuessFromStatsAttempt(String playerId, GuessFromStatsPokemonSummary guessedPokemon, long attemptedAt) {}
+  public record GuessFromStatsAttempt(String playerId, GuessPokemonSummary guessedPokemon, long attemptedAt) {}
 
   /** {@code GuessFromStatsSolve} (solo en el estado). */
   public record GuessFromStatsSolve(int solveOrder, long solvedAt, long elapsedMs, int points, int attempts,
@@ -131,38 +121,7 @@ public final class GuessFromStatsTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record GuessFromStatsPublicSolve(int solveOrder, long solvedAt, long elapsedMs, int points, int attempts,
-      GuessFromStatsPokemonSummary submittedPokemon) {}
-
-  /**
-   * {@code GuessFromStatsPlayerStats}. Muchos contadores contiguos: fuera de este record solo se construye con
-   * {@link #ZERO}, {@link #withSolve} ({@code recordGuessSolve}) y los métodos con nombre.
-   */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record GuessFromStatsPlayerStats(int correct, int missed, int totalAttempts, int firstTry, int roundFirsts,
-      long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) implements GuessSolveStats<GuessFromStatsPlayerStats> {
-
-    static final GuessFromStatsPlayerStats ZERO = new GuessFromStatsPlayerStats(0, 0, 0, 0, 0, 0, 0, 0);
-
-    @Override
-    public GuessFromStatsPlayerStats withSolve(int correct, int totalAttempts, int firstTry, int roundFirsts,
-        long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) {
-      return new GuessFromStatsPlayerStats(correct, missed, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Ronda resuelta sin acierto. */
-    GuessFromStatsPlayerStats afterMiss() {
-      return new GuessFromStatsPlayerStats(correct, missed + 1, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Intento fallido. */
-    GuessFromStatsPlayerStats afterWrongAttempt() {
-      return new GuessFromStatsPlayerStats(correct, missed, totalAttempts + 1, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-  }
+      GuessPokemonSummary submittedPokemon) {}
 
   /** {@code GuessFromStatsPreparedRound} (solo en el estado). */
   public record GuessFromStatsPreparedRound(String sourcePokemonId, String signature, List<String> acceptedPokemonIds,
@@ -190,11 +149,6 @@ public final class GuessFromStatsTypes {
     }
   }
 
-  /** {@code { result: 'CORRECT' | 'INCORRECT'; attemptedAt }}. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record GuessFromStatsLastAttempt(GuessFromStatsAttemptOutcome result, long attemptedAt) {}
-
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
    * {@link #toBuilder()} (setters con nombre: el constructor posicional de 18 campos no se usa en el motor).
@@ -210,9 +164,9 @@ public final class GuessFromStatsTypes {
       Map<String, Integer> attemptCounts,
       Map<String, GuessFromStatsSolve> solves,
       Map<String, Long> cooldownUntil,
-      Map<String, GuessFromStatsLastAttempt> lastAttemptResult,
+      Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
-      Map<String, GuessFromStatsPlayerStats> playerStats,
+      Map<String, GuessPlayerStats> playerStats,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
@@ -260,9 +214,9 @@ public final class GuessFromStatsTypes {
       private Map<String, Integer> attemptCounts = Map.of();
       private Map<String, GuessFromStatsSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
-      private Map<String, GuessFromStatsLastAttempt> lastAttemptResult = Map.of();
+      private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
-      private Map<String, GuessFromStatsPlayerStats> playerStats = Map.of();
+      private Map<String, GuessPlayerStats> playerStats = Map.of();
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
@@ -290,14 +244,14 @@ public final class GuessFromStatsTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
-      public Builder lastAttemptResult(Map<String, GuessFromStatsLastAttempt> value) {
+      public Builder lastAttemptResult(Map<String, GuessLastAttempt> value) {
         lastAttemptResult = value;
         return this;
       }
 
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
-      public Builder playerStats(Map<String, GuessFromStatsPlayerStats> value) { playerStats = value; return this; }
+      public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
@@ -341,7 +295,7 @@ public final class GuessFromStatsTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record GuessFromStatsPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
-      @Nullable Long cooldownUntil, int roundPoints, int attemptCount, @Nullable GuessFromStatsLastAttempt lastAttempt,
+      @Nullable Long cooldownUntil, int roundPoints, int attemptCount, @Nullable GuessLastAttempt lastAttempt,
       @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<GuessFromStatsAttempt> attempts) {}
 
   /** {@code guessFromStatsActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */

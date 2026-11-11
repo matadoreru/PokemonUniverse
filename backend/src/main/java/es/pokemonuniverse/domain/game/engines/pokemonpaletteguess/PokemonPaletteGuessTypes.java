@@ -7,10 +7,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
-import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
-import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
@@ -28,25 +29,12 @@ public final class PokemonPaletteGuessTypes {
 
   private PokemonPaletteGuessTypes() {}
 
-  /** {@code 'CORRECT' | 'INCORRECT'}. */
-  public enum PokemonPaletteAttemptOutcome { CORRECT, INCORRECT }
-
   /** {@code PokemonPaletteGuessPlayerState['role']}. */
   public enum PokemonPaletteRole { PLAYER, SPECTATOR }
 
-  /** {@code { id, name, sprite }} del Pokémon. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonPaletteSummary(String id, String name, String sprite) {
-
-    static PokemonPaletteSummary of(Pokemon pokemon) {
-      return new PokemonPaletteSummary(pokemon.id(), pokemon.name(), pokemon.sprite());
-    }
-  }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonPaletteAttempt(String playerId, PokemonPaletteSummary guessedPokemon, long attemptedAt) {}
+  public record PokemonPaletteAttempt(String playerId, GuessPokemonSummary guessedPokemon, long attemptedAt) {}
 
   /**
    * {@code PokemonPaletteHint}: unión discriminada por {@code kind}. Cada variante es un record con {@code kind}
@@ -107,37 +95,6 @@ public final class PokemonPaletteGuessTypes {
     }
   }
 
-  /**
-   * {@code PokemonPaletteStats}. Muchos contadores contiguos: fuera de este record solo se construye con {@link #ZERO},
-   * {@link #withSolve} (las mismas cuentas que el acierto de {@code server.ts}) y los métodos con nombre.
-   */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonPaletteStats(int correct, int missed, int totalAttempts, int firstTry, int roundFirsts,
-      long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) implements GuessSolveStats<PokemonPaletteStats> {
-
-    static final PokemonPaletteStats ZERO = new PokemonPaletteStats(0, 0, 0, 0, 0, 0, 0, 0);
-
-    @Override
-    public PokemonPaletteStats withSolve(int correct, int totalAttempts, int firstTry, int roundFirsts,
-        long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) {
-      return new PokemonPaletteStats(correct, missed, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Ronda resuelta sin acierto. */
-    PokemonPaletteStats afterMiss() {
-      return new PokemonPaletteStats(correct, missed + 1, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Intento fallido. */
-    PokemonPaletteStats afterWrongAttempt() {
-      return new PokemonPaletteStats(correct, missed, totalAttempts + 1, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-  }
-
   /** {@code lastRound.pokemon} del estado: el resumen más la generación. */
   public record PokemonPaletteTarget(String id, String name, String sprite, int generation) {}
 
@@ -172,11 +129,6 @@ public final class PokemonPaletteGuessTypes {
     }
   }
 
-  /** {@code { result: 'CORRECT' | 'INCORRECT'; attemptedAt }}. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonPaletteLastAttempt(PokemonPaletteAttemptOutcome result, long attemptedAt) {}
-
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
    * {@link #toBuilder()} (setters con nombre: el constructor posicional de 19 campos no se usa en el motor).
@@ -193,9 +145,9 @@ public final class PokemonPaletteGuessTypes {
       Map<String, Integer> attemptCounts,
       Map<String, PokemonPaletteSolve> solves,
       Map<String, Long> cooldownUntil,
-      Map<String, PokemonPaletteLastAttempt> lastAttemptResult,
+      Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
-      Map<String, PokemonPaletteStats> playerStats,
+      Map<String, GuessPlayerStats> playerStats,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
@@ -245,9 +197,9 @@ public final class PokemonPaletteGuessTypes {
       private Map<String, Integer> attemptCounts = Map.of();
       private Map<String, PokemonPaletteSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
-      private Map<String, PokemonPaletteLastAttempt> lastAttemptResult = Map.of();
+      private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
-      private Map<String, PokemonPaletteStats> playerStats = Map.of();
+      private Map<String, GuessPlayerStats> playerStats = Map.of();
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
@@ -277,14 +229,14 @@ public final class PokemonPaletteGuessTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
-      public Builder lastAttemptResult(Map<String, PokemonPaletteLastAttempt> value) {
+      public Builder lastAttemptResult(Map<String, GuessLastAttempt> value) {
         lastAttemptResult = value;
         return this;
       }
 
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
-      public Builder playerStats(Map<String, PokemonPaletteStats> value) { playerStats = value; return this; }
+      public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
@@ -331,7 +283,7 @@ public final class PokemonPaletteGuessTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokemonPaletteGuessPlayerState(PokemonPaletteRole role, boolean canGuess, boolean solved,
       @Nullable Integer solveOrder, @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable PokemonPaletteLastAttempt lastAttempt,
+      @Nullable GuessLastAttempt lastAttempt,
       @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonPaletteAttempt> attempts) {}
 
   /** {@code pokemonPaletteGuessActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */

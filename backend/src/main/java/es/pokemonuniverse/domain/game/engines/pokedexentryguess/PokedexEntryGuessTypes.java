@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
-import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
 import es.pokemonuniverse.domain.pokemon.PokedexEntry;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
@@ -67,60 +69,13 @@ public final class PokedexEntryGuessTypes {
     }
   }
 
-  /** {@code 'CORRECT' | 'INCORRECT'}. */
-  public enum PokedexEntryGuessAttemptOutcome { CORRECT, INCORRECT }
-
-  /** {@code guessedPokemon} de un intento: {@code { id, name, sprite }}. */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokedexEntryGuessPokemonSummary(String id, String name, String sprite) {
-
-    static PokedexEntryGuessPokemonSummary of(Pokemon pokemon) {
-      return new PokedexEntryGuessPokemonSummary(pokemon.id(), pokemon.name(), pokemon.sprite());
-    }
-  }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokedexEntryGuessAttempt(String playerId, PokedexEntryGuessPokemonSummary guessedPokemon,
-      long attemptedAt) {}
+  public record PokedexEntryGuessAttempt(String playerId, GuessPokemonSummary guessedPokemon, long attemptedAt) {}
 
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokedexEntryGuessSolve(int solveOrder, long solvedAt, long elapsedMs, int points, int attempts) {}
-
-  /**
-   * {@code PokedexEntryGuessPlayerStats}. Muchos contadores contiguos: fuera de este record solo se construye con
-   * {@link #ZERO}, {@link #withSolve} ({@code recordGuessSolve}) y los métodos con nombre.
-   */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokedexEntryGuessPlayerStats(int correct, int missed, int totalAttempts, int firstTry, int roundFirsts,
-      long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds)
-      implements GuessSolveStats<PokedexEntryGuessPlayerStats> {
-
-    /** {@code emptyPokedexEntryStats()}. */
-    static final PokedexEntryGuessPlayerStats ZERO = new PokedexEntryGuessPlayerStats(0, 0, 0, 0, 0, 0, 0, 0);
-
-    @Override
-    public PokedexEntryGuessPlayerStats withSolve(int correct, int totalAttempts, int firstTry, int roundFirsts,
-        long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) {
-      return new PokedexEntryGuessPlayerStats(correct, missed, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Ronda resuelta sin acierto. */
-    PokedexEntryGuessPlayerStats afterMiss() {
-      return new PokedexEntryGuessPlayerStats(correct, missed + 1, totalAttempts, firstTry, roundFirsts,
-          solveTimeTotalMs, bestTimeMs, pointsFromRounds);
-    }
-
-    /** Intento fallido. */
-    PokedexEntryGuessPlayerStats afterWrongAttempt() {
-      return new PokedexEntryGuessPlayerStats(correct, missed, totalAttempts + 1, firstTry, roundFirsts,
-          solveTimeTotalMs, bestTimeMs, pointsFromRounds);
-    }
-  }
 
   /** {@code PokedexEntryGuessRoundTarget} (solo en el estado). */
   public record PokedexEntryGuessRoundTarget(String pokemonId, PokedexEntry entry) {}
@@ -143,11 +98,6 @@ public final class PokedexEntryGuessTypes {
     }
   }
 
-  /** {@code { result: 'CORRECT' | 'INCORRECT'; attemptedAt }}. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokedexEntryGuessLastAttempt(PokedexEntryGuessAttemptOutcome result, long attemptedAt) {}
-
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
    * {@link #toBuilder()} (setters con nombre: el constructor posicional de 17 campos no se usa en el motor).
@@ -163,9 +113,9 @@ public final class PokedexEntryGuessTypes {
       Map<String, Integer> attemptCounts,
       Map<String, PokedexEntryGuessSolve> solves,
       Map<String, Long> cooldownUntil,
-      Map<String, PokedexEntryGuessLastAttempt> lastAttemptResult,
+      Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
-      Map<String, PokedexEntryGuessPlayerStats> playerStats,
+      Map<String, GuessPlayerStats> playerStats,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
@@ -212,9 +162,9 @@ public final class PokedexEntryGuessTypes {
       private Map<String, Integer> attemptCounts = Map.of();
       private Map<String, PokedexEntryGuessSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
-      private Map<String, PokedexEntryGuessLastAttempt> lastAttemptResult = Map.of();
+      private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
-      private Map<String, PokedexEntryGuessPlayerStats> playerStats = Map.of();
+      private Map<String, GuessPlayerStats> playerStats = Map.of();
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
@@ -242,14 +192,14 @@ public final class PokedexEntryGuessTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
-      public Builder lastAttemptResult(Map<String, PokedexEntryGuessLastAttempt> value) {
+      public Builder lastAttemptResult(Map<String, GuessLastAttempt> value) {
         lastAttemptResult = value;
         return this;
       }
 
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
-      public Builder playerStats(Map<String, PokedexEntryGuessPlayerStats> value) { playerStats = value; return this; }
+      public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
@@ -312,7 +262,7 @@ public final class PokedexEntryGuessTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokedexEntryGuessPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
       @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable PokedexEntryGuessLastAttempt lastAttempt,
+      @Nullable GuessLastAttempt lastAttempt,
       @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokedexEntryGuessAttempt> attempts) {}
 
   /** {@code pokedexEntryGuessActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */

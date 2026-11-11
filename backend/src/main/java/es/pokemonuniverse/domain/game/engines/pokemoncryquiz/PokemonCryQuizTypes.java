@@ -8,14 +8,14 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.PokemonAudioCatalog.CryVersion;
-import es.pokemonuniverse.domain.game.engine.infra.GuessSolveStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPlayerStats;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedGameState;
-import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,23 +34,9 @@ public final class PokemonCryQuizTypes {
   /** {@code 'PLAYER' | 'SPECTATOR'}. */
   public enum PokemonCryQuizRole { PLAYER, SPECTATOR }
 
-  /** {@code 'CORRECT' | 'INCORRECT'}. */
-  public enum PokemonCryQuizAttemptOutcome { CORRECT, INCORRECT }
-
-  /** {@code { id, name, sprite }} ({@code reveal} de {@code server.ts}). */
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonCryQuizPokemonSummary(String id, String name, String sprite) {
-
-    static PokemonCryQuizPokemonSummary of(Pokemon pokemon) {
-      return new PokemonCryQuizPokemonSummary(pokemon.id(), pokemon.name(), pokemon.sprite());
-    }
-  }
-
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonCryQuizAttempt(String playerId, PokemonCryQuizPokemonSummary guessedPokemon,
-      long attemptedAt) {}
+  public record PokemonCryQuizAttempt(String playerId, GuessPokemonSummary guessedPokemon, long attemptedAt) {}
 
   /**
    * {@code PokemonCryQuizSolve}. Cuatro enteros contiguos: fuera de este record solo se construye con {@link #of}, que
@@ -67,52 +53,6 @@ public final class PokemonCryQuizTypes {
     }
   }
 
-  /**
-   * {@code PokemonCryQuizStats}. Muchos contadores contiguos: fuera de este record solo se construye con
-   * {@link #ZERO}, {@link #withSolve} ({@code recordGuessSolve}) y los métodos con nombre.
-   */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonCryQuizPlayerStats(int correct, int missed, int totalAttempts, int firstTry, int roundFirsts,
-      long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds)
-      implements GuessSolveStats<PokemonCryQuizPlayerStats> {
-
-    static final PokemonCryQuizPlayerStats ZERO = new PokemonCryQuizPlayerStats(0, 0, 0, 0, 0, 0, 0, 0);
-
-    @Override
-    public PokemonCryQuizPlayerStats withSolve(int correct, int totalAttempts, int firstTry, int roundFirsts,
-        long solveTimeTotalMs, long bestTimeMs, int pointsFromRounds) {
-      return new PokemonCryQuizPlayerStats(correct, missed, totalAttempts, firstTry, roundFirsts, solveTimeTotalMs,
-          bestTimeMs, pointsFromRounds);
-    }
-
-    /** Ronda resuelta sin acierto. */
-    PokemonCryQuizPlayerStats afterMiss() {
-      return new PokemonCryQuizPlayerStats(correct, missed + 1, totalAttempts, firstTry, roundFirsts,
-          solveTimeTotalMs, bestTimeMs, pointsFromRounds);
-    }
-
-    /** Intento fallido. */
-    PokemonCryQuizPlayerStats afterWrongAttempt() {
-      return new PokemonCryQuizPlayerStats(correct, missed, totalAttempts + 1, firstTry, roundFirsts,
-          solveTimeTotalMs, bestTimeMs, pointsFromRounds);
-    }
-
-    /** {@code { ...entry.stats }} con las claves de TS, en su orden. */
-    Map<String, Number> toMap() {
-      var mapped = new LinkedHashMap<String, Number>();
-      mapped.put("correct", correct);
-      mapped.put("missed", missed);
-      mapped.put("totalAttempts", totalAttempts);
-      mapped.put("firstTry", firstTry);
-      mapped.put("roundFirsts", roundFirsts);
-      mapped.put("solveTimeTotalMs", solveTimeTotalMs);
-      mapped.put("bestTimeMs", bestTimeMs);
-      mapped.put("pointsFromRounds", pointsFromRounds);
-      return mapped;
-    }
-  }
-
   /** {@code { id, name, sprite, generation }} del Pokémon revelado (solo en el estado). */
   public record PokemonCryQuizRoundPokemon(String id, String name, String sprite, int generation) {}
 
@@ -125,11 +65,6 @@ public final class PokemonCryQuizTypes {
       attemptCounts = frozenMap(attemptCounts);
     }
   }
-
-  /** {@code { result: 'CORRECT' | 'INCORRECT'; attemptedAt }}. */
-  @Serdeable
-  @JsonInclude(JsonInclude.Include.ALWAYS)
-  public record PokemonCryQuizLastAttempt(PokemonCryQuizAttemptOutcome result, long attemptedAt) {}
 
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
@@ -149,9 +84,9 @@ public final class PokemonCryQuizTypes {
       Map<String, Integer> attemptCounts,
       Map<String, PokemonCryQuizSolve> solves,
       Map<String, Long> cooldownUntil,
-      Map<String, PokemonCryQuizLastAttempt> lastAttemptResult,
+      Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
-      Map<String, PokemonCryQuizPlayerStats> playerStats,
+      Map<String, GuessPlayerStats> playerStats,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
@@ -204,9 +139,9 @@ public final class PokemonCryQuizTypes {
       private Map<String, Integer> attemptCounts = Map.of();
       private Map<String, PokemonCryQuizSolve> solves = Map.of();
       private Map<String, Long> cooldownUntil = Map.of();
-      private Map<String, PokemonCryQuizLastAttempt> lastAttemptResult = Map.of();
+      private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
-      private Map<String, PokemonCryQuizPlayerStats> playerStats = Map.of();
+      private Map<String, GuessPlayerStats> playerStats = Map.of();
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
@@ -240,14 +175,14 @@ public final class PokemonCryQuizTypes {
 
       public Builder cooldownUntil(Map<String, Long> value) { cooldownUntil = value; return this; }
 
-      public Builder lastAttemptResult(Map<String, PokemonCryQuizLastAttempt> value) {
+      public Builder lastAttemptResult(Map<String, GuessLastAttempt> value) {
         lastAttemptResult = value;
         return this;
       }
 
       public Builder scores(Map<String, Integer> value) { scores = value; return this; }
 
-      public Builder playerStats(Map<String, PokemonCryQuizPlayerStats> value) { playerStats = value; return this; }
+      public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
@@ -304,7 +239,7 @@ public final class PokemonCryQuizTypes {
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokemonCryQuizPlayerState(PokemonCryQuizRole role, boolean canGuess, boolean solved,
       @Nullable Integer solveOrder, @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
-      @Nullable PokemonCryQuizLastAttempt lastAttempt,
+      @Nullable GuessLastAttempt lastAttempt,
       @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonCryQuizAttempt> attempts) {}
 
   /** {@code whosThatPokemonActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */

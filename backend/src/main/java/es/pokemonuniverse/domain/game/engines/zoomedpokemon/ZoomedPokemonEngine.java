@@ -11,9 +11,12 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
-import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog;
 import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog.Source;
+import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog;
 import es.pokemonuniverse.domain.game.engine.infra.AssetTokens;
+import es.pokemonuniverse.domain.game.engine.infra.GuessAttemptOutcome;
+import es.pokemonuniverse.domain.game.engine.infra.GuessLastAttempt;
+import es.pokemonuniverse.domain.game.engine.infra.GuessPokemonSummary;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
@@ -23,13 +26,10 @@ import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonConfig.
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomStage;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonAction;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonAttempt;
-import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonAttemptOutcome;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonFocusPoint;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonHint;
-import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonLastAttempt;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPlayerState;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPlayerStats;
-import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPokemonSummary;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPublicPokemon;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPublicSolve;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPublicState;
@@ -320,7 +320,7 @@ public final class ZoomedPokemonEngine
       var stage = new ZoomStage(zoomStage, ZoomedPokemonRules.ZOOM_STAGES.get(zoomStage), zoomBonus);
       var solves = new LinkedHashMap<>(state.solves());
       solves.put(playerId, ZoomedPokemonSolve.of(context.now(), elapsedMs, solveOrder, stage, points, attemptCount));
-      lastAttemptResult.put(playerId, new ZoomedPokemonLastAttempt(ZoomedPokemonAttemptOutcome.CORRECT, context.now()));
+      lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.CORRECT, context.now()));
       var scores = new LinkedHashMap<>(state.scores());
       scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
       playerStats.put(playerId, stats.afterSolve(attemptCount, solveOrder, elapsedMs, zoomStage, points, source));
@@ -334,8 +334,8 @@ public final class ZoomedPokemonEngine
       return GameActionResult.accept(resolveIfComplete(next, context));
     }
     var attempts = new ArrayList<>(state.attempts());
-    attempts.add(new ZoomedPokemonAttempt(playerId, ZoomedPokemonPokemonSummary.of(guessed), context.now()));
-    lastAttemptResult.put(playerId, new ZoomedPokemonLastAttempt(ZoomedPokemonAttemptOutcome.INCORRECT, context.now()));
+    attempts.add(new ZoomedPokemonAttempt(playerId, GuessPokemonSummary.of(guessed), context.now()));
+    lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.INCORRECT, context.now()));
     playerStats.put(playerId, stats.afterWrongAttempt());
     return GameActionResult.accept(state.toBuilder()
         .attempts(attempts.subList(Math.max(0, attempts.size() - MAX_RECENT_ATTEMPTS), attempts.size()))
