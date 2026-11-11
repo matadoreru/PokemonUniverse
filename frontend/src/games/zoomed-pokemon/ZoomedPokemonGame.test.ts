@@ -3,17 +3,17 @@ import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { ZoomedPokemonConfigPanel } from '../games/zoomed-pokemon/ConfigPanel';
-import { describeZoomedHint } from '../games/zoomed-pokemon/presentation';
+import { ZoomedPokemonConfigPanel } from './ConfigPanel';
+import { describeZoomedHint } from './presentation';
 import { ZoomedPokemonGame, ZoomViewport } from './ZoomedPokemonGame';
 import { ZoomedPokemonResults } from './ZoomedPokemonResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { labelledRadiogroup } from '../ui/segmented-markup';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { labelledRadiogroup } from '../../ui/segmented-markup';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const BASE = '/api/rooms/ABC234/games/token/rounds/1/options';
 const REVEAL_IMAGE = `${BASE}/reveal/sprite`;
@@ -80,7 +80,7 @@ describe('Zoomed Pokémon: pantalla', () => {
   it('lets the browser smooth enlarged sprites instead of forcing pixelated scaling', () => {
     const markup = renderToStaticMarkup(createElement(ZoomViewport, { source: '/sprite.png', sourceType: 'SPRITE', alt: 'Detalle ampliado' }));
     expect(markup).not.toContain('pixelated');
-    const css = readFileSync(new URL('../games/zoomed-pokemon/Zoomed.module.css', import.meta.url), 'utf8');
+    const css = readFileSync(new URL('./Zoomed.module.css', import.meta.url), 'utf8');
     expect(css).toMatch(/\.viewport > img \{[^}]*image-rendering: auto;/);
     expect(css).not.toMatch(/image-rendering: pixelated/);
     // El recorte lo hace el servidor por etapas: el visor no escala ni transforma la imagen.

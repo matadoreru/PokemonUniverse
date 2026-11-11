@@ -2,19 +2,19 @@ import type { PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } f
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { PokemonCryQuizConfigPanel } from '../games/pokemon-cry-quiz/ConfigPanel';
-import { CRY_PLAY_FAILED, CRY_UNAVAILABLE, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
+import { PokemonCryQuizConfigPanel } from './ConfigPanel';
+import { CRY_PLAY_FAILED, CRY_UNAVAILABLE, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from './presentation';
 import { PokemonCryQuizGame } from './PokemonCryQuizGame';
 import { PokemonCryQuizResults } from './PokemonCryQuizResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { labelledRadiogroup } from '../ui/segmented-markup';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { labelledRadiogroup } from '../../ui/segmented-markup';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 const duck = vi.fn();
-vi.mock('../audio', () => ({ audio: { music: { duck: (on: boolean) => duck(on) } } }));
+vi.mock('../../audio', () => ({ audio: { music: { duck: (on: boolean) => duck(on) } } }));
 
 const CRY = '/api/rooms/ABC234/games/opaque/rounds/1/options/cry/audio';
 const REVEAL_SPRITE = '/api/rooms/ABC234/games/opaque/rounds/1/options/reveal/sprite';

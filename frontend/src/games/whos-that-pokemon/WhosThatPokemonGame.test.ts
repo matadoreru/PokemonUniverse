@@ -2,16 +2,16 @@ import { defaultWhosThatPokemonConfig, type RoomView, type WhosThatPokemonPlayer
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { WhosThatPokemonConfigPanel } from '../games/whos-that-pokemon/ConfigPanel';
-import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
+import { WhosThatPokemonConfigPanel } from './ConfigPanel';
+import { describeWhosThatHint } from './presentation';
 import { WhosThatPokemonGame } from './WhosThatPokemonGame';
 import { WhosThatPokemonResults } from './WhosThatPokemonResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const REVEAL_SPRITE = '/api/rooms/ABC234/games/token/rounds/1/options/reveal/sprite';
 const reveal = { pokemon: { name: 'Lucario', sprite: REVEAL_SPRITE, generation: 4 }, solves: { p1: { solveOrder: 1, solvedAt: 2_000, elapsedMs: 1_000, speedPoints: 10, placementBonus: 3, points: 13, attempts: 1 } }, attemptCounts: { p1: 1, p2: 1 } };

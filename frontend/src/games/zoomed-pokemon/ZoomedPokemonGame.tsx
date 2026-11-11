@@ -1,15 +1,15 @@
 import type { ZoomedPokemonConfig, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
 import { ZoomOut } from 'lucide-react';
-import { describeZoomedHint, zoomedSourceLabel, zoomLabel } from '../games/zoomed-pokemon/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { Chip, cx, Icon } from '../ui';
+import { describeZoomedHint, zoomedSourceLabel, zoomLabel } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { Chip, cx, Icon } from '../../ui';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
-} from './guess-kit';
-import { GamePanel, GameScreen } from './game-kit/GameScreen';
-import type { ActiveGameProps } from './room-command';
-import s from '../games/zoomed-pokemon/Zoomed.module.css';
+} from '../../room/guess-kit';
+import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
+import type { ActiveGameProps } from '../../room/room-command';
+import s from './Zoomed.module.css';
 
 const GAME_NAME = 'Zoomed Pokémon';
 const QUESTION = '¿Qué Pokémon es?';

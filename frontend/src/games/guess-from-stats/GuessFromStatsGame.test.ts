@@ -2,17 +2,17 @@ import { defaultGuessFromStatsConfig, type GuessFromStatsPlayerState, type Guess
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { GuessFromStatsConfigPanel } from '../games/guess-from-stats/ConfigPanel';
-import { validateGuessFromStatsConfig } from '../games/guess-from-stats/validation';
-import { describeStatsHint, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
+import { GuessFromStatsConfigPanel } from './ConfigPanel';
+import { validateGuessFromStatsConfig } from './validation';
+import { describeStatsHint, statMax, statsAnswerText } from './presentation';
 import { GuessFromStatsGame } from './GuessFromStatsGame';
 import { GuessFromStatsResults } from './GuessFromStatsResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const answer = { id: 'gardevoir', name: 'Gardevoir', sprite: '/gardevoir.png', generation: 3, types: ['psychic', 'fairy'] as Array<'psychic' | 'fairy'>, hp: 68, attack: 65, defense: 65, specialAttack: 125, specialDefense: 115, speed: 80, bst: 518 };
 const equivalent = { ...answer, id: 'gardevoir-mega', name: 'Mega-Gardevoir', sprite: '/mega.png', types: [...answer.types] };

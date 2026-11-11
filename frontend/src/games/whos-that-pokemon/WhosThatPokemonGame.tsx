@@ -1,15 +1,15 @@
 import { whoPokemonScoringLabel, type WhosThatPokemonConfig, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
 import { Lightbulb } from 'lucide-react';
-import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { Chip, Icon } from '../ui';
+import { describeWhosThatHint } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { Chip, Icon } from '../../ui';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
-} from './guess-kit';
-import { GamePanel, GameScreen } from './game-kit/GameScreen';
-import type { ActiveGameProps } from './room-command';
-import s from '../games/whos-that-pokemon/WhosThat.module.css';
+} from '../../room/guess-kit';
+import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
+import type { ActiveGameProps } from '../../room/room-command';
+import s from './WhosThat.module.css';
 
 const GAME_NAME = '¿Quién es ese Pokémon?';
 

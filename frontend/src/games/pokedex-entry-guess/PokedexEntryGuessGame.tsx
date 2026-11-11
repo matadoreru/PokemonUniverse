@@ -1,16 +1,16 @@
 import type { PokedexEntryGuessConfig, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState } from '@pokemon-universe/shared/public';
 import { BookOpenText } from 'lucide-react';
 import { useLayoutEffect, useRef } from 'react';
-import { describePokedexEntryHint, entrySegments, fitFontSize } from '../games/pokedex-entry-guess/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { Chip, Icon } from '../ui';
+import { describePokedexEntryHint, entrySegments, fitFontSize } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { Chip, Icon } from '../../ui';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
-} from './guess-kit';
-import { GamePanel, GameScreen } from './game-kit/GameScreen';
-import type { ActiveGameProps } from './room-command';
-import s from '../games/pokedex-entry-guess/Entry.module.css';
+} from '../../room/guess-kit';
+import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
+import type { ActiveGameProps } from '../../room/room-command';
+import s from './Entry.module.css';
 
 const GAME_NAME = 'Pokédex Entry Guess';
 const QUESTION = '¿De quién es esta entrada?';

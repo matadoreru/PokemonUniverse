@@ -2,17 +2,17 @@ import type { PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, Ro
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokemonPaletteGuessConfigPanel } from '../games/pokemon-palette-guess/ConfigPanel';
-import { colorName, describePaletteHint, paletteSwatches } from '../games/pokemon-palette-guess/presentation';
+import { PokemonPaletteGuessConfigPanel } from './ConfigPanel';
+import { colorName, describePaletteHint, paletteSwatches } from './presentation';
 import { PokemonPaletteGuessGame } from './PokemonPaletteGuessGame';
 import { PokemonPaletteGuessResults } from './PokemonPaletteGuessResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { labelledRadiogroup } from '../ui/segmented-markup';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { labelledRadiogroup } from '../../ui/segmented-markup';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const colors = ['#183048', '#d86048', '#f0c030', '#4878c0', '#78a848'];
 const weights = [0.4, 0.25, 0.15, 0.12, 0.08];

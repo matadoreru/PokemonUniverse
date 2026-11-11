@@ -1,16 +1,16 @@
 import type { GuessFromStatsConfig, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
-import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { Bar, cx, TypeBadge } from '../ui';
+import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { Bar, cx, TypeBadge } from '../../ui';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
-} from './guess-kit';
-import { GamePanel, GameScreen } from './game-kit/GameScreen';
-import type { ActiveGameProps } from './room-command';
-import s from '../games/guess-from-stats/Stats.module.css';
+} from '../../room/guess-kit';
+import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
+import type { ActiveGameProps } from '../../room/room-command';
+import s from './Stats.module.css';
 
 const GAME_NAME = 'Guess from Stats';
 const QUESTION = '¿De quién son estas estadísticas?';

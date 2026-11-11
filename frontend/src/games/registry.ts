@@ -140,13 +140,13 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'whos-that-pokemon',
   config: component(() => import('./whos-that-pokemon/ConfigPanel'), 'WhosThatPokemonConfigPanel'),
-  active: component(() => import('../room/WhosThatPokemonGame'), 'WhosThatPokemonGame'),
-  results: component(() => import('../room/WhosThatPokemonResults'), 'WhosThatPokemonResults'),
+  active: component(() => import('./whos-that-pokemon/WhosThatPokemonGame'), 'WhosThatPokemonGame'),
+  results: component(() => import('./whos-that-pokemon/WhosThatPokemonResults'), 'WhosThatPokemonResults'),
 })).register(clientModule({
   id: 'pokedex-entry-guess',
   config: component(() => import('./pokedex-entry-guess/ConfigPanel'), 'PokedexEntryGuessConfigPanel'),
-  active: component(() => import('../room/PokedexEntryGuessGame'), 'PokedexEntryGuessGame'),
-  results: component(() => import('../room/PokedexEntryGuessResults'), 'PokedexEntryGuessResults'),
+  active: component(() => import('./pokedex-entry-guess/PokedexEntryGuessGame'), 'PokedexEntryGuessGame'),
+  results: component(() => import('./pokedex-entry-guess/PokedexEntryGuessResults'), 'PokedexEntryGuessResults'),
 })).register(clientModule({
   id: 'type-chain',
   config: component(() => import('./type-chain/ConfigPanel'), 'TypeChainConfigPanel'),
@@ -155,13 +155,13 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'guess-from-stats',
   config: component(() => import('./guess-from-stats/ConfigPanel'), 'GuessFromStatsConfigPanel'),
-  active: component(() => import('../room/GuessFromStatsGame'), 'GuessFromStatsGame'),
-  results: component(() => import('../room/GuessFromStatsResults'), 'GuessFromStatsResults'),
+  active: component(() => import('./guess-from-stats/GuessFromStatsGame'), 'GuessFromStatsGame'),
+  results: component(() => import('./guess-from-stats/GuessFromStatsResults'), 'GuessFromStatsResults'),
 })).register(clientModule({
   id: 'zoomed-pokemon',
   config: component(() => import('./zoomed-pokemon/ConfigPanel'), 'ZoomedPokemonConfigPanel'),
-  active: component(() => import('../room/ZoomedPokemonGame'), 'ZoomedPokemonGame'),
-  results: component(() => import('../room/ZoomedPokemonResults'), 'ZoomedPokemonResults'),
+  active: component(() => import('./zoomed-pokemon/ZoomedPokemonGame'), 'ZoomedPokemonGame'),
+  results: component(() => import('./zoomed-pokemon/ZoomedPokemonResults'), 'ZoomedPokemonResults'),
 })).register(clientModule({
   id: 'poke-taboo',
   config: component(() => import('./poke-taboo/ConfigPanel'), 'PokeTabooConfigPanel'),
@@ -220,8 +220,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-cry-quiz',
   config: component(() => import('./pokemon-cry-quiz/ConfigPanel'), 'PokemonCryQuizConfigPanel'),
-  active: component(() => import('../room/PokemonCryQuizGame'), 'PokemonCryQuizGame'),
-  results: component(() => import('../room/PokemonCryQuizResults'), 'PokemonCryQuizResults'),
+  active: component(() => import('./pokemon-cry-quiz/PokemonCryQuizGame'), 'PokemonCryQuizGame'),
+  results: component(() => import('./pokemon-cry-quiz/PokemonCryQuizResults'), 'PokemonCryQuizResults'),
 })).register(clientModule({
   id: 'pokemon-trivia',
   config: component(() => import('./pokemon-trivia/ConfigPanel'), 'PokemonTriviaConfigPanel'),
@@ -230,8 +230,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-palette-guess',
   config: component(() => import('./pokemon-palette-guess/ConfigPanel'), 'PokemonPaletteGuessConfigPanel'),
-  active: component(() => import('../room/PokemonPaletteGuessGame'), 'PokemonPaletteGuessGame'),
-  results: component(() => import('../room/PokemonPaletteGuessResults'), 'PokemonPaletteGuessResults'),
+  active: component(() => import('./pokemon-palette-guess/PokemonPaletteGuessGame'), 'PokemonPaletteGuessGame'),
+  results: component(() => import('./pokemon-palette-guess/PokemonPaletteGuessResults'), 'PokemonPaletteGuessResults'),
 })).register(clientModule({
   id: 'who-is-who-pokemon',
   config: component(() => import('./who-is-who-pokemon/ConfigPanel'), 'WhoIsWhoPokemonConfigPanel'),

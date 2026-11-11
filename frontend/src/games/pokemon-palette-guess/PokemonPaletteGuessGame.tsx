@@ -1,15 +1,15 @@
 import type { PokemonPaletteGuessConfig, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
-import { describePaletteHint, paletteSwatches } from '../games/pokemon-palette-guess/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { cx } from '../ui';
+import { describePaletteHint, paletteSwatches } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { cx } from '../../ui';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
-} from './guess-kit';
-import { GamePanel, GameScreen } from './game-kit/GameScreen';
-import type { ActiveGameProps } from './room-command';
-import s from '../games/pokemon-palette-guess/Palette.module.css';
+} from '../../room/guess-kit';
+import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
+import type { ActiveGameProps } from '../../room/room-command';
+import s from './Palette.module.css';
 
 const GAME_NAME = 'Adivina por la Paleta';
 const QUESTION = '¿De quién son estos colores?';

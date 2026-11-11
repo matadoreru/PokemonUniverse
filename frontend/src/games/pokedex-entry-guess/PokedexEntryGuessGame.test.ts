@@ -2,16 +2,16 @@ import { defaultPokedexEntryGuessConfig, type PokedexEntryGuessPlayerState, type
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokedexEntryGuessConfigPanel } from '../games/pokedex-entry-guess/ConfigPanel';
-import { describePokedexEntryHint, entrySegments, fitFontSize } from '../games/pokedex-entry-guess/presentation';
+import { PokedexEntryGuessConfigPanel } from './ConfigPanel';
+import { describePokedexEntryHint, entrySegments, fitFontSize } from './presentation';
 import { PokedexEntryGuessGame } from './PokedexEntryGuessGame';
 import { PokedexEntryGuessResults } from './PokedexEntryGuessResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const MASKED = 'Se dice que ??? aparece para advertir de catástrofes. ??? huye de los humanos.';
 const REVEAL_SPRITE = '/api/rooms/ABC234/games/token/rounds/1/options/reveal/sprite';

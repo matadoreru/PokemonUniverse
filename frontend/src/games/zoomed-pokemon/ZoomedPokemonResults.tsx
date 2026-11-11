@@ -1,7 +1,7 @@
 import { ZoomIn } from 'lucide-react';
-import type { GameResultsProps } from './room-command';
-import { guessTop, type GuessStats } from './guess-kit';
-import { GuessResults } from './guess-kit/GuessResults';
+import type { GameResultsProps } from '../../room/room-command';
+import { guessTop, type GuessStats } from '../../room/guess-kit';
+import { GuessResults } from '../../room/guess-kit/GuessResults';
 
 const maxZoomExtras = (stats: GuessStats) => [`${stats.maxZoomSolves ?? 0} a máximo zoom`];
 
