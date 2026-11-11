@@ -1468,7 +1468,7 @@ class RoomCoordinatorTest {
     assertFalse(allowed.containsKey("pokemon-red-flag"));
     room.gameSelectionMode = new GameSelectionMode.Random(List.of("higher-lower", "pokedex-distance"));
     assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("pokedex-distance", "CLASSIC")),
-        kit.manager.playablePicks(room, room.gameSelectionMode.gameIds()));
+        kit.manager.rotation.playablePicks(room, room.gameSelectionMode.gameIds()));
   }
 
   @Test
@@ -1481,11 +1481,11 @@ class RoomCoordinatorTest {
     var gameIds = List.of("higher-lower", "pokedex-distance");
     room.gameSelectionMode = new GameSelectionMode.Vote(gameIds);
     assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS"),
-        new GamePick("pokedex-distance", "CLASSIC")), kit.manager.playablePicks(room, gameIds));
+        new GamePick("pokedex-distance", "CLASSIC")), kit.manager.rotation.playablePicks(room, gameIds));
     // Por orden, cada modo marcado ocupa su propio turno, seguidos y en el orden del catálogo.
     room.gameSelectionMode = new GameSelectionMode.Order(gameIds);
     assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS"),
-        new GamePick("pokedex-distance", "CLASSIC")), kit.manager.playablePicks(room, gameIds));
+        new GamePick("pokedex-distance", "CLASSIC")), kit.manager.rotation.playablePicks(room, gameIds));
   }
 
   @Test
@@ -1622,7 +1622,7 @@ class RoomCoordinatorTest {
     alone.gameSelectionMode = new GameSelectionMode.Order(List.of("higher-lower", "pokedex-distance"));
     solo.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
     assertEquals(List.of(new GamePick("higher-lower", "CLASSIC"), new GamePick("higher-lower", "ENDLESS")),
-        solo.manager.playablePicks(alone, alone.gameSelectionMode.gameIds()));
+        solo.manager.rotation.playablePicks(alone, alone.gameSelectionMode.gameIds()));
   }
 
   @Test

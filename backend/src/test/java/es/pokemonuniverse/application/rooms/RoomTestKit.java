@@ -127,7 +127,7 @@ final class RoomTestKit {
 
   /** Juegos de {@code gameIds} con algún par jugable con los conectados de ahora. */
   static List<String> playableGameIds(RoomCoordinator manager, LiveRoom room, List<String> gameIds) {
-    return manager.playablePicks(room, gameIds).stream().map(GamePick::gameId).distinct().toList();
+    return manager.rotation.playablePicks(room, gameIds).stream().map(GamePick::gameId).distinct().toList();
   }
 
   /** {@code room:set-ready} con un booleano. */
