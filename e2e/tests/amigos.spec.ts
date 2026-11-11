@@ -55,7 +55,7 @@ for (const { w, h } of SIZES) {
       // nombre en mayúsculas; el diálogo sigue abierto con el resultado.
       const panelA = await abrirAmigos(a.page);
       await expect(pestana(panelA, 'Amigos')).toHaveAttribute('aria-selected', 'true');
-      await expect(panelA.getByText('Todavía no tienes amigos. Añade a alguien por su nombre de usuario.')).toBeVisible();
+      await expect(panelA.getByText('Todavía no tienes amigos.')).toBeVisible();
       await capture(a.page, 'amigos-vacio');
       const anadir = await abrirAnadirAmigo(a.page);
       await anadir.getByLabel('Nombre de usuario').fill(b.cuenta.username.toUpperCase());
