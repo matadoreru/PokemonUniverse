@@ -115,13 +115,13 @@ final class GameRotation {
     } catch (ConfigValidationException e) {
       return false;
     }
-    return GameConfigReadiness.validate(gameId, toTree.apply(parsed), readinessContext.apply(room, playerCount)).isEmpty()
-        && engine.checkAvailability(parsed, lobbyContext.apply(room)).isEmpty();
+    return GameConfigReadiness.validate(gameId, toTree.apply(parsed), readinessContext.apply(room, playerCount))
+        .isEmpty() && engine.checkAvailability(parsed, lobbyContext.apply(room)).isEmpty();
   }
 
   private Optional<String> gameConfigReadinessReason(LiveRoom room, String gameId) {
     if (registry.get(gameId).isEmpty()) return Optional.of("Minijuego desconocido.");
-    var engine = engine(gameId).orElseThrow();
+    var engine = engine(gameId).orElseThrow(() -> new IllegalStateException("Sin motor: " + gameId));
     Object parsed;
     try {
       parsed = engine.parseConfig(room.gameConfigs.get(gameId));
@@ -136,8 +136,8 @@ final class GameRotation {
   }
 
   /**
-   * Al empezar: todos los juegos elegidos existen y tienen una configuración válida, y al menos uno
-   * admite a los conectados. Con un solo juego elegido, {@code RoomCoordinator.launchGame} da el motivo exacto (mínimo o máximo).
+   * Al empezar: todos los juegos elegidos existen y tienen una configuración válida, y al menos uno admite a los
+   * conectados. Con un solo juego elegido, {@code RoomCoordinator.launchGame} da el motivo exacto (mínimo o máximo).
    */
   void assertRotationReady(LiveRoom room) {
     var gameIds = room.gameSelectionMode.gameIds();

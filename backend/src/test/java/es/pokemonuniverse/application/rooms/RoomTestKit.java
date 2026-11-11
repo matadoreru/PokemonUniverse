@@ -125,9 +125,11 @@ final class RoomTestKit {
     return manager.join(identity, connectionId, JsonNode.createStringNode(code));
   }
 
-  /** Juegos de {@code gameIds} con algún par jugable con los conectados de ahora. */
+  /** Juegos de {@code gameIds} jugables en su modo por defecto con los conectados de ahora. */
   static List<String> playableGameIds(RoomCoordinator manager, LiveRoom room, List<String> gameIds) {
-    return manager.rotation.playablePicks(room, gameIds).stream().map(GamePick::gameId).distinct().toList();
+    int playerCount = manager.rotation.connectedPlayerCount(room);
+    return gameIds.stream()
+        .filter(gameId -> manager.rotation.playable(room, new GamePick(gameId, null), playerCount)).toList();
   }
 
   /** Abre la votación del siguiente juego entre los pares jugables de la selección de la sala. */

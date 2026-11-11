@@ -85,8 +85,9 @@ import org.slf4j.LoggerFactory;
  * de programarse; el callback re-entra por el lock y comprueba {@code room.transitionTimer == timer} (Review Focus 2).
  *
  * <p>Los colaboradores ({@link RoomChatCommands}, {@link GameRotation}, {@link NextGameVoting},
- * {@link DailyRoomLifecycle}, {@link CursorRelay} y {@link RoomViews}) reciben la sala ya bloqueada: nunca toman el lock
- * ni programan temporizadores. Los mensajes de error viajan sin traducir en {@link RoomException}.
+ * {@link DailyRoomLifecycle}, {@link CursorRelay} y {@link RoomViews}) reciben la sala ya bloqueada y nunca toman el
+ * lock; solo programan o cancelan temporizadores con el lock tomado, a través del coordinador. Los mensajes de error
+ * viajan sin traducir en {@link RoomException}.
  */
 @Singleton
 public class RoomCoordinator {
@@ -135,8 +136,8 @@ public class RoomCoordinator {
   /**
    * {@code tcgCards}: el catálogo TCG en memoria que comparten todas las salas (no se fija por partida: Node pasa la
    * misma instancia, cuyo {@code refresh} sustituye la lista). Sin BD no hay catálogo y {@code tcg-higher-lower}
-   * responde con su literal de no disponibilidad. Ninguno de los cuatro últimos depende del coordinador (la presencia de
-   * amigos lo pide a través de un {@code BeanProvider}), así que entran por el constructor sin ciclos.
+   * responde con su literal de no disponibilidad. Ninguno de los cuatro últimos depende del coordinador (la presencia
+   * de amigos lo pide a través de un {@code BeanProvider}), así que entran por el constructor sin ciclos.
    */
   @Inject
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
@@ -169,7 +170,8 @@ public class RoomCoordinator {
       schedule(room);
     });
     this.dailyRooms = new DailyRoomLifecycle(store, cursors, pending,
-        dailyRuns != null ? dailyRuns : DailyRunListener.NONE, this::context, this::roomActivity, this::claimGameFinish);
+        dailyRuns != null ? dailyRuns : DailyRunListener.NONE, this::context, this::roomActivity,
+        this::claimGameFinish);
     this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
     this.currentCatalog = snapshot(catalog.loadPokemonCatalog());
     for (var manifest : registry.list()) {
@@ -669,7 +671,7 @@ public class RoomCoordinator {
       var room = permissionRoom(playerId, RoomPermission.EDIT_GAME_CONFIG);
       assertLobby(room);
       registry.get(gameId).orElseThrow(() -> new RoomException("Minijuego desconocido."));
-      var engine = engine(gameId).orElseThrow();
+      var engine = engine(gameId).orElseThrow(() -> new IllegalStateException("Sin motor: " + gameId));
       var parsed = toTree(engine.parseConfig(config));
       // Cambiar el modo de la configuración devuelve los modos marcados a su valor por defecto. El lobby ya no lo
       // cambia (marca los modos con room:update-allowed-modes); queda como defensa para otros clientes.
@@ -908,7 +910,8 @@ public class RoomCoordinator {
     var players = room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED)
         .map(member -> new GamePlayer(member.identity.id(), member.identity.displayName(), true, true)).toList();
     var module = registry.get(room.selectedGameId).orElseThrow(() -> new RoomException("Unknown game"));
-    var engine = engine(room.selectedGameId).orElseThrow();
+    var engine = engine(room.selectedGameId)
+        .orElseThrow(() -> new IllegalStateException("Sin motor: " + room.selectedGameId));
     if (launch == null && players.size() < module.minPlayers()) {
       throw new RoomException("Se necesitan al menos " + module.minPlayers() + " jugadores.");
     }

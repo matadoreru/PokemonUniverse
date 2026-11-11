@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Registro de minijuegos: los manifiestos de {@code games/registry.json} y el motor de cada uno. Clase de dominio pura:
- * la carga vive en {@code adapters.out.resources.ClasspathGameRegistryLoader}, que falla al arrancar si algún manifiesto
- * no tiene motor. Los tests pueden construir registros sin motores o con solo algunos.
+ * Registro de minijuegos: los manifiestos de {@code games/registry.json} y el motor de cada uno. Clase de dominio
+ * pura: la carga vive en {@code adapters.out.resources.ClasspathGameRegistryLoader}, que falla al arrancar si algún
+ * manifiesto no tiene motor. Los tests pueden construir registros sin motores o con solo algunos.
  */
 public final class GameRegistry {
 
