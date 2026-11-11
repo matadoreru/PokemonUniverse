@@ -1,20 +1,20 @@
 import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { ServerTimer } from '../components/ServerTimer';
-import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSidebar } from '../games/higher-lower/HigherLowerParts';
-import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerPlateKind, higherLowerVerdict } from '../games/higher-lower/presentation';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { Cutin, cx, ScreenSplit } from '../ui';
-import { GameSkipSlot } from './game-kit/GameSkipSlot';
+import { ServerTimer } from '../../components/ServerTimer';
+import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSidebar } from './HigherLowerParts';
+import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerPlateKind, higherLowerVerdict } from './presentation';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { Cutin, cx, ScreenSplit } from '../../ui';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
 import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
-import { usePendingAction } from './game-kit/usePendingAction';
-import type { ActiveGameProps } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/higher-lower/HigherLower.module.css';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
+import { usePendingAction } from '../../room/game-kit/usePendingAction';
+import type { ActiveGameProps } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './HigherLower.module.css';
 
 /**
  * Higher or Lower (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, la stat y el tiempo, el duelo de dos

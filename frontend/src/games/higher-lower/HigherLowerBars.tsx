@@ -1,6 +1,6 @@
-import { Bar, Chip, cx } from '../ui';
+import { Bar, Chip, cx } from '../../ui';
 import { higherLowerBars } from './higher-lower-labels';
-import s from '../games/higher-lower/HigherLower.module.css';
+import s from './HigherLower.module.css';
 
 export interface HigherLowerBarsProps {
   previous: { name: string; value: number };

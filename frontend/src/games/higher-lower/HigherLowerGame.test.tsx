@@ -1,14 +1,14 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerMemberStatus, higherLowerPlateKind, higherLowerRanking, higherLowerRecord, higherLowerVerdict } from '../games/higher-lower/presentation';
+import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerMemberStatus, higherLowerPlateKind, higherLowerRanking, higherLowerRecord, higherLowerVerdict } from './presentation';
 import { HigherLowerGame } from './HigherLowerGame';
 import { HigherLowerResults } from './HigherLowerResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 
 /** Pokémon de la ronda: el número de Pokédex de Onix (95) es la respuesta de la categoría «N.º Pokédex» y nunca se pinta. */

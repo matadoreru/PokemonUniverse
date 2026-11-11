@@ -1,20 +1,20 @@
 import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { ServerTimer } from '../components/ServerTimer';
-import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
-import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetManualExhausted, learnsetPlateKind, learnsetPositions, learnsetVerdict } from '../games/learnset-guess/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { useTimedVisibility } from '../hooks/useTimedVisibility';
-import { cx, ScreenSplit } from '../ui';
-import { GameSkipSlot } from './game-kit/GameSkipSlot';
-import { useFocusOnTransition } from './game-kit/focus-transition';
+import { ServerTimer } from '../../components/ServerTimer';
+import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from './LearnsetGuessParts';
+import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetManualExhausted, learnsetPlateKind, learnsetPositions, learnsetVerdict } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { useTimedVisibility } from '../../hooks/useTimedVisibility';
+import { cx, ScreenSplit } from '../../ui';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { learnsetGroupProgress, learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetManualStakeText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
-import { PokemonSelector } from './game-kit/PokemonSelector';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/learnset-guess/LearnsetGuess.module.css';
+import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
+import { type ActiveGameProps, ignoreFailure } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './LearnsetGuess.module.css';
 
 /** Lo que dura en pantalla el aviso «X ha acertado» para los demás. */
 const SOLVED_NOTICE_MS = 2_000;

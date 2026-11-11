@@ -1,5 +1,5 @@
 import { gameModeLabel, learnsetManualRevealPoints, learnsetPoints } from '@pokemon-universe/shared/public';
-import { secondsLabel } from '../lib/format';
+import { secondsLabel } from '../../lib/format';
 
 /** Nombre visible de Revelación manual (el del catálogo de modos). */
 export const learnsetModeLabel = gameModeLabel('learnset-guess', { mode: 'MANUAL_REVEAL' }) ?? 'Revelación manual';

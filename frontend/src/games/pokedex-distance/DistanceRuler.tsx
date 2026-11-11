@@ -1,9 +1,9 @@
 import type { PublicRoundResult, RoomMemberView } from '@pokemon-universe/shared/public';
 import { Check, Equal, UserX, X } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Chip, cx, Icon } from '../ui';
+import { Chip, cx, Icon } from '../../ui';
 import { DEFAULT_LANE_GAP, DISTANCE_RULER_CAPTION, distanceMarkerLabel, formatDexNumber, rulerLayout, type RulerMarker } from './distance-ruler';
-import { useRoomMembers } from './room-members';
+import { useRoomMembers } from '../../room/room-members';
 import s from './DistanceRuler.module.css';
 
 /**

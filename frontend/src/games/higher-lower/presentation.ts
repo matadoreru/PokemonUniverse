@@ -1,5 +1,5 @@
 import type { HigherLowerAnswer, HigherLowerChoice, HigherLowerOutcome, HigherLowerPublicState } from '@pokemon-universe/shared/public';
-import { higherLowerChoiceLabels, higherLowerOutcomeStatus } from '../../room/higher-lower-labels';
+import { higherLowerChoiceLabels, higherLowerOutcomeStatus } from './higher-lower-labels';
 
 /** Orden de las tres respuestas: el de los botones y el de los atajos 1, 2 y 3. */
 export const HIGHER_LOWER_CHOICE_ORDER: readonly HigherLowerChoice[] = ['HIGHER', 'SAME', 'LOWER'];

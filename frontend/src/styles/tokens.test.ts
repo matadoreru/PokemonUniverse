@@ -212,11 +212,11 @@ describe('capas (§2)', () => {
   it('sin zIndex inline salvo el contenido por isolate', () => {
     const root = path.join(here, '..');
     // DistanceRuler.tsx usa zIndex inline para apilar carriles; su `.lanes` (DistanceRuler.module.css) lleva `isolation: isolate`.
-    const permitidos = new Set(['room/DistanceRuler.tsx']);
+    const permitidos = new Set(['games/pokedex-distance/DistanceRuler.tsx']);
     const malos = tsxFiles(root).map((f) => path.relative(root, f).split(path.sep).join('/'))
       .filter((r) => !permitidos.has(r) && /zIndex\s*:/.test(readFileSync(path.join(root, r), 'utf8')));
     expect(malos).toEqual([]);
-    expect(readFileSync(path.join(root, 'room/DistanceRuler.module.css'), 'utf8')).toMatch(/\.lanes\s*\{[^}]*isolation:\s*isolate/);
+    expect(readFileSync(path.join(root, 'games/pokedex-distance/DistanceRuler.module.css'), 'utf8')).toMatch(/\.lanes\s*\{[^}]*isolation:\s*isolate/);
   });
   it('la escala de Tailwind son solo las capas', () => {
     expect(Object.keys((tailwind.theme as { zIndex?: Record<string, string> }).zIndex ?? {}).sort()).toEqual(Object.keys(layers).sort());

@@ -1,21 +1,21 @@
 import type { TcgHigherLowerChoice, TcgHigherLowerConfig, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { ServerTimer } from '../components/ServerTimer';
-import { HigherLowerHud } from '../games/higher-lower/HigherLowerParts';
-import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgPlateKind, tcgVerdict } from '../games/tcg-higher-lower/presentation';
-import { TcgDuelCard, TcgPlate, TcgPriceStrip, TcgSidebar } from '../games/tcg-higher-lower/TcgParts';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { cx, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
-import { usePendingAction } from './game-kit/usePendingAction';
-import { GameSkipSlot } from './game-kit/GameSkipSlot';
-import { higherLowerRevealCountdown } from './higher-lower-labels';
-import type { ActiveGameProps } from './room-command';
-import { useRoomMembers } from './room-members';
-import hl from '../games/higher-lower/HigherLower.module.css';
-import s from '../games/tcg-higher-lower/TcgHigherLower.module.css';
+import { ServerTimer } from '../../components/ServerTimer';
+import { HigherLowerHud } from '../higher-lower/HigherLowerParts';
+import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgPlateKind, tcgVerdict } from './presentation';
+import { TcgDuelCard, TcgPlate, TcgPriceStrip, TcgSidebar } from './TcgParts';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { cx, ScreenSplit } from '../../ui';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
+import { usePendingAction } from '../../room/game-kit/usePendingAction';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { higherLowerRevealCountdown } from '../higher-lower/higher-lower-labels';
+import type { ActiveGameProps } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import hl from '../higher-lower/HigherLower.module.css';
+import s from './TcgHigherLower.module.css';
 
 /**
  * Higher or Lower: Cartas (spec §2 y §6 «Juegos»), con el lenguaje de Higher or Lower. Arriba se mira: la placa con la

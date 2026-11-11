@@ -1,5 +1,5 @@
 import type { HigherLowerAnswerVisibility, HigherLowerCategory, HigherLowerChoice, HigherLowerOutcome } from '@pokemon-universe/shared/public';
-import { plural } from '../lib/format';
+import { plural } from '../../lib/format';
 
 // Etiquetas en español de las tres respuestas de Higher or Lower (botones, revelado y barra lateral).
 export const higherLowerChoiceLabels: Record<HigherLowerChoice, string> = { HIGHER: 'Mayor', SAME: 'Igual', LOWER: 'Menor' };

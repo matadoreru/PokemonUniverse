@@ -10,7 +10,7 @@ import {
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../common/ConfigRange';
 import { GameModeField, useModeShown } from '../common/GameModeField';
-import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
+import { higherLowerVisibilityLabels } from './higher-lower-labels';
 import { LIVE_VISIBILITY_WARNING } from '../common/live-visibility';
 import { Card, cx, Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';

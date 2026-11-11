@@ -8,7 +8,7 @@ import { friendErrorMessage, friendRelation, isGuestId, sentText } from '../frie
 import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
 import { canMuteInChat } from './chat/LobbyChat';
 import { playerColor } from '../lib/player-color';
-import { distanceMemberStatus, distanceMemberStatusLabels } from './pokedex-distance-selection';
+import { distanceMemberStatus, distanceMemberStatusLabels } from '../games/pokedex-distance/pokedex-distance-selection';
 import s from './PlayerList.module.css';
 
 interface Props {

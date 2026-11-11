@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { cx } from '../ui';
+import { cx } from '../../ui';
 import { dexStripLayout } from './dex-strip';
 import { formatDexNumber } from './distance-ruler';
 import s from './DexStrip.module.css';

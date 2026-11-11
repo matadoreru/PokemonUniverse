@@ -1,11 +1,11 @@
 import { gameModeLabel, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
 import { Crosshair, Target } from 'lucide-react';
-import { cx, Icon, Panel } from '../ui';
+import { cx, Icon, Panel } from '../../ui';
 import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
-import { ResultsHostActions } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
+import { ResultsHostActions } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
 import s from './PokedexDistanceResults.module.css';
 
 const CELL_TONE: Record<DistanceCellTone, string | undefined> = {

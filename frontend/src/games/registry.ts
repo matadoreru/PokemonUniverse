@@ -100,8 +100,8 @@ const component = (load: LazyComponentDefinition['load'], exportName: string): L
 export const clientGameRegistry = new ClientGameRegistry().register(clientModule({
   id: 'pokedex-distance',
   config: component(() => import('./pokedex-distance/ConfigPanel'), 'PokedexDistanceConfigPanel'),
-  active: component(() => import('../room/PokedexDistanceGame'), 'PokedexDistanceGame'),
-  results: component(() => import('../room/PokedexDistanceResults'), 'PokedexDistanceResults'),
+  active: component(() => import('./pokedex-distance/PokedexDistanceGame'), 'PokedexDistanceGame'),
+  results: component(() => import('./pokedex-distance/PokedexDistanceResults'), 'PokedexDistanceResults'),
 })).register(clientModule({
   id: 'shiny-vote',
   config: component(() => import('./shiny-vote/ConfigPanel'), 'ShinyVoteConfigPanel'),
@@ -115,8 +115,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'higher-lower',
   config: component(() => import('./higher-lower/ConfigPanel'), 'HigherLowerConfigPanel'),
-  active: component(() => import('../room/HigherLowerGame'), 'HigherLowerGame'),
-  results: component(() => import('../room/HigherLowerResults'), 'HigherLowerResults'),
+  active: component(() => import('./higher-lower/HigherLowerGame'), 'HigherLowerGame'),
+  results: component(() => import('./higher-lower/HigherLowerResults'), 'HigherLowerResults'),
 })).register(clientModule({
   id: 'type-duel',
   config: component(() => import('./type-duel/ConfigPanel'), 'TypeDuelConfigPanel'),
@@ -125,8 +125,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'learnset-guess',
   config: component(() => import('./learnset-guess/ConfigPanel'), 'LearnsetGuessConfigPanel'),
-  active: component(() => import('../room/LearnsetGuessGame'), 'LearnsetGuessGame'),
-  results: component(() => import('../room/LearnsetGuessResults'), 'LearnsetGuessResults'),
+  active: component(() => import('./learnset-guess/LearnsetGuessGame'), 'LearnsetGuessGame'),
+  results: component(() => import('./learnset-guess/LearnsetGuessResults'), 'LearnsetGuessResults'),
 })).register(clientModule({
   id: 'pokeddle-race',
   config: component(() => import('./pokeddle-race/ConfigPanel'), 'PokeddleRaceConfigPanel'),
@@ -215,8 +215,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'tcg-higher-lower',
   config: component(() => import('./tcg-higher-lower/ConfigPanel'), 'TcgHigherLowerConfigPanel'),
-  active: component(() => import('../room/TcgHigherLowerGame'), 'TcgHigherLowerGame'),
-  results: component(() => import('../room/TcgHigherLowerResults'), 'TcgHigherLowerResults'),
+  active: component(() => import('./tcg-higher-lower/TcgHigherLowerGame'), 'TcgHigherLowerGame'),
+  results: component(() => import('./tcg-higher-lower/TcgHigherLowerResults'), 'TcgHigherLowerResults'),
 })).register(clientModule({
   id: 'pokemon-cry-quiz',
   config: component(() => import('./pokemon-cry-quiz/ConfigPanel'), 'PokemonCryQuizConfigPanel'),

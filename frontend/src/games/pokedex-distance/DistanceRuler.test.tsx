@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { DistanceRuler } from './DistanceRuler';
-import { member } from './test-support/room-view';
+import { member } from '../../room/test-support/room-view';
 
 const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName }));
 

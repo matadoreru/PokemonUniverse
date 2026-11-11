@@ -1,15 +1,15 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetRoundResult, RoomView } from '@pokemon-universe/shared/public';
-import { learnsetAnnouncement, learnsetClueOrder, learnsetFocusKey, learnsetPlateKind, learnsetPositions, learnsetRecords, learnsetStatsLine, learnsetVerdict } from '../games/learnset-guess/presentation';
+import { learnsetAnnouncement, learnsetClueOrder, learnsetFocusKey, learnsetPlateKind, learnsetPositions, learnsetRecords, learnsetStatsLine, learnsetVerdict } from './presentation';
 import { LearnsetGuessGame } from './LearnsetGuessGame';
 import { LearnsetGuessResults } from './LearnsetGuessResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 const move = (moveId: string, name: string, level: number | null, type: 'normal' | 'electric' | 'steel' = 'normal', category: 'physical' | 'special' | 'status' = 'physical') => ({ moveId, name, level, type, category });
 

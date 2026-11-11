@@ -1,5 +1,5 @@
 import { type DistanceRoundRecord, MAX_TIEBREAK_DEPTH } from '@pokemon-universe/shared/public';
-import { plural } from '../lib/format';
+import { plural } from '../../lib/format';
 
 export interface DistancePlayerSummary {
   playerId: string;

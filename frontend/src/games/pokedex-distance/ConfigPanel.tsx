@@ -3,7 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../common/ConfigRange';
 import { GameModeField, useModeShown } from '../common/GameModeField';
 import { LIVE_VISIBILITY_WARNING } from '../common/live-visibility';
-import { DISTANCE_SELECTION_VISIBILITY_LABEL, distanceSelectionVisibilityLabels } from '../../room/pokedex-distance-selection';
+import { DISTANCE_SELECTION_VISIBILITY_LABEL, distanceSelectionVisibilityLabels } from './pokedex-distance-selection';
 import { Segmented } from '../../ui';
 import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';

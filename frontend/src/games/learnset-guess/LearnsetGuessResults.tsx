@@ -1,14 +1,14 @@
 import type { LearnsetGuessPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Lightbulb, Trophy } from 'lucide-react';
-import { learnsetRecords, learnsetStatsLine } from '../games/learnset-guess/presentation';
+import { learnsetRecords, learnsetStatsLine } from './presentation';
 import { learnsetModeLabel } from './learnset-texts';
-import { Chip, Icon } from '../ui';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { roundsLabel } from '../lib/format';
+import { Chip, Icon } from '../../ui';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { roundsLabel } from '../../lib/format';
 
 /**
  * Resultados de Learnset Guess: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con

@@ -4,7 +4,7 @@ import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, E
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
-import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
+import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from './higher-lower-labels';
 import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop } from '../../ui';

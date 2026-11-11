@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { PokedexDistanceResults } from './PokedexDistanceResults';
-import { member, roomView } from './test-support/room-view';
+import { member, roomView } from '../../room/test-support/room-view';
 
 const stats = (exactHits: number, tiebreaksWon: number) => ({ exactHits, roundsSurvived: 1, selections: 2, averageDistance: 4.5, tiebreaksWon });
 

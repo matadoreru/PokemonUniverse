@@ -1,15 +1,15 @@
 import { gameModeLabel, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Flame, Target } from 'lucide-react';
-import { higherLowerRecord } from '../games/higher-lower/presentation';
-import { Chip, Icon } from '../ui';
+import { higherLowerRecord } from './presentation';
+import { Chip, Icon } from '../../ui';
 import { higherLowerEndlessStatsLine, higherLowerStatsLine } from './higher-lower-labels';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { roundsLabel } from '../lib/format';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { roundsLabel } from '../../lib/format';
 
 const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
   { key: 'bestStreak', title: 'Mejor racha', icon: Flame, unit: (value) => value === 1 ? 'acierto seguido' : 'aciertos seguidos' },

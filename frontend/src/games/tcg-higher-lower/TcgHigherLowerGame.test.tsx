@@ -2,15 +2,15 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { RoomView, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { defaultTcgHigherLowerConfig } from '@pokemon-universe/shared/public';
-import { TcgHigherLowerConfigPanel } from '../games/tcg-higher-lower/ConfigPanel';
-import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgMemberStatus, tcgPlateKind, tcgPriceDiff, tcgStatsLine, tcgVerdict } from '../games/tcg-higher-lower/presentation';
+import { TcgHigherLowerConfigPanel } from './ConfigPanel';
+import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgMemberStatus, tcgPlateKind, tcgPriceDiff, tcgStatsLine, tcgVerdict } from './presentation';
 import { TcgHigherLowerGame } from './TcgHigherLowerGame';
 import { TcgHigherLowerResults } from './TcgHigherLowerResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 
 /** Precio de la nueva carta: nunca puede salir antes de revelar (ni en bruto ni formateado). */
