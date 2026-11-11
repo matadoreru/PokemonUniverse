@@ -24,9 +24,13 @@ export async function animacionDe(locator: Locator): Promise<string> {
   return locator.evaluate((el) => getComputedStyle(el).animationName);
 }
 
-/** Quita la reducción de movimiento que la suite fija por defecto para comprobar que la animación existe. */
+/**
+ * Quita la reducción de movimiento que la suite fija por defecto para comprobar que la animación existe. Con el ajuste
+ * «Sistema», la app quita `data-motion="reduce"` de `<html>` al recibir el cambio de `matchMedia` (E8): se espera a eso.
+ */
 export async function conMovimiento(page: Page): Promise<void> {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.waitForFunction(() => !document.documentElement.hasAttribute('data-motion'));
 }
 
 /**

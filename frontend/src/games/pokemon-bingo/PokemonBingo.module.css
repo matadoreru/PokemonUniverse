@@ -137,6 +137,8 @@
   line-clamp: 3;
   white-space: normal;
   overflow-wrap: break-word;
+  /* Con el texto Muy grande (E8) una palabra larga no cabe: mejor con guion que partida a secas. */
+  hyphens: auto;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   font-size: var(--fs-15);

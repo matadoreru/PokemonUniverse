@@ -4,11 +4,11 @@
  * cada kit (adivinar, social, subasta y Bingo, con cabecera propia) y los resultados.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { capture, collectErrors, conMovimiento, crearSalaConJugadores, esperarPartida, iniciarPartida, seleccionarJuego, type Jugador, type SalaConJugadores } from '../src/helpers.js';
+import { capture, collectErrors, conMovimiento, crearSalaConJugadores, esperarPartida, iniciarPartida, seleccionarJuego, SIZES, type Jugador, type SalaConJugadores } from '../src/helpers.js';
 import { sinScorePop } from '../src/juegos.js';
 
-/** Los dos tamaños del criterio de aceptación de E8. */
-const TAMANOS = [{ w: 1280, h: 720 }, { w: 390, h: 844 }] as const;
+/** Los dos tamaños del criterio de aceptación de E8 (1280×720 y 390×844) y 1920×1080 para la rúbrica. */
+const TAMANOS = SIZES;
 
 const html = (page: Page) => page.locator('html');
 
@@ -29,7 +29,7 @@ async function textoMuyGrande(page: Page): Promise<void> {
   await expect(dialogo).toBeHidden();
 }
 
-/** Captura a los dos tamaños del criterio, sin scroll horizontal y con `measureLayout` vacío. */
+/** Captura a los tres tamaños de revisión, sin scroll horizontal y con `measureLayout` vacío. */
 async function capturarGrande(page: Page, nombre: string): Promise<void> {
   for (const { w, h } of TAMANOS) {
     await page.setViewportSize({ width: w, height: h });
@@ -129,6 +129,12 @@ for (const { juego, n, nombre, listo } of [
       await empezar(sala);
       await expect(listo(sala.host.page)).toBeVisible({ timeout: 20_000 });
       await capturarGrande(sala.host.page, nombre);
+      // Lo que no cabe a lo alto se alcanza desplazando: la última carta o casilla también se puede ver.
+      const ultima = listo(sala.host.page).getByRole('button').last();
+      if (await ultima.count()) {
+        await ultima.scrollIntoViewIfNeeded();
+        await expect(ultima).toBeInViewport();
+      }
       for (const jugador of sala.jugadores) expect(jugador.errors, jugador.name).toEqual([]);
     } finally {
       await sala.cerrar();

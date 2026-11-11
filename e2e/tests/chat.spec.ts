@@ -138,3 +138,28 @@ for (const { w, h } of SIZES) {
     }
   });
 }
+
+test('el mensaje a medio escribir vuelve tras recargar y se borra al enviarlo', async ({ browser }) => {
+  const yo = await invitado(browser, 1280, 720, 'Borrador');
+  try {
+    await createRoom(yo.page);
+    const volver = async () => {
+      await yo.page.reload();
+      await yo.page.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
+      await expect(yo.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });
+    };
+    let campo = await abrirChat(yo.page);
+    await campo.fill('Un borrador sin enviar');
+    await volver();
+    campo = await abrirChat(yo.page);
+    await expect(campo).toHaveValue('Un borrador sin enviar');
+    await campo.press('Enter');
+    await expect(campo).toHaveValue('');
+    await expect(mensajes(yo.page)).toContainText('Un borrador sin enviar');
+    await volver();
+    await expect(await abrirChat(yo.page)).toHaveValue('');
+    expect(yo.errors).toEqual([]);
+  } finally {
+    await yo.context.close();
+  }
+});
