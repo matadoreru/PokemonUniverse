@@ -1,0 +1,36 @@
+[
+  {
+    "gameId": "pokedex-distance",
+    "roundCount": 5,
+    "config": {
+      "mode": "POINTS",
+      "pointsRounds": 5
+    }
+  },
+  {
+    "gameId": "shiny-vote",
+    "roundCount": 10,
+    "config": {
+      "mode": "CLASSIC",
+      "optionCount": 4,
+      "rounds": 10
+    }
+  },
+  {
+    "gameId": "higher-lower",
+    "roundCount": 10,
+    "config": {
+      "mode": "CLASSIC",
+      "rounds": 10
+    }
+  },
+  {
+    "gameId": "learnset-guess",
+    "roundCount": 3,
+    "config": {
+      "mode": "MANUAL_REVEAL",
+      "roundSeconds": 90,
+      "rounds": 3
+    }
+  }
+]

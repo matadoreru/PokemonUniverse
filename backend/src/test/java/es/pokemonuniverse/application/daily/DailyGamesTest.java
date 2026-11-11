@@ -35,8 +35,12 @@ import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyVote
 import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyVotePublicState;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.WebContracts;
+import io.micronaut.json.tree.JsonNode;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -278,5 +282,28 @@ class DailyGamesTest {
     var outcomes = new TreeMap<Integer, Integer>(Map.of(0, 1, 2, 1, 11, 1));
     var outcome = DailyGames.outcome(game("shiny-vote"), outcomes, new GameResults(null, List.of()), P);
     assertEquals(new DailyOutcome(0, 1, List.of(-1, 1, -1, -1, -1, -1, -1, -1, -1, -1)), outcome);
+  }
+
+  /**
+   * La web repite el orden de los juegos ({@code DAILY_GAME_IDS}) y la regla de cada uno ({@code DAILY_RULE_TEXT}):
+   * graba {@code web-contracts/daily-games.json} (id, rondas y claves fijas de la configuración, en el orden del
+   * sorteo), que lee {@code packages/shared/src/daily.test.ts}.
+   */
+  @Test
+  void matchesTheWebContract() throws IOException {
+    var games = new ArrayList<LinkedHashMap<String, Object>>();
+    for (var game : DailyGames.all()) {
+      // Sobre una configuración vacía quedan solo las claves fijas; ordenadas, porque llegan de un Map.of.
+      var config = new TreeMap<String, JsonNode>();
+      for (var key : game.config(JsonNode.createObjectNode(Map.of())).entries()) {
+        config.put(key.getKey(), key.getValue());
+      }
+      var entry = new LinkedHashMap<String, Object>();
+      entry.put("gameId", game.gameId());
+      entry.put("roundCount", game.roundCount());
+      entry.put("config", JsonNode.createObjectNode(config));
+      games.add(entry);
+    }
+    WebContracts.check("daily-games.json", games);
   }
 }

@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { DAILY_RULE_TEXT, dailyShareText, formatDailyDate, isDailyGameId } from './daily.js';
+import { DAILY_GAME_IDS, DAILY_RULE_TEXT, dailyShareText, formatDailyDate, isDailyGameId, type DailyGameId } from './daily.js';
+import { gameModeLabel } from './games/modes.js';
 
 const origin = 'https://pokemon.example';
 
@@ -38,5 +40,25 @@ describe('reto diario compartido', () => {
   it('Learnset Guess', () => {
     expect(dailyShareText({ gameId: 'learnset-guess', date: '2026-11-07', score: 40, correct: 2, roundCount: 3, rounds: [3, 1, 0], origin }))
       .toBe('Pokémon Universe · Reto diario 07/11/2026\n📚 Learnset Guess · 2/3 · 40 pts\n⬛⬛🟩 🟩 🟥\nhttps://pokemon.example/play');
+  });
+});
+
+/**
+ * `web-contracts/daily-games.json` lo graba `DailyGamesTest` desde Java (aquí solo se lee): los juegos del sorteo en su
+ * orden, sus rondas y las claves fijas de su configuración. La regla que muestra la web tiene que decir lo mismo.
+ */
+describe('reto diario frente a Java', () => {
+  const games = JSON.parse(readFileSync(new URL('../../../backend/src/test/resources/web-contracts/daily-games.json', import.meta.url), 'utf8')) as { gameId: DailyGameId; roundCount: number; config: { mode: string; optionCount?: number } }[];
+
+  it('los mismos juegos en el mismo orden', () => {
+    expect([...DAILY_GAME_IDS]).toEqual(games.map(({ gameId }) => gameId));
+  });
+
+  it.each(games)('$gameId: la regla lleva sus rondas, su modo y sus candidatos', ({ gameId, roundCount, config }) => {
+    const rule = DAILY_RULE_TEXT[gameId];
+    expect(rule.startsWith(`${roundCount} `), rule).toBe(true);
+    const mode = gameModeLabel(gameId, config);
+    if (mode) expect(rule).toContain(mode);
+    if (config.optionCount !== undefined) expect(rule).toContain(`${config.optionCount} candidatos`);
   });
 });
