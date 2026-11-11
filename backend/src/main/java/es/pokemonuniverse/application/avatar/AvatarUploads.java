@@ -8,7 +8,9 @@ import java.util.function.Function;
 
 /**
  * Subida de un avatar personalizado: procesa y guarda la imagen y después se la da a la cuenta o al invitado nuevo. Si
- * ese segundo paso falla, borra el fichero recién guardado para no dejarlo huérfano. Es una clase aparte porque
+ * ese segundo paso falla, borra el fichero recién guardado para no dejarlo huérfano. En el invitado, ese paso incluye
+ * la respuesta que construye el llamador (la firma de la sesión): si falla, el fichero tampoco queda. En la cuenta
+ * registrada no, porque tras {@code apply} la BD ya apunta al fichero nuevo. Es una clase aparte porque
  * {@link AvatarAssignment} ya depende de {@link AvatarService}.
  */
 @Singleton
@@ -29,12 +31,15 @@ public class AvatarUploads {
     return withStored(contents, contentType, stored -> assignment.apply(userId, stored));
   }
 
-  /** Crea un invitado con la imagen subida como avatar. */
-  public AuthUser uploadForGuest(String displayName, byte[] contents, String contentType) {
-    return withStored(contents, contentType, stored -> auth.guest(displayName, stored));
+  /**
+   * Crea un invitado con la imagen subida como avatar y devuelve lo que {@code respond} construya con él (la respuesta
+   * con la sesión firmada); si {@code respond} falla, borra el fichero nuevo.
+   */
+  public <R> R uploadForGuest(String displayName, byte[] contents, String contentType, Function<AuthUser, R> respond) {
+    return withStored(contents, contentType, stored -> respond.apply(auth.guest(displayName, stored)));
   }
 
-  private AuthUser withStored(byte[] contents, String contentType, Function<AvatarRef.Custom, AuthUser> use) {
+  private <R> R withStored(byte[] contents, String contentType, Function<AvatarRef.Custom, R> use) {
     var stored = avatars.processAndStore(contents, contentType);
     try {
       return use.apply(stored);

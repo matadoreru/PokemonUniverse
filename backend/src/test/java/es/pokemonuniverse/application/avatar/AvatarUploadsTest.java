@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.adapters.out.storage.AvatarImageProcessor;
 import es.pokemonuniverse.adapters.out.storage.FilesystemAvatarStorage;
+import es.pokemonuniverse.application.auth.AuthService;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import java.awt.Color;
@@ -44,6 +45,20 @@ class AvatarUploadsTest {
 
     var error = assertThrows(IllegalStateException.class,
         () -> uploads.uploadForUser("user_1", TestImages.png(64, 64, Color.BLUE), "image/png"));
+
+    assertSame(failure, error);
+    assertEquals(0, files());
+  }
+
+  @Test
+  void failedGuestResponseRemovesTheNewFile() throws IOException {
+    var failure = new IllegalStateException("Cannot sign session token");
+    var uploads = new AvatarUploads(avatars(), null, new AuthService(null, null, null, null, null));
+
+    var error = assertThrows(IllegalStateException.class, () -> uploads.uploadForGuest("Ana",
+        TestImages.png(64, 64, Color.BLUE), "image/png", guest -> {
+          throw failure;
+        }));
 
     assertSame(failure, error);
     assertEquals(0, files());

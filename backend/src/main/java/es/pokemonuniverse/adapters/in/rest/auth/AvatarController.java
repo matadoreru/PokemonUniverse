@@ -95,9 +95,9 @@ public class AvatarController {
     // Se leen todos los valores: repetido en la query, qs lo convierte en array (el parámetro solo lo documenta).
     var name = AvatarRequests.displayName(request.getParameters().getAll("displayName"));
     if (!AvatarRequests.isImage(contentType)) throw unsupported();
-    var guest = uploads.uploadForGuest(name, body, contentType);
-    var response = session(HttpResponse.created(new UserResponse(guest)));
-    guestAvatars.removePriorGuestAvatar(current, ((AvatarRef.Custom) guest.avatar()).value());
+    var response = uploads.uploadForGuest(name, body, contentType,
+        guest -> session(HttpResponse.created(new UserResponse(guest))));
+    guestAvatars.removePriorGuestAvatar(current, ((AvatarRef.Custom) response.body().user().avatar()).value());
     return response;
   }
 
