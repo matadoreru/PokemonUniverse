@@ -76,6 +76,12 @@ proyección, el orden de claves del cable y los mensajes de error. Un cambio de 
   estado TS, incluido `spectatorIds` si el estado lo tiene. El ciclo activo → resultados → siguiente usa
   `Timing.advanceTimedRound` con un `TimedRoundStrategy` `static final` cuando el TS lo usa. Si el TS escribe su propio
   `handleTimeout` (por ejemplo, con dos fases activas como `pokedexdistance/`), se porta literal.
+- **Adivinar**: `GuessingRound.precheck` lleva las guardas comunes de la acción de adivinar, en este orden: ronda
+  activa, observador, acierto previo, plazo y cooldown. El estado implementa `GuessingState`, y el juego pasa su
+  literal de acierto previo y el estado con el que rechaza el intento tardío (casi siempre la ronda ya resuelta). Las
+  guardas propias (pool, respuesta) van después, en el motor. Los records `GuessPokemonSummary`, `GuessLastAttempt`,
+  `GuessAttemptOutcome` y `GuessPlayerStats` (con `GuessingRound.recordGuessSolve`) sirven a todo juego con esa forma
+  exacta; uno con otras estadísticas o claves (Zoomed Pokémon, Unown Translator) conserva sus records.
 - **Errores**: los literales de `server.ts`, idénticos, en `GameActionResult.reject`. Un `throw new Error` de TS se
   traduce como `EngineException` con el mismo mensaje.
 - **`localeCompare`** (constraint 21): sobre ids de jugador se traduce como `String.compareTo`. Es equivalente: cuid de usuario (`c` + minúsculas y dígitos) y `guest_<uuid>` (hexadecimal en minúscula), con el
