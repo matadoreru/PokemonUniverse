@@ -10,7 +10,8 @@ import java.time.Instant;
 
 /**
  * {@link Clock} fijo que el test adelanta a mano. Se activa con {@code @Property(name = "test.clock.mutable",
- * value = "true")} y sustituye al {@link SystemClock}.
+ * value = "true")} y sustituye al {@link SystemClock}: congela todo el reloj de la aplicación (salas, reto diario,
+ * historial, amigos, recuperación de contraseña y límite de peticiones), no solo el de quien lo use en el test.
  */
 @Singleton
 @Requires(property = "test.clock.mutable", value = "true")

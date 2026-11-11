@@ -16,8 +16,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * {@code createChangelogSchema} y {@code updateChangelogSchema} de {@code shared/changelog.ts} con las incidencias de
- * Zod 4 en su orden: campos en el orden de la forma, después las claves desconocidas ({@code .strict()}).
+ * Cuerpo de alta y de edición de una entrada del changelog. Las incidencias siguen el formato y el orden de Zod 4:
+ * campos en el orden de la forma y después las claves desconocidas (el cuerpo es estricto). Al crear son obligatorios
+ * {@code version}, {@code title}, {@code date} y {@code content}; al editar todos son opcionales.
  *
  * <p>{@code published} vale {@code false} si no llega al crear; en la edición, ausente es {@code null} y la entrada
  * conserva su estado. Una edición sin campos ({@code {}}) se acepta y no cambia nada salvo {@code updatedAt}.

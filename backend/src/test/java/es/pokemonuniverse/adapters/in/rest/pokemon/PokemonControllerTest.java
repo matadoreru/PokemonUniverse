@@ -10,6 +10,7 @@ import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
 import es.pokemonuniverse.application.assets.AssetSourceLoader;
 import es.pokemonuniverse.application.assets.LoadedAsset;
+import es.pokemonuniverse.application.assets.ResourceCapacityException;
 import es.pokemonuniverse.application.pokemon.PokemonCatalogService;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import io.micronaut.context.annotation.Property;
@@ -56,6 +57,8 @@ class PokemonControllerTest {
     public LoadedAsset fetch(String source) {
       calls.add(source);
       if (source.equals("https://sprites/t11-html.png")) return new LoadedAsset("<html>".getBytes(), "text/html");
+      // El sprite de abra simula la caché sin hueco para otra descarga.
+      if (source.equals("https://sprites/t11-abra.png")) throw new ResourceCapacityException();
       if (source.startsWith("https://sprites/t11-") && !source.contains("broken")) return new LoadedAsset(PNG, "image/png");
       throw new EngineException("Sprite source returned 404");
     }
@@ -215,6 +218,14 @@ class PokemonControllerTest {
     var broken = exchange(HttpRequest.GET("/api/pokemon/t11-broken/sprite"));
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, broken.status());
     assertFalse(new String(broken.getBody(byte[].class).orElse(new byte[0])).contains("https://"));
+  }
+
+  @Test
+  void capacityExhaustionIs503() {
+    var busy = exchange(HttpRequest.GET("/api/pokemon/t11-abra/sprite"));
+    assertEquals(HttpStatus.SERVICE_UNAVAILABLE, busy.status());
+    assertEquals("{\"error\":\"El servidor está procesando demasiados recursos. Reintenta en unos segundos.\"}",
+        new String(busy.getBody(byte[].class).orElse(new byte[0]), java.nio.charset.StandardCharsets.UTF_8));
   }
 
   /** Si el origen no devuelve una imagen, el proxy no la reenvía como si lo fuera. */
