@@ -12,12 +12,6 @@ export const createCustomWouldYouRatherPromptSchema = z.object({
   optionB: wouldYouRatherOptionTextSchema,
 }).strict().refine(optionsDiffer, { message: 'Las dos opciones deben ser diferentes.', path: ['optionB'] });
 
-export const updateCustomWouldYouRatherPromptSchema = z.object({
-  optionA: wouldYouRatherOptionTextSchema.optional(),
-  optionB: wouldYouRatherOptionTextSchema.optional(),
-  enabled: z.boolean().optional(),
-}).strict().refine((value) => value.optionA !== undefined || value.optionB !== undefined || value.enabled !== undefined, 'No hay cambios que guardar.');
-
 export const importCustomWouldYouRatherPromptsSchema = z.object({
   version: z.literal(1),
   prompts: z.array(createCustomWouldYouRatherPromptSchema).min(1, 'Incluye al menos un dilema.').max(100, 'Puedes importar hasta 100 dilemas cada vez.'),

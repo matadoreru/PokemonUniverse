@@ -1,8 +1,6 @@
 import type { PresenceStatus, RoomPhase, RoomRole } from './room.js';
 import type { UserRole } from './auth.js';
 
-export const ADMIN_PAGE_SIZE = 20;
-
 export type AdminRoomStatus = 'ACTIVE' | 'CLOSED' | 'INTERRUPTED';
 export type AdminGameStatus = 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED' | 'INTERRUPTED';
 
