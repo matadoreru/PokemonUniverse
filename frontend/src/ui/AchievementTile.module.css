@@ -58,9 +58,9 @@
 .lock {
   flex: none;
 }
-/* Entrada de un logro recién conseguido: solo transform y opacity, una vez. */
+/* Entrada de un logro recién conseguido: solo transform y opacity, una vez, en el máximo de 400 ms de §3.4. */
 .fresh {
-  animation: arrive 500ms var(--ease) both;
+  animation: arrive 400ms var(--ease) both;
 }
 @keyframes arrive {
   0% {
