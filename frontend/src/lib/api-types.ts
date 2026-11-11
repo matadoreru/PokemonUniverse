@@ -1095,7 +1095,7 @@ export interface components {
              */
             type: "DEFAULT";
         };
-        /** @description Un cambio de una entrada del changelog (changelogChangeSchema en shared). `highlight` solo vale `true` o `null`: un `false` se normaliza a `null` y la clave no sale en el JSON. */
+        /** @description Un cambio de una entrada del changelog. `highlight` solo vale `true` o `null`: un `false` se normaliza a `null` y la clave no sale en el JSON. */
         ChangelogChange: {
             /** @enum {string} */
             type: "NEW" | "MINIGAMES" | "BALANCE" | "INTERFACE" | "IMPROVEMENTS" | "BUGS" | "TECHNICAL";
