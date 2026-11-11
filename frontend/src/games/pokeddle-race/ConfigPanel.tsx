@@ -17,7 +17,7 @@ const labels: Record<PokeddleClueKey, string> = {
 };
 
 /**
- * Ajustes de Pokédle Race con los controles del catálogo: generaciones, los tiempos (`ConfigRange`: 10–60 s y 1–15
+ * Ajustes de Pokédle Race con los controles del catálogo: generaciones, los tiempos (`ConfigRange`: 10–60 s y 1–30
  * rondas, dentro del contrato) y qué pistas salen en los tableros (`Toggle` por pista en sus grupos, con la cuenta en un
  * `Chip`; al menos una).
  */
@@ -28,7 +28,7 @@ export function PokeddleRaceConfigPanel({ config, disabled, onChange }: { config
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La ronda se cierra antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Máximo de rondas" value={value.maxRounds} min={1} max={15} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(maxRounds) => onChange({ ...value, maxRounds })} />
+      <ConfigRange label="Máximo de rondas" value={value.maxRounds} min={1} max={30} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(maxRounds) => onChange({ ...value, maxRounds })} />
     </div>
     <div className={s.head}>
       <span className={s.label}>Pistas</span>
