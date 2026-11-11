@@ -5,7 +5,7 @@ import { ServerTimer } from '../../components/ServerTimer';
 import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from './ConnectionsParts';
 import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsGroupAction, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from './presentation';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
-import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { Chip, cx, Icon, Pill, ScorePop, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
@@ -47,7 +47,7 @@ export function PokemonConnectionsGame({ room, selfId, onAction }: ActiveGamePro
   useEffect(() => { setSelected((current) => current.filter((id) => !foundIds.has(id))); }, [foundIds]);
 
   const feedback = own?.lastAttempt ?? null;
-  useSfxCue(feedback ? feedback.kind === 'CORRECT' ? 'hit' : 'miss' : null, feedback?.attemptedAt ?? null);
+  useOutcomeCue(feedback ? feedback.kind === 'CORRECT' : null, feedback?.attemptedAt);
   const titleRef = useRef<HTMLHeadingElement>(null);
   // Solo un intento nuevo (no el que ya había al montar o al reconectar) lleva el foco a la placa.
   const attemptFocus = useRef<AttemptFocusState | null>(null);

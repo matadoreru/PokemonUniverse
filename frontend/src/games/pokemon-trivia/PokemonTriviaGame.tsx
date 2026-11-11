@@ -7,6 +7,7 @@ import {
 } from './presentation';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { Chip, Pill, ScorePop } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameScreen } from '../../room/game-kit/GameScreen';
@@ -48,7 +49,7 @@ export function PokemonTriviaGame({ room, selfId, onAction }: ActiveGameProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(triviaFocusKey(kind, game.roundNumber), titleRef);
   useSfxCue('tick', player?.answer ? game.roundNumber : null);
-  useSfxCue(verdict && participating ? verdict.tone === 'ok' ? 'hit' : 'miss' : null, result ? game.roundNumber : null);
+  useOutcomeCue(verdict && participating && result ? verdict.tone === 'ok' : null, game.roundNumber);
 
   // Una pregunta nueva empieza sin elección.
   useEffect(() => { setDraft(null); }, [game.roundNumber]);

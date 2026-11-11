@@ -5,7 +5,7 @@ import { TypeChainAttempts, TypeChainChain, TypeChainHud, TypeChainPlayers, Type
 import { chainTypeText, typeChainAnnouncement, typeChainEliminationLabels, typeChainFocusKey, typeChainPlateKind, typeChainReasonLabels, typeChainSearchAutoFocus, type TypeChainPlateKind } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
-import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { Chip, cx, Icon, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from '../../room/guess-kit';
@@ -41,8 +41,8 @@ export function TypeChainGame({ room, selfId, onAction }: ActiveGameProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(typeChainFocusKey(kind, game.turnNumber), titleRef);
   const lastEvent = game.events.at(-1);
-  useSfxCue(lastEvent?.kind === 'SUCCESS' && lastEvent.playerId === selfId ? 'hit' : null, lastEvent?.at ?? null);
-  useSfxCue(player?.lastAttempt ? 'miss' : null, player?.lastAttempt?.attemptedAt ?? null);
+  useOutcomeCue(lastEvent?.kind === 'SUCCESS' && lastEvent.playerId === selfId ? true : null, lastEvent?.at);
+  useOutcomeCue(player?.lastAttempt ? false : null, player?.lastAttempt?.attemptedAt);
 
   const announcement = typeChainAnnouncement({ game, player, kind, nameOf });
   const ownElimination = game.eliminations.find((entry) => entry.playerId === selfId);

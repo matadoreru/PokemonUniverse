@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Eye, Hourglass, Search, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
-import { ActionPlate, Badge, Chip, Icon, ScorePop } from '../../ui';
+import { ActionPlate, Badge, Chip, cx, Icon, ScorePop } from '../../ui';
 import { PokemonSelector } from '../game-kit/PokemonSelector';
 import type { PokemonSearchOption } from '../game-kit/pokemon-search';
 import { attemptsText, guessSearchAutoFocus, guessSeconds, ordinal, pointsWord, type GuessPanelKind, type GuessVerdict } from './presentation';
@@ -102,15 +102,18 @@ function points(value: number, pop: boolean) {
 }
 
 /** Aviso junto al buscador: la espera tras un fallo (a la vista, oculto a los lectores: ya lo dice la región viva) o el último fallo. */
-function searchNote(cooldownMs: number, lastWrong: string | null | undefined): ReactNode {
-  if (cooldownMs > 0) return <span aria-hidden="true" data-testid="guess-cooldown"><Chip tone="warn" icon={<Icon icon={Hourglass} size={18} />}>Incorrecto · nuevo intento en {guessSeconds(cooldownMs)}</Chip></span>;
-  if (lastWrong) return <Chip tone="bad" icon={<Icon icon={X} size={18} />}><span className={s.noteName}>{lastWrong}</span> no era</Chip>;
-  return null;
+function searchNote(cooldownMs: number, lastWrong: string | null | undefined, attemptCount: number): ReactNode {
+  const note = cooldownMs > 0
+    ? <span aria-hidden="true" data-testid="guess-cooldown"><Chip tone="warn" icon={<Icon icon={Hourglass} size={18} />}>Incorrecto · nuevo intento en {guessSeconds(cooldownMs)}</Chip></span>
+    : lastWrong ? <Chip tone="bad" icon={<Icon icon={X} size={18} />}><span className={s.noteName}>{lastWrong}</span> no era</Chip> : null;
+  // Cada fallo entra con una sacudida corta, una sola vez: la clave es el intento, así no se repite al pasar de la
+  // espera a «X no era» ni con cada segundo de la cuenta.
+  return note && <span key={attemptCount} className={cx(s.note, 'motion-shake')} data-testid="guess-note">{note}</span>;
 }
 
 function plateContent({ kind, question, guessText, cooldownMs = 0, lastWrong, attemptCount = 0, solveOrder, roundPoints = 0, solvedTitle = '¡Acertado!', watchingText, verdict, countdown, gameName }: GuessPanelProps): PlateContent {
   switch (kind) {
-    case 'guess': return { icon: Search, tone: 'info', kicker: attemptCount > 0 ? `Tu respuesta · ${attemptsText(attemptCount)}` : 'Tu respuesta', title: question, ...(guessText ? { text: guessText } : {}), aside: searchNote(cooldownMs, lastWrong) };
+    case 'guess': return { icon: Search, tone: 'info', kicker: attemptCount > 0 ? `Tu respuesta · ${attemptsText(attemptCount)}` : 'Tu respuesta', title: question, ...(guessText ? { text: guessText } : {}), aside: searchNote(cooldownMs, lastWrong, attemptCount) };
     case 'solved': return {
       icon: CheckCircle2, tone: 'ok', kicker: solveOrder ? <Badge>{ordinal(solveOrder)} en acertar</Badge> : 'Acertado', title: solvedTitle,
       text: 'La respuesta sigue oculta para los demás.', aside: points(roundPoints, true),

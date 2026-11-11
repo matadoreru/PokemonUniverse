@@ -5,6 +5,7 @@ import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSideb
 import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerPlateKind, higherLowerVerdict } from './presentation';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { Cutin, cx, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { HigherLowerBars } from './HigherLowerBars';
@@ -51,7 +52,7 @@ export function HigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
   const kind = higherLowerPlateKind({ phase: game.phase, canAnswer, answer, revealed: lastRound !== null });
   const bars = lastRound ? higherLowerBars(lastRound.previousValue, lastRound.currentValue) : null;
   useSfxCue('tick', answer ? game.roundNumber : null);
-  useSfxCue(selfOutcome ? selfOutcome.correct ? 'hit' : 'miss' : null, selfOutcome ? game.roundNumber : null);
+  useOutcomeCue(selfOutcome?.correct, game.roundNumber);
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(higherLowerFocusKey(kind, game.roundNumber), titleRef);

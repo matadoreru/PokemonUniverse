@@ -1,4 +1,9 @@
-/* Lo propio de la placa del kit de adivinar (la base es `ui/ActionPlate`): el nombre de la nota y los puntos. */
+/* Lo propio de la placa del kit de adivinar (la base es `ui/ActionPlate`): la nota, su nombre y los puntos. */
+/* Caja de la nota del último fallo: la sacudida (`motion-shake`) mueve el chip entero. */
+.note {
+  display: inline-flex;
+  max-width: 100%;
+}
 .noteName {
   display: inline-block;
   max-width: 10rem;

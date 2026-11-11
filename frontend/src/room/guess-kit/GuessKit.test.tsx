@@ -92,6 +92,10 @@ describe('guess-kit: GuessPanel', () => {
     const after = panel({ cooldownMs: 0, lastWrong: 'Raichu', attemptCount: 1 });
     expect(after).toContain('Raichu</span> no era');
     expect(after).not.toContain('guess-cooldown');
+    // El fallo entra con una sacudida (una por intento); sin fallos no hay nota.
+    expect(waiting).toMatch(/class="[^"]*motion-shake[^"]*" data-testid="guess-note"/);
+    expect(after).toMatch(/class="[^"]*motion-shake[^"]*" data-testid="guess-note"/);
+    expect(panel({ attemptCount: 0 })).not.toContain('guess-note');
   });
 
   it('compacta (Sketchmon): solo cambia la clase de la placa; el buscador, su ayuda y el estado siguen ahí', () => {

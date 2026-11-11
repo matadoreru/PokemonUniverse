@@ -1,7 +1,7 @@
 import type { GamePhase, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
 import { useRef, type RefObject } from 'react';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
-import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../game-kit/useOutcomeCue';
 import { useFocusOnTransition } from '../game-kit/focus-transition';
 import type { GameTimer } from '../game-kit/GameScreen';
 import { useRoomMembers } from '../room-members';
@@ -98,7 +98,9 @@ export function useGuessRound<L extends GuessRoundResultLike>({ room, selfId, ga
   const kind = guessPanelKind(game.phase, player ? { participating, canGuess: player.canGuess, solved: player.solved } : null, lastRound !== null);
   const ownLast = active ? guessOwnLastAttempt(player?.attempts ?? game.attempts, selfId) : null;
 
-  useSfxCue('hit', active && player?.solved ? game.roundNumber : null);
+  // Acierto una vez por ronda; fallo una vez por intento propio (el último de la lista pública).
+  useOutcomeCue(active && player?.solved ? true : null, game.roundNumber);
+  useOutcomeCue(ownLast ? false : null, ownLast?.attemptedAt);
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(guessFocusKey(kind, game.roundNumber), titleRef);
 

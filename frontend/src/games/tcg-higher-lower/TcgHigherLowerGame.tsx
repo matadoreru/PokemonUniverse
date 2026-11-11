@@ -6,6 +6,7 @@ import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tc
 import { TcgDuelCard, TcgPlate, TcgPriceStrip, TcgSidebar } from './TcgParts';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { cx, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
@@ -43,7 +44,7 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: ActiveGameProps) 
   const kind = tcgPlateKind({ phase: game.phase, canAnswer, answer, revealed: lastRound !== null });
   const comparison = lastRound ? Math.sign(Number(lastRound.currentPrice) - Number(lastRound.previousPrice)) : null;
   useSfxCue('tick', answer ? game.roundNumber : null);
-  useSfxCue(selfOutcome ? selfOutcome.correct ? 'hit' : 'miss' : null, selfOutcome ? game.roundNumber : null);
+  useOutcomeCue(selfOutcome?.correct, game.roundNumber);
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(tcgFocusKey(kind, game.roundNumber), titleRef);

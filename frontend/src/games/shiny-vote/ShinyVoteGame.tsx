@@ -9,7 +9,7 @@ import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from
 import { SHINY_CARDS_TIMEOUT_MS, shinyCardsReady, shinyRoundFeedback } from './reveal';
 import { shinyVotersVisible } from './vote-visibility';
 import { useServerOffset } from '../../hooks/useServerTime';
-import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { cx, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
@@ -82,7 +82,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: ActiveGameProps) {
   const correctOption = reveal ? game.options.find((option) => option.id === game.correctOptionId) ?? null : null;
   const feedback = reveal && participant ? shinyRoundFeedback(playerState?.roundResult ?? null, Boolean(ownVote)) : null;
   const cardFeedback = feedback ? { ...feedback, points: playerState?.roundResult?.points ?? 0 } : null;
-  useSfxCue(reveal && participant ? playerState?.roundResult?.correct ? 'hit' : 'miss' : null, reveal ? game.roundNumber : null);
+  useOutcomeCue(reveal && participant ? Boolean(playerState?.roundResult?.correct) : null, game.roundNumber);
 
   useEffect(() => {
     setDraft(null);

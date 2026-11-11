@@ -6,7 +6,7 @@ import { BingoBoard, BingoHud, BingoPlayers } from './BingoParts';
 import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoProgressText, type BingoPlateKind } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
-import { useSfxCue } from '../../hooks/useSfxCue';
+import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { Chip, ConfirmDialog, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
@@ -50,7 +50,7 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
   const selectedCell = own && selectedIndex >= 0 ? own.cells[selectedIndex]! : null;
   const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
   const attempt = kind === 'pick' ? player?.lastAttempt ?? null : null;
-  useSfxCue(attempt ? attempt.correct ? 'hit' : 'miss' : null, attempt?.attemptedAt ?? null);
+  useOutcomeCue(attempt?.correct, attempt?.attemptedAt);
   // Último acierto: el buscador se vuelve a montar vacío (la bandeja abierta quitaría sitio al tablero).
   const [placedAt, setPlacedAt] = useState<number | null>(attempt?.correct ? attempt.attemptedAt : null);
   if (attempt?.correct && attempt.attemptedAt !== placedAt) setPlacedAt(attempt.attemptedAt);
