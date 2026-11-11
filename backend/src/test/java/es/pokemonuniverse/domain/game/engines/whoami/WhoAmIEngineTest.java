@@ -640,9 +640,9 @@ class WhoAmIEngineTest {
     assertEquals(0, statsOf.apply("p2").get("firstSolves"));
     var publicResults = view(state, context).results();
     assertEquals(List.of(
-        WhoAmIResultEntry.of("p1", state.assignments().get("p1"), true, 0, 13, 1),
-        WhoAmIResultEntry.of("p3", state.assignments().get("p3"), true, 0, 11, 2),
-        WhoAmIResultEntry.of("p2", state.assignments().get("p2"), true, 1, 11, 3)), publicResults);
+        new WhoAmIResultEntry("p1", state.assignments().get("p1"), true, 0, 13, 1),
+        new WhoAmIResultEntry("p3", state.assignments().get("p3"), true, 0, 11, 2),
+        new WhoAmIResultEntry("p2", state.assignments().get("p2"), true, 1, 11, 3)), publicResults);
     assertNull(view(state, context).turnPlayerId());
     assertNull(view(state, context).currentQuestion());
   }

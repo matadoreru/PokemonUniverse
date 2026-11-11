@@ -92,14 +92,7 @@ public final class WhoAmITypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record WhoAmIResultEntry(String playerId, WhoAmIPokemon pokemon, boolean solved, int questionsAsked,
-      int points, int rank) {
-
-    /** Constructor con nombre: evita confundir los tres enteros contiguos. */
-    public static WhoAmIResultEntry of(String playerId, WhoAmIPokemon pokemon, boolean solved, int questionsAsked,
-        int points, int rank) {
-      return new WhoAmIResultEntry(playerId, pokemon, solved, questionsAsked, points, rank);
-    }
-  }
+      int points, int rank) {}
 
   /**
    * {@code WhoAmIPlayerStats}: seis contadores contiguos. Fuera de este record solo se construye con {@link #ZERO} y

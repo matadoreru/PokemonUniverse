@@ -360,7 +360,7 @@ public final class WhoAmIEngine
 
   private static List<WhoAmIResultEntry> results(WhoAmIState state) {
     return WhoAmIRules.buildResults(state).standings().stream()
-        .map(standing -> WhoAmIResultEntry.of(standing.playerId(), state.assignments().get(standing.playerId()),
+        .map(standing -> new WhoAmIResultEntry(standing.playerId(), state.assignments().get(standing.playerId()),
             state.solvedPlayerIds().contains(standing.playerId()),
             state.questionsAsked().getOrDefault(standing.playerId(), 0), standing.points(), standing.position()))
         .toList();
