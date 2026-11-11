@@ -5,6 +5,7 @@ import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
+import es.pokemonuniverse.domain.room.ChatFilter;
 import es.pokemonuniverse.domain.room.DailyRoom;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.RoomPhase;
@@ -15,6 +16,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Montaje de sala para los tests del reto diario fuera de este paquete: coordinador real con todos los motores
@@ -31,12 +33,14 @@ public final class DailyTestRooms {
   private final AtomicInteger lateFailingStarts = new AtomicInteger();
   private volatile @Nullable CountDownLatch startGate;
 
-  public DailyTestRooms(long startMs) {
+  /** {@code dailyRuns} recibe el reloj de la sala y devuelve quien registra sus partidas. */
+  public DailyTestRooms(long startMs, Function<Clock, DailyRunListener> dailyRuns) {
     this.time = new ManualTime(startMs);
     this.manager = new RoomCoordinator(registry(), MAPPER, new RecordingEvents(), new RecordingAudit(),
         new RecordingPersister(), UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time,
         new SeededRandom(42), time, RoomSettings.DEFAULTS, () -> GameCatalogs.of(RoomTestKit.CATALOG),
-        RoomTestKit.ASSETS, null) {
+        RoomTestKit.ASSETS, null, UserExperienceReader.NONE, ChatFilter.NONE, RoomActivity.NONE,
+        dailyRuns.apply(time)) {
       @Override
       public RoomView startDaily(AuthUser identity, String connectionId, DailyLaunch launch) {
         var gate = startGate;
@@ -97,10 +101,6 @@ public final class DailyTestRooms {
   /** Cada {@code startDaily} espera (hasta 10 s) a que se abra {@code gate}. */
   public void holdDailyStartsUntil(@Nullable CountDownLatch gate) {
     startGate = gate;
-  }
-
-  public void useDailyRuns(DailyRunListener listener) {
-    manager.useDailyRuns(listener);
   }
 
   /** {@code game:action} del jugador. */

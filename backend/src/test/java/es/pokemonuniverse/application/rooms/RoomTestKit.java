@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GameEngine;
 import es.pokemonuniverse.domain.identity.AuthUser;
 import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
+import es.pokemonuniverse.domain.room.ChatFilter;
 import es.pokemonuniverse.domain.room.GamePick;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.PresenceStatus;
@@ -53,6 +54,12 @@ final class RoomTestKit {
     this(50_000, UserGameConfigPreferences.NO_OP, fakeGames);
   }
 
+  /** Con ganchos opcionales propios (experiencia, filtro del chat, partidas del reto). */
+  RoomTestKit(Hooks hooks, String... fakeGames) {
+    this(50_000, UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, registry(fakeGames), RoomSettings.DEFAULTS,
+        hooks);
+  }
+
   RoomTestKit(long start, UserGameConfigPreferences preferences, String... fakeGames) {
     this(start, preferences, HostContentProvider.EMPTY, registry(fakeGames));
   }
@@ -68,18 +75,49 @@ final class RoomTestKit {
 
   RoomTestKit(long start, UserGameConfigPreferences preferences, HostContentProvider host, GameRegistry registry,
       RoomSettings settings) {
+    this(start, preferences, host, registry, settings, Hooks.NONE);
+  }
+
+  private RoomTestKit(long start, UserGameConfigPreferences preferences, HostContentProvider host,
+      GameRegistry registry, RoomSettings settings, Hooks hooks) {
     this.time = new ManualTime(start);
     this.random = new SeededRandom(42);
     this.registry = registry;
-    this.manager = coordinator(registry, events, audit, persister, preferences, host, time, random, time, settings);
+    this.manager = coordinator(registry, events, audit, persister, preferences, host, time, random, time, settings,
+        hooks);
   }
 
-  /** Coordinador de los tests: catálogo dorado, recursos sin red y sin catálogo TCG. */
+  /** Ganchos opcionales del coordinador; sin ellos, ninguno escucha ni filtra nada. */
+  record Hooks(UserExperienceReader experience, ChatFilter chatFilter, DailyRunListener dailyRuns) {
+    static final Hooks NONE = new Hooks(UserExperienceReader.NONE, ChatFilter.NONE, DailyRunListener.NONE);
+
+    Hooks withExperience(UserExperienceReader value) {
+      return new Hooks(value, chatFilter, dailyRuns);
+    }
+
+    Hooks withChatFilter(ChatFilter value) {
+      return new Hooks(experience, value, dailyRuns);
+    }
+
+    Hooks withDailyRuns(DailyRunListener value) {
+      return new Hooks(experience, chatFilter, value);
+    }
+  }
+
+  /** Coordinador de los tests: catálogo dorado, recursos sin red, sin catálogo TCG y sin ganchos. */
   static RoomCoordinator coordinator(GameRegistry registry, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences preferences, HostContentProvider host, Clock clock,
       RandomSource random, RoomSchedulers schedulers, RoomSettings settings) {
+    return coordinator(registry, events, audit, results, preferences, host, clock, random, schedulers, settings,
+        Hooks.NONE);
+  }
+
+  static RoomCoordinator coordinator(GameRegistry registry, RoomEvents events, RoomAuditSink audit,
+      GameResultsPersister results, UserGameConfigPreferences preferences, HostContentProvider host, Clock clock,
+      RandomSource random, RoomSchedulers schedulers, RoomSettings settings, Hooks hooks) {
     return new RoomCoordinator(registry, MAPPER, events, audit, results, preferences, host, clock, random, schedulers,
-        settings, () -> GameCatalogs.of(CATALOG), ASSETS, null);
+        settings, () -> GameCatalogs.of(CATALOG), ASSETS, null, hooks.experience(), hooks.chatFilter(),
+        RoomActivity.NONE, hooks.dailyRuns());
   }
 
   /** {@code room:join} con el código ya como texto. */

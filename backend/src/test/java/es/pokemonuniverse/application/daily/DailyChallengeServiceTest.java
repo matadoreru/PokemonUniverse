@@ -22,6 +22,7 @@ import es.pokemonuniverse.application.rooms.DailyRunListener;
 import es.pokemonuniverse.application.rooms.DailyTestRooms;
 import es.pokemonuniverse.application.rooms.RoomException;
 import es.pokemonuniverse.application.rooms.RoomView;
+import es.pokemonuniverse.application.time.Clock;
 import es.pokemonuniverse.domain.daily.CatalogFingerprint;
 import es.pokemonuniverse.domain.daily.DailyCalendar;
 import es.pokemonuniverse.domain.daily.DailySeed;
@@ -116,14 +117,18 @@ class DailyChallengeServiceTest {
     // generaciones: los tests que juegan el juego del sorteo usan un día en el que no sale.
     while (drawnGame(date).equals("learnset-guess")) date = date.plusDays(1);
     track(date);
-    rooms = new DailyTestRooms(at(date, LocalTime.NOON));
+    rooms = new DailyTestRooms(at(date, LocalTime.NOON), this::recorderFor);
     wire(rooms);
   }
 
-  private void wire(DailyTestRooms target) {
+  /** El recorder de cada coordinador de prueba, con el reloj de su sala. */
+  private DailyRunListener recorderFor(Clock clock) {
     recorder = new DailyRunRecorder(results, connections, (userId, result) -> finished.add(new Finished(userId,
-        result)), target.clock(), json, executor);
-    target.useDailyRuns(recorder);
+        result)), clock, json, executor);
+    return recorder;
+  }
+
+  private void wire(DailyTestRooms target) {
     service = new DailyChallengeService(target.manager(), challenges, results, users, DailyTestRooms.registry(),
         target.clock(), KEY, json);
   }
@@ -239,7 +244,7 @@ class DailyChallengeServiceTest {
 
   @Test
   void productionBeansWireWithoutCycle() {
-    // El recorder no depende del coordinador, así que el coordinador lo recibe en useDailyRuns sin ciclo.
+    // El recorder no depende del coordinador, así que el coordinador lo recibe en su constructor sin ciclo.
     assertNotNull(beans.getBean(DailyChallengeService.class));
     assertTrue(beans.getBean(DailyRunListener.class)
         instanceof DailyRunRecorder);
@@ -517,7 +522,7 @@ class DailyChallengeServiceTest {
     rooms.manager().flush();
 
     // Reinicio: coordinador y servicio nuevos sobre la misma BD, con otro catálogo vigente.
-    var restarted = new DailyTestRooms(rooms.clock().now());
+    var restarted = new DailyTestRooms(rooms.clock().now(), this::recorderFor);
     restarted.replaceCatalog(catalogWithNewcomer());
     wire(restarted);
     var misty = user();

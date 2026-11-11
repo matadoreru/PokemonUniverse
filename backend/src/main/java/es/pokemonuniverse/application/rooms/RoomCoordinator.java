@@ -130,24 +130,32 @@ public class RoomCoordinator {
   /** Motores con los tipos borrados, uno por juego. */
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
   /** Experiencia de las cuentas al entrar (nivel del avatar); sin BD, ninguna. */
-  private UserExperienceReader experience = UserExperienceReader.NONE;
-  private ChatFilter chatFilter = ChatFilter.NONE;
-  /** Presencia de amigos; sin ella, nadie escucha. */
-  private RoomActivity activity = RoomActivity.NONE;
+  private final UserExperienceReader experience;
+  /** Palabras que el chat sustituye por asteriscos. */
+  private final ChatFilter chatFilter;
+  /** Presencia de amigos: escucha los cambios de sala. */
+  private final RoomActivity activity;
   /** Partidas del reto diario; sin él, nadie las registra. */
-  private DailyRunListener dailyRuns = DailyRunListener.NONE;
+  private final DailyRunListener dailyRuns;
 
   /**
    * {@code tcgCards}: el catálogo TCG en memoria que comparten todas las salas (no se fija por partida: Node pasa la
    * misma instancia, cuyo {@code refresh} sustituye la lista). Sin BD no hay catálogo y {@code tcg-higher-lower}
-   * responde con su literal de no disponibilidad.
+   * responde con su literal de no disponibilidad. Ninguno de los cuatro últimos depende del coordinador (la presencia de
+   * amigos lo pide a través de un {@code BeanProvider}), así que entran por el constructor sin ciclos.
    */
   @Inject
   public RoomCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
       GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
       Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
-      GameCatalogProvider catalog, GameAssetService assets, @Nullable TcgCardCatalog tcgCards) {
+      GameCatalogProvider catalog, GameAssetService assets, @Nullable TcgCardCatalog tcgCards,
+      UserExperienceReader experience, ChatFilter chatFilter, RoomActivity activity,
+      @Nullable DailyRunListener dailyRuns) {
     this.tcgCards = tcgCards;
+    this.experience = experience;
+    this.chatFilter = chatFilter;
+    this.activity = activity;
+    this.dailyRuns = dailyRuns != null ? dailyRuns : DailyRunListener.NONE;
     this.registry = registry;
     this.json = json;
     this.events = events;
@@ -167,30 +175,6 @@ public class RoomCoordinator {
       defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
       registry.engine(manifest.id()).ifPresent(engine -> engines.put(manifest.id(), new ErasedEngine(engine)));
     }
-  }
-
-  /** Inyección por método: no cambia los constructores que usan las pruebas. */
-  @Inject
-  void useExperience(UserExperienceReader reader) {
-    this.experience = reader;
-  }
-
-  /** Inyección por método, como la experiencia: palabras que el chat sustituye por asteriscos. */
-  @Inject
-  void useChatFilter(ChatFilter filter) {
-    this.chatFilter = filter;
-  }
-
-  /** Inyección por método, como la experiencia: la presencia de amigos escucha los cambios de sala. */
-  @Inject
-  void useActivity(RoomActivity activity) {
-    this.activity = activity;
-  }
-
-  /** Inyección por método, como la presencia: quien registra las partidas del reto diario (opcional). */
-  @Inject
-  void useDailyRuns(@Nullable DailyRunListener listener) {
-    this.dailyRuns = listener != null ? listener : DailyRunListener.NONE;
   }
 
   /** Catálogo de Pokémon vigente (el que usará la siguiente partida); de solo lectura. */

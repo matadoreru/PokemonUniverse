@@ -5,18 +5,22 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import es.pokemonuniverse.application.auth.IdentityTokens;
 import es.pokemonuniverse.application.assets.GameAssetService;
+import es.pokemonuniverse.application.rooms.DailyRunListener;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.application.rooms.GameResultsPersister;
 import es.pokemonuniverse.application.rooms.HostContentProvider;
+import es.pokemonuniverse.application.rooms.RoomActivity;
 import es.pokemonuniverse.application.rooms.RoomAuditSink;
 import es.pokemonuniverse.application.rooms.RoomCoordinator;
 import es.pokemonuniverse.application.rooms.RoomEvents;
 import es.pokemonuniverse.application.rooms.RoomSchedulers;
 import es.pokemonuniverse.application.rooms.RoomSettings;
+import es.pokemonuniverse.application.rooms.UserExperienceReader;
 import es.pokemonuniverse.application.rooms.UserGameConfigPreferences;
 import es.pokemonuniverse.application.time.Clock;
 import es.pokemonuniverse.application.time.RandomSource;
 import es.pokemonuniverse.domain.game.GameRegistry;
+import es.pokemonuniverse.domain.room.ChatFilter;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
@@ -44,9 +48,10 @@ class RoomWebSocketFailureTest {
     ExplodingCoordinator(GameRegistry registry, JsonMapper json, RoomEvents events, RoomAuditSink audit,
         GameResultsPersister results, UserGameConfigPreferences userGameConfigs, HostContentProvider hostContent,
         Clock clock, RandomSource random, RoomSchedulers schedulers, RoomSettings settings,
-        GameCatalogProvider catalog, GameAssetService assets) {
+        GameCatalogProvider catalog, GameAssetService assets, UserExperienceReader experience, ChatFilter chatFilter,
+        RoomActivity activity, @Nullable DailyRunListener dailyRuns) {
       super(registry, json, events, audit, results, userGameConfigs, hostContent, clock, random, schedulers, settings,
-          catalog, assets, null);
+          catalog, assets, null, experience, chatFilter, activity, dailyRuns);
     }
 
     @Override

@@ -48,8 +48,7 @@ class RoomChatCoordinatorTest {
   @Test
   @DisplayName("a message reaches every connected member, filtered")
   void sendReachesEveryConnectedMemberFiltered() {
-    var kit = new RoomTestKit();
-    kit.manager.useChatFilter(new ChatFilter(List.of("caca")));
+    var kit = new RoomTestKit(RoomTestKit.Hooks.NONE.withChatFilter(new ChatFilter(List.of("caca"))));
     kit.room(8, guest("host", "Host"), guest("a", "Ana"), guest("b", "Bea"));
     kit.events.clear();
     kit.manager.sendChat("a", text("hola caca"));

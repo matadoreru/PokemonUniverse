@@ -114,11 +114,9 @@ class RoomCoordinatorDailyTest {
   RoomCoordinator manager = build(RoomSettings.DEFAULTS);
 
   private RoomCoordinator build(RoomSettings settings) {
-    var manager = RoomTestKit.coordinator(registry, events, audit, persister, UserGameConfigPreferences.NO_OP,
-        HostContentProvider.EMPTY, time, random, time, settings);
-    manager.useDailyRuns(runs);
-    manager.useExperience(userId -> XP);
-    return manager;
+    return RoomTestKit.coordinator(registry, events, audit, persister, UserGameConfigPreferences.NO_OP,
+        HostContentProvider.EMPTY, time, random, time, settings,
+        RoomTestKit.Hooks.NONE.withDailyRuns(runs).withExperience(userId -> XP));
   }
 
   private DailyLaunch launch(String gameId, DoubleSupplier gameRandom) {

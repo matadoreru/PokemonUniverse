@@ -25,12 +25,11 @@ class RoomExperienceTest {
   @Test
   @DisplayName("registered members show their level; guests show null")
   void levelInMemberView() {
-    var kit = new RoomTestKit("shiny-vote");
     var reads = new ArrayList<String>();
-    kit.manager.useExperience(id -> {
+    var kit = new RoomTestKit(RoomTestKit.Hooks.NONE.withExperience(id -> {
       reads.add(id);
       return Map.of("host-user", 260, "late-user", 0).get(id);
-    });
+    }), "shiny-vote");
     var room = kit.room(8, user("host-user", "Host", "h@example.com"), guest("guest", "Ana"));
     var view = kit.manager.view(room, "guest");
     assertEquals(3, level(view, "host-user"));
@@ -42,8 +41,7 @@ class RoomExperienceTest {
   @Test
   @DisplayName("a finished game adds its experience in memory before persisting")
   void finishedGameRaisesLevel() {
-    var kit = new RoomTestKit("shiny-vote");
-    kit.manager.useExperience(id -> 80);
+    var kit = new RoomTestKit(RoomTestKit.Hooks.NONE.withExperience(id -> 80), "shiny-vote");
     var room = kit.room(8, user("host-user", "Host", "h@example.com"), guest("guest", "Ana"));
     kit.manager.selectGame("host-user", "shiny-vote");
     assertEquals(1, level(kit.manager.view(room, "host-user"), "host-user"));
@@ -60,10 +58,9 @@ class RoomExperienceTest {
   @Test
   @DisplayName("a failing experience read only leaves the member without level")
   void failingReadIsIgnored() {
-    var kit = new RoomTestKit("shiny-vote");
-    kit.manager.useExperience(id -> {
+    var kit = new RoomTestKit(RoomTestKit.Hooks.NONE.withExperience(id -> {
       throw new IllegalStateException("db down");
-    });
+    }), "shiny-vote");
     var room = kit.room(8, user("host-user", "Host", "h@example.com"));
     assertNull(level(kit.manager.view(room, "host-user"), "host-user"));
   }
