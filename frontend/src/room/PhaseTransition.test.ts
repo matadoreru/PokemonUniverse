@@ -4,10 +4,14 @@ import { phaseScreenKey } from './PhaseTransition';
 const room = (phase: string, gamesPlayed = 0, gameInstanceId?: string) => ({ phase, gamesPlayed, ...(gameInstanceId ? { gameSkipState: { gameInstanceId } } : {}) });
 
 describe('phaseScreenKey', () => {
-  it('las fases de una misma partida comparten clave, venga o no el estado de saltar', () => {
+  it('las fases de una misma partida comparten clave', () => {
     const keys = ['ROUND_ACTIVE', 'ROUND_RESULTS', 'CLUE_PHASE', 'VOTE_PHASE'].map((phase) => phaseScreenKey(room(phase, 2, 'a')));
     expect(new Set(keys).size).toBe(1);
-    expect(phaseScreenKey(room('ROUND_ACTIVE', 2))).toBe(keys[0]);
+  });
+
+  it('saltar una partida y empezar otra cambia de clave aunque `gamesPlayed` no suba', () => {
+    expect(phaseScreenKey(room('ROUND_ACTIVE', 2, 'a'))).not.toBe(phaseScreenKey(room('ROUND_ACTIVE', 2, 'b')));
+    expect(phaseScreenKey(room('ROUND_ACTIVE', 2))).not.toBe(phaseScreenKey(room('ROUND_ACTIVE', 3)));
   });
 
   it('cambia de la sala a la partida, a sus resultados, a la votación y a la sesión', () => {

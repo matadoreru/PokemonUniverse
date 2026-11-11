@@ -126,6 +126,19 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     }));
     expect(celebraciones.filter((c) => c === 'win'), 'una sola victoria').toHaveLength(1);
     expect(celebraciones.filter((c) => c === 'podium'), 'sin podio a cero puntos').toHaveLength(0);
+    // Con movimiento, el confeti cae solo para quien gana, en una capa fija a toda la ventana.
+    const ganador = jugadores[celebraciones.indexOf('win')]!.page;
+    await conMovimiento(ganador);
+    await expect(ganador.getByTestId('confetti')).toHaveCount(1);
+    const capa = await ganador.getByTestId('confetti').boundingBox();
+    const ventana = ganador.viewportSize();
+    expect(capa && ventana && Math.round(capa.width) === ventana.width && Math.round(capa.height) === ventana.height, 'confeti a toda la ventana').toBe(true);
+    for (const { page } of jugadores.filter(({ page }) => page !== ganador)) {
+      await conMovimiento(page);
+      await expect(page.getByTestId('confetti')).toHaveCount(0);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+    }
+    await ganador.emulateMedia({ reducedMotion: 'reduce' });
     const delatoras = imagenes.filter((url) => /githubusercontent|\/sprites\/pokemon\/|\/\d+\.(png|gif|webp|svg)(\?|$)|\/pokemon\/\d+(\/|$)/.test(url));
     expect(delatoras, 'ninguna imagen de la partida delata el número de Pokédex').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);

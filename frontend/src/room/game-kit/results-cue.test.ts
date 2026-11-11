@@ -28,8 +28,9 @@ describe('resultsCelebration', () => {
     expect(resultsCelebration({ won: false, standings, selfId: 'c' })).toBe('podium');
     expect(resultsCelebration({ won: false, standings, selfId: 'c', winnersNeedPoints: true })).toBeNull();
     expect(resultsCelebration({ won: false, standings, selfId: 'd' })).toBeNull();
-    // 1.º sin `won` (p. ej. un empate a cero): ni victoria ni podio.
-    expect(resultsCelebration({ won: false, standings, selfId: 'a' })).toBeNull();
+    // 1.º sin `won` (un empate en cabeza): gana como dice su insignia; a cero y con `winnersNeedPoints`, nada.
+    expect(resultsCelebration({ won: false, standings, selfId: 'a' })).toBe('win');
+    expect(resultsCelebration({ won: false, standings: [{ id: 'a', position: 1, points: 0 }, { id: 'b', position: 1, points: 0 }], selfId: 'a', winnersNeedPoints: true })).toBeNull();
     expect(resultsCelebration({ won: false, standings })).toBeNull();
     expect(resultsCelebration({ won: false, podium: true })).toBe('podium');
   });

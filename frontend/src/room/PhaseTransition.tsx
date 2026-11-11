@@ -11,7 +11,8 @@ interface PhaseKeyRoom {
  * Clave de la pantalla de la sala: cambia al pasar de sala a partida, a resultados, a la votación o a los resultados de
  * la sesión, y entre una partida y la siguiente; nunca entre rondas ni fases de una misma partida (`ROUND_ACTIVE`,
  * `ROUND_RESULTS`… son todas «partida»). La votación y su recuento son la misma pantalla. La partida se identifica
- * con `gamesPlayed`, que solo sube al terminarla (la vista no siempre trae `gameSkipState`).
+ * por su `gameInstanceId` (la vista lo trae a todos mientras dura; un salto puede encadenar otra partida sin pasar
+ * por resultados ni subir `gamesPlayed`), y si faltara, por `gamesPlayed`.
  */
 export function phaseScreenKey(room: PhaseKeyRoom): string {
   switch (room.phase) {
@@ -20,7 +21,7 @@ export function phaseScreenKey(room: PhaseKeyRoom): string {
     case 'NEXT_GAME_VOTE_RESULTS': return `vote:${room.gamesPlayed}`;
     case 'GAME_RESULTS': return `results:${room.gamesPlayed}`;
     case 'SESSION_RESULTS': return 'session';
-    default: return `game:${room.gamesPlayed}`;
+    default: return `game:${room.gameSkipState?.gameInstanceId ?? room.gamesPlayed}`;
   }
 }
 
