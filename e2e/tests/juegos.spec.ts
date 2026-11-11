@@ -5986,12 +5986,14 @@ test('type-duel: modo Cooperativo, búsqueda conjunta contra el reloj y resultad
     await esperarPartida(jugadores.map((j) => j.page));
     await comprobarTituloDeCabecera(host.page, 'Type Duel · Cooperativo');
 
-    // La combinación es pública: se busca en la BD un Pokémon de ese tipo exacto (nombre sin guiones) y lo dice el primer invitado.
+    // La combinación es pública: se busca en la BD un Pokémon de ese tipo exacto y el primer invitado escribe su nombre.
+    // Se busca por nombre y no por id: algunos Pokémon por defecto tienen un id con guion (Morpeko es
+    // `morpeko-full-belly`) y, si es el único de la combinación, filtrar los ids con guion no dejaba ninguno.
     const tablero = (page: Page) => page.getByTestId('type-duel-coop-board');
     await expect(tablero(host.page)).toBeVisible({ timeout: 20_000 });
     const tipos = [...new Set(await tablero(host.page).locator('[data-type]').evaluateAll((els) => els.map((el) => el.getAttribute('data-type')!)))];
     const nombres = psql(
-      `SELECT p.id FROM "Pokemon" p WHERE p."isDefault" AND p.id !~ '-' AND (SELECT array_agg(a."typeId" ORDER BY a."typeId") FROM "PokemonTypeAssignment" a WHERE a."pokemonId" = p.id) = (SELECT array_agg(t ORDER BY t) FROM unnest(string_to_array(:'tipos', ',')) AS t) ORDER BY p."nationalDexNumber" LIMIT 3;`,
+      `SELECT p.name FROM "Pokemon" p WHERE p."isDefault" AND (SELECT array_agg(a."typeId" ORDER BY a."typeId") FROM "PokemonTypeAssignment" a WHERE a."pokemonId" = p.id) = (SELECT array_agg(t ORDER BY t) FROM unnest(string_to_array(:'tipos', ',')) AS t) ORDER BY p."nationalDexNumber" LIMIT 3;`,
       { tipos: tipos.join(',') },
     ).split('\n').filter(Boolean);
     test.info().annotations.push({ type: 'coop', description: `combinación ${tipos.join('/')}; candidatos ${nombres.join(', ')}` });
