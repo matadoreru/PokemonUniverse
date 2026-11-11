@@ -6,6 +6,8 @@ export { Pill, PillAnchor, PillLink, pillClickHandler } from './Pill';
 export type { PillAnchorProps, PillLinkProps, PillProps, PillSize, PillVariant } from './Pill';
 export { Panel } from './Panel';
 export type { PanelProps } from './Panel';
+export { ActionPlate } from './ActionPlate';
+export type { ActionPlateProps, ActionPlateTone } from './ActionPlate';
 export { StateBox } from './StateBox';
 export type { StateBoxProps } from './StateBox';
 export { Tabs, TabPanel, nextTab } from './Tabs';

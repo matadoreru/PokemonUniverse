@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Eye, Hourglass, Search, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
-import { Badge, Chip, cx, Icon, Panel, ScorePop } from '../../ui';
+import { ActionPlate, Badge, Chip, Icon, ScorePop } from '../../ui';
 import { PokemonSelector } from '../PokemonSelector';
 import type { PokemonSearchOption } from '../pokemon-search';
 import { attemptsText, guessSearchAutoFocus, guessSeconds, ordinal, pointsWord, type GuessPanelKind, type GuessVerdict } from './presentation';
@@ -90,22 +90,11 @@ export function GuessPanel(props: GuessPanelProps) {
   const content = props.content ?? plateContent(props);
   // Con el buscador a la vista, la placa solo lleva el kicker y el título: la descripción sobra junto al campo.
   const searching = kind === 'guess' && Boolean(selector);
-  return <Panel variant="cream" as="section" className={cx(compact && s.compact)} bodyClassName={cx(s.plate, kind === 'guess' && s.plateSearch)} aria-labelledby="guess-plate-title">
-    <div className={s.plateRow}>
-      <span className={cx(s.plateIcon, s[`tone_${content.tone}`])}><Icon icon={content.icon} size={32} /></span>
-      <div className={s.plateText}>
-        <span className={s.kicker}>{content.kicker}</span>
-        <h2 id="guess-plate-title" ref={titleRef} tabIndex={-1} className={s.plateTitle}>{content.title}</h2>
-        {content.text && !searching && <p className={s.help}>{content.text}</p>}
-      </div>
-      {content.aside && <div className={s.plateAside}>{content.aside}</div>}
-    </div>
-    {kind === 'guess' && selector && <div className={s.search}>
-      <PokemonSelector key={selector.roundKey} pokemon={selector.pokemon} loading={selector.loading} loadError={selector.loadError} onRetry={selector.onRetry}
-        locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={selector.autoFocus ?? guessSearchAutoFocus()} inputLabel={selector.inputLabel} {...(selector.maxResults ? { maxResults: selector.maxResults } : {})}
-        onSelect={(pokemonId) => selector.onGuess(pokemonId).catch(ignoreFailure)} />
-    </div>}
-  </Panel>;
+  return <ActionPlate titleId="guess-plate-title" titleRef={titleRef} icon={content.icon} tone={content.tone} kicker={content.kicker} title={content.title}
+    text={searching ? undefined : content.text} aside={content.aside} search={kind === 'guess'} compact={compact}
+    body={kind === 'guess' && selector && <PokemonSelector key={selector.roundKey} pokemon={selector.pokemon} loading={selector.loading} loadError={selector.loadError} onRetry={selector.onRetry}
+      locked={selector.locked ?? EMPTY_LOCKED} disabled={false} confirmationDisabled={cooldownMs > 0} variant="embedded" autoFocus={selector.autoFocus ?? guessSearchAutoFocus()} inputLabel={selector.inputLabel} {...(selector.maxResults ? { maxResults: selector.maxResults } : {})}
+      onSelect={(pokemonId) => selector.onGuess(pokemonId).catch(ignoreFailure)} />} />;
 }
 
 function points(value: number, pop: boolean) {

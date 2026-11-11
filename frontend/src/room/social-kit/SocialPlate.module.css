@@ -1,4 +1,4 @@
-/* Placa de abajo de los juegos sociales: la base es la de `GuessPanel` (GuessPanel.module.css); aquí, lo propio. */
+/* Placa de abajo de los juegos sociales: la base es `ui/ActionPlate`; aquí, lo propio. */
 .plate {
   min-width: 0;
 }

@@ -1,7 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
-import { cx, Icon, Panel } from '../../ui';
-import g from '../guess-kit/GuessPanel.module.css';
+import { ActionPlate, cx } from '../../ui';
 import s from './SocialPlate.module.css';
 
 /** Lo que pinta la placa: icono y tono, kicker, título, ayuda y, a la derecha, la acción o los puntos. */
@@ -33,20 +32,10 @@ export interface SocialPlateProps {
 
 /**
  * Pantalla inferior de los juegos sociales (spec §2: abajo, la acción): una placa crema con el estado en texto (icono,
- * kicker, título y ayuda), la acción a la derecha y, debajo, lo que se usa para actuar. Tiene el mismo aspecto que la
- * placa del kit de adivinar (comparte su CSS). Sin región viva propia: lo que se anuncia lo dice la de `SocialScreen`.
+ * kicker, título y ayuda), la acción a la derecha y, debajo, lo que se usa para actuar: la `ui/ActionPlate` del kit de
+ * adivinar. Sin región viva propia: lo que se anuncia lo dice la de `SocialScreen`.
  */
 export function SocialPlate({ titleRef, content, children, search = false, className, bodyClassName, textClassName }: SocialPlateProps) {
-  return <Panel variant="cream" as="section" {...(className ? { className } : {})} bodyClassName={cx(g.plate, search && g.plateSearch, s.plate)} aria-labelledby="social-plate-title">
-    <div className={g.plateRow}>
-      <span className={cx(g.plateIcon, g[`tone_${content.tone}`])}><Icon icon={content.icon} size={32} /></span>
-      <div className={cx(g.plateText, s.text)}>
-        <span className={g.kicker}>{content.kicker}</span>
-        <h2 id="social-plate-title" ref={titleRef} tabIndex={-1} className={g.plateTitle}>{content.title}</h2>
-        {content.text && <p className={cx(g.help, textClassName)}>{content.text}</p>}
-      </div>
-      {content.aside && <div className={g.plateAside}>{content.aside}</div>}
-    </div>
-    {children != null && children !== false && <div className={cx(search && g.search, s.body, bodyClassName)}>{children}</div>}
-  </Panel>;
+  return <ActionPlate titleId="social-plate-title" titleRef={titleRef} icon={content.icon} tone={content.tone} kicker={content.kicker} title={content.title} text={content.text} aside={content.aside}
+    body={children} search={search} className={className} plateClassName={s.plate} textClassName={s.text} helpClassName={textClassName} bodyClassName={cx(s.body, bodyClassName)} />;
 }

@@ -1,9 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
 import { Coins, Crown, Eye, Gavel, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type Ref } from 'react';
-import { cx, Dialog, Field, Icon, Panel, Pill } from '../../ui';
+import { ActionPlate, cx, Dialog, Field, Pill } from '../../ui';
 import { useRefocusAfterReject } from '../focus-transition';
-import g from '../guess-kit/GuessPanel.module.css';
 import { sendWithBusy } from '../room-command';
 import { bindChoiceShortcuts } from '../social-kit';
 import { bidDraftError, bidShortcutsLive, bidSteps, clampBid, parseBid, safeAmount, type BidBlock, type BidBlockReason } from './presentation';
@@ -105,19 +104,13 @@ export function BidControls({ titleRef, block, min, max, unit = 'monedas', epoch
   const participating = block.reason !== 'watching';
   const idle = participating && !block.canRaise && !block.canPass;
   const tone = REASON_TONE[block.reason];
-  return <Panel variant="cream" as="section" {...(className ? { className } : {})} bodyClassName={cx(g.plate, s.plate)} aria-labelledby="bid-controls-title">
-    <div className={g.plateRow} data-testid="bid-controls" data-reason={block.reason} data-idle={idle || undefined}>
-      <span className={cx(g.plateIcon, g[`tone_${tone}`], s.icon)}><Icon icon={REASON_ICON[block.reason]} size={32} /></span>
-      <div className={cx(g.plateText, s.text)}>
-        <span className={g.kicker}>{kicker}</span>
-        <h2 id="bid-controls-title" ref={titleRef} tabIndex={-1} className={g.plateTitle}>{block.title}</h2>
-        <p className={cx(g.help, idle ? s.message : s.help)}>{block.text}</p>
-      </div>
-      {budget != null && <div className={cx(g.plateAside, s.budget)} data-testid="bid-budget">
-        <span className={s.budgetLabel}>Tu presupuesto</span>
-        <span className={s.budgetValue}><strong>{safeAmount(budget)}</strong> <small>{unit === 'monedas' && safeAmount(budget) === 1 ? 'moneda' : unit}</small></span>
-      </div>}
-    </div>
+  const budgetPlate = budget != null && <>
+    <span className={s.budgetLabel}>Tu presupuesto</span>
+    <span className={s.budgetValue}><strong>{safeAmount(budget)}</strong> <small>{unit === 'monedas' && safeAmount(budget) === 1 ? 'moneda' : unit}</small></span>
+  </>;
+  return <ActionPlate titleId="bid-controls-title" titleRef={titleRef} icon={REASON_ICON[block.reason]} tone={tone} kicker={kicker} title={block.title} text={block.text} aside={budgetPlate}
+    className={className} plateClassName={s.plate} iconClassName={s.icon} textClassName={s.text} helpClassName={idle ? s.message : s.help} asideClassName={s.budget}
+    rowAttrs={{ 'data-testid': 'bid-controls', 'data-reason': block.reason, 'data-idle': idle || undefined }} asideAttrs={{ 'data-testid': 'bid-budget' }}>
     {participating && !idle && <form className={s.controls} onSubmit={submit} aria-label="Controles de la puja">
       {block.canRaise && steps.length > 0 && <div className={s.steps} role="group" aria-label="Incrementos (atajos 1 a 4)">
         {steps.map((step) => <Pill key={step.key} size="small" variant="blue" badge={step.shortcut} aria-keyshortcuts={step.shortcut} aria-pressed={amount === step.value}
@@ -142,5 +135,5 @@ export function BidControls({ titleRef, block, min, max, unit = 'monedas', epoch
       ]}>
       <p>{confirmPass.text}</p>
     </Dialog>}
-  </Panel>;
+  </ActionPlate>;
 }

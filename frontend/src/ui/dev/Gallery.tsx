@@ -5,7 +5,7 @@
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
-import { Bell, Bug, Code2, Eye, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -22,6 +22,7 @@ import { ResultsShell } from '../../room/ResultsShell';
 import type { ResultsStanding } from '../../room/ResultsShell';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
+import { ActionPlate } from '../ActionPlate';
 import { Badge, Chip, TypeBadge, TypeOption } from '../Badge';
 import { Bar } from '../Bar';
 import { Card } from '../Card';
@@ -1117,6 +1118,30 @@ function ScreenTransitionSection() {
   );
 }
 
+/** Placa de acción (pantalla inferior de los juegos): estado, lo que toca a la derecha y, debajo, lo que se usa. */
+function ActionPlateSection() {
+  return (
+    <Section name="action-plate" title="ActionPlate">
+      <Fig id="action-plate-points" caption="Acierto con los puntos a la derecha" wide>
+        <ActionPlate titleId="gallery-plate-ok" icon={CheckCircle2} tone="ok" kicker={<Badge>1.º en acertar</Badge>} title="¡Era Pikachu!" text="Has acertado al segundo intento."
+          aside={<strong className={s.popFigure}>+3<small> puntos</small></strong>} />
+      </Fig>
+      <Fig id="action-plate-wait" caption="Espera con aviso a la derecha (tono info)" wide>
+        <ActionPlate titleId="gallery-plate-wait" icon={Clock3} tone="info" kicker="Ronda 3" title="Esperando al resto" text="La ronda acaba cuando respondan todos o se agote el tiempo."
+          aside={<Chip tone="info" icon={<Icon icon={Clock3} size={18} />}>Faltan 2 jugadores</Chip>} />
+      </Fig>
+      <Fig id="action-plate-search" caption="search: el título a la izquierda y el campo a la derecha desde 1024 px" wide>
+        <ActionPlate titleId="gallery-plate-search" icon={Eye} tone="warn" kicker="Tu turno" title="¿Qué Pokémon es?" text="Escribe al menos dos letras." search
+          body={<Field label="Buscar Pokémon" placeholder="Pikachu" value="" onChange={noop} />} />
+      </Fig>
+      <Fig id="action-plate-compact" caption="compact: una sola fila sin icono en escritorio (Sketchmon)" wide>
+        <ActionPlate titleId="gallery-plate-compact" icon={Eye} tone="warn" kicker="Adivina" title="¿Qué está dibujando?" search compact
+          body={<Field label="Buscar Pokémon" placeholder="Pikachu" value="" onChange={noop} />} />
+      </Fig>
+    </Section>
+  );
+}
+
 const SCREEN_WIDTHS: { width: ScreenWidth; label: string }[] = [
   { width: 'narrow', label: 'narrow · tarjeta (520 → 640 px)' },
   { width: 'medium', label: 'medium · lectura (760 → 960 px)' },
@@ -1377,6 +1402,7 @@ export function Gallery() {
       <UnownGlyphSection />
       <ConfettiSection />
       <ScreenTransitionSection />
+      <ActionPlateSection />
       <ScreenSection />
       <ScreenSplitSection />
       <AuctionSection />
