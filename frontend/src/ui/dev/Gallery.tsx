@@ -1135,8 +1135,9 @@ function ActionPlateSection() {
           body={<Field label="Buscar Pokémon" placeholder="Pikachu" value="" onChange={noop} />} />
       </Fig>
       <Fig id="action-plate-compact" caption="compact: una sola fila sin icono en escritorio (Sketchmon)" wide>
+        {/* Con el buscador de verdad: en compacto, lo que sigue al campo (la bandeja) se abre hacia arriba, sobre la escena. */}
         <ActionPlate titleId="gallery-plate-compact" icon={Eye} tone="warn" kicker="Adivina" title="¿Qué está dibujando?" search compact
-          body={<Field label="Buscar Pokémon" placeholder="Pikachu" value="" onChange={noop} />} />
+          body={<PokemonSelector variant="embedded" pokemon={SELECTOR_POKEMON} locked={new Set()} disabled={false} autoFocus={false} inputLabel="Buscar Pokémon" onSelect={asyncNoop} />} />
       </Fig>
     </Section>
   );
