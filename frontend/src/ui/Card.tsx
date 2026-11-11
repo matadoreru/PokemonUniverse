@@ -114,7 +114,9 @@ function CornerMark({ state }: { state: CardState }) {
 
 /** Carta de Pokémon; con `onSelect` es un botón conmutador. Correcta/incorrecta llevan icono y texto además del color. */
 export function Card({ sprite, name, number, types, state = 'idle', photo, size = 'md', flip = false, attrs, decorativeSprite, eager = false, action, disabled, art, marks = 'line', artOverlay, onSelect, children }: CardProps) {
-  // Suena al empezar a girar (`revealing` o `flip`): la carta se da la vuelta.
+  // Suena al empezar a girar (`revealing` o `flip`): la carta se da la vuelta delante del jugador. A propósito, una carta
+  // que se monta ya girada no suena: llega con una pantalla de revelado entera (varias cartas a la vez), que ya tiene su
+  // `game.reveal` común (`roomRevealKey`); sonar aquí lo duplicaría una vez por carta.
   const turning = state === 'revealing' || flip;
   const before = useRef(turning);
   useEffect(() => {
