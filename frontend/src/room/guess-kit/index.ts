@@ -11,12 +11,8 @@ export { GuessHints } from './GuessHints';
 export type { GuessHint } from './GuessHints';
 export { GuessRoundReveal } from './GuessRoundReveal';
 export type { GuessAnswer } from './GuessRoundReveal';
-export {
-  attemptsText, guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessPublicAttempts, guessRevealLines, guessScoreboard, guessSeconds,
-  guessSolvedOrders, guessSprite, guessVerdict, ordinal, pointsWord,
-} from './presentation';
-export type { GuessAttemptLike, GuessPanelKind, GuessRevealLine, GuessRevealSolveLike, GuessScoreLine, GuessVerdict } from './presentation';
-export { guessRecords, guessRoundFirsts, guessStatsLine, guessTop } from './results';
-export type { GuessRecord, GuessStats } from './results';
+export { attemptsText, guessOwnLastAttempt, guessPublicAttempts, guessRevealLines, guessScoreboard, guessSeconds, guessSolvedOrders, guessSprite, ordinal, pointsWord } from './presentation';
+export { guessTop } from './results';
+export type { GuessStats } from './results';
 export { useGuessRound } from './useGuessRound';
 export type { GuessRound, GuessRoundGame, GuessRoundOptions, GuessRoundPanelProps, GuessRoundPlayer, GuessRoundResultLike } from './useGuessRound';

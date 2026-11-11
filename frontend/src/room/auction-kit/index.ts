@@ -13,5 +13,5 @@ export { BudgetPlate } from './BudgetPlate';
 export type { BudgetEntry, BudgetPlateProps } from './BudgetPlate';
 export { BidHistory, BidHistoryList } from './BidHistory';
 export type { BidHistoryProps, BidHistoryView } from './BidHistory';
-export { amountText, bidBlock, bidDraftError, bidShortcutsLive, bidEpoch, bidLog, bidSteps, clampBid, parseBid, safeAmount, turnOrderEntries, waitTexts } from './presentation';
-export type { BidBlock, BidBlockInput, BidBlockReason, BidEventLike, BidLogEntry, BidStep, TurnOrderEntry, TurnOrderState } from './presentation';
+export { amountText, bidBlock, bidEpoch, bidLog, turnOrderEntries, waitTexts } from './presentation';
+export type { BidBlockInput, BidBlockReason, BidEventLike, BidLogEntry, TurnOrderEntry } from './presentation';
