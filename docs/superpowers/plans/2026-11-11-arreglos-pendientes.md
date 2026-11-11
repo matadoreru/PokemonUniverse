@@ -58,5 +58,12 @@ funciona en PRO. Si es incorrecto, un rollback a través del corte dejaría de e
   comprobar la CI con `gh run list`; el oráculo Node ya está retirado.
 - [x] **F. Notas de parche 0.8.0 (V16 o la siguiente libre):** los tres juegos nuevos y los arreglos visibles, con el
   patrón idempotente `NOT EXISTS` de V14/V15.
+- [ ] **H. Tailwind sin forma ni decoración** (decisión del 2026-11-11, ya en `AGENTS.md`):
+  - Tailwind vale para maquetación y para peso, mayúsculas, `tracking-*` y `leading-*`;
+  - `rounded*`, `border*` y `shadow*` pasan a los componentes de `ui/` o a CSS Modules con los tokens (unas 30 clases en
+    unas 15 pantallas);
+  - el lint `no-arbitrary-style` empieza a rechazarlas fuera de `ui/`;
+  - Playwright solo de las pantallas tocadas, sin cambios visibles salvo radios que pasen a los del sistema.
+  - Pendiente: el usuario la retoma con la D.
 - [ ] **G. Imagen nativa:** intentar que arranque, con compilaciones nativas de una en una y avisando al usuario.
   - Pendiente: el usuario la retoma.
