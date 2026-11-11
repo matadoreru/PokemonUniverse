@@ -7,7 +7,7 @@ import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoFocusKey, bin
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
-import { Chip, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../../ui';
+import { Chip, ConfirmDialog, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from '../../room/guess-kit';
@@ -122,10 +122,10 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
   </Dialog>;
 
   const move = pending ? bingoMoveText({ pokemonName: pending.pokemonName, from: pending.from, to: pending.to }) : null;
-  const moveDialog = <Dialog open={pending !== null} title={move?.title ?? ''} onClose={() => setPending(null)}
-    actions={[{ label: 'Mover aquí', variant: 'yellow', autoFocus: true, onClick: () => { if (pending) confirmMove(pending); } }, { label: 'Cancelar', variant: 'blue', onClick: () => undefined }]}>
+  const moveDialog = <ConfirmDialog open={pending !== null} title={move?.title ?? ''} onClose={() => setPending(null)} width={520}
+    confirmLabel="Mover aquí" tone="yellow" focus="confirm" onConfirm={() => { if (pending) confirmMove(pending); }}>
     {move && <div className={s.moveText}><p>{move.used}</p><p><strong>{move.question}</strong></p></div>}
-  </Dialog>;
+  </ConfirmDialog>;
 
   const announcement = bingoAnnouncement({ kind, attempt, cooldownMs, winner: winnerName ? { name: winnerName, self: game.winnerId === selfId } : null });
   return <>

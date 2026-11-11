@@ -35,7 +35,7 @@ import { Confetti } from '../Confetti';
 import { Cutin } from '../Cutin';
 import type { CutinTone } from '../Cutin';
 import type { ForcedState } from '../cx';
-import { Dialog } from '../Dialog';
+import { ConfirmDialog, Dialog } from '../Dialog';
 import { Field, SelectField, TextArea } from '../Field';
 import { HudPlate } from '../HudPlate';
 import { Icon } from '../Icon';
@@ -870,11 +870,17 @@ function HudSection() {
 
 function DialogSection({ onToast }: { onToast(): void }) {
   const [open, setOpen] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   return (
     <Section name="dialog" title="Dialog">
       <Fig id="dialog-open" caption="Abre el diálogo de ejemplo">
         <Pill variant="yellow" onClick={() => setOpen(true)}>
           Abrir diálogo
+        </Pill>
+      </Fig>
+      <Fig id="dialog-confirm" caption="ConfirmDialog: «Cancelar» primero y con el foco, la acción en peligro a la derecha">
+        <Pill variant="danger" onClick={() => setConfirm(true)}>
+          Terminar sesión
         </Pill>
       </Fig>
       <Fig id="dialog-audio" caption="Ajustes de sonido (contenido del diálogo)" cream>
@@ -885,8 +891,8 @@ function DialogSection({ onToast }: { onToast(): void }) {
         title="Diálogo de ejemplo"
         onClose={() => setOpen(false)}
         actions={[
-          { label: 'Aceptar', onClick: noop, autoFocus: true },
           { label: 'Cancelar', variant: 'ghost', onClick: noop },
+          { label: 'Aceptar', variant: 'yellow', onClick: noop, autoFocus: true },
         ]}
       >
         <p>Crema, con contorno de 3 px. Esc, el fondo o una acción lo cierran y el foco vuelve al botón.</p>
@@ -894,6 +900,9 @@ function DialogSection({ onToast }: { onToast(): void }) {
           Lanzar aviso
         </Pill>
       </Dialog>
+      <ConfirmDialog open={confirm} title="¿Terminar la sesión?" onClose={() => setConfirm(false)} confirmLabel="Terminar sesión" onConfirm={noop}>
+        <p>La sesión acaba para toda la sala y se enseña la clasificación final. No se puede deshacer.</p>
+      </ConfirmDialog>
     </Section>
   );
 }

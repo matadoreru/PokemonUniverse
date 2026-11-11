@@ -4,7 +4,7 @@ import { useId, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar } from '../components/Avatar';
 import { useRoom } from '../room/RoomContext';
-import { Dialog, Drawer, Field, Pill, PillLink, Row, TabPanel, Tabs, type TabItem } from '../ui';
+import { ConfirmDialog, Dialog, Drawer, Field, Pill, PillLink, Row, TabPanel, Tabs, type TabItem } from '../ui';
 import { useFriends, type FriendsContextValue } from './FriendsContext';
 import { FRIEND_STATUS_LABEL, friendErrorMessage, sentText, type FriendEntry } from './friends-state';
 import s from './FriendsDrawer.module.css';
@@ -209,13 +209,10 @@ function FriendsPanel({ friends }: { friends: FriendsContextValue }) {
       </div>
       <AddFriendDialog open={adding} onClose={() => setAdding(false)} send={friends.send} />
       <FindPlayerDialog open={finding} onClose={() => setFinding(false)} onFound={openProfile} />
-      <Dialog open={removing !== null} title={removing ? `¿Quitar a ${removing.username}?` : 'Quitar amigo'} onClose={() => setRemoving(null)} width={420}
-        actions={[
-          { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
-          { label: 'Quitar', variant: 'danger', onClick: () => { if (removing) { const id = removing.id; run(`remove:${id}`, () => friends.remove(id)); } } },
-        ]}>
+      <ConfirmDialog open={removing !== null} title={removing ? `¿Quitar a ${removing.username}?` : 'Quitar amigo'} onClose={() => setRemoving(null)}
+        confirmLabel="Quitar" onConfirm={() => { if (removing) { const id = removing.id; run(`remove:${id}`, () => friends.remove(id)); } }}>
         <p>Dejaréis de ser amigos. Podrás enviarle otra solicitud cuando quieras.</p>
-      </Dialog>
+      </ConfirmDialog>
     </div>
   );
 }

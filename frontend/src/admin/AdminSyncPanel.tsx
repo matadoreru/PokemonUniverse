@@ -1,7 +1,7 @@
 import type { AdminDataSyncItem } from '@pokemon-universe/shared/public';
 import { RefreshCw, TriangleAlert } from 'lucide-react';
 import { useState } from 'react';
-import { cx, Dialog, Panel, Pill, StateBox } from '../ui';
+import { ConfirmDialog, cx, Panel, Pill, StateBox } from '../ui';
 import { adminListStatus, formatAdminDate, formatCount, formatDuration } from './admin-format';
 import { Detail, DetailGrid, StatusChip } from './AdminParts';
 import tone from '../styles/tones.module.css';
@@ -71,14 +71,10 @@ export function AdminSyncView({ items, loading, error, syncing, onSync, onRetry 
           ))}
         </div>
       )}
-      <Dialog
-        open={confirmFull}
-        title="¿Forzar el Full Sync?"
-        onClose={() => setConfirmFull(false)}
-        actions={[{ label: 'Forzar Full Sync', variant: 'danger', onClick: () => onSync('all', true) }, { label: 'Cancelar', variant: 'cream', autoFocus: true, onClick: () => undefined }]}
-      >
+      <ConfirmDialog open={confirmFull} title="¿Forzar el Full Sync?" onClose={() => setConfirmFull(false)} width={520}
+        confirmLabel="Forzar Full Sync" onConfirm={() => onSync('all', true)}>
         <p>El Full Sync vuelve a consultar todo el dataset. Los datos actuales se conservarán si la fuente falla.</p>
-      </Dialog>
+      </ConfirmDialog>
     </section>
   );
 }

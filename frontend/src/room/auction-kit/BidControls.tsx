@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { Coins, Crown, Eye, Gavel, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type Ref } from 'react';
-import { ActionPlate, cx, Dialog, Field, Pill } from '../../ui';
+import { ActionPlate, ConfirmDialog, cx, Field, Pill } from '../../ui';
 import { useRefocusAfterReject } from '../game-kit/focus-transition';
 import { sendWithBusy } from '../room-command';
 import { bindChoiceShortcuts } from '../social-kit';
@@ -128,12 +128,9 @@ export function BidControls({ titleRef, block, min, max, unit = 'monedas', epoch
         {onPass && <Pill variant="blue" icon={SkipForward} loading={busy === 'pass'} disabled={!block.canPass || busy !== null} data-testid="bid-pass" onClick={pass}>{passLabel}</Pill>}
       </div>
     </form>}
-    {confirmPass && <Dialog open={confirming} title={confirmPass.title} onClose={() => setConfirming(false)}
-      actions={[
-        { label: confirmPass.confirmLabel ?? passLabel, onClick: () => { setConfirming(false); if (onPass) void send('pass', onPass); } },
-        { label: 'Seguir pujando', variant: 'blue', autoFocus: true, onClick: () => setConfirming(false) },
-      ]}>
+    {confirmPass && <ConfirmDialog open={confirming} title={confirmPass.title} onClose={() => setConfirming(false)} width={520}
+      cancelLabel="Seguir pujando" confirmLabel={confirmPass.confirmLabel ?? passLabel} tone="yellow" onConfirm={() => { if (onPass) void send('pass', onPass); }}>
       <p>{confirmPass.text}</p>
-    </Dialog>}
+    </ConfirmDialog>}
   </ActionPlate>;
 }

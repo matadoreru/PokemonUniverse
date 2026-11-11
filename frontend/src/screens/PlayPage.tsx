@@ -7,7 +7,7 @@ import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
 import { useDailyOverview } from '../daily/useDailyOverview';
 import { useRoom } from '../room/RoomContext';
 import { normalizeRoomCode, ROOM_CODE_LENGTH, roomErrorMessage } from '../room/roomCode';
-import { cx, Dialog, Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
+import { ConfirmDialog, cx, Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
 import tone from '../styles/tones.module.css';
 
 type Busy = 'create' | 'join' | 'leave' | 'daily' | null;
@@ -121,13 +121,10 @@ export function PlayPage() {
             {leaveError && <div className="w-full"><StateBox kind="error" title={isDaily ? 'No se pudo abandonar el reto' : 'No se pudo salir de la sala'} text={leaveError} onCream /></div>}
           </div>
         </Panel>
-        <Dialog open={confirmAbandon} title="¿Abandonar el reto?" onClose={() => setConfirmAbandon(false)} width={420}
-          actions={[
-            { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
-            { label: 'Abandonar el reto', variant: 'danger', onClick: () => void leave() },
-          ]}>
+        <ConfirmDialog open={confirmAbandon} title="¿Abandonar el reto?" onClose={() => setConfirmAbandon(false)}
+          confirmLabel="Abandonar el reto" onConfirm={() => void leave()}>
           <p>{ABANDON_DAILY_TEXT}</p>
-        </Dialog>
+        </ConfirmDialog>
       </Screen>
     );
   }

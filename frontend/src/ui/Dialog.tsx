@@ -183,3 +183,35 @@ export function Dialog({ open, title, onClose, children, actions = [], width }: 
     </dialog>
   );
 }
+
+export interface ConfirmDialogProps {
+  open: boolean;
+  title: string;
+  /** Se llama al cancelar, al confirmar (después de `onConfirm`), con Esc o con un clic en el fondo. */
+  onClose(): void;
+  onConfirm(): void;
+  confirmLabel: string;
+  cancelLabel?: string;
+  /** `danger` (por defecto) para lo que no se deshace: salir, expulsar, borrar; `yellow` para el resto. */
+  tone?: 'danger' | 'yellow';
+  /** Quién recibe el foco al abrir: «Cancelar» (por defecto) o la acción, si no hay peligro y se espera confirmar. */
+  focus?: 'cancel' | 'confirm';
+  width?: number;
+  children?: ReactNode;
+}
+
+/**
+ * Orden único de los diálogos de confirmación: «Cancelar» primero (a la izquierda; arriba en móvil, donde se apilan) y
+ * la acción después, a la derecha, en rojo si no se deshace. El foco va a «Cancelar» salvo que se pida lo contrario.
+ */
+export function confirmDialogActions({ confirmLabel, cancelLabel = 'Cancelar', tone = 'danger', focus = 'cancel', onConfirm }: Pick<ConfirmDialogProps, 'confirmLabel' | 'cancelLabel' | 'tone' | 'focus' | 'onConfirm'>): DialogAction[] {
+  return [
+    { label: cancelLabel, variant: 'blue', autoFocus: focus === 'cancel', onClick: () => undefined },
+    { label: confirmLabel, variant: tone, autoFocus: focus === 'confirm', onClick: onConfirm },
+  ];
+}
+
+/** `Dialog` de confirmación con el orden de `confirmDialogActions`. */
+export function ConfirmDialog({ open, title, onClose, width = 420, children, ...actions }: ConfirmDialogProps) {
+  return <Dialog open={open} title={title} onClose={onClose} width={width} actions={confirmDialogActions(actions)}>{children}</Dialog>;
+}

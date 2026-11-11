@@ -8,7 +8,7 @@ import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { useFeedbackTarget } from '../components/feedback-target';
 import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
-import { cx, Dialog, Icon } from '../ui';
+import { ConfirmDialog, cx, Icon } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import n from './ConnectionNotice.module.css';
 import { useRoom } from './RoomContext';
@@ -80,13 +80,10 @@ function RoomSessionContent() {
   return <>
     {/* La placa de la sala (código y «Salir») va a la cabecera solo en `/room`: en `/play` la pantalla ya ofrece volver o salir. */}
     {room && pathname === '/room' && <RoomPlatePortal room={room} onLeave={askLeave} />}
-    <Dialog open={confirmLeave} title={daily ? '¿Abandonar el reto?' : '¿Salir de la partida?'} onClose={() => setConfirmLeave(false)} width={420}
-      actions={[
-        { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
-        { label: daily ? 'Abandonar el reto' : 'Salir', variant: 'danger', onClick: leave },
-      ]}>
+    <ConfirmDialog open={confirmLeave} title={daily ? '¿Abandonar el reto?' : '¿Salir de la partida?'} onClose={() => setConfirmLeave(false)}
+      confirmLabel={daily ? 'Abandonar el reto' : 'Salir'} onConfirm={leave}>
       <p>{daily ? ABANDON_DAILY_TEXT : 'Dejarás la sala ahora mismo; el resto seguirá jugando sin ti.'}</p>
-    </Dialog>
+    </ConfirmDialog>
     {/* En la intro y en los juegos rediseñados el control va dentro de su pantalla (que llena el alto del `main` sin scroll). */}
     {room?.gameSkipState && !daily && skipRowInLayout(room) && <div className="content-row flex flex-wrap items-center justify-end gap-2 pt-3">
       <SkipGameControl key={`${room.gameSkipState.gameInstanceId}:${connected}`} state={room.gameSkipState} connected={connected} onSetVote={setGameSkipVote} />

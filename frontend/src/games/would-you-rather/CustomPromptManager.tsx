@@ -3,7 +3,7 @@ import { CheckCircle2, FileJson, Pencil, Plus, Power, Save, Trash2, Upload, X } 
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/api-errors';
-import { Chip, cx, Dialog, Field, Icon, Pill, StateBox, TextArea } from '../../ui';
+import { Chip, ConfirmDialog, cx, Field, Icon, Pill, StateBox, TextArea } from '../../ui';
 import { parseWouldYouRatherImportJson, WOULD_YOU_RATHER_JSON_EXAMPLE } from './json-import';
 import s from './CustomPromptManager.module.css';
 
@@ -119,9 +119,9 @@ export function CustomWouldYouRatherPromptManager({ disabled }: { disabled: bool
             </div>}
         </li>)}</ul>}
 
-    <Dialog open={removing !== null} title="¿Eliminar este dilema?" onClose={() => setRemoving(null)}
-      actions={[{ label: 'Eliminar', variant: 'danger', onClick: () => { if (removing) void remove(removing); } }, { label: 'Cancelar', variant: 'cream', autoFocus: true, onClick: () => undefined }]}>
+    <ConfirmDialog open={removing !== null} title="¿Eliminar este dilema?" onClose={() => setRemoving(null)} width={520}
+      confirmLabel="Eliminar" onConfirm={() => { if (removing) void remove(removing); }}>
       {removing && <p>«{removing.optionA}» contra «{removing.optionB}». No se puede deshacer.</p>}
-    </Dialog>
+    </ConfirmDialog>
   </section>;
 }

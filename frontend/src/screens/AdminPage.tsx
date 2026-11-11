@@ -9,7 +9,7 @@ import { AdminRecordsView, type AdminRecords } from '../admin/AdminRecords';
 import { AdminSyncView, type SyncSource } from '../admin/AdminSyncPanel';
 import { api } from '../lib/api';
 import { apiErrorMessage } from '../lib/api-errors';
-import { cx, Dialog, HudPlate, Icon, Screen, TabPanel, Tabs, type TabItem } from '../ui';
+import { ConfirmDialog, cx, HudPlate, Icon, Screen, TabPanel, Tabs, type TabItem } from '../ui';
 import tone from '../styles/tones.module.css';
 
 const emptyPage = <T,>(): PaginatedAdminResponse<T> => ({ items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 });
@@ -169,14 +169,10 @@ export function AdminPage() {
         </TabPanel>
       </div>
 
-      <Dialog
-        open={pendingTab !== null}
-        title="¿Descartar los cambios del changelog?"
-        onClose={() => setPendingTab(null)}
-        actions={[{ label: 'Descartar', variant: 'danger', onClick: () => { if (pendingTab) setTab(pendingTab); } }, { label: 'Seguir editando', variant: 'cream', autoFocus: true, onClick: () => undefined }]}
-      >
+      <ConfirmDialog open={pendingTab !== null} title="¿Descartar los cambios del changelog?" onClose={() => setPendingTab(null)} width={520}
+        cancelLabel="Seguir editando" confirmLabel="Descartar" onConfirm={() => { if (pendingTab) setTab(pendingTab); }}>
         <p>Hay cambios del changelog sin guardar. Si cambias de sección, se perderán.</p>
-      </Dialog>
+      </ConfirmDialog>
     </Screen>
   );
 }

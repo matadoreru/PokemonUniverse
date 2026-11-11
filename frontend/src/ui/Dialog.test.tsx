@@ -2,7 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { setUiSoundSink } from '../audio/uiSound';
-import { createDialogController, Dialog, dialogCloseReason, isOutsideRect } from './Dialog';
+import { ConfirmDialog, confirmDialogActions, createDialogController, Dialog, dialogCloseReason, isOutsideRect } from './Dialog';
 
 afterEach(() => setUiSoundSink(null));
 
@@ -153,5 +153,28 @@ describe('Dialog', () => {
   it('cerrado no pinta el contenido', () => {
     const html = renderToStaticMarkup(createElement(Dialog, { open: false, title: 'Ajustes', onClose: () => undefined }, 'Cuerpo'));
     expect(html).not.toContain('Cuerpo');
+  });
+});
+
+describe('ConfirmDialog', () => {
+  it('puts «Cancelar» first with the focus and the dangerous action last', () => {
+    const onConfirm = vi.fn();
+    const [cancel, confirm] = confirmDialogActions({ confirmLabel: 'Expulsar', onConfirm });
+    expect(cancel).toMatchObject({ label: 'Cancelar', variant: 'blue', autoFocus: true });
+    expect(confirm).toMatchObject({ label: 'Expulsar', variant: 'danger', autoFocus: false });
+    confirm!.onClick();
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the order for a safe action that takes the focus', () => {
+    const actions = confirmDialogActions({ confirmLabel: 'Mover aquí', cancelLabel: 'Volver', tone: 'yellow', focus: 'confirm', onConfirm: () => undefined });
+    expect(actions.map((action) => [action.label, action.variant, action.autoFocus])).toEqual([['Volver', 'blue', false], ['Mover aquí', 'yellow', true]]);
+  });
+
+  it('renders the cancel button before the action, with data-autofocus on cancel', () => {
+    const html = renderToStaticMarkup(createElement(ConfirmDialog, { open: true, title: '¿Quitar a Misty?', onClose: () => undefined, confirmLabel: 'Quitar', onConfirm: () => undefined }, 'Dejaréis de ser amigos.'));
+    expect(html.indexOf('>Cancelar<')).toBeGreaterThan(-1);
+    expect(html.indexOf('>Cancelar<')).toBeLessThan(html.indexOf('>Quitar<'));
+    expect(html).toMatch(/<button[^>]*data-autofocus=""[^>]*>(?:(?!<\/button>).)*Cancelar/);
   });
 });

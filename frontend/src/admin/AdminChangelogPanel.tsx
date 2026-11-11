@@ -13,7 +13,7 @@ import { useChangelog } from '../changelog/ChangelogContext';
 import { formatChangelogDate } from '../changelog/ChangelogEntryView';
 import { api } from '../lib/api';
 import { apiErrorMessage } from '../lib/api-errors';
-import { cx, Chip, Dialog, Field, Panel, Pill, SelectField, TextArea, Toggle, ToastStack, useToasts, type StateBoxProps } from '../ui';
+import { Chip, ConfirmDialog, cx, Field, Panel, Pill, SelectField, TextArea, ToastStack, Toggle, useToasts, type StateBoxProps } from '../ui';
 import { ListDetail, rowControlId, SelectRow, useListDetail } from './AdminParts';
 import tone from '../styles/tones.module.css';
 
@@ -221,22 +221,14 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
           </form>
         }
       />
-      <Dialog
-        open={pending !== null}
-        title="¿Descartar los cambios?"
-        onClose={() => setPending(null)}
-        actions={[{ label: 'Descartar', variant: 'danger', onClick: () => { if (pending) applyForm(pending); } }, { label: 'Seguir editando', variant: 'cream', autoFocus: true, onClick: () => undefined }]}
-      >
+      <ConfirmDialog open={pending !== null} title="¿Descartar los cambios?" onClose={() => setPending(null)} width={520}
+        cancelLabel="Seguir editando" confirmLabel="Descartar" onConfirm={() => { if (pending) applyForm(pending); }}>
         <p>Hay cambios sin guardar en v{form.version || 'nueva'}. Si abres otra versión, se perderán.</p>
-      </Dialog>
-      <Dialog
-        open={confirmRemove}
-        title={`¿Eliminar la versión v${form.version}?`}
-        onClose={() => setConfirmRemove(false)}
-        actions={[{ label: 'Eliminar', variant: 'danger', onClick: () => void remove() }, { label: 'Cancelar', variant: 'cream', autoFocus: true, onClick: () => undefined }]}
-      >
+      </ConfirmDialog>
+      <ConfirmDialog open={confirmRemove} title={`¿Eliminar la versión v${form.version}?`} onClose={() => setConfirmRemove(false)} width={520}
+        confirmLabel="Eliminar" onConfirm={() => void remove()}>
         <p>Se borra definitivamente, también de las Novedades públicas si estaba publicada. No se puede deshacer.</p>
-      </Dialog>
+      </ConfirmDialog>
       {toasts.length > 0 && <ToastStack toasts={toasts} onClose={close} />}
     </section>
   );

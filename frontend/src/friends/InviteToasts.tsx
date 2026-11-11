@@ -2,7 +2,7 @@ import type { FriendInvite } from '@pokemon-universe/shared/public';
 import { useEffect, useState, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRoom } from '../room/RoomContext';
-import { ActionToast, Dialog } from '../ui';
+import { ActionToast, ConfirmDialog } from '../ui';
 import { useFriends } from './FriendsContext';
 
 /** Texto secundario del aviso: el minijuego elegido, si lo hay, y el código de la sala. */
@@ -53,12 +53,9 @@ export function useInviteToasts(): { toasts: ReactElement[]; dialog: ReactElemen
       primary={{ label: 'Unirse', onClick: () => accept(invite) }}
       secondary={{ label: 'Ahora no', onClick: () => dismissInvite(invite.inviteId) }} />
   ));
-  const dialog = <Dialog open={confirm !== null} title="¿Cambiar de sala?" onClose={() => setConfirm(null)} width={420}
-    actions={[
-      { label: 'Quedarme', variant: 'blue', autoFocus: true, onClick: () => undefined },
-      { label: 'Unirme', variant: 'yellow', onClick: () => { if (confirm) enter(confirm, true); } },
-    ]}>
+  const dialog = <ConfirmDialog open={confirm !== null} title="¿Cambiar de sala?" onClose={() => setConfirm(null)}
+    cancelLabel="Quedarme" confirmLabel="Unirme" tone="yellow" onConfirm={() => { if (confirm) enter(confirm, true); }}>
     <p>{confirm ? `Saldrás de tu sala actual. ¿Unirte a la sala de ${confirm.from.username}?` : ''}</p>
-  </Dialog>;
+  </ConfirmDialog>;
   return { toasts, dialog };
 }

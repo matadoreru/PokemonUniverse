@@ -5,7 +5,7 @@ import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
 import { useOptionalFriends, type FriendsContextValue } from '../friends/FriendsContext';
 import { friendErrorMessage, friendRelation, isGuestId, sentText } from '../friends/friends-state';
-import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
+import { Badge, Chip, ConfirmDialog, Dialog, Icon, Pill, Row } from '../ui';
 import { canMuteInChat } from './chat/LobbyChat';
 import { playerColor } from '../lib/player-color';
 import { distanceMemberStatus, distanceMemberStatusLabels } from '../games/pokedex-distance/pokedex-distance-selection';
@@ -211,13 +211,11 @@ export const PlayerList = memo(function PlayerList({ members, game, selfId, canM
           onSetRoomRole={onSetRoomRole} onSetChatMute={onSetChatMute} onAsk={(kind) => ask(kind, menuMember)} onClose={closeMenu} />}
       </Dialog>}
       {canManage && <>
-        <Dialog open={Boolean(pending)} title={pending && confirm ? confirm.title(pending.member.displayName) : 'Confirmar'} onClose={() => setPending(null)} width={420}
-          actions={pending && confirm ? [
-            { label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined },
-            { label: confirm.action, variant: pending.kind === 'kick' ? 'danger' : 'yellow', onClick: () => { (pending.kind === 'kick' ? onKick : onTransferHost)?.(pending.member.id); onConfirmed?.(); } },
-          ] : []}>
+        <ConfirmDialog open={Boolean(pending && confirm)} title={pending && confirm ? confirm.title(pending.member.displayName) : 'Confirmar'} onClose={() => setPending(null)}
+          confirmLabel={confirm?.action ?? 'Confirmar'} tone={pending?.kind === 'kick' ? 'danger' : 'yellow'}
+          onConfirm={() => { if (!pending) return; (pending.kind === 'kick' ? onKick : onTransferHost)?.(pending.member.id); onConfirmed?.(); }}>
           {confirm && <p>{confirm.body}</p>}
-        </Dialog>
+        </ConfirmDialog>
       </>}
     </>
   );

@@ -3,7 +3,7 @@ import { CheckCircle2, Pencil, Plus, Power, Save, Trash2, X } from 'lucide-react
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/api-errors';
-import { Chip, cx, Dialog, Field, Icon, Pill, StateBox } from '../../ui';
+import { Chip, ConfirmDialog, cx, Field, Icon, Pill, StateBox } from '../../ui';
 import s from './CustomCategoryManager.module.css';
 
 const MIN = 4;
@@ -142,9 +142,9 @@ export function CustomCategoryManager({
             </div>}
         </li>)}</ul>}
 
-    <Dialog open={removing !== null} title={`¿Eliminar esta ${noun}?`} onClose={() => setRemoving(null)}
-      actions={[{ label: 'Eliminar', variant: 'danger', onClick: () => { if (removing) void remove(removing); } }, { label: 'Cancelar', variant: 'cream', autoFocus: true, onClick: () => undefined }]}>
+    <ConfirmDialog open={removing !== null} title={`¿Eliminar esta ${noun}?`} onClose={() => setRemoving(null)} width={520}
+      confirmLabel="Eliminar" onConfirm={() => { if (removing) void remove(removing); }}>
       {removing && <p>«{removing.text}». No se puede deshacer.</p>}
-    </Dialog>
+    </ConfirmDialog>
   </section>;
 }
