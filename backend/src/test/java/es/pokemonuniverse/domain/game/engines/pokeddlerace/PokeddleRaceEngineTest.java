@@ -1,16 +1,19 @@
 package es.pokemonuniverse.domain.game.engines.pokeddlerace;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.EvolutionValue;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.PokeddleFeedbackEntry;
+import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.PokeddleRaceState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
@@ -19,6 +22,7 @@ import es.pokemonuniverse.domain.pokemon.PokemonEvolutionLink;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.GoldenRun;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
@@ -28,7 +32,10 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-/** Lo que las fixtures doradas no cubren: manifiesto, parseo y errores de arranque. */
+/**
+ * Lo que las fixtures doradas no cubren: manifiesto, parseo y errores de arranque; y que el Pokémon secreto de cada
+ * tablero solo se revele al resolverlo o al terminar, comprobado paso a paso sobre los escenarios dorados.
+ */
 class PokeddleRaceEngineTest {
 
   private final PokeddleRaceEngine engine = new PokeddleRaceEngine(GoldenManifests.of(PokeddleRaceEngine.ID));
@@ -188,5 +195,27 @@ class PokeddleRaceEngineTest {
     var feedback = PokeddleRaceRules.buildPokeddleFeedback(chansey, clefairy, config, evolutions);
     assertEquals(new PokeddleFeedbackEntry.Evolution(new EvolutionValue(1, 1), "PARTIAL"),
         feedback.get("evolutionStage"));
+  }
+
+  /** El tablero público revela su Pokémon secreto cuando su jugador lo resuelve o acaba la partida; antes, nunca. */
+  @Test
+  void aSecretIsRevealedOnlyOnceItsBoardIsSolved() {
+    int[] hidden = {0};
+    for (var file : GoldenRun.scenarios(PokeddleRaceEngine.ID)) {
+      GoldenRun.forEachSnapshot(PokeddleRaceEngine.ID, file, run -> {
+        var state = run.state(PokeddleRaceState.class);
+        var boards = engine.getPublicState(state, run.context()).boards();
+        for (var playerId : state.playerIds()) {
+          var revealed = boards.get(playerId).revealedPokemon();
+          if (state.solved().containsKey(playerId) || state.phase() == GamePhase.GAME_RESULTS) {
+            assertEquals(state.secretPokemonIds().get(playerId), revealed.id(), playerId);
+          } else {
+            assertNull(revealed, playerId + " en " + state.phase());
+            if (state.phase() == GamePhase.ROUND_RESULTS) hidden[0]++;
+          }
+        }
+      });
+    }
+    assertTrue(hidden[0] > 0, "algún tablero sigue sin resolver al cerrar una ronda");
   }
 }

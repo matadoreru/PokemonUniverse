@@ -2,29 +2,39 @@ package es.pokemonuniverse.domain.game.engines.mostlikelyto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToConfig.PromptSource;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToAction;
+import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToPlayerState;
+import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.GoldenRun;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiConsumer;
 import org.junit.jupiter.api.Test;
 
-/** Lo que las fixtures doradas no cubren: manifiesto, parseo, preguntas oficiales y errores de arranque. */
+/**
+ * Lo que las fixtures doradas no cubren: manifiesto, parseo, preguntas oficiales y errores de arranque; y la
+ * privacidad de respuestas y votos, comprobada paso a paso sobre los escenarios dorados.
+ */
 class MostLikelyToEngineTest {
 
   private final MostLikelyToEngine engine = new MostLikelyToEngine(GoldenManifests.of(MostLikelyToEngine.ID));
@@ -98,5 +108,54 @@ class MostLikelyToEngineTest {
     var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
     var error = assertThrows(EngineException.class, () -> engine.getResults(state));
     assertEquals("Results are unavailable before Most Likely To finishes", error.getMessage());
+  }
+
+  /** Mientras se elige, la vista pública solo dice quién ha respondido; cada jugador ve únicamente su Pokémon. */
+  @Test
+  void answersStayHiddenWhileChoosing() {
+    int[] answers = {0};
+    forEachState(Set.of(GamePhase.ROUND_ACTIVE), (state, run) -> {
+      var publicState = engine.getPublicState(state, run.context());
+      assertEquals(List.of(), publicState.revealedAnswers());
+      assertEquals(List.copyOf(state.selections().keySet()), publicState.selectionCompletedIds());
+      assertNull(publicState.lastRound());
+      for (var playerId : state.playerIds()) {
+        var view = playerView(state, playerId, run);
+        assertEquals("PLAYER".equals(view.role()) ? state.selections().get(playerId) : null, view.ownChoice());
+      }
+      answers[0] += state.selections().size();
+    });
+    assertTrue(answers[0] > 0, "algún escenario responde antes de votar");
+  }
+
+  /** Durante la votación (y el desempate), nadie ve a quién votó otro; el recuento llega con los resultados. */
+  @Test
+  void votesStayHiddenUntilTheResults() {
+    int[] votes = {0};
+    forEachState(Set.of(GamePhase.VOTING, GamePhase.REVOTE), (state, run) -> {
+      var publicState = engine.getPublicState(state, run.context());
+      assertEquals(List.copyOf(state.votes().keySet()), publicState.votedPlayerIds());
+      assertNull(publicState.lastRound());
+      for (var playerId : state.playerIds()) {
+        var view = playerView(state, playerId, run);
+        assertEquals("PLAYER".equals(view.role()) ? state.votes().get(playerId) : null, view.ownVotePlayerId());
+      }
+      votes[0] += state.votes().size();
+    });
+    assertTrue(votes[0] > 0, "algún escenario vota");
+  }
+
+  private MostLikelyToPlayerState playerView(MostLikelyToState state, String playerId, GoldenRun run) {
+    return assertInstanceOf(MostLikelyToPlayerState.class, engine.getPlayerState(state, playerId, run.context()));
+  }
+
+  /** Recorre los estados de los escenarios dorados en las fases dadas. */
+  private static void forEachState(Set<GamePhase> phases, BiConsumer<MostLikelyToState, GoldenRun> check) {
+    for (var file : GoldenRun.scenarios(MostLikelyToEngine.ID)) {
+      GoldenRun.forEachSnapshot(MostLikelyToEngine.ID, file, run -> {
+        var state = run.state(MostLikelyToState.class);
+        if (phases.contains(state.phase())) check.accept(state, run);
+      });
+    }
   }
 }

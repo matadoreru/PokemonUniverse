@@ -1,21 +1,25 @@
 package es.pokemonuniverse.domain.game.engines.pokemontrivia;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaDifficulty;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaQuestionType;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaOptionId;
+import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.GoldenRun;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
@@ -23,7 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/** Lo que las fixtures doradas no cubren: manifiesto, configuración por defecto, parseo, formato y errores de arranque. */
+/**
+ * Lo que las fixtures doradas no cubren: manifiesto, configuración por defecto, parseo, formato y errores de arranque;
+ * y que las respuestas ajenas no se vean durante la ronda, comprobado paso a paso sobre los escenarios dorados.
+ */
 class PokemonTriviaEngineTest {
 
   private final PokemonTriviaEngine engine = new PokemonTriviaEngine(GoldenManifests.of(PokemonTriviaEngine.ID));
@@ -94,5 +101,26 @@ class PokemonTriviaEngineTest {
     var state = engine.createInitialState(impossible, context);
     var error = assertThrows(EngineException.class, () -> engine.start(state, context));
     assertEquals("No hay suficientes datos distintos para crear preguntas con esta configuración.", error.getMessage());
+  }
+
+  /** Con la ronda abierta, la vista pública solo dice quién ha respondido; cada jugador ve únicamente su respuesta. */
+  @Test
+  void othersAnswersStayHiddenWhileTheRoundIsActive() {
+    int[] answers = {0};
+    for (var file : GoldenRun.scenarios(PokemonTriviaEngine.ID)) {
+      GoldenRun.forEachSnapshot(PokemonTriviaEngine.ID, file, run -> {
+        var state = run.state(PokemonTriviaState.class);
+        if (state.phase() != GamePhase.ROUND_ACTIVE) return;
+        var publicState = engine.getPublicState(state, run.context());
+        assertEquals(List.copyOf(state.answers().keySet()), publicState.answeredPlayerIds());
+        assertNull(publicState.lastRound());
+        for (var player : run.context().players()) {
+          assertEquals(state.answers().get(player.id()),
+              engine.getPlayerState(state, player.id(), run.context()).answer(), player.id());
+        }
+        if (state.answers().size() < state.playerIds().size()) answers[0] += state.answers().size();
+      });
+    }
+    assertTrue(answers[0] > 0, "algún escenario tiene respuestas con la ronda aún abierta");
   }
 }

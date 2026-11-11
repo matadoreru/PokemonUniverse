@@ -9,23 +9,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoAction;
+import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.GoldenRun;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 import org.junit.jupiter.api.Test;
 
-/** Lo que las fixtures doradas no cubren: manifiesto, parseo y errores de arranque (el exportador no los graba). */
+/**
+ * Lo que las fixtures doradas no cubren: manifiesto, parseo y errores de arranque (el exportador no los graba); y la
+ * privacidad de soluciones e intentos, comprobada paso a paso sobre los escenarios dorados. Los tableros (condiciones y
+ * Pokémon colocados) son públicos a propósito: la carrera se sigue en directo.
+ */
 class PokemonBingoEngineTest {
 
   private final PokemonBingoEngine engine = new PokemonBingoEngine(GoldenManifests.of(PokemonBingoEngine.ID));
@@ -114,5 +122,49 @@ class PokemonBingoEngineTest {
     assertFalse(spectator.canAct());
     assertEquals(null, spectator.cooldownUntil());
     assertTrue(engine.getPlayerState(state, "p1", context).canAct());
+  }
+
+  /** El emparejamiento del servidor no sale nunca; las posibles soluciones solo llegan con los resultados. */
+  @Test
+  void solutionsStayHiddenUntilTheEnd() {
+    int[] revealed = {0};
+    forEachState((state, run) -> {
+      var cells = engine.getPublicState(state, run.context()).boards().values().stream()
+          .flatMap(board -> board.cells().stream()).toList();
+      if (state.phase() == GamePhase.GAME_RESULTS) {
+        revealed[0] += (int) cells.stream().filter(cell -> !cell.possibleSolutions().isEmpty()).count();
+      } else {
+        assertTrue(cells.stream().allMatch(cell -> cell.possibleSolutions().isEmpty()), state.phase().name());
+      }
+    });
+    assertTrue(revealed[0] > 0, "algún escenario revela soluciones al terminar");
+  }
+
+  /** El último intento (con su Pokémon y su mensaje) solo llega a quien lo hizo; un fallo no aparece en su tablero. */
+  @Test
+  void privateAttemptsOnlyReachTheirPlayer() {
+    int[] misses = {0};
+    forEachState((state, run) -> {
+      var publicState = engine.getPublicState(state, run.context());
+      for (var playerId : state.playerIds()) {
+        var attempt = state.lastAttempts().get(playerId);
+        assertEquals(attempt, engine.getPlayerState(state, playerId, run.context()).lastAttempt(), playerId);
+        if (attempt == null || attempt.correct()) continue;
+        misses[0]++;
+        var cell = publicState.boards().get(playerId).cells().stream()
+            .filter(candidate -> candidate.id().equals(attempt.cellId())).findFirst().orElseThrow();
+        assertFalse(cell.assignment() != null && cell.assignment().id().equals(attempt.pokemonId()),
+            "el fallo de " + playerId + " no se coloca en su tablero público");
+      }
+    });
+    assertTrue(misses[0] > 0, "algún escenario tiene un intento fallido");
+  }
+
+  /** Recorre los estados de los escenarios dorados. */
+  private static void forEachState(BiConsumer<PokemonBingoState, GoldenRun> check) {
+    for (var file : GoldenRun.scenarios(PokemonBingoEngine.ID)) {
+      GoldenRun.forEachSnapshot(PokemonBingoEngine.ID, file, run -> check.accept(run.state(PokemonBingoState.class),
+          run));
+    }
   }
 }

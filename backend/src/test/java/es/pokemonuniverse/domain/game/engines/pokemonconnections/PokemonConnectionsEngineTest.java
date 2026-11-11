@@ -3,6 +3,7 @@ package es.pokemonuniverse.domain.game.engines.pokemonconnections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,24 +11,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
+import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsCatalog.PuzzleOptions;
+import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAnswerGroup;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionPokemon;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.PokemonConnectionsAction;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.PokemonConnectionsPlayerState;
+import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.PokemonConnectionsState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.GoldenRun;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -191,5 +197,34 @@ class PokemonConnectionsEngineTest {
     assertEquals(List.of("classic-connections-eevee-family-fossils-dogs", "classic-connections-fossils-dogs-food",
         "classic-connections-dogs-food-eevee-family", "classic-connections-food-eevee-family-fossils"),
         candidates.stream().map(PokemonConnectionsCatalog.GeneratedConnectionsPuzzle::key).toList());
+  }
+
+  /**
+   * Con la ronda abierta, cada jugador ve solo los grupos que encontró; la vista pública, solo cuántos lleva cada uno.
+   * Ningún escenario dorado acierta un grupo con la ronda abierta, así que se acierta uno sobre el primero.
+   */
+  @Test
+  void eachPlayerSeesOnlyTheGroupsTheyFound() throws IOException {
+    var run = GoldenRun.of(PokemonConnectionsEngine.ID, "race-and-errors");
+    run.start();
+    var started = run.state(PokemonConnectionsState.class);
+    var group = started.answerGroups().get(0);
+    var ids = group.pokemon().stream().map(ConnectionPokemon::id).toList();
+    var result = engine.handleAction(started, "p1", new PokemonConnectionsAction.SubmitGroup(ids), run.context());
+    assertTrue(result.accepted(), String.valueOf(result.error()));
+    var state = result.state();
+    assertEquals(GamePhase.ROUND_ACTIVE, state.phase());
+
+    var publicState = engine.getPublicState(state, run.context());
+    assertNull(publicState.lastRound());
+    assertEquals(1, publicState.playerProgress().get("p1").foundGroups());
+    var publicJson = ObjectMapper.getDefault().writeValueAsString(publicState);
+    assertFalse(publicJson.contains(group.label()), "la vista pública no trae la etiqueta del grupo");
+    for (var playerId : state.playerIds()) {
+      var view = assertInstanceOf(PokemonConnectionsPlayerState.Player.class,
+          engine.getPlayerState(state, playerId, run.context()));
+      var shown = view.foundGroups().stream().map(ConnectionAnswerGroup::id).collect(Collectors.toSet());
+      assertEquals(playerId.equals("p1") ? Set.of(group.id()) : Set.of(), shown, playerId);
+    }
   }
 }

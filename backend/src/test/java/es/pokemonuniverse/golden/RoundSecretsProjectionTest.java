@@ -132,7 +132,7 @@ class RoundSecretsProjectionTest {
       var submitted = s.attempts().stream().map(BluffAuctionAttempt::pokemon).map(pokemon -> pokemon.id()).toList();
       return pokemonSecrets(context, s.validPokemonIds().stream().filter(id -> !submitted.contains(id)).toList());
     }, Set.of(), false));
-    // Los Pokémon del tablero son públicos; los grupos (categoría, etiqueta, explicación) solo los ve quien los encontró.
+    // Los Pokémon del tablero son públicos; cada grupo (categoría, etiqueta, explicación) solo lo ve quien lo encontró.
     RULES.put("pokemon-connections", Rule.of((state, context) -> {
       var s = (PokemonConnectionsState) state;
       if (s.phase() != GamePhase.ROUND_ACTIVE) return List.of();

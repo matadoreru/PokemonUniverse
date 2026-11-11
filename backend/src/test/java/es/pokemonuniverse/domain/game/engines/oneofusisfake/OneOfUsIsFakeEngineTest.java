@@ -2,6 +2,7 @@ package es.pokemonuniverse.domain.game.engines.oneofusisfake;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,19 +14,27 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeConfig.CategorySource;
+import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.FakeRevealedChoice;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.OneOfUsIsFakeAction;
+import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.OneOfUsIsFakePlayerState;
+import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.OneOfUsIsFakeState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.golden.GoldenRun;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import org.junit.jupiter.api.Test;
 
-/** Lo que las fixtures doradas no cubren: manifiesto, parseo, categorías oficiales y errores de arranque. */
+/**
+ * Lo que las fixtures doradas no cubren: manifiesto, parseo, categorías oficiales y errores de arranque; y la
+ * privacidad de cada fase, comprobada paso a paso sobre los escenarios dorados.
+ */
 class OneOfUsIsFakeEngineTest {
 
   private final OneOfUsIsFakeEngine engine = new OneOfUsIsFakeEngine(GoldenManifests.of(OneOfUsIsFakeEngine.ID));
@@ -103,5 +112,73 @@ class OneOfUsIsFakeEngineTest {
     var state = engine.start(engine.createInitialState(engine.defaultConfig(), context), context);
     var error = assertThrows(EngineException.class, () -> engine.getResults(state));
     assertEquals("Results are unavailable before the game finishes", error.getMessage());
+  }
+
+  /** Antes de los resultados, solo el fake sabe que lo es (y solo si {@code fakeKnows}); nadie más recibe quién es. */
+  @Test
+  void onlyTheFakeIsToldTheyAreFake() {
+    int checked = forEachHiddenRound((state, run) -> {
+      var publicState = engine.getPublicState(state, run.context());
+      assertNull(publicState.lastRound(), "la vista pública no trae el resultado de la ronda");
+      for (var playerId : state.playerIds()) {
+        // Un desconectado recibe la vista de espectador, que solo lleva role.
+        if (!(engine.getPlayerState(state, playerId, run.context()) instanceof OneOfUsIsFakePlayerState view)) continue;
+        boolean told = state.config().fakeKnows() && playerId.equals(state.fakePlayerId());
+        assertEquals(told ? Boolean.TRUE : null, view.isFake(), playerId + " en " + state.phase());
+      }
+    });
+    assertTrue(checked > 0);
+  }
+
+  /** Las elecciones solo se ven en la vista propia hasta que se revelan, en el orden de revelado. */
+  @Test
+  void choicesStayHiddenUntilRevealed() {
+    int checked = forEachHiddenRound((state, run) -> {
+      var revealed = state.revealOrder().subList(0, Math.min(state.revealedCount(), state.revealOrder().size()));
+      var shown = engine.getPublicState(state, run.context()).revealedChoices().stream()
+          .map(FakeRevealedChoice::playerId).toList();
+      assertEquals(revealed.stream().filter(state.selections()::containsKey).toList(), shown, state.phase().name());
+      if (state.phase() == GamePhase.ROUND_ACTIVE) assertEquals(List.of(), shown);
+      for (var playerId : state.playerIds()) {
+        // Un desconectado recibe la vista de espectador, que solo lleva role.
+        if (!(engine.getPlayerState(state, playerId, run.context()) instanceof OneOfUsIsFakePlayerState view)) continue;
+        assertEquals(state.selections().get(playerId), view.ownChoice());
+      }
+    });
+    assertTrue(checked > 0);
+  }
+
+  /** Durante la votación, la vista pública solo dice quién ha votado; cada jugador ve únicamente su voto. */
+  @Test
+  void votesStayPrivateUntilTheResults() {
+    int[] votes = {0};
+    forEachHiddenRound((state, run) -> {
+      var publicState = engine.getPublicState(state, run.context());
+      assertEquals(List.copyOf(state.votes().keySet()), publicState.votedPlayerIds());
+      for (var playerId : state.playerIds()) {
+        // Un desconectado recibe la vista de espectador, que solo lleva role.
+        if (!(engine.getPlayerState(state, playerId, run.context()) instanceof OneOfUsIsFakePlayerState view)) continue;
+        assertEquals(state.votes().get(playerId), view.ownVotePlayerId());
+      }
+      votes[0] += state.votes().size();
+    });
+    assertTrue(votes[0] > 0, "algún escenario vota antes de los resultados");
+  }
+
+  /** Recorre los estados de los escenarios dorados con fake elegido y antes de los resultados; devuelve cuántos. */
+  private int forEachHiddenRound(BiConsumer<OneOfUsIsFakeState, GoldenRun> check) {
+    int[] count = {0};
+    for (var file : GoldenRun.scenarios(OneOfUsIsFakeEngine.ID)) {
+      GoldenRun.forEachSnapshot(OneOfUsIsFakeEngine.ID, file, run -> {
+        var state = run.state(OneOfUsIsFakeState.class);
+        if (state.fakePlayerId() == null || state.phase() == GamePhase.ROUND_RESULTS
+            || state.phase() == GamePhase.GAME_RESULTS) {
+          return;
+        }
+        check.accept(state, run);
+        count[0]++;
+      });
+    }
+    return count[0];
   }
 }
