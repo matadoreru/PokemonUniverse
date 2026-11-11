@@ -68,4 +68,12 @@ class JsNumbersTest {
       assertTrue(Double.isNaN(JsNumbers.fromString(nan)), nan);
     }
   }
+
+  @Test
+  void truthyIsBooleanOfAJsInteger() {
+    assertFalse(JsNumbers.truthy(null));
+    assertFalse(JsNumbers.truthy(0));
+    assertTrue(JsNumbers.truthy(-1));
+    assertTrue(JsNumbers.truthy(2));
+  }
 }

@@ -4,9 +4,11 @@ import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonHint;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonPlayerStats;
 import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonState;
+import es.pokemonuniverse.domain.json.JsNumbers;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,17 +25,14 @@ public final class WhosThatPokemonRules {
 
   private WhosThatPokemonRules() {}
 
-  private static boolean blank(String value) {
-    return value == null || value.isEmpty();
-  }
-
   /**
    * {@code isUsableWhoPokemonSprite}: URL {@code https} de {@code raw.githubusercontent.com} terminada en
    * {@code .png}/{@code .webp}. El esquema y el host se comparan en minúscula, como los normaliza {@code new URL}; una
    * URL que {@link URI} no admite cuenta como el {@code catch} de TS.
    */
   public static boolean isUsableWhoPokemonSprite(Pokemon pokemon) {
-    if (blank(pokemon.id()) || blank(pokemon.name()) || blank(pokemon.sprite())) return false;
+    if (!JsStrings.truthy(pokemon.id()) || !JsStrings.truthy(pokemon.name())
+        || !JsStrings.truthy(pokemon.sprite())) return false;
     try {
       var url = new URI(pokemon.sprite());
       var scheme = url.getScheme();
@@ -52,19 +51,15 @@ public final class WhosThatPokemonRules {
     var hints = new ArrayList<WhosThatPokemonHint>();
     hints.add(new WhosThatPokemonHint.Generation(pokemon.generation()));
     hints.add(new WhosThatPokemonHint.Type(pokemon.types().getFirst()));
-    if (truthy(pokemon.evolutionStage()) && truthy(pokemon.evolutionStageCount())) {
+    if (JsNumbers.truthy(pokemon.evolutionStage()) && JsNumbers.truthy(pokemon.evolutionStageCount())) {
       hints.add(new WhosThatPokemonHint.Evolution(pokemon.evolutionStage(), pokemon.evolutionStageCount()));
     } else {
       hints.add(new WhosThatPokemonHint.TypeCount(pokemon.types().size()));
     }
-    if (hints.size() < 3 && !blank(pokemon.legendaryStatus())) {
+    if (hints.size() < 3 && JsStrings.truthy(pokemon.legendaryStatus())) {
       hints.add(new WhosThatPokemonHint.Category(pokemon.legendaryStatus()));
     }
     return List.copyOf(hints.subList(0, Math.min(3, hints.size())));
-  }
-
-  private static boolean truthy(Integer value) {
-    return value != null && value != 0;
   }
 
   /** {@code whoPokemonHintSchedule}: {@code Math.round} de JS y de Java redondean igual (mitades hacia +∞). */

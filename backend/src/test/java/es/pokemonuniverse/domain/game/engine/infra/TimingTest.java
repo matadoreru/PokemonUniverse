@@ -97,6 +97,10 @@ class TimingTest {
     var noRandom = assertThrows(NullPointerException.class, () -> GameContext.builder(catalog, null));
     assertEquals("GameContext necesita una fuente de azar (random)", noRandom.getMessage());
     var context = context(5, List.of());
+    assertFalse(context.isHost("x"));
+    assertFalse(context.toBuilder().hostId("").build().isHost(""));
+    assertTrue(context.toBuilder().hostId("x").build().isHost("x"));
+    assertFalse(context.toBuilder().hostId("x").build().isHost("y"));
     assertEquals(9, context.withNow(9).now());
     assertEquals(List.of("x"), context.withPlayers(List.of(new GamePlayer("x", "X"))).players().stream()
         .map(GamePlayer::id).toList());

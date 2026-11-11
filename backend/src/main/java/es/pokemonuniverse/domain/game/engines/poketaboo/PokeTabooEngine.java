@@ -76,10 +76,6 @@ public final class PokeTabooEngine
     return PokeTabooConfig.defaults();
   }
 
-  private static boolean truthy(@Nullable String value) {
-    return value != null && !value.isEmpty();
-  }
-
   /** {@code context.pokemon.byId(id ?? '')}. */
   private static @Nullable Pokemon byId(GameContext context, @Nullable String id) {
     return context.pokemon().byId(id == null ? "" : id).orElse(null);
@@ -87,7 +83,8 @@ public final class PokeTabooEngine
 
   public static List<Pokemon> pokeTabooPool(PokeTabooConfig config, GameContext context) {
     return context.pokemon().forGenerations(config.generations(), config.includeRegionalForms()).stream()
-        .filter(pokemon -> truthy(pokemon.id()) && truthy(pokemon.name()) && truthy(pokemon.sprite()))
+        .filter(pokemon -> JsStrings.truthy(pokemon.id()) && JsStrings.truthy(pokemon.name())
+            && JsStrings.truthy(pokemon.sprite()))
         .toList();
   }
 

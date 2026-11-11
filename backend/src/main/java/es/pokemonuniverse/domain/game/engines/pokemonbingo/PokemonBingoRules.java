@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonbingo;
 
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 
 /**
@@ -19,8 +20,8 @@ public final class PokemonBingoRules {
         && (!config.family("weight") || pokemon.weightHectograms() > 0)
         && (!config.family("evolutionStage") || (nonZero(pokemon.evolutionStage())
             && nonZero(pokemon.evolutionStageCount())))
-        && (!config.family("legendaryStatus") || nonEmpty(pokemon.legendaryStatus()))
-        && (!config.family("color") || (nonEmpty(pokemon.color()) && !pokemon.color().equals("unknown")))
+        && (!config.family("legendaryStatus") || JsStrings.truthy(pokemon.legendaryStatus()))
+        && (!config.family("color") || (JsStrings.truthy(pokemon.color()) && !pokemon.color().equals("unknown")))
         && (!config.family("abilities") || (pokemon.abilities() != null && !pokemon.abilities().isEmpty()));
   }
 
@@ -28,7 +29,4 @@ public final class PokemonBingoRules {
     return value != null && value != 0;
   }
 
-  private static boolean nonEmpty(String value) {
-    return value != null && !value.isEmpty();
-  }
 }

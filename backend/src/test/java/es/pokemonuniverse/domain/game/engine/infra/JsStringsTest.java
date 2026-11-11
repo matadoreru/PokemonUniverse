@@ -23,4 +23,12 @@ class JsStringsTest {
     assertTrue(JsStrings.isJsWhitespace('\u2007'));
     assertTrue(JsStrings.isJsWhitespace('\u1680'));
   }
+
+  @Test
+  void truthyIsBooleanOfAJsString() {
+    assertFalse(JsStrings.truthy(null));
+    assertFalse(JsStrings.truthy(""));
+    assertTrue(JsStrings.truthy(" "));
+    assertTrue(JsStrings.truthy("0"));
+  }
 }

@@ -57,6 +57,11 @@ public record GameContext(
     return toBuilder().players(value).build();
   }
 
+  /** Hay host y es {@code playerId}. */
+  public boolean isHost(String playerId) {
+    return hostId != null && !hostId.isEmpty() && hostId.equals(playerId);
+  }
+
   /** El jugador existe, está conectado y activo. */
   public boolean isPlayerRequired(String playerId) {
     for (var player : players) {

@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.Immutables;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -69,12 +70,6 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
   @Override
   public PokemonBluffAuctionConfig defaultConfig() {
     return PokemonBluffAuctionConfig.defaults();
-  }
-
-  private static <T> List<T> appended(List<T> values, T value) {
-    var next = new ArrayList<T>(values);
-    next.add(value);
-    return next;
   }
 
   /** {@code canonicalPool}: la primera especie por defecto de cada número de Pokédex, en el orden del catálogo. */
@@ -244,8 +239,8 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
       if (!next.passedPlayerIds().contains(playerId) && context.isPlayerRequired(playerId)) break;
       if (!next.passedPlayerIds().contains(playerId)) {
         next = next.toBuilder()
-            .passedPlayerIds(appended(next.passedPlayerIds(), playerId))
-            .bidHistory(appended(next.bidHistory(), BluffAuctionBidEvent.pass(playerId)))
+            .passedPlayerIds(Immutables.appended(next.passedPlayerIds(), playerId))
+            .bidHistory(Immutables.appended(next.bidHistory(), BluffAuctionBidEvent.pass(playerId)))
             .build();
       }
       var settled = settleIfOneRemains(next, context);
@@ -259,8 +254,8 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
   private static PokemonBluffAuctionState passAndAdvance(PokemonBluffAuctionState state, String playerId,
       GameContext context) {
     var next = state.toBuilder()
-        .passedPlayerIds(appended(state.passedPlayerIds(), playerId))
-        .bidHistory(appended(state.bidHistory(), BluffAuctionBidEvent.pass(playerId)))
+        .passedPlayerIds(Immutables.appended(state.passedPlayerIds(), playerId))
+        .bidHistory(Immutables.appended(state.bidHistory(), BluffAuctionBidEvent.pass(playerId)))
         .build();
     var settled = settleIfOneRemains(next, context);
     return settled.phase() == GamePhase.ROUND_ACTIVE ? advanceTurn(settled, context) : settled;
@@ -344,7 +339,7 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
         var next = state.toBuilder()
             .currentBid(amount)
             .currentBidderId(playerId)
-            .bidHistory(appended(state.bidHistory(), BluffAuctionBidEvent.bid(playerId, amount)))
+            .bidHistory(Immutables.appended(state.bidHistory(), BluffAuctionBidEvent.bid(playerId, amount)))
             .build();
         return GameActionResult.accept(advanceTurn(next, context));
       }
@@ -361,7 +356,7 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
     var pokemon = found.get();
     if (state.usedPokemonIds().contains(pokemon.id())) {
       var duplicate = new BluffAuctionAttempt(BluffAuctionPokemonView.of(pokemon), "DUPLICATE", context.now());
-      return GameActionResult.accept(state.toBuilder().attempts(appended(state.attempts(), duplicate)).build());
+      return GameActionResult.accept(state.toBuilder().attempts(Immutables.appended(state.attempts(), duplicate)).build());
     }
     boolean correct = state.validPokemonIds().contains(pokemon.id());
     var attempt = new BluffAuctionAttempt(BluffAuctionPokemonView.of(pokemon), correct ? "CORRECT" : "INCORRECT",
@@ -370,8 +365,8 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
     playerStats.put(playerId, stats(state, playerId).afterAttempt(correct));
     long deadline = state.roundEndsAt() == null ? context.now() : state.roundEndsAt();
     var next = state.toBuilder()
-        .usedPokemonIds(appended(state.usedPokemonIds(), pokemon.id()))
-        .attempts(appended(state.attempts(), attempt))
+        .usedPokemonIds(Immutables.appended(state.usedPokemonIds(), pokemon.id()))
+        .attempts(Immutables.appended(state.attempts(), attempt))
         .correctCount(state.correctCount() + (correct ? 1 : 0))
         .incorrectCount(state.incorrectCount() + (correct ? 0 : 1))
         .roundEndsAt(deadline + (correct ? BLUFF_SECONDS_PER_CORRECT_ATTEMPT
@@ -409,8 +404,8 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
       var turnPlayerId = currentTurnPlayerId(state);
       if (turnPlayerId != null && !context.isPlayerRequired(turnPlayerId)) {
         var next = state.passedPlayerIds().contains(turnPlayerId) ? state : state.toBuilder()
-            .passedPlayerIds(appended(state.passedPlayerIds(), turnPlayerId))
-            .bidHistory(appended(state.bidHistory(), BluffAuctionBidEvent.pass(turnPlayerId)))
+            .passedPlayerIds(Immutables.appended(state.passedPlayerIds(), turnPlayerId))
+            .bidHistory(Immutables.appended(state.bidHistory(), BluffAuctionBidEvent.pass(turnPlayerId)))
             .build();
         var settled = settleIfOneRemains(next, context);
         return settled.phase() == GamePhase.ROUND_ACTIVE ? advanceTurn(settled, context) : settled;

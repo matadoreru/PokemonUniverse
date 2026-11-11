@@ -4,6 +4,7 @@ import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsEvolution;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsHint;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsPlayerStats;
@@ -72,11 +73,7 @@ public final class GuessFromStatsRules {
     if (!config.hintsEnabled()) return true;
     var hints = config.hints();
     return (!hints.evolution() || normalizeEvolution(pokemon) != null)
-        && (!hints.category() || present(pokemon.legendaryStatus()));
-  }
-
-  private static boolean present(@Nullable String value) {
-    return value != null && !value.isEmpty();
+        && (!hints.category() || JsStrings.truthy(pokemon.legendaryStatus()));
   }
 
   /** {@code [...new Set(types)].sort()}: orden por unidades UTF-16, el de {@link String#compareTo}. */
@@ -95,7 +92,7 @@ public final class GuessFromStatsRules {
     if (enabled.evolution() && evolution != null) hints.add(new GuessFromStatsHint.Evolution(evolution));
     if (enabled.height()) hints.add(new GuessFromStatsHint.Height(pokemon.heightDecimeters()));
     if (enabled.weight()) hints.add(new GuessFromStatsHint.Weight(pokemon.weightHectograms()));
-    if (enabled.category() && present(pokemon.legendaryStatus())) {
+    if (enabled.category() && JsStrings.truthy(pokemon.legendaryStatus())) {
       hints.add(new GuessFromStatsHint.Category(pokemon.legendaryStatus()));
     }
     return hints;

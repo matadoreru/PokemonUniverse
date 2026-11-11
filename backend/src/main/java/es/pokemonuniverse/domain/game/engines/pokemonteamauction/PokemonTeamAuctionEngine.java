@@ -9,6 +9,8 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.Immutables;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -67,11 +69,6 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
     return PokemonTeamAuctionConfig.defaults();
   }
 
-  /** {@code Boolean(value)} de una cadena de JS. */
-  private static boolean truthy(@Nullable String value) {
-    return value != null && !value.isEmpty();
-  }
-
   private static <T> List<T> rotate(List<T> values, int offset) {
     if (values.isEmpty()) return List.of();
     int start = offset % values.size();
@@ -80,17 +77,11 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
     return rotated;
   }
 
-  private static <T> List<T> appended(List<T> values, T value) {
-    var next = new ArrayList<T>(values);
-    next.add(value);
-    return next;
-  }
-
   /** Consume {@code random} al barajar el pool una vez; los lotes lo recorren en círculo. */
   private static List<TeamAuctionPokemon> poolFor(GameContext context, PokemonTeamAuctionConfig config,
       int totalLots) {
     var pool = context.pokemon().forGenerations(config.generations(), config.includeForms()).stream()
-        .filter(pokemon -> truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
+        .filter(pokemon -> JsStrings.truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
         .toList();
     if (pool.isEmpty()) throw new EngineException("No hay Pokémon disponibles con estas generaciones.");
     var shuffledPool = Randoms.shuffled(pool, context.random());
@@ -185,18 +176,18 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
     var result = new TeamAuctionLotResult(state.currentLotIndex() + 1, lot, state.currentBidderId(),
         currentBid == null ? 0 : currentBid);
     int nextLot = state.currentLotIndex() + 1;
-    if (!truthy(state.currentBidderId()) || currentBid == null) {
-      return beginLot(state.toBuilder().lotHistory(appended(state.lotHistory(), result)).build(), nextLot, context);
+    if (!JsStrings.truthy(state.currentBidderId()) || currentBid == null) {
+      return beginLot(state.toBuilder().lotHistory(Immutables.appended(state.lotHistory(), result)).build(), nextLot, context);
     }
     var winner = participant(state, state.currentBidderId());
     if (winner == null || winner.coins() < currentBid || winner.team().size() >= TEAM_SIZE) {
-      return beginLot(state.toBuilder().lotHistory(appended(state.lotHistory(), result.unowned())).build(), nextLot,
+      return beginLot(state.toBuilder().lotHistory(Immutables.appended(state.lotHistory(), result.unowned())).build(), nextLot,
           context);
     }
     var participants = new LinkedHashMap<>(state.participants());
     participants.put(state.currentBidderId(), winner.afterWinning(currentBid, lot));
     return beginLot(
-        state.toBuilder().participants(participants).lotHistory(appended(state.lotHistory(), result)).build(),
+        state.toBuilder().participants(participants).lotHistory(Immutables.appended(state.lotHistory(), result)).build(),
         nextLot, context);
   }
 
@@ -223,8 +214,8 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
       if (!next.passedPlayerIds().contains(currentId) && !currentId.equals(next.currentBidderId())) {
         var pass = TeamAuctionBidEvent.pass(next.currentLotIndex() + 1, currentId);
         next = next.toBuilder()
-            .passedPlayerIds(appended(next.passedPlayerIds(), currentId))
-            .bidHistory(appended(next.bidHistory(), pass))
+            .passedPlayerIds(Immutables.appended(next.passedPlayerIds(), currentId))
+            .bidHistory(Immutables.appended(next.bidHistory(), pass))
             .build();
       }
       next = next.toBuilder().roundEndsAt(null).turnIndex(nextTurnIndex(next)).build();
@@ -244,8 +235,8 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
     var pass = TeamAuctionBidEvent.pass(state.currentLotIndex() + 1, playerId);
     return normalizeTurn(state.toBuilder()
         .roundEndsAt(null)
-        .passedPlayerIds(appended(state.passedPlayerIds(), playerId))
-        .bidHistory(appended(state.bidHistory(), pass))
+        .passedPlayerIds(Immutables.appended(state.passedPlayerIds(), playerId))
+        .bidHistory(Immutables.appended(state.bidHistory(), pass))
         .turnIndex(nextTurnIndex(state))
         .build(), context);
   }
@@ -317,7 +308,7 @@ public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuc
           .roundEndsAt(null)
           .currentBid(raise.amount())
           .currentBidderId(playerId)
-          .bidHistory(appended(state.bidHistory(), bid))
+          .bidHistory(Immutables.appended(state.bidHistory(), bid))
           .turnIndex(nextTurnIndex(state))
           .build();
       return GameActionResult.accept(normalizeTurn(next, context));

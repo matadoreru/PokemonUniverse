@@ -1,8 +1,10 @@
 package es.pokemonuniverse.domain.game.engines.pokeddlerace;
 
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.EvolutionValue;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.PokeddleFeedbackEntry;
+import es.pokemonuniverse.domain.json.JsNumbers;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -112,18 +114,11 @@ public final class PokeddleRaceRules {
   public static boolean hasCompletePokeddleMetadata(Pokemon pokemon, PokeddleRaceConfig config) {
     return (!config.clue("height") || pokemon.heightDecimeters() > 0)
         && (!config.clue("weight") || pokemon.weightHectograms() > 0)
-        && (!config.clue("evolutionStage") || (truthy(pokemon.evolutionStage()) && truthy(pokemon.evolutionStageCount())))
-        && (!config.clue("legendaryStatus") || truthy(pokemon.legendaryStatus()))
-        && (!config.clue("color") || (truthy(pokemon.color()) && !"unknown".equals(pokemon.color())))
+        && (!config.clue("evolutionStage") || (JsNumbers.truthy(pokemon.evolutionStage())
+            && JsNumbers.truthy(pokemon.evolutionStageCount())))
+        && (!config.clue("legendaryStatus") || JsStrings.truthy(pokemon.legendaryStatus()))
+        && (!config.clue("color") || (JsStrings.truthy(pokemon.color()) && !"unknown".equals(pokemon.color())))
         && (!config.clue("abilities") || !abilities(pokemon).isEmpty());
-  }
-
-  private static boolean truthy(Integer value) {
-    return value != null && value != 0;
-  }
-
-  private static boolean truthy(String value) {
-    return value != null && !value.isEmpty();
   }
 
   /** {@code shufflePokeddlePool}: el mismo Fisher–Yates que {@link Randoms#shuffled}, con las mismas extracciones. */

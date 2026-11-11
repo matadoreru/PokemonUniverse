@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -100,13 +101,10 @@ public final class SketchmonEngine
   /** {@code sketchmonPool}: con id, nombre y sprite; las formas solo con {@code includeForms}. */
   static List<Pokemon> pool(SketchmonConfig config, GameContext context) {
     return context.pokemon().forGenerations(config.generations(), config.includeForms()).stream()
-        .filter(pokemon -> !blank(pokemon.id()) && !blank(pokemon.name()) && !blank(pokemon.sprite())
+        .filter(pokemon -> JsStrings.truthy(pokemon.id()) && JsStrings.truthy(pokemon.name())
+            && JsStrings.truthy(pokemon.sprite())
             && (config.includeForms() || pokemon.isDefault()))
         .toList();
-  }
-
-  private static boolean blank(@Nullable String value) {
-    return value == null || value.isEmpty();
   }
 
   /** {@code sketchmonHintDeadlines}: {@code Math.round} de JS y de Java redondean igual (mitades hacia +∞). */

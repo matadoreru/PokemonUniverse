@@ -8,6 +8,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.Immutables;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsCatalog.PuzzleOptions;
@@ -73,12 +74,6 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     return PokemonConnectionsConfig.defaults();
   }
 
-  private static <T> List<T> appended(List<T> values, T value) {
-    var next = new ArrayList<T>(values);
-    next.add(value);
-    return next;
-  }
-
   /** {@code values.length > limit ? values.slice(-limit) : values}. */
   private static <T> List<T> lastAtMost(List<T> values, int limit) {
     return values.size() > limit ? values.subList(values.size() - limit, values.size()) : values;
@@ -100,7 +95,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     var config = state.config();
     var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context, new PuzzleOptions(config.groupSize(),
         config.pokemonCount(), config.generations(), state.usedPuzzleKeys(), state.recentCategoryIds()));
-    var usedPuzzleKeys = appended(state.usedPuzzleKeys(), puzzle.key());
+    var usedPuzzleKeys = Immutables.appended(state.usedPuzzleKeys(), puzzle.key());
     var recentCategoryIds = new ArrayList<String>(state.recentCategoryIds());
     for (var group : puzzle.groups()) recentCategoryIds.add(group.categoryId());
     return state.toBuilder()
@@ -250,7 +245,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
       if (state.phase() != GamePhase.ROUND_RESULTS) {
         return GameActionResult.reject(state, "La solución aún no se está mostrando.");
       }
-      if (context.hostId() == null || context.hostId().isEmpty() || !context.hostId().equals(playerId)) {
+      if (!context.isHost(playerId)) {
         return GameActionResult.reject(state, "Solo el Host puede avanzar el puzle.");
       }
       return GameActionResult.accept(beginNextRound(state, context));
@@ -289,7 +284,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     var attempted = List.copyOf(uniqueIds);
     var matched = exactGroup(remainingGroups, uniqueIds);
     if (matched != null) {
-      var foundGroupIds = appended(current.foundGroupIds(), matched.id());
+      var foundGroupIds = Immutables.appended(current.foundGroupIds(), matched.id());
       boolean solved = foundGroupIds.size() == state.answerGroups().size();
       Integer completionRank = solved ? Integer.valueOf(state.completionOrder().size() + 1) : null;
       int bonus = completionRank == null ? 0 : PokemonConnectionsRules.completionBonus(completionRank);
@@ -309,7 +304,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
       playerStats.put(playerId, stats(state, playerId).afterGroupFound());
       var next = state.toBuilder()
           .progress(progress)
-          .completionOrder(solved ? appended(state.completionOrder(), playerId) : state.completionOrder())
+          .completionOrder(solved ? Immutables.appended(state.completionOrder(), playerId) : state.completionOrder())
           .scores(scores)
           .playerStats(playerStats)
           .build();

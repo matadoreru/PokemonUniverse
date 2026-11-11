@@ -336,7 +336,7 @@ public final class TypeDuelEngine
       if (state.phase() != GamePhase.ROUND_RESULTS) {
         return GameActionResult.reject(state, "No hay ningún resultado que avanzar.");
       }
-      if (context.hostId() == null || !context.hostId().equals(playerId)) {
+      if (!context.isHost(playerId)) {
         return GameActionResult.reject(state, "Solo el Host puede avanzar la ronda.");
       }
       return GameActionResult.accept(advanceAfterResult(state, context));

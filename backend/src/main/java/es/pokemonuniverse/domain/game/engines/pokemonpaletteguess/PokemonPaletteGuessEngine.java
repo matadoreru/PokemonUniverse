@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
@@ -130,14 +131,11 @@ public final class PokemonPaletteGuessEngine implements
     return new VisiblePalette(List.copyOf(colors), source.stream().map(weight -> weight / sum).toList());
   }
 
-  private static boolean present(String value) {
-    return value != null && !value.isEmpty();
-  }
-
   /** {@code pokemonPalettePool}: formas por defecto con id, nombre, sprite y al menos 3 colores. */
   static List<Pokemon> pool(PokemonPaletteGuessConfig config, GameContext context) {
     return context.pokemon().forGenerations(config.generations()).stream()
-        .filter(pokemon -> present(pokemon.id()) && present(pokemon.name()) && present(pokemon.sprite())
+        .filter(pokemon -> JsStrings.truthy(pokemon.id()) && JsStrings.truthy(pokemon.name())
+            && JsStrings.truthy(pokemon.sprite())
             && (pokemon.palette() == null ? 0 : pokemon.palette().size()) >= MIN_PALETTE_COLORS)
         .toList();
   }
@@ -158,7 +156,7 @@ public final class PokemonPaletteGuessEngine implements
           }
         }
         case CATEGORY -> {
-          if (present(pokemon.legendaryStatus())) hints.add(new PokemonPaletteHint.Category(pokemon.legendaryStatus()));
+          if (JsStrings.truthy(pokemon.legendaryStatus())) hints.add(new PokemonPaletteHint.Category(pokemon.legendaryStatus()));
         }
       }
     }

@@ -1,5 +1,7 @@
 package es.pokemonuniverse.domain.game.engine.infra;
 
+import io.micronaut.core.annotation.Nullable;
+
 /**
  * Operaciones de texto con la semántica de JavaScript, para los motores que reciben texto libre de los jugadores.
  *
@@ -12,6 +14,11 @@ package es.pokemonuniverse.domain.game.engine.infra;
 public final class JsStrings {
 
   private JsStrings() {}
+
+  /** {@code Boolean(value)} de una cadena de JS: ni {@code null} ni vacía (un espacio sí cuenta). */
+  public static boolean truthy(@Nullable String value) {
+    return value != null && !value.isEmpty();
+  }
 
   /** {@code value.trim()} de JavaScript. */
   public static String trim(String value) {

@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GameLifecycle;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -154,7 +155,8 @@ public final class PokemonTriviaEngine
   @Override
   public PokemonTriviaState createInitialState(PokemonTriviaConfig config, GameContext context) {
     var pool = context.pokemon().forGenerations(config.generations()).stream()
-        .filter(pokemon -> present(pokemon.id()) && present(pokemon.name()) && present(pokemon.sprite()))
+        .filter(pokemon -> JsStrings.truthy(pokemon.id()) && JsStrings.truthy(pokemon.name())
+            && JsStrings.truthy(pokemon.sprite()))
         .toList();
     if (pool.size() < config.optionCount()) {
       throw new EngineException("Se necesitan al menos " + config.optionCount()
@@ -176,10 +178,6 @@ public final class PokemonTriviaEngine
         .scores(scores)
         .playerStats(playerStats)
         .build();
-  }
-
-  private static boolean present(String value) {
-    return value != null && !value.isEmpty();
   }
 
   @Override

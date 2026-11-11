@@ -28,7 +28,6 @@ import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonRedFlagStats;
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonRedFlagVoteRound;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -76,11 +75,6 @@ public final class PokemonRedFlagEngine
 
   private static PokemonRedFlagPokemon summary(Pokemon pokemon) {
     return new PokemonRedFlagPokemon(pokemon.id(), pokemon.name(), pokemon.sprite());
-  }
-
-  /** {@code Boolean(value)} de una cadena de JS. */
-  private static boolean truthy(@Nullable String value) {
-    return value != null && !value.isEmpty();
   }
 
   /** {@code Boolean(state.answers[state.answerSlots[playerId]!])}. */
@@ -155,7 +149,7 @@ public final class PokemonRedFlagEngine
         .map(answerId -> state.answers().get(answerId))
         .filter(Objects::nonNull)
         .map(PokemonRedFlagAnswer::authorId)
-        .filter(PokemonRedFlagEngine::truthy)
+        .filter(JsStrings::truthy)
         .toList();
     var winnerSet = new HashSet<>(winnerIds);
     Map<String, String> decisiveVotes = voteHistory.isEmpty() ? Map.of() : voteHistory.getLast().votes();
@@ -176,8 +170,8 @@ public final class PokemonRedFlagEngine
     for (var playerId : state.playerIds()) {
       var current = PokemonRedFlagRules.statsOf(state, playerId);
       var ownAnswerId = state.answerSlots().get(playerId);
-      boolean answered = truthy(ownAnswerId) && state.answers().containsKey(ownAnswerId);
-      int receivedVotes = truthy(ownAnswerId) ? voteCounts.getOrDefault(ownAnswerId, 0) : 0;
+      boolean answered = JsStrings.truthy(ownAnswerId) && state.answers().containsKey(ownAnswerId);
+      int receivedVotes = JsStrings.truthy(ownAnswerId) ? voteCounts.getOrDefault(ownAnswerId, 0) : 0;
       playerStats.put(playerId, current.afterRound(answered, receivedVotes, winnerSet.contains(playerId),
           winnerIds.size(), pointsAwarded.getOrDefault(playerId, 0)));
     }
@@ -228,7 +222,7 @@ public final class PokemonRedFlagEngine
       var draft = state.drafts().get(playerId);
       var text = draft == null ? null : JsStrings.trim(draft);
       var answerId = state.answerSlots().get(playerId);
-      if (truthy(text) && truthy(answerId) && !answers.containsKey(answerId)) {
+      if (JsStrings.truthy(text) && JsStrings.truthy(answerId) && !answers.containsKey(answerId)) {
         answers.put(answerId, new PokemonRedFlagAnswer(answerId, playerId, text));
       }
     }
@@ -258,7 +252,7 @@ public final class PokemonRedFlagEngine
       throw new EngineException("La Frase Pokémon necesita al menos 3 jugadores.");
     }
     var pool = context.pokemon().forGenerations(config.generations(), config.includeForms()).stream()
-        .filter(pokemon -> truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
+        .filter(pokemon -> JsStrings.truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
         .toList();
     if (pool.isEmpty()) throw new EngineException("No hay Pokémon disponibles con esta configuración.");
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
@@ -325,7 +319,7 @@ public final class PokemonRedFlagEngine
       return GameActionResult.reject(state, "Esa respuesta no es candidata.");
     }
     if (answer.authorId().equals(playerId)) return GameActionResult.reject(state, "No puedes votar tu propia respuesta.");
-    if (truthy(state.votes().get(playerId))) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
+    if (JsStrings.truthy(state.votes().get(playerId))) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
     var stats = PokemonRedFlagRules.statsOf(state, playerId);
     var votes = new LinkedHashMap<>(state.votes());
     votes.put(playerId, vote.answerId());
@@ -385,14 +379,15 @@ public final class PokemonRedFlagEngine
       return PokemonRedFlagPlayerState.SPECTATOR;
     }
     var ownAnswerId = state.answerSlots().get(playerId);
-    var ownAnswer = truthy(ownAnswerId) ? state.answers().get(ownAnswerId) : null;
+    var ownAnswer = JsStrings.truthy(ownAnswerId) ? state.answers().get(ownAnswerId) : null;
     boolean voting = state.phase() == GamePhase.VOTING || state.phase() == GamePhase.REVOTE;
     return new PokemonRedFlagPlayerState(
         "PLAYER",
         state.phase() == GamePhase.ROUND_ACTIVE && ownAnswer == null,
         state.drafts().getOrDefault(playerId, ""),
         ownAnswer != null ? new PokemonRedFlagAnswerView(ownAnswer.id(), ownAnswer.text()) : null,
-        voting && !truthy(state.votes().get(playerId)) && state.voteCandidates().stream().anyMatch(answerId -> {
+        voting && !JsStrings.truthy(state.votes().get(playerId))
+            && state.voteCandidates().stream().anyMatch(answerId -> {
           var answer = state.answers().get(answerId);
           return answer == null || !answer.authorId().equals(playerId);
         }),

@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.PromptDeck;
 import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
@@ -26,7 +27,6 @@ import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.S
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingRoundResult;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingState;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,11 +76,6 @@ public final class SecretRankingEngine
 
   private static SecretRankingPokemon summary(Pokemon pokemon) {
     return new SecretRankingPokemon(pokemon.id(), pokemon.name(), pokemon.sprite());
-  }
-
-  /** {@code Boolean(value)} de una cadena de JS. */
-  private static boolean truthy(@Nullable String value) {
-    return value != null && !value.isEmpty();
   }
 
   /** Los ids que no están en el catálogo se omiten. */
@@ -225,7 +220,7 @@ public final class SecretRankingEngine
       throw new EngineException("Secret Ranking necesita al menos 3 jugadores; se recomiendan 4 o más.");
     }
     var pool = context.pokemon().forGenerations(config.generations(), config.includeForms()).stream()
-        .filter(pokemon -> truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
+        .filter(pokemon -> JsStrings.truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
         .toList();
     if (pool.size() < 5) {
       throw new EngineException("Se necesitan al menos 5 Pokémon con imagen para esta configuración.");

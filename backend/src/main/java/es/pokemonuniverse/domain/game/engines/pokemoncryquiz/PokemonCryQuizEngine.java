@@ -15,6 +15,7 @@ import es.pokemonuniverse.domain.game.engine.PokemonAudioCatalog;
 import es.pokemonuniverse.domain.game.engine.PokemonAudioCatalog.CryVersion;
 import es.pokemonuniverse.domain.game.engine.infra.AssetTokens;
 import es.pokemonuniverse.domain.game.engine.infra.GuessingRound;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
@@ -114,13 +115,9 @@ public final class PokemonCryQuizEngine implements
         state.roundNumber(), "cry", "audio");
   }
 
-  private static boolean blank(@Nullable String value) {
-    return value == null || value.isEmpty();
-  }
-
   /** {@code Boolean(cryFor(...))}: una URL vacía cuenta como ausente. */
   private static boolean hasCry(PokemonAudioCatalog audio, String pokemonId, CryVersion version) {
-    return !blank(audio.cryFor(pokemonId, version));
+    return JsStrings.truthy(audio.cryFor(pokemonId, version));
   }
 
   /** {@code pokemonCryPool}: vacío sin catálogo de audio. */
@@ -129,7 +126,8 @@ public final class PokemonCryQuizEngine implements
     if (audio == null) return List.of();
     return context.pokemon().forGenerations(config.generations(), config.includeRegionalForms()).stream()
         .filter(pokemon -> {
-          if (blank(pokemon.id()) || blank(pokemon.name()) || blank(pokemon.sprite())) return false;
+          if (!JsStrings.truthy(pokemon.id()) || !JsStrings.truthy(pokemon.name())
+              || !JsStrings.truthy(pokemon.sprite())) return false;
           return switch (config.cryVersion()) {
             case LATEST -> hasCry(audio, pokemon.id(), CryVersion.LATEST);
             case LEGACY -> hasCry(audio, pokemon.id(), CryVersion.LEGACY);
@@ -368,7 +366,8 @@ public final class PokemonCryQuizEngine implements
   public Optional<AssetResolution> resolveAsset(PokemonCryQuizState state, AssetRequest request,
       GameContext context) {
     if (!state.assetToken().equals(request.assetToken()) || state.roundNumber() != request.roundNumber()
-        || !"cry".equals(request.assetId()) || blank(state.targetPokemonId()) || state.currentCryVersion() == null) {
+        || !"cry".equals(request.assetId()) || !JsStrings.truthy(state.targetPokemonId())
+        || state.currentCryVersion() == null) {
       return Optional.empty();
     }
     var audio = context.pokemonAudio();

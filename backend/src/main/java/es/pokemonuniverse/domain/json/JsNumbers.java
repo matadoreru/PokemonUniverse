@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.json;
 
+import io.micronaut.core.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.regex.Pattern;
@@ -22,6 +23,11 @@ public final class JsNumbers {
   public static final double MAX_SAFE_INTEGER = 9_007_199_254_740_991d;
 
   private JsNumbers() {}
+
+  /** {@code Boolean(value)} de un entero de JS: ni {@code null} ni {@code 0}. */
+  public static boolean truthy(@Nullable Integer value) {
+    return value != null && value != 0;
+  }
 
   /** {@code Number.isSafeInteger}: finito, sin parte decimal y con {@code |value| <= 2^53 - 1}. */
   public static boolean isSafeInteger(double value) {

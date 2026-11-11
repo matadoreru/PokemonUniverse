@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -75,11 +76,6 @@ public final class OneOfUsIsFakeEngine
   @Override
   public OneOfUsIsFakeConfig defaultConfig() {
     return OneOfUsIsFakeConfig.defaults();
-  }
-
-  /** {@code Boolean(value)} de una cadena de JS. */
-  private static boolean truthy(@Nullable String value) {
-    return value != null && !value.isEmpty();
   }
 
   /** Oficiales y del host, estas con el id {@code custom-…} ({@code { ...category, id }} conserva su posición). */
@@ -185,7 +181,7 @@ public final class OneOfUsIsFakeEngine
   private static boolean allEligibleVoted(OneOfUsIsFakeState state, GameContext context) {
     return state.playerIds().stream()
         .filter(context::isPlayerRequired)
-        .allMatch(playerId -> truthy(state.votes().get(playerId)));
+        .allMatch(playerId -> JsStrings.truthy(state.votes().get(playerId)));
   }
 
   private static FakeVoteRound currentVoteRound(OneOfUsIsFakeState state) {
@@ -337,7 +333,7 @@ public final class OneOfUsIsFakeEngine
     if (!state.voteCandidates().contains(vote.playerId())) {
       return GameActionResult.reject(state, "Ese jugador no es candidato en esta votación.");
     }
-    if (truthy(state.votes().get(playerId))) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
+    if (JsStrings.truthy(state.votes().get(playerId))) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
     var current = OneOfUsIsFakeRules.statsOf(state, playerId);
     var votes = new LinkedHashMap<>(state.votes());
     votes.put(playerId, vote.playerId());
@@ -405,7 +401,7 @@ public final class OneOfUsIsFakeEngine
         state.selections().get(playerId),
         state.phase() == GamePhase.ROUND_ACTIVE,
         (state.phase() == GamePhase.DISCUSSION || state.phase() == GamePhase.REVOTE)
-            && !truthy(state.votes().get(playerId)),
+            && !JsStrings.truthy(state.votes().get(playerId)),
         state.votes().get(playerId),
         state.config().fakeKnows() && isFake ? Boolean.TRUE : null);
   }

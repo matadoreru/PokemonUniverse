@@ -10,6 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engine.infra.RunoffVoting;
 import es.pokemonuniverse.domain.game.engine.infra.PromptDeck;
 import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
@@ -26,7 +27,6 @@ import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.Mos
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToStats;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToVoteRound;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -74,11 +74,6 @@ public final class MostLikelyToEngine
 
   private static MostLikelyToPokemon summary(Pokemon pokemon) {
     return new MostLikelyToPokemon(pokemon.id(), pokemon.name(), pokemon.sprite());
-  }
-
-  /** {@code Boolean(value)} de una cadena de JS. */
-  private static boolean truthy(@Nullable String value) {
-    return value != null && !value.isEmpty();
   }
 
   /** Oficiales y del host, estas con el id prefijado. */
@@ -220,7 +215,7 @@ public final class MostLikelyToEngine
       throw new EngineException("Most Likely To necesita al menos 3 jugadores.");
     }
     var pool = context.pokemon().forGenerations(config.generations(), config.includeForms()).stream()
-        .filter(pokemon -> truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
+        .filter(pokemon -> JsStrings.truthy(pokemon.sprite()) && (config.includeForms() || pokemon.isDefault()))
         .toList();
     if (pool.isEmpty()) throw new EngineException("No hay Pokémon disponibles con esta configuración.");
     var prompts = promptPool(config, context);
@@ -282,7 +277,7 @@ public final class MostLikelyToEngine
     if (!state.voteCandidates().contains(vote.playerId())) {
       return GameActionResult.reject(state, "Esa respuesta no es candidata en esta votación.");
     }
-    if (truthy(state.votes().get(playerId))) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
+    if (JsStrings.truthy(state.votes().get(playerId))) return GameActionResult.reject(state, "Tu voto ya está bloqueado.");
     var stats = MostLikelyToRules.statsOf(state, playerId);
     var votes = new LinkedHashMap<>(state.votes());
     votes.put(playerId, vote.playerId());
@@ -343,7 +338,7 @@ public final class MostLikelyToEngine
         "PLAYER",
         state.phase() == GamePhase.ROUND_ACTIVE,
         state.selections().get(playerId),
-        voting && !truthy(state.votes().get(playerId))
+        voting && !JsStrings.truthy(state.votes().get(playerId))
             && state.voteCandidates().stream().anyMatch(candidateId -> !candidateId.equals(playerId)),
         state.votes().get(playerId));
   }

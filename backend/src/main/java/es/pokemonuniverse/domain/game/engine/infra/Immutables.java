@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engine.infra;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +28,13 @@ public final class Immutables {
   /** Copia inmutable ordenada por clave numérica ascendente: se serializa como un {@code Record<number, …>} de JS. */
   public static <V> SortedMap<Integer, V> frozenSortedMap(Map<Integer, V> map) {
     return Collections.unmodifiableSortedMap(new TreeMap<>(map));
+  }
+
+  /** {@code [...values, value]}: copia mutable con {@code value} al final. */
+  public static <T> List<T> appended(List<T> values, T value) {
+    var next = new ArrayList<T>(values);
+    next.add(value);
+    return next;
   }
 
   /** {@code List.copyOf}: inmutable y sin nulos. */

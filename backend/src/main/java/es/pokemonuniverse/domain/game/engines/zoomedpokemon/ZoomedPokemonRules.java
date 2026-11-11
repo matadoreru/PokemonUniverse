@@ -4,11 +4,13 @@ import es.pokemonuniverse.domain.game.Scoring;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
+import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonConfig.HintKind;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonConfig.ImageMode;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonHint;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonPlayerStats;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonTypes.ZoomedPokemonState;
+import es.pokemonuniverse.domain.json.JsNumbers;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,17 +51,14 @@ public final class ZoomedPokemonRules {
     return (int) zoomStageSchedule(roundStartedAt, roundSeconds).stream().filter(deadline -> now >= deadline).count();
   }
 
-  private static boolean blank(String value) {
-    return value == null || value.isEmpty();
-  }
-
   /**
    * {@code isUsableZoomedSprite}: URL {@code https} de {@code raw.githubusercontent.com} terminada en
    * {@code .png}/{@code .webp}. El esquema y el host se comparan en minúscula, como los normaliza {@code new URL}; una
    * URL que {@link URI} no admite cuenta como el {@code catch} de TS.
    */
   public static boolean isUsableZoomedSprite(Pokemon pokemon) {
-    if (blank(pokemon.id()) || blank(pokemon.name()) || blank(pokemon.sprite())) return false;
+    if (!JsStrings.truthy(pokemon.id()) || !JsStrings.truthy(pokemon.name())
+        || !JsStrings.truthy(pokemon.sprite())) return false;
     try {
       var url = new URI(pokemon.sprite());
       var scheme = url.getScheme();
@@ -82,20 +81,16 @@ public final class ZoomedPokemonRules {
         case TYPE -> result.add(new ZoomedPokemonHint.Type(pokemon.types()));
         case TYPE_COUNT -> result.add(new ZoomedPokemonHint.TypeCount(pokemon.types().size()));
         case EVOLUTION -> {
-          if (truthy(pokemon.evolutionStage()) && truthy(pokemon.evolutionStageCount())) {
+          if (JsNumbers.truthy(pokemon.evolutionStage()) && JsNumbers.truthy(pokemon.evolutionStageCount())) {
             result.add(new ZoomedPokemonHint.Evolution(pokemon.evolutionStage(), pokemon.evolutionStageCount()));
           }
         }
         case CATEGORY -> {
-          if (!blank(pokemon.legendaryStatus())) result.add(new ZoomedPokemonHint.Category(pokemon.legendaryStatus()));
+          if (JsStrings.truthy(pokemon.legendaryStatus())) result.add(new ZoomedPokemonHint.Category(pokemon.legendaryStatus()));
         }
       }
     }
     return List.copyOf(result);
-  }
-
-  private static boolean truthy(Integer value) {
-    return value != null && value != 0;
   }
 
   /** {@code zoomBonusForStage}: el {@code RangeError} de TS es una {@link EngineException} con el mismo mensaje. */

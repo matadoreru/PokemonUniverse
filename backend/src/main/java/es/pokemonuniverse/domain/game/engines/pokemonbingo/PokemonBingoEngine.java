@@ -262,7 +262,7 @@ public final class PokemonBingoEngine
       if (state.phase() != GamePhase.ROUND_RESULTS) {
         return GameActionResult.reject(state, "El resultado todavía no se puede saltar.");
       }
-      if (context.hostId() == null || context.hostId().isEmpty() || !playerId.equals(context.hostId())) {
+      if (!context.isHost(playerId)) {
         return GameActionResult.reject(state, "Solo el host puede continuar.");
       }
       return GameActionResult.accept(finish(state));
