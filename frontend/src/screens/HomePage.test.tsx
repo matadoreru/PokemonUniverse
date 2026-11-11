@@ -36,6 +36,11 @@ describe('HomeNews (panel «Lo último en el universo»)', () => {
     expect(markup).not.toContain('Ver todas');
   });
 
+  it('el estado vacío lleva «Crear sala» cuando la portada da la acción', () => {
+    expect(render()).not.toContain('>Crear sala<');
+    expect(render({ onCreateRoom: () => undefined })).toContain('>Crear sala<');
+  });
+
   it('con error muestra el StateBox de error en español y «Reintentar», sin el texto del servidor', () => {
     const markup = render({ error: 'Failed to fetch' });
     expect(markup).toContain('role="alert"');

@@ -284,7 +284,7 @@ test('pokedex-distance: empate forzado tras tres desempates', async ({ browser }
     await expect(host.page.getByRole('heading', { name: 'Mejor acierto' })).toBeVisible();
     const tabla = host.page.getByRole('table');
     await expect(tabla.getByRole('columnheader')).toHaveText(['Entrenador', 'R1', 'R1 · D1', 'R1 · D2', 'R1 · D3']);
-    await expect(tabla.getByRole('row').filter({ hasText: invitado.name }).getByRole('cell').last()).toContainText('✗');
+    await expect(tabla.getByRole('row').filter({ hasText: invitado.name }).getByRole('cell').last()).toContainText('cayó');
     await expect(host.page.getByText(/NaN|Infinity|ronda 0/)).toHaveCount(0);
     await host.page.setViewportSize({ width: 390, height: 844 });
     expect(await host.page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'sin scroll horizontal de la página a 390').toBe(true);

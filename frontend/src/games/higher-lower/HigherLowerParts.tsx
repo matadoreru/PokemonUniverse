@@ -1,6 +1,6 @@
 import type { HigherLowerAnswerVisibility, HigherLowerChoice, HigherLowerOutcome, HigherLowerPokemonView, HigherLowerPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, UserX, XCircle } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, UserX, X, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
@@ -74,12 +74,12 @@ function memberName(member: RoomMemberView | undefined) {
   return member?.displayName ?? UNKNOWN_PLAYER_NAME;
 }
 
-/** Resultado de un jugador con texto (además del ✓/✗ y del color): «✓ +2 acierto», «✗ Fallo» o «✗ Sin respuesta». */
+/** Resultado de un jugador con texto (además del icono y del color): «+2 acierto», «Fallo» o «Sin respuesta». */
 export function HigherLowerOutcomeChip({ outcome }: { outcome: HigherLowerOutcome | undefined }) {
-  return <Chip tone={outcome?.correct ? 'ok' : 'bad'}>
+  return <Chip tone={outcome?.correct ? 'ok' : 'bad'} icon={<Icon icon={outcome?.correct ? Check : X} size={18} />}>
     <span className={s.outcome} data-outcome={outcome?.correct ? 'hit' : 'miss'}>{outcome?.correct
-      ? <><span aria-hidden="true">✓</span> +{outcome.awardedPoints}<span className="sr-only"> {higherLowerOutcomeStatus(outcome)}</span></>
-      : <><span aria-hidden="true">✗</span> {higherLowerOutcomeStatus(outcome)}</>}</span>
+      ? <>+{outcome.awardedPoints}<span className="sr-only"> {higherLowerOutcomeStatus(outcome)}</span></>
+      : higherLowerOutcomeStatus(outcome)}</span>
   </Chip>;
 }
 

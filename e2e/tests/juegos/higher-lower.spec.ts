@@ -101,8 +101,8 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await host.page.emulateMedia({ reducedMotion: 'reduce' });
     // Resultado con texto, no solo con color o glifo: un acierto (con su racha) y dos fallos.
     await expect(host.page.locator('[data-outcome="hit"]')).toHaveCount(1);
-    await expect(host.page.locator('[data-outcome="hit"]')).toHaveText(/^✓ \+\d+ acierto$/);
-    await expect(host.page.locator('[data-outcome="miss"]')).toHaveText(['✗ Fallo', '✗ Fallo']);
+    await expect(host.page.locator('[data-outcome="hit"]')).toHaveText(/^\+\d+ acierto$/);
+    await expect(host.page.locator('[data-outcome="miss"]')).toHaveText(['Fallo', 'Fallo']);
     await expect(host.page.locator('[data-outcome-line]', { hasText: /^Racha 1( · \+\d+ rapidez)?$/ })).toHaveCount(1);
     const nombre = 'juego-higher-lower-revelacion';
     const medidas = await Promise.all(capturas.map(({ page }) => layoutProblems(page, nombre, true)));

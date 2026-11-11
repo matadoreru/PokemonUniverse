@@ -120,7 +120,8 @@ describe('LearnsetGuessGame: pantalla', () => {
     expect(html.match(/data-testid="learnset-reveal-row"/g)).toHaveLength(3);
     expect(html).toContain('Acertó · 1.º');
     expect(html).toContain('Pistas iniciales');
-    expect(html).toContain('✗ No acertó');
+    expect(html).toMatch(/lucide-x[^"]*"[^>]*>.*?<\/svg>.*?No acertó/);
+    expect(html).not.toContain('✗');
     expect(html.match(/Sin conexión/g)).toHaveLength(1);
     expect(html).toContain('Pistas que llegaron a verse');
     expect(html).toContain('Sin revelar · 1');

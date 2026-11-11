@@ -29,9 +29,10 @@ const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(<HigherLo
 describe('HigherLowerGame', () => {
   it('names each result with text, not only colour or a glyph', () => {
     const html = render(room('ROUND_RESULTS'));
-    expect(html).toContain('<span aria-hidden="true">✓</span> +2<span class="sr-only"> acierto</span>');
-    expect(html).toContain('<span aria-hidden="true">✗</span> Fallo');
-    expect(html).toContain('<span aria-hidden="true">✗</span> Sin respuesta');
+    expect(html).toMatch(/lucide-check[^"]*"[^>]*>.*?<\/svg><span class="[^"]*outcome[^"]*" data-outcome="hit">\+2<span class="sr-only"> acierto<\/span><\/span>/);
+    expect(html).toMatch(/lucide-x[^"]*"[^>]*>.*?<\/svg><span class="[^"]*outcome[^"]*" data-outcome="miss">Fallo<\/span>/);
+    expect(html).toMatch(/data-outcome="miss">Sin respuesta<\/span>/);
+    expect(html).not.toMatch(/[✓✗]/);
     expect(html).toContain('Racha 1 · +1 rapidez');
     expect(html).toContain('data-testid="higher-lower-bars"');
     expect(html).toContain('Respuesta: Mayor');

@@ -1,5 +1,5 @@
 import { gameModeLabel, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
-import { Crosshair, Target } from 'lucide-react';
+import { Check, Crosshair, Target, X } from 'lucide-react';
 import { cx, Icon, Panel } from '../../ui';
 import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
 import { ResultsHostActions } from '../../room/game-kit/ResultsRecords';
@@ -66,7 +66,7 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: GameRes
         </tr></thead>
         <tbody>{standings.map((standing) => <tr key={standing.playerId}>
           <th scope="row" className={s.nameCell}><span className={s.truncate} title={nameOf(standing.playerId)}>{nameOf(standing.playerId)}</span></th>
-          {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={CELL_TONE[cell.tone]} title={cell.label}><span aria-hidden="true">{cell.mark && `${cell.mark} `}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
+          {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={CELL_TONE[cell.tone]} title={cell.label}><span aria-hidden="true" className={s.cellValue}>{cell.mark && <Icon icon={cell.mark === 'hit' ? Check : X} size={18} />}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
         </tr>)}</tbody>
       </table>
     </div>

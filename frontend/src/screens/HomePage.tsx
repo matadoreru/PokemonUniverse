@@ -1,5 +1,6 @@
 import type { ChangelogEntry } from '@pokemon-universe/shared/public';
-import { MessagesSquare, Play, UserRound } from 'lucide-react';
+import { MessagesSquare, Play, Plus, UserRound } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { PatchPreview } from '../changelog/ChangelogEntryView';
 import { useChangelog } from '../changelog/ChangelogContext';
@@ -18,6 +19,8 @@ export interface HomeNewsProps {
   loading: boolean;
   error: string;
   onRetry(): void;
+  /** «Crear sala» del estado vacío (lleva a Jugar). */
+  onCreateRoom?: () => void;
   className?: string;
 }
 
@@ -25,14 +28,14 @@ export interface HomeNewsProps {
  * Panel «Lo último en el universo»: la última versión publicada, o su `StateBox` de carga, vacío o error. El error del
  * servidor no se enseña tal cual (puede llegar en inglés, «Failed to fetch»): el texto es fijo y en español.
  */
-export function HomeNews({ entries, loading, error, onRetry, className }: HomeNewsProps) {
+export function HomeNews({ entries, loading, error, onRetry, onCreateRoom, className }: HomeNewsProps) {
   const latest = entries[0];
   const status: StateBoxProps | null = error
     ? { kind: 'error', title: 'No se pudieron cargar las novedades', text: 'Comprueba la conexión y vuelve a intentarlo.', action: { label: 'Reintentar', onClick: onRetry } }
     : loading
       ? { kind: 'loading', title: 'Cargando la última versión' }
       : !latest
-        ? { kind: 'empty', title: 'Aún no hay novedades', text: 'Las notas de cada versión aparecerán aquí. Mientras tanto, crea una sala e invita a tus amigos a jugar.' }
+        ? { kind: 'empty', title: 'Aún no hay novedades', text: 'Las notas de cada versión aparecerán aquí. Mientras tanto, crea una sala e invita a tus amigos a jugar.', ...(onCreateRoom ? { action: { label: 'Crear sala', icon: Plus, onClick: onCreateRoom } } : {}) }
         : null;
   return (
     <Panel
@@ -56,6 +59,7 @@ export function HomeNews({ entries, loading, error, onRetry, className }: HomeNe
 export function HomePage() {
   const { user } = useAuth();
   const { entries, loading, error, refresh } = useChangelog();
+  const navigate = useNavigate();
   return (
     <Screen footer={<LegalLine />}>
       <div className="grid gap-8 lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:gap-12 2xl:gap-20">
@@ -80,7 +84,7 @@ export function HomePage() {
             <PillAnchor href={DISCORD_URL} variant="blue" icon={MessagesSquare} block>Únete al Discord</PillAnchor>
           </nav>
         </div>
-        <HomeNews entries={entries} loading={loading} error={error} onRetry={() => void refresh()} className="lg:min-h-0" />
+        <HomeNews entries={entries} loading={loading} error={error} onRetry={() => void refresh()} onCreateRoom={() => navigate('/play')} className="lg:min-h-0" />
       </div>
     </Screen>
   );

@@ -50,7 +50,7 @@ export function SessionResults({ room, selfId, onLobby, onLeave }: { room: RoomV
         <table className={s.table}>
           <thead><tr><th scope="col" className={s.nameCell}>Entrenador</th>{room.sessionHistory.map((game) => <th scope="col" key={`${game.gameId}-${game.gameNumber}`} title={gameNames.get(game.gameId) ?? game.gameId}>P{game.gameNumber}</th>)}<th scope="col" className={s.total}>Total</th></tr></thead>
           <tbody>{podium.standings.map((member) => <tr key={member.id}>
-            <th scope="row" className={s.nameCell}><span className={s.truncate}>{member.name}</span></th>
+            <th scope="row" className={s.nameCell}><span className={s.truncate} title={member.name}>{member.name}</span></th>
             {room.sessionHistory.map((game) => {
               const points = game.points[member.id] ?? 0;
               // Como en el podio: sin puntos no hay corona (una partida en la que nadie puntúa no tiene ganador).

@@ -95,7 +95,8 @@ export type DistanceCellTone = 'leaf' | 'aqua' | 'ink' | 'berry' | 'muted';
 export interface DistanceCell {
   text: string;
   /** ✓ acierto exacto, ✗ cayó en esa ronda: el estado nunca va solo con color. */
-  mark: '✓' | '✗' | null;
+  /** Marca además del color: acierto exacto (`hit`) o ronda en la que cayó (`fell`); la pinta un icono. */
+  mark: 'hit' | 'fell' | null;
   tone: DistanceCellTone;
   /** Texto completo para lectores de pantalla y `title`. */
   label: string;
@@ -111,9 +112,9 @@ export function distanceCell(record: DistanceRoundRecord, playerId: string): Dis
   const what = distance === null ? 'sin respuesta' : distance === 0 ? 'acierto exacto' : `a ${distance}`;
   if (fell) {
     const note = distanceForcedTieNote(record, playerId);
-    return { text, mark: '✗', tone: 'berry', label: `${round}: ${what}, cayó${note ? ` (${note})` : ''}` };
+    return { text, mark: 'fell', tone: 'berry', label: `${round}: ${what}, cayó${note ? ` (${note})` : ''}` };
   }
-  if (distance === 0) return { text, mark: '✓', tone: 'leaf', label: `${round}: ${what}` };
+  if (distance === 0) return { text, mark: 'hit', tone: 'leaf', label: `${round}: ${what}` };
   if (distance !== null && distance <= DISTANCE_CLOSE_MAX) return { text, mark: null, tone: 'aqua', label: `${round}: ${what}` };
   return { text, mark: null, tone: 'ink', label: `${round}: ${what}` };
 }

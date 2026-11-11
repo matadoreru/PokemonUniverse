@@ -176,7 +176,7 @@ export function LearnsetRevealBoard({ result, members, colors, selfId, className
           avatar={<Avatar name={member.displayName} avatar={member.avatar} level={member.level} size="sm" />}
           meta={<span className={s.rowMeta}>{solve
             ? <><Chip tone="ok" icon={<Icon icon={Check} size={18} />}>Acertó · {ordinal(solve.solveOrder)}</Chip><span className={s.attemptBy}>{manualSeen ? `Con ${manualSeen}` : learnsetStageText(solve.revealStage)}</span></>
-            : <>{status === 'offline' ? <Chip tone="neutral" icon={<Icon icon={WifiOff} size={18} />}>Sin conexión</Chip> : <Chip tone="bad">✗ No acertó</Chip>}{manualSeen && <span className={s.attemptBy}>Vio {manualSeen}</span>}</>}</span>}
+            : <>{status === 'offline' ? <Chip tone="neutral" icon={<Icon icon={WifiOff} size={18} />}>Sin conexión</Chip> : <Chip tone="bad" icon={<Icon icon={X} size={18} />}>No acertó</Chip>}{manualSeen && <span className={s.attemptBy}>Vio {manualSeen}</span>}</>}</span>}
           value={<span className={s.score}>+{solve?.points ?? 0}</span>} />
       </li>;
     })}</ol>

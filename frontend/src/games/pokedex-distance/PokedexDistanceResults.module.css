@@ -181,3 +181,11 @@
     font-size: var(--fs-15);
   }
 }
+
+/* Valor de la celda con su marca (acierto exacto o caída) delante, en línea y del color de la celda. */
+.cellValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  vertical-align: middle;
+}
