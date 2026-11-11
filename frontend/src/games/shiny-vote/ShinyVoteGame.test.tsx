@@ -237,7 +237,7 @@ describe('Shiny Quiz UI', () => {
     for (const html of states) {
       expectSingleLiveRegion(html);
       expect(html).toMatch(/<p class="sr-only" role="status" aria-live="polite">/);
-      expect(html).toMatch(/<h2 tabindex="-1" class="[^"]*actionTitle/);
+      expect(html).toMatch(/<h2 [^>]*tabindex="-1" class="[^"]*title/);
     }
     expect(states[1]).toContain('Voto registrado: opción B. Esperando al resto de entrenadores.');
     expect(states[2]).toContain('Revelación: la respuesta correcta es la B. Has acertado: +4 puntos.');

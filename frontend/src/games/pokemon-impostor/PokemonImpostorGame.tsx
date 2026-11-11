@@ -153,7 +153,7 @@ function impostorPlate({ game, player, people, voteDraft, submitting, roleShown,
       if (player.ownVote) return { icon: Check, tone: 'ok', kicker: 'Voto bloqueado', title: 'Tu voto está bloqueado.', text: 'El objetivo permanece secreto hasta el recuento.' };
       if (!player.canVote) return { icon: Eye, tone: 'info', kicker: 'Sin voto', title: 'Estás observando', text: 'Los jugadores vivos eligen a quién expulsar.' };
       const target = voteDraft === IMPOSTOR_SKIP_TARGET ? 'Saltar' : voteDraft ? people.nameOf(voteDraft) : null;
-      return { label: 'Tu voto', icon: target ? Vote : MousePointerClick, tone: target ? 'warn' : 'info', kicker: target ? 'Has elegido' : 'Tu voto',
+      return { icon: target ? Vote : MousePointerClick, tone: target ? 'warn' : 'info', kicker: target ? 'Has elegido' : 'Tu voto',
         title: target ?? 'Elige a quién expulsar', text: 'Tres rondas seguidas sin expulsión dan la victoria a los impostores.',
         aside: <Pill variant="yellow" size="main" icon={Vote} disabled={!voteDraft} loading={submitting} onClick={onConfirm}>Confirmar voto</Pill> };
     }

@@ -1,9 +1,9 @@
 import type { ShinyOption, ShinyOptionId, ShinyVote } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { useRef, type ReactNode, type Ref } from 'react';
+import { useId, useRef, type ReactNode, type Ref } from 'react';
 import { Check, CheckCircle2, Clock3, Eye, Hourglass, MousePointerClick, Send, Sparkles, TimerOff, UserX, XCircle } from 'lucide-react';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
-import { cx, Icon, Panel, Pill } from '../../ui';
+import { ActionPlate, cx, Pill, type ActionPlateTone } from '../../ui';
 import { SHINY_CARDS_LOADING } from './reveal';
 import { roundsLabel } from '../../lib/format';
 import s from './ShinyVote.module.css';
@@ -18,32 +18,25 @@ function OptionIdentity({ id, name }: { id: ShinyOptionId; name?: string | undef
 
 interface PlateProps {
   icon: LucideIcon;
-  tone: 'ok' | 'bad' | 'info' | 'warn';
+  tone: ActionPlateTone;
   kicker: string;
   title: ReactNode;
   text?: ReactNode;
   aside?: ReactNode;
   /** En el móvil, la acción baja a su propia línea a todo el ancho. */
   wideAside?: boolean;
-  label?: string;
 }
 
 /**
- * Placa crema de la pantalla inferior: icono, kicker, título, texto y, a la derecha, la acción o los puntos. El aviso
- * para lectores de pantalla va en una región `status` que está siempre montada (solo cambia su texto): así se anuncia
- * cada cambio. El título admite foco por programa (`tabIndex={-1}`) para devolverle el foco cuando su control desaparece.
+ * Placa de acción del catálogo (`ActionPlate`) con el aviso para lectores en una región `status` siempre montada (solo
+ * cambia su texto): así se anuncia cada cambio. Al título va el foco por programa cuando su control desaparece.
  */
-function StatusPlate({ icon, tone, kicker, title, text, aside, wideAside = false, label, announcement, titleRef }: PlateProps & { announcement: string; titleRef: Ref<HTMLHeadingElement> }) {
-  return <Panel variant="cream" as="section" bodyClassName={cx(s.action)} {...(label ? { 'aria-label': label } : {})}>
-    <span className={cx(s.actionIcon, s[tone])}><Icon icon={icon} size={32} /></span>
-    <div className={s.actionText}>
-      <span className={s.kicker}>{kicker}</span>
-      <h2 ref={titleRef} tabIndex={-1} className={s.actionTitle}>{title}</h2>
-      {text && <p className={s.help}>{text}</p>}
-    </div>
-    {aside && <div className={cx(s.actionAside, wideAside && s.actionAsideWide)}>{aside}</div>}
+function StatusPlate({ icon, tone, kicker, title, text, aside, wideAside = false, announcement, titleRef }: PlateProps & { announcement: string; titleRef: Ref<HTMLHeadingElement> }) {
+  const titleId = useId();
+  return <ActionPlate titleId={titleId} titleRef={titleRef} icon={icon} tone={tone} kicker={kicker} title={title} text={text}
+    aside={aside} helpClassName={s.help} asideClassName={cx(wideAside && s.actionAsideWide)}>
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-  </Panel>;
+  </ActionPlate>;
 }
 
 /**
@@ -156,7 +149,7 @@ function shinyPlate({ active, loading, revealed, participant, selectedOption, ow
 
   if (ownVote) return { icon: Check, tone: 'ok', kicker: 'Voto bloqueado', title: <>Voto confirmado: <OptionIdentity id={ownVote.optionId} /></>, text: 'Esperando al resto de entrenadores.' };
 
-  return { label: 'Confirmar voto', icon: loading ? Hourglass : MousePointerClick, tone: selectedOption ? 'warn' : 'info',
+  return { icon: loading ? Hourglass : MousePointerClick, tone: selectedOption ? 'warn' : 'info',
     kicker: loading ? 'Un momento' : selectedOption ? 'Has seleccionado' : 'Tu voto',
     title: loading ? SHINY_CARDS_LOADING : selectedOption ? <OptionIdentity id={selectedOption.id} name={selectedOption.pokemonName} /> : 'Selecciona uno de los Pokémon',
     text: <span className={s.shortcuts}>Atajos: A–F o 1–6 · Enter confirma</span>,

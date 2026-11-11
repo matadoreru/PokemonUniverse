@@ -193,60 +193,6 @@
   }
 }
 
-/* Estado sin buscador (elección bloqueada, observando, veredicto): como la acción del lobby. */
-.actionBody {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-@media (min-width: 1024px) {
-  .actionBody {
-    gap: var(--sp-4);
-  }
-}
-.actionIcon {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border: var(--ol-3) solid var(--navy);
-  border-radius: 50%;
-  color: var(--navy);
-  box-shadow: var(--sh-hard-3);
-}
-.ok {
-  background: var(--ok);
-}
-.info {
-  background: var(--info);
-}
-.warn {
-  background: var(--warn);
-}
-.status {
-  min-width: 0;
-  flex: 1 1 auto;
-}
-.kicker {
-  display: block;
-  font: 800 var(--fs-13) / 1.2 var(--font-text);
-  color: var(--ink-2);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.actionTitle {
-  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
-  color: var(--ink);
-}
-.help {
-  margin-top: var(--sp-1);
-  font: 800 var(--fs-13) / 1.35 var(--font-text);
-  color: var(--ink-2);
-}
-.aside {
-  flex: none;
-}
 /* La carta elegida, sin estirarse. */
 .pick {
   display: block;
@@ -275,13 +221,6 @@
   }
   .targetNumber {
     font-size: var(--fs-44);
-  }
-  .actionIcon,
-  .kicker {
-    display: none;
-  }
-  .actionTitle {
-    font-size: var(--fs-18);
   }
   .pick {
     width: 6rem;
@@ -349,23 +288,6 @@
   .pickCount,
   .lead {
     font-size: var(--fs-18);
-  }
-  .actionBody {
-    gap: var(--sp-5);
-    padding-block: var(--sp-2);
-  }
-  .actionIcon {
-    width: 72px;
-    height: 72px;
-  }
-  .kicker {
-    font-size: var(--fs-15);
-  }
-  .actionTitle {
-    font-size: var(--fs-34);
-  }
-  .help {
-    font-size: var(--fs-15);
   }
   .pick {
     width: 9rem;

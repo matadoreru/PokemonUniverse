@@ -491,62 +491,6 @@
   gap: var(--sp-1);
 }
 
-/* Pantalla inferior: placa crema con icono, estado y, a la derecha, la acción. */
-.action {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-@media (min-width: 1024px) {
-  .action {
-    gap: var(--sp-4);
-  }
-}
-.actionIcon {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border: var(--ol-3) solid var(--navy);
-  border-radius: 50%;
-  color: var(--navy);
-  box-shadow: var(--sh-hard-3);
-}
-.ok {
-  background: var(--ok);
-}
-.bad {
-  background: var(--bad);
-}
-.info {
-  background: var(--info);
-}
-.warn {
-  background: var(--warn);
-}
-.actionText {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.actionTitle {
-  overflow-wrap: anywhere;
-  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
-  color: var(--ink);
-}
-/* Hueco para el anillo de foco: no pisa el kicker ni el texto. */
-.actionTitle {
-  /* El anillo abraza el texto, no toda la línea. */
-  width: fit-content;
-  max-width: 100%;
-  margin-block: 3px;
-  padding-inline: 4px;
-  margin-inline: -4px;
-}
-.actionAside {
-  flex: none;
-}
-
 /* Pista: el campo crece y la píldora a su derecha (debajo en el móvil). */
 .clueForm {
   display: flex;
@@ -577,7 +521,6 @@
   .title {
     font-size: var(--fs-22);
   }
-  .action,
   .clueForm {
     flex-wrap: wrap;
   }
@@ -588,13 +531,6 @@
   .actionAside > button,
   .clueForm > button {
     width: 100%;
-  }
-  .actionIcon,
-  .action .kicker {
-    display: none;
-  }
-  .actionTitle {
-    font-size: var(--fs-18);
   }
   .roleName,
   .eliminatedName {

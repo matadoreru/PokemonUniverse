@@ -20,7 +20,8 @@ export interface ActionPlateProps {
   icon: LucideIcon;
   tone: ActionPlateTone;
   kicker: ReactNode;
-  title: string;
+  /** Texto o una identidad en línea (la letra y el nombre de una carta). */
+  title: ReactNode;
   /** Ayuda bajo el título. */
   text?: ReactNode;
   /** A la derecha de la fila: el aviso, los puntos o el presupuesto. */

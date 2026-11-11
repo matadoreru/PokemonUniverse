@@ -50,6 +50,8 @@
   max-width: 100%;
   /* Hueco para el anillo de foco (3 px fuera): no pisa el kicker ni el texto. */
   margin-block: 3px;
+  /* Un nombre largo sin espacios parte la línea antes que salirse de la placa. */
+  overflow-wrap: break-word;
   font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
   color: var(--ink);
 }

@@ -38,13 +38,13 @@ describe('PokedexDistanceGame: foco y avisos', () => {
   });
   it('con la elección bloqueada el título es el destino del foco y el aviso no repite los textos de la pantalla', () => {
     const html = render(room({ selectedIds: ['p1'] }, { canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: 1 } }));
-    expect(html).toMatch(/<h2 tabindex="-1"[^>]*>¡Selección confirmada!<\/h2>/);
+    expect(html).toMatch(/<h2 [^>]*tabindex="-1"[^>]*>¡Selección confirmada!<\/h2>/);
     expect(liveText(html)).toBe('Has elegido Pikachu: tu elección queda bloqueada hasta la revelación. 1 de 2 ya tiene su elección.');
     for (const text of ['Selección confirmada', 'Resultado de la ronda', 'Estás observando', 'Ya ha elegido']) expect(liveText(html)).not.toContain(text);
   });
   it('en la revelación anuncia el veredicto y marca a los desconectados', () => {
     const html = render(room({ phase: 'ROUND_RESULTS', lastRound, roundEndsAt: null, nextTransitionAt: 9_000 }));
-    expect(html).toMatch(/<h2 tabindex="-1"[^>]*>⏱️ Tiempo agotado<\/h2>/);
+    expect(html).toMatch(/<h2 [^>]*tabindex="-1"[^>]*>⏱️ Tiempo agotado<\/h2>/);
     expect(liveText(html)).toContain('Te quedaste a 1.');
     expect(liveText(html)).not.toContain('Resultado de la ronda');
     // Bruno (p2) está desconectado: su fila lo dice; la de Ana no.
@@ -79,7 +79,7 @@ describe('PokedexDistanceGame: modo Por puntos', () => {
     const html = render(room({ ...points, phase: 'ROUND_RESULTS', lastRound: scored, roundEndsAt: null, nextTransitionAt: 9_000 }));
     expect(html).toContain('+99 pts');
     expect(html).toContain('+0 pts');
-    expect(html).toMatch(/<h2 tabindex="-1"[^>]*>🎯 Puntos de la ronda<\/h2>/);
+    expect(html).toMatch(/<h2 [^>]*tabindex="-1"[^>]*>🎯 Puntos de la ronda<\/h2>/);
     expect(html).not.toContain('Eliminado');
     expect(html).not.toContain('Cae quien quedó más lejos');
     expect(liveText(html)).toContain('sumas 99');

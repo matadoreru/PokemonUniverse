@@ -1,10 +1,10 @@
 import { IMPOSTOR_SKIP_TARGET, type ImpostorEliminationReveal, type ImpostorVoteResult, type PokemonImpostorPlayerState, type PokemonImpostorPublicState, type RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Brain, Check, CircleDashed, Eye, ShieldCheck, Skull, SkipForward, UserX, Users } from 'lucide-react';
-import { Fragment, type CSSProperties, type ReactNode, type Ref } from 'react';
+import { Fragment, useId, type CSSProperties, type ReactNode, type Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
+import { ActionPlate, Badge, Card, Chip, cx, Icon, Panel, Pill, Row, type ActionPlateTone } from '../../ui';
 import { impostorClueGroupLabel, impostorClueLine, impostorTallies, votesLabel } from './presentation';
 import { impostorFellowsLead, impostorFellowsShort, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 import s from './PokemonImpostor.module.css';
@@ -249,26 +249,18 @@ export function ImpostorPlayersPanel({ game, people, className }: { game: Pokemo
 
 export interface PlateProps {
   icon: LucideIcon;
-  tone: 'ok' | 'bad' | 'info' | 'warn';
+  tone: ActionPlateTone;
   kicker: string;
   title: ReactNode;
   text?: ReactNode;
   aside?: ReactNode;
-  label?: string;
 }
 
 /**
- * Placa crema de la pantalla inferior: icono, kicker, título (admite foco por programa, `tabIndex={-1}`) y, a la
- * derecha, la acción.
+ * Pantalla inferior: la placa de acción del catálogo (icono, kicker, título con foco por programa y, a la derecha, la
+ * acción, que en el móvil baja a su propia línea a todo el ancho).
  */
-export function ImpostorPlate({ icon, tone, kicker, title, text, aside, label, titleRef }: PlateProps & { titleRef: Ref<HTMLHeadingElement> }) {
-  return <Panel variant="cream" as="section" bodyClassName={cx(s.action)} {...(label ? { 'aria-label': label } : {})}>
-    <span className={cx(s.actionIcon, s[tone])}><Icon icon={icon} size={32} /></span>
-    <div className={s.actionText}>
-      <span className={s.kicker}>{kicker}</span>
-      <h2 ref={titleRef} tabIndex={-1} className={s.actionTitle}>{title}</h2>
-      {text && <p className={s.help}>{text}</p>}
-    </div>
-    {aside && <div className={s.actionAside}>{aside}</div>}
-  </Panel>;
+export function ImpostorPlate({ icon, tone, kicker, title, text, aside, titleRef }: PlateProps & { titleRef: Ref<HTMLHeadingElement> }) {
+  const titleId = useId();
+  return <ActionPlate titleId={titleId} titleRef={titleRef} icon={icon} tone={tone} kicker={kicker} title={title} text={text} aside={aside} asideClassName={s.actionAside} />;
 }

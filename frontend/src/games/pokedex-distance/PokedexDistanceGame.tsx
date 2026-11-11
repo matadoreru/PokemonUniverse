@@ -1,14 +1,14 @@
 import { gameModeLabel, type PokedexDistanceConfig, type PokedexDistancePlayerState, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode, RefObject } from 'react';
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 import { Check, Clock3, Crosshair, Eye, Hourglass, Lock, Ruler, Swords, Target, TimerOff, Trophy, UserX } from 'lucide-react';
 import { Avatar } from '../../components/Avatar';
 import { ServerTimer } from '../../components/ServerTimer';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
-import { Badge, Card, Chip, Confetti, MomentCutin, cx, Icon, Panel, Row, ScoreValue, ScreenSplit } from '../../ui';
+import { ActionPlate, Badge, Card, Chip, Confetti, MomentCutin, cx, Icon, Panel, Row, ScoreValue, ScreenSplit, type ActionPlateTone } from '../../ui';
 import { formatDexNumber } from './distance-ruler';
 import { DexStrip } from './DexStrip';
 import { DistanceRuler } from './DistanceRuler';
@@ -182,17 +182,10 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
   </div>;
 }
 
-/** Pantalla inferior sin buscador: placa crema con icono, estado y, a la derecha, el tiempo o la carta elegida. */
-function ActionStatus({ icon, kicker, title, text, tone, aside, titleRef }: { icon: LucideIcon; kicker: string; title: string; text: string; tone: 'ok' | 'info' | 'warn'; aside?: ReactNode; titleRef?: RefObject<HTMLHeadingElement | null> }) {
-  return <Panel variant="cream" as="div" bodyClassName={cx(s.actionBody)}>
-    <span className={cx(s.actionIcon, s[tone])}><Icon icon={icon} size={32} /></span>
-    <div className={s.status}>
-      <span className={s.kicker}>{kicker}</span>
-      {/* Destino del foco (`useFocusOnTransition`): sin anillo, por la regla global de los títulos con tabindex -1. */}
-      <h2 ref={titleRef} tabIndex={-1} className={s.actionTitle}>{title}</h2>
-      <p className={s.help}>{text}</p>
-    </div>
-    {aside && <div className={s.aside}>{aside}</div>}
-  </Panel>;
+/** Pantalla inferior sin buscador: la placa de acción del catálogo, con el tiempo o la carta elegida a la derecha. */
+function ActionStatus({ icon, kicker, title, text, tone, aside, titleRef }: { icon: LucideIcon; kicker: string; title: string; text: string; tone: ActionPlateTone; aside?: ReactNode; titleRef?: RefObject<HTMLHeadingElement | null> }) {
+  const titleId = useId();
+  // Destino del foco (`useFocusOnTransition`): sin anillo, por la regla global de los títulos con tabindex -1.
+  return <ActionPlate titleId={titleId} titleRef={titleRef} icon={icon} tone={tone} kicker={kicker} title={title} text={text} aside={aside} />;
 }
 

@@ -296,71 +296,9 @@
   color: var(--ink-2);
 }
 
-/* Pantalla inferior: placa crema con icono, estado y, a la derecha, la acción o los puntos. */
-.action {
-  /* Contiene la región `sr-only` (absoluta) del aviso. */
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-}
-@media (min-width: 1024px) {
-  .action {
-    gap: var(--sp-4);
-  }
-}
-.actionIcon {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border: var(--ol-3) solid var(--navy);
-  border-radius: 50%;
-  color: var(--navy);
-  box-shadow: var(--sh-hard-3);
-}
-.ok {
-  background: var(--ok);
-}
-.bad {
-  background: var(--bad);
-}
-.info {
-  background: var(--info);
-}
-.warn {
-  background: var(--warn);
-}
-.actionText {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.kicker {
-  display: block;
-  font: 800 var(--fs-13) / 1.2 var(--font-text);
-  color: var(--ink-2);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.actionTitle {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-  font: 800 var(--fs-22) / var(--lh-display) var(--font-display);
-  color: var(--ink);
-}
-.help {
-  margin-top: var(--sp-1);
-  font: 700 var(--fs-13) / 1.35 var(--font-text);
-  color: var(--ink-2);
-}
+/* Pantalla inferior (`ActionPlate`): lo resaltado de la ayuda, en tinta. */
 .help strong {
   color: var(--ink);
-}
-.actionAside {
-  flex: none;
 }
 .identity {
   display: inline-flex;
@@ -408,9 +346,6 @@
   .hudTimer {
     grid-area: timer;
   }
-  .action {
-    flex-wrap: wrap;
-  }
   .actionAsideWide {
     flex-basis: 100%;
   }
@@ -422,13 +357,6 @@
   }
   .question {
     font-size: var(--fs-22);
-  }
-  .actionIcon,
-  .kicker {
-    display: none;
-  }
-  .actionTitle {
-    font-size: var(--fs-18);
   }
   .points {
     font-size: var(--fs-34);
@@ -512,22 +440,6 @@
     height: 9rem;
   }
   .caption {
-    font-size: var(--fs-15);
-  }
-  .action {
-    gap: var(--sp-5);
-  }
-  .actionIcon {
-    width: 72px;
-    height: 72px;
-  }
-  .kicker {
-    font-size: var(--fs-15);
-  }
-  .actionTitle {
-    font-size: var(--fs-34);
-  }
-  .help {
     font-size: var(--fs-15);
   }
   .points {
