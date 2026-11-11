@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { PokedexDistancePlayerState, PokedexDistancePublicState, RoomView } from '@pokemon-universe/shared/public';
 import { PokedexDistanceGame } from './PokedexDistanceGame';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -30,13 +31,15 @@ const lastRound: NonNullable<PokedexDistancePublicState['lastRound']> = {
 
 describe('PokedexDistanceGame: foco y avisos', () => {
   it('tiene una sola región de avisos, montada en todas las fases', () => {
-    const views = [room(), room({ selectedIds: ['p1'] }, { canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: 1 } }), room({ phase: 'ROUND_RESULTS', lastRound, roundEndsAt: null, nextTransitionAt: 9_000 })];
-    for (const view of views) expect(render(view).match(/class="sr-only" role="status"/g)).toHaveLength(1);
+    const locked = { canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: 1 } };
+    const views = [room(), room({ selectedIds: ['p1'] }, locked), room({ selectedIds: ['p1'] }, { ...locked, exactHit: true }), room({ phase: 'ROUND_RESULTS', lastRound, roundEndsAt: null, nextTransitionAt: 9_000 })];
+    for (const view of views) expectSingleLiveRegion(render(view));
+    for (const view of views.slice(0, 2)) expectSingleLiveRegion(render(view, 'p3'), 'espectador');
   });
   it('con la elección bloqueada el título es el destino del foco y el aviso no repite los textos de la pantalla', () => {
     const html = render(room({ selectedIds: ['p1'] }, { canSelect: false, selection: { pokemonId: 'pikachu', selectedAt: 1 } }));
     expect(html).toMatch(/<h2 tabindex="-1"[^>]*>¡Selección confirmada!<\/h2>/);
-    expect(liveText(html)).toBe('Has elegido Pikachu: tu elección queda bloqueada hasta la revelación.');
+    expect(liveText(html)).toBe('Has elegido Pikachu: tu elección queda bloqueada hasta la revelación. 1 de 2 ya tiene su elección.');
     for (const text of ['Selección confirmada', 'Resultado de la ronda', 'Estás observando', 'Ya ha elegido']) expect(liveText(html)).not.toContain(text);
   });
   it('en la revelación anuncia el veredicto y marca a los desconectados', () => {
@@ -69,7 +72,7 @@ describe('PokedexDistanceGame: modo Por puntos', () => {
     const board = html.slice(html.indexOf('Marcador de la partida'));
     expect(board.indexOf('Bruno')).toBeLessThan(board.indexOf('Ana'));
     expect(html).toContain('150<small> pts</small>');
-    expect(html.match(/class="sr-only" role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
   });
   it('en la revelación cada fila lleva sus puntos de la ronda y no hay eliminados', () => {
     const scored = { ...lastRound, reason: 'SCORED' as const, eliminatedIds: [], points: { p1: 99, p2: 0 } };

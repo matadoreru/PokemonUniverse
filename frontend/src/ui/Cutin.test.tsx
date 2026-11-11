@@ -40,6 +40,15 @@ describe('Cutin', () => {
     expect(html).not.toMatch(/class="[^"]*reveal-cut-in/);
   });
 
+  it('con `live={false}` se ve igual pero no es región viva, y oculta no deja nada', () => {
+    const band = { delayedShown: false, reduced: false, tone: 'yellow' as const, title: 'Ana', live: false };
+    const shown = renderToStaticMarkup(createElement(CutinBand, { ...band, visible: true }));
+    expect(shown).toContain('Ana');
+    expect(shown).toContain('data-layer="cutin"');
+    expect(shown).not.toMatch(/role="status"|aria-live/);
+    expect(renderToStaticMarkup(createElement(CutinBand, { ...band, visible: false }))).toBe('');
+  });
+
   it('cambia al tono diferido junto con la línea diferida', () => {
     const before = renderToStaticMarkup(createElement(CutinBand, { visible: true, delayedShown: false, reduced: false, tone: 'yellow', delayedTone: 'red', title: 'Ana', delayedLine: '…era impostor' }));
     expect(classes(before)).toContain('yellow');

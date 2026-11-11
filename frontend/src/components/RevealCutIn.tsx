@@ -27,6 +27,8 @@ export interface RevealCutInProps {
   delayedTone?: CutInTone;
   holdMs?: number;
   reducedMotion?: boolean;
+  /** Ver `Cutin`: con `false` no es región viva (la pantalla ya lo anuncia en la suya). */
+  live?: boolean;
   onDone?(): void;
 }
 

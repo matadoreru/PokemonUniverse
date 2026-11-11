@@ -63,6 +63,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   const announcement = distanceAnnouncement({
     phase: game.phase, roundNumber: game.roundNumber, target: targetLabel, eligible, hasSelection,
     exactHit: Boolean(playerState?.exactHit), ownPickName: ownPick?.name ?? null, lastRound, selfId,
+    picked: { selected: pickedCount, eligible: game.eligibleIds.length },
   });
 
   // En GAME_STARTING la ronda es aún la 0: la placa ya anuncia la primera.
@@ -88,7 +89,8 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
   </Panel>;
 
   const picks = activePhase && <div className={s.picks}>
-    <p className={s.pickCount} aria-live="polite">{distancePickedCountText(pickedCount, game.eligibleIds.length)}</p>
+    {/* Sin `aria-live`: el recuento lo dice la región viva de la pantalla. */}
+    <p className={s.pickCount}>{distancePickedCountText(pickedCount, game.eligibleIds.length)}</p>
     <ul className={s.chips} aria-label="Quién ha elegido">{game.eligibleIds.map((playerId) => {
       const picked = game.selectedIds.includes(playerId);
       return <li key={playerId}><Chip tone={picked ? 'ok' : 'neutral'} icon={<Icon icon={picked ? Check : Hourglass} size={18} />}>
@@ -177,7 +179,8 @@ export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView
     {/* Primero: tras el armazón, su posición estática (absoluta, sin ancestro posicionado) alargaría la página en el móvil. */}
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
-    {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} />}
+    {/* Sin región viva propia: el acierto exacto ya lo dice el aviso de la pantalla. */}
+    {exactHitNow && <RevealCutIn key={roundKey} tone="electric" title={DISTANCE_EXACT_HIT_TITLE} subtitle={targetLabel} live={false} />}
     {/* Clavo: la elección propia era exactamente el objetivo; al revelar, confeti (decorativo, sin movimiento no sale). */}
     {distanceExactAtReveal(game, selfId) && <Confetti key={`confeti-${roundKey}`} seed={game.roundNumber + game.tiebreakDepth * 31} />}
   </div>;

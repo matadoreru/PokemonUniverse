@@ -28,6 +28,11 @@ interface CutinContent {
   className?: CutinClassName | undefined;
   /** Valor de `data-layer` (capa que el medidor de E2E no cuenta como solape). */
   layer?: string | undefined;
+  /**
+   * Región viva (`role="status"` asertiva, por defecto). Con `false`, sin rol: para una pantalla que ya dice lo mismo
+   * en su única región viva. Oculta entonces no deja nada montado.
+   */
+  live?: boolean | undefined;
 }
 
 export interface CutinProps extends CutinContent {
@@ -63,8 +68,10 @@ export function CutinBand({
   onSkip,
   className,
   layer = 'cutin',
+  live = true,
 }: CutinBandProps) {
-  if (!visible) return <div className={s.srOnly} role="status" aria-live="assertive" data-layer={layer} />;
+  const region = live ? { role: 'status', 'aria-live': 'assertive' as const } : {};
+  if (!visible) return live ? <div className={s.srOnly} {...region} data-layer={layer} /> : null;
   const shownTone = delayedTone && delayedShown ? delayedTone : tone;
   const extra = typeof className === 'function' ? className(shownTone) : className;
   // La salida por la derecha empieza `--t-screen` antes de que el temporizador la desmonte.
@@ -72,8 +79,7 @@ export function CutinBand({
   return (
     <div
       className={cx(extra, s.cutin, s[shownTone], onSkip && s.skippable)}
-      role="status"
-      aria-live="assertive"
+      {...region}
       data-layer={layer}
       data-motion={reduced ? 'reduced' : 'full'}
       style={style}

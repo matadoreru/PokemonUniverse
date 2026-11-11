@@ -109,7 +109,7 @@ describe('distanceRoundRows', () => {
 
 describe('foco y avisos', () => {
   const sel = (distance: number) => ({ pokemonId: `p${distance}`, pokemonName: `P${distance}`, sprite: '/s.png', dexNumber: 25 + distance, distance, selectedAt: 1 });
-  const base = { phase: 'ROUND_ACTIVE' as const, roundNumber: 2, target: '#025', eligible: true, hasSelection: false, exactHit: false, ownPickName: null, lastRound: null, selfId: 'a' };
+  const base = { phase: 'ROUND_ACTIVE' as const, roundNumber: 2, target: '#025', eligible: true, hasSelection: false, exactHit: false, ownPickName: null, lastRound: null, selfId: 'a', picked: { selected: 1, eligible: 3 } };
   it('la clave del foco solo existe con la elección bloqueada o en la revelación, y cambia con el desempate', () => {
     expect(distanceFocusKey('ROUND_ACTIVE', '2-0', false)).toBeNull();
     expect(distanceFocusKey('ROUND_ACTIVE', '2-0', true)).toBe('locked:2-0');
@@ -118,11 +118,13 @@ describe('foco y avisos', () => {
     expect(distanceFocusKey('ROUND_RESULTS', '2-0', false)).toBe('reveal:2-0');
     expect(distanceFocusKey('GAME_RESULTS', '2-0', true)).toBeNull();
   });
-  it('anuncia la ronda, la elección bloqueada y el acierto exacto', () => {
-    expect(distanceAnnouncement(base)).toBe('Ronda 2: busca el Pokémon más cercano al objetivo #025.');
-    expect(distanceAnnouncement({ ...base, hasSelection: true, ownPickName: 'Pikachu' })).toBe('Has elegido Pikachu: tu elección queda bloqueada hasta la revelación.');
-    expect(distanceAnnouncement({ ...base, hasSelection: true, exactHit: true, ownPickName: 'Pikachu' })).toBe('Distancia 0 con Pikachu: es el objetivo #025.');
-    expect(distanceAnnouncement({ ...base, eligible: false })).toBe('');
+  it('anuncia la ronda, la elección bloqueada y el acierto exacto, con cuántos han elegido', () => {
+    expect(distanceAnnouncement(base)).toBe('Ronda 2: busca el Pokémon más cercano al objetivo #025. 1 de 3 ya tiene su elección.');
+    expect(distanceAnnouncement({ ...base, hasSelection: true, ownPickName: 'Pikachu', picked: { selected: 2, eligible: 3 } })).toBe('Has elegido Pikachu: tu elección queda bloqueada hasta la revelación. 2 de 3 ya tienen su elección.');
+    expect(distanceAnnouncement({ ...base, hasSelection: true, exactHit: true, ownPickName: 'Pikachu' })).toBe('Distancia 0 con Pikachu: es el objetivo #025. 1 de 3 ya tiene su elección.');
+    // Quien no juega la ronda solo oye el recuento; fuera de la ronda, nada.
+    expect(distanceAnnouncement({ ...base, eligible: false, picked: { selected: 0, eligible: 3 } })).toBe('0 de 3 ya tienen su elección.');
+    expect(distanceAnnouncement({ ...base, phase: 'GAME_STARTING' })).toBe('');
   });
   it('anuncia el veredicto de la ronda con la distancia propia y la eliminación', () => {
     const lastRound = { eligibleIds: ['a', 'b'], selections: { a: sel(3) }, reason: 'NO_RESPONSE' as const, eliminatedIds: ['b'], tiedIds: [] };
@@ -160,7 +162,7 @@ describe('modo Por puntos', () => {
     expect(outcome.showTiedChip('p1')).toBe(false);
   });
   it('el aviso dice cuánto suma cada uno, también sin elección', () => {
-    const base = { phase: 'ROUND_RESULTS' as const, roundNumber: 2, target: '#025', eligible: true, hasSelection: true, exactHit: false, ownPickName: null, lastRound: scored };
+    const base = { phase: 'ROUND_RESULTS' as const, roundNumber: 2, target: '#025', eligible: true, hasSelection: true, exactHit: false, ownPickName: null, lastRound: scored, picked: { selected: 1, eligible: 2 } };
     expect(distanceAnnouncement({ ...base, selfId: 'p1' })).toBe('Ronda 2 revelada: nadie queda fuera, cada uno suma según su distancia. Te quedaste a 3: sumas 97.');
     expect(distanceAnnouncement({ ...base, selfId: 'p2' })).toContain('No elegiste a tiempo: sumas 0.');
     expect(distanceAnnouncement({ ...base, selfId: 'p2' })).not.toMatch(/fuera de la partida|Cae/);

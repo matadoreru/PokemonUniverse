@@ -150,11 +150,17 @@ export function distanceFocusKey(phase: PokedexDistancePublicState['phase'], rou
   return active && hasSelection ? `locked:${roundKey}` : null;
 }
 
+/** Recuento de la región viva (con otras palabras que `distancePickedCountText`, que las E2E buscan como texto). */
+function pickedCountAnnouncement({ selected, eligible }: { selected: number; eligible: number }): string {
+  return `${selected} de ${eligible} ya ${selected === 1 ? 'tiene' : 'tienen'} su elección.`;
+}
+
 /**
- * Texto de la región `role="status"` de la pantalla: la ronda que empieza, la elección propia bloqueada o el veredicto
- * de la ronda (con la distancia propia). Con otras palabras que la pantalla: no repite los textos que buscan las E2E.
+ * Texto de la única región viva de la pantalla: la ronda que empieza, la elección propia bloqueada o el acierto exacto,
+ * con cuántos han elegido ya (también para quien no juega la ronda), o el veredicto de la ronda (con la distancia
+ * propia). Con otras palabras que la pantalla: no repite los textos que buscan las E2E.
  */
-export function distanceAnnouncement({ phase, roundNumber, target, eligible, hasSelection, exactHit, ownPickName, lastRound, selfId }: {
+export function distanceAnnouncement({ phase, roundNumber, target, eligible, hasSelection, exactHit, ownPickName, lastRound, selfId, picked }: {
   phase: PokedexDistancePublicState['phase'];
   roundNumber: number;
   /** Objetivo ya formateado (`#025`). */
@@ -165,6 +171,8 @@ export function distanceAnnouncement({ phase, roundNumber, target, eligible, has
   ownPickName: string | null;
   lastRound: Pick<PokedexDistancePublicState['lastRound'] & object, 'eligibleIds' | 'selections' | 'reason' | 'eliminatedIds' | 'tiedIds' | 'points'> | null;
   selfId: string;
+  /** Cuántos de los que juegan la ronda ya han elegido (solo `selectedIds`). */
+  picked: { selected: number; eligible: number };
 }): string {
   if (phase === 'ROUND_RESULTS' && lastRound?.reason === 'SCORED') {
     const verdict = `Ronda ${roundNumber} revelada: nadie queda fuera, cada uno suma según su distancia.`;
@@ -186,8 +194,10 @@ export function distanceAnnouncement({ phase, roundNumber, target, eligible, has
     return `${verdict} ${own}${lastRound.eliminatedIds.includes(selfId) ? ' Quedas fuera de la partida.' : ''}`;
   }
   const active = phase === 'ROUND_ACTIVE' || phase === 'TIEBREAKER_ACTIVE';
-  if (!active || !eligible) return '';
-  if (exactHit) return `Distancia 0 con ${ownPickName ?? 'tu Pokémon'}: es el objetivo ${target}.`;
-  if (hasSelection) return `${ownPickName ? `Has elegido ${ownPickName}` : 'Has elegido'}: tu elección queda bloqueada hasta la revelación.`;
-  return `Ronda ${roundNumber}: busca el Pokémon más cercano al objetivo ${target}.`;
+  if (!active) return '';
+  const count = pickedCountAnnouncement(picked);
+  if (!eligible) return count;
+  if (exactHit) return `Distancia 0 con ${ownPickName ?? 'tu Pokémon'}: es el objetivo ${target}. ${count}`;
+  if (hasSelection) return `${ownPickName ? `Has elegido ${ownPickName}` : 'Has elegido'}: tu elección queda bloqueada hasta la revelación. ${count}`;
+  return `Ronda ${roundNumber}: busca el Pokémon más cercano al objetivo ${target}. ${count}`;
 }
