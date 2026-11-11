@@ -50,9 +50,4 @@ public interface DailyResultRepository extends CrudRepository<DailyResultEntity,
   @Query(value = "SELECT COUNT(*) FROM \"DailyResult\" WHERE \"date\" = :date AND \"status\" = 'FINISHED'"
       + " AND \"score\" > :score", nativeQuery = true)
   long countFinishedAbove(LocalDate date, int score);
-
-  /** Retos terminados de la cuenta, el más reciente primero. */
-  @Query(value = "SELECT * FROM \"DailyResult\" WHERE \"userId\" = :userId AND \"status\" = 'FINISHED'"
-      + " ORDER BY \"date\" DESC LIMIT :limit", nativeQuery = true)
-  List<DailyResultEntity> findFinishedByUser(String userId, int limit);
 }

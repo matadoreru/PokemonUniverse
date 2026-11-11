@@ -2,7 +2,6 @@ package es.pokemonuniverse.application.daily;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -244,7 +243,6 @@ class DailyChallengeServiceTest {
     assertNotNull(beans.getBean(DailyChallengeService.class));
     assertTrue(beans.getBean(DailyRunListener.class)
         instanceof DailyRunRecorder);
-    assertTrue(beans.getBean(DailyResultsReader.class) instanceof DailyRunRecorder);
   }
 
   // ------------------------------------------------------------------------------------------------ start
@@ -675,30 +673,5 @@ class DailyChallengeServiceTest {
     // El día siguiente ya es otro reto.
     track(tomorrow);
     assertEquals("AVAILABLE", service.overview(ash).status());
-  }
-
-  @Test
-  void finishedByForAchievements() {
-    var ash = user();
-    pin("pokedex-distance");
-    start(ash);
-    playToResults(ash);
-    rooms.manager().leave(ash.id());
-    var tomorrow = date.plusDays(1);
-    pin(tomorrow, "higher-lower", sortedIds(DailyTestRooms.goldenCatalog()));
-    rooms.setTime(at(tomorrow, LocalTime.NOON));
-    start(ash);
-    playToResults(ash);
-
-    var views = recorder.finishedBy(ash.id(), 10);
-    assertEquals(List.of(tomorrow.toString(), date.toString()), views.stream().map(DailyResultView::date).toList());
-    assertEquals(List.of("higher-lower", "pokedex-distance"),
-        views.stream().map(DailyResultView::gameId).toList());
-    var latest = row(ash, tomorrow);
-    assertEquals(new DailyResultView(tomorrow.toString(), "higher-lower", latest.getScore(), latest.getCorrect(),
-        listOf(latest.getRounds(), Integer.class), latest.getFinishedAt().toString()), views.getFirst());
-    assertEquals(10, views.getFirst().rounds().size());
-    assertEquals(1, recorder.finishedBy(ash.id(), 1).size());
-    assertNotEquals(views.get(0).finishedAt(), views.get(1).finishedAt());
   }
 }

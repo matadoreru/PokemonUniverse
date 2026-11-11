@@ -1,6 +1,5 @@
 package es.pokemonuniverse.application.daily;
 
-import es.pokemonuniverse.adapters.out.persistence.DailyResultEntity;
 import es.pokemonuniverse.adapters.out.persistence.DailyResultRepository;
 import es.pokemonuniverse.application.friends.UserConnections;
 import es.pokemonuniverse.application.rooms.DailyRunListener;
@@ -8,7 +7,6 @@ import es.pokemonuniverse.application.time.Clock;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.room.DailyRoom;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.type.Argument;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.serde.annotation.Serdeable;
@@ -31,7 +29,7 @@ import java.util.concurrent.ExecutorService;
  */
 @Singleton
 @Requires(beans = DailyResultRepository.class)
-public class DailyRunRecorder implements DailyRunListener, DailyResultsReader {
+public class DailyRunRecorder implements DailyRunListener {
 
   /** Payload de {@code daily:recorded}. */
   @Serdeable
@@ -94,25 +92,6 @@ public class DailyRunRecorder implements DailyRunListener, DailyResultsReader {
     var rowId = daily.resultRowId;
     var abandonedAt = Instant.ofEpochMilli(clock.now());
     return CompletableFuture.runAsync(() -> results.abandon(rowId, abandonedAt), executor);
-  }
-
-  @Override
-  public List<DailyResultView> finishedBy(String userId, int limit) {
-    return results.findFinishedByUser(userId, limit).stream().map(this::view).toList();
-  }
-
-  private DailyResultView view(DailyResultEntity row) {
-    return new DailyResultView(row.getDate().toString(), row.getGameId(), row.getScore(), row.getCorrect(),
-        rounds(row.getRounds()), row.getFinishedAt().toString());
-  }
-
-  /** {@code rounds} vuelve de jsonb normalizado ({@code [1, 0, 1]}): se lee como JSON, nunca se compara el texto. */
-  List<Integer> rounds(String text) {
-    try {
-      return json.readValue(text, Argument.listOf(Integer.class));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
   }
 
   private String toJson(List<Integer> rounds) {

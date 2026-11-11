@@ -160,22 +160,6 @@ class DailyRepositoriesTest {
   }
 
   @Test
-  void findFinishedByUserNewestFirst() {
-    var u = user();
-    var older = challenge("higher-lower");
-    var newer = older.plusDays(100001);
-    challenges.insertIfAbsent(newer, "shiny-vote", "[1]", "x");
-    createdDates.add(newer);
-    var r1 = start(u, older, "higher-lower");
-    var r2 = start(u, newer, "shiny-vote");
-    results.finish(r1.getId(), 1, 1, "[1]", Instant.now());
-    results.finish(r2.getId(), 2, 1, "[1]", Instant.now());
-    assertEquals(List.of(r2.getId(), r1.getId()),
-        results.findFinishedByUser(u, 10).stream().map(DailyResultEntity::getId).toList());
-    assertEquals(1, results.findFinishedByUser(u, 1).size());
-  }
-
-  @Test
   void deletingUserCascades() {
     var date = challenge("higher-lower");
     var u = user();
