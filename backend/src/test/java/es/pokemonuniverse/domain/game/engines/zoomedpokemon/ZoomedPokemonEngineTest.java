@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.zoomedpokemon;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,18 +9,14 @@ import es.pokemonuniverse.domain.game.engine.AssetRequest;
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
-import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.PokemonVisualCatalog;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonConfig.HintKind;
 import es.pokemonuniverse.domain.game.engines.zoomedpokemon.ZoomedPokemonConfig.ImageMode;
 import es.pokemonuniverse.domain.json.JsonTree;
-import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
+import es.pokemonuniverse.support.EngineTestKit;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +42,8 @@ class ZoomedPokemonEngineTest {
 
   private static final Artworks PIKACHU = new Artworks(Map.of("pikachu", "art/25.png"));
 
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
   private static GameContext context(int players, @Nullable PokemonVisualCatalog visuals) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(1000)
-        .roomCode("GOLD01").pokemonVisuals(visuals).build();
+    return EngineTestKit.builder(players).roomCode("GOLD01").pokemonVisuals(visuals).build();
   }
 
   private static ZoomedPokemonConfig config(List<Integer> generations, ImageMode mode) {

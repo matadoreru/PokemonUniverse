@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonbluffauction;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -11,7 +12,6 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionTypes.BluffAuctionCuratedCategory;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionTypes.BluffAuctionRule;
 import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAuctionTypes.PokemonBluffAuctionAction;
@@ -24,10 +24,8 @@ import es.pokemonuniverse.domain.pokemon.conditions.ConditionOperator;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
+import es.pokemonuniverse.support.EngineTestKit;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -41,18 +39,12 @@ class PokemonBluffAuctionEngineTest {
   private final PokemonBluffAuctionEngine engine =
       new PokemonBluffAuctionEngine(GoldenManifests.of(PokemonBluffAuctionEngine.ID));
 
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
   private static GameContext context(PokemonCatalog catalog, int players) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(catalog, new Mulberry32(1)).players(list).now(1000).build();
+    return EngineTestKit.builder(catalog, 1, players).build();
   }
 
   private static GameContext context(int players) {
-    return context(GoldenCatalogs.load("gen1-2"), players);
+    return EngineTestKit.context(players);
   }
 
   private static PokemonBluffAuctionConfig config(List<Integer> generations) {

@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonconnections;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -27,7 +28,6 @@ import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
 import es.pokemonuniverse.golden.GoldenRun;
-import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,10 +52,6 @@ class PokemonConnectionsEngineTest {
   private static final List<String> CLASSIC_IDS = List.of("vaporeon", "jolteon", "flareon", "espeon", "omanyte",
       "kabuto", "aerodactyl", "lileep", "growlithe", "houndour", "electrike", "lillipup", "vanillite", "slurpuff",
       "appletun", "alcremie");
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
 
   /** Mismo pool sintético que el script TS: tipos alternos Agua/Fuego y defensas 50–52. */
   private static InMemoryPokemonCatalog classicCatalog() {

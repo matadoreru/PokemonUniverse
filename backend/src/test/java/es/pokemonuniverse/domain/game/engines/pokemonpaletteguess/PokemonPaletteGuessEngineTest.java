@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokemonpaletteguess;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,8 +18,6 @@ import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenFixture.PalettePatch;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +31,6 @@ class PokemonPaletteGuessEngineTest {
 
   private final PokemonPaletteGuessEngine engine =
       new PokemonPaletteGuessEngine(GoldenManifests.of(PokemonPaletteGuessEngine.ID));
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
 
   private static GameContext context(PokemonCatalog catalog) {
     return GameContext.builder(catalog, new Mulberry32(1)).players(List.of(new GamePlayer("p1", "Ana"))).now(1000)

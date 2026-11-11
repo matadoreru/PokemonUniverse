@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.tcghigherlower;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,8 +16,6 @@ import es.pokemonuniverse.domain.tcg.TcgCardCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +28,6 @@ import org.junit.jupiter.api.Test;
 class TcgHigherLowerEngineTest {
 
   private final TcgHigherLowerEngine engine = new TcgHigherLowerEngine(GoldenManifests.of(TcgHigherLowerEngine.ID));
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
 
   private static GameContext context(TcgCardCatalog cards) {
     return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1))
