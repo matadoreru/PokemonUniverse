@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '../lib/api';
+import { apiErrorMessage } from '../lib/api-errors';
 import type { PokemonSelectorResponse } from '../lib/api-contract';
 import type { PokemonSearchOption } from '../room/pokemon-search';
 
@@ -28,19 +29,14 @@ const POOL_ERROR_FALLBACK = 'No se pudo cargar el buscador de Pokémon. Comprueb
 /** El límite de peticiones del servidor (`ApiError` «Too many requests»). */
 const POOL_RATE_LIMITED = 'Demasiadas peticiones seguidas. Espera unos segundos y pulsa «Reintentar».';
 
-/** Frases de estado HTTP que `api()` usa como mensaje cuando la respuesta no trae un `error` propio. */
-const HTTP_STATUS_TEXTS = new Set(['Request failed', 'Bad Request', 'Unauthorized', 'Forbidden', 'Not Found', 'Request Timeout', 'Too Many Requests', 'Internal Server Error', 'Bad Gateway', 'Service Unavailable', 'Gateway Timeout']);
-
 /**
- * Mensaje del estado de error del buscador. Un fallo de red (`TypeError` de `fetch`), un mensaje vacío, el
- * genérico de `api()` o una frase de estado HTTP en inglés se sustituyen por un texto en español; el `error` que
- * envía el servidor en el cuerpo se muestra tal cual.
+ * Mensaje del estado de error del buscador. Un fallo de red, un mensaje vacío o un texto en inglés se sustituyen por
+ * un texto en español; el `error` que envía el servidor en el cuerpo, si ya está en español, se muestra tal cual.
  */
 export function poolErrorMessage(caught: unknown): string {
-  if (caught instanceof TypeError || !(caught instanceof Error)) return POOL_ERROR_FALLBACK;
-  const message = caught.message.trim();
-  if (message === 'Too many requests') return POOL_RATE_LIMITED;
-  return !message || HTTP_STATUS_TEXTS.has(message) ? POOL_ERROR_FALLBACK : message;
+  // Un texto suelto (no un `Error`) no viene de `api()`: el de reserva.
+  if (!(caught instanceof Error)) return POOL_ERROR_FALLBACK;
+  return apiErrorMessage(caught, { translations: { 'Too many requests': POOL_RATE_LIMITED }, network: POOL_ERROR_FALLBACK, status: false, fallback: POOL_ERROR_FALLBACK });
 }
 
 export async function fetchPokemonPool(path: string, signal: AbortSignal): Promise<PokemonSearchOption[]> {

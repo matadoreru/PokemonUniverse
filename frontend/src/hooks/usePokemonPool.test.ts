@@ -41,7 +41,7 @@ describe('usePokemonPool', () => {
     expect(poolErrorMessage('raro')).toBe('No se pudo cargar el buscador de Pokémon. Comprueba la conexión.');
     expect(poolErrorMessage(new Error('Generaciones no válidas'))).toBe('Generaciones no válidas');
     expect(poolErrorMessage(new Error('Too many requests'))).toBe('Demasiadas peticiones seguidas. Espera unos segundos y pulsa «Reintentar».');
-    for (const generic of ['', '  ', 'Request failed', 'Internal Server Error', 'Bad Gateway', 'Service Unavailable']) {
+    for (const generic of ['', '  ', 'Request failed', 'Internal Server Error', 'Internal server error', 'Bad Gateway', 'Service Unavailable', 'Authentication required', 'Invalid request']) {
       expect(poolErrorMessage(new Error(generic)), generic).toBe('No se pudo cargar el buscador de Pokémon. Comprueba la conexión.');
     }
   });

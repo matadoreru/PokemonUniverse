@@ -1,5 +1,6 @@
 import type { FriendInvite, FriendStatus } from '@pokemon-universe/shared/public';
 import type { FriendResponse, FriendsResponse } from '../lib/api-contract';
+import { apiErrorMessage } from '../lib/api-errors';
 
 /** Un amigo de la lista (`GET /api/friends`). */
 export type FriendEntry = FriendResponse;
@@ -87,7 +88,7 @@ const GENERIC = 'No se pudo completar. Inténtalo de nuevo en unos segundos.';
 
 /**
  * Errores de las rutas `/api/friends` (`FriendService` y el limitador `friendRequests`) en español, para el texto en línea
- * del panel. `api()` lanza `Error(body.error)`.
+ * del panel. `api()` lanza un `ApiError` con ese texto; lo común está en `lib/api-errors.ts`.
  */
 export const FRIEND_ERROR_TRANSLATIONS: Record<string, string> = {
   'Cannot send a friend request to this user': 'No se puede enviar la solicitud a ese usuario.',
@@ -99,8 +100,8 @@ export const FRIEND_ERROR_TRANSLATIONS: Record<string, string> = {
 };
 
 export function friendErrorMessage(error: unknown): string {
-  const raw = (typeof error === 'string' ? error : error instanceof Error ? error.message : '').trim();
-  return Object.hasOwn(FRIEND_ERROR_TRANSLATIONS, raw) ? FRIEND_ERROR_TRANSLATIONS[raw]! : GENERIC;
+  // Sin red o con un texto desconocido, el genérico del panel.
+  return apiErrorMessage(error, { translations: FRIEND_ERROR_TRANSLATIONS, network: GENERIC, spanish: false, status: false, fallback: GENERIC });
 }
 
 /** Relación con otra cuenta según la lista: amigos, solicitud recibida (para aceptarla), enviada o ninguna. */

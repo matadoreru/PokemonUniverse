@@ -1,3 +1,4 @@
+import { errorText, looksSpanish } from '../lib/api-errors';
 import { OFFLINE_MESSAGE, TIMEOUT_MESSAGE } from '../lib/realtime';
 
 /** Longitud del código de sala (`roomCodeSchema`: `^[A-Z2-9]{6}$`). */
@@ -118,7 +119,7 @@ const SPANISH = new Set<string>([OFFLINE_MESSAGE, TIMEOUT_MESSAGE, ...SERVER_SPA
 
 /** Texto en español para un error al crear, unirse o salir de una sala. */
 export function roomErrorMessage(error: unknown): string {
-  const raw = (typeof error === 'string' ? error : error instanceof Error ? error.message : '').trim();
+  const raw = errorText(error);
   if (Object.hasOwn(ROOM_ERROR_TRANSLATIONS, raw)) return ROOM_ERROR_TRANSLATIONS[raw]!;
   if (SPANISH.has(raw)) return raw;
   // El error de validación del código llega como la lista de incidencias de Zod, con el patrón
@@ -127,9 +128,6 @@ export function roomErrorMessage(error: unknown): string {
   return GENERIC;
 }
 
-/** Palabras que delatan un texto en español del servidor (la mayoría de los rechazos del lobby ya llegan así). */
-const SPANISH_HINT = /[áéíóúñü¿¡]|\b(?:el|la|los|las|de|del|que|un|una|ya|se|en|tu|al|por|para|con|hay|puedes|jugador|jugadores|minijuego|minijuegos|sala|partida|host)\b/i;
-
 /**
  * Texto en español para un error de una orden de la sala (lobby: listo, empezar, ajustes, roles). A diferencia de
  * `roomErrorMessage`, deja pasar los rechazos del servidor que ya están en español («Falta por confirmar: …», «No tienes
@@ -137,10 +135,9 @@ const SPANISH_HINT = /[áéíóúñü¿¡]|\b(?:el|la|los|las|de|del|que|un|una|
  * de validación, «Action rejected», errores sin texto) se queda en el genérico.
  */
 export function roomActionErrorMessage(error: unknown): string {
-  const raw = (typeof error === 'string' ? error : error instanceof Error ? error.message : '').trim();
+  const raw = errorText(error);
   if (Object.hasOwn(ROOM_ERROR_TRANSLATIONS, raw)) return ROOM_ERROR_TRANSLATIONS[raw]!;
   if (SPANISH.has(raw)) return raw;
-  // Las incidencias de validación llegan como JSON (`ZodIssues.stringify`): no son para leer.
-  if (!raw || raw.startsWith('[') || raw.startsWith('{')) return GENERIC;
-  return SPANISH_HINT.test(raw) ? raw : GENERIC;
+  // `looksSpanish` descarta las incidencias de validación en JSON y los textos en inglés con «Pokémon».
+  return looksSpanish(raw) ? raw : GENERIC;
 }

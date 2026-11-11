@@ -2,23 +2,20 @@ import type { CustomCategoryView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Pencil, Plus, Power, Save, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../../lib/api';
+import { apiErrorMessage } from '../../lib/api-errors';
 import { Chip, cx, Dialog, Field, Icon, Pill, StateBox } from '../../ui';
 import s from './CustomCategoryManager.module.css';
 
 const MIN = 4;
 const MAX = 160;
 
-/** Frases que `api()` usa cuando la respuesta no trae un `error` propio (en inglés): nunca se enseñan tal cual. */
-const ENGLISH_STATUS = /^(Request failed|Failed to fetch|NetworkError.*|Load failed|Bad Request|Unauthorized|Forbidden|Not Found|Conflict|Request Timeout|Too Many Requests|Internal Server Error|Bad Gateway|Service Unavailable|Gateway Timeout)$/i;
-
 /**
- * Mensaje de error en castellano: el `error` que manda el servidor (ya en castellano) tal cual; un fallo de red, un
- * mensaje vacío o una frase de estado HTTP en inglés, el texto de reserva.
+ * Mensaje de error en castellano: el `error` que manda el servidor tal cual si ya está en castellano; un fallo de red,
+ * un mensaje vacío o un texto en inglés, el texto de reserva.
  */
 export function categoryErrorMessage(caught: unknown, fallback: string): string {
-  if (!(caught instanceof Error) || caught instanceof TypeError) return fallback;
-  const message = caught.message.trim();
-  return !message || ENGLISH_STATUS.test(message) ? fallback : message;
+  if (!(caught instanceof Error)) return fallback;
+  return apiErrorMessage(caught, { network: fallback, status: false, fallback });
 }
 
 interface CustomCategoryManagerProps {

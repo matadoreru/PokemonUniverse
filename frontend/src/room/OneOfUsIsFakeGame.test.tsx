@@ -250,5 +250,8 @@ describe('One of Us Is Fake: resultados, ajustes y gestor', () => {
     expect(categoryErrorMessage(new Error('Bad Request'), 'No se pudo guardar.')).toBe('No se pudo guardar.');
     expect(categoryErrorMessage(new TypeError('Failed to fetch'), 'Sin conexión.')).toBe('Sin conexión.');
     expect(categoryErrorMessage('raro', 'Sin conexión.')).toBe('Sin conexión.');
+    // Los textos en inglés del servidor tampoco se enseñan.
+    expect(categoryErrorMessage(new Error('Internal server error'), 'No se pudo guardar.')).toBe('No se pudo guardar.');
+    expect(categoryErrorMessage(new Error('Authentication required'), 'No se pudo guardar.')).toBe('No se pudo guardar.');
   });
 });
