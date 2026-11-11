@@ -11,6 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.TimedRoundStrategy;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
@@ -235,7 +236,7 @@ public final class PokeddleRaceEngine
         .filter(pokemon -> PokeddleRaceRules.hasCompletePokeddleMetadata(pokemon, config))
         .toList();
     if (pool.isEmpty()) throw new EngineException("No hay Pokémon con datos completos para esta configuración.");
-    var shuffled = PokeddleRaceRules.shufflePokeddlePool(pool, context.random());
+    var shuffled = Randoms.shuffled(pool, context.random());
     var playerIds = context.players().stream().map(GamePlayer::id).toList();
     var secrets = new LinkedHashMap<String, String>();
     var boards = new LinkedHashMap<String, List<PokeddleBoardRow>>();

@@ -24,11 +24,6 @@ public final class PokemonConnectionsRules {
     return rank <= CONNECTIONS_COMPLETION_BONUSES.size() ? CONNECTIONS_COMPLETION_BONUSES.get(rank - 1) : 0;
   }
 
-  /** {@code emptyPokemonConnectionsStats()}. */
-  public static PokemonConnectionsStats emptyPokemonConnectionsStats() {
-    return PokemonConnectionsStats.EMPTY;
-  }
-
   /**
    * Puntos, tableros completados y grupos encontrados de mayor a menor, luego menos errores; los empates de puntos
    * comparten puesto. El desempate de TS es {@code playerId.localeCompare}; aquí {@link String#compareTo},
@@ -41,7 +36,7 @@ public final class PokemonConnectionsRules {
     var entries = state.playerIds().stream()
         .map(playerId -> new Scoring.ScoreEntry<>(playerId,
             Objects.requireNonNullElse(state.scores().get(playerId), 0),
-            Objects.requireNonNullElse(state.playerStats().get(playerId), emptyPokemonConnectionsStats())))
+            Objects.requireNonNullElse(state.playerStats().get(playerId), PokemonConnectionsStats.EMPTY)))
         .toList();
     Comparator<Scoring.ScoreEntry<PokemonConnectionsStats>> compare = (left, right) -> {
       int result = Integer.compare(right.points(), left.points());

@@ -87,7 +87,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
 
   private static PokemonConnectionsStats stats(PokemonConnectionsState state, String playerId) {
     return Objects.requireNonNullElse(state.playerStats().get(playerId),
-        PokemonConnectionsRules.emptyPokemonConnectionsStats());
+        PokemonConnectionsStats.EMPTY);
   }
 
   /** {@code preparePuzzle}: genera el puzle y después baraja el tablero, en ese orden de {@code random}. */
@@ -205,7 +205,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     var playerStats = new LinkedHashMap<String, PokemonConnectionsStats>();
     for (var playerId : playerIds) {
       scores.put(playerId, 0);
-      playerStats.put(playerId, PokemonConnectionsRules.emptyPokemonConnectionsStats());
+      playerStats.put(playerId, PokemonConnectionsStats.EMPTY);
     }
     var base = PokemonConnectionsState.builder()
         .phase(GamePhase.GAME_STARTING)

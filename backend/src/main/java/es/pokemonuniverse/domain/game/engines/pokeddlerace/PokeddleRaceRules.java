@@ -1,7 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.pokeddlerace;
 
 import es.pokemonuniverse.domain.game.engine.infra.JsStrings;
-import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.EvolutionValue;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.PokeddleFeedbackEntry;
 import es.pokemonuniverse.domain.json.JsNumbers;
@@ -12,7 +11,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.DoubleSupplier;
 
 /** Reglas de Pokédle Race (antes en {@code pokeddle-race/rules.ts}; la etapa evolutiva ya no es traducción literal). */
 public final class PokeddleRaceRules {
@@ -119,10 +117,5 @@ public final class PokeddleRaceRules {
         && (!config.clue("legendaryStatus") || JsStrings.truthy(pokemon.legendaryStatus()))
         && (!config.clue("color") || (JsStrings.truthy(pokemon.color()) && !"unknown".equals(pokemon.color())))
         && (!config.clue("abilities") || !abilities(pokemon).isEmpty());
-  }
-
-  /** {@code shufflePokeddlePool}: el mismo Fisher–Yates que {@link Randoms#shuffled}, con las mismas extracciones. */
-  public static <T> List<T> shufflePokeddlePool(List<T> source, DoubleSupplier random) {
-    return Randoms.shuffled(source, random);
   }
 }

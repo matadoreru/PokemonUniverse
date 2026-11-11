@@ -1,9 +1,11 @@
 package es.pokemonuniverse.domain.game.engine.infra;
 
 import es.pokemonuniverse.domain.game.engine.GameContext;
-import es.pokemonuniverse.domain.game.engine.GamePhase;
 
-/** Transiciones propias de un juego para {@link Timing#advanceTimedRound}. */
+/**
+ * Transiciones propias de un juego para {@link Timing#advanceTimedRound}, con {@code ROUND_ACTIVE} y
+ * {@code ROUND_RESULTS} como fases activa y de resultados.
+ */
 public interface TimedRoundStrategy<S extends TimedGameState> {
 
   S beginNext(S state, GameContext context);
@@ -17,13 +19,5 @@ public interface TimedRoundStrategy<S extends TimedGameState> {
   /** {@code tickActive?.(state, context) ?? state}: sin implementar devuelve el mismo estado. */
   default S tickActive(S state, GameContext context) {
     return state;
-  }
-
-  default GamePhase activePhase() {
-    return GamePhase.ROUND_ACTIVE;
-  }
-
-  default GamePhase resultsPhase() {
-    return GamePhase.ROUND_RESULTS;
   }
 }

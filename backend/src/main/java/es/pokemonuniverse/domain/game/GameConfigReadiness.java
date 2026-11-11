@@ -2,9 +2,9 @@ package es.pokemonuniverse.domain.game;
 
 import static es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions.BINGO_FAMILY_KEYS;
 
+import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceConfig;
 import es.pokemonuniverse.domain.json.JsNumbers;
 import io.micronaut.json.tree.JsonNode;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,12 +13,6 @@ import java.util.Optional;
  * expresar por sí solo.
  */
 public final class GameConfigReadiness {
-
-  /** {@code POKEDDLE_CLUE_KEYS} de {@code pokeddle-race/config.ts}. */
-  public static final List<String> POKEDDLE_CLUE_KEYS = List.of(
-      "generation", "dexNumber", "types", "typeCount",
-      "hp", "attack", "defense", "specialAttack", "specialDefense", "speed", "baseStatTotal",
-      "height", "weight", "evolutionStage", "legendaryStatus", "color", "abilities");
 
   private static final Map<String, String> BINGO_FAMILY_LABELS = Map.ofEntries(
       Map.entry("generation", "Generación"),
@@ -82,7 +76,7 @@ public final class GameConfigReadiness {
     var value = record(config);
     if (gameId.equals("pokeddle-race")) {
       var clues = record(value.get("clues"));
-      if (POKEDDLE_CLUE_KEYS.stream().noneMatch(key -> isTrue(clues.get(key)))) {
+      if (PokeddleRaceConfig.CLUE_KEYS.stream().noneMatch(key -> isTrue(clues.get(key)))) {
         return Optional.of("Selecciona al menos una pista.");
       }
     }

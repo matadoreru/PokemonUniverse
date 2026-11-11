@@ -46,12 +46,10 @@ public final class Timing {
 
   /** Ciclo común activo → resultados → siguiente/fin; los juegos solo inyectan sus transiciones. */
   public static <S extends TimedGameState> S advanceTimedRound(S state, GameContext context, TimedRoundStrategy<S> strategy) {
-    var activePhase = strategy.activePhase();
-    var resultsPhase = strategy.resultsPhase();
-    if (state.phase() == resultsPhase && deadlineReached(context.now(), state.nextTransitionAt())) {
+    if (state.phase() == GamePhase.ROUND_RESULTS && deadlineReached(context.now(), state.nextTransitionAt())) {
       return strategy.isComplete(state) ? strategy.finish(state, context) : strategy.beginNext(state, context);
     }
-    if (state.phase() != activePhase) return state;
+    if (state.phase() != GamePhase.ROUND_ACTIVE) return state;
     if (deadlineReached(context.now(), state.roundEndsAt())) return strategy.resolveActive(state, context);
     return strategy.tickActive(state, context);
   }
