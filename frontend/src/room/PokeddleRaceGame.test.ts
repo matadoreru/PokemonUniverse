@@ -305,7 +305,7 @@ describe('Pokédle Race: resultados y ajustes', () => {
   it('ajustes: un interruptor por pista, rondas desde 1 y aviso sin pistas', () => {
     const html = renderToStaticMarkup(createElement(PokeddleRaceConfigPanel, { config: defaultPokeddleRaceConfig, disabled: false, onChange: async () => undefined }));
     expect(html.match(/role="switch"/g)).toHaveLength(17);
-    expect(html).toContain('min="1" max="15"');
+    expect(html).toContain('min="1" max="30"');
     expect(html).not.toContain('class="chip');
     const none = { ...defaultPokeddleRaceConfig, clues: Object.fromEntries(Object.keys(defaultPokeddleRaceConfig.clues).map((key) => [key, false])) };
     expect(renderToStaticMarkup(createElement(PokeddleRaceConfigPanel, { config: none, disabled: false, onChange: async () => undefined }))).toContain('Selecciona al menos una pista.');
