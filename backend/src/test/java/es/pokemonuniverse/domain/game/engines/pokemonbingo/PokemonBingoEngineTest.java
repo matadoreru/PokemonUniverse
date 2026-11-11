@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Lo que las fixtures doradas no cubren: manifiesto, parseo y errores de arranque (el exportador no los graba); y la
- * privacidad de soluciones e intentos, comprobada paso a paso sobre los escenarios dorados. Los tableros (condiciones y
- * Pokémon colocados) son públicos a propósito: la carrera se sigue en directo.
+ * privacidad de soluciones e intentos, comprobada paso a paso sobre los escenarios dorados. La vista pública lleva el
+ * tablero de cada jugador (condiciones y Pokémon colocados); cada jugador tiene un tablero distinto.
  */
 class PokemonBingoEngineTest {
 

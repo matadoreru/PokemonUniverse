@@ -27,6 +27,7 @@ import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.junit.jupiter.api.Test;
@@ -180,5 +181,53 @@ class OneOfUsIsFakeEngineTest {
       });
     }
     return count[0];
+  }
+
+  /**
+   * Contrafáctico: con otro jugador como fake, el ciclo de vida, la vista pública y la de todos salvo los dos
+   * implicados no cambian. Así ningún campo, se llame como se llame, delata quién es.
+   */
+  @Test
+  void noOtherViewDependsOnWhoIsFake() {
+    int checked = forEachHiddenRound((state, run) -> {
+      var fake = state.fakePlayerId();
+      var other = state.playerIds().stream().filter(id -> !id.equals(fake)).findFirst().orElseThrow();
+      var swapped = state.toBuilder().fakePlayerId(other).build();
+      assertSameViews(state, swapped, run, List.of(fake, other));
+    });
+    assertTrue(checked > 0);
+  }
+
+  /** Contrafáctico: cambiar a quién votó un jugador solo cambia su propia vista. */
+  @Test
+  void noOtherViewDependsOnAVote() {
+    int[] checked = {0};
+    forEachHiddenRound((state, run) -> {
+      for (var vote : state.votes().entrySet()) {
+        var candidate = state.voteCandidates().stream()
+            .filter(id -> !id.equals(vote.getValue()) && !id.equals(vote.getKey())).findFirst();
+        if (candidate.isEmpty()) continue;
+        var votes = new LinkedHashMap<>(state.votes());
+        votes.put(vote.getKey(), candidate.get());
+        assertSameViews(state, state.toBuilder().votes(votes).build(), run, List.of(vote.getKey()));
+        checked[0]++;
+      }
+    });
+    assertTrue(checked[0] > 0, "algún escenario vota antes de los resultados");
+  }
+
+  private void assertSameViews(OneOfUsIsFakeState state, OneOfUsIsFakeState changed, GoldenRun run,
+      List<String> except) {
+    var context = run.context();
+    assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getLifecycle(state)),
+        GoldenReplayer.tree(engine.getLifecycle(changed))), "lifecycle en " + state.phase());
+    assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getPublicState(state, context)),
+        GoldenReplayer.tree(engine.getPublicState(changed, context))), "publicState en " + state.phase());
+    for (var player : context.players()) {
+      if (except.contains(player.id())) continue;
+      assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getPlayerState(state, player.id(), context)),
+          GoldenReplayer.tree(engine.getPlayerState(changed, player.id(), context))),
+          player.id() + " en " + state.phase());
+    }
   }
 }

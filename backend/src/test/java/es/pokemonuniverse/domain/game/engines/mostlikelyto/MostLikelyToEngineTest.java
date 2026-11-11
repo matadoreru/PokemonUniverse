@@ -26,6 +26,7 @@ import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -157,5 +158,33 @@ class MostLikelyToEngineTest {
         if (phases.contains(state.phase())) check.accept(state, run);
       });
     }
+  }
+
+  /** Contrafáctico: durante la votación, cambiar a quién votó un jugador solo cambia su propia vista. */
+  @Test
+  void noOtherViewDependsOnAVote() {
+    int[] checked = {0};
+    forEachState(Set.of(GamePhase.VOTING, GamePhase.REVOTE), (state, run) -> {
+      var context = run.context();
+      for (var vote : state.votes().entrySet()) {
+        var candidate = state.voteCandidates().stream()
+            .filter(id -> !id.equals(vote.getValue()) && !id.equals(vote.getKey())).findFirst();
+        if (candidate.isEmpty()) continue;
+        var votes = new LinkedHashMap<>(state.votes());
+        votes.put(vote.getKey(), candidate.get());
+        var changed = state.toBuilder().votes(votes).build();
+        assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getLifecycle(state)),
+            GoldenReplayer.tree(engine.getLifecycle(changed))));
+        assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getPublicState(state, context)),
+            GoldenReplayer.tree(engine.getPublicState(changed, context))));
+        for (var player : context.players()) {
+          if (player.id().equals(vote.getKey())) continue;
+          assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getPlayerState(state, player.id(), context)),
+              GoldenReplayer.tree(engine.getPlayerState(changed, player.id(), context))), player.id());
+        }
+        checked[0]++;
+      }
+    });
+    assertTrue(checked[0] > 0, "algún escenario vota");
   }
 }

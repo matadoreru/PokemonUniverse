@@ -14,6 +14,7 @@ import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaDifficulty;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaQuestionType;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaOptionId;
+import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaQuestion;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;
@@ -122,5 +123,37 @@ class PokemonTriviaEngineTest {
       });
     }
     assertTrue(answers[0] > 0, "algún escenario tiene respuestas con la ronda aún abierta");
+  }
+
+  /**
+   * Contrafáctico: con la ronda abierta, otra opción correcta no cambia ninguna vista. Las opciones son públicas, así
+   * que buscar la letra correcta no serviría: lo que se fija es que nada dependa de ella.
+   */
+  @Test
+  void noViewDependsOnTheCorrectOption() {
+    int[] checked = {0};
+    for (var file : GoldenRun.scenarios(PokemonTriviaEngine.ID)) {
+      GoldenRun.forEachSnapshot(PokemonTriviaEngine.ID, file, run -> {
+        var state = run.state(PokemonTriviaState.class);
+        var question = state.question();
+        if (state.phase() != GamePhase.ROUND_ACTIVE || question == null) return;
+        var context = run.context();
+        for (var option : question.options()) {
+          if (option.id() == question.correctOptionId()) continue;
+          var changed = state.toBuilder().question(new PokemonTriviaQuestion(question.key(), question.type(),
+              question.prompt(), question.options(), option.id(), question.fact())).build();
+          assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getLifecycle(state)),
+              GoldenReplayer.tree(engine.getLifecycle(changed))));
+          assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getPublicState(state, context)),
+              GoldenReplayer.tree(engine.getPublicState(changed, context))));
+          for (var player : context.players()) {
+            assertTrue(JsonTree.equal(GoldenReplayer.tree(engine.getPlayerState(state, player.id(), context)),
+                GoldenReplayer.tree(engine.getPlayerState(changed, player.id(), context))), player.id());
+          }
+          checked[0]++;
+        }
+      });
+    }
+    assertTrue(checked[0] > 0);
   }
 }
