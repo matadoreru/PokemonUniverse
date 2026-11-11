@@ -22,6 +22,8 @@ export interface StateBoxProps {
   secondaryAction?: StateBoxAction;
   /** Sobre fondo crema. */
   onCream?: boolean;
+  /** Sin icono ni alto mínimo: para un vacío bajo contenido en un panel bajo (p. ej. la sala con un solo jugador). */
+  compact?: boolean;
   /**
    * Vacío o carga como región viva (`role="status"`, por defecto). Con `false`, sin rol: para un vacío dentro de una
    * pantalla que ya tiene su única región viva (p. ej. los intentos de los juegos de adivinar). El error sigue siendo `alert`.
@@ -29,7 +31,7 @@ export interface StateBoxProps {
   live?: boolean;
 }
 
-export function StateBox({ kind, title, text, action, secondaryAction, onCream, live = true }: StateBoxProps) {
+export function StateBox({ kind, title, text, action, secondaryAction, onCream, compact, live = true }: StateBoxProps) {
   if (kind === 'loading') {
     return (
       <div className={s.ghost} {...(live ? { role: 'status', 'aria-live': 'polite' as const, 'aria-label': title } : {})} aria-busy="true">
@@ -42,8 +44,8 @@ export function StateBox({ kind, title, text, action, secondaryAction, onCream, 
     );
   }
   return (
-    <div className={cx(s.box, onCream && s.onCream, kind === 'error' && s.error)} {...(kind === 'error' ? { role: 'alert' } : live ? { role: 'status' } : {})}>
-      <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} className={s.icon} />
+    <div className={cx(s.box, onCream && s.onCream, kind === 'error' && s.error, compact && s.compact)} {...(kind === 'error' ? { role: 'alert' } : live ? { role: 'status' } : {})}>
+      {!compact && <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} className={s.icon} />}
       <strong className={s.title}>{title}</strong>
       {text && <p className={s.text}>{text}</p>}
       {action && !secondaryAction && (

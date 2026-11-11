@@ -10,6 +10,11 @@
   height: 100%;
   color: var(--white);
 }
+.compact.box {
+  min-height: 0;
+  height: auto;
+  padding: var(--sp-2);
+}
 .onCream.box {
   color: var(--ink-2);
 }

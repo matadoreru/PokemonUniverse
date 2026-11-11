@@ -31,4 +31,9 @@ describe('StateBox', () => {
     expect(quiet).toContain('<span class="sr-only">Cargando</span>');
     expect(renderToStaticMarkup(createElement(StateBox, { kind: 'loading', title: 'Cargando' }))).toContain('aria-label="Cargando"');
   });
+
+  it('compacto no lleva icono', () => {
+    expect(renderToStaticMarkup(createElement(StateBox, { kind: 'empty', title: 'Vacío', compact: true }))).not.toContain('<svg');
+    expect(renderToStaticMarkup(createElement(StateBox, { kind: 'empty', title: 'Vacío' }))).toContain('<svg');
+  });
 });

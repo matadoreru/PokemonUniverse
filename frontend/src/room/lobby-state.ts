@@ -91,6 +91,7 @@ export function lobbyStartReason({ canStart, selectedGames, compatibleCount, pen
 export function emptyRoomState({ copied, onCopy, onInvite }: { copied: boolean; onCopy(): void; onInvite: (() => void) | null }): Omit<StateBoxProps, 'live'> {
   return {
     kind: 'empty',
+    compact: true,
     title: 'Aún no ha llegado nadie',
     text: 'Comparte el enlace de la sala para que entre tu grupo.',
     action: { label: copied ? 'Enlace copiado' : 'Copiar enlace', icon: copied ? Check : Link2, onClick: onCopy },
