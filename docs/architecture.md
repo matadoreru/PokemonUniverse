@@ -137,8 +137,7 @@ Plan: `docs/superpowers/plans/2026-11-03-etapa-2d-corte.md`. En un mismo desplie
 - **Web.** Habla solo con Java: sin `socket.io-client`, salas por `/ws` y HTTP por `/api` del mismo origen.
 - **nginx.** `location ^~ /api/` y `location = /ws` hacia `backend:8080`; `/api` sin barra da 404, `/socket.io/` da 410 y el resto es la SPA.
 - **Compose.** Sin servicio `server`: `backend` solo depende de `postgres` y fija `ROOMS_ENABLED`,
-  `INTERRUPT_STALE_ROOMS` y `BACKEND_DATA_SYNC_ENABLED` a `true` (solo el rollback del primer despliegue tras el corte
-  los apaga, con `PU_CUTOVER_ROLLBACK_JAVA=false`; ver `DEPLOY.md` §5). Los artworks van dentro de la imagen.
+  `INTERRUPT_STALE_ROOMS` y `BACKEND_DATA_SYNC_ENABLED` a `true` fijo. Los artworks van dentro de la imagen.
 - **Esquema.** Flyway es el único dueño (ver «Esquema» arriba); `_prisma_migrations` se conserva.
 - **CI y despliegue.** Sin imagen, workflow ni job de Node.
   `scripts/deploy.sh` para el contenedor Node del despliegue anterior antes de arrancar Java y lo borra cuando pasa
