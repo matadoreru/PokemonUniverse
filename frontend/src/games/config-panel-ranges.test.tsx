@@ -1,43 +1,116 @@
 import {
   absurdPokedexConfigSchema,
   defaultAbsurdPokedexConfig,
+  defaultGuessFromStatsConfig,
   defaultHigherLowerConfig,
   defaultLearnsetGuessConfig,
+  defaultMostLikelyToConfig,
+  defaultOneOfUsIsFakeConfig,
+  defaultPokeddleRaceConfig,
   defaultPokedexDistanceConfig,
+  defaultPokedexEntryGuessConfig,
+  defaultPokemonBingoConfig,
+  defaultPokemonBluffAuctionConfig,
+  defaultPokemonConnectionsConfig,
+  defaultPokemonCryQuizConfig,
   defaultPokemonImpostorConfig,
+  defaultPokemonPaletteGuessConfig,
+  defaultPokemonRedFlagConfig,
+  defaultPokemonTeamAuctionConfig,
+  defaultPokemonTriviaConfig,
+  defaultPokeTabooConfig,
+  defaultSecretRankingConfig,
   defaultShinyVoteConfig,
+  defaultSketchmonConfig,
+  defaultTcgHigherLowerConfig,
+  defaultTypeChainConfig,
   defaultTypeDuelConfig,
+  defaultUnownTranslatorConfig,
+  gameModeCatalog,
+  defaultWhoAmIConfig,
+  defaultWhoIsWhoPokemonConfig,
+  defaultWhosThatPokemonConfig,
+  defaultWouldYouRatherConfig,
+  defaultZoomedPokemonConfig,
+  guessFromStatsConfigSchema,
   higherLowerConfigSchema,
   learnsetGuessConfigSchema,
+  mostLikelyToConfigSchema,
+  oneOfUsIsFakeConfigSchema,
+  pokeddleRaceConfigSchema,
   pokedexDistanceConfigSchema,
+  pokedexEntryGuessConfigSchema,
+  pokemonBingoConfigSchema,
+  pokemonBluffAuctionConfigSchema,
+  pokemonConnectionsConfigSchema,
+  pokemonCryQuizConfigSchema,
   pokemonImpostorConfigSchema,
+  pokemonPaletteGuessConfigSchema,
+  pokemonRedFlagConfigSchema,
+  pokemonTeamAuctionConfigSchema,
+  pokemonTriviaConfigSchema,
+  pokeTabooConfigSchema,
+  secretRankingConfigSchema,
   shinyVoteConfigSchema,
+  sketchmonConfigSchema,
+  tcgHigherLowerConfigSchema,
+  typeChainConfigSchema,
   typeDuelConfigSchema,
-  defaultUnownTranslatorConfig,
   unownTranslatorConfigSchema,
-  defaultWhoAmIConfig,
   whoAmIConfigSchema,
+  whoIsWhoPokemonConfigSchema,
+  whosThatPokemonConfigSchema,
+  wouldYouRatherConfigSchema,
+  zoomedPokemonConfigSchema,
+  type RoomView,
 } from '@pokemon-universe/shared/public';
 import { createElement, type ComponentType } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { AbsurdPokedexConfigPanel } from './absurd-pokedex/ConfigPanel';
+import { GuessFromStatsConfigPanel } from './guess-from-stats/ConfigPanel';
 import { HigherLowerConfigPanel } from './higher-lower/ConfigPanel';
 import { LearnsetGuessConfigPanel } from './learnset-guess/ConfigPanel';
+import { MostLikelyToConfigPanel } from './most-likely-to/ConfigPanel';
+import { OneOfUsIsFakeConfigPanel } from './one-of-us-is-fake/ConfigPanel';
+import { PokeTabooConfigPanel } from './poke-taboo/ConfigPanel';
+import { PokeddleRaceConfigPanel } from './pokeddle-race/ConfigPanel';
 import { PokedexDistanceConfigPanel } from './pokedex-distance/ConfigPanel';
+import { PokedexEntryGuessConfigPanel } from './pokedex-entry-guess/ConfigPanel';
+import { PokemonBingoConfigPanel } from './pokemon-bingo/ConfigPanel';
+import { PokemonBluffAuctionConfigPanel } from './pokemon-bluff-auction/ConfigPanel';
+import { PokemonConnectionsConfigPanel } from './pokemon-connections/ConfigPanel';
+import { PokemonCryQuizConfigPanel } from './pokemon-cry-quiz/ConfigPanel';
 import { PokemonImpostorConfigPanel } from './pokemon-impostor/ConfigPanel';
+import { PokemonPaletteGuessConfigPanel } from './pokemon-palette-guess/ConfigPanel';
+import { PokemonRedFlagConfigPanel } from './pokemon-red-flag/ConfigPanel';
+import { PokemonTeamAuctionConfigPanel } from './pokemon-team-auction/ConfigPanel';
+import { PokemonTriviaConfigPanel } from './pokemon-trivia/ConfigPanel';
+import { SecretRankingConfigPanel } from './secret-ranking/ConfigPanel';
 import { ShinyVoteConfigPanel } from './shiny-vote/ConfigPanel';
+import { SketchmonConfigPanel } from './sketchmon/ConfigPanel';
+import { TcgHigherLowerConfigPanel } from './tcg-higher-lower/ConfigPanel';
+import { TypeChainConfigPanel } from './type-chain/ConfigPanel';
 import { TypeDuelConfigPanel } from './type-duel/ConfigPanel';
 import { UnownTranslatorConfigPanel } from './unown-translator/ConfigPanel';
 import { WhoAmIConfigPanel } from './who-am-i/ConfigPanel';
+import { WhoIsWhoPokemonConfigPanel } from './who-is-who-pokemon/ConfigPanel';
+import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
+import { WouldYouRatherConfigPanel } from './would-you-rather/ConfigPanel';
+import { ZoomedPokemonConfigPanel } from './zoomed-pokemon/ConfigPanel';
 
-type Panel = ComponentType<{ config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }>;
+// Los paneles de preguntas propias leen la sesión: un invitado no ve el gestor, que pediría datos a la API.
+vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
+
+type Panel = ComponentType<{ config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }>;
+/** Sala mínima: quien mira no es el anfitrión. */
+const room = { hostId: 'host' } as RoomView;
 interface NumericField { minValue: number | null; maxValue: number | null }
 interface Range { min: number; max: number }
 
 /** Reads every `<input type="range">` of the static markup, keyed by its accessible label. */
 function renderRanges(Panel: Panel, config: unknown): Map<string, Range> {
-  const markup = renderToStaticMarkup(createElement(Panel, { config, disabled: false, onChange: async () => {} }));
+  const markup = renderToStaticMarkup(createElement(Panel, { config, disabled: false, room, selfId: 'guest', onChange: async () => {} }));
   const ranges = new Map<string, Range>();
   for (const [input] of markup.matchAll(/<input[^>]*type="range"[^>]*>/g)) {
     const attribute = (name: string) => input.match(new RegExp(`${name}="([^"]*)"`))?.[1];
@@ -49,22 +122,57 @@ function renderRanges(Panel: Panel, config: unknown): Map<string, Range> {
   return ranges;
 }
 
-/** Each slider label with the schema field it edits. */
-const panels: { game: string; Panel: Panel; config: unknown; shape: Record<string, unknown>; fields: Record<string, string> }[] = [
-  { game: 'higher-lower', Panel: HigherLowerConfigPanel, config: defaultHigherLowerConfig, shape: higherLowerConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
-  { game: 'type-duel', Panel: TypeDuelConfigPanel, config: defaultTypeDuelConfig, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo para elegir tipo': 'typeSelectSeconds', 'Tiempo para buscar': 'searchSeconds', 'Número de rondas': 'rounds' } },
-  { game: 'shiny-vote', Panel: ShinyVoteConfigPanel, config: defaultShinyVoteConfig, shape: shinyVoteConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds', 'Duración de la revelación': 'revealSeconds' } },
-  { game: 'pokemon-impostor', Panel: PokemonImpostorConfigPanel, config: defaultPokemonImpostorConfig, shape: pokemonImpostorConfigSchema.shape, fields: { Impostores: 'impostorCount', 'Tiempo por pista': 'clueSeconds', 'Tiempo de votación': 'voteSeconds' } },
-  { game: 'pokedex-distance', Panel: PokedexDistanceConfigPanel, config: defaultPokedexDistanceConfig, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds' } },
-  { game: 'learnset-guess', Panel: LearnsetGuessConfigPanel, config: defaultLearnsetGuessConfig, shape: learnsetGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
-  { game: 'absurd-pokedex', Panel: AbsurdPokedexConfigPanel, config: defaultAbsurdPokedexConfig, shape: absurdPokedexConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para escribir': 'writeSeconds', 'Tiempo para votar': 'voteSeconds' } },
-  { game: 'unown-translator', Panel: UnownTranslatorConfigPanel, config: defaultUnownTranslatorConfig, shape: unownTranslatorConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por ronda': 'roundSeconds', 'Tiempo entre letras': 'hintSeconds' } },
-  { game: 'who-am-i', Panel: WhoAmIConfigPanel, config: defaultWhoAmIConfig, shape: whoAmIConfigSchema.shape, fields: { 'Número de vueltas': 'maxLaps', 'Tiempo para preguntar': 'askSeconds', 'Tiempo para responder': 'answerSeconds' } },
-  // Los ajustes propios de un modo solo salen en ese modo; los que el modo no usa se ocultan.
-  { game: 'pokedex-distance POINTS', Panel: PokedexDistanceConfigPanel, config: { ...defaultPokedexDistanceConfig, mode: 'POINTS' }, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'pointsRounds' } },
-  { game: 'type-duel COOP', Panel: TypeDuelConfigPanel, config: { ...defaultTypeDuelConfig, mode: 'COOP' }, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
-  { game: 'higher-lower ENDLESS', Panel: HigherLowerConfigPanel, config: { ...defaultHigherLowerConfig, mode: 'ENDLESS' }, shape: higherLowerConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds' } },
+/**
+ * Todos los paneles de configuración, con cada deslizador (en cualquier modo) y el campo del esquema que edita. Sus
+ * límites tienen que ser los del campo Zod, que son los que acepta Java (\`config-cases.test.ts\`).
+ */
+const panels: Record<string, { Panel: Panel; config: object; shape: Record<string, unknown>; fields: Record<string, string> }> = {
+  'absurd-pokedex': { Panel: AbsurdPokedexConfigPanel, config: defaultAbsurdPokedexConfig, shape: absurdPokedexConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para escribir': 'writeSeconds', 'Tiempo para votar': 'voteSeconds' } },
+  'guess-from-stats': { Panel: GuessFromStatsConfigPanel, config: defaultGuessFromStatsConfig, shape: guessFromStatsConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'higher-lower': { Panel: HigherLowerConfigPanel, config: defaultHigherLowerConfig, shape: higherLowerConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'learnset-guess': { Panel: LearnsetGuessConfigPanel, config: defaultLearnsetGuessConfig, shape: learnsetGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'most-likely-to': { Panel: MostLikelyToConfigPanel, config: defaultMostLikelyToConfig, shape: mostLikelyToConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para responder': 'selectionSeconds', 'Tiempo para votar': 'votingSeconds' } },
+  'one-of-us-is-fake': { Panel: OneOfUsIsFakeConfigPanel, config: defaultOneOfUsIsFakeConfig, shape: oneOfUsIsFakeConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para elegir': 'selectionSeconds', 'Tiempo de debate y voto': 'discussionSeconds' } },
+  'poke-taboo': { Panel: PokeTabooConfigPanel, config: defaultPokeTabooConfig, shape: pokeTabooConfigSchema.shape, fields: { 'Vueltas': 'laps' } },
+  'pokeddle-race': { Panel: PokeddleRaceConfigPanel, config: defaultPokeddleRaceConfig, shape: pokeddleRaceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Máximo de rondas': 'maxRounds' } },
+  'pokedex-distance': { Panel: PokedexDistanceConfigPanel, config: defaultPokedexDistanceConfig, shape: pokedexDistanceConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'pointsRounds' } },
+  'pokedex-entry-guess': { Panel: PokedexEntryGuessConfigPanel, config: defaultPokedexEntryGuessConfig, shape: pokedexEntryGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'pokemon-bingo': { Panel: PokemonBingoConfigPanel, config: defaultPokemonBingoConfig, shape: pokemonBingoConfigSchema.shape, fields: { 'Tiempo total': 'durationSeconds' } },
+  'pokemon-bluff-auction': { Panel: PokemonBluffAuctionConfigPanel, config: defaultPokemonBluffAuctionConfig, shape: pokemonBluffAuctionConfigSchema.shape, fields: { 'Tiempo por puja': 'bidSeconds' } },
+  'pokemon-connections': { Panel: PokemonConnectionsConfigPanel, config: defaultPokemonConnectionsConfig, shape: pokemonConnectionsConfigSchema.shape, fields: { 'Errores permitidos': 'mistakesAllowed', 'Tiempo por puzle': 'roundSeconds', 'Número de puzles': 'rounds' } },
+  'pokemon-cry-quiz': { Panel: PokemonCryQuizConfigPanel, config: defaultPokemonCryQuizConfig, shape: pokemonCryQuizConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'pokemon-impostor': { Panel: PokemonImpostorConfigPanel, config: defaultPokemonImpostorConfig, shape: pokemonImpostorConfigSchema.shape, fields: { 'Impostores': 'impostorCount', 'Tiempo por pista': 'clueSeconds', 'Tiempo de votación': 'voteSeconds' } },
+  'pokemon-palette-guess': { Panel: PokemonPaletteGuessConfigPanel, config: defaultPokemonPaletteGuessConfig, shape: pokemonPaletteGuessConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'pokemon-red-flag': { Panel: PokemonRedFlagConfigPanel, config: defaultPokemonRedFlagConfig, shape: pokemonRedFlagConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por fase': 'phaseSeconds' } },
+  'pokemon-team-auction': { Panel: PokemonTeamAuctionConfigPanel, config: defaultPokemonTeamAuctionConfig, shape: pokemonTeamAuctionConfigSchema.shape, fields: { 'Tiempo por turno': 'bidSeconds' } },
+  'pokemon-trivia': { Panel: PokemonTriviaConfigPanel, config: defaultPokemonTriviaConfig, shape: pokemonTriviaConfigSchema.shape, fields: { 'Tiempo por pregunta': 'roundSeconds', 'Número de preguntas': 'rounds' } },
+  'secret-ranking': { Panel: SecretRankingConfigPanel, config: defaultSecretRankingConfig, shape: secretRankingConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para ordenar': 'roundSeconds' } },
+  'shiny-vote': { Panel: ShinyVoteConfigPanel, config: defaultShinyVoteConfig, shape: shinyVoteConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds', 'Duración de la revelación': 'revealSeconds' } },
+  'sketchmon': { Panel: SketchmonConfigPanel, config: defaultSketchmonConfig, shape: sketchmonConfigSchema.shape, fields: { 'Vueltas': 'laps' } },
+  'tcg-higher-lower': { Panel: TcgHigherLowerConfigPanel, config: defaultTcgHigherLowerConfig, shape: tcgHigherLowerConfigSchema.shape, fields: { 'Tiempo por comparación': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'type-chain': { Panel: TypeChainConfigPanel, config: defaultTypeChainConfig, shape: typeChainConfigSchema.shape, fields: {  } },
+  'type-duel': { Panel: TypeDuelConfigPanel, config: defaultTypeDuelConfig, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo para elegir tipo': 'typeSelectSeconds', 'Tiempo para buscar': 'searchSeconds', 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
+  'unown-translator': { Panel: UnownTranslatorConfigPanel, config: defaultUnownTranslatorConfig, shape: unownTranslatorConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por ronda': 'roundSeconds', 'Tiempo entre letras': 'hintSeconds' } },
+  'who-am-i': { Panel: WhoAmIConfigPanel, config: defaultWhoAmIConfig, shape: whoAmIConfigSchema.shape, fields: { 'Número de vueltas': 'maxLaps', 'Tiempo para preguntar': 'askSeconds', 'Tiempo para responder': 'answerSeconds' } },
+  'who-is-who-pokemon': { Panel: WhoIsWhoPokemonConfigPanel, config: defaultWhoIsWhoPokemonConfig, shape: whoIsWhoPokemonConfigSchema.shape, fields: { 'Pokémon en el tablero': 'boardSize', 'Tiempo para elegir secreto': 'selectionSeconds' } },
+  'whos-that-pokemon': { Panel: WhosThatPokemonConfigPanel, config: defaultWhosThatPokemonConfig, shape: whosThatPokemonConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+  'would-you-rather': { Panel: WouldYouRatherConfigPanel, config: defaultWouldYouRatherConfig, shape: wouldYouRatherConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo para votar y predecir': 'roundSeconds' } },
+  'zoomed-pokemon': { Panel: ZoomedPokemonConfigPanel, config: defaultZoomedPokemonConfig, shape: zoomedPokemonConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
+};
+
+/** Los ajustes propios de un modo solo salen en ese modo; los que el modo no usa se ocultan. */
+const modeSliders: { game: string; mode: string; labels: string[] }[] = [
+  { game: 'pokedex-distance', mode: 'CLASSIC', labels: ['Tiempo por ronda'] },
+  { game: 'pokedex-distance', mode: 'POINTS', labels: ['Tiempo por ronda', 'Número de rondas'] },
+  { game: 'type-duel', mode: 'COOP', labels: ['Tiempo de búsqueda conjunta', 'Número de rondas'] },
+  { game: 'higher-lower', mode: 'ENDLESS', labels: ['Tiempo por ronda'] },
 ];
+
+/** La configuración por defecto de \`game\` en cada uno de sus modos (o sin modo). */
+const modeConfigs = (game: string): [string, object][] => {
+  const { config } = panels[game]!;
+  return (gameModeCatalog(game)?.modes ?? ['—']).map((mode) => [mode, mode === '—' ? config : { ...config, mode }]);
+};
 
 /** El campo numérico del esquema, sin el `.default()` de los ajustes que una configuración guardada puede no traer. */
 const numericField = (field: unknown): NumericField => {
@@ -108,12 +216,29 @@ describe('config panel ranges', () => {
     expect(ranges.get('Tiempo para responder')).toEqual({ min: 10, max: 60 });
   });
 
-  it.each(panels)('$game: every slider matches the bounds of its Zod field', ({ Panel, config, shape, fields }) => {
-    const ranges = renderRanges(Panel, config);
-    expect([...ranges.keys()].sort()).toEqual(Object.keys(fields).sort());
-    for (const [label, field] of Object.entries(fields)) {
-      const schema = numericField(shape[field]);
-      expect({ label, ...ranges.get(label) }).toEqual({ label, min: schema.minValue, max: schema.maxValue });
-    }
+  it('hay una fila por cada panel de configuración', () => {
+    const files = Object.keys(import.meta.glob('./*/ConfigPanel.tsx')).map((path) => path.split('/')[1]).sort();
+    expect(Object.keys(panels).sort()).toEqual(files);
   });
+
+  it.each(Object.keys(panels))('%s: cada deslizador, en cada modo, tiene los límites de su campo Zod', (game) => {
+    const { Panel, shape, fields } = panels[game]!;
+    const seen = new Set<string>();
+    for (const [mode, config] of modeConfigs(game)) {
+      for (const [label, range] of renderRanges(Panel, config)) {
+        seen.add(label);
+        const field = fields[label];
+        expect(field, `${mode}: «${label}» no está en la tabla`).toBeDefined();
+        const schema = numericField(shape[field!]);
+        expect({ mode, label, ...range }).toEqual({ mode, label, min: schema.minValue, max: schema.maxValue });
+      }
+    }
+    expect([...seen].sort()).toEqual(Object.keys(fields).sort());
+  });
+
+  it.each(modeSliders)('$game $mode: solo salen los deslizadores del modo', ({ game, mode, labels }) => {
+    const { Panel, config } = panels[game]!;
+    expect([...renderRanges(Panel, { ...config, mode }).keys()].sort()).toEqual([...labels].sort());
+  });
+
 });
