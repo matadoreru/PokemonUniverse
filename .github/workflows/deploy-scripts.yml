@@ -1,7 +1,8 @@
 name: Deploy scripts
 
 # Simulación del despliegue (scripts/test-deploy-rollback.sh: docker falso, configuración real de
-# `docker compose config`, sin daemon) y shellcheck de los scripts. Independiente de main.yml: no construye imágenes.
+# `docker compose config`, sin daemon), shellcheck de los scripts y sus tests de Node (`npm run test:scripts`, sin
+# dependencias). Independiente de main.yml: no construye imágenes.
 on:
   pull_request:
     branches:
@@ -38,3 +39,10 @@ jobs:
 
       - name: Deploy rollback simulation
         run: bash scripts/test-deploy-rollback.sh
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Script tests
+        run: npm run test:scripts
