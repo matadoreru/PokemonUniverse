@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PokemonCryQuizConfigPanel } from '../games/pokemon-cry-quiz/ConfigPanel';
-import { CRY_UNAVAILABLE, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
+import { CRY_PLAY_FAILED, CRY_UNAVAILABLE, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
 import { PokemonCryQuizGame } from './PokemonCryQuizGame';
 import { PokemonCryQuizResults } from './PokemonCryQuizResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
@@ -73,6 +73,12 @@ describe('Adivina el Grito: privacidad', () => {
 });
 
 describe('Adivina el Grito: pantalla', () => {
+  it('el error del grito no es otra región: se suma al aviso de la única región viva', () => {
+    expect(cryAnnouncement('Ronda 2: escucha el grito.', CRY_PLAY_FAILED)).toBe(`Ronda 2: escucha el grito. ${CRY_PLAY_FAILED}`);
+    expect(cryAnnouncement('', CRY_UNAVAILABLE)).toBe(CRY_UNAVAILABLE);
+    expect(cryAnnouncement('Ronda 2: escucha el grito.', '')).toBe('Ronda 2: escucha el grito.');
+  });
+
   it('el botón del grito es un Pill grande con su estado en texto y el ecualizador es decorativo', () => {
     const html = render(room(publicGame(), guessing));
     expect(html).toMatch(/<button[^>]*data-testid="cry-play"[^>]*>.*Reproducir grito<\/span><\/button>/);

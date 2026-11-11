@@ -1,7 +1,7 @@
 import type { PokemonCryQuizConfig, PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { Play, RotateCcw, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { CRY_PLAY_FAILED, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
+import { CRY_PLAY_FAILED, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { Chip, cx, Pill } from '../ui';
 import {
@@ -19,9 +19,10 @@ const WAVES = [38, 62, 84, 56, 100, 72, 46, 90, 64, 34, 58].map((height, index) 
 /**
  * El grito: un `<audio>` con la ruta opaca de la ronda (no dice qué Pokémon es) y un `Pill` grande que dice su estado
  * en texto («Reproducir grito» / «Sonando…»). Nunca suena solo: hace falta pulsar. Mientras suena, la música de la
- * sala baja (F2). En la ronda va con un ecualizador decorativo que llena la zona de la pista.
+ * sala baja (F2). En la ronda va con un ecualizador decorativo que llena la zona de la pista. Si no suena, el error se
+ * ve junto al botón y `onError` lo pasa a la pantalla, que lo anuncia en su región viva (al desmontarse lo limpia).
  */
-export function CryPlayer({ source, replay = false }: { source: string; replay?: boolean }) {
+export function CryPlayer({ source, replay = false, onError }: { source: string; replay?: boolean; onError?(message: string): void }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState('');
@@ -33,6 +34,8 @@ export function CryPlayer({ source, replay = false }: { source: string; replay?:
     setPlaying(false); setError(''); audioRef.current?.load();
   }, [source]);
   useEffect(() => releaseCryDuck, [source]);
+  useEffect(() => { onError?.(error); }, [error, onError]);
+  useEffect(() => () => onError?.(''), [onError]);
   const events = cryAudioEvents({ playing: setPlaying, error: setError });
   const play = async () => {
     const element = audioRef.current;
@@ -50,7 +53,8 @@ export function CryPlayer({ source, replay = false }: { source: string; replay?:
     {replay
       ? <Pill variant="yellow" icon={icon} onClick={() => void play()} data-testid="cry-play">{label}</Pill>
       : <Pill variant="yellow" size="main" icon={icon} className={s.play} onClick={() => void play()} data-testid="cry-play">{label}</Pill>}
-    {error && <p className={s.error} role="alert"><Chip tone="bad">{error}</Chip></p>}
+    {/* Sin `role="alert"`: lo anuncia la región viva de la pantalla (`onError`). */}
+    {error && <p className={s.error}><Chip tone="bad">{error}</Chip></p>}
   </div>;
 }
 
@@ -70,13 +74,14 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: { room: RoomView;
   const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeRegionalForms ?? false });
   const round = useGuessRound({ room, selfId, game, player, participating: player?.role === 'PLAYER', answer: (result) => result.pokemon.name, roundSeconds: config?.roundSeconds });
   const { members, colors, lastRound, announcement, timer } = round;
+  const [audioError, setAudioError] = useState('');
   const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce su grito';
 
   const clue = lastRound
     ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {cryVersionLabel(lastRound.cryVersion)}</>}
-      clueTitle="Su grito" clue={<CryPlayer source={lastRound.cryUrl} replay />} />
+      clueTitle="Su grito" clue={<CryPlayer source={lastRound.cryUrl} replay onError={setAudioError} />} />
     : <GuessClue label="Grito del Pokémon misterioso" variant="dark" className={s.stage}>
-      {game.cryUrl && <CryPlayer source={game.cryUrl} />}
+      {game.cryUrl && <CryPlayer source={game.cryUrl} onError={setAudioError} />}
     </GuessClue>;
 
   const side = lastRound
@@ -92,5 +97,5 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: { room: RoomView;
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el grito ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
   return <GuessScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
-    announcement={announcement} clue={clue} side={side} bottom={bottom} />;
+    announcement={cryAnnouncement(announcement, audioError)} clue={clue} side={side} bottom={bottom} />;
 }

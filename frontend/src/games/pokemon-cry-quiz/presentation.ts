@@ -22,6 +22,14 @@ export function cryAudioEvents(set: { playing(on: boolean): void; error(message:
   };
 }
 
+/**
+ * Texto de la única región viva de la pantalla: el aviso de la ronda y, si el grito no suena, el porqué (el error se ve
+ * junto al botón, sin región propia).
+ */
+export function cryAnnouncement(round: string, audioError: string): string {
+  return [round, audioError].filter(Boolean).join(' ');
+}
+
 /** Al cambiar de grito o desmontar (sin un `pause` fiable), la música vuelve a su volumen. */
 export function releaseCryDuck(): void {
   audio.music.duck(false);
