@@ -313,23 +313,26 @@ export async function esperarPartida(pages: readonly Page[]): Promise<void> {
  */
 const PG_CONTAINER = process.env.PU_E2E_PG_CONTAINER ?? 'pokemonuniverse_postgres_1';
 
+/** Programa de contenedores con el que se entra en él: `podman` en local; la CI pasa `PU_E2E_CONTAINER_CLI=docker`. */
+const CONTAINER_CLI = process.env.PU_E2E_CONTAINER_CLI ?? 'podman';
+
 let bdComprobada = false;
 
 /**
- * Comprueba que `podman` existe y que el contenedor de PostgreSQL está en marcha, y falla al momento
- * con un mensaje que dice cómo arreglarlo. `psql()` la llama la primera vez; los specs que preparan
+ * Comprueba que el programa de contenedores existe y que el contenedor de PostgreSQL está en marcha, y falla al
+ * momento con un mensaje que dice cómo arreglarlo. `psql()` la llama la primera vez; los specs que preparan
  * datos la llaman en `beforeAll`, antes de crear nada.
  */
 export function comprobarBdE2E(): void {
   if (bdComprobada) return;
   try {
-    execFileSync('podman', ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    execFileSync(CONTAINER_CLI, ['--version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   } catch {
-    throw new Error('Los E2E necesitan `podman` en el PATH para preparar datos en PostgreSQL (`npm run db:up`).');
+    throw new Error(`Los E2E necesitan \`${CONTAINER_CLI}\` en el PATH para preparar datos en PostgreSQL (\`npm run db:up\`; otro programa con PU_E2E_CONTAINER_CLI).`);
   }
   let estado = '';
   try {
-    estado = execFileSync('podman', ['container', 'inspect', '--format', '{{.State.Running}}', PG_CONTAINER], {
+    estado = execFileSync(CONTAINER_CLI, ['container', 'inspect', '--format', '{{.State.Running}}', PG_CONTAINER], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
     }).trim();
@@ -354,7 +357,7 @@ export function psql(sql: string, vars: Record<string, string> = {}): string {
   comprobarBdE2E();
   const args = ['exec', '-i', PG_CONTAINER, 'psql', '-U', 'pokemon', '-d', 'pokemon_universe', '-v', 'ON_ERROR_STOP=1', '-At'];
   for (const [name, value] of Object.entries(vars)) args.push('-v', `${name}=${value}`);
-  return execFileSync('podman', args, { input: sql, encoding: 'utf8' }).trim();
+  return execFileSync(CONTAINER_CLI, args, { input: sql, encoding: 'utf8' }).trim();
 }
 
 /** Cuenta registrada de prueba: credenciales únicas por ejecución. */
