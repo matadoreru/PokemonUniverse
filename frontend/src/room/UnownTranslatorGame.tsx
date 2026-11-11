@@ -11,7 +11,7 @@ import { attemptsText, GuessClue, GuessScreen, guessSeconds, ordinal, pointsWord
 import { guessSearchAutoFocus } from './guess-kit/presentation';
 import { ResponseProgress, SocialPlate, type SocialPlateContent } from './social-kit';
 import { hiddenLettersText, UnownRoundReveal } from './UnownTranslatorResults';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { type ActiveGameProps, sendWithBusy } from './room-command';
 import s from '../games/unown-translator/UnownTranslator.module.css';
 
 const GAME_NAME = 'Traductor Unown';
@@ -65,8 +65,7 @@ function UnownAnswerForm({ roundNumber, cooling, fieldRef, onGuess }: { roundNum
     event.preventDefault();
     const value = text.trim();
     if (!value || busy || cooling) return;
-    setBusy(true);
-    void onGuess(value).catch(ignoreFailure).finally(() => setBusy(false));
+    void sendWithBusy(setBusy, () => onGuess(value));
   };
   return <form className="flex flex-wrap items-end gap-3" onSubmit={submit}>
     <div className="min-w-0 flex-1 basis-56">
