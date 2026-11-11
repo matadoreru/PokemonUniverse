@@ -1,11 +1,11 @@
 import { gameModeLabel, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Target } from 'lucide-react';
-import { shinyRecords } from '../games/shiny-vote/presentation';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { roundsLabel } from '../lib/format';
+import { shinyRecords } from './presentation';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { roundsLabel } from '../../lib/format';
 
 /** Línea de estadísticas de un puesto: aciertos y precisión. */
 export function shinyStatsLine(stats: { correctVotes?: number | undefined; accuracy?: number | undefined }): string {

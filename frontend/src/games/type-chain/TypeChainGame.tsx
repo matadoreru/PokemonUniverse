@@ -1,17 +1,17 @@
 import type { TypeChainConfig, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, Hourglass, Search, Skull, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
-import { TypeChainAttempts, TypeChainChain, TypeChainHud, TypeChainPlayers, TypeChainStage } from '../games/type-chain/TypeChainParts';
-import { chainTypeText, typeChainAnnouncement, typeChainEliminationLabels, typeChainFocusKey, typeChainPlateKind, typeChainReasonLabels, typeChainSearchAutoFocus, type TypeChainPlateKind } from '../games/type-chain/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { Chip, cx, Icon, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
-import type { ActiveGameProps } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/type-chain/TypeChain.module.css';
+import { TypeChainAttempts, TypeChainChain, TypeChainHud, TypeChainPlayers, TypeChainStage } from './TypeChainParts';
+import { chainTypeText, typeChainAnnouncement, typeChainEliminationLabels, typeChainFocusKey, typeChainPlateKind, typeChainReasonLabels, typeChainSearchAutoFocus, type TypeChainPlateKind } from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { Chip, cx, Icon, ScreenSplit } from '../../ui';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { GuessPanel, guessSeconds, type GuessPlateContent } from '../../room/guess-kit';
+import type { ActiveGameProps } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './TypeChain.module.css';
 
 /**
  * Type Chain (spec §2 y §6 «Juegos»). Cada cadena tiene un tipo fijo y, por turnos, cada jugador nombra un Pokémon de

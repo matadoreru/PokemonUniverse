@@ -1,22 +1,22 @@
 import { type RoomMemberView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ServerTimer } from '../components/ServerTimer';
-import { ShinyGameHeader } from '../games/shiny-vote/ShinyGameHeader';
-import { ShinyGameSidebar } from '../games/shiny-vote/ShinyGameSidebar';
-import { clearShinySprites, ShinyBeforeAfter, ShinyOptionCard } from '../games/shiny-vote/ShinyOptionCard';
-import { ShinyVoteStatus } from '../games/shiny-vote/ShinyVoteStatus';
-import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from '../games/shiny-vote/interaction';
-import { SHINY_CARDS_TIMEOUT_MS, shinyCardsReady, shinyRoundFeedback } from '../games/shiny-vote/reveal';
-import { shinyVotersVisible } from '../games/shiny-vote/vote-visibility';
-import { useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { cx, ScreenSplit } from '../ui';
-import { GameSkipSlot } from './game-kit/GameSkipSlot';
-import { useChoiceShortcuts } from './game-kit/useChoiceShortcuts';
-import { usePendingAction } from './game-kit/usePendingAction';
-import type { ActiveGameProps } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/shiny-vote/ShinyVote.module.css';
+import { ServerTimer } from '../../components/ServerTimer';
+import { ShinyGameHeader } from './ShinyGameHeader';
+import { ShinyGameSidebar } from './ShinyGameSidebar';
+import { clearShinySprites, ShinyBeforeAfter, ShinyOptionCard } from './ShinyOptionCard';
+import { ShinyVoteStatus } from './ShinyVoteStatus';
+import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from './interaction';
+import { SHINY_CARDS_TIMEOUT_MS, shinyCardsReady, shinyRoundFeedback } from './reveal';
+import { shinyVotersVisible } from './vote-visibility';
+import { useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { cx, ScreenSplit } from '../../ui';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
+import { usePendingAction } from '../../room/game-kit/usePendingAction';
+import type { ActiveGameProps } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './ShinyVote.module.css';
 
 /**
  * Cartas de la ronda listas para votar: todas cargadas (o fallidas) o, como mucho, `SHINY_CARDS_TIMEOUT_MS` después de

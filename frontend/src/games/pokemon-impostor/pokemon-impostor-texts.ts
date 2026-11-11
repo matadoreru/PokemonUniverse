@@ -1,5 +1,5 @@
 import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type ImpostorEliminationReveal, type ImpostorFinishReason, type ImpostorVoteResult } from '@pokemon-universe/shared/public';
-import { joinNames } from '../lib/format';
+import { joinNames } from '../../lib/format';
 
 /** Titular del resultado de una votación según su tipo. */
 export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: string) => string): string {

@@ -6,7 +6,7 @@ import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
 import { impostorClueGroupLabel, impostorClueLine, impostorTallies, votesLabel } from './presentation';
-import { impostorFellowsLead, impostorFellowsShort, impostorVoteHeadline, impostorVoteTargetLabel } from '../../room/pokemon-impostor-texts';
+import { impostorFellowsLead, impostorFellowsShort, impostorVoteHeadline, impostorVoteTargetLabel } from './pokemon-impostor-texts';
 import s from './PokemonImpostor.module.css';
 
 export type NameOf = (id: string) => string;

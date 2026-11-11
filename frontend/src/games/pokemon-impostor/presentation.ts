@@ -1,5 +1,5 @@
 import { IMPOSTOR_CLUE_MAX_CODE_POINTS, type ImpostorVoteResult, type PokemonImpostorPlayerState, type PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
-import { impostorCluePhaseTitle, impostorFellowsShort } from '../../room/pokemon-impostor-texts';
+import { impostorCluePhaseTitle, impostorFellowsShort } from './pokemon-impostor-texts';
 
 type NameOf = (id: string) => string;
 

@@ -2,17 +2,17 @@ import { defaultPokemonBingoConfig, type BingoPublicBoard, type PokemonBingoPlay
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokemonBingoConfigPanel } from '../games/pokemon-bingo/ConfigPanel';
-import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoClock, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoPlayerOrder, bingoProgressText, bingoStatsLine } from '../games/pokemon-bingo/presentation';
+import { PokemonBingoConfigPanel } from './ConfigPanel';
+import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoClock, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoPlayerOrder, bingoProgressText, bingoStatsLine } from './presentation';
 import { PokemonBingoGame } from './PokemonBingoGame';
 import { PokemonBingoResults } from './PokemonBingoResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
-import { LEGACY } from '../styles/legacy-classes';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
+import { LEGACY } from '../../styles/legacy-classes';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{ id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' }], error: '', loading: false, retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{ id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' }], error: '', loading: false, retry: () => undefined }) }));
 
 const solution = { id: 'secret-solution', name: 'Solución Secreta', sprite: '/secret.png' };
 

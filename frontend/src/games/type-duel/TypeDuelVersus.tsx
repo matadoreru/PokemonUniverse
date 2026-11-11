@@ -1,9 +1,9 @@
 import type { PokemonType } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { CSSProperties, ReactNode } from 'react';
-import { Chip, cx, TypeBadge } from '../ui';
+import { Chip, cx, TypeBadge } from '../../ui';
 import { typeDuelSolutionsText } from './type-duel-result';
-import s from '../games/type-duel/TypeDuel.module.css';
+import s from './TypeDuel.module.css';
 
 export interface TypeDuelDuelist { id: string; name: string; type: PokemonType | undefined; /** Avatar del duelista (decorativo: el nombre va escrito). */ avatar?: ReactNode }
 

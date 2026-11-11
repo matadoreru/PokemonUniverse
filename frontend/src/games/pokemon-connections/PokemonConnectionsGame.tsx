@@ -1,18 +1,18 @@
 import type { PokemonConnectionsConfig, PokemonConnectionsPlayerState, PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, CheckCircle2, Clock3, Eye, Lightbulb, MousePointerClick, ShieldX, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ServerTimer } from '../components/ServerTimer';
-import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from '../games/pokemon-connections/ConnectionsParts';
-import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsGroupAction, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from '../games/pokemon-connections/presentation';
-import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { Chip, cx, Icon, Pill, ScorePop, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { GameSkipSlot } from './game-kit/GameSkipSlot';
-import { GuessPanel, type GuessPlateContent } from './guess-kit';
-import { type ActiveGameProps, sendWithBusy } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/pokemon-connections/PokemonConnections.module.css';
+import { ServerTimer } from '../../components/ServerTimer';
+import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from './ConnectionsParts';
+import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsGroupAction, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from './presentation';
+import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { Chip, cx, Icon, Pill, ScorePop, ScreenSplit } from '../../ui';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { GuessPanel, type GuessPlateContent } from '../../room/guess-kit';
+import { type ActiveGameProps, sendWithBusy } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './PokemonConnections.module.css';
 
 /**
  * Pokémon Connections (spec §2 y §6 «Juegos»). Arriba se mira: la placa del puzle con el plazo y el tablero, una

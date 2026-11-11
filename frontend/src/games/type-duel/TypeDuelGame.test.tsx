@@ -1,15 +1,15 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import type { TypeDuelPlayerState, TypeDuelPublicState, RoomView } from '@pokemon-universe/shared/public';
-import { typeDuelAnnouncement, typeDuelCoopAnnouncement, typeDuelCoopRanking, typeDuelCoopRoundTitle, typeDuelCoopStatsLine, typeDuelFocusKey, typeDuelMemberStatus, typeDuelOwnLastAttempt, typeDuelPlateKind, typeDuelRecords, typeDuelStatsLine, typeDuelVerdict, typeGridMove } from '../games/type-duel/presentation';
+import { typeDuelAnnouncement, typeDuelCoopAnnouncement, typeDuelCoopRanking, typeDuelCoopRoundTitle, typeDuelCoopStatsLine, typeDuelFocusKey, typeDuelMemberStatus, typeDuelOwnLastAttempt, typeDuelPlateKind, typeDuelRecords, typeDuelStatsLine, typeDuelVerdict, typeGridMove } from './presentation';
 import { TypeDuelGame } from './TypeDuelGame';
 import { TypeDuelResults } from './TypeDuelResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 
 
 type Phase = TypeDuelPublicState['phase'];

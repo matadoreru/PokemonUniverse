@@ -105,13 +105,13 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'shiny-vote',
   config: component(() => import('./shiny-vote/ConfigPanel'), 'ShinyVoteConfigPanel'),
-  active: component(() => import('../room/ShinyVoteGame'), 'ShinyVoteGame'),
-  results: component(() => import('../room/ShinyVoteResults'), 'ShinyVoteResults'),
+  active: component(() => import('./shiny-vote/ShinyVoteGame'), 'ShinyVoteGame'),
+  results: component(() => import('./shiny-vote/ShinyVoteResults'), 'ShinyVoteResults'),
 })).register(clientModule({
   id: 'pokemon-impostor',
   config: component(() => import('./pokemon-impostor/ConfigPanel'), 'PokemonImpostorConfigPanel'),
-  active: component(() => import('../room/PokemonImpostorGame'), 'PokemonImpostorGame'),
-  results: component(() => import('../room/PokemonImpostorResults'), 'PokemonImpostorResults'),
+  active: component(() => import('./pokemon-impostor/PokemonImpostorGame'), 'PokemonImpostorGame'),
+  results: component(() => import('./pokemon-impostor/PokemonImpostorResults'), 'PokemonImpostorResults'),
 })).register(clientModule({
   id: 'higher-lower',
   config: component(() => import('./higher-lower/ConfigPanel'), 'HigherLowerConfigPanel'),
@@ -120,8 +120,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'type-duel',
   config: component(() => import('./type-duel/ConfigPanel'), 'TypeDuelConfigPanel'),
-  active: component(() => import('../room/TypeDuelGame'), 'TypeDuelGame'),
-  results: component(() => import('../room/TypeDuelResults'), 'TypeDuelResults'),
+  active: component(() => import('./type-duel/TypeDuelGame'), 'TypeDuelGame'),
+  results: component(() => import('./type-duel/TypeDuelResults'), 'TypeDuelResults'),
 })).register(clientModule({
   id: 'learnset-guess',
   config: component(() => import('./learnset-guess/ConfigPanel'), 'LearnsetGuessConfigPanel'),
@@ -135,8 +135,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-bingo',
   config: component(() => import('./pokemon-bingo/ConfigPanel'), 'PokemonBingoConfigPanel'),
-  active: component(() => import('../room/PokemonBingoGame'), 'PokemonBingoGame'),
-  results: component(() => import('../room/PokemonBingoResults'), 'PokemonBingoResults'),
+  active: component(() => import('./pokemon-bingo/PokemonBingoGame'), 'PokemonBingoGame'),
+  results: component(() => import('./pokemon-bingo/PokemonBingoResults'), 'PokemonBingoResults'),
 })).register(clientModule({
   id: 'whos-that-pokemon',
   config: component(() => import('./whos-that-pokemon/ConfigPanel'), 'WhosThatPokemonConfigPanel'),
@@ -150,8 +150,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'type-chain',
   config: component(() => import('./type-chain/ConfigPanel'), 'TypeChainConfigPanel'),
-  active: component(() => import('../room/TypeChainGame'), 'TypeChainGame'),
-  results: component(() => import('../room/TypeChainResults'), 'TypeChainResults'),
+  active: component(() => import('./type-chain/TypeChainGame'), 'TypeChainGame'),
+  results: component(() => import('./type-chain/TypeChainResults'), 'TypeChainResults'),
 })).register(clientModule({
   id: 'guess-from-stats',
   config: component(() => import('./guess-from-stats/ConfigPanel'), 'GuessFromStatsConfigPanel'),
@@ -185,8 +185,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-connections',
   config: component(() => import('./pokemon-connections/ConfigPanel'), 'PokemonConnectionsConfigPanel'),
-  active: component(() => import('../room/PokemonConnectionsGame'), 'PokemonConnectionsGame'),
-  results: component(() => import('../room/PokemonConnectionsResults'), 'PokemonConnectionsResults'),
+  active: component(() => import('./pokemon-connections/PokemonConnectionsGame'), 'PokemonConnectionsGame'),
+  results: component(() => import('./pokemon-connections/PokemonConnectionsResults'), 'PokemonConnectionsResults'),
 })).register(clientModule({
   id: 'pokemon-team-auction',
   config: component(() => import('./pokemon-team-auction/ConfigPanel'), 'PokemonTeamAuctionConfigPanel'),

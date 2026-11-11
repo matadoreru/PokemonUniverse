@@ -2,15 +2,15 @@ import { defaultPokemonConnectionsConfig, type ConnectionAnswerGroup, type Pokem
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokemonConnectionsConfigPanel } from '../games/pokemon-connections/ConfigPanel';
-import { connectionsSnapSeconds, nextAttemptFocus, connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, connectionsRevealOrder, connectionsRoundLine, connectionsStatsLine, connectionsTimeLabel } from '../games/pokemon-connections/presentation';
+import { PokemonConnectionsConfigPanel } from './ConfigPanel';
+import { connectionsSnapSeconds, nextAttemptFocus, connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, connectionsRevealOrder, connectionsRoundLine, connectionsStatsLine, connectionsTimeLabel } from './presentation';
 import { PokemonConnectionsGame } from './PokemonConnectionsGame';
 import { PokemonConnectionsResults } from './PokemonConnectionsResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 const pokemon = Array.from({ length: 16 }, (_, index) => ({ id: `pokemon-${index + 1}`, name: `Pokémon ${index + 1}`, sprite: `/pokemon-${index + 1}.png` }));
 const LABELS = ['Pokémon fósiles', 'Evoluciones de Eevee', 'Aspecto canino', 'Roedores eléctricos'];

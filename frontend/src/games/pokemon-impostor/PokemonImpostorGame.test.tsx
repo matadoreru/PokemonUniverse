@@ -3,17 +3,17 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { impostorAnnouncement, impostorClueLine, impostorFocusKey, impostorPhaseTitle, impostorRoundLabel, impostorClueGroupLabel, impostorTallies } from '../games/pokemon-impostor/presentation';
+import { impostorAnnouncement, impostorClueLine, impostorFocusKey, impostorPhaseTitle, impostorRoundLabel, impostorClueGroupLabel, impostorTallies } from './presentation';
 import { PokemonImpostorGame } from './PokemonImpostorGame';
 import { impostorResultLine, impostorTeam, PokemonImpostorResults } from './PokemonImpostorResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [], loading: false, error: '', retry: () => undefined }) }));
 const motion = vi.hoisted(() => ({ reduced: false }));
-vi.mock('../hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => motion.reduced }));
+vi.mock('../../hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => motion.reduced }));
 
 const SECRET = 'Snorlax';
 

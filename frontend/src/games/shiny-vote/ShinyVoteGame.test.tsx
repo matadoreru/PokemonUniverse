@@ -3,17 +3,17 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import { shinyCardState } from '../games/shiny-vote/ShinyOptionCard';
-import { shinyRanking } from '../games/shiny-vote/ShinyGameSidebar';
-import { shinyStatusAnnouncement } from '../games/shiny-vote/ShinyVoteStatus';
-import { shouldMoveFocusOnTransition } from './game-kit/focus-transition';
+import { shinyCardState } from './ShinyOptionCard';
+import { shinyRanking } from './ShinyGameSidebar';
+import { shinyStatusAnnouncement } from './ShinyVoteStatus';
+import { shouldMoveFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { ShinyVoteGame } from './ShinyVoteGame';
 import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
 const members: RoomView['members'] = ['Eru', 'Ana', 'Leo', 'Marta', 'Iris'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
 

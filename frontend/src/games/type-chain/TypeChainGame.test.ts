@@ -2,17 +2,17 @@ import { defaultTypeChainConfig, type RoomView, type TypeChainPlayerState, type 
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { TypeChainConfigPanel } from '../games/type-chain/ConfigPanel';
-import { chainTypeText, typeChainAnnouncement, typeChainEventView, typeChainFocusKey, typeChainMemberStatus, typeChainNamed, typeChainPlateKind, typeChainSearchAutoFocus } from '../games/type-chain/presentation';
+import { TypeChainConfigPanel } from './ConfigPanel';
+import { chainTypeText, typeChainAnnouncement, typeChainEventView, typeChainFocusKey, typeChainMemberStatus, typeChainNamed, typeChainPlateKind, typeChainSearchAutoFocus } from './presentation';
 import { TypeChainGame } from './TypeChainGame';
 import { TypeChainResults } from './TypeChainResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 // El buscador de verdad necesita el pool: aquí se pinta un sustituto que enseña su etiqueta, los bloqueados y si se enfoca solo.
-vi.mock('./game-kit/PokemonSelector', () => ({
+vi.mock('../../room/game-kit/PokemonSelector', () => ({
   PokemonSelector: ({ inputLabel, locked, autoFocus }: { inputLabel: string; locked: ReadonlySet<string>; autoFocus?: boolean }) => createElement('input', { 'aria-label': inputLabel, 'data-locked': [...locked].join(','), 'data-autofocus': String(Boolean(autoFocus)) }),
 }));
 

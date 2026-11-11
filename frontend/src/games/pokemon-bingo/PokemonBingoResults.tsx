@@ -1,13 +1,13 @@
 import type { PokemonBingoPublicState } from '@pokemon-universe/shared/public';
 import { Grid3x3, Trophy } from 'lucide-react';
 import { useState } from 'react';
-import { BingoBoard } from '../games/pokemon-bingo/BingoParts';
-import { bingoProgressText, bingoStatsLine } from '../games/pokemon-bingo/presentation';
-import { Chip, Icon, Panel, TabPanel, Tabs } from '../ui';
-import { ResultsHostActions } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
+import { BingoBoard } from './BingoParts';
+import { bingoProgressText, bingoStatsLine } from './presentation';
+import { Chip, Icon, Panel, TabPanel, Tabs } from '../../ui';
+import { ResultsHostActions } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
 
 /**
  * Resultados de Pokémon Bingo: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con

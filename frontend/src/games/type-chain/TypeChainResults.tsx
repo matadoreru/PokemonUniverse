@@ -1,14 +1,14 @@
 import type { TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { Equal, ListOrdered, ShieldCheck, Skull, XCircle } from 'lucide-react';
-import { typeChainEliminationLabels } from '../games/type-chain/presentation';
-import { Chip, Icon } from '../ui';
-import { guessTop } from './guess-kit';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { plural } from '../lib/format';
+import { typeChainEliminationLabels } from './presentation';
+import { Chip, Icon } from '../../ui';
+import { guessTop } from '../../room/guess-kit';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { plural } from '../../lib/format';
 
 /**
  * Resultados de Type Chain: la clasificación del catálogo (`ResultsShell` con podio, ganador y «+N»), que ordena por

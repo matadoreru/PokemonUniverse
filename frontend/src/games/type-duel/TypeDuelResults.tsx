@@ -1,13 +1,13 @@
 import { gameModeLabel, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import { Equal, HandHeart, Percent, Swords, Timer, Users } from 'lucide-react';
-import { sharesPosition } from './game-kit/results-ties';
-import { typeDuelCoopStatsLine, typeDuelRecords, typeDuelStatsLine } from '../games/type-duel/presentation';
-import { Chip, Icon } from '../ui';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
-import { roundsLabel } from '../lib/format';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { typeDuelCoopStatsLine, typeDuelRecords, typeDuelStatsLine } from './presentation';
+import { Chip, Icon } from '../../ui';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
+import { roundsLabel } from '../../lib/format';
 
 /**
  * Resultados de Type Duel: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con insignia y

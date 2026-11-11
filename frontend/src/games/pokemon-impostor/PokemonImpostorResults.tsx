@@ -1,13 +1,13 @@
 import type { GameStanding, ImpostorRole, PokemonImpostorPlayerState, PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
 import { Crown, ShieldCheck, Skull } from 'lucide-react';
-import { Avatar } from '../components/Avatar';
-import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../ui';
-import { useRoomMembers } from './room-members';
+import { Avatar } from '../../components/Avatar';
+import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { useRoomMembers } from '../../room/room-members';
 import { impostorFinishText } from './pokemon-impostor-texts';
-import { ResultsHostActions } from './game-kit/ResultsRecords';
-import { ResultsShell } from './game-kit/ResultsShell';
-import type { GameResultsProps } from './room-command';
-import s from '../games/pokemon-impostor/PokemonImpostorResults.module.css';
+import { ResultsHostActions } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell } from '../../room/game-kit/ResultsShell';
+import type { GameResultsProps } from '../../room/room-command';
+import s from './PokemonImpostorResults.module.css';
 
 /** Línea de cada jugador en los resultados: pistas dadas y si llegó al final o lo expulsaron. */
 export function impostorResultLine(stats: GameStanding['stats'] | undefined): string {

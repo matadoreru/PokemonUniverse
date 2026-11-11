@@ -1,24 +1,24 @@
 import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type PokemonImpostorConfig, type PokemonImpostorPlayerState, type PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
 import { Check, Clock3, Eye, Hourglass, Lock, MousePointerClick, Send, TimerOff, UserX, Vote } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar } from '../components/Avatar';
-import { ServerTimer } from '../components/ServerTimer';
-import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from '../games/pokemon-impostor/ImpostorParts';
-import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from '../games/pokemon-impostor/presentation';
-import { validateImpostorClue } from '../games/pokemon-impostor/validation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
-import { useServerOffset } from '../hooks/useServerTime';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { useDelayElapsed } from '../hooks/useTimedVisibility';
-import { Cutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../ui';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { GameSkipSlot } from './game-kit/GameSkipSlot';
-import { PokemonSelector } from './game-kit/PokemonSelector';
+import { Avatar } from '../../components/Avatar';
+import { ServerTimer } from '../../components/ServerTimer';
+import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from './ImpostorParts';
+import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from './presentation';
+import { validateImpostorClue } from './validation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { useServerOffset } from '../../hooks/useServerTime';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { useDelayElapsed } from '../../hooks/useTimedVisibility';
+import { Cutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../../ui';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
-import { type ActiveGameProps, sendWithBusy } from './room-command';
-import { useRoomMembers } from './room-members';
-import s from '../games/pokemon-impostor/PokemonImpostor.module.css';
+import { type ActiveGameProps, sendWithBusy } from '../../room/room-command';
+import { useRoomMembers } from '../../room/room-members';
+import s from './PokemonImpostor.module.css';
 
 /**
  * Pokémon Impostor (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda (fase y tiempo) y la escena de la fase

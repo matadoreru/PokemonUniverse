@@ -1,13 +1,13 @@
 import type { PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
 import { Equal, Medal, Puzzle, Timer } from 'lucide-react';
-import { connectionsStatsLine } from '../games/pokemon-connections/presentation';
-import { Chip, Icon } from '../ui';
-import { guessSeconds, guessTop } from './guess-kit';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
+import { connectionsStatsLine } from './presentation';
+import { Chip, Icon } from '../../ui';
+import { guessSeconds, guessTop } from '../../room/guess-kit';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
 
 /**
  * Resultados de Pokémon Connections: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
