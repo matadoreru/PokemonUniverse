@@ -1,4 +1,4 @@
-import { defaultSecretRankingConfig, type RoomView, type SecretRankingPlayerState, type SecretRankingPokemon, type SecretRankingPublicState, type SecretRankingRoundResult } from '@pokemon-universe/shared';
+import { defaultSecretRankingConfig, type RoomView, type SecretRankingPlayerState, type SecretRankingPokemon, type SecretRankingPublicState, type SecretRankingRoundResult } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

@@ -1,4 +1,4 @@
-import { defaultOneOfUsIsFakeConfig, type FakeRoundResult, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState, type RoomView } from '@pokemon-universe/shared';
+import { defaultOneOfUsIsFakeConfig, type FakeRoundResult, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultPokemonBingoConfig } from '@pokemon-universe/shared';
+import { defaultPokemonBingoConfig } from '@pokemon-universe/shared/public';
 import { validatePokemonBingoConfig } from './ConfigPanel';
 
 describe('Pokémon Bingo lobby validation', () => {

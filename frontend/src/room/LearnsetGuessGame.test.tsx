@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetRoundResult, RoomView } from '@pokemon-universe/shared';
+import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetRoundResult, RoomView } from '@pokemon-universe/shared/public';
 import { learnsetAnnouncement, learnsetClueOrder, learnsetFocusKey, learnsetPlateKind, learnsetPositions, learnsetRecords, learnsetStatsLine, learnsetVerdict } from '../games/learnset-guess/presentation';
 import { LearnsetGuessGame } from './LearnsetGuessGame';
 import { LearnsetGuessResults } from './LearnsetGuessResults';

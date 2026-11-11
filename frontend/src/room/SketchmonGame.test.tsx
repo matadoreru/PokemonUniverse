@@ -1,4 +1,4 @@
-import { defaultSketchmonConfig, type RoomView, type SketchmonGalleryEntry, type SketchmonPlayerState, type SketchmonPublicState, type SketchmonRoundResult } from '@pokemon-universe/shared';
+import { defaultSketchmonConfig, type RoomView, type SketchmonGalleryEntry, type SketchmonPlayerState, type SketchmonPublicState, type SketchmonRoundResult } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

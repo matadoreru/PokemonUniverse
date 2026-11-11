@@ -1,4 +1,4 @@
-import type { RoomMemberView } from '@pokemon-universe/shared';
+import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

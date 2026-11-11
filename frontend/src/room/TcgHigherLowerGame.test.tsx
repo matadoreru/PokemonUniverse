@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import type { RoomView, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared';
-import { defaultTcgHigherLowerConfig } from '@pokemon-universe/shared';
+import type { RoomView, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
+import { defaultTcgHigherLowerConfig } from '@pokemon-universe/shared/public';
 import { TcgHigherLowerConfigPanel } from '../games/tcg-higher-lower/ConfigPanel';
 import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgMemberStatus, tcgPlateKind, tcgPriceDiff, tcgStatsLine, tcgVerdict } from '../games/tcg-higher-lower/presentation';
 import { TcgHigherLowerGame } from './TcgHigherLowerGame';

@@ -1,4 +1,4 @@
-import { defaultZoomedPokemonConfig, type RoomView, type ZoomedPokemonPlayerState, type ZoomedPokemonPublicState } from '@pokemon-universe/shared';
+import { defaultZoomedPokemonConfig, type RoomView, type ZoomedPokemonPlayerState, type ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
 import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';

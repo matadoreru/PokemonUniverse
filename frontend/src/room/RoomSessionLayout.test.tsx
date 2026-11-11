@@ -1,4 +1,4 @@
-import type { GameSkipStateView, RoomView } from '@pokemon-universe/shared';
+import type { GameSkipStateView, RoomView } from '@pokemon-universe/shared/public';
 import { createElement, type PropsWithChildren } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';

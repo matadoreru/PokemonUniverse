@@ -1,4 +1,4 @@
-import type { ChatMessage, RoomView } from '@pokemon-universe/shared';
+import type { ChatMessage, RoomView } from '@pokemon-universe/shared/public';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';

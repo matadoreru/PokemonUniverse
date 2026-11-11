@@ -1,4 +1,4 @@
-import { defaultWhoIsWhoPokemonConfig, type RoomView, type WhoIsWhoPlayerState, type WhoIsWhoPublicState } from '@pokemon-universe/shared';
+import { defaultWhoIsWhoPokemonConfig, type RoomView, type WhoIsWhoPlayerState, type WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

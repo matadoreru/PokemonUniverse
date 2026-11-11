@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ChangelogEntry } from '@pokemon-universe/shared';
+import type { ChangelogEntry } from '@pokemon-universe/shared/public';
 import { selectedChangelogEntry, unreadChangelogCount, unreadVersions } from './changelog-state.js';
 
 const entries = ['0.9.0', '0.8.1', '0.8.0'].map((version, index): ChangelogEntry => ({

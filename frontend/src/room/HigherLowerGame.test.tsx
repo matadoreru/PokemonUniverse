@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import type { HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared';
+import type { HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerMemberStatus, higherLowerPlateKind, higherLowerRanking, higherLowerRecord, higherLowerVerdict } from '../games/higher-lower/presentation';
 import { HigherLowerGame } from './HigherLowerGame';
 import { HigherLowerResults } from './HigherLowerResults';

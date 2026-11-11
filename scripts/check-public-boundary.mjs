@@ -8,7 +8,6 @@ const visited = new Set();
 function visit(file) {
   if (visited.has(file)) return;
   visited.add(file);
-  if (/\/games\/(?:[^/]+\/server|registry)\.ts$/.test(file)) throw new Error(`Browser entry reaches an authoritative engine: ${file}`);
   const source = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true);
   for (const node of source.statements) {
     if (!ts.isImportDeclaration(node) && !ts.isExportDeclaration(node)) continue;

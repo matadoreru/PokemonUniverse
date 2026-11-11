@@ -1,4 +1,4 @@
-import { defaultWouldYouRatherConfig, type RoomView, type WouldYouRatherPlayerState, type WouldYouRatherPublicState, type WouldYouRatherRoundResult } from '@pokemon-universe/shared';
+import { defaultWouldYouRatherConfig, type RoomView, type WouldYouRatherPlayerState, type WouldYouRatherPublicState, type WouldYouRatherRoundResult } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

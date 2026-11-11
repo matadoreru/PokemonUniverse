@@ -295,6 +295,6 @@ Team Auction and Bluff Auction use a 20-second bid-turn limit by default and aut
 
 ## Browser package boundary and verification
 
-Production web code imports `@pokemon-universe/shared/public`; engines remain available through the root/server entry for server code and engine tests. ESLint rejects server/root imports from production web modules. `npm run check:boundaries` walks the runtime import graph of the public entry and rejects server engines or unexpected dependencies; `npm test` runs that check and rebuilds shared before testing consumers.
+`@pokemon-universe/shared/public` is the package's only entry, for web code and tests alike; engines live only in Java. `npm run check:boundaries` walks the runtime import graph of that entry and rejects any dependency other than `zod`; `npm test` runs that check and rebuilds shared before testing consumers.
 
 `npm run benchmark:rooms` compares repeated and shared public projection work for synthetic Sketchmon rooms. It excludes serialization, network and database costs. PostgreSQL isolation regressions run only with an explicit `TEST_DATABASE_URL`; CI supplies its disposable migrated database. They never fall back to a developer's `DATABASE_URL`.

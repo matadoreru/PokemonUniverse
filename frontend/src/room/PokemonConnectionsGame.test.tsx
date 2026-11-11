@@ -1,4 +1,4 @@
-import { defaultPokemonConnectionsConfig, type ConnectionAnswerGroup, type PokemonConnectionsPlayerState, type PokemonConnectionsPublicState, type RoomView } from '@pokemon-universe/shared';
+import { defaultPokemonConnectionsConfig, type ConnectionAnswerGroup, type PokemonConnectionsPlayerState, type PokemonConnectionsPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

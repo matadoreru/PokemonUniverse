@@ -1,4 +1,4 @@
-import { defaultPokedexDistanceConfig, type DistanceRoundRecord, type GameResults, type PokedexDistancePublicState, type RoomView } from '@pokemon-universe/shared';
+import { defaultPokedexDistanceConfig, type DistanceRoundRecord, type GameResults, type PokedexDistancePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';

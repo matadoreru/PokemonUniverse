@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import type { TypeDuelPlayerState, TypeDuelPublicState, RoomView } from '@pokemon-universe/shared';
+import type { TypeDuelPlayerState, TypeDuelPublicState, RoomView } from '@pokemon-universe/shared/public';
 import { typeDuelAnnouncement, typeDuelCoopAnnouncement, typeDuelCoopRanking, typeDuelCoopRoundTitle, typeDuelCoopStatsLine, typeDuelFocusKey, typeDuelMemberStatus, typeDuelOwnLastAttempt, typeDuelPlateKind, typeDuelRecords, typeDuelStatsLine, typeDuelVerdict, typeGridMove } from '../games/type-duel/presentation';
 import { TypeDuelGame } from './TypeDuelGame';
 import { TypeDuelResults } from './TypeDuelResults';

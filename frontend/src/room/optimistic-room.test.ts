@@ -1,4 +1,4 @@
-import type { RoomView } from '@pokemon-universe/shared';
+import type { RoomView } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation } from './optimistic-room';
 

@@ -1,4 +1,4 @@
-import { defaultPokemonBingoConfig, type BingoPublicBoard, type PokemonBingoPlayerState, type PokemonBingoPublicState, type RoomView } from '@pokemon-universe/shared';
+import { defaultPokemonBingoConfig, type BingoPublicBoard, type PokemonBingoPlayerState, type PokemonBingoPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

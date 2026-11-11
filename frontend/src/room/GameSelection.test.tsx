@@ -1,4 +1,4 @@
-import type { MiniGameManifest, RoomView } from '@pokemon-universe/shared';
+import type { MiniGameManifest, RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';

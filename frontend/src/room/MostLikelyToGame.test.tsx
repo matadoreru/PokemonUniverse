@@ -1,4 +1,4 @@
-import { defaultMostLikelyToConfig, type MostLikelyToPlayerState, type MostLikelyToPokemon, type MostLikelyToPublicState, type MostLikelyToRoundResult, type RoomView } from '@pokemon-universe/shared';
+import { defaultMostLikelyToConfig, type MostLikelyToPlayerState, type MostLikelyToPokemon, type MostLikelyToPublicState, type MostLikelyToRoundResult, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

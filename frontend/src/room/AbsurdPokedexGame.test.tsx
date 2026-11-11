@@ -1,4 +1,4 @@
-import { defaultAbsurdPokedexConfig, type AbsurdPokedexPlayerState, type AbsurdPokedexPublicState, type AbsurdPokedexRoundResult, type RoomView } from '@pokemon-universe/shared';
+import { defaultAbsurdPokedexConfig, type AbsurdPokedexPlayerState, type AbsurdPokedexPublicState, type AbsurdPokedexRoundResult, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

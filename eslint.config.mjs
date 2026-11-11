@@ -77,14 +77,6 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   { rules: { '@typescript-eslint/no-explicit-any': 'off' } },
   {
-    files: ['frontend/src/**/*.{ts,tsx}'],
-    ignores: ['**/*.test.ts', '**/*.test.tsx'],
-    rules: { 'no-restricted-imports': ['error', {
-      paths: [{ name: '@pokemon-universe/shared', message: 'Use @pokemon-universe/shared/public in browser code.' }],
-      patterns: [{ group: ['**/shared/src/**'], message: 'Import the built contracts from @pokemon-universe/shared/public.' }],
-    }] },
-  },
-  {
     files: ['frontend/src/**/*.tsx'],
     ignores: ['**/*.test.tsx'],
     plugins: { arcade },

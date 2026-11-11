@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Pokemon } from '@pokemon-universe/shared';
+import type { Pokemon } from '@pokemon-universe/shared/public';
 import { firstSelectablePokemonOption, searchPokemonOptions } from './pokemon-search';
 
 const pokemon: Pokemon[] = [

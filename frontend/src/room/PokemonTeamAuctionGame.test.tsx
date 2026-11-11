@@ -1,4 +1,4 @@
-import { defaultPokemonTeamAuctionConfig, type PokemonTeamAuctionPlayerState, type PokemonTeamAuctionPublicState, type RoomView, type TeamAuctionPokemon } from '@pokemon-universe/shared';
+import { defaultPokemonTeamAuctionConfig, type PokemonTeamAuctionPlayerState, type PokemonTeamAuctionPublicState, type RoomView, type TeamAuctionPokemon } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';

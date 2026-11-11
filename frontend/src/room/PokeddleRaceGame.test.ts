@@ -1,4 +1,4 @@
-import { defaultPokeddleRaceConfig, type PokeddleClueKey, type PokeddlePublicBoard, type PokeddleRacePlayerState, type PokeddleRacePublicState, type RoomView } from '@pokemon-universe/shared';
+import { defaultPokeddleRaceConfig, type PokeddleClueKey, type PokeddlePublicBoard, type PokeddleRacePlayerState, type PokeddleRacePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
