@@ -269,7 +269,7 @@ function StateBoxSection() {
         <StateBox kind="empty" title="Nada por aquí" text="Crea una sala para empezar." onCream />
       </Fig>
       <Fig id="statebox-empty-actions" caption="Vacío compacto con dos acciones (sala con un solo jugador)">
-        <StateBox kind="empty" compact title="Aún no ha llegado nadie" text="Comparte el enlace de la sala para que entre tu grupo." action={{ label: 'Copiar enlace', icon: Link2, onClick: noop }} secondaryAction={{ label: 'Invitar amigos', icon: UserPlus, onClick: noop }} live={false} />
+        <StateBox kind="empty" compact title="Aún no ha llegado nadie" action={{ label: 'Copiar enlace', icon: Link2, onClick: noop }} secondaryAction={{ label: 'Invitar amigos', icon: UserPlus, onClick: noop }} live={false} />
       </Fig>
       <Fig id="statebox-loading" caption="Cargando sobre crema" cream>
         <StateBox kind="loading" title="Cargando" onCream />

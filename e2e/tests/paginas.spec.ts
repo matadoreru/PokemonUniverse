@@ -179,3 +179,26 @@ for (const { w, h } of SIZES) {
     expect(errors.filter((e) => !/500|Internal Server Error/.test(e))).toEqual([]);
   });
 }
+
+test('una pantalla cuyo código no carga enseña su error con «Reintentar» y se recupera', async ({ page }) => {
+  // El `import()` perezoso de Novedades falla (corte de red o fragmento caducado tras un despliegue).
+  const fragmento = '**/src/screens/ChangelogPage.tsx*';
+  await page.route(fragmento, (route) => route.abort());
+  await page.goto('/changelog');
+  const error = page.getByRole('alert').filter({ hasText: 'No se pudo cargar la pantalla' });
+  await expect(error).toBeVisible();
+  for (const { w, h } of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    await capture(page, 'pantalla-error-carga');
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.unroute(fragmento);
+  await error.getByRole('button', { name: 'Reintentar' }).click();
+  // El navegador puede guardar el fallo del módulo: entonces el segundo intento ofrece recargar, que lo trae de nuevo.
+  const novedades = page.getByRole('heading', { level: 1 });
+  const recargar = page.getByRole('button', { name: 'Recargar página' });
+  await expect(novedades.or(recargar)).toBeVisible();
+  if (await recargar.isVisible()) await recargar.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'No se pudo cargar' })).toHaveCount(0);
+  await expect(novedades).toBeVisible();
+});

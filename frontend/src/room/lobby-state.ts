@@ -86,14 +86,15 @@ export function lobbyStartReason({ canStart, selectedGames, compatibleCount, pen
 
 /**
  * Estado vacío de la placa de jugadores con un solo jugador conectado: «Copiar enlace» (o «Enlace copiado» justo
- * después) y, si hay panel de amigos, «Invitar amigos», que lo abre.
+ * después) y, si hay panel de amigos, «Invitar amigos», que lo abre (entonces sin texto, para que quepa).
  */
 export function emptyRoomState({ copied, onCopy, onInvite }: { copied: boolean; onCopy(): void; onInvite: (() => void) | null }): Omit<StateBoxProps, 'live'> {
   return {
     kind: 'empty',
     compact: true,
     title: 'Aún no ha llegado nadie',
-    text: 'Comparte el enlace de la sala para que entre tu grupo.',
+    // Con las dos acciones (una debajo de otra en la placa) el texto sobra: así caben sin desplazar la placa a 1280×720.
+    ...(onInvite ? {} : { text: 'Comparte el enlace de la sala para que entre tu grupo.' }),
     action: { label: copied ? 'Enlace copiado' : 'Copiar enlace', icon: copied ? Check : Link2, onClick: onCopy },
     ...(onInvite ? { secondaryAction: { label: 'Invitar amigos', icon: UserPlus, onClick: onInvite } } : {}),
   };

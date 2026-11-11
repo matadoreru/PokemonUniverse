@@ -94,6 +94,8 @@ describe('emptyRoomState', () => {
     expect(state).toMatchObject({ kind: 'empty', title: 'Aún no ha llegado nadie', action: { label: 'Copiar enlace', onClick: onCopy }, secondaryAction: { label: 'Invitar amigos', onClick: onInvite } });
     const copied = emptyRoomState({ copied: true, onCopy, onInvite: null });
     expect(copied).not.toHaveProperty('secondaryAction');
+    expect(copied.text).toContain('Comparte el enlace');
+    expect(state).not.toHaveProperty('text');
     expect(copied.action?.label).toBe('Enlace copiado');
   });
 });

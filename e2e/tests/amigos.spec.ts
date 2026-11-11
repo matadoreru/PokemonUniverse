@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import {
-  abrirAmigos, anadirJuegos, borrarCuentas, capture, cartaDeJuego, cerrarAmigos, comprobarBdE2E, conmutarJuego,
+  abrirAmigos, anadirJuegos, borrarCuentas, capture, capturarATresTamaños, cartaDeJuego, cerrarAmigos, comprobarBdE2E, conmutarJuego,
   createRoom, hacerAmigosPorApi, joinRoom, persona, SIZES, type CuentaE2E,
 } from '../src/helpers.js';
 
@@ -115,6 +115,11 @@ for (const { w, h } of SIZES) {
       await conmutarJuego(cartaDeJuego(a.page, 'Shiny Quiz'), false);
       await expect(a.page.getByText(/dos pestañas/)).toHaveCount(0);
       expect(tramasOtra.filter((trama) => trama.includes('session:restored') || trama.includes('room:state'))).toEqual([]);
+      // Sola en la sala, A ve el estado vacío con sus dos acciones enteras (sin quedar cortadas por la placa).
+      const vacia = a.page.getByRole('region', { name: 'Jugadores' });
+      await capturarATresTamaños(a.page, 'lobby-sala-vacia-amigos', { antes: async () => {
+        for (const nombre of ['Copiar enlace', 'Invitar amigos']) await expect(vacia.getByRole('button', { name: nombre })).toBeInViewport({ ratio: 1 });
+      } });
       await a.page.getByRole('button', { name: /^Invitar amigos/ }).click();
       const panelLobby = a.page.getByRole('dialog', { name: 'Amigos' });
       await expect(panelLobby.getByRole('button', { name: `Invitar a ${b.cuenta.username}` })).toBeEnabled();

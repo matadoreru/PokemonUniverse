@@ -490,7 +490,13 @@ test('«Saltar al contenido» es lo primero con el teclado y lleva el foco al ma
   const saltar = page.getByRole('link', { name: 'Saltar al contenido' });
   await expect(saltar).toBeFocused();
   await expect(saltar).toBeInViewport();
-  await capture(page, 'saltar-al-contenido');
+  // A 390 px la píldora no debe tapar la placa del HUD de forma que no se pueda leer: se captura en los tres tamaños.
+  for (const { w, h } of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    await expect(saltar).toBeFocused();
+    await capture(page, 'saltar-al-contenido');
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.keyboard.press('Enter');
   await expect(page.locator('main#contenido')).toBeFocused();
   await expect(page).toHaveURL(/\/$/);
