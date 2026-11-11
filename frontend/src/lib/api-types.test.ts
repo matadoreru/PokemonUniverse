@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import type { AchievementFamily, AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, DailyStatus, FeedbackItem, LevelProgress, MiniGameManifest, TcgFilterOptions, UserProfileResponse } from '@pokemon-universe/shared/public';
+import type { AchievementFamily, AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminGameStatus, AdminRoomHistoryItem, AdminRoomStatus, AdminSummary, AdminUserItem, AuthUser, ChangelogCategory, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, DailyStatus, FeedbackItem, FeedbackReference, FeedbackStatus, FeedbackType, LevelProgress, MiniGameManifest, ProfileDerivedMetricDefinition, ProfileMetricAggregation, ProfileMetricDefinition, TcgFilterOptions, UserProfileResponse, UserRole } from '@pokemon-universe/shared/public';
 import type { components, paths } from './api-types';
 import type { ChangelogResponse, DailyLeaderboardResponse, DailyOverviewResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
 
@@ -58,6 +58,23 @@ describe('contrato OpenAPI generado', () => {
     expectTypeOf<Body<'/api/achievements', 'get', 200>['achievements'][number]['family']>().toEqualTypeOf<AchievementFamily>();
     expectTypeOf<DailyOverviewResponse['status']>().toEqualTypeOf<DailyStatus>();
     expectTypeOf<DailyLeaderboardResponse['me']['status']>().toEqualTypeOf<DailyStatus>();
+  });
+  it('los enumerados del contrato son exactamente los de shared (un valor nuevo en cualquier lado rompe el test)', () => {
+    type Schemas = components['schemas'];
+    expectTypeOf<Schemas['AdminRoomHistoryItem']['status']>().toEqualTypeOf<AdminRoomStatus>();
+    expectTypeOf<Schemas['AdminGameHistoryItem']['status']>().toEqualTypeOf<AdminGameStatus>();
+    expectTypeOf<Schemas['ChangelogChange']['type']>().toEqualTypeOf<ChangelogCategory>();
+    expectTypeOf<Schemas['GameManifest.MetricDefinition']['aggregation']>().toEqualTypeOf<ProfileMetricAggregation>();
+    expectTypeOf<NonNullable<Schemas['GameManifest.MetricDefinition']['format']>>().toEqualTypeOf<NonNullable<ProfileMetricDefinition['format']>>();
+    expectTypeOf<Schemas['GameManifest.DerivedMetricDefinition']['kind']>().toEqualTypeOf<ProfileDerivedMetricDefinition['kind']>();
+    expectTypeOf<NonNullable<Schemas['GameManifest.DerivedMetricDefinition']['format']>>().toEqualTypeOf<NonNullable<ProfileDerivedMetricDefinition['format']>>();
+    expectTypeOf<Schemas['FeedbackItemResponse']['reference']>().toEqualTypeOf<FeedbackReference>();
+    expectTypeOf<Schemas['FeedbackItemResponse']['type']>().toEqualTypeOf<FeedbackType>();
+    expectTypeOf<Schemas['FeedbackItemResponse']['status']>().toEqualTypeOf<FeedbackStatus>();
+    expectTypeOf<Schemas['FeedbackItemResponse.Author']['kind']>().toEqualTypeOf<AuthUser['kind']>();
+    expectTypeOf<Schemas['AdminUserItem']['role']>().toEqualTypeOf<UserRole>();
+    expectTypeOf<NonNullable<Schemas['AuthUser']['role']>>().toEqualTypeOf<UserRole>();
+    expectTypeOf<Schemas['AuthUser']['kind']>().toEqualTypeOf<AuthUser['kind']>();
   });
   it('changelog y feedback usan los tipos de shared, validados contra el contrato generado', () => {
     expectTypeOf<ChangelogResponse['entries'][number]>().toEqualTypeOf<ChangelogEntry>();

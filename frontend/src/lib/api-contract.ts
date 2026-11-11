@@ -28,7 +28,7 @@ type PublicProfileWire = JsonBody<'/api/users/{username}/profile', 'get', 200>['
  * Perfil de otra cuenta (`/u/:username`): sin `progress`, `stats` ni `achievements` si es privado para quien mira.
  * `stats` con los tipos de shared del perfil propio: shared usa arrays `readonly` y el contrato generado, mutables.
  */
-export type PublicProfileResponse = Omit<PublicProfileWire, 'stats'> & { stats?: Pick<UserProfileResponse, 'globalStats' | 'games'> | null };
+export type PublicProfileResponse = Omit<PublicProfileWire, 'stats'> & { stats?: Pick<UserProfileResponse, 'globalStats' | 'games'> };
 export type ProfileSettingsResponse = JsonBody<'/api/auth/profile', 'patch', 200>;
 export type FriendsResponse = JsonBody<'/api/friends', 'get', 200>;
 export type FriendRequestResponse = JsonBody<'/api/friends/requests', 'post', 201>['request'];

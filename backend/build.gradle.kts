@@ -41,6 +41,7 @@ dependencies {
   annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
   annotationProcessor("io.micronaut.openapi:micronaut-openapi")
   compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
+  testCompileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
   implementation("io.micronaut.validation:micronaut-validation")
   implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
   implementation("io.micronaut.sql:micronaut-jdbc-hikari")
