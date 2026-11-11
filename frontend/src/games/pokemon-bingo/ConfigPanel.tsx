@@ -1,11 +1,9 @@
-import { BINGO_FAMILY_KEYS, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared/public';
+import { BINGO_FAMILY_KEYS, bingoFamilyLabels, validateGameConfigReadiness, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Segmented, Toggle } from '../../ui';
 import { bingoClock } from './presentation';
-import { bingoFamilyLabels, validatePokemonBingoConfig } from './validation';
 import s from './ConfigPanel.module.css';
-export { validatePokemonBingoConfig } from './validation';
 
 const groups: Array<{ title: string; keys: BingoFamilyKey[] }> = [
   { title: 'Básicas', keys: ['generation', 'dexNumber', 'type', 'typeCombination', 'typeCount'] },
@@ -22,7 +20,7 @@ const SIDES = [2, 3, 4, 5, 6] as const;
  * grupos, con la cuenta en un `Chip`; al menos una) y cuántas condiciones puede tener una casilla (`Segmented`).
  */
 export function PokemonBingoConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
-  const value = config as PokemonBingoConfig; const validation = validatePokemonBingoConfig(value);
+  const value = config as PokemonBingoConfig; const validation = validateGameConfigReadiness('pokemon-bingo', value);
   const active = BINGO_FAMILY_KEYS.filter((key) => value.families[key]).length;
   const side = (key: 'width' | 'height', label: string) => <div className={s.field}>
     <span className={s.label}>{label}</span>

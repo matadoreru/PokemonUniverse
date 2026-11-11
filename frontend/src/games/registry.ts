@@ -1,15 +1,8 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
+import { validateGameConfigReadiness, type GameConfigReadinessContext, type RoomView } from '@pokemon-universe/shared/public';
 import type { GameActionOptions } from '../room/room-command';
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
-import { validatePokeddleConfig } from './pokeddle-race/validation';
-import { validatePokemonBingoConfig } from './pokemon-bingo/validation';
 import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
-import { validateOneOfUsIsFakeConfig } from './one-of-us-is-fake/validation';
-import { validateSecretRankingConfig } from './secret-ranking/validation';
-import { validateMostLikelyToConfig } from './most-likely-to/validation';
-import { validateWouldYouRatherConfig } from './would-you-rather/validation';
-import { validatePokemonImpostorConfig } from './pokemon-impostor/validation';
 
 export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown, options?: GameActionOptions): Promise<void> }
 export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
@@ -19,7 +12,8 @@ export interface MiniGameClientModule {
   ConfigPanel: ComponentType<GameConfigProps>;
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
-  validateConfig?(config: unknown, room?: RoomView): string | null;
+  /** El primer motivo por el que la config no deja empezar, o `null`. */
+  validateConfig(config: unknown, room?: RoomView): string | null;
   preloadConfig(): Promise<unknown>;
   preloadGameplay(): Promise<unknown>;
 }
@@ -45,12 +39,26 @@ function preloadableComponent<TProps>(definition: LazyComponentDefinition): {
   return { Component: lazy(load), preload: load };
 }
 
+/**
+ * Lo que la preparación de shared necesita de la sala, contado como el servidor: los jugadores conectados y el
+ * contenido personal del host. Sin sala no se comprueba nada que dependa de ellos.
+ */
+function readinessContext(room: RoomView | undefined): GameConfigReadinessContext {
+  if (!room) return {};
+  return {
+    hostCustomCategoryCount: room.hostCustomCategoryCount ?? 0,
+    hostWouldYouRatherPromptCount: room.hostWouldYouRatherPromptCount ?? 0,
+    playerCount: room.members.filter((member) => member.presence === 'CONNECTED').length,
+  };
+}
+
 function clientModule(definition: {
   id: string;
   config: LazyComponentDefinition;
   active: LazyComponentDefinition;
   results: LazyComponentDefinition;
-  validateConfig?(config: unknown, room?: RoomView): string | null;
+  /** Lo que solo comprueba la web (sin regla de preparación en el servidor); va antes que la preparación común. */
+  validateConfig?(config: unknown): string | null;
 }): MiniGameClientModule {
   const config = preloadableComponent<GameConfigProps>(definition.config);
   const active = preloadableComponent<ActiveGameProps>(definition.active);
@@ -60,7 +68,7 @@ function clientModule(definition: {
     ConfigPanel: config.Component,
     ActiveGame: active.Component,
     Results: results.Component,
-    ...(definition.validateConfig ? { validateConfig: definition.validateConfig } : {}),
+    validateConfig: (value, room) => definition.validateConfig?.(value) ?? validateGameConfigReadiness(definition.id, value, readinessContext(room)),
     preloadConfig: config.preload,
     preloadGameplay: () => Promise.all([active.preload(), results.preload()]),
   };
@@ -96,7 +104,6 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./pokemon-impostor/ConfigPanel'), 'PokemonImpostorConfigPanel'),
   active: component(() => import('../room/PokemonImpostorGame'), 'PokemonImpostorGame'),
   results: component(() => import('../room/PokemonImpostorResults'), 'PokemonImpostorResults'),
-  validateConfig: validatePokemonImpostorConfig,
 })).register(clientModule({
   id: 'higher-lower',
   config: component(() => import('./higher-lower/ConfigPanel'), 'HigherLowerConfigPanel'),
@@ -117,13 +124,11 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./pokeddle-race/ConfigPanel'), 'PokeddleRaceConfigPanel'),
   active: component(() => import('../room/PokeddleRaceGame'), 'PokeddleRaceGame'),
   results: component(() => import('../room/PokeddleRaceResults'), 'PokeddleRaceResults'),
-  validateConfig: validatePokeddleConfig,
 })).register(clientModule({
   id: 'pokemon-bingo',
   config: component(() => import('./pokemon-bingo/ConfigPanel'), 'PokemonBingoConfigPanel'),
   active: component(() => import('../room/PokemonBingoGame'), 'PokemonBingoGame'),
   results: component(() => import('../room/PokemonBingoResults'), 'PokemonBingoResults'),
-  validateConfig: validatePokemonBingoConfig,
 })).register(clientModule({
   id: 'whos-that-pokemon',
   config: component(() => import('./whos-that-pokemon/ConfigPanel'), 'WhosThatPokemonConfigPanel'),
@@ -161,7 +166,6 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./one-of-us-is-fake/ConfigPanel'), 'OneOfUsIsFakeConfigPanel'),
   active: component(() => import('../room/OneOfUsIsFakeGame'), 'OneOfUsIsFakeGame'),
   results: component(() => import('../room/OneOfUsIsFakeResults'), 'OneOfUsIsFakeResults'),
-  validateConfig: validateOneOfUsIsFakeConfig,
 })).register(clientModule({
   id: 'pokemon-bluff-auction',
   config: component(() => import('./pokemon-bluff-auction/ConfigPanel'), 'PokemonBluffAuctionConfigPanel'),
@@ -187,19 +191,16 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./secret-ranking/ConfigPanel'), 'SecretRankingConfigPanel'),
   active: component(() => import('../room/SecretRankingGame'), 'SecretRankingGame'),
   results: component(() => import('../room/SecretRankingResults'), 'SecretRankingResults'),
-  validateConfig: validateSecretRankingConfig,
 })).register(clientModule({
   id: 'most-likely-to',
   config: component(() => import('./most-likely-to/ConfigPanel'), 'MostLikelyToConfigPanel'),
   active: component(() => import('../room/MostLikelyToGame'), 'MostLikelyToGame'),
   results: component(() => import('../room/MostLikelyToResults'), 'MostLikelyToResults'),
-  validateConfig: validateMostLikelyToConfig,
 })).register(clientModule({
   id: 'would-you-rather',
   config: component(() => import('./would-you-rather/ConfigPanel'), 'WouldYouRatherConfigPanel'),
   active: component(() => import('../room/WouldYouRatherGame'), 'WouldYouRatherGame'),
   results: component(() => import('../room/WouldYouRatherResults'), 'WouldYouRatherResults'),
-  validateConfig: validateWouldYouRatherConfig,
 })).register(clientModule({
   id: 'pokemon-red-flag',
   config: component(() => import('./pokemon-red-flag/ConfigPanel'), 'PokemonRedFlagConfigPanel'),

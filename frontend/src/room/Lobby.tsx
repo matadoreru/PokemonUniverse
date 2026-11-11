@@ -142,7 +142,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const configReason = (selectedGameIds.length === 1 ? selectedGameIds : compatibleGameIds).map((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
     if (!manifest) return null;
-    const reason = clientGameRegistry.get(gameId).validateConfig?.(rotationConfig(gameId), room) ?? null;
+    const reason = clientGameRegistry.get(gameId).validateConfig(rotationConfig(gameId), room);
     return reason ? (selectedGameIds.length === 1 ? reason : `${manifest.name}: ${reason}`) : null;
   }).find((reason) => reason !== null) ?? null;
   // Un solo juego: el motivo exacto (mínimo o máximo de jugadores), como el servidor.

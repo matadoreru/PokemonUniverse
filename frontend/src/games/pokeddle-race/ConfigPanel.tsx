@@ -1,10 +1,8 @@
-import { POKEDDLE_CLUE_KEYS, type PokeddleClueKey, type PokeddleRaceConfig } from '@pokemon-universe/shared/public';
+import { POKEDDLE_CLUE_KEYS, validateGameConfigReadiness, type PokeddleClueKey, type PokeddleRaceConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Toggle } from '../../ui';
-import { validatePokeddleConfig } from './validation';
 import s from './ConfigPanel.module.css';
-export { validatePokeddleConfig } from './validation';
 
 const groups: Array<{ title: string; keys: PokeddleClueKey[] }> = [
   { title: 'Básicas', keys: ['generation', 'dexNumber', 'types', 'typeCount'] },
@@ -22,7 +20,7 @@ const labels: Record<PokeddleClueKey, string> = {
  * `Chip`; al menos una).
  */
 export function PokeddleRaceConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
-  const value = config as PokeddleRaceConfig; const validation = validatePokeddleConfig(value);
+  const value = config as PokeddleRaceConfig; const validation = validateGameConfigReadiness('pokeddle-race', value);
   const active = POKEDDLE_CLUE_KEYS.filter((key) => value.clues[key]).length;
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => void onChange({ ...value, generations })} />

@@ -63,7 +63,7 @@ export function rotationGameReadinessReason(room: RoomView, game: MiniGameManife
   const availability = gameAvailabilityReason(game, playerCount);
   if (availability) return availability;
   const client = clientGameRegistry.get(game.id);
-  return client.validateConfig?.(rotationGameConfig(room, game.id), room) ?? null;
+  return client.validateConfig(rotationGameConfig(room, game.id), room);
 }
 
 /** A player-count requirement (impostor parity) only skips the game in a rotation: it does not block the room. */
