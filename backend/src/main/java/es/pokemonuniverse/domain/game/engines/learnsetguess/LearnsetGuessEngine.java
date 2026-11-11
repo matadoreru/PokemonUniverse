@@ -242,10 +242,7 @@ public final class LearnsetGuessEngine
       throw new EngineException(
           "No hay Pokémon con learnsets válidos para esa selección de generaciones. Ejecuta el seed actualizado.");
     }
-    List<Candidate> candidates = allCandidates.stream()
-        .filter(entry -> !state.usedPokemonIds().contains(entry.pokemon().id()))
-        .toList();
-    if (candidates.isEmpty()) candidates = allCandidates;
+    var candidates = Randoms.preferUnused(allCandidates, entry -> state.usedPokemonIds().contains(entry.pokemon().id()));
     var selected = Randoms.randomItem(candidates, context.random());
     var groups = groupLearnset(selected.learnset());
     int initialGroupCount = (int) groups.stream()

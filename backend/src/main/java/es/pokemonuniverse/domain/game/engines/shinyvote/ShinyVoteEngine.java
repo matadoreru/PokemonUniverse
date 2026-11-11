@@ -131,8 +131,7 @@ public final class ShinyVoteEngine
     var selected = Randoms.takeRandom(shinyPool(state.config(), context), requiredPokemon, context.random());
     if (selected.size() < requiredPokemon) throw new EngineException(requiredPokemonMessage(requiredPokemon));
     List<Pokemon> candidates = samePokemon ? optionIds.stream().map(id -> selected.getFirst()).toList() : selected;
-    int correctIndex = Math.min((int) Math.floor(context.random().getAsDouble() * optionIds.size()),
-        optionIds.size() - 1);
+    int correctIndex = Randoms.randomIndex(optionIds.size(), context.random());
     var palettes = Randoms.shuffled(ShinyVoteFilters.FAKE_SHINY_PALETTES, context.random());
     int fakePaletteIndex = 0;
     var options = new ArrayList<ShinyOptionState>();

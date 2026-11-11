@@ -145,10 +145,7 @@ public final class WhosThatPokemonEngine implements
     if (allCandidates.isEmpty()) {
       throw new EngineException("No hay Pokémon con sprites válidos para esta configuración.");
     }
-    List<Pokemon> candidates = allCandidates.stream()
-        .filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id()))
-        .toList();
-    if (candidates.isEmpty()) candidates = allCandidates;
+    var candidates = Randoms.preferUnused(allCandidates, pokemon -> state.usedPokemonIds().contains(pokemon.id()));
     var target = Randoms.randomItem(candidates, context.random());
     long roundStartedAt = context.now();
     long roundEndsAt = roundStartedAt + state.config().roundSeconds() * 1_000L;

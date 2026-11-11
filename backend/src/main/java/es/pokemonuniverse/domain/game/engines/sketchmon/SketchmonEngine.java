@@ -195,11 +195,10 @@ public final class SketchmonEngine
   private static Pokemon selectTarget(SketchmonState state, GameContext context) {
     var pool = new ArrayList<Pokemon>();
     for (var id : state.poolIds()) context.pokemon().byId(id).ifPresent(pool::add);
-    List<Pokemon> candidates = pool.stream().filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id())).toList();
-    if (candidates.isEmpty()) candidates = pool;
-    double random = context.random().getAsDouble();
+    var candidates = Randoms.preferUnused(pool, pokemon -> state.usedPokemonIds().contains(pokemon.id()));
+    int index = Randoms.randomIndex(candidates.size(), context.random());
     if (candidates.isEmpty()) throw new EngineException("No hay Pokémon disponibles para Sketchmon.");
-    return candidates.get(Math.min((int) Math.floor(random * candidates.size()), candidates.size() - 1));
+    return candidates.get(index);
   }
 
   /**

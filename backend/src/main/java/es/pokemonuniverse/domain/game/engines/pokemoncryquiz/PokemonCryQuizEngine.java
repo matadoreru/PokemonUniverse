@@ -149,7 +149,7 @@ public final class PokemonCryQuizEngine implements
     for (var version : List.of(CryVersion.LATEST, CryVersion.LEGACY)) {
       if (audio != null && hasCry(audio, pokemonId, version)) available.add(version);
     }
-    int index = Math.min((int) Math.floor(context.random().getAsDouble() * available.size()), available.size() - 1);
+    int index = Randoms.randomIndex(available.size(), context.random());
     // available[-1] de JS es undefined: el pool garantiza al menos una versión.
     return index >= 0 ? available.get(index) : null;
   }
@@ -157,10 +157,7 @@ public final class PokemonCryQuizEngine implements
   private static PokemonCryQuizState beginRound(PokemonCryQuizState state, GameContext context) {
     var pool = new ArrayList<Pokemon>();
     for (var id : state.poolIds()) context.pokemon().byId(id).ifPresent(pool::add);
-    List<Pokemon> candidates = pool.stream()
-        .filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id()))
-        .toList();
-    if (candidates.isEmpty()) candidates = pool;
+    var candidates = Randoms.preferUnused(pool, pokemon -> state.usedPokemonIds().contains(pokemon.id()));
     if (candidates.isEmpty()) throw new EngineException("No hay gritos disponibles para esta configuración.");
     var target = Randoms.randomItem(candidates, context.random());
     var usedPokemonIds = new ArrayList<>(state.usedPokemonIds());

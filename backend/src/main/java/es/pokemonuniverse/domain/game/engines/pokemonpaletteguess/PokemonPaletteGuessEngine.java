@@ -168,8 +168,7 @@ public final class PokemonPaletteGuessEngine implements
   private static PokemonPaletteGuessState beginRound(PokemonPaletteGuessState state, GameContext context) {
     var pool = new ArrayList<Pokemon>();
     for (var id : state.poolIds()) context.pokemon().byId(id).ifPresent(pool::add);
-    List<Pokemon> candidates = pool.stream().filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id())).toList();
-    if (candidates.isEmpty()) candidates = pool;
+    var candidates = Randoms.preferUnused(pool, pokemon -> state.usedPokemonIds().contains(pokemon.id()));
     if (candidates.isEmpty()) throw new EngineException("No hay paletas persistidas para esta configuración.");
     var target = Randoms.randomItem(candidates, context.random());
     var used = new LinkedHashSet<>(state.usedPokemonIds());

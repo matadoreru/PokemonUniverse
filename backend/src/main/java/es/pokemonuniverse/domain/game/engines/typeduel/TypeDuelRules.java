@@ -5,6 +5,7 @@ import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.GameStanding;
+import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelState;
 import es.pokemonuniverse.domain.game.engines.typeduel.TypeDuelTypes.TypeDuelStats;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
@@ -84,7 +85,7 @@ public final class TypeDuelRules {
         .filter(pair -> lastPair == null || !(pair.contains(lastPair.get(0)) && pair.contains(lastPair.get(1))))
         .toList();
     if (!withoutRepeat.isEmpty()) candidates = withoutRepeat;
-    return candidates.get(Math.min((int) Math.floor(random.getAsDouble() * candidates.size()), candidates.size() - 1));
+    return Randoms.randomItem(candidates, random);
   }
 
   private static int sum(Map<String, Integer> counts, List<String> pair) {

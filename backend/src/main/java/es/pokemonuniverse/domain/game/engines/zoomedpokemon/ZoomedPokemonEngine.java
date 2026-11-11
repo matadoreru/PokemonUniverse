@@ -189,10 +189,7 @@ public final class ZoomedPokemonEngine
     var allCandidates = new ArrayList<Pokemon>();
     for (var id : state.poolIds()) context.pokemon().byId(id).ifPresent(allCandidates::add);
     if (allCandidates.isEmpty()) throw noImages(state.config());
-    List<Pokemon> candidates = allCandidates.stream()
-        .filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id()))
-        .toList();
-    if (candidates.isEmpty()) candidates = allCandidates;
+    var candidates = Randoms.preferUnused(allCandidates, pokemon -> state.usedPokemonIds().contains(pokemon.id()));
     var target = Randoms.randomItem(candidates, context.random());
     var visual = chooseVisual(state.config(), target, context);
     long roundStartedAt = context.now();

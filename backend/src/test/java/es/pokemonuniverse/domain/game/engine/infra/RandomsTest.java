@@ -2,6 +2,7 @@ package es.pokemonuniverse.domain.game.engine.infra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -73,5 +74,26 @@ class RandomsTest {
     assertEquals(List.of(), Randoms.takeRandom(input, 0, () -> {
       throw new AssertionError("sin extracciones");
     }));
+  }
+
+  @Test
+  void randomIndexDrawsOnceEvenForAnEmptyPool() {
+    var draws = new AtomicInteger();
+    assertEquals(-1, Randoms.randomIndex(0, () -> {
+      draws.incrementAndGet();
+      return 0.5;
+    }));
+    assertEquals(1, draws.get());
+    assertEquals(0, Randoms.randomIndex(3, () -> 0));
+    assertEquals(1, Randoms.randomIndex(3, () -> 0.5));
+    assertEquals(2, Randoms.randomIndex(3, () -> 1.0));
+  }
+
+  @Test
+  void preferUnusedFallsBackToThePoolWithoutDrawing() {
+    var pool = List.of("a", "b", "c");
+    assertEquals(List.of("a", "c"), Randoms.preferUnused(pool, "b"::equals));
+    assertSame(pool, Randoms.preferUnused(pool, value -> true));
+    assertEquals(List.of(), Randoms.preferUnused(List.<String>of(), value -> false));
   }
 }

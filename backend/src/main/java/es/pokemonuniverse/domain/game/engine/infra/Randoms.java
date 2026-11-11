@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Traducción literal de {@code games/infrastructure/random.ts}: consume {@code random} el mismo número de veces y en
@@ -61,14 +62,30 @@ public final class Randoms {
     var pool = new ArrayList<>(items);
     var result = new ArrayList<T>();
     while (result.size() < count && !pool.isEmpty()) {
-      int index = Math.min((int) Math.floor(random.getAsDouble() * pool.size()), pool.size() - 1);
-      result.add(pool.remove(index));
+      result.add(pool.remove(randomIndex(pool.size(), random)));
     }
     return result;
   }
 
+  /**
+   * {@code Math.min(Math.floor(random() * size), size - 1)}: consume una extracción siempre, también con
+   * {@code size = 0}, que da {@code -1}. Así un motor puede extraer antes de lanzar por un pool vacío.
+   */
+  public static int randomIndex(int size, DoubleSupplier random) {
+    return Math.min((int) Math.floor(random.getAsDouble() * size), size - 1);
+  }
+
+  /**
+   * Los elementos de {@code pool} que no están usados o, si ya se usaron todos, el pool entero. No consume
+   * {@code random}: cada motor decide si lanza por un pool vacío antes o después de extraer.
+   */
+  public static <T> List<T> preferUnused(List<T> pool, Predicate<T> used) {
+    var unused = pool.stream().filter(used.negate()).toList();
+    return unused.isEmpty() ? pool : unused;
+  }
+
   /** {@code items[Math.min(Math.floor(random() * items.length), items.length - 1)]}; exige una lista no vacía. */
   public static <T> T randomItem(List<T> items, DoubleSupplier random) {
-    return items.get(Math.min((int) Math.floor(random.getAsDouble() * items.size()), items.size() - 1));
+    return items.get(randomIndex(items.size(), random));
   }
 }

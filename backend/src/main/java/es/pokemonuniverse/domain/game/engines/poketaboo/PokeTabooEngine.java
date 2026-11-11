@@ -110,14 +110,16 @@ public final class PokeTabooEngine
         .build();
   }
 
-  /** Consume {@code random} una vez; sin Pokémon por usar, vuelve a elegir entre todo el pool. */
+  /**
+   * Consume {@code random} una vez, aunque no quede ningún candidato; sin Pokémon por usar, vuelve a elegir entre todo
+   * el pool.
+   */
   private static Pokemon selectTarget(PokeTabooState state, GameContext context) {
     var pool = state.poolIds().stream().map(id -> context.pokemon().byId(id)).flatMap(Optional::stream).toList();
-    var candidates = pool.stream().filter(pokemon -> !state.usedPokemonIds().contains(pokemon.id())).toList();
-    if (candidates.isEmpty()) candidates = pool;
-    double random = context.random().getAsDouble();
+    var candidates = Randoms.preferUnused(pool, pokemon -> state.usedPokemonIds().contains(pokemon.id()));
+    int index = Randoms.randomIndex(candidates.size(), context.random());
     if (candidates.isEmpty()) throw new EngineException("No hay Pokémon disponibles para PokéTaboo.");
-    return candidates.get(Math.min((int) Math.floor(random * candidates.size()), candidates.size() - 1));
+    return candidates.get(index);
   }
 
   /** Salta (y anota como fallida) la ronda de cada descriptor que no está conectado. */
