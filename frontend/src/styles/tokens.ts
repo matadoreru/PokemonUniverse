@@ -130,11 +130,6 @@ export function contrast(a: string, b: string): number {
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
 }
 
-/** Regla de texto sobre el color del jugador (§3.1): azul noche si la luminancia es >= 0,30; si no, blanco. */
-export function inkOn(hex: string): string {
-  return luminance(hex) >= 0.3 ? colors.navy : colors.white;
-}
-
 /** Tinta de un glifo o letra sobre un color (§3.1): blanco o azul noche, el de más contraste. */
 export function bestInk(bg: string): string {
   return contrast(colors.navy, bg) >= contrast(colors.white, bg) ? colors.navy : colors.white;

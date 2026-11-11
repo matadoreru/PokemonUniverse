@@ -28,7 +28,6 @@ export interface ChatLogProps {
   /** Con esta función cada mensaje lleva un botón de moderar. */
   onModerate?: (id: string) => void;
   moderateLabel?: (item: ChatLogItem) => string;
-  newMessagesLabel?: string;
   className?: string;
   /** Solo galería: enseña «Ver mensajes nuevos» sin tener que desplazar la lista. */
   forceUnseen?: boolean;
@@ -60,7 +59,7 @@ function scrollToEnd(el: HTMLElement, smooth: boolean) {
  * Lista de mensajes de un chat. No es una región viva: los avisos de mensajes nuevos los da otro sitio. Baja sola al
  * último mensaje si ya estaba abajo; si quien lee había subido, no se mueve y ofrece «Ver mensajes nuevos».
  */
-export function ChatLog({ items, label, empty, onModerate, moderateLabel, newMessagesLabel = 'Ver mensajes nuevos', className, forceUnseen, active = true }: ChatLogProps) {
+export function ChatLog({ items, label, empty, onModerate, moderateLabel, className, forceUnseen, active = true }: ChatLogProps) {
   const list = useRef<HTMLOListElement>(null);
   const atBottom = useRef(true);
   const seen = useRef<Set<string> | null>(null);
@@ -139,7 +138,7 @@ export function ChatLog({ items, label, empty, onModerate, moderateLabel, newMes
               setUnseen(false);
             }}
           >
-            {newMessagesLabel}
+            Ver mensajes nuevos
           </Pill>
         </div>
       )}

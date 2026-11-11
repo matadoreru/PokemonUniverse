@@ -128,7 +128,6 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --t-press: 90ms;
-  --t-focus: 120ms;
   --t-screen: 220ms;
   --t-bounce: 220ms;
   --t-reveal: 360ms;
@@ -162,7 +161,6 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --t-press: 0ms;
-    --t-focus: 0ms;
     --t-screen: 0ms;
     --t-bounce: 0ms;
     --t-reveal: 0ms;
@@ -172,7 +170,6 @@
 /* La clase `static` del body (E2E) lo apaga todo, fundidos incluidos. */
 .static {
   --t-press: 0ms;
-  --t-focus: 0ms;
   --t-screen: 0ms;
   --t-bounce: 0ms;
   --t-reveal: 0ms;

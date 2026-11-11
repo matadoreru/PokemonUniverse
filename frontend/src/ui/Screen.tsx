@@ -13,17 +13,16 @@ export interface ScreenProps {
   /** Pie fijo al fondo de la pantalla en escritorio (la línea legal). */
   footer?: ReactNode;
   className?: string;
-  contentClassName?: string;
 }
 
 /**
  * Pantalla pública (spec §2): en escritorio llena el alto del `main`, centra su contenido en los dos ejes con los
  * mismos márgenes en todas las pantallas y lo deja crecer por pasos a 1536 y 1920 px; en móvil apila arriba.
  */
-export function Screen({ children, width = 'wide', fill = false, footer, className, contentClassName }: ScreenProps) {
+export function Screen({ children, width = 'wide', fill = false, footer, className }: ScreenProps) {
   return (
     <div className={cx(s.screen, s[width], fill && s.fill, footer == null && s.bare, className)}>
-      <div className={cx(s.content, contentClassName)}>{children}</div>
+      <div className={s.content}>{children}</div>
       {footer != null && <div className={s.footer}>{footer}</div>}
     </div>
   );

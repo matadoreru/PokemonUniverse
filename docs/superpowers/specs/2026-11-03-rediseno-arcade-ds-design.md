@@ -139,7 +139,7 @@ sobre `--navy-2`.
 
 ### 3.4 Movimiento
 
-Los tokens de Inazuma: `--t-press` 90 ms, `--t-focus` 120, `--t-screen` 220, `--t-bounce` 220 (sobreimpulso),
+Los tokens de Inazuma: `--t-press` 90 ms, `--t-screen` 220, `--t-bounce` 220 (sobreimpulso),
 `--t-reveal` 360 y `--t-cutin` 1400. Curvas `--ease` y `--ease-bounce`.
 
 - Solo se animan `transform` y `opacity`. Interacción ≤400 ms; la única animación firma más larga es el cut-in.

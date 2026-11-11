@@ -56,7 +56,6 @@ describe('ChatLog', () => {
   it('«Ver mensajes nuevos» solo aparece cuando hay mensajes sin ver', () => {
     expect(render()).not.toContain('Ver mensajes nuevos');
     expect(render({ forceUnseen: true })).toContain('Ver mensajes nuevos');
-    expect(render({ forceUnseen: true, newMessagesLabel: 'Hay más' })).toContain('Hay más');
   });
 });
 

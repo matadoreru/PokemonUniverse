@@ -127,6 +127,23 @@
     height: calc(var(--sp-6) * 12);
   }
 }
+/* Marco de alto fijo para `Screen`: llena el alto de su caja desde 1024 px; aquí, el del marco (con su propio scroll). */
+.screenFrame {
+  height: calc(var(--sp-6) * 8);
+  overflow: auto;
+  border: var(--ol-2) solid var(--navy-3);
+  border-radius: var(--r-card);
+  background: var(--band);
+}
+.fillPanel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.textInk {
+  margin: 0;
+  font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
+  color: var(--ink);
+}
 .tileList {
   margin: 0;
   padding: 0;

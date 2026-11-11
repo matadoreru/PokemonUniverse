@@ -17,10 +17,11 @@ export interface ChatComposerProps {
   busy?: boolean;
   /** Estado, no error: el motivo sustituye al campo y al botón. */
   disabledReason?: string | null;
-  /** Desde cuántos caracteres se ve el contador. */
-  counterFrom?: number;
   className?: string;
 }
+
+/** Desde cuántos caracteres se ve el contador. */
+const COUNTER_FROM = 160;
 
 /** Envía solo si hay texto (recortado) y no se espera un ack; devuelve si llamó a `onSubmit`. */
 export function submitChat(value: string, busy: boolean, onSubmit: () => void): boolean {
@@ -30,13 +31,13 @@ export function submitChat(value: string, busy: boolean, onSubmit: () => void): 
 }
 
 /** Campo de escribir del chat: Intro (o el botón) envía; el contador aparece al acercarse al límite. */
-export function ChatComposer({ value, onChange, onSubmit, label, maxLength, busy = false, disabledReason, counterFrom = 160, className }: ChatComposerProps) {
+export function ChatComposer({ value, onChange, onSubmit, label, maxLength, busy = false, disabledReason, className }: ChatComposerProps) {
   const counterId = useId();
   const formRef = useRef<HTMLFormElement>(null);
   if (disabledReason) {
     return <p className={cx(s.reason, className)}>{disabledReason}</p>;
   }
-  const showCounter = value.length >= counterFrom;
+  const showCounter = value.length >= COUNTER_FROM;
   const submit = (e: FormEvent) => {
     e.preventDefault();
     // Con el botón el foco se iría a él (y se perdería al deshabilitarse): se devuelve al campo para no cerrar el teclado.

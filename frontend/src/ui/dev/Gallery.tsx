@@ -45,6 +45,7 @@ import { Pill, PillAnchor, PillLink } from '../Pill';
 import { Row, RowButton, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
 import { AchievementTile } from '../AchievementTile';
+import { Screen, ScreenHeader, type ScreenWidth } from '../Screen';
 import { ScreenSplit } from '../ScreenSplit';
 import { ScreenTransition } from '../ScreenTransition';
 import { Segmented } from '../Segmented';
@@ -1103,6 +1104,56 @@ function ScreenTransitionSection() {
   );
 }
 
+const SCREEN_WIDTHS: { width: ScreenWidth; label: string }[] = [
+  { width: 'narrow', label: 'narrow · tarjeta (520 → 640 px)' },
+  { width: 'medium', label: 'medium · lectura (760 → 960 px)' },
+  { width: 'form', label: 'form · formulario (1100 → 1200 px)' },
+  { width: 'wide', label: 'wide · completo (por defecto)' },
+];
+
+/** Pantalla pública y su cabecera, cada una en un marco de alto fijo: `Screen` llena el alto del `main` desde 1024 px. */
+function ScreenSection() {
+  return (
+    <Section name="screen" title="Screen y ScreenHeader">
+      {SCREEN_WIDTHS.map(({ width, label }) => (
+        <Fig key={width} id={`screen-${width}`} caption={`Ancho ${label}`} wide>
+          <div className={s.screenFrame}>
+            <Screen width={width}>
+              <Panel title={width} variant="cream">
+                <p className={s.textInk}>El contenido se centra y no pasa de su ancho.</p>
+              </Panel>
+            </Screen>
+          </div>
+        </Fig>
+      ))}
+      <Fig id="screen-footer" caption="Con pie (la línea legal, al fondo en escritorio)" wide>
+        <div className={s.screenFrame}>
+          <Screen width="medium" footer={<p className={s.text}>Pokémon Universe · aviso legal</p>}>
+            <Panel title="Contenido" variant="cream">
+              <p className={s.textInk}>Centrado en el hueco que deja el pie.</p>
+            </Panel>
+          </Screen>
+        </div>
+      </Fig>
+      <Fig id="screen-fill" caption="fill: el contenido llena el alto (listas con scroll interno)" wide>
+        <div className={s.screenFrame}>
+          <Screen width="medium" fill>
+            <Panel title="Lista" variant="dark" scroll scrollLabel="Lista de ejemplo" className={s.fillPanel ?? ''}>
+              {['Misty', 'Ash', 'Brock', 'Gary', 'Serena'].map((name, i) => <Row key={name} rank={i + 1} name={name} value={`${12 - i * 2} pts`} color={playerColor(i)} />)}
+            </Panel>
+          </Screen>
+        </div>
+      </Fig>
+      <Fig id="screenheader-aside" caption="ScreenHeader con entradilla y acción" wide>
+        <ScreenHeader title="Novedades" subtitle="Lo último de Pokémon Universe" aside={<Pill size="small" onClick={noop}>Volver</Pill>} />
+      </Fig>
+      <Fig id="screenheader-center" caption="ScreenHeader centerOnMobile (centrada por debajo de 1024 px)" wide>
+        <ScreenHeader title="Entra en la sala" subtitle="Escribe el código que te han pasado" centerOnMobile />
+      </Fig>
+    </Section>
+  );
+}
+
 function ScreenSplitSection() {
   return (
     <Section name="screensplit" title="ScreenSplit">
@@ -1313,6 +1364,7 @@ export function Gallery() {
       <UnownGlyphSection />
       <ConfettiSection />
       <ScreenTransitionSection />
+      <ScreenSection />
       <ScreenSplitSection />
       <AuctionSection />
       <GamePiecesSection />
