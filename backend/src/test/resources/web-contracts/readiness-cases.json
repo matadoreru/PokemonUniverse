@@ -2011,6 +2011,78 @@
     "context": {
       "hostCustomCategoryCount": 0,
       "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 1
+    },
+    "message": "Demasiados impostores: con 1 jugadores el máximo es 0."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 1
+    },
+    "message": "Demasiados impostores: con 1 jugadores el máximo es 0."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 3
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 1
+    },
+    "message": "Demasiados impostores: con 1 jugadores el máximo es 0."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 2
+    },
+    "message": "Demasiados impostores: con 2 jugadores el máximo es 0."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 2
+    },
+    "message": "Demasiados impostores: con 2 jugadores el máximo es 0."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 3
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 2
+    },
+    "message": "Demasiados impostores: con 2 jugadores el máximo es 0."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
       "playerCount": 3
     },
     "message": null
@@ -2110,6 +2182,30 @@
       "playerCount": 5
     },
     "message": "Demasiados impostores: con 5 jugadores el máximo es 2."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1.5
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 3
+    },
+    "message": "Demasiados impostores: con 3 jugadores el máximo es 1."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1.5
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
   },
   {
     "gameId": "pokemon-impostor",

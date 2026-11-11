@@ -12,7 +12,11 @@ export interface MiniGameClientModule {
   ConfigPanel: ComponentType<GameConfigProps>;
   ActiveGame: ComponentType<ActiveGameProps>;
   Results: ComponentType<GameResultsProps>;
-  /** El primer motivo por el que la config no deja empezar, o `null`. */
+  /**
+   * El primer motivo por el que la config no deja empezar, o `null`: la comprobación propia de la web del juego (si la
+   * tiene, en `webConfigChecks`) y si no la preparación de shared, la misma regla que aplica el servidor. Un juego no
+   * tiene las dos: su comprobación propia taparía los mensajes del servidor (lo vigila `registry.test.ts`).
+   */
   validateConfig(config: unknown, room?: RoomView): string | null;
   preloadConfig(): Promise<unknown>;
   preloadGameplay(): Promise<unknown>;
@@ -52,14 +56,19 @@ function readinessContext(room: RoomView | undefined): GameConfigReadinessContex
   };
 }
 
+/** Lo que solo comprueba la web, en juegos sin regla de preparación en el servidor. */
+export const webConfigChecks: Readonly<Record<string, (config: unknown) => string | null>> = {
+  'guess-from-stats': validateGuessFromStatsConfig,
+  'zoomed-pokemon': validateZoomedPokemonConfig,
+};
+
 function clientModule(definition: {
   id: string;
   config: LazyComponentDefinition;
   active: LazyComponentDefinition;
   results: LazyComponentDefinition;
-  /** Lo que solo comprueba la web (sin regla de preparación en el servidor); va antes que la preparación común. */
-  validateConfig?(config: unknown): string | null;
 }): MiniGameClientModule {
+  const webCheck = webConfigChecks[definition.id];
   const config = preloadableComponent<GameConfigProps>(definition.config);
   const active = preloadableComponent<ActiveGameProps>(definition.active);
   const results = preloadableComponent<GameResultsProps>(definition.results);
@@ -68,7 +77,7 @@ function clientModule(definition: {
     ConfigPanel: config.Component,
     ActiveGame: active.Component,
     Results: results.Component,
-    validateConfig: (value, room) => definition.validateConfig?.(value) ?? validateGameConfigReadiness(definition.id, value, readinessContext(room)),
+    validateConfig: (value, room) => webCheck?.(value) ?? validateGameConfigReadiness(definition.id, value, readinessContext(room)),
     preloadConfig: config.preload,
     preloadGameplay: () => Promise.all([active.preload(), results.preload()]),
   };
@@ -149,13 +158,11 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./guess-from-stats/ConfigPanel'), 'GuessFromStatsConfigPanel'),
   active: component(() => import('../room/GuessFromStatsGame'), 'GuessFromStatsGame'),
   results: component(() => import('../room/GuessFromStatsResults'), 'GuessFromStatsResults'),
-  validateConfig: validateGuessFromStatsConfig,
 })).register(clientModule({
   id: 'zoomed-pokemon',
   config: component(() => import('./zoomed-pokemon/ConfigPanel'), 'ZoomedPokemonConfigPanel'),
   active: component(() => import('../room/ZoomedPokemonGame'), 'ZoomedPokemonGame'),
   results: component(() => import('../room/ZoomedPokemonResults'), 'ZoomedPokemonResults'),
-  validateConfig: validateZoomedPokemonConfig,
 })).register(clientModule({
   id: 'poke-taboo',
   config: component(() => import('./poke-taboo/ConfigPanel'), 'PokeTabooConfigPanel'),

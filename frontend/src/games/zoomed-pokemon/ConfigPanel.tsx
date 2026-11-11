@@ -4,7 +4,6 @@ import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
-export { validateZoomedPokemonConfig } from './validation';
 
 const IMAGE_LABEL = 'Imagen';
 const HINT_KINDS_LABEL = 'Qué pistas salen';

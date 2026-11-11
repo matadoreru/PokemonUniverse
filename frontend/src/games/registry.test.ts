@@ -1,6 +1,7 @@
 import { defaultPokemonBingoConfig, type RoomMemberView, type RoomView } from '@pokemon-universe/shared/public';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { clientGameRegistry } from './registry';
+import { clientGameRegistry, webConfigChecks } from './registry';
 
 function member(id: string, presence: RoomMemberView['presence'] = 'CONNECTED'): RoomMemberView {
   return {
@@ -99,10 +100,18 @@ describe('client minigame registry', () => {
       }
     });
 
+    it('ningún juego con regla de preparación en el servidor tiene además comprobación propia en la web', () => {
+      // Los casos que graba GameConfigReadinessTest: un juego con algún mensaje tiene regla en Java y en shared.
+      const cases = JSON.parse(readFileSync(new URL('../../../backend/src/test/resources/web-contracts/readiness-cases.json', import.meta.url), 'utf8')) as { gameId: string; message: string | null }[];
+      const ruled = new Set(cases.filter(({ message }) => message !== null).map(({ gameId }) => gameId));
+      expect(ruled.size).toBeGreaterThan(0);
+      expect(Object.keys(webConfigChecks).filter((gameId) => ruled.has(gameId))).toEqual([]);
+      for (const gameId of Object.keys(webConfigChecks)) expect(() => clientGameRegistry.get(gameId)).not.toThrow();
+    });
+
     it('mantiene las comprobaciones propias de la web', () => {
       expect(validate('zoomed-pokemon', { generations: [] })).toBe('Selecciona al menos una generación.');
       expect(validate('type-chain', {})).toBeNull();
     });
   });
 });
-

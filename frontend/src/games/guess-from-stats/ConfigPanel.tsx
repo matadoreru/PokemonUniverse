@@ -4,7 +4,6 @@ import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Chip, Toggle } from '../../ui';
 import s from './ConfigPanel.module.css';
-export { validateGuessFromStatsConfig } from './validation';
 
 const STATS_LABEL = 'Stats mostradas';
 const HINT_KINDS_LABEL = 'Qué pistas salen';

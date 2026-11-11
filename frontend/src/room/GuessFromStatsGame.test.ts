@@ -2,7 +2,8 @@ import { defaultGuessFromStatsConfig, type GuessFromStatsPlayerState, type Guess
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { GuessFromStatsConfigPanel, validateGuessFromStatsConfig } from '../games/guess-from-stats/ConfigPanel';
+import { GuessFromStatsConfigPanel } from '../games/guess-from-stats/ConfigPanel';
+import { validateGuessFromStatsConfig } from '../games/guess-from-stats/validation';
 import { describeStatsHint, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
 import { GuessFromStatsGame } from './GuessFromStatsGame';
 import { GuessFromStatsResults } from './GuessFromStatsResults';

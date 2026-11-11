@@ -207,11 +207,13 @@ class GameConfigReadinessTest {
     cases.add("pokemon-bingo", object("families", object("typeCount", true, "hp", "yes"), "width", 6, "height", 6));
 
     // Pokémon Impostor: más inocentes que impostores, solo con jugadores conectados.
-    for (int players : List.of(0, 3, 4, 5)) {
+    for (int players : List.of(0, 1, 2, 3, 4, 5)) {
       for (int impostors : List.of(1, 2, 3)) {
         cases.add("pokemon-impostor", object("impostorCount", impostors), 0, 0, players);
       }
     }
+    cases.add("pokemon-impostor", object("impostorCount", 1.5), 0, 0, 3);
+    cases.add("pokemon-impostor", object("impostorCount", 1.5), 0, 0, 4);
     cases.add("pokemon-impostor", object("impostorCount", "2"), 0, 0, 4);
     cases.add("pokemon-impostor", object("impostorCount", null), 0, 0, 4);
     cases.add("pokemon-impostor", object(), 0, 0, 4);
