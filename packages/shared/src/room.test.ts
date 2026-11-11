@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPendingReadyNames, gameSelectionModeSchema, hasRoomPermission, isSessionComplete, ROOM_PERMISSIONS } from './room.js';
+import { formatPendingReadyNames, hasRoomPermission, isSessionComplete, ROOM_PERMISSIONS } from './room.js';
 
 describe('room permissions', () => {
   it('gives the Host every room permission', () => {
@@ -26,18 +26,6 @@ describe('room permissions', () => {
 
   it('keeps Members read-only', () => {
     expect(ROOM_PERMISSIONS.some((permission) => hasRoomPermission('MEMBER', permission))).toBe(false);
-  });
-});
-
-describe('game selection mode', () => {
-  it('keeps the ordered list of unique games in every mode, possibly empty', () => {
-    expect(gameSelectionModeSchema.parse({ type: 'ORDER', gameIds: ['two', 'one'] })).toEqual({ type: 'ORDER', gameIds: ['two', 'one'] });
-    expect(gameSelectionModeSchema.parse({ type: 'RANDOM', gameIds: ['one'] })).toEqual({ type: 'RANDOM', gameIds: ['one'] });
-    expect(gameSelectionModeSchema.parse({ type: 'VOTE', gameIds: ['one', 'two'] })).toEqual({ type: 'VOTE', gameIds: ['one', 'two'] });
-    // La lista puede quedar vacía en el lobby (empezar lo impide); los repetidos se siguen rechazando.
-    expect(gameSelectionModeSchema.parse({ type: 'ORDER', gameIds: [] })).toEqual({ type: 'ORDER', gameIds: [] });
-    expect(gameSelectionModeSchema.safeParse({ type: 'VOTE', gameIds: ['one', 'two', 'two'] }).success).toBe(false);
-    expect(gameSelectionModeSchema.safeParse({ type: 'FIXED' }).success).toBe(false);
   });
 });
 

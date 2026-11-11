@@ -133,8 +133,6 @@ export type SetGameSkipVoteRequest = z.infer<typeof setGameSkipVoteRequestSchema
 export const gameActionRequestSchema = z.object({ gameInstanceId: z.string().uuid(), actionEpoch: z.string().min(1).max(512), action: z.unknown() }).strict();
 export type GameActionRequest = z.infer<typeof gameActionRequestSchema>;
 
-export type GameFinishReason = 'COMPLETED' | 'SKIPPED';
-
 /** Public, player-specific projection of the vote attached to the active game runtime. */
 export interface GameSkipStateView {
   gameInstanceId: string;
@@ -186,24 +184,6 @@ export interface RoomView {
   /** Sala del reto diario (un jugador, sin código que compartir); `null` en una sala normal. */
   daily: DailyRoomInfo | null;
 }
-
-export const roomCodeSchema = z.string().trim().toUpperCase().regex(/^[A-Z2-9]{6}$/);
-export const displayNameSchema = z.string().trim().min(2).max(24).regex(/^[\p{L}\p{N}_ -]+$/u);
-export const sessionModeSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('INFINITE') }),
-  z.object({ type: z.literal('GAME_COUNT'), target: z.number().int().min(1).max(100) }),
-  z.object({ type: z.literal('POINT_TARGET'), target: z.number().int().min(5).max(10000) }),
-]);
-
-// La selección y el modo se editan en pestañas distintas: cambiar de modo conserva la lista y ningún modo exige más de un
-// juego. La lista puede quedar vacía en el lobby: empezar exige un juego (y lo que depende de los jugadores conectados
-// se comprueba también al empezar).
-const selectionGameIdsSchema = z.array(z.string().min(1)).refine((ids) => new Set(ids).size === ids.length, 'Los minijuegos no pueden repetirse.');
-export const gameSelectionModeSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('ORDER'), gameIds: selectionGameIdsSchema }),
-  z.object({ type: z.literal('RANDOM'), gameIds: selectionGameIdsSchema }),
-  z.object({ type: z.literal('VOTE'), gameIds: selectionGameIdsSchema }),
-]);
 
 export interface ClientToServerEvents {
   /** La conexión entra en la sesión de sala (`/play` y `/room`): solo una conexión enganchada ocupa el asiento. */

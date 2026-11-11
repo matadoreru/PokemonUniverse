@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { avatarRefSchema, DEFAULT_AVATAR } from './avatar.js';
+import { avatarRefSchema } from './avatar.js';
 
 describe('avatar definitions', () => {
-  it('provides a safe default and accepts uploaded avatars', () => {
-    expect(avatarRefSchema.parse(DEFAULT_AVATAR)).toEqual({ type: 'DEFAULT' });
+  it('accepts the default and uploaded avatars', () => {
+    expect(avatarRefSchema.parse({ type: 'DEFAULT' })).toEqual({ type: 'DEFAULT' });
     const custom = { type: 'CUSTOM', value: '0123456789abcdef0123456789abcdef0123.webp', version: 2 };
     expect(avatarRefSchema.parse(custom)).toEqual(custom);
   });

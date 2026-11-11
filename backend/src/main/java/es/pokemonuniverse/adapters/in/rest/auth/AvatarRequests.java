@@ -33,8 +33,9 @@ final class AvatarRequests {
   }
 
   /**
-   * {@code displayNameSchema = z.string().trim().min(2).max(24).regex(...)} sobre {@code req.query.displayName}: sin
-   * valor es {@code undefined} y repetido es un array (qs). Las comprobaciones de cadena se acumulan como en Zod.
+   * {@code displayNameSchema = z.string().trim().min(2).max(24).regex(...)} (antes en {@code shared/room.ts}) sobre
+   * {@code req.query.displayName}: sin valor es {@code undefined} y repetido es un array (qs). Las comprobaciones de
+   * cadena se acumulan como en Zod.
    */
   static String displayName(List<String> values) {
     var issues = new ZodIssues();
