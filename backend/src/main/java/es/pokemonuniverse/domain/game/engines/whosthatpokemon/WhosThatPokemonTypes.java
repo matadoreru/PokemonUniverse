@@ -85,7 +85,7 @@ public final class WhosThatPokemonTypes {
   public record WhosThatPokemonAttempt(String playerId, WhosThatPokemonPokemonSummary guessedPokemon,
       long attemptedAt) {}
 
-  /** {@code WhoPokemonScore} de {@code rules.ts}. */
+  /** {@code WhoPokemonScore}, antes en {@code rules.ts}. */
   public record WhoPokemonScore(int speedPoints, int placementBonus, int totalPoints) {}
 
   /**

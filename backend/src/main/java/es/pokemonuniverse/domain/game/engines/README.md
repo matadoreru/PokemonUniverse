@@ -24,9 +24,10 @@ proyección, el orden de claves del cable y los mensajes de error. Un cambio de 
   el issue va en la raíz) sin punto final. Un helper local solo se justifica si su mensaje difiere del común, y se
   comenta por qué; sus fallos de tipo usan `config.reject(clave, detalle)` y siguen con un valor centinela, para que
   `GameEngine.configIssues` (la migración de configuraciones guardadas) los recoja todos con su ruta.
-- `<Juego>Types`: los records de `types.ts` con los mismos nombres, más la acción con su `parse(JsonNode)`, que es
-  estricto si el esquema TS lo es.
-- `<Juego>Rules`: el port de `rules.ts`.
+- `<Juego>Types`: los records del estado, de las proyecciones y de la acción, con su `parse(JsonNode)`. El estado de
+  servidor y las acciones solo existen aquí; las proyecciones (`*PublicState`, `*PlayerState`) llevan los mismos
+  nombres que sus tipos TS en `packages/shared/src/games/<id>/types.ts`.
+- `<Juego>Rules`: las reglas puras del juego (puntuación, pistas, resultados).
 - `<Juego>Engine`: el port de `server.ts`. Recibe en el constructor el `GameManifest` de `games/registry.json`; el
   manifiesto no se duplica a mano.
 - Las condiciones de `pokemon/conditions/*` (tipos, reglas y generador) están en `domain/pokemon/conditions/`, que
@@ -105,8 +106,8 @@ Cada fixture guarda una entrada (jugadores, `seed`, `now`, configuración, conte
    `src/test/resources/golden/`: es el cambio de comportamiento, y tiene que ser solo el que buscabas. Sin `-Dupdate`,
    `GoldenReplayTest` compara y falla en el primer desajuste con su ruta JSON. Un desajuste que no esperabas es un
    fallo del motor, no de la fixture. Si cambia la configuración, cambia también su esquema Zod en
-   `packages/shared/src/games/<id>/config.ts`: el frontend valida con él, y `config-cases.test.ts` exige que acepte y
-   normalice lo mismo que graba `config-cases.json`.
+   `packages/shared/src/games/<id>/config.ts`, del que la web saca sus tipos (Guess From Stats valida además con él);
+   `config-cases.test.ts` exige que acepte y normalice lo mismo que graba `config-cases.json`.
 2. **Añadir un escenario.** Escribe a mano `golden/<id>/<escenario>.json` con `engineId`, `scenario`, `seed`,
    `catalog` (`gen1-2`), `players`, `config` y `steps` (copia uno existente del mismo motor), sin `expected`, y
    grábalo con el comando del paso 1. Cada escenario necesita como mínimo 3 rondas, un `seed` distinto y un `now`
@@ -128,7 +129,10 @@ Cada fixture guarda una entrada (jugadores, `seed`, `now`, configuración, conte
    `adapters/out/resources/ClasspathGameRegistryLoader.java`, con
    `engines.put(<Juego>Engine.ID, new <Juego>Engine(manifest(manifests, <Juego>Engine.ID)))`. Su manifiesto y su
    configuración por defecto se escriben a mano en `src/main/resources/games/registry.json`, la fuente de los dos;
-   la `default<Juego>Config` de `packages/shared` tiene que coincidir (lo comprueba `registry-defaults.test.ts`).
+   la `default<Juego>Config` de `packages/shared` tiene que coincidir (lo comprueba `registry-defaults.test.ts`). En
+   `packages/shared/src/games/<id>/` van solo `config.ts` (esquema Zod y configuración por defecto), en `types.ts` las
+   proyecciones que lee la web y lo que referencian, y las constantes o textos que muestre la pantalla; ni estado de
+   servidor, ni acciones, ni reglas.
    Escribe sus escenarios como en el paso 2 y grábalos. `GoldenReplayTest` los recoge solo y
    `GoldenRegistryConsistencyTest` exige que todo motor registrado tenga fixtures y viceversa. Todo en el mismo commit.
 4. Termina con `./gradlew check` y, en la raíz, con `npm run lint && npm test`.

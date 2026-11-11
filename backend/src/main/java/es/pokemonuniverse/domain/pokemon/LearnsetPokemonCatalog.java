@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Catálogo con movimientos por nivel y evolución ({@code LearnsetPokemonCatalog} de {@code pokemon/types.ts}).
+ * Catálogo con movimientos por nivel y evolución ({@code LearnsetPokemonCatalog}, antes en {@code pokemon/types.ts}).
  * {@code isLearnsetPokemonCatalog(catalog)} de TS es {@code catalog instanceof LearnsetPokemonCatalog}.
  */
 public interface LearnsetPokemonCatalog extends PokemonCatalog {

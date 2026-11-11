@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Traducción literal de {@code secret-ranking/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code secret-ranking/rules.ts}. */
 public final class SecretRankingRules {
 
   private SecretRankingRules() {}

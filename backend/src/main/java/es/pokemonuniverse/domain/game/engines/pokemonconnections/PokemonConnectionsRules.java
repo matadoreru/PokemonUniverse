@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-connections/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-connections/rules.ts}. */
 public final class PokemonConnectionsRules {
 
   /** {@code CONNECTIONS_COMPLETION_BONUSES}: bonificación del primero, segundo y tercero en completar. */

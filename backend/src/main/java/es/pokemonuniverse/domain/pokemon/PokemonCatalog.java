@@ -3,7 +3,7 @@ package es.pokemonuniverse.domain.pokemon;
 import java.util.List;
 import java.util.Optional;
 
-/** Catálogo de Pokémon que ven los motores ({@code PokemonCatalog} de {@code pokemon/types.ts}). */
+/** Catálogo de Pokémon que ven los motores ({@code PokemonCatalog}, antes en {@code pokemon/types.ts}). */
 public interface PokemonCatalog {
 
   List<Pokemon> all();

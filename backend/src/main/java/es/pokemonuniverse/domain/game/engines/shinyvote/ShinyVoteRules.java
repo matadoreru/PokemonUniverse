@@ -9,7 +9,7 @@ import es.pokemonuniverse.domain.game.engines.shinyvote.ShinyVoteTypes.ShinyVote
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 
-/** Traducción literal de {@code shiny-vote/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code shiny-vote/rules.ts}. */
 public final class ShinyVoteRules {
 
   /** {@code SHINY_ORDER_BONUSES}. */

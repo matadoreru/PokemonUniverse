@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Motor de un minijuego: traducción literal de {@code MiniGameModule} de {@code contracts.ts}. Es puro y determinista;
+ * Motor de un minijuego: traducción literal de {@code MiniGameModule}, antes en {@code contracts.ts}. Es puro y determinista;
  * el tiempo y el azar llegan solo por {@link GameContext}.
  *
  * <p>La entrada cruda ({@link #parseConfig}, {@link #parseAction}) llega como {@link JsonNode} de

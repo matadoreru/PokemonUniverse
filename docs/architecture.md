@@ -2,7 +2,7 @@
 
 The repository is split into three boundaries (the Java backend is described in its own section below):
 
-- `packages/shared`: transport schemas, public and per-player projection types, default configs, presentation rules and scoring for the browser. It has no engines and depends only on `zod`.
+- `packages/shared`: config schemas, public and per-player projection types, default configs and presentation helpers for the browser. It has no engines and depends only on `zod`.
 - `backend`: the Java server, the only server and the only place with game engines. It serves the whole HTTP API, hosts rooms over the `/ws` WebSocket with all 31 engines, runs data-sync and owns the schema (Flyway). The coordinator sends intentions to a registered game module and publishes only its public projection.
 - `frontend`: React screens and presentation. It never decides deadlines, winners, eliminations or whether a selection wins a race.
 

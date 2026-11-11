@@ -10,7 +10,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Predicate;
 
 /**
- * Contexto de una llamada a un motor ({@code GameContext} de {@code contracts.ts}). {@code now} en ms epoch y
+ * Contexto de una llamada a un motor ({@code GameContext}, antes en {@code contracts.ts}). {@code now} en ms epoch y
  * {@code random} en [0, 1) son las únicas fuentes de tiempo y azar; ambos, {@code pokemon} y {@code players}, son
  * obligatorios. Las listas del host nunca son nulas (el {@code ?? []} de los motores TS).
  */

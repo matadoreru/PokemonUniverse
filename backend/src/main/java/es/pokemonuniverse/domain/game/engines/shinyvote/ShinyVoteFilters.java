@@ -4,7 +4,7 @@ import es.pokemonuniverse.domain.game.engine.AssetResolution.Recolor;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal de {@code shiny-vote/filters.ts}. */
+/** Traducción literal del TS que antes estaba en {@code shiny-vote/filters.ts}. */
 public final class ShinyVoteFilters {
 
   /** {@code FAKE_SHINY_SPRITE_PROBABILITY}: algunos señuelos parten de la paleta shiny oficial antes de recolorearse. */

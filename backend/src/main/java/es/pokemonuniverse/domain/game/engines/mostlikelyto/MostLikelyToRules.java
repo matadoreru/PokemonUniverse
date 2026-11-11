@@ -8,7 +8,7 @@ import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.Mos
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToStats;
 import java.util.Comparator;
 
-/** Traducción literal de {@code most-likely-to/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code most-likely-to/rules.ts}. */
 public final class MostLikelyToRules {
 
   /** {@code MOST_LIKELY_TO_WIN_POINTS}. */

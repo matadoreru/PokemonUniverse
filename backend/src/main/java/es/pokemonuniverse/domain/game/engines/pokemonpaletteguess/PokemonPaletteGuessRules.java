@@ -10,7 +10,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonpaletteguess.PokemonPalette
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 
-/** Traducción literal de {@code pokemon-palette-guess/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-palette-guess/rules.ts}. */
 public final class PokemonPaletteGuessRules {
 
   /** {@code PODIUM_BONUSES}. */

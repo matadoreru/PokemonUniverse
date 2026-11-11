@@ -77,7 +77,7 @@ public final class PokemonTeamAuctionTypes {
   public record TeamAuctionPlayerStats(int lotsWon, int pokemonWon, int bstTotal, int coinsRemaining,
       int legendaryCount, int mythicalCount, int unownedLots) {
 
-    /** {@code participantStats(participant, lotsWon, unownedLots)} de {@code rules.ts}. */
+    /** {@code participantStats(participant, lotsWon, unownedLots)}, antes en {@code rules.ts}. */
     static TeamAuctionPlayerStats of(TeamAuctionParticipant participant, int lotsWon, int unownedLots) {
       int bstTotal = 0;
       int legendaryCount = 0;

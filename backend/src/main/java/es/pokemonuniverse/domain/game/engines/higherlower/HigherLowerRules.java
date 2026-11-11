@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal de {@code higher-lower/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code higher-lower/rules.ts}. */
 public final class HigherLowerRules {
 
   /** {@code HIGHER_LOWER_POINTS}. */

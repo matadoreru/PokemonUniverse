@@ -33,7 +33,7 @@ import java.util.function.Predicate;
  */
 public final class PokemonConnectionsCatalog {
 
-  /** {@code POKEMON_TYPES} de {@code pokemon/types.ts}, en su orden, con su etiqueta de {@code typeLabels}. */
+  /** {@code POKEMON_TYPES} de {@code pokemon/types.ts}, en su orden, con su etiqueta de {@code POKEMON_TYPE_LABELS} ({@code pokemon/labels.ts}). */
   private static final Map<String, String> TYPE_LABELS = orderedLabels(
       "normal", "Normal", "fire", "Fuego", "water", "Agua", "electric", "Eléctrico", "grass", "Planta",
       "ice", "Hielo", "fighting", "Lucha", "poison", "Veneno", "ground", "Tierra", "flying", "Volador",

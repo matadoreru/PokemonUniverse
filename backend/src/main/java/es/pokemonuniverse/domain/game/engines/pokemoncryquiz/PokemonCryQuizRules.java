@@ -9,7 +9,7 @@ import es.pokemonuniverse.domain.game.engines.pokemoncryquiz.PokemonCryQuizTypes
 import es.pokemonuniverse.domain.game.engines.pokemoncryquiz.PokemonCryQuizTypes.PokemonCryScore;
 import java.util.Comparator;
 
-/** Traducción literal de {@code pokemon-cry-quiz/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-cry-quiz/rules.ts}. */
 public final class PokemonCryQuizRules {
 
   /** {@code POKEMON_CRY_PODIUM_BONUSES}. */

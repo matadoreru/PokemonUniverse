@@ -236,7 +236,7 @@ public class PokemonCatalogSeeder {
 
   // --- Transformación --------------------------------------------------------------------------------------------
 
-  /** {@code isSupportedRegionalFormId} de {@code shared/pokemon/types.ts}. */
+  /** {@code isSupportedRegionalFormId}, antes en {@code shared/pokemon/types.ts}. */
   static boolean isSupportedRegionalFormId(String id) {
     if (TOTEM.matcher(id).find()) return false;
     return REGIONAL.matcher(id).find() || TAUROS.matcher(id).find() || id.equals("darmanitan-galar-standard")

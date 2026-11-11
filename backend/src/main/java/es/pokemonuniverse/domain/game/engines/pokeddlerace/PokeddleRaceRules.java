@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
-/** Reglas de Pokédle Race (origen: {@code pokeddle-race/rules.ts}; la etapa evolutiva ya no es traducción literal). */
+/** Reglas de Pokédle Race (antes en {@code pokeddle-race/rules.ts}; la etapa evolutiva ya no es traducción literal). */
 public final class PokeddleRaceRules {
 
   private PokeddleRaceRules() {}

@@ -9,7 +9,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonbluffauction.PokemonBluffAu
 import java.util.Comparator;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-bluff-auction/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-bluff-auction/rules.ts}. */
 public final class PokemonBluffAuctionRules {
 
   public static final int BLUFF_BIDDER_SUCCESS_POINTS = 5;

@@ -8,7 +8,7 @@ import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherTypes
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherTypes.WouldYouRatherStats;
 import java.util.Comparator;
 
-/** Traducción literal de {@code would-you-rather/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code would-you-rather/rules.ts}. */
 public final class WouldYouRatherRules {
 
   /** {@code WOULD_YOU_RATHER_MAJORITY_POINTS}. */

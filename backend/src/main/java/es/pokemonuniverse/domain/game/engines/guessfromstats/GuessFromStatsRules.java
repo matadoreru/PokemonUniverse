@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
-/** Traducción literal de {@code guess-from-stats/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code guess-from-stats/rules.ts}. */
 public final class GuessFromStatsRules {
 
   /** {@code statOrder}: claves de TS en el orden en que se muestran. */

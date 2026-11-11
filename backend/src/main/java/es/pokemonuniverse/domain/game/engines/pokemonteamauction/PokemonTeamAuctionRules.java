@@ -10,7 +10,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonteamauction.PokemonTeamAuct
 import java.util.Comparator;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-team-auction/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-team-auction/rules.ts}. */
 public final class PokemonTeamAuctionRules {
 
   private PokemonTeamAuctionRules() {}

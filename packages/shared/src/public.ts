@@ -1,4 +1,4 @@
-/** Browser-safe contracts and presentation helpers; authoritative engines are excluded. */
+/** Única entrada del paquete: esquemas de config, proyecciones y ayudas de presentación para el navegador. */
 export * from './auth.js';
 export * from './admin.js';
 export * from './avatar.js';

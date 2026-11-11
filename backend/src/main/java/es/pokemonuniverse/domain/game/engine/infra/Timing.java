@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-/** Traducción literal de {@code games/infrastructure/timing.ts}. */
+/** Traducción literal del TS que antes estaba en {@code games/infrastructure/timing.ts}. */
 public final class Timing {
 
   private Timing() {}

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal de {@code pokedex-entry-guess/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokedex-entry-guess/rules.ts}. */
 public final class PokedexEntryGuessRules {
 
   private PokedexEntryGuessRules() {}

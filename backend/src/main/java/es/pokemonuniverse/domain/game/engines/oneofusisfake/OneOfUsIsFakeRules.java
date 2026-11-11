@@ -8,7 +8,7 @@ import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.O
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.OneOfUsIsFakeStats;
 import java.util.Comparator;
 
-/** Traducción literal de {@code one-of-us-is-fake/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code one-of-us-is-fake/rules.ts}. */
 public final class OneOfUsIsFakeRules {
 
   /** {@code NORMAL_ROUND_POINTS}. */

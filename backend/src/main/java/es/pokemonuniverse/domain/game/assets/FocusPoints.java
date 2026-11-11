@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.Optional;
 
 /**
- * Port literal de {@code alphaBounds}, {@code localAlphaDensity} y {@code validFocusPoint} de
- * {@code packages/shared/src/games/zoomed-pokemon/rules.ts}: el punto de foco de una ronda debe coincidir con el TS.
+ * Port literal de {@code alphaBounds}, {@code localAlphaDensity} y {@code validFocusPoint}, antes en
+ * {@code packages/shared/src/games/zoomed-pokemon/rules.ts}: elige el punto de foco de cada ronda.
  */
 public final class FocusPoints {
 

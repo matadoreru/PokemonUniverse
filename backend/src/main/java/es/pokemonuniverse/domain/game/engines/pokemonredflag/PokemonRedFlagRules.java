@@ -8,7 +8,7 @@ import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes
 import es.pokemonuniverse.domain.game.engines.pokemonredflag.PokemonRedFlagTypes.PokemonRedFlagStats;
 import java.util.Comparator;
 
-/** Traducción literal de {@code pokemon-red-flag/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-red-flag/rules.ts}. */
 public final class PokemonRedFlagRules {
 
   /** {@code POKEMON_RED_FLAG_WIN_POINTS}. */

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-/** Traducción literal de {@code games/infrastructure/runoff-voting.ts}. */
+/** Traducción literal del TS que antes estaba en {@code games/infrastructure/runoff-voting.ts}. */
 public final class RunoffVoting {
 
   /** Ronda de desempate congelada: copias de candidatos y papeletas. */

@@ -4,9 +4,10 @@ import type { z } from 'zod';
 import * as contracts from '../public.js';
 
 /**
- * El backend valida las configuraciones con su propio `parse`, y el frontend con los esquemas Zod de este paquete.
- * `config-cases.json` de cada motor (`backend/src/test/resources/golden/<id>/`) graba lo que acepta Java y cómo lo
- * normaliza; el esquema Zod tiene que dar lo mismo.
+ * El backend valida las configuraciones con su propio `parse`; la web saca sus tipos de los esquemas Zod de este
+ * paquete (y Guess From Stats valida con el suyo). `config-cases.json` de cada motor
+ * (`backend/src/test/resources/golden/<id>/`) graba lo que acepta Java y cómo lo normaliza; el esquema Zod tiene que
+ * dar lo mismo.
  */
 const golden = new URL('../../../../backend/src/test/resources/golden/', import.meta.url);
 const ids = readdirSync(golden, { withFileTypes: true }).filter((entry) => entry.isDirectory() && entry.name !== 'catalog').map((entry) => entry.name).sort();

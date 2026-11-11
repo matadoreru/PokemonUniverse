@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-/** Traducción literal de {@code packages/shared/src/scoring.ts}. */
+/** Traducción literal del TS que antes estaba en {@code packages/shared/src/scoring.ts}. */
 public final class Scoring {
 
   /** V1: el orden lo dan las clasificaciones de cada juego; sus unidades nunca entran en los totales de sesión. */

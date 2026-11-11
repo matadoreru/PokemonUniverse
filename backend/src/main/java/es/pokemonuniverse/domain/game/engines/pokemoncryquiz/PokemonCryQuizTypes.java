@@ -50,7 +50,7 @@ public final class PokemonCryQuizTypes {
   public record PokemonCryQuizAttempt(String playerId, PokemonCryQuizPokemonSummary guessedPokemon,
       long attemptedAt) {}
 
-  /** Resultado de {@code pokemonCryScore} de {@code rules.ts}. */
+  /** Resultado de {@code pokemonCryScore}, antes en {@code rules.ts}. */
   public record PokemonCryScore(int speedPoints, int placementBonus, int totalPoints) {}
 
   /**

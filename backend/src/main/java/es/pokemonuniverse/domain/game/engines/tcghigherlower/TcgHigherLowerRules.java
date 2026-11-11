@@ -8,7 +8,7 @@ import es.pokemonuniverse.domain.game.engines.tcghigherlower.TcgHigherLowerTypes
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 
-/** Traducción literal de {@code tcg-higher-lower/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code tcg-higher-lower/rules.ts}. */
 public final class TcgHigherLowerRules {
 
   private TcgHigherLowerRules() {}
