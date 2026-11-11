@@ -9,14 +9,13 @@
   min-width: 0;
 }
 .tray {
+  composes: cream from '../ui/surfaces.module.css';
   min-width: 0;
   padding: var(--sp-2);
   border: var(--ol-2-5) solid var(--navy);
   border-radius: var(--r-card);
   background: var(--cream-2);
   color: var(--ink);
-  --focus-ring: var(--navy);
-  --focus-ring-on-yellow: var(--navy);
 }
 .grid {
   display: grid;

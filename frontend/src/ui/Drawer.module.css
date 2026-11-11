@@ -1,5 +1,6 @@
 /* Panel lateral (spec §2): `<dialog>` nativo pegado al borde derecho; a pantalla completa por debajo de `sm`. */
 .drawer {
+  composes: cream from './surfaces.module.css';
   margin: 0;
   padding: 0;
   max-width: none;
@@ -10,10 +11,6 @@
   border-left: var(--ol-3) solid var(--navy);
   background: var(--cream);
   color: var(--ink);
-  color-scheme: light;
-  --caret: var(--blue-d);
-  --focus-ring: var(--navy);
-  --focus-ring-on-yellow: var(--navy);
   box-shadow: var(--sh-dialog);
   overflow: hidden;
 }

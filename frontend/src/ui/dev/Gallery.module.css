@@ -63,12 +63,10 @@
   display: block;
 }
 .cream {
+  composes: cream from '../surfaces.module.css';
   border-radius: var(--r-panel);
   background: var(--cream);
   color: var(--ink);
-  /* Como en toda superficie crema: anillo de foco azul noche. */
-  --focus-ring: var(--navy);
-  --focus-ring-on-yellow: var(--navy);
 }
 .cream > * {
   flex: 1 1 100%;

@@ -134,22 +134,33 @@ describe('sin alias heredados (§11, F9)', () => {
     expect(tailwind.theme.extend).not.toHaveProperty('boxShadow');
   });
   /*
-   * Cada superficie crema del catálogo fija su propia tinta: sin `.on-cream`, el texto de diálogos, paneles crema,
-   * pestañas y campos sigue en --ink, con anillo de foco azul noche y controles nativos en claro.
+   * Cada superficie crema compone `cream` de `ui/surfaces.module.css` (sin `.on-cream`): anillo de foco azul noche,
+   * cursor azul oscuro y controles nativos en claro. El texto de diálogos, paneles crema, pestañas y campos va en --ink.
    */
-  it.each([
-    ['Panel.module.css', '.cream'],
-    ['Dialog.module.css', '.dialog'],
-    ['Tabs.module.css', '.panel'],
-    ['Field.module.css', '.field'],
-  ])('%s %s: tinta, foco y esquema de color propios del crema', (file, selector) => {
-    const source = readFileSync(path.join(here, '..', 'ui', file), 'utf8');
-    const block = source.match(new RegExp(`\\n\\${selector}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
-    expect(block).toMatch(/\bcolor:\s*var\(--ink\);/);
+  it('surfaces.module.css .cream: foco, cursor y esquema de color del crema', () => {
+    const source = readFileSync(path.join(here, '..', 'ui', 'surfaces.module.css'), 'utf8');
+    const block = source.match(/\n\.cream\s*\{([^}]*)\}/)?.[1] ?? '';
     expect(block).toMatch(/--focus-ring:\s*var\(--navy\);/);
     expect(block).toMatch(/--focus-ring-on-yellow:\s*var\(--navy\);/);
     expect(block).toMatch(/color-scheme:\s*light;/);
     expect(block).toMatch(/--caret:\s*var\(--blue-d\);/);
+  });
+  it.each([
+    ['ui/Panel.module.css', '.cream', true],
+    ['ui/Dialog.module.css', '.dialog', true],
+    ['ui/Tabs.module.css', '.panel', true],
+    ['ui/Field.module.css', '.field', true],
+    ['ui/Drawer.module.css', '.drawer', true],
+    ['ui/Card.module.css', '.card', false],
+    ['ui/dev/Gallery.module.css', '.cream', true],
+    ['room/ConfigRange.module.css', '.range', true],
+    ['room/PokemonSelector.module.css', '.tray', true],
+  ])('%s %s compone la superficie crema', (file, selector, ink) => {
+    const source = readFileSync(path.join(here, '..', file), 'utf8');
+    const block = source.match(new RegExp(`(?:^|\\n)\\${selector}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
+    expect(block).toMatch(/composes:\s*cream from '[./]+(ui\/)?surfaces\.module\.css';/);
+    expect(block).not.toMatch(/--focus-ring|--caret|color-scheme/);
+    if (ink) expect(block).toMatch(/\bcolor:\s*var\(--ink\);/);
   });
   it('tinta y foco del crema ≥ 4,5:1 y ≥ 3:1', () => {
     expect(contrast(colors.ink, colors.cream)).toBeGreaterThanOrEqual(4.5);

@@ -59,15 +59,10 @@
   font: 800 var(--fs-13) / 1 var(--font-text);
 }
 .panel {
+  composes: cream from './surfaces.module.css';
   border: var(--ol-3) solid var(--navy);
   border-radius: 0 var(--r-panel) var(--r-panel) var(--r-panel);
   background: var(--cream);
   color: var(--ink);
-  /* Crema (antes `.on-cream`): controles nativos en claro y cursor de texto azul oscuro. */
-  color-scheme: light;
-  --caret: var(--blue-d);
-  /* Sobre crema el anillo amarillo no se ve (1,36:1): azul noche, también sobre la píldora amarilla. */
-  --focus-ring: var(--navy);
-  --focus-ring-on-yellow: var(--navy);
   padding: var(--sp-4);
 }

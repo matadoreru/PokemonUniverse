@@ -4,12 +4,8 @@
  * envoltorio fija la tinta y el anillo de foco azul noche en lugar de heredarlos.
  */
 .field {
+  composes: cream from './surfaces.module.css';
   color: var(--ink);
-  /* Crema (antes `.on-cream`): controles nativos en claro y cursor de texto azul oscuro. */
-  color-scheme: light;
-  --caret: var(--blue-d);
-  --focus-ring: var(--navy);
-  --focus-ring-on-yellow: var(--navy);
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
