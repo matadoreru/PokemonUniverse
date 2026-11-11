@@ -1,5 +1,28 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { playerCountReadinessReason, validateGameConfigReadiness } from './config-readiness.js';
+import { playerCountReadinessReason, validateGameConfigReadiness, type GameConfigReadinessContext } from './config-readiness.js';
+
+/**
+ * Java rechaza empezar y la web avisa en la sala, cada uno con su regla. `web-contracts/readiness-cases.json` lo graba
+ * `GameConfigReadinessTest` (aquí solo se lee): juego, config, contexto y el mensaje de Java o `null`.
+ */
+const cases = JSON.parse(readFileSync(new URL('../../../../backend/src/test/resources/web-contracts/readiness-cases.json', import.meta.url), 'utf8')) as {
+  gameId: string; config: unknown; context: Required<GameConfigReadinessContext>; message: string | null;
+}[];
+
+describe('readiness-cases.json de Java', () => {
+  it('trae casos que pasan y que no pasan de cada juego con regla', () => {
+    const ruled = ['pokeddle-race', 'pokemon-bingo', 'pokemon-impostor', 'one-of-us-is-fake', 'secret-ranking', 'most-likely-to', 'would-you-rather'];
+    for (const gameId of ruled) {
+      const outcomes = cases.filter((entry) => entry.gameId === gameId).map(({ message }) => message === null);
+      expect(new Set(outcomes), gameId).toEqual(new Set([true, false]));
+    }
+  });
+
+  it.each(cases.map((entry, index) => [index, entry.gameId, entry] as const))('caso %i (%s)', (_index, gameId, { config, context, message }) => {
+    expect(validateGameConfigReadiness(gameId, config, context)).toBe(message);
+  });
+});
 
 describe('validateGameConfigReadiness', () => {
   it('rejects impostor parity before start', () => {

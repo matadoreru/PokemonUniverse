@@ -1,0 +1,2434 @@
+[
+  {
+    "gameId": "pokeddle-race",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": "nope",
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": [],
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "type-chain",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "type-chain",
+    "config": {
+      "clues": {},
+      "families": {},
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 2
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "generation": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "dexNumber": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "types": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "typeCount": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "hp": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "attack": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "defense": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "specialAttack": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "specialDefense": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "speed": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "baseStatTotal": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "height": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "weight": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "evolutionStage": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "legendaryStatus": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "color": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "abilities": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "generation": false,
+        "dexNumber": false,
+        "types": false,
+        "typeCount": false,
+        "hp": false,
+        "attack": false,
+        "defense": false,
+        "specialAttack": false,
+        "specialDefense": false,
+        "speed": false,
+        "baseStatTotal": false,
+        "height": false,
+        "weight": false,
+        "evolutionStage": false,
+        "legendaryStatus": false,
+        "color": false,
+        "abilities": false
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {}
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "types": "yes"
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "types": 1
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "types": null
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": {
+        "unknown": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": null
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": [
+        true
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {
+      "clues": "types"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokeddle-race",
+    "config": {},
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una pista."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {},
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": null
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": [
+        true
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {}
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "type": "yes"
+      },
+      "width": 5,
+      "height": 5
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "type": 1
+      },
+      "width": 5,
+      "height": 5
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "type": false,
+        "hp": false
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "Selecciona al menos una familia de condiciones."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 3,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 4,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Generación” para un tablero 4×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 1,
+      "height": 4,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Generación” para un tablero 1×4."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "dexNumber": true
+      },
+      "width": 11,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "dexNumber": true
+      },
+      "width": 12,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Número Pokédex” para un tablero 12×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "dexNumber": true
+      },
+      "width": 1,
+      "height": 12,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Número Pokédex” para un tablero 1×12."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "type": true
+      },
+      "width": 18,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "type": true
+      },
+      "width": 19,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Tipo” para un tablero 19×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "type": true
+      },
+      "width": 1,
+      "height": 19,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Tipo” para un tablero 1×19."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCombination": true
+      },
+      "width": 20,
+      "height": 20
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 2,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 3,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Monotipo / doble tipo” para un tablero 3×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 1,
+      "height": 3,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Monotipo / doble tipo” para un tablero 1×3."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "hp": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "hp": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “HP” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "hp": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “HP” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "attack": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "attack": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Ataque” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "attack": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Ataque” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "defense": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "defense": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Defensa” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "defense": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Defensa” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "specialAttack": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "specialAttack": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “At. Especial” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "specialAttack": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “At. Especial” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "specialDefense": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "specialDefense": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Def. Especial” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "specialDefense": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Def. Especial” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "speed": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "speed": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Velocidad” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "speed": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Velocidad” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "baseStatTotal": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "baseStatTotal": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Total stats” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "baseStatTotal": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Total stats” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "height": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "height": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Altura” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "height": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Altura” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "weight": true
+      },
+      "width": 6,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "weight": true
+      },
+      "width": 7,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Peso” para un tablero 7×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "weight": true
+      },
+      "width": 1,
+      "height": 7,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Peso” para un tablero 1×7."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "evolutionStage": true
+      },
+      "width": 4,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "evolutionStage": true
+      },
+      "width": 5,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Estado evolutivo” para un tablero 5×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "evolutionStage": true
+      },
+      "width": 1,
+      "height": 5,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Estado evolutivo” para un tablero 1×5."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "legendaryStatus": true
+      },
+      "width": 3,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "legendaryStatus": true
+      },
+      "width": 4,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Legendario / Mítico” para un tablero 4×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "legendaryStatus": true
+      },
+      "width": 1,
+      "height": 4,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Legendario / Mítico” para un tablero 1×4."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "color": true
+      },
+      "width": 10,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "color": true
+      },
+      "width": 11,
+      "height": 1,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Color oficial” para un tablero 11×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "color": true
+      },
+      "width": 1,
+      "height": 11,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Color oficial” para un tablero 1×11."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "abilities": true
+      },
+      "width": 20,
+      "height": 20
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 2,
+      "height": 2,
+      "generations": [
+        1,
+        2,
+        3
+      ]
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Generación” para un tablero 2×2."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 1,
+      "height": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Generación” para un tablero 1×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 1,
+      "height": 1,
+      "generations": "1"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Generación” para un tablero 1×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "generation": true
+      },
+      "width": 1,
+      "height": 1,
+      "generations": []
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Generación” para un tablero 1×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 2.5,
+      "height": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Monotipo / doble tipo” para un tablero 2.5×1."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 2,
+      "height": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Monotipo / doble tipo” para un tablero 2×2."
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      }
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 0,
+      "height": 5
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": -2,
+      "height": -2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": "5",
+      "height": 5
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true
+      },
+      "width": 5,
+      "height": null
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true,
+        "hp": true
+      },
+      "width": 6,
+      "height": 6
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-bingo",
+    "config": {
+      "families": {
+        "typeCount": true,
+        "hp": "yes"
+      },
+      "width": 6,
+      "height": 6
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "No hay suficientes condiciones distintas de “Monotipo / doble tipo” para un tablero 6×6."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 3
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 3
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 3
+    },
+    "message": "Demasiados impostores: con 3 jugadores el máximo es 1."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 3
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 3
+    },
+    "message": "Demasiados impostores: con 3 jugadores el máximo es 1."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": "Demasiados impostores: con 4 jugadores el máximo es 1."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 3
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": "Demasiados impostores: con 4 jugadores el máximo es 1."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 5
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 5
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": 3
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 5
+    },
+    "message": "Demasiados impostores: con 5 jugadores el máximo es 2."
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": "2"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {
+      "impostorCount": null
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": {},
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokemon-impostor",
+    "config": null,
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
+  },
+  {
+    "gameId": "pokedex-distance",
+    "config": {
+      "impostorCount": 2
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 4
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 5,
+      "playerCount": 0
+    },
+    "message": "El host necesita al menos 2 categorías personales activas; ahora hay 0."
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 1,
+      "hostWouldYouRatherPromptCount": 5,
+      "playerCount": 0
+    },
+    "message": "El host necesita al menos 2 categorías personales activas; ahora hay 1."
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 2,
+      "hostWouldYouRatherPromptCount": 5,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 3,
+      "hostWouldYouRatherPromptCount": 5,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": "MIXED"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": "custom"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "categorySource": 1
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "one-of-us-is-fake",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 5,
+      "playerCount": 0
+    },
+    "message": "El host necesita al menos una pregunta personal activa para usar solo preguntas personalizadas."
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 1,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": {
+      "promptSource": "MIXED"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": {
+      "promptSource": true
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "secret-ranking",
+    "config": {
+      "categorySource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 5,
+      "playerCount": 0
+    },
+    "message": "El host necesita al menos una pregunta personal activa para usar solo preguntas personalizadas."
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 1,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": {
+      "promptSource": "MIXED"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": {
+      "promptSource": true
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "most-likely-to",
+    "config": {
+      "categorySource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 3,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": "El host necesita al menos un dilema personal activo para usar solo dilemas personalizados."
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": {
+      "promptSource": "CUSTOM"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 1,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": {
+      "promptSource": "PUBLIC"
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  },
+  {
+    "gameId": "would-you-rather",
+    "config": {
+      "promptSource": null
+    },
+    "context": {
+      "hostCustomCategoryCount": 0,
+      "hostWouldYouRatherPromptCount": 0,
+      "playerCount": 0
+    },
+    "message": null
+  }
+]

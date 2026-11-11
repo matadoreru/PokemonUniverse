@@ -8,8 +8,8 @@ import java.nio.file.Path;
 
 /**
  * Ficheros de {@code src/test/resources/web-contracts/}: lo que la web copia de Java (puntuación que muestra, juegos y
- * reglas del reto diario, textos de condición). Los graba un test Java y los lee un test de {@code packages/shared},
- * que comprueba que la copia TS dice lo mismo. Se regeneran con
+ * reglas del reto diario, textos de condición, mensajes de preparación de la sala). Los graba un test Java y los lee
+ * un test de {@code packages/shared}, que comprueba que la copia TS dice lo mismo. Se regeneran con
  * {@code ./gradlew test -DupdateWebContracts=true --tests '<el test que lo graba>'}, una propiedad propia para no
  * regrabar las doradas a la vez; el diff es el cambio que tiene que seguir la web.
  */
