@@ -1,13 +1,13 @@
 import { MOST_LIKELY_TO_WIN_POINTS, type MostLikelyToConfig, type MostLikelyToPlayerState, type MostLikelyToPublicState } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, Search, Trophy, X } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { mostLikelyAnnouncement, mostLikelyCurrentStep, mostLikelyHeading, mostLikelySteps, mostLikelyVerdict } from '../games/most-likely-to/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Chip, Icon } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import { PokemonSelector } from './PokemonSelector';
 import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
@@ -42,9 +42,7 @@ export function MostLikelyToGame({ room, selfId, onAction }: ActiveGameProps) {
   const { pokemon, error: loadError, loading: poolLoading, retry } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeForms ?? false, enabled: choosing && participating });
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
-  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
-  const colorOf = (id: string) => playerColor(members.get(id)?.index ?? 0);
+  const members = useRoomMembers(room); const { nameOf, colorOf } = members;
   const ownVote = participating ? player.ownVotePlayerId : null;
   const locked = voting && ownVote !== null;
 
@@ -74,7 +72,7 @@ export function MostLikelyToGame({ room, selfId, onAction }: ActiveGameProps) {
     media: <img className={s.sprite} src={guessSprite(answer.pokemon.sprite)} alt="" />,
   }));
   const stage = result
-    ? <VoteTally idBase="most-likely-tally" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winnerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.member.avatar} intro={result.prompt}
+    ? <VoteTally idBase="most-likely-tally" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winnerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.avatar} intro={result.prompt}
       summaryName={answerName} emptyText="Nadie envió una respuesta a tiempo." className={s.tally} />
     : prompt;
 

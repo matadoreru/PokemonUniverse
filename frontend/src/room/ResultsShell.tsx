@@ -7,6 +7,7 @@ import { useAchievements } from '../achievements/AchievementsContext';
 import { audio } from '../audio';
 import { Avatar } from '../components/Avatar';
 import { Badge, cx, Icon, Panel, Row, ScorePop } from '../ui';
+import type { RoomMembers } from './room-members';
 import s from './ResultsShell.module.css';
 
 /** Efecto del final: el podio de la sesión da `game.win` al campeón y `game.podium` al resto; los resultados de una partida solo `game.win` al ganador. */
@@ -29,6 +30,22 @@ export interface ResultsStanding {
   meta?: ReactNode;
   /** Sprite propio de la franja (p. ej. el Pokémon secreto de cada uno), a la derecha de los puntos; decorativo. */
   sprite?: string | undefined;
+}
+
+/**
+ * Puestos de `ResultsShell` desde la clasificación del motor: id, puesto, puntos y el nombre, el avatar y el color de
+ * cada jugador en la sala (`RoomMembers`); `extra` añade lo propio del juego (la línea de métricas, un sprite).
+ */
+export function standingRows<S extends { playerId: string; position: number; points: number }>(standings: readonly S[], members: RoomMembers, extra?: (standing: S) => Pick<ResultsStanding, 'meta' | 'sprite'>): ResultsStanding[] {
+  return standings.map((standing) => ({
+    id: standing.playerId,
+    position: standing.position,
+    name: members.nameOf(standing.playerId),
+    points: standing.points,
+    avatar: members.get(standing.playerId)?.avatar,
+    color: members.colorOf(standing.playerId),
+    ...extra?.(standing),
+  }));
 }
 
 const defaultPoints = (points: number) => `${points} pts`;

@@ -2,7 +2,7 @@ import type { PokeTabooConfig, PokeTabooPlayerState, PokeTabooPublicState } from
 import { POKEMON_TYPE_LABELS, POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Check, Clock3, Eye, Hourglass, Mic, PenLine, Trophy, X } from 'lucide-react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   TABOO_STEPS, TURN_STATUS_TEXT, tabooAnnouncement, tabooCurrentStep, tabooHeading, tabooRevealSummary, tabooRole, tabooRoundLabel,
   tabooTurnStatus, tabooVerdict, type TabooTurnStatus,
@@ -15,6 +15,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from './guess-kit';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/poke-taboo/PokeTaboo.module.css';
 
 const GAME_NAME = 'PokéTaboo';
@@ -48,9 +49,7 @@ export function PokeTabooGame({ room, selfId, onAction }: ActiveGameProps) {
   const cooldownMs = useRemainingMs(player?.role === 'GUESSER' ? player.cooldownUntil : null, offset);
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
   const describerId = result?.descriptorId ?? game.descriptorId;
   const describerName = describerId ? nameOf(describerId) : null;
   const participating = player !== null && player.role !== 'SPECTATOR';

@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { BingoBoard } from '../games/pokemon-bingo/BingoParts';
 import { bingoProgressText, bingoStatsLine } from '../games/pokemon-bingo/presentation';
 import { Chip, Icon, Panel, TabPanel, Tabs } from '../ui';
-import { playerColor } from './player-color';
 import { ResultsHostActions } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 
 /**
@@ -18,23 +18,14 @@ export function PokemonBingoResults({ room, selfId, onLobby, onEnd }: GameResult
   const game = room.game as PokemonBingoPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const ids = standings.length ? standings.map((standing) => standing.playerId) : Object.keys(game.boards);
   const [tab, setTab] = useState(ids[0] ?? selfId);
   const active = game.boards[tab] ? tab : ids[0] ?? null;
   const board = active ? game.boards[active] ?? null : null;
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
-    return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
-      meta: <>{standing.playerId === game.winnerId && <Chip tone="ok" icon={<Icon icon={Trophy} size={18} />}>Bingo</Chip>}<span>{bingoStatsLine(standing.stats)}</span></>,
-    };
-  });
+  const rows = standingRows(standings, members, (standing) => ({
+    meta: <>{standing.playerId === game.winnerId && <Chip tone="ok" icon={<Icon icon={Trophy} size={18} />}>Bingo</Chip>}<span>{bingoStatsLine(standing.stats)}</span></>,
+  }));
   const aside = <Panel title="Tableros finales" variant="dark" as="section" right={board ? <Chip tone={board.completed === board.total ? 'ok' : 'neutral'} icon={<Icon icon={Grid3x3} size={18} />}>{bingoProgressText(board)}</Chip> : null}>
     <Tabs label="Tablero final de cada jugador" idBase="bingo-final" active={active ?? ''} onChange={setTab}
       items={ids.map((id) => ({ key: id, label: `${id === selfId ? `${nameOf(id)} (tú)` : nameOf(id)} · ${game.boards[id]?.completed ?? 0}/${game.boards[id]?.total ?? 0}` }))} />

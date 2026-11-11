@@ -1,7 +1,7 @@
 import type { AbsurdPokedexConfig, AbsurdPokedexPlayerState, AbsurdPokedexPokemon, AbsurdPokedexPublicState, PokemonType } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, ABSURD_POKEDEX_MAX_ENTRY_LENGTH, absurdPokedexScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, Send, Trophy, Vote, X } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type Ref } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type Ref } from 'react';
 import { Avatar } from '../components/Avatar';
 import { absurdAnnouncement, absurdCurrentStep, absurdHeading, absurdModeTitle, absurdSteps, absurdVotePayload, createDraftScheduler, fooledNames, sendAbsurdDraft, sortedRoundEntries, toggleFunny } from '../games/absurd-pokedex/presentation';
 import { autoSendDelay, createAnswerSender } from '../games/pokemon-red-flag/RedFlagWriter';
@@ -9,7 +9,7 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon, Panel, Pill, TextArea } from '../ui';
 import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import { type ActiveGameProps, type GameAction, ignoreFailure } from './room-command';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, socialFocusKey, votesText } from './social-kit';
 import s from '../games/absurd-pokedex/AbsurdPokedex.module.css';
@@ -133,8 +133,7 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: ActiveGameProps) {
   const result = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
-  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const ownEntry = participating ? player.ownEntry : null;
   const voteLocked = voting && participating && player.ownVoteEntryId !== null;
   const canWrite = writing && participating && player.canSubmit && !ownEntry;
@@ -177,7 +176,7 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: ActiveGameProps) {
               <div className={s.entryActions}>
                 {entry.isReal
                   ? <span className={s.officialChip}><Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>{`Entrada oficial · ${result.realEntry?.versionLabel ?? ''}`}</Chip></span>
-                  : author && <span className={s.author}><Avatar name={nameOf(author)} avatar={members.get(author)?.member.avatar} size="sm" /><strong style={{ '--player': playerColor(members.get(author)?.index ?? 0) } as CSSProperties} className={s.authorName}>{nameOf(author)}</strong>{author === selfId && <Chip tone="info">Tu entrada</Chip>}</span>}
+                  : author && <span className={s.author}><Avatar name={nameOf(author)} avatar={members.get(author)?.avatar} size="sm" /><strong style={{ '--player': members.colorOf(author) } as CSSProperties} className={s.authorName}>{nameOf(author)}</strong>{author === selfId && <Chip tone="info">Tu entrada</Chip>}</span>}
                 <Chip tone={entry.votesReceived > 0 ? 'ok' : 'neutral'}>{votesText(entry.votesReceived)}</Chip>
                 {entry.funnyVotesReceived > 0 && <Chip tone="warn">{`😂 ${entry.funnyVotesReceived}`}</Chip>}
                 {fooled && <span className={s.fooled}>{fooled}</span>}

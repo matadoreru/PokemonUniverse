@@ -1,10 +1,10 @@
 import { gameModeLabel, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
 import { Crosshair, Target } from 'lucide-react';
 import { cx, Icon, Panel } from '../ui';
-import { playerColor } from './player-color';
 import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
 import { ResultsHostActions } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import s from './PokedexDistanceResults.module.css';
 
@@ -28,24 +28,17 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: GameRes
   const history = game.roundHistory;
   const summary = distanceResultsSummary(history, standings.map((standing) => standing.playerId));
   const byPlayer = new Map(summary.players.map((player) => [player.playerId, player]));
-  const memberOf = (playerId: string) => room.members.find((member) => member.id === playerId);
-  const nameOf = (playerId: string) => memberOf(playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const best = summary.best;
   // «Por puntos»: la clasificación (del servidor) va por puntos y nadie cae; el subtítulo lleva el nombre del modo.
   const pointsMode = game.mode === 'POINTS';
   const modeLabel = gameModeLabel('pokedex-distance', game);
 
-  const rows: ResultsStanding[] = standings.map((standing) => {
+  const rows = standingRows(standings, members, (standing) => {
     const player = byPlayer.get(standing.playerId);
     // «Ganador» ya lo pone la insignia de la franja: aquí solo la ronda en la que cayó.
     const label = player && !pointsMode && standing.playerId !== winnerId ? distanceStandingLabel(player, winnerId) : null;
     return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: memberOf(standing.playerId)?.avatar,
-      color: playerColor(Math.max(0, room.members.findIndex((member) => member.id === standing.playerId))),
       // En la franja propia (amarilla) el rojo no llega a AA: tinta oscura, el texto ya dice que cayó.
       meta: <>{label && <span className={standing.playerId === selfId ? s.fellTextSelf : s.fellText}>{label}</span>}<span>{distanceStatsLine(standing.stats)}</span></>,
     };

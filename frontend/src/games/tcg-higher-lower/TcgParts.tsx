@@ -80,7 +80,7 @@ export function TcgSidebar({ game, lastRound, members, colors, selfId, className
   className?: string | undefined;
 }) {
   const answered = game.answeredIds.filter((id) => game.playerIds.includes(id)).length;
-  const nameOf = (id: string) => members.get(id)?.displayName ?? id;
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
   const ranking = higherLowerRanking(game, nameOf);
   const points = (id: string) => game.scores[id] ?? 0;
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}

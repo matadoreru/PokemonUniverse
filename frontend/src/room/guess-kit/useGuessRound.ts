@@ -1,9 +1,10 @@
 import type { GamePhase, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
-import { useMemo, useRef, type RefObject } from 'react';
+import { useRef, type RefObject } from 'react';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useFocusOnTransition } from '../focus-transition';
 import type { GuessTimer } from './GuessScreen';
+import { useRoomMembers } from '../room-members';
 import {
   guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessVerdict,
   type GuessAttemptLike, type GuessPanelKind, type GuessVerdict,
@@ -87,8 +88,7 @@ export interface GuessRound<L> {
  * región viva y las props de `GuessPanel`. Cada juego pinta su pista, sus pistas extra y su revelación con esto.
  */
 export function useGuessRound<L extends GuessRoundResultLike>({ room, selfId, game, player, participating: forced, answer, roundSeconds }: GuessRoundOptions<L>): GuessRound<L> {
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const offset = useServerOffset(room.serverNow);
   const cooldownMs = useRemainingMs(player?.cooldownUntil ?? null, offset);
   const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);

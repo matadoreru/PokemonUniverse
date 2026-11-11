@@ -70,8 +70,8 @@ export function HigherLowerDuelCard({ side, pokemon, category, flip, leader }: {
   </Card>;
 }
 
-function memberName(member: RoomMemberView | undefined, id: string) {
-  return member?.displayName ?? id;
+function memberName(member: RoomMemberView | undefined) {
+  return member?.displayName ?? 'Entrenador';
 }
 
 /** Resultado de un jugador con texto (además del ✓/✗ y del color): «✓ +2 acierto», «✗ Fallo» o «✗ Sin respuesta». */
@@ -101,14 +101,14 @@ export function HigherLowerSidebar({ game, members, colors, selfId, className }:
   const playing = game.alive ?? game.playerIds;
   const answered = game.answeredIds.filter((id) => playing.includes(id)).length;
   const privateAnswers = !reveal && Object.keys(game.answers).length === 0 && game.answeredIds.length > 0;
-  const ranking = higherLowerRanking(game, (id) => memberName(members.get(id), id));
+  const ranking = higherLowerRanking(game, (id) => memberName(members.get(id)));
   const points = (id: string) => game.scores[id] ?? 0;
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}
     right={<Badge tone="cream">{`${answered} / ${playing.length} respuestas`}</Badge>}>
     <p className={s.sideHint}>{endless && <><strong>{playing.length} en pie</strong> · </>}{reveal ? 'Resultado de la ronda' : answered < playing.length ? `Pendientes · ${playing.length - answered}` : 'Todos han respondido'}{privateAnswers && <> · <strong>Respuestas privadas</strong> hasta revelar</>}</p>
     <ol className={s.rows} aria-label="Clasificación de la partida">{ranking.map(({ id, position }) => {
       const member = members.get(id);
-      const name = memberName(member, id);
+      const name = memberName(member);
       const streak = game.streaks[id] ?? 0;
       const status = higherLowerMemberStatus(game, id);
       const chip = status.kind === 'eliminated'

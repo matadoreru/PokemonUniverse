@@ -10,6 +10,7 @@ import { Chip, cx, Icon, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/type-chain/TypeChain.module.css';
 
 /**
@@ -29,8 +30,7 @@ export function TypeChainGame({ room, selfId, onAction }: ActiveGameProps) {
   const config = room.selectedGameConfig as Partial<TypeChainConfig> | null;
   const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [], includeForms: true });
   const offset = useServerOffset(room.serverNow);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const used = useMemo(() => new Set(game.usedPokemonIds), [game.usedPokemonIds]);
   const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
   const spectator = members.get(selfId)?.role === 'SPECTATOR';

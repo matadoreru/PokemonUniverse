@@ -3,10 +3,10 @@ import { Crosshair, Equal, Sparkles, Trophy } from 'lucide-react';
 import { closestAverage, formatDistance, secretRankingStatsLine } from '../games/secret-ranking/presentation';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
-import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import s from '../games/secret-ranking/SecretRanking.module.css';
 
@@ -20,20 +20,11 @@ export function SecretRankingResults({ room, selfId, onLobby, onEnd }: GameResul
   const game = room.game as SecretRankingPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
-    return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
-      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{secretRankingStatsLine(standing.stats)}</span></>,
-    };
-  });
+  const rows = standingRows(standings, members, (standing) => ({
+    meta: <>{sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{secretRankingStatsLine(standing.stats)}</span></>,
+  }));
   const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
   const wins = guessTop(entries, 'roundWins');
   const perfect = guessTop(entries, 'perfectMatches');

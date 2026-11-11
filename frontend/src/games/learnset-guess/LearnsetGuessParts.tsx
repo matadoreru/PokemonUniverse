@@ -122,7 +122,7 @@ export function LearnsetAttempts({ attempts, members, colors, className, own = f
         ? <span><strong>Todavía no has fallado.</strong> Cada fallo te enseña otro grupo de movimientos, pero el acierto vale {MANUAL_REVEAL_STEP} puntos menos.</span>
         : <span><strong>Todavía no hay intentos incorrectos.</strong> Cuanto antes aciertes, más puntos: cada pista nueva resta uno.</span>}</p>
       : <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
-        const name = members.get(attempt.playerId)?.displayName ?? attempt.playerId;
+        const name = members.get(attempt.playerId)?.displayName ?? 'Entrenador';
         return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`}>
           <Row name={attempt.pokemonName} color={playerColor(colors.get(attempt.playerId) ?? 0)}
             avatar={<img className={s.attemptSprite} src={learnsetSprite(attempt.sprite)} alt="" />}

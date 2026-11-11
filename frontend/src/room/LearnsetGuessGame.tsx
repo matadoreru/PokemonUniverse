@@ -1,5 +1,5 @@
 import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState } from '@pokemon-universe/shared/public';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
 import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetManualExhausted, learnsetPlateKind, learnsetPositions, learnsetVerdict } from '../games/learnset-guess/presentation';
@@ -13,6 +13,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { learnsetGroupProgress, learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetManualStakeText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 import { PokemonSelector } from './PokemonSelector';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/learnset-guess/LearnsetGuess.module.css';
 
 /** Lo que dura en pantalla el aviso «X ha acertado» para los demás. */
@@ -35,8 +36,7 @@ export function LearnsetGuessGame({ room, selfId, onAction }: ActiveGameProps) {
   const player = room.gamePlayerState as LearnsetGuessPlayerState | null;
   const config = room.selectedGameConfig as Partial<LearnsetGuessConfig> | null;
   const { pokemon, loading: poolLoading, error: poolError, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [] });
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const offset = useServerOffset(room.serverNow);
   const roundRemaining = Math.ceil(useRemainingMs(game.roundEndsAt, offset) / 1_000);
   const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);

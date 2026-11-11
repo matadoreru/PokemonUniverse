@@ -3,9 +3,9 @@ import { Equal, HandHeart, Percent, Swords, Timer, Users } from 'lucide-react';
 import { sharesPosition } from './results-ties';
 import { typeDuelCoopStatsLine, typeDuelRecords, typeDuelStatsLine } from '../games/type-duel/presentation';
 import { Chip, Icon } from '../ui';
-import { playerColor } from './player-color';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 
 /**
@@ -17,22 +17,13 @@ import type { GameResultsProps } from './room-command';
  */
 export function TypeDuelResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TypeDuelPublicState; const host = room.hostId === selfId;
+  const members = useRoomMembers(room); const { nameOf } = members;
   if (game.mode === 'COOP') return <TypeDuelCoopResults room={room} selfId={selfId} onLobby={onLobby} onEnd={onEnd} />;
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
   const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
-    return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
-      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{typeDuelStatsLine(standing.stats)}</span></>,
-    };
-  });
+  const rows = standingRows(standings, members, (standing) => ({
+    meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{typeDuelStatsLine(standing.stats)}</span></>,
+  }));
   const records = typeDuelRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
   const aside = <ResultsRecords id="type-duel-records-title" records={[
     { key: 'wins', title: 'Más duelos ganados', icon: Swords, names: records.wins?.names ?? null, value: records.wins?.value ?? '', unit: records.wins?.value === '1' ? 'duelo ganado' : 'duelos ganados' },
@@ -49,21 +40,10 @@ const coopPoints = (points: number) => `${points} Pokémon`;
 function TypeDuelCoopResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TypeDuelPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const groupTotal = standings.reduce((sum, standing) => sum + standing.points, 0);
   const best = Math.max(0, ...standings.map((standing) => standing.points));
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
-    return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
-      meta: <span>{typeDuelCoopStatsLine(standing.stats)}</span>,
-    };
-  });
+  const rows = standingRows(standings, members, (standing) => ({ meta: <span>{typeDuelCoopStatsLine(standing.stats)}</span> }));
   const aside = <ResultsRecords id="type-duel-records-title" title="El grupo" records={[
     { key: 'group', title: 'Total del grupo', icon: Users, names: groupTotal > 0 ? ['Entre todos'] : null, value: String(groupTotal), unit: groupTotal === 1 ? 'Pokémon distinto encontrado' : 'Pokémon distintos encontrados' },
     { key: 'best', title: 'Mayor aportación', icon: HandHeart, names: best > 0 ? standings.filter((standing) => standing.points === best).map((standing) => nameOf(standing.playerId)) : null, value: String(best), unit: 'Pokémon aportados' },

@@ -12,6 +12,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, type GuessPlateContent } from './guess-kit';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-connections/PokemonConnections.module.css';
 
 /**
@@ -31,8 +32,7 @@ export function PokemonConnectionsGame({ room, selfId, onAction }: ActiveGamePro
   const player = room.gamePlayerState as PokemonConnectionsPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonConnectionsConfig> | null;
   const offset = useServerOffset(room.serverNow);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const [selected, setSelected] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [advancing, setAdvancing] = useState(false);

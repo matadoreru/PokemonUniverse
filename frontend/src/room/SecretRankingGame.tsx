@@ -11,9 +11,9 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Bar, Chip, cx, Icon, Panel, Pill, Row, StateBox } from '../ui';
 import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
-import { playerColor } from './player-color';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, socialFocusKey, type SocialPlateContent } from './social-kit';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/secret-ranking/SecretRanking.module.css';
 
 const GAME_NAME = 'Secret Ranking';
@@ -64,9 +64,8 @@ function RankingBoard({ kicker, prompt, help, order, onMove, movesDisabled = fal
 
 /** Revelación (pantalla de arriba): el ranking promedio del grupo y cómo ordenó cada jugador. */
 function RankingReveal({ result, room, selfId }: { result: SecretRankingRoundResult; room: RoomView; selfId: string }) {
-  const members = new Map(room.members.map((member, index) => [member.id, { member, index }]));
+  const members = useRoomMembers(room); const { nameOf } = members;
   const players = rankingStandings(result);
-  const nameOf = (playerId: string) => members.get(playerId)?.member.displayName ?? 'Entrenador';
   // Quién envió ranking, en el orden de la sala: el puesto que dio cada uno a cada Pokémon del consenso.
   const submitted = room.members.map((member) => member.id).filter((playerId) => result.players[playerId]?.ranking);
   return <div className={s.reveal}>
@@ -87,11 +86,11 @@ function RankingReveal({ result, room, selfId }: { result: SecretRankingRoundRes
     <Panel variant="cream" as="section" aria-labelledby="ranking-players-title" scroll scrollLabel="Cómo ordenó cada uno" className={cx(s.revealPanel)} bodyClassName={cx(s.revealBody)}>
       <h2 id="ranking-players-title" className={s.panelKicker}>Cómo ordenó cada uno</h2>
       <ol className={s.rows} aria-label="Rankings revelados" data-testid="ranking-players">{players.map((playerId) => {
-        const entry = members.get(playerId);
-        const name = entry?.member.displayName ?? 'Entrenador';
+        const member = members.get(playerId);
+        const name = members.nameOf(playerId);
         const ranking = result.players[playerId]?.ranking ?? null;
         return <li key={playerId} data-testid="ranking-player">
-          <Row name={name} color={playerColor(entry?.index ?? 0)} self={playerId === selfId} avatar={<Avatar name={name} avatar={entry?.member.avatar} level={entry?.member.level} size="sm" />}
+          <Row name={name} color={members.colorOf(playerId)} self={playerId === selfId} avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
             meta={ranking
               ? <ol className={s.strip} aria-label={`Orden de ${name}`}>{ranking.map((pokemon, index) => <li key={pokemon.id} className={s.stripItem} title={`${index + 1}. ${pokemon.name}`}>
                 <span className={s.stripRank} aria-hidden="true">{index + 1}</span>
@@ -107,16 +106,16 @@ function RankingReveal({ result, room, selfId }: { result: SecretRankingRoundRes
 
 /** Columna lateral de la revelación: la cercanía de cada jugador al grupo, con su barra, su distancia en texto y los puntos. */
 function ClosenessPanel({ result, room, selfId }: { result: SecretRankingRoundResult; room: RoomView; selfId: string }) {
-  const members = new Map(room.members.map((member, index) => [member.id, { member, index }]));
+  const members = useRoomMembers(room);
   return <Panel title="Cercanía de la ronda" variant="dark" scroll scrollLabel="Cercanía de la ronda">
     <ol className={s.closeRows} aria-label="Cercanía de la ronda">{rankingStandings(result).map((playerId) => {
-      const entry = members.get(playerId);
-      const name = entry?.member.displayName ?? 'Entrenador';
+      const member = members.get(playerId);
+      const name = members.nameOf(playerId);
       const player = result.players[playerId]!;
       const status = rankingPlayerStatus(result, playerId);
       return <li key={playerId} data-testid="ranking-closeness">
-        <Row name={name} {...(player.position !== null ? { rank: player.position } : {})} color={playerColor(entry?.index ?? 0)} self={playerId === selfId}
-          disconnected={entry?.member.presence !== undefined && entry.member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={entry?.member.avatar} level={entry?.member.level} size="sm" />}
+        <Row name={name} {...(player.position !== null ? { rank: player.position } : {})} color={members.colorOf(playerId)} self={playerId === selfId}
+          disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'} avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.closeMeta}>
             <Chip tone={status.tone} {...(status.tone === 'ok' ? { icon: <Icon icon={Trophy} size={18} /> } : status.tone === 'bad' ? { icon: <Icon icon={X} size={18} /> } : {})}>{status.text}</Chip>
             {player.distance !== null && <span className={s.distance}>
@@ -188,8 +187,7 @@ export function SecretRankingGame({ room, selfId, onAction }: ActiveGameProps) {
   const submitRef = useRef<HTMLButtonElement>(null);
   useRefocusAfterReject(game.roundNumber, busy, open, submitRef);
 
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { nameOf } = useRoomMembers(room);
   const playerIds = useMemo(() => room.members.filter((member) => game.scores[member.id] !== undefined).map((member) => member.id), [room.members, game.scores]);
 
   const titleRef = useRef<HTMLHeadingElement>(null);

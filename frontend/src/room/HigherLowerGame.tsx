@@ -1,5 +1,5 @@
 import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSidebar } from '../games/higher-lower/HigherLowerParts';
@@ -14,6 +14,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/higher-lower/HigherLower.module.css';
 
 /**
@@ -35,8 +36,7 @@ export function HigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
   const offset = useServerOffset(room.serverNow);
   const active = game.phase === 'ROUND_ACTIVE';
   const remaining = Math.ceil(useRemainingMs(game.roundEndsAt ?? game.nextTransitionAt, offset) / 1000);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const category = higherLowerCategoryLabels[game.category];
   // Solo en `ROUND_RESULTS`: en la ronda siguiente `lastRound` sigue siendo el de la anterior.
   const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;

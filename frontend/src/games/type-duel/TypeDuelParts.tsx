@@ -112,7 +112,7 @@ function MemberChip({ game, id }: { game: TypeDuelPublicState; id: string }) {
  * estado, u observador). Los empates con puntos llevan su chip.
  */
 export function TypeDuelSidebar({ game, members, colors, selfId, className }: { game: TypeDuelPublicState; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; selfId: string; className?: string | undefined }) {
-  const nameOf = (id: string) => members.get(id)?.displayName ?? id;
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
   const ranking = higherLowerRanking(game, nameOf);
   const points = (id: string) => game.scores[id] ?? 0;
   return <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" {...(className ? { className } : {})}
@@ -142,7 +142,7 @@ export function TypeDuelAttempts({ attempts, members, colors, className }: { att
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
     {attempts.length === 0 && <p className={s.empty}><Icon icon={Search} size={24} /><span><strong>Todavía no hay intentos.</strong> El primero que dé con un Pokémon de la combinación exacta gana.</span></p>}
     {ordered.length > 0 && <ul className={s.rows} aria-label="Intentos del duelo">{ordered.map((attempt, index) => {
-      const name = members.get(attempt.playerId)?.displayName ?? attempt.playerId;
+      const name = members.get(attempt.playerId)?.displayName ?? 'Entrenador';
       return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`}>
         <Row name={attempt.pokemonName} color={playerColor(colors.get(attempt.playerId) ?? 0)}
           avatar={<img className={s.attemptSprite} src={typeDuelSprite(attempt.sprite)} alt="" />}

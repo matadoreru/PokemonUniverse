@@ -2,7 +2,7 @@ import type { GameStanding, ImpostorRole, PokemonImpostorPlayerState, PokemonImp
 import { Crown, ShieldCheck, Skull } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../ui';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import { impostorFinishText } from './pokemon-impostor-texts';
 import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell } from './ResultsShell';
@@ -31,8 +31,7 @@ export function PokemonImpostorResults({ room, selfId, onLobby, onEnd }: GameRes
   const impostorsWon = game.winnerTeam === 'IMPOSTORS';
   const standings = game.results?.standings ?? [];
   const byPlayer = new Map(standings.map((standing) => [standing.playerId, standing]));
-  const memberIndex = (id: string) => room.members.findIndex((member) => member.id === id);
-  const nameOf = (id: string) => room.members[memberIndex(id)]?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const guesserId = standings.find((standing) => standing.stats.pokemonGuessed === 1)?.playerId ?? null;
   const finishText = impostorFinishText(game.finishReason, guesserId ? nameOf(guesserId) : null);
   const won = byPlayer.get(selfId)?.won ?? false;
@@ -48,10 +47,9 @@ export function PokemonImpostorResults({ room, selfId, onLobby, onEnd }: GameRes
         {winners && <Badge><Icon icon={Crown} size={18} />Ganan</Badge>}
       </h2>
       <ol className={s.rows} aria-label={title}>{ids.map((id) => {
-        const index = memberIndex(id);
         const name = nameOf(id);
-        return <li key={id}><Row name={name} self={id === selfId} color={playerColor(Math.max(0, index))}
-          avatar={<span className={s.rowAvatar}><Avatar name={name} avatar={room.members[index]?.avatar} size="md" /></span>}
+        return <li key={id}><Row name={name} self={id === selfId} color={members.colorOf(id)}
+          avatar={<span className={s.rowAvatar}><Avatar name={name} avatar={members.get(id)?.avatar} size="md" /></span>}
           meta={<span className={s.meta}>
             <Chip tone={role === 'IMPOSTOR' ? 'bad' : 'info'}>{role === 'IMPOSTOR' ? 'IMPOSTOR' : 'INOCENTE'}</Chip>
             <span>{impostorResultLine(byPlayer.get(id)?.stats)}</span>

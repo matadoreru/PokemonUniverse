@@ -1,7 +1,7 @@
 import type { PokemonTeamAuctionConfig, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Coins, Crown, Eye, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   currentLotEvents, PASS_RULE, TEAM_SIZE, TEAM_STATUS_TEXT, teamAnnouncement, teamBlockInput, teamBst, teamHeading, teamPrevious, teamStatus, teamTimerLabel, teamTurnOrder, type TeamStatus,
 } from '../games/pokemon-team-auction/presentation';
@@ -13,7 +13,7 @@ import {
   AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
 } from './auction-kit';
 import { useFocusOnTransition } from './focus-transition';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import type { ActiveGameProps } from './room-command';
 
 const GAME_NAME = 'Pokémon Team Auction';
@@ -38,9 +38,7 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: ActiveGamePro
   const offset = useServerOffset(room.serverNow);
   useSfxCue(game.currentBid != null ? 'game.bid' : null, `${game.lotNumber}:${game.currentBid ?? ''}`);
 
-  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
-  const colorOf = (id: string) => playerColor(members.get(id)?.index ?? 0);
+  const members = useRoomMembers(room); const { nameOf, colorOf } = members;
   const [teamOf, setTeamOf] = useState<string | null>(null);
 
   const block = bidBlock(teamBlockInput(game, player, selfId, nameOf));
@@ -66,11 +64,11 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: ActiveGamePro
     const participant = game.participants[id];
     if (!participant) return [];
     const status = teamStatus(game, id);
-    const entry = members.get(id);
+    const member = members.get(id);
     const name = nameOf(id);
     return [{
       id, name, budget: participant.coins, color: colorOf(id), self: id === selfId,
-      disconnected: entry?.member.presence !== undefined && entry.member.presence !== 'CONNECTED',
+      disconnected: member?.presence !== undefined && member.presence !== 'CONNECTED',
       status: { tone: STATUS_TONE[status], text: TEAM_STATUS_TEXT[status], icon: STATUS_ICON[status] },
       detail: <><span>{`Equipo ${participant.team.length}/${TEAM_SIZE} · BST ${teamBst(participant.team)}`}</span><TeamStrip team={participant.team} /></>,
       action: <Pill size="round" variant="blue" icon={Eye} aria-label={id === selfId ? 'Ver tu equipo' : `Ver equipo de ${name}`} data-testid="team-open" onClick={() => setTeamOf(id)} />,

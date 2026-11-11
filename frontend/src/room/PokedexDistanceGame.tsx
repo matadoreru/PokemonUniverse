@@ -16,7 +16,7 @@ import { DistanceRuler } from './DistanceRuler';
 import { GameSkipSlot } from './GameSkipSlot';
 import { useFocusOnTransition } from './focus-transition';
 import { PlayerList } from './PlayerList';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import { PokemonSelector } from './PokemonSelector';
 import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distancePointsText, distanceScoreboard, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
@@ -51,8 +51,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
   // Solo `selectedIds` (quién, nunca qué): con las elecciones ocultas no adelanta nada.
   const pickedCount = game.selectedIds.filter((id) => game.eligibleIds.includes(id)).length;
   const targetLabel = formatDexNumber(game.targetDexNumber ?? 0);
-  const memberOf = (playerId: string) => room.members.find((item) => item.id === playerId);
-  const colorOf = (playerId: string) => playerColor(Math.max(0, room.members.findIndex((item) => item.id === playerId)));
+  const members = useRoomMembers(room); const { nameOf, colorOf } = members;
   // La elección propia sale del catálogo público del buscador (nombre y sprite, nunca el número).
   const ownPick = playerState?.selection ? pokemon.find((entry) => entry.id === playerState.selection!.pokemonId) ?? null : null;
   // Al bloquear la elección el buscador se desmonta y, al revelar, cambia la placa: el foco va a su título.
@@ -92,7 +91,7 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
     <ul className={s.chips} aria-label="Quién ha elegido">{game.eligibleIds.map((playerId) => {
       const picked = game.selectedIds.includes(playerId);
       return <li key={playerId}><Chip tone={picked ? 'ok' : 'neutral'} icon={<Icon icon={picked ? Check : Hourglass} size={18} />}>
-        <span className={s.chipName} title={memberOf(playerId)?.displayName ?? playerId}>{memberOf(playerId)?.displayName ?? playerId}</span>
+        <span className={s.chipName} title={nameOf(playerId)}>{nameOf(playerId)}</span>
         <span className="sr-only">{picked ? ': ya ha elegido' : ': eligiendo'}</span>
       </Chip></li>;
     })}</ul>
@@ -112,8 +111,8 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
   const panel = revealing
     ? <Panel title="Resultado de la ronda" variant="dark" scroll scrollLabel="Distancias de la ronda" className={cx(s.sidePanel)}>
       <ul className={s.rows} aria-label="Distancias de la ronda">{distanceRoundRows(lastRound).map((row) => {
-        const rowMember = memberOf(row.playerId);
-        const name = rowMember?.displayName ?? row.playerId;
+        const rowMember = members.get(row.playerId);
+        const name = nameOf(row.playerId);
         const selection = lastRound.selections[row.playerId];
         return <li key={row.playerId}>
           <Row
@@ -138,8 +137,8 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
       // Marcador de la partida: solo cambia al revelar cada ronda (quién ha elegido ya sale en las fichas de arriba).
       ? <Panel title="Marcador" variant="dark" scroll scrollLabel="Marcador de la partida" className={cx(s.sidePanel)}>
         <ul className={s.rows} aria-label="Marcador de la partida">{distanceScoreboard(game.scores ?? {}).map((entry) => {
-          const rowMember = memberOf(entry.playerId);
-          const name = rowMember?.displayName ?? entry.playerId;
+          const rowMember = members.get(entry.playerId);
+          const name = nameOf(entry.playerId);
           return <li key={entry.playerId}>
             <Row
               name={name}

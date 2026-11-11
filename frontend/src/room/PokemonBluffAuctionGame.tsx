@@ -1,7 +1,7 @@
 import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionConfig, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Copy, Crown, Eye, Hourglass, Mic2, Search, ShieldQuestion, SkipForward, X, XCircle } from 'lucide-react';
-import { useMemo, useRef, type ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Avatar } from '../components/Avatar';
 import {
   ATTEMPT_TEXT, bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffResultTitle, bluffRoundLabel, bluffRoundLines, bluffRoundResult,
@@ -14,7 +14,7 @@ import { Badge, Bar, Chip, cx, Icon, Panel, Row, type ChipProps } from '../ui';
 import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, amountText, bidBlock, bidEpoch, bidLog, type BudgetEntry } from './auction-kit';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel } from './guess-kit';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import type { ActiveGameProps } from './room-command';
 import b from '../games/pokemon-bluff-auction/BluffAuction.module.css';
 
@@ -72,10 +72,8 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGamePr
   const offset = useServerOffset(room.serverNow);
   useSfxCue(game.currentBid != null ? 'game.bid' : null, `${game.roundNumber}:${game.currentBid ?? ''}`);
 
-  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
-  const colorOf = (id: string) => playerColor(members.get(id)?.index ?? 0);
-  const avatarOf = (id: string, size: 'sm' | 'md' | 'lg' = 'sm') => <Avatar name={nameOf(id)} avatar={members.get(id)?.member.avatar} size={size} />;
+  const members = useRoomMembers(room); const { nameOf, colorOf } = members;
+  const avatarOf = (id: string, size: 'sm' | 'md' | 'lg' = 'sm') => <Avatar name={nameOf(id)} avatar={members.get(id)?.avatar} size={size} />;
 
   const result = bluffRoundResult(game);
   const searching = game.phase === 'POKEMON_SEARCH' && game.bidderId !== null;
@@ -131,7 +129,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGamePr
   // --- Lateral ---
   const table: BudgetEntry[] = order.map((id, index) => {
     const status = bluffSeatStatus(game, id);
-    const member = members.get(id)?.member;
+    const member = members.get(id);
     const passed = game.passedPlayerIds.includes(id);
     const bid = bids.get(id);
     return {

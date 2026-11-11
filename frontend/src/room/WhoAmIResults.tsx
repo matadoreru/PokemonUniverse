@@ -4,10 +4,10 @@ import { CheckCircle2, Equal, X } from 'lucide-react';
 import { questionsText, WHO_AM_I_NAME } from '../games/who-am-i/presentation';
 import { Card, Chip, Icon, Panel } from '../ui';
 import { guessSprite } from './guess-kit';
-import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 import s from '../games/who-am-i/WhoAmI.module.css';
 
@@ -22,19 +22,15 @@ export function WhoAmIResults({ room, selfId, onLobby, onEnd }: GameResultsProps
   const game = room.game as WhoAmIPublicState;
   const host = room.hostId === selfId;
   const results = [...(game.results ?? [])].sort((a, b) => a.rank - b.rank);
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const positions = results.map((entry) => ({ id: entry.playerId, position: entry.rank }));
-  const rows: ResultsStanding[] = results.map((entry) => {
-    const index = room.members.findIndex((member) => member.id === entry.playerId);
-    return {
-      id: entry.playerId, position: entry.rank, name: nameOf(entry.playerId), points: entry.points, avatar: room.members[index]?.avatar, color: playerColor(Math.max(0, index)),
-      sprite: guessSprite(entry.pokemon.sprite),
-      meta: <>
-        {sharesPosition(positions, entry.playerId, () => entry.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
-        <span>{`Era ${entry.pokemon.name} · ${entry.solved ? 'Acertó' : 'No acertó'} · ${questionsText(entry.questionsAsked)}`}</span>
-      </>,
-    };
-  });
+  const rows = standingRows(results.map((entry) => ({ ...entry, position: entry.rank })), members, (entry) => ({
+    sprite: guessSprite(entry.pokemon.sprite),
+    meta: <>
+      {sharesPosition(positions, entry.playerId, () => entry.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
+      <span>{`Era ${entry.pokemon.name} · ${entry.solved ? 'Acertó' : 'No acertó'} · ${questionsText(entry.questionsAsked)}`}</span>
+    </>,
+  }));
   const solved = results.filter((entry) => entry.solved).length;
   const winner = results.find((entry) => entry.rank === 1 && entry.points > 0 && entry.playerId === selfId);
   const aside = <Panel title="Los Pokémon de cada uno" variant="dark" scroll scrollLabel="Los Pokémon de cada jugador">

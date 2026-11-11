@@ -2,10 +2,10 @@ import type { PokeddleRacePublicState } from '@pokemon-universe/shared/public';
 import { Flag, ListChecks, Timer, X, Check } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessSeconds, guessSprite, guessTop } from './guess-kit';
-import { playerColor } from './player-color';
 import { pokeddleAttemptsText, pokeddleVisibleSecret } from './pokeddle-presentation';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 
 const num = (stats: Record<string, number>, key: string) => Number(stats[key] ?? 0);
@@ -29,19 +29,12 @@ export function pokeddleStatsLine(stats: Record<string, number>): string {
 export function PokeddleRaceResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokeddleRacePublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
+  const members = useRoomMembers(room); const { nameOf } = members;
+  const rows = standingRows(standings, members, (standing) => {
     const board = game.boards[standing.playerId];
     const secret = board ? pokeddleVisibleSecret(board, game.phase) : null;
     const solved = board?.solved === true;
     return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
       // El Pokémon que tenía cada uno, con su sprite (encontrado o no: en la clasificación ya es público).
       sprite: secret ? guessSprite(secret.sprite) : undefined,
       meta: <>

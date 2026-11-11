@@ -4,10 +4,10 @@ import { Equal, Flame, Target } from 'lucide-react';
 import { higherLowerRecord } from '../games/higher-lower/presentation';
 import { Chip, Icon } from '../ui';
 import { higherLowerEndlessStatsLine, higherLowerStatsLine } from './higher-lower-labels';
-import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 
 const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
@@ -30,20 +30,11 @@ export function HigherLowerResults({ room, selfId, onLobby, onEnd }: GameResults
   const endless = game.mode === 'ENDLESS';
   const modeLabel = gameModeLabel('higher-lower', game);
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
-    return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
-      meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{endless ? higherLowerEndlessStatsLine(standing.stats) : higherLowerStatsLine(standing.stats)}</span></>,
-    };
-  });
+  const rows = standingRows(standings, members, (standing) => ({
+    meta: <>{sharesPosition(positions, standing.playerId, () => standing.points) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}<span>{endless ? higherLowerEndlessStatsLine(standing.stats) : higherLowerStatsLine(standing.stats)}</span></>,
+  }));
   const entries = standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats }));
   const aside = <ResultsRecords id="higher-lower-records-title" records={(endless ? RECORDS.filter(({ key }) => key === 'bestStreak') : RECORDS).map(({ key, title, icon, unit }) => {
     const record = higherLowerRecord(entries, key);

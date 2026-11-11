@@ -5,14 +5,14 @@ import { playerColor } from '../../room/player-color';
 import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
 import s from './ShinyVote.module.css';
 
-function memberName(member: RoomMemberView | undefined, id: string) {
-  return member?.displayName ?? id;
+function memberName(member: RoomMemberView | undefined) {
+  return member?.displayName ?? 'Entrenador';
 }
 
 /** Marcador ordenado por puntos (empates por nombre) con la posición compartida en los empates. */
 export function shinyRanking(game: Pick<ShinyVotePublicState, 'playerIds' | 'scores'>, members: ReadonlyMap<string, RoomMemberView>): { id: string; position: number }[] {
   const score = (id: string) => game.scores[id] ?? 0;
-  const ranking = [...game.playerIds].sort((left, right) => score(right) - score(left) || memberName(members.get(left), left).localeCompare(memberName(members.get(right), right)));
+  const ranking = [...game.playerIds].sort((left, right) => score(right) - score(left) || memberName(members.get(left)).localeCompare(memberName(members.get(right))));
   return ranking.map((id) => ({ id, position: ranking.findIndex((other) => score(other) === score(id)) + 1 }));
 }
 
@@ -42,7 +42,7 @@ export function ShinyGameSidebar({ game, members, colors, selfId, className }: {
     <p className={s.sideHint}>{survival && <><strong>{playing.length} en pie</strong> · </>}{game.pendingPlayerIds.length > 0 ? `Pendientes · ${game.pendingPlayerIds.length}` : 'Todos han votado'}{privateVotes && <> · <strong>Elección privada</strong> hasta revelar</>}</p>
     <ol className={s.rows} aria-label="Clasificación de la partida">{shinyRanking(game, members).map(({ id, position }) => {
       const member = members.get(id);
-      const name = memberName(member, id);
+      const name = memberName(member);
       const vote = reveal ? game.votes[id] : undefined;
       const correct = vote?.optionId === game.correctOptionId;
       const status = member?.role === 'SPECTATOR'

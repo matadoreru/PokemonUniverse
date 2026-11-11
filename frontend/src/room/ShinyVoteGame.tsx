@@ -15,6 +15,7 @@ import { GameSkipSlot } from './GameSkipSlot';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/shiny-vote/ShinyVote.module.css';
 
 /**
@@ -74,8 +75,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: ActiveGameProps) {
   const canVote = active && participant && !ownVote && playerState?.canVote === true && !loadingCards;
   // Botones mientras se puede votar (o se podrá cuando carguen): con el voto dado o al revelar, cartas fijas sin apagar.
   const interactive = active && participant && !ownVote && playerState?.canVote === true;
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const selectedOptionId = ownVote?.optionId ?? draft;
   const selectedOption = game.options.find((option) => option.id === selectedOptionId) ?? null;
   const optionIds = useMemo(() => game.options.map((option) => option.id), [game.options]);

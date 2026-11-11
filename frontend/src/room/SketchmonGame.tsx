@@ -2,7 +2,7 @@ import type { PokemonType, SketchmonConfig, SketchmonPlayerState, SketchmonPubli
 import { POKEMON_TYPE_LABELS, SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Brush, Check, Clock3, Eye, Hourglass, Palette, Radio, Trophy, X } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import {
   SKETCH_STEPS, SKETCH_TURN_TEXT, sketchAnnouncement, sketchCanvasLabel, sketchCurrentStep, sketchHeading, sketchRevealSummary, sketchRole, sketchRoundLabel,
   sketchTurnStatus, sketchVerdict, type SketchTurnStatus,
@@ -17,6 +17,7 @@ import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, g
 import { useSketchPad } from './SketchmonCanvas';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/sketchmon/Sketchmon.module.css';
 
 const GAME_NAME = 'Sketchmon';
@@ -56,9 +57,7 @@ export function SketchmonGame({ room, selfId, onAction }: ActiveGameProps) {
   const wide = useMediaQuery('(min-width: 1024px)');
   const pad = useSketchPad({ strokes: game.strokes, onAction, enabled: drawing && player.canDraw, resetKey: game.roundNumber });
 
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
   const drawerId = result?.drawerId ?? game.drawerId;
   const drawerName = drawerId ? nameOf(drawerId) : null;
   const participating = player !== null && player.role !== 'SPECTATOR';

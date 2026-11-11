@@ -1,6 +1,6 @@
 import type { PokeddlePublicBoard, PokeddleRaceConfig, PokeddleRacePlayerState, PokeddleRacePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, Flag, Search, Send, Users } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
@@ -16,6 +16,7 @@ import {
   type PokeddlePlateKind, type PokeddleRivalStatus,
 } from './pokeddle-presentation';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/pokeddle-race/PokeddleRace.module.css';
 
 const GAME_NAME = 'Pokédle Race';
@@ -102,8 +103,7 @@ export function PokeddleRaceGame({ room, selfId, onAction }: ActiveGameProps) {
   const { pokemon, error: loadError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [] });
   const offset = useServerOffset(room.serverNow);
   const transitionRemaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1_000);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const own = game.boards[selfId] ?? null;
   const active = game.phase === 'ROUND_ACTIVE';
   const kind = pokeddlePlateKind(game.phase, player, own !== null);

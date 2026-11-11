@@ -58,7 +58,7 @@ export function TypeDuelCoopFound({ found, total, members, colors, selfId, class
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
     {found.length === 0 && <p className={s.empty}><Icon icon={Search} size={24} /><span><strong>Todavía no hay ninguno.</strong> Cada Pokémon con esos tipos suma una vez para el grupo.</span></p>}
     {ordered.length > 0 && <ul className={s.rows} aria-label="Pokémon encontrados">{ordered.map((find) => {
-      const name = members.get(find.playerId)?.displayName ?? find.playerId;
+      const name = members.get(find.playerId)?.displayName ?? 'Entrenador';
       return <li key={find.pokemonId}>
         <Row name={find.pokemonName} color={playerColor(colors.get(find.playerId) ?? 0)}
           avatar={<img className={s.attemptSprite} src={typeDuelSprite(find.sprite)} alt="" />}
@@ -70,7 +70,7 @@ export function TypeDuelCoopFound({ found, total, members, colors, selfId, class
 
 /** Cooperativo (columna lateral): la aportación de cada jugador en la partida, de más a menos. */
 export function TypeDuelCoopContributions({ playerIds, contributions, members, colors, selfId, className }: { playerIds: readonly string[]; contributions: Readonly<Record<string, number>>; members: ReadonlyMap<string, RoomMemberView>; colors: ReadonlyMap<string, number>; selfId: string; className?: string | undefined }) {
-  const nameOf = (id: string) => members.get(id)?.displayName ?? id;
+  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
   const ranking = typeDuelCoopRanking(playerIds, contributions, nameOf);
   const total = ranking.reduce((sum, entry) => sum + entry.count, 0);
   return <Panel title="Aportaciones" variant="dark" scroll scrollLabel="Aportación de cada jugador" {...(className ? { className } : {})}

@@ -1,6 +1,6 @@
 import type { BingoPublicCell, PokemonBingoConfig, PokemonBingoPlayerState, PokemonBingoPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, CheckCircle2, Clock3, Eye, Grid3x3, Hourglass, Lock, Trash2, Trophy, X } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { BingoBoard, BingoHud, BingoPlayers } from '../games/pokemon-bingo/BingoParts';
 import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoProgressText, type BingoPlateKind } from '../games/pokemon-bingo/presentation';
@@ -12,6 +12,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-bingo/PokemonBingo.module.css';
 
 /** Mover un Pokémon que ya está en otra casilla: espera la confirmación del `Dialog`. */
@@ -32,9 +33,7 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
   const config = room.selectedGameConfig as Partial<PokemonBingoConfig> | null;
   const offset = useServerOffset(room.serverNow);
   const { pokemon, error: poolError, loading: poolLoading, retry: retryPool } = usePokemonPool({ generations: config?.generations ?? [] });
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
 
   const own = game.boards[selfId] ?? null;
   const kind = bingoPlateKind(game.phase, { hasBoard: own !== null, canAct: player?.canAct ?? false });

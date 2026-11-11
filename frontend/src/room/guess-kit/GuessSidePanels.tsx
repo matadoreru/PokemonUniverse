@@ -45,7 +45,7 @@ export function GuessAttemptsFeed({ attempts, members, colors, title = 'Intentos
   return <Panel title={title} variant="dark" scroll scrollLabel="Intentos públicos de la ronda" {...(className ? { className } : {})} right={<Badge tone="cream">{attempts.length}</Badge>}
     status={ordered.length === 0 ? { kind: 'empty', title: 'Todavía no hay intentos incorrectos.', text: emptyText, live: false } : null}>
     <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
-      const name = members.get(attempt.playerId)?.displayName ?? attempt.playerId;
+      const name = members.get(attempt.playerId)?.displayName ?? 'Entrenador';
       return <li key={`${attempt.playerId}-${attempt.attemptedAt}-${index}`} data-testid="guess-attempt">
         <Row name={attempt.guessedPokemon.name} color={playerColor(colors.get(attempt.playerId) ?? 0)}
           avatar={<img className={s.attemptSprite} src={guessSprite(attempt.guessedPokemon.sprite)} alt="" />}

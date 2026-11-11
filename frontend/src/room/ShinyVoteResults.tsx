@@ -1,9 +1,9 @@
 import { gameModeLabel, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Target } from 'lucide-react';
 import { shinyRecords } from '../games/shiny-vote/presentation';
-import { playerColor } from './player-color';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 
 /** Línea de estadísticas de un puesto: aciertos y precisión. */
@@ -28,20 +28,10 @@ export function ShinyVoteResults({ room, selfId, onLobby, onEnd }: GameResultsPr
   const modeLabel = gameModeLabel('shiny-vote', game);
   const alive = new Set(game.alive ?? []);
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
-    const member = room.members[index];
-    return {
-      id: standing.playerId,
-      position: standing.position,
-      name: member?.displayName ?? 'Entrenador',
-      points: standing.points,
-      avatar: member?.avatar,
-      color: playerColor(Math.max(0, index)),
-      meta: <span>{survival ? alive.has(standing.playerId) ? 'Sigue en pie' : `Cayó en la ronda ${standing.points + 1}` : shinyStatsLine(standing.stats)}</span>,
-    };
-  });
+  const members = useRoomMembers(room); const { nameOf } = members;
+  const rows = standingRows(standings, members, (standing) => ({
+    meta: <span>{survival ? alive.has(standing.playerId) ? 'Sigue en pie' : `Cayó en la ronda ${standing.points + 1}` : shinyStatsLine(standing.stats)}</span>,
+  }));
   const records = shinyRecords(standings.map((standing) => ({ name: nameOf(standing.playerId), stats: standing.stats })));
   const aside = <ResultsRecords id="shiny-records-title" records={survival ? [
     { key: 'correct', title: 'Más rondas superadas', icon: CheckCircle2, names: records.correct?.names ?? null, value: String(records.correct?.value ?? 0), unit: records.correct?.value === 1 ? 'ronda superada' : 'rondas superadas' },

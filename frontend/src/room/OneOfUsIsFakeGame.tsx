@@ -1,6 +1,6 @@
-import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type FakePokemonChoice, type FakeRoundResult, type OneOfUsIsFakeConfig, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState, type RoomMemberView } from '@pokemon-universe/shared/public';
+import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type FakePokemonChoice, type FakeRoundResult, type OneOfUsIsFakeConfig, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, HelpCircle, Search, ShieldAlert, Sparkles, Trophy, UserRoundX, X } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { Avatar } from '../components/Avatar';
 import { fakeAnnouncement, fakeCurrentStep, fakeHeading, fakeSteps, fakeTallySummary, fakeVerdict, FAKE_ROUND_LABELS } from '../games/one-of-us-is-fake/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
@@ -8,7 +8,7 @@ import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon, Panel } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
-import { playerColor } from './player-color';
+import { useRoomMembers, type RoomMembers } from './room-members';
 import { PokemonSelector } from './PokemonSelector';
 import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, tallyOutcome,
@@ -20,7 +20,6 @@ import s from '../games/one-of-us-is-fake/OneOfUsIsFake.module.css';
 const GAME_NAME = 'One of Us Is Fake';
 const EMPTY_LOCKED = new Set<string>();
 
-type Seat = { member: RoomMemberView; index: number };
 
 /**
  * Las elecciones del grupo (escena de la revelación, del debate y de la segunda vuelta): una `Card` por jugador con su
@@ -38,7 +37,7 @@ function ChoiceBoard({ playerIds, picked, choices, revealing, flip, category, se
   /** Las cartas destapadas giran (revelación y debate). */
   flip: boolean;
   category: string | null;
-  seats: ReadonlyMap<string, Seat>;
+  seats: RoomMembers;
 }) {
   return <Panel variant="cream" title="Las elecciones" className={cx(s.board, !revealing && s.voting)} bodyClassName={cx(s.boardBody)} right={<span className={s.count}>{`${choices.size}/${picked.size}`}</span>}>
     <p className={s.category} data-testid="fake-category">
@@ -48,8 +47,8 @@ function ChoiceBoard({ playerIds, picked, choices, revealing, flip, category, se
     </p>
     <ul className={s.grid} data-testid="fake-choices">{playerIds.map((id) => {
       const pokemon = choices.get(id);
-      const name = seats.get(id)?.member.displayName ?? 'Entrenador';
-      const owner = <span className={s.owner} title={name} style={{ ['--seat' as string]: playerColor(seats.get(id)?.index ?? 0) }}>{name}</span>;
+      const name = seats.nameOf(id);
+      const owner = <span className={s.owner} title={name} style={{ ['--seat' as string]: seats.colorOf(id) }}>{name}</span>;
       return <li key={id} className={s.cell} data-fake-choice={id}>
         {pokemon
           ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="fill" flip={flip}>{owner}</Card>
@@ -62,8 +61,8 @@ function ChoiceBoard({ playerIds, picked, choices, revealing, flip, category, se
 }
 
 /** Quién era el fake y las dos categorías (encima del recuento, solo en `ROUND_RESULTS`). */
-function FakeReveal({ result, seats }: { result: FakeRoundResult; seats: ReadonlyMap<string, Seat> }) {
-  const fake = seats.get(result.fakePlayerId)?.member;
+function FakeReveal({ result, seats }: { result: FakeRoundResult; seats: RoomMembers }) {
+  const fake = seats.get(result.fakePlayerId);
   const name = fake?.displayName ?? 'Entrenador';
   return <Panel variant="cream" as="section" aria-label="El fake era" className={cx(s.reveal)} bodyClassName={cx(s.revealBody)}>
     <div className={s.revealWho}>
@@ -107,9 +106,8 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: ActiveGameProps) {
   const { pokemon, error: loadError, loading: poolLoading, retry } = usePokemonPool({ generations: config?.generations ?? [], includeForms: config?.includeRegionalForms ?? false, enabled: choosing && participating });
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
-  const seats = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
-  const nameOf = (id: string) => seats.get(id)?.member.displayName ?? 'Entrenador';
-  const avatarRefOf = (id: string) => seats.get(id)?.member.avatar;
+  const seats = useRoomMembers(room); const { nameOf } = seats;
+  const avatarRefOf = (id: string) => seats.get(id)?.avatar;
   const avatarOf = (id: string) => <Avatar name={nameOf(id)} avatar={avatarRefOf(id)} size="sm" />;
   const ownVote = participating ? player.ownVotePlayerId : null;
   const locked = voting && ownVote !== null;
@@ -139,7 +137,7 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: ActiveGameProps) {
   let stage;
   if (result) {
     const tallyOptions: TallyOption[] = result.players.map((entry) => ({
-      id: entry.playerId, name: nameOf(entry.playerId), media: avatarOf(entry.playerId), color: playerColor(seats.get(entry.playerId)?.index ?? 0), self: entry.playerId === selfId,
+      id: entry.playerId, name: nameOf(entry.playerId), media: avatarOf(entry.playerId), color: seats.colorOf(entry.playerId), self: entry.playerId === selfId,
       ...(entry.pokemon ? { pick: { name: entry.pokemon.name, sprite: guessSprite(entry.pokemon.sprite) } } : { detail: 'Sin elección' }),
       ...(entry.isFake ? { tags: [{ key: 'fake', label: 'Fake', icon: ShieldAlert }] } : {}),
     }));

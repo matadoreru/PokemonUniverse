@@ -11,6 +11,7 @@ import { guessSprite } from './guess-kit';
 import { PokemonSelector } from './PokemonSelector';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/who-am-i/WhoAmI.module.css';
 
 /** Plazo de `DECIDING` (`DECIDE_MS` del motor): no es configurable. */
@@ -156,8 +157,7 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const player = room.gamePlayerState as WhoAmIPlayerState | null;
   const config = room.selectedGameConfig as Partial<WhoAmIConfig> | null;
   const offset = useServerOffset(room.serverNow);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { nameOf } = useRoomMembers(room);
   const participating = player?.role === 'PLAYER' && game.playerIds.includes(selfId);
   const active = game.phase === 'TURN_ACTIVE' && game.turnPlayerId !== null && game.turnStep !== null;
   const ownTurn = active && game.turnPlayerId === selfId;

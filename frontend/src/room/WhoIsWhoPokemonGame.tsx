@@ -1,6 +1,6 @@
 import type { WhoIsWhoPlayerState, WhoIsWhoPokemonConfig, WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, Hourglass, MessageCircleQuestion, Target, X } from 'lucide-react';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { useServerOffset } from '../hooks/useServerTime';
 import { Chip, cx, Pill } from '../ui';
 import {
@@ -10,6 +10,7 @@ import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel 
 import { useFocusOnTransition } from './focus-transition';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
 
 const GAME_NAME = 'Quién es Quién';
@@ -31,9 +32,7 @@ export function WhoIsWhoPokemonGame({ room, selfId, onAction }: ActiveGameProps)
   const offset = useServerOffset(room.serverNow);
   const [busy, setBusy] = useState(false);
   const [dialog, setDialog] = useState<'guess' | 'secret' | null>(null);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
   const ready = secretsReady(game);
   const role: WhoRole = whoRole(game, player);
   const team = player?.team ?? null;

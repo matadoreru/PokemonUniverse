@@ -14,6 +14,7 @@ import { GuessPanel, GuessScreen, type GuessPlateContent } from './guess-kit';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
 
 /**
@@ -33,8 +34,7 @@ export function PokemonTriviaGame({ room, selfId, onAction }: ActiveGameProps) {
   const [draft, setDraft] = useState<PokemonTriviaOptionId | null>(null);
   const { pending, submit } = usePendingAction(onAction);
   const submitting = pending !== null;
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   // Jugadores de la partida: los que puntúan (los espectadores no), en el orden de la sala.
   const players = useMemo(() => room.members.map((member) => member.id).filter((id) => id in game.scores), [room.members, game.scores]);
   const result = triviaVisibleRound(game);

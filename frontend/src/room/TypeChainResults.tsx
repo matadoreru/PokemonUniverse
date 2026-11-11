@@ -3,10 +3,10 @@ import { Equal, ListOrdered, ShieldCheck, Skull, XCircle } from 'lucide-react';
 import { typeChainEliminationLabels } from '../games/type-chain/presentation';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
-import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
-import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { ResultsShell, standingRows } from './ResultsShell';
+import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
 
 const count = (value: number, one: string, many: string) => `${value} ${value === 1 ? one : many}`;
@@ -20,20 +20,13 @@ const count = (value: number, one: string, many: string) => `${value} ${value ==
 export function TypeChainResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TypeChainPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
-  const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const positions = standings.map((standing) => ({ id: standing.playerId, position: standing.position }));
-  const rows: ResultsStanding[] = standings.map((standing) => {
-    const index = room.members.findIndex((member) => member.id === standing.playerId);
+  const rows = standingRows(standings, members, (standing) => {
     const stats = standing.stats;
     const elimination = game.eliminations.find((entry) => entry.playerId === standing.playerId);
     const named = Number(stats.validSubmissions ?? 0); const invalid = Number(stats.invalidAttempts ?? 0);
     return {
-      id: standing.playerId,
-      position: standing.position,
-      name: nameOf(standing.playerId),
-      points: standing.points,
-      avatar: room.members[index]?.avatar,
-      color: playerColor(Math.max(0, index)),
       meta: <>
         {sharesPosition(positions, standing.playerId, () => standing.points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
         {elimination

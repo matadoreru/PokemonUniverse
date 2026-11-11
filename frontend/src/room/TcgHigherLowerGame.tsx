@@ -1,5 +1,5 @@
 import type { TcgHigherLowerChoice, TcgHigherLowerConfig, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { HigherLowerHud } from '../games/higher-lower/HigherLowerParts';
 import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgPlateKind, tcgVerdict } from '../games/tcg-higher-lower/presentation';
@@ -13,6 +13,7 @@ import { usePendingAction } from './usePendingAction';
 import { GameSkipSlot } from './GameSkipSlot';
 import { higherLowerRevealCountdown } from './higher-lower-labels';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import hl from '../games/higher-lower/HigherLower.module.css';
 import s from '../games/tcg-higher-lower/TcgHigherLower.module.css';
 
@@ -32,8 +33,7 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: ActiveGameProps) 
   const offset = useServerOffset(room.serverNow);
   const active = game.phase === 'ROUND_ACTIVE';
   const remaining = Math.ceil(useRemainingMs(game.roundEndsAt ?? game.nextTransitionAt, offset) / 1000);
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   // Solo en `ROUND_RESULTS`: fuera de ella no se pinta ningún precio de la nueva carta ni el resultado.
   const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
   const participant = game.playerIds.includes(selfId);

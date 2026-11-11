@@ -18,6 +18,7 @@ import { GameSkipSlot } from './GameSkipSlot';
 import { PokemonSelector } from './PokemonSelector';
 import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-impostor/PokemonImpostor.module.css';
 
 /**
@@ -33,9 +34,8 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   const game = room.game as PokemonImpostorPublicState;
   const player = room.gamePlayerState as PokemonImpostorPlayerState;
   const config = room.selectedGameConfig as PokemonImpostorConfig;
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const people: ImpostorPeople = useMemo(() => ({ members, colors, selfId, nameOf: (id: string) => members.get(id)?.displayName ?? id, outIds: new Set(game.eliminatedIds) }), [colors, members, selfId, game.eliminatedIds]);
+  const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
+  const people: ImpostorPeople = useMemo(() => ({ members, colors, selfId, nameOf, outIds: new Set(game.eliminatedIds) }), [colors, members, nameOf, selfId, game.eliminatedIds]);
   const [clueText, setClueText] = useState('');
   const [voteDraft, setVoteDraft] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);

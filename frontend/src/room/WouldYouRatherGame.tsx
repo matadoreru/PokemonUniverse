@@ -1,6 +1,6 @@
 import { WOULD_YOU_RATHER_PREDICTION_POINTS, type WouldYouRatherConfig, type WouldYouRatherOption, type WouldYouRatherPlayerState, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Lock, Scale, Send, Trophy, Users, X } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   WYR_OPTIONS, wouldYouRatherAnnouncement, wouldYouRatherCurrentStep, wouldYouRatherHeading, wouldYouRatherPlayerLine, wouldYouRatherRound,
   submitBallot, wouldYouRatherSteps, wouldYouRatherSummary, wouldYouRatherVerdict,
@@ -11,6 +11,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { pointsWord } from './guess-kit';
 import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialScreen, VoteTally, socialFocusKey, type ChoiceOption, type TallyOption } from './social-kit';
 import type { ActiveGameProps } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/would-you-rather/WouldYouRather.module.css';
 
 const GAME_NAME = 'Would You Rather Pokémon';
@@ -45,8 +46,7 @@ export function WouldYouRatherGame({ room, selfId, onAction }: ActiveGameProps) 
   const busy = busyRound === game.roundNumber;
   const open = active && participating && player.canSubmit && !locked;
 
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? 'Entrenador';
+  const { byId: members, nameOf } = useRoomMembers(room);
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   useFocusOnTransition(socialFocusKey(game.phase, game.roundNumber, 1, locked), titleRef);

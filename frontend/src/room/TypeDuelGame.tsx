@@ -17,6 +17,7 @@ import { typeDuelIsLastResult, typeDuelPhaseCue, typeDuelWillRetry } from './typ
 import { typeDuelHeading, typeDuelResultText } from './type-duel-result';
 import { TypeDuelVersus } from './TypeDuelVersus';
 import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { useRoomMembers } from './room-members';
 import s from '../games/type-duel/TypeDuel.module.css';
 
 /** Puntos del ganador de un duelo (regla del motor). */
@@ -41,9 +42,7 @@ function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TypeDuelPublicState;
   const player = room.gamePlayerState as TypeDuelPlayerState | null;
   const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.displayName ?? id;
+  const { byId: members, colorIndex: colors, nameOf } = useRoomMembers(room);
   const offset = useServerOffset(room.serverNow);
   const deadline = game.roundEndsAt ?? game.nextTransitionAt;
   const remaining = Math.ceil(useRemainingMs(deadline, offset) / 1000);
@@ -147,8 +146,7 @@ function TypeDuelCoopGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TypeDuelPublicState;
   const player = room.gamePlayerState as TypeDuelPlayerState | null;
   const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;
-  const members = useMemo(() => new Map(room.members.map((member) => [member.id, member])), [room.members]);
-  const colors = useMemo(() => new Map(room.members.map((member, index) => [member.id, index])), [room.members]);
+  const { byId: members, colorIndex: colors } = useRoomMembers(room);
   const offset = useServerOffset(room.serverNow);
   const deadline = game.roundEndsAt ?? game.nextTransitionAt;
   const remaining = Math.ceil(useRemainingMs(deadline, offset) / 1000);

@@ -3,7 +3,7 @@ import { Check, Equal, UserX, X } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Chip, cx, Icon } from '../ui';
 import { DEFAULT_LANE_GAP, DISTANCE_RULER_CAPTION, distanceMarkerLabel, formatDexNumber, rulerLayout, type RulerMarker } from './distance-ruler';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import s from './DistanceRuler.module.css';
 
 /**
@@ -63,8 +63,7 @@ export function DistanceRuler({ round, members, selfId, className }: { round: Pu
   const laneCount = Math.max(0, ...placed.map((marker) => marker.lane)) + 1;
   const compact = laneCount > MAX_FULL_LANES;
   const pitch = compact ? COMPACT_LANE_VAR : LANE_VAR;
-  const nameOf = (playerId: string) => members.find((member) => member.id === playerId)?.displayName ?? playerId;
-  const colorOf = (playerId: string) => playerColor(Math.max(0, members.findIndex((member) => member.id === playerId)));
+  const { nameOf, colorOf } = useRoomMembers({ members });
   const target = round.targetPokemon;
   return <figure className={cx(s.ruler, className)} data-testid="distance-ruler">
     <figcaption className={s.caption}>{DISTANCE_RULER_CAPTION}</figcaption>

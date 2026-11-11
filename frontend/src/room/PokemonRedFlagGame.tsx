@@ -1,6 +1,6 @@
 import { RED_FLAG_WIN_POINTS, type PokemonRedFlagConfig, type PokemonRedFlagPlayerState, type PokemonRedFlagPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, ThumbsDown, ThumbsUp, Trophy, X } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { Avatar } from '../components/Avatar';
 import { redFlagAnnouncement, sendRedFlagDraft, redFlagCurrentStep, redFlagHeading, redFlagQuestion, redFlagSteps, redFlagVerdict } from '../games/pokemon-red-flag/presentation';
 import { RedFlagWriter } from '../games/pokemon-red-flag/RedFlagWriter';
@@ -9,7 +9,7 @@ import { Card, Chip, cx, Icon } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import type { ActiveGameProps } from './room-command';
 import { guessSprite, pointsWord } from './guess-kit';
-import { playerColor } from './player-color';
+import { useRoomMembers } from './room-members';
 import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
   type BallotOption, type TallyOption,
@@ -42,8 +42,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: ActiveGameProps) 
   const green = mode === 'GREEN';
   const transitionMs = useRemainingMs(result ? game.nextTransitionAt : null, offset);
 
-  const members = useMemo(() => new Map(room.members.map((member, index) => [member.id, { member, index }])), [room.members]);
-  const nameOf = (id: string) => members.get(id)?.member.displayName ?? 'Entrenador';
+  const members = useRoomMembers(room); const { nameOf } = members;
   const ownAnswer = participating ? player.ownAnswer : null;
   const ownVote = participating ? player.ownVoteAnswerId : null;
   const voteLocked = voting && ownVote !== null;
@@ -76,11 +75,11 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: ActiveGameProps) 
     {...(pokemon ? { media: <span className={cx(s.pokemon, voting && s.pokemonVoting)}><Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} decorativeSprite size="sm" eager /></span> } : {})} />;
 
   const tallyOptions: TallyOption[] = (result?.answers ?? []).map((answer) => ({
-    id: answer.id, name: nameOf(answer.authorId), text: <>“{answer.text}”</>, color: playerColor(members.get(answer.authorId)?.index ?? 0), self: answer.authorId === selfId,
-    media: <Avatar name={nameOf(answer.authorId)} avatar={members.get(answer.authorId)?.member.avatar} size="sm" />,
+    id: answer.id, name: nameOf(answer.authorId), text: <>“{answer.text}”</>, color: members.colorOf(answer.authorId), self: answer.authorId === selfId,
+    media: <Avatar name={nameOf(answer.authorId)} avatar={members.get(answer.authorId)?.avatar} size="sm" />,
   }));
   const stage = result
-    ? <VoteTally idBase="red-flag-tally" title="Autores revelados" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winningAnswerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.member.avatar}
+    ? <VoteTally idBase="red-flag-tally" title="Autores revelados" options={tallyOptions} rounds={result.voteRounds} winnerIds={result.winningAnswerIds} voterName={nameOf} voterAvatar={(id) => members.get(id)?.avatar}
       winnerLabel={'Frase ganadora'} intro={pokemon ? redFlagQuestion(mode, pokemon.name) : undefined}
       emptyText="Nadie escribió una respuesta a tiempo." className={s.tally} />
     : prompt;
