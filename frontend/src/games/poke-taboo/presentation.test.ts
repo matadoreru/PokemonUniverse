@@ -35,7 +35,8 @@ describe('palabras prohibidas', () => {
   });
 
   // Casos fijos que rechaza `PokeTabooRules.containsTabooPokemonName` del motor Java sin los nombres en otros idiomas
-  // (`names`, que solo conoce el servidor). Si el motor cambia la regla, hay que cambiar esta tabla.
+  // (`names`, que solo conoce el servidor). `PokeTabooRulesTest.java` comprueba la misma tabla contra el motor: si
+  // cambia la regla, hay que cambiar las dos.
   it('rechaza exactamente las pistas que rechazaría el motor en una tabla de Pokémon y pistas', () => {
     const rejected: Record<string, { pokemon: { id: string; name: string }; hints: string[] }> = {
       lucario: { pokemon: lucario, hints: ['Es como LUCARIO pero azul', 'lu ca rio', 'superlucariomax'] },
