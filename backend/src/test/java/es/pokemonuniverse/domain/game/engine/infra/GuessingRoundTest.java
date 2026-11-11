@@ -1,7 +1,6 @@
 package es.pokemonuniverse.domain.game.engine.infra;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
@@ -35,5 +34,27 @@ class GuessingRoundTest {
     var attempts = List.of("a", "b");
     assertEquals(attempts, GuessingRound.guideAttempts(false, attempts));
     assertNull(GuessingRound.guideAttempts(true, attempts));
+  }
+
+  private record Attempt(String playerId, String pokemonId) {}
+
+  private static final List<Attempt> ATTEMPTS = List.of(new Attempt("p1", "pidgey"), new Attempt("p2", "rattata"),
+      new Attempt("p1", "zubat"));
+
+  /** Con los intentos públicos, la vista pública los lleva todos; si no, ninguno. */
+  @Test
+  void publicAttemptsAreAllOrNothing() {
+    assertEquals(ATTEMPTS, GuessingRound.publicAttempts(true, ATTEMPTS));
+    assertEquals(List.of(), GuessingRound.publicAttempts(false, ATTEMPTS));
+  }
+
+  /** Sin intentos públicos, cada jugador recibe solo los suyos, en orden; con ellos, la vista propia no los repite. */
+  @Test
+  void ownAttemptsFilterOutEveryoneElse() {
+    assertEquals(List.of(ATTEMPTS.get(0), ATTEMPTS.get(2)),
+        GuessingRound.ownAttempts(false, ATTEMPTS, Attempt::playerId, "p1"));
+    assertEquals(List.of(ATTEMPTS.get(1)), GuessingRound.ownAttempts(false, ATTEMPTS, Attempt::playerId, "p2"));
+    assertEquals(List.of(), GuessingRound.ownAttempts(false, ATTEMPTS, Attempt::playerId, "p3"));
+    assertNull(GuessingRound.ownAttempts(true, ATTEMPTS, Attempt::playerId, "p1"));
   }
 }
