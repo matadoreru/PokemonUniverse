@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AdminSyncView, type AdminSyncViewProps } from './AdminSyncPanel';
-import { LEGACY, syncItem } from './fixtures';
+import { LEGACY } from '../styles/legacy-classes';
+import { syncItem } from './fixtures';
 
 const noop = () => undefined;
 const base: AdminSyncViewProps = { items: [], loading: false, error: '', syncing: '', onSync: noop, onRetry: noop };

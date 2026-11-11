@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AdminChangelogPanel, ChangelogVersionList, emptyChanges, formFromEntry, highlightCount, newChangelogForm, normalizedChange } from './AdminChangelogPanel';
-import { entry, LEGACY } from './fixtures';
+import { LEGACY } from '../styles/legacy-classes';
+import { entry } from './fixtures';
 
 const noop = () => undefined;
 

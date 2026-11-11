@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AdminFeedbackPanel, AdminFeedbackView, type AdminFeedbackViewProps } from './AdminFeedbackPanel';
-import { feedback, LEGACY } from './fixtures';
+import { LEGACY } from '../styles/legacy-classes';
+import { feedback } from './fixtures';
 
 const noop = () => undefined;
 const base: AdminFeedbackViewProps = {

@@ -8,6 +8,7 @@ import { PokemonBingoGame } from './PokemonBingoGame';
 import { PokemonBingoResults } from './PokemonBingoResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -56,7 +57,6 @@ function room(game: PokemonBingoPublicState, player: PokemonBingoPlayerState | n
 
 const playing: PokemonBingoPlayerState = { canAct: true, cooldownUntil: null, lastAttempt: null };
 const render = (view: RoomView, selfId = 'p1') => renderToStaticMarkup(createElement(PokemonBingoGame, { room: view, selfId, onAction: async () => undefined }));
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|card|chip|label|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry)\b/;
 
 describe('PokemonBingoGame', () => {
   it('pinta el tablero propio como cartas conmutadoras con la condición, el colocado y la vacía', () => {

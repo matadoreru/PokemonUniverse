@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AdminRecordsView, type AdminRecordsViewProps } from './AdminRecords';
-import { adminUser, LEGACY, room } from './fixtures';
+import { LEGACY } from '../styles/legacy-classes';
+import { adminUser, room } from './fixtures';
 
 const noop = () => undefined;
 const base: AdminRecordsViewProps = {

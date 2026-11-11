@@ -8,11 +8,11 @@ import { WhoIsWhoPokemonResults } from './WhoIsWhoPokemonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { labelledRadiogroup } from '../ui/segmented-markup';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|icon-button|card|chip|label|field|panel|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry|text-aqua|text-ink|bg-berry|empty-state|status-error|page-shell)\b/;
 const MEDALS = /🥇|🥈|🥉|🏆/;
 
 const board = [

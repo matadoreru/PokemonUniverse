@@ -8,11 +8,11 @@ import { PokemonRedFlagGame } from './PokemonRedFlagGame';
 import { PokemonRedFlagResults } from './PokemonRedFlagResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|card|chip|label|field|panel|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry|text-aqua|empty-state|status-error)\b/;
 const NAMES = ['Eru', 'Ana', 'Leo'];
 const LONG = 'Guarda en su Poké Ball una colección de 300 calcetines desparejados y supercalifragilisticoespialidosamente sucios';
 

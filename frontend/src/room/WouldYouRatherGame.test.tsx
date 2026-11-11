@@ -9,12 +9,12 @@ import { WouldYouRatherGame } from './WouldYouRatherGame';
 import { WouldYouRatherResults } from './WouldYouRatherResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|card|chip|label|field|panel|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry|text-aqua|empty-state|status-error)\b/;
 const PROMPT = { optionA: 'Vivir con Gengar', optionB: 'Viajar con Magikarp' };
 
 const majorityResult: WouldYouRatherRoundResult = {

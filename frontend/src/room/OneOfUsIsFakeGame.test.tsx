@@ -9,13 +9,13 @@ import { OneOfUsIsFakeGame } from './OneOfUsIsFakeGame';
 import { OneOfUsIsFakeResults } from './OneOfUsIsFakeResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{ id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png' }], error: '', loading: false, retry: () => undefined }) }));
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|card|chip|label|field|panel|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry|text-aqua|text-ink|bg-berry|empty-state|status-error)\b/;
 
 const MAIN = 'Pokémon que parecen mascotas';
 const VARIANT = 'Pokémon guardaespaldas';

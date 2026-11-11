@@ -8,13 +8,13 @@ import { brushDotSize } from './SketchmonCanvas';
 import { SketchmonResults } from './SketchmonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 // El pool del buscador nunca contiene el secreto (si lo tuviera, el test de privacidad fallaría en falso).
 vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{ id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png', generation: 1, types: ['electric'] }], loading: false, error: '', retry: () => undefined }) }));
 
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|icon-button|card|chip|label|field|panel|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry|text-aqua|empty-state|status-error|page-shell|type-badge|sketchmon-canvas)\b/;
 const MEDALS = /🥇|🥈|🥉|🏆/;
 
 const drawing = [{ id: 'line_1', tool: 'PENCIL' as const, color: '#182033' as const, width: 8, points: [{ x: 0.1, y: 0.2 }, { x: 0.4, y: 0.5 }] }];

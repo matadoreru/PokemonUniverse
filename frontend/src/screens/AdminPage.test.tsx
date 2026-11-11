@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { LEGACY } from '../admin/fixtures';
+import { LEGACY } from '../styles/legacy-classes';
 import { AdminPage } from './AdminPage';
 
 describe('AdminPage', () => {

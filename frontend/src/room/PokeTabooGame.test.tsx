@@ -7,13 +7,13 @@ import { PokeTabooGame } from './PokeTabooGame';
 import { PokeTabooResults } from './PokeTabooResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
+import { LEGACY } from '../styles/legacy-classes';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
 // El pool del buscador nunca contiene el secreto (si lo tuviera, el test de privacidad fallaría en falso).
 vi.mock('../hooks/usePokemonPool', () => ({ usePokemonPool: () => ({ pokemon: [{ id: 'pikachu', name: 'Pikachu', sprite: '/pikachu.png', generation: 1, types: ['electric'] }], loading: false, error: '', retry: () => undefined }) }));
 
-const LEGACY = /class="[^"]*\b(btn-primary|btn-secondary|btn-ghost|icon-button|card|chip|label|field|panel|reveal-pop|timer-pulse|text-electric|text-leaf|text-berry|text-aqua|empty-state|status-error|page-shell|type-badge)\b/;
 const MEDALS = /🥇|🥈|🥉|🏆/;
 
 const secret: PokeTabooSecretPokemon = {
