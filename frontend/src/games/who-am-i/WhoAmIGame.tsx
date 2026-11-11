@@ -260,6 +260,6 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   }
   const bottom = <SocialPlate titleRef={titleRef} content={content} search={search}>{body}</SocialPlate>;
 
-  return <SocialScreen gameName={WHO_AM_I_NAME} roundNumber={game.lap} totalRounds={game.maxLaps} roundLabel={`Vuelta ${Math.max(1, game.lap)} de ${game.maxLaps}`}
+  return <SocialScreen gameName={WHO_AM_I_NAME} roundNumber={game.lap} phase={game.phase} totalRounds={game.maxLaps} roundLabel={`Vuelta ${Math.max(1, game.lap)} de ${game.maxLaps}`}
     heading={turnHeadline(game, selfId, nameOf)} meta={meta} timer={timer} announcement={announcement} stage={stage} side={side} bottom={bottom} className={s.screen} />;
 }

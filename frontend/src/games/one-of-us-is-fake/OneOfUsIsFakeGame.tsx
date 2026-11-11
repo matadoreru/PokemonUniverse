@@ -210,7 +210,7 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: ActiveGameProps) {
   }
 
   const meta = informedFake ? <Chip tone="bad" icon={<Icon icon={ShieldAlert} size={18} />}>Eres el fake</Chip> : undefined;
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={fakeHeading(game.phase, game.voteRoundNumber, result)} {...(meta ? { meta } : {})} timer={timer}
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={fakeHeading(game.phase, game.voteRoundNumber, result)} {...(meta ? { meta } : {})} timer={timer}
     announcement={announcement} phases={<PhaseRail steps={fakeSteps(game.phase, game.voteRoundNumber, result?.voteRounds.length ?? 0)} current={fakeCurrentStep(game.phase)} />}
     stage={stage} side={side} bottom={bottom} />;
 }

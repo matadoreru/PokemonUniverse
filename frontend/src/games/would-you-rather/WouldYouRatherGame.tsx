@@ -124,7 +124,7 @@ export function WouldYouRatherGame({ room, selfId, onAction }: ActiveGameProps) 
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={wouldYouRatherHeading(game.phase, result)} timer={timer}
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={wouldYouRatherHeading(game.phase, result)} timer={timer}
     announcement={wouldYouRatherAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, locked, result })}
     phases={<PhaseRail steps={wouldYouRatherSteps} current={wouldYouRatherCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

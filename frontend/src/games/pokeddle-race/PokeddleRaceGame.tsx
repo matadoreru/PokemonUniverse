@@ -150,7 +150,7 @@ export function PokeddleRaceGame({ room, selfId, onAction }: ActiveGameProps) {
     {rival && <PokeddleBoard board={rival} clues={game.enabledClues} mode="rival" owner={rivalName} title="Sus intentos" />}
   </Dialog>;
 
-  return <>{dialog}<GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.maxRounds} heading={heading}
+  return <>{dialog}<GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.maxRounds} heading={heading}
     meta={<Chip tone="neutral" icon={<Icon icon={Users} size={18} />}>{game.activePlayerIds.length} en carrera</Chip>}
     timer={timer} announcement={announcement} clue={clue} side={<RacePanel game={game} members={members} colors={colors} selfId={selfId} onOpen={setRivalId} />} bottom={bottom} className={s.screen} /></>;
 }

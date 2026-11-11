@@ -45,6 +45,45 @@
 .clue > * {
   flex: 1 1 auto;
 }
+/* Entrada de la pista al cambiar de ronda o de fase: dos animaciones iguales que se alternan (cambiar de nombre la
+   reinicia sin volver a montar). `backwards`: al acabar no queda `transform` (lo fijo de dentro no cambia de caja). */
+.enterOdd {
+  animation: clue-enter-odd var(--t-screen) var(--ease) backwards;
+}
+.enterEven {
+  animation: clue-enter-even var(--t-screen) var(--ease) backwards;
+}
+@keyframes clue-enter-odd {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes clue-enter-even {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes clue-fade-odd {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes clue-fade-even {
+  from {
+    opacity: 0;
+  }
+}
+/* Con reducción de movimiento, solo el fundido de 120 ms (§3.4). */
+@media (prefers-reduced-motion: reduce) {
+  .enterOdd {
+    animation: clue-fade-odd var(--t-fade) var(--ease) backwards;
+  }
+  .enterEven {
+    animation: clue-fade-even var(--t-fade) var(--ease) backwards;
+  }
+}
 
 /* Placa de la ronda: ronda y juego arriba, el título debajo; el plazo y «Saltar minijuego» a la derecha. */
 .hud {

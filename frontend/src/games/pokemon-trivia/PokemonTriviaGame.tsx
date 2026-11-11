@@ -83,7 +83,7 @@ export function PokemonTriviaGame({ room, selfId, onAction }: ActiveGameProps) {
   const selected = player?.answer?.optionId ?? draft;
   const content = plateContent({ kind, game, player, verdict, countdown: `${last ? 'Clasificación' : 'Siguiente pregunta'} en ${Math.max(0, transition)}s`, optionCount: game.options.length, draft, submitting, onConfirm: confirm });
 
-  return <GameScreen gameName="Pokémon Trivia" roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} className={s.screen}
+  return <GameScreen gameName="Pokémon Trivia" roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} className={s.screen}
     meta={<Chip tone="neutral">{triviaDifficultyLabels[game.difficulty]}</Chip>}
     timer={timer} announcement={triviaAnnouncement({ kind, game, player, verdict })}
     clue={<TriviaBoard game={game} result={result} selected={selected} pending={submitting} canAnswer={canAnswer} members={members} selfId={selfId} onSelect={selectOption} />}

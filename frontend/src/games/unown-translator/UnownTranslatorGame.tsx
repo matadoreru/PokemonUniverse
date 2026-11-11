@@ -199,6 +199,6 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
   </SocialPlate>;
 
   const heading = lastRound ? `¡Decía ${lastRound.answer}!` : QUESTION;
-  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} testId="unown-screen" />;
 }

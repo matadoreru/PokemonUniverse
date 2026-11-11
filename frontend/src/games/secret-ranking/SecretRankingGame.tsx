@@ -243,6 +243,6 @@ export function SecretRankingGame({ room, selfId, onAction }: ActiveGameProps) {
 
   const announcement = secretRankingAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, locked, move: open ? current.move : null, moveSeq: current.seq, result, nameOf });
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={secretRankingHeading(game.phase, result, locked)} timer={timer}
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={secretRankingHeading(game.phase, result, locked)} timer={timer}
     announcement={announcement} phases={<PhaseRail steps={secretRankingSteps} current={secretRankingCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

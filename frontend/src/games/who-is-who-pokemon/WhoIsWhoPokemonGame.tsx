@@ -110,7 +110,7 @@ export function WhoIsWhoPokemonGame({ room, selfId, onAction }: ActiveGameProps)
   const bottom = <SocialPlate titleRef={titleRef} content={content} className={s.plate} textClassName={ownMiss && ready ? s.plateMiss : s.plateHelp} />;
 
   return <>
-    <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} roundLabel={whoRoundLabel(game)} heading={heading} meta={meta} timer={timer}
+    <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} roundLabel={whoRoundLabel(game)} heading={heading} meta={meta} timer={timer}
       announcement={whoAnnouncement({ game, player, nameOf })} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} />
     <WhoPickDialog open={dialog !== null} mode={dialog ?? 'guess'} cards={game.board} discardedIds={discarded} busy={busy} epoch={game.turnNumber}
       onClose={() => setDialog(null)} onConfirm={(pokemonId) => void confirm(pokemonId)} />

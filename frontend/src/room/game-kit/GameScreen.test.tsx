@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { GameScreen } from './GameScreen';
+import { clueEntryClass, GameScreen } from './GameScreen';
 import { expectSingleLiveRegion } from '../test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
@@ -17,5 +17,13 @@ describe('game-kit: marco', () => {
     expect(html).toMatch(/<h1[^>]*>Reconoce su silueta<\/h1>/);
     const silent = renderToStaticMarkup(<GameScreen gameName="x" roundNumber={1} totalRounds={1} heading="h" timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={null} side={null} bottom={null} />);
     expectSingleLiveRegion(silent);
+  });
+  it('la pista no entra al montar y alterna dos animaciones en cada cambio de ronda o fase', () => {
+    expect(clueEntryClass(0)).toBeUndefined();
+    expect(clueEntryClass(1)).toMatch(/enterOdd/);
+    expect(clueEntryClass(2)).toMatch(/enterEven/);
+    expect(clueEntryClass(3)).toBe(clueEntryClass(1));
+    const html = renderToStaticMarkup(<GameScreen gameName="x" roundNumber={1} totalRounds={1} phase="ROUND_ACTIVE" heading="h" timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={<p>pista</p>} side={null} bottom={null} />);
+    expect(html).not.toMatch(/enter(Odd|Even)/);
   });
 });

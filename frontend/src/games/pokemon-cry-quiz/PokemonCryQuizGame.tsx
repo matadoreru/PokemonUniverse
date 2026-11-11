@@ -98,6 +98,6 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: ActiveGameProps) 
     watchingText="Puedes escuchar el grito y seguir el marcador."
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el grito ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer}
     announcement={cryAnnouncement(announcement, audioError)} clue={clue} side={side} bottom={bottom} />;
 }

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ServerTimer } from '../../components/ServerTimer';
 import { Badge, cx, Panel, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from './GameSkipSlot';
@@ -21,6 +21,11 @@ export interface GameScreenProps {
   gameName: string;
   roundNumber: number;
   totalRounds: number;
+  /**
+   * Fase de la ronda (`game.phase`). Con la ronda, es la clave de la entrada suave de la pista: al cambiar cualquiera de
+   * las dos, la pista entra de nuevo sin volver a montarse (ni ella ni la placa de abajo, que conserva el foco y el texto).
+   */
+  phase?: string | undefined;
   /** Título (`h1`): la pregunta en la ronda («¿Quién es ese Pokémon?») o «¡Era X!» en la revelación. */
   heading: string;
   /** Chips extra de la cabecera, junto a la ronda (p. ej. «Referencia Gen 4», «Zoom ×4»). */
@@ -49,6 +54,26 @@ export interface GameScreenProps {
 }
 
 /**
+ * Cuántas veces ha cambiado `key` desde el montaje (0 al montar). No vuelve a montar nada: sirve para alternar dos
+ * clases de animación iguales, que el navegador reinicia al cambiar de nombre.
+ */
+export function useStepCount(key: string): number {
+  const [step, setStep] = useState({ key, n: 0 });
+  if (step.key !== key) {
+    const next = { key, n: step.n + 1 };
+    setStep(next);
+    return next.n;
+  }
+  return step.n;
+}
+
+/** Clase de entrada de la pista: ninguna al montar (ya entra la pantalla entera) y, en cada cambio, una de las dos. */
+export function clueEntryClass(step: number): string | undefined {
+  if (step === 0) return undefined;
+  return step % 2 === 1 ? s.enterOdd : s.enterEven;
+}
+
+/**
  * Marco de las pantallas de juego (spec §2 y §6 «Juegos»), el de los kits de adivinar, social y de subasta:
  * `ScreenSplit fill` con, arriba, la placa de la ronda (ronda N de M, nombre del juego, título, plazo y «Saltar
  * minijuego»), la pista y las pistas adicionales; abajo, la placa de la acción; al lado, el marcador y los intentos (o
@@ -58,7 +83,8 @@ export interface GameScreenProps {
  * pista va arriba con el plazo y la placa de la acción pegada al fondo. El mismo marco sirve a la ronda y a la
  * revelación: así la región viva no se vuelve a montar al cambiar de fase.
  */
-export function GameScreen({ gameName, roundNumber, totalRounds, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId }: GameScreenProps) {
+export function GameScreen({ gameName, roundNumber, totalRounds, phase, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId }: GameScreenProps) {
+  const clueStep = useStepCount(`${roundNumber}|${phase ?? ''}`);
   const top = <div className={s.top}>
     <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
       <div className={s.hudMain}>
@@ -75,7 +101,7 @@ export function GameScreen({ gameName, roundNumber, totalRounds, heading, meta, 
       </div>
     </Panel>
     {phases}
-    <div className={s.clue}>{clue}</div>
+    <div className={cx(s.clue, clueEntryClass(clueStep))}>{clue}</div>
     {hints}
   </div>;
   return <div className={cx('content-row', s.screen, className)} {...(testId ? { 'data-testid': testId } : {})}>

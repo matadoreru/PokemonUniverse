@@ -11,6 +11,8 @@ export interface SocialScreenProps {
   gameName: string;
   roundNumber: number;
   totalRounds: number;
+  /** Fase de la ronda (`game.phase`): con la ronda, la clave de la entrada de la escena (ver `GameScreen`). */
+  phase?: string | undefined;
   /** Texto de la insignia en lugar de «Ronda N de M» (Poké Taboo: «Turno 3 de 6 · Vuelta 1 de 2»). */
   roundLabel?: ReactNode;
   /** `h1` corto de la fase («Elige tu respuesta», «Segunda vuelta», «La respuesta favorita»); una línea con elipsis. */
