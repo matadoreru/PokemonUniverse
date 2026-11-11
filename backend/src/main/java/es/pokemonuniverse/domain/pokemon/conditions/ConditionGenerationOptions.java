@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@code ConditionGenerationOptions}, antes en {@code pokemon/conditions/types.ts}: {@code families} va indexado por las
- * claves de {@link #BINGO_FAMILY_KEYS} y {@code maxConditions} es {@code 1} o {@code 2}.
+ * {@code ConditionGenerationOptions}, antes en {@code pokemon/conditions/types.ts}: {@code families} va indexado por
+ * las claves de {@link #BINGO_FAMILY_KEYS} y {@code maxConditions} es {@code 1} o {@code 2}.
  */
 public record ConditionGenerationOptions(List<Integer> generations, Map<String, Boolean> families, int maxConditions,
     int combinationLimit) {

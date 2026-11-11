@@ -1,6 +1,9 @@
 package es.pokemonuniverse.domain.game.assets;
 
-/** Canal alfa de una imagen, fila a fila ({@code AlphaPlane}, antes en {@code zoomed-pokemon/rules.ts}); valores sin signo. */
+/**
+ * Canal alfa de una imagen, fila a fila ({@code AlphaPlane}, antes en {@code zoomed-pokemon/rules.ts}); valores sin
+ * signo.
+ */
 public record AlphaPlane(int width, int height, byte[] alpha) {
 
   public AlphaPlane {

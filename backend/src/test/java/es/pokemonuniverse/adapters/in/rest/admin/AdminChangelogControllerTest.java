@@ -26,7 +26,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** {@code createAdminChangelogRouter}: CRUD de novedades con los esquemas Zod que antes estaban en {@code shared/changelog.ts}. */
+/**
+ * {@code createAdminChangelogRouter}: CRUD de novedades con los esquemas Zod que antes estaban en
+ * {@code shared/changelog.ts}.
+ */
 @MicronautTest(transactional = false)
 class AdminChangelogControllerTest {
 

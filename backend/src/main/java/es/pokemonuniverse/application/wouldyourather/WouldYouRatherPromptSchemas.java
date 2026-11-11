@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Esquemas Zod de dilemas (los de crear e importar siguen en {@code packages/shared/src/custom-would-you-rather.ts}; el
- * de editar estaba antes ahí), con las incidencias de Zod 4 en el mismo orden: primero los campos, después las claves desconocidas del objeto y por último el refine.
+ * Esquemas Zod de dilemas (los de crear e importar siguen en {@code packages/shared/src/custom-would-you-rather.ts};
+ * el de editar estaba antes ahí), con las incidencias de Zod 4 en el mismo orden: primero los campos, después las
+ * claves desconocidas del objeto y por último el refine.
  * <ul>
  *   <li>El refine de opciones distintas compara los valores ya recortados y corre aunque haya {@code too_small},
  *   {@code too_big} o claves desconocidas; no corre si alguna opción no es una cadena.</li>

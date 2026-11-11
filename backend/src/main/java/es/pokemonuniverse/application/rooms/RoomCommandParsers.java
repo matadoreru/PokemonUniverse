@@ -36,7 +36,10 @@ public final class RoomCommandParsers {
 
   private RoomCommandParsers() {}
 
-  /** {@code roomCodeSchema} (antes en {@code shared/room.ts}): {@code trim()}, {@code toUpperCase()} y {@code ^[A-Z2-9]{6}$}. */
+  /**
+   * {@code roomCodeSchema} (antes en {@code shared/room.ts}): {@code trim()}, {@code toUpperCase()} y
+   * {@code ^[A-Z2-9]{6}$}.
+   */
   public static String roomCode(@Nullable JsonNode raw) {
     var issues = new ZodIssues();
     if (raw == null || !raw.isString()) {
@@ -64,7 +67,8 @@ public final class RoomCommandParsers {
 
   /**
    * {@code gameSelectionModeSchema}, antes en {@code shared/room.ts}. Un cliente antiguo aún puede mandar
-   * {@code { type: "FIXED" }} (el minijuego fijo, sin lista): se lee como {@code ORDER} con solo {@code currentGameId}, que es lo mismo.
+   * {@code { type: "FIXED" }} (el minijuego fijo, sin lista): se lee como {@code ORDER} con solo
+   * {@code currentGameId}, que es lo mismo.
    */
   public static GameSelectionMode gameSelectionMode(@Nullable JsonNode raw, String currentGameId) {
     if (raw != null && raw.isObject() && raw.get("type") != null && raw.get("type").isString()
