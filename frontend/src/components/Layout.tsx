@@ -12,7 +12,8 @@ import { FriendsButton } from '../friends/FriendsButton';
 import { FriendsDrawer } from '../friends/FriendsDrawer';
 import { useInviteToasts } from '../friends/InviteToasts';
 import { RoomNotice } from '../room/RoomNotice';
-import { RouteLoadingFallback } from './LoadingFallback';
+import { LoadErrorBoundary } from './LoadErrorBoundary';
+import { RouteLoadError, RouteLoadingFallback } from './LoadingFallback';
 import s from './Layout.module.css';
 
 /**
@@ -133,9 +134,12 @@ export function Layout() {
           {/* Hueco de avisos flotantes (conexión de la sala): capa de alto cero pegada arriba, bajo la cabecera. */}
           <div id={HEADER_NOTICES_ID} className="sticky top-0 z-toast h-0" />
           <ScreenTransition routeKey={pathname} focusHeading>
-            <Suspense fallback={<RouteLoadingFallback />}>
-              <Outlet />
-            </Suspense>
+            {/* Una carga fallida pinta su error con «Reintentar» en lugar de dejar la pantalla en blanco; otra ruta lo olvida. */}
+            <LoadErrorBoundary resetKey={pathname} fallback={(props) => <RouteLoadError {...props} />}>
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <Outlet />
+              </Suspense>
+            </LoadErrorBoundary>
           </ScreenTransition>
         </main>
       </div>

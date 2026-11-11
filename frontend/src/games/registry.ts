@@ -1,6 +1,7 @@
 import { validateGameConfigReadiness, type GameConfigReadinessContext, type RoomView } from '@pokemon-universe/shared/public';
 import type { ActiveGameProps, GameResultsProps } from '../room/room-command';
-import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import type { ComponentType } from 'react';
+import { retryableLazy } from '../lib/retryable-lazy';
 import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
 import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
 
@@ -26,20 +27,16 @@ interface LazyComponentDefinition {
   exportName: string;
 }
 
-function preloadableComponent<TProps>(definition: LazyComponentDefinition): {
-  Component: LazyExoticComponent<ComponentType<TProps>>;
+/** El componente perezoso de un juego, con su precarga y reintentable tras un fallo (`retryableLazy`). */
+function preloadableComponent<TProps extends object>(definition: LazyComponentDefinition): {
+  Component: ComponentType<TProps>;
   preload(): Promise<unknown>;
 } {
-  let pending: Promise<{ default: ComponentType<TProps> }> | null = null;
-  const load = () => {
-    pending ??= definition.load().then((module) => {
-      const Component = module[definition.exportName];
-      if (!Component) throw new Error(`Missing client component export: ${definition.exportName}`);
-      return { default: Component as ComponentType<TProps> };
-    }).catch((error: unknown) => { pending = null; throw error; });
-    return pending;
-  };
-  return { Component: lazy(load), preload: load };
+  return retryableLazy<TProps>(() => definition.load().then((module) => {
+    const Component = module[definition.exportName];
+    if (!Component) throw new Error(`Missing client component export: ${definition.exportName}`);
+    return { default: Component as ComponentType<TProps> };
+  }));
 }
 
 /**

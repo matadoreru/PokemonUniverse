@@ -1,6 +1,7 @@
 import { defaultPokemonBingoConfig, type RoomMemberView, type RoomView } from '@pokemon-universe/shared/public';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { isRetryableLazy } from '../lib/retryable-lazy';
 import { clientGameRegistry, webConfigChecks } from './registry';
 import { member, roomView } from '../room/test-support/room-view';
 
@@ -45,11 +46,11 @@ describe('client minigame registry', () => {
     ]);
   });
 
-  it('keeps configuration, gameplay and results behind React lazy boundaries', () => {
+  it('keeps configuration, gameplay and results behind retryable lazy boundaries', () => {
     for (const module of clientGameRegistry.list()) {
-      expect(module.ConfigPanel).toHaveProperty('$$typeof', Symbol.for('react.lazy'));
-      expect(module.ActiveGame).toHaveProperty('$$typeof', Symbol.for('react.lazy'));
-      expect(module.Results).toHaveProperty('$$typeof', Symbol.for('react.lazy'));
+      expect(isRetryableLazy(module.ConfigPanel)).toBe(true);
+      expect(isRetryableLazy(module.ActiveGame)).toBe(true);
+      expect(isRetryableLazy(module.Results)).toBe(true);
     }
   });
 

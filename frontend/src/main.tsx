@@ -1,4 +1,4 @@
-import { lazy, StrictMode, Suspense, type ReactNode } from 'react';
+import { lazy, StrictMode, Suspense, type ComponentType, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
@@ -8,20 +8,24 @@ import { RequireAuth } from './components/RequireAuth';
 import { RequireAdmin } from './components/RequireAdmin';
 import { HomePage } from './screens/HomePage';
 import { RotationPreview } from './screens/RotationPreview';
+import { retryableLazy } from './lib/retryable-lazy';
 import './styles.css';
 
-const AuthPage = lazy(() => import('./screens/AuthPage').then((module) => ({ default: module.AuthPage })));
-const PlayPage = lazy(() => import('./screens/PlayPage').then((module) => ({ default: module.PlayPage })));
-const ProfilePage = lazy(() => import('./screens/ProfilePage').then((module) => ({ default: module.ProfilePage })));
-const PublicProfilePage = lazy(() => import('./screens/PublicProfilePage').then((module) => ({ default: module.PublicProfilePage })));
-const RoomPage = lazy(() => import('./screens/RoomPage').then((module) => ({ default: module.RoomPage })));
-const RoomSessionLayout = lazy(() => import('./room/RoomSessionLayout').then((module) => ({ default: module.RoomSessionLayout })));
-const AdminPage = lazy(() => import('./screens/AdminPage').then((module) => ({ default: module.AdminPage })));
-const ChangelogPage = lazy(() => import('./screens/ChangelogPage').then((module) => ({ default: module.ChangelogPage })));
-const ForgotPasswordPage = lazy(() => import('./screens/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
-const ResetPasswordPage = lazy(() => import('./screens/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
-const DailyPage = lazy(() => import('./daily/DailyPage').then((module) => ({ default: module.DailyPage })));
-const FeedbackPage = lazy(() => import('./screens/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
+/** Pantalla perezosa que «Reintentar» puede volver a cargar si falla su `import()` (`LoadErrorBoundary` en `Layout`). */
+const page = (load: () => Promise<{ default: ComponentType }>) => retryableLazy(load).Component;
+
+const AuthPage = page(() => import('./screens/AuthPage').then((module) => ({ default: module.AuthPage })));
+const PlayPage = page(() => import('./screens/PlayPage').then((module) => ({ default: module.PlayPage })));
+const ProfilePage = page(() => import('./screens/ProfilePage').then((module) => ({ default: module.ProfilePage })));
+const PublicProfilePage = page(() => import('./screens/PublicProfilePage').then((module) => ({ default: module.PublicProfilePage })));
+const RoomPage = page(() => import('./screens/RoomPage').then((module) => ({ default: module.RoomPage })));
+const RoomSessionLayout = page(() => import('./room/RoomSessionLayout').then((module) => ({ default: module.RoomSessionLayout })));
+const AdminPage = page(() => import('./screens/AdminPage').then((module) => ({ default: module.AdminPage })));
+const ChangelogPage = page(() => import('./screens/ChangelogPage').then((module) => ({ default: module.ChangelogPage })));
+const ForgotPasswordPage = page(() => import('./screens/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
+const ResetPasswordPage = page(() => import('./screens/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
+const DailyPage = page(() => import('./daily/DailyPage').then((module) => ({ default: module.DailyPage })));
+const FeedbackPage = page(() => import('./screens/FeedbackPage').then((module) => ({ default: module.FeedbackPage })));
 
 // Galería del catálogo (solo desarrollo): el `import()` va dentro de la rama DEV para que no entre en el bundle.
 const Gallery = import.meta.env.DEV ? lazy(() => import('./ui/dev/Gallery').then((module) => ({ default: module.Gallery }))) : null;

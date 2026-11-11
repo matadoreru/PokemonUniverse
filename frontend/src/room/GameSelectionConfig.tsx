@@ -1,7 +1,7 @@
 import { gameModeCatalog, NEXT_GAME_VOTE_OPTIONS, playerCountReadinessReason, supportsPlayerCount, type GameSelectionMode, type GameSelectionType, type MiniGameManifest, type RoomView } from '@pokemon-universe/shared/public';
 import { AlertCircle, Check, ListOrdered, LockKeyhole, Settings2, Shuffle, Vote } from 'lucide-react';
-import { Suspense, useEffect, useState } from 'react';
-import { GameLoadingFallback } from '../components/LoadingFallback';
+import { useEffect, useState } from 'react';
+import { GameLoad } from '../components/LoadingFallback';
 import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, StateBox } from '../ui';
 import { GameArt } from '../games/GameArt';
@@ -202,7 +202,7 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
       <div className={g.editorBody}>
         {disabled && <p className={g.readonly}><Icon icon={LockKeyhole} size={18} />Solo el host y los co-hosts pueden cambiar estos ajustes.</p>}
         <SessionModesProvider value={sessionModes}>
-          <Suspense fallback={<GameLoadingFallback compact />}><client.ConfigPanel config={rotationGameConfig(room, editingGame.id)} disabled={disabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></Suspense>
+          <GameLoad compact resetKey={editingGame.id}><client.ConfigPanel config={rotationGameConfig(room, editingGame.id)} disabled={disabled} room={room} selfId={selfId} onChange={(config) => onConfig(editingGame.id, config)} /></GameLoad>
         </SessionModesProvider>
       </div>
     </Panel>;
