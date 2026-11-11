@@ -843,8 +843,11 @@ function CardSection() {
         </div>
       </Fig>
       <Fig id="card-selected-mark" caption="Elegida con tic de esquina (selectedMark, marks=line): el estado no va solo en el tinte · orden de los minijuegos y final de la sesión">
-        <Card size="sm" art={<span className="text-34">∞</span>} name="Infinita" state="selected" selectedMark onSelect={() => undefined} />
-        <Card size="sm" art={<span className="text-34">#</span>} name="Por partidas" selectedMark onSelect={() => undefined} />
+        {/* Con el ancho de las cartas del lobby (una columna en el móvil, tres en escritorio): el tic no pisa el icono. */}
+        <div className="grid w-full gap-3">
+          <Card size="sm" art={<span className="text-34">∞</span>} name="Infinita" state="selected" selectedMark onSelect={() => undefined} />
+          <Card size="sm" art={<span className="text-34">#</span>} name="Por partidas" selectedMark onSelect={() => undefined} />
+        </div>
       </Fig>
       <Fig id="card-selected-mark-fill" caption="Llena con selectedMark: elegida y sin elegir">
         <div className="grid h-56 w-full grid-cols-2 gap-3">
