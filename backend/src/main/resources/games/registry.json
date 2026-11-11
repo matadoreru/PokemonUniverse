@@ -2702,6 +2702,7 @@
     "experimental": false,
     "minPlayers": 2,
     "maxPlayers": 8,
+    "presenceGraceMs": 8000,
     "profileStats": {
       "metrics": [
         {

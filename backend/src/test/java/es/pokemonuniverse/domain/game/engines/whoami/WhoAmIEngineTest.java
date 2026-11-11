@@ -154,6 +154,12 @@ class WhoAmIEngineTest {
   }
 
   @Test
+  void shortDisconnectsHaveAPresenceGrace() {
+    // Un microcorte (cambiar de app) no pasa el turno ni acaba la partida: la sala espera 8 s antes de avisar al motor.
+    assertEquals(Integer.valueOf(8_000), engine.manifest().presenceGraceMs());
+  }
+
+  @Test
   void needsTwoPlayers() throws IOException {
     assertEquals(2, engine.manifest().minPlayers());
     var error = assertThrows(EngineException.class, () -> engine.createInitialState(config(10), context(1, 3)));
