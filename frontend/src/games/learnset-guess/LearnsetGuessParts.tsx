@@ -1,4 +1,4 @@
-import type { LearnsetGuessAttempt, LearnsetGuessPublicState, LearnsetMoveGroup, LearnsetMoveHint, LearnsetRoundResult, MoveCategory, RoomMemberView } from '@pokemon-universe/shared/public';
+import { learnsetManualRevealPoints, type LearnsetGuessAttempt, type LearnsetGuessPublicState, type LearnsetMoveGroup, type LearnsetMoveHint, type LearnsetRoundResult, type MoveCategory, type RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { AlarmClock, BookOpen, Check, CheckCircle2, CircleDashed, Clock3, Coins, Equal, Eye, EyeOff, Hourglass, Lightbulb, Search, Sparkles, Swords, WifiOff, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
@@ -106,6 +106,9 @@ export function LearnsetScoreboard({ lines, selfId, className }: { lines: readon
   </Panel>;
 }
 
+/** Revelación manual: lo que cuesta cada grupo de movimientos más a la vista, con la cuenta del motor. */
+const MANUAL_REVEAL_STEP = learnsetManualRevealPoints(2, 1) - learnsetManualRevealPoints(2, 2);
+
 /**
  * Intentos (columna lateral): los fallos de la ronda, el último arriba. Públicos en Clásico; en Revelación manual
  * (`own`) solo los propios, que nadie más ve.
@@ -116,7 +119,7 @@ export function LearnsetAttempts({ attempts, members, colors, className, own = f
     {/* Vacío sin región viva propia (la pantalla ya tiene la suya): enseña a jugar. */}
     {ordered.length === 0
       ? <p className={s.empty}><Icon icon={Search} size={24} />{own
-        ? <span><strong>Todavía no has fallado.</strong> Cada fallo te enseña otro grupo de movimientos, pero el acierto vale 10 puntos menos.</span>
+        ? <span><strong>Todavía no has fallado.</strong> Cada fallo te enseña otro grupo de movimientos, pero el acierto vale {MANUAL_REVEAL_STEP} puntos menos.</span>
         : <span><strong>Todavía no hay intentos incorrectos.</strong> Cuanto antes aciertes, más puntos: cada pista nueva resta uno.</span>}</p>
       : <ul className={s.rows} aria-label="Intentos de la ronda">{ordered.map((attempt, index) => {
         const name = members.get(attempt.playerId)?.displayName ?? attempt.playerId;
