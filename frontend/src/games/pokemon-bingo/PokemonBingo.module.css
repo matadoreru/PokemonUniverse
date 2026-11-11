@@ -531,3 +531,7 @@
   background: var(--ok);
   color: var(--navy);
 }
+/* Casilla elegida: el disco amarillo de `Card` con `selectedMark`, en el hueco del de «completa». */
+.picked {
+  background: var(--yellow);
+}

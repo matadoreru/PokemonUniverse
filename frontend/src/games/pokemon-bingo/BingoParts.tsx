@@ -1,5 +1,5 @@
 import type { BingoPublicBoard, PokemonBingoPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Eye, Grid3x3, Plus, Trophy } from 'lucide-react';
+import { Check, CheckCircle2, Eye, Grid3x3, Plus, Trophy } from 'lucide-react';
 import { useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { guessSprite } from '../../room/guess-kit';
@@ -36,7 +36,7 @@ export function BingoBoard({ board, width, height, selectedCellId = null, onSele
       const assigned = cell.assignment;
       const selected = cell.id === selectedCellId;
       const solutions = showSolutions ? cell.possibleSolutions : [];
-      return <Card key={cell.id} size="fill" name={condition} decorativeSprite state={selected ? 'selected' : 'idle'} selectedMark
+      return <Card key={cell.id} size="fill" name={condition} decorativeSprite state={selected ? 'selected' : 'idle'}
         {...(assigned ? { sprite: guessSprite(assigned.sprite) } : { art: <Icon icon={Plus} size={24} /> })}
         attrs={{
           'data-bingo-cell': cell.id,
@@ -51,9 +51,11 @@ export function BingoBoard({ board, width, height, selectedCellId = null, onSele
               <span className="sr-only">Completa</span>
             </span>
             {/* «Completa» a la vista: el tic de la esquina (el sprite ocupa la casilla; el texto, para lectores). */}
-            <span className={s.done} aria-hidden="true"><Icon icon={CheckCircle2} size={18} /></span>
+            {!selected && <span className={s.done} aria-hidden="true"><Icon icon={CheckCircle2} size={18} /></span>}
           </>
           : <span className={s.empty}>Vacía</span>}
+        {/* Elegida: en la misma esquina, el tic amarillo de la carta elegida (no solo el tinte); el panel de abajo la nombra. */}
+        {selected && <span className={cx(s.done, s.picked)} aria-hidden="true" data-mark="selected"><Icon icon={Check} size={18} /></span>}
         {solutions.length > 0 && <span className={s.solutions}>
           <span className={s.solutionsTitle}>Podías usar</span>
           <span className={s.solutionList}>{solutions.map((pokemon) => <span key={pokemon.id} className={s.solution}>

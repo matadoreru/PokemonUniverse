@@ -842,11 +842,14 @@ function CardSection() {
           <Card size="fill" name="Oricorio Estilo Apasionado" art={<span className="text-34">💃</span>} onSelect={() => undefined} />
         </div>
       </Fig>
-      <Fig id="card-selected-mark" caption="Elegida con tic de esquina (selectedMark, marks=line): el estado no va solo en el tinte · modo de sesión y casilla de Bingo">
-        <div className="grid h-56 w-full grid-cols-3 gap-3">
-          <Card size="sm" art={<span className="text-34">∞</span>} name="Infinita" state="selected" selectedMark onSelect={() => undefined} />
-          <Card size="sm" art={<span className="text-34">#</span>} name="Por partidas" selectedMark onSelect={() => undefined} />
+      <Fig id="card-selected-mark" caption="Elegida con tic de esquina (selectedMark, marks=line): el estado no va solo en el tinte · orden de los minijuegos y final de la sesión">
+        <Card size="sm" art={<span className="text-34">∞</span>} name="Infinita" state="selected" selectedMark onSelect={() => undefined} />
+        <Card size="sm" art={<span className="text-34">#</span>} name="Por partidas" selectedMark onSelect={() => undefined} />
+      </Fig>
+      <Fig id="card-selected-mark-fill" caption="Llena con selectedMark: elegida y sin elegir">
+        <div className="grid h-56 w-full grid-cols-2 gap-3">
           <Card size="fill" name="Tipo Fuego" art={<span className="text-34">+</span>} state="selected" selectedMark onSelect={() => undefined} />
+          <Card size="fill" name="Tipo Agua" art={<span className="text-34">+</span>} selectedMark onSelect={() => undefined} />
         </div>
       </Fig>
       <Fig id="card-corner-marks" caption="Marcas en la esquina (marks=corner): elegida, correcta e incorrecta, con quién la eligió encima del sprite · el hueco del sprite no cambia">

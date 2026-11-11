@@ -129,7 +129,7 @@ export function GameOrderChoice({ mode, compatibleCount, pairCount = compatibleC
     <div className={g.choices} role="group" aria-label="Orden de los minijuegos">
       {ORDER_CHOICES.map((choice) => (
         // Solo lectura: carta sin botón, sin atenuar (el modo elegido se sigue viendo amarillo).
-        <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={mode.type === choice.type ? 'selected' : 'idle'} {...(disabled ? {} : { onSelect: () => { if (choice.type !== mode.type) onChange({ type: choice.type, gameIds: mode.gameIds }); } })} />
+        <Card key={choice.type} size="sm" art={<Icon icon={choice.icon} size={32} />} name={choice.title} state={mode.type === choice.type ? 'selected' : 'idle'} selectedMark {...(disabled ? {} : { onSelect: () => { if (choice.type !== mode.type) onChange({ type: choice.type, gameIds: mode.gameIds }); } })} />
       ))}
     </div>
     {showHint && <GameOrderHint mode={mode} compatibleCount={compatibleCount} pairCount={pairCount} />}

@@ -194,6 +194,11 @@
   color: var(--navy);
   box-shadow: var(--sh-hard-3);
 }
+/* `selectedMark`: el mismo disco, en la esquina superior derecha de la carta. */
+.cardMark {
+  top: var(--sp-2);
+  right: var(--sp-2);
+}
 .markOk {
   background: var(--ok);
 }

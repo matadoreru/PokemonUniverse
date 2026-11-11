@@ -58,8 +58,8 @@ export interface CardProps {
    */
   marks?: 'line' | 'corner';
   /**
-   * Con `marks="line"`: la elegida lleva también el tic de esquina, para que «elegida» no sea solo el tinte y el
-   * contorno. No hace falta si la carta ya marca su elección de otra forma (el número de orden del lobby).
+   * Con `marks="line"`: la elegida lleva también el tic en la esquina superior derecha de la carta, para que «elegida»
+   * no sea solo el tinte y el contorno. No hace falta si la carta ya marca su elección de otra forma (el número de orden del lobby).
    */
   selectedMark?: boolean;
   /** Capa sobre el hueco del sprite, abajo a la derecha (p. ej. los avatares de quién la eligió): no ocupa alto. */
@@ -110,10 +110,10 @@ function CardImage({ src, alt, eager, className }: { src: string; alt: string; e
 }
 
 /** Marca de esquina (`marks="corner"`): correcta, incorrecta o elegida; el texto, solo para lectores de pantalla. */
-function CornerMark({ state }: { state: CardState }) {
+function CornerMark({ state, className }: { state: CardState; className?: string | undefined }) {
   if (state === 'correct') return <span className={cx(s.mark, s.markOk)} data-mark="correct"><Icon icon={Check} size={18} /><span className="sr-only">Correcta</span></span>;
   if (state === 'wrong') return <span className={cx(s.mark, s.markBad)} data-mark="wrong"><Icon icon={X} size={18} /><span className="sr-only">Incorrecta</span></span>;
-  if (state === 'selected') return <span className={cx(s.mark, s.markSelected)} data-mark="selected" aria-hidden="true"><Icon icon={Check} size={18} /></span>;
+  if (state === 'selected') return <span className={cx(s.mark, s.markSelected, className)} data-mark="selected" aria-hidden="true"><Icon icon={Check} size={18} /></span>;
   return null;
 }
 
@@ -141,7 +141,7 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
         ) : (
           <span className={s.placeholder} aria-hidden="true">?</span>
         )}
-        {(marks === 'corner' || (selectedMark && state === 'selected')) && <CornerMark state={state} />}
+        {marks === 'corner' && <CornerMark state={state} />}
         {artOverlay != null && <span className={s.overlay}>{artOverlay}</span>}
       </span>
       {/* Llena, el nombre largo se recorta con elipsis: `title` deja leerlo entero. */}
@@ -167,6 +167,8 @@ export function Card({ sprite, name, number, types, state = 'idle', photo, size 
         </span>
       )}
       {children}
+      {/* En la esquina de la carta, no del hueco del sprite: en las cartas pequeñas taparía su icono. */}
+      {marks === 'line' && selectedMark && state === 'selected' && <CornerMark state={state} className={s.cardMark} />}
     </>
   );
   const cls = cx(s.card, s[state], size === 'sm' && s.sm, size === 'fill' && s.fill, flip && s.flip, onSelect && s.button);
