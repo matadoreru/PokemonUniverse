@@ -1,7 +1,7 @@
 import { errorText, looksSpanish } from '../lib/api-errors';
 import { OFFLINE_MESSAGE, TIMEOUT_MESSAGE } from '../lib/realtime';
 
-/** Longitud del código de sala (`roomCodeSchema`: `^[A-Z2-9]{6}$`). */
+/** Longitud del código de sala (`RoomCommandParsers.roomCode` del backend: `^[A-Z2-9]{6}$`). */
 export const ROOM_CODE_LENGTH = 6;
 
 /**

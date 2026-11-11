@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Valores fijados ejecutando {@code validFocusPoint} de {@code packages/shared/dist/games/zoomed-pokemon/rules.js} con
- * {@code npx tsx} sobre los mismos planos sintéticos (ver el informe de la Tarea 3 de la etapa 2B).
+ * Valores fijados ejecutando {@code validFocusPoint}, antes en {@code packages/shared/src/games/zoomed-pokemon/rules.ts},
+ * con {@code npx tsx} sobre los mismos planos sintéticos (ver el informe de la Tarea 3 de la etapa 2B).
  */
 class FocusPointsTest {
 

@@ -297,4 +297,4 @@ Team Auction and Bluff Auction use a 20-second bid-turn limit by default and aut
 
 `@pokemon-universe/shared/public` is the package's only entry, for web code and tests alike; engines live only in Java. `npm run check:boundaries` walks the runtime import graph of that entry and rejects any dependency other than `zod`; `npm test` runs that check and rebuilds shared before testing consumers.
 
-`npm run benchmark:rooms` compares repeated and shared public projection work for synthetic Sketchmon rooms. It excludes serialization, network and database costs. PostgreSQL isolation regressions run only with an explicit `TEST_DATABASE_URL`; CI supplies its disposable migrated database. They never fall back to a developer's `DATABASE_URL`.
+PostgreSQL tests run in the Java backend against a disposable Testcontainers database (`cd backend && ./gradlew check`); they never use a developer's `DATABASE_URL`.
