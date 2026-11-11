@@ -1,6 +1,6 @@
 package es.pokemonuniverse.application.datasync.pokemon;
 
-import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * regionales, learnsets, evolución, metadatos de Pokeddle y entradas de Pokédex). Una fase solo escribe cuando ya
  * tiene descargados todos sus requisitos, y su versión en {@code "PokemonCatalogSync"} se escribe al terminarla.
  *
- * <p>Las peticiones van por {@link SyncHttpClient} (Node usa su propio {@code fetchJson}: 4 intentos con espera
+ * <p>Las peticiones van por {@link SyncHttp} (Node usa su propio {@code fetchJson}: 4 intentos con espera
  * {@code intento*400} ms); un estado HTTP de error conserva el literal de Node
  * {@code PokéAPI returned <status> for <label>}. Los lotes de 25 peticiones concurrentes conservan el orden.
  */
@@ -55,11 +55,11 @@ public class PokemonCatalogSeeder {
       Map.of("alola", "Alola", "galar", "Galar", "hisui", "Hisui", "paldea", "Paldea");
 
   private final PokemonCatalogStore store;
-  private final SyncHttpClient http;
+  private final SyncHttp http;
   private final PokeApiUrls urls;
   private final Clock clock;
 
-  public PokemonCatalogSeeder(PokemonCatalogStore store, SyncHttpClient http, PokeApiUrls urls, Clock clock) {
+  public PokemonCatalogSeeder(PokemonCatalogStore store, SyncHttp http, PokeApiUrls urls, Clock clock) {
     this.store = store;
     this.http = http;
     this.urls = urls;
@@ -140,9 +140,9 @@ public class PokemonCatalogSeeder {
   private JsonNode fetchJson(URI uri, String label) {
     try {
       return http.json(uri, label);
-    } catch (SyncHttpClient.SyncHttpException e) {
+    } catch (SyncHttp.SyncHttpException e) {
       if (e.status() == 0) throw e;
-      throw new SyncHttpClient.SyncHttpException("PokéAPI returned " + e.status() + " for " + label, e.status());
+      throw new SyncHttp.SyncHttpException("PokéAPI returned " + e.status() + " for " + label, e.status());
     }
   }
 

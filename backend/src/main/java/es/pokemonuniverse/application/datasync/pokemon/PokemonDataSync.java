@@ -1,11 +1,11 @@
 package es.pokemonuniverse.application.datasync.pokemon;
 
-import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
 import es.pokemonuniverse.application.datasync.DataSyncAdapter;
 import es.pokemonuniverse.application.datasync.DataSyncMode;
 import es.pokemonuniverse.application.datasync.DataSyncSource;
 import es.pokemonuniverse.application.datasync.PokemonPaletteCount;
 import es.pokemonuniverse.application.datasync.SyncResult;
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.json.tree.JsonNode;
 import java.time.Instant;
@@ -29,13 +29,13 @@ public class PokemonDataSync implements DataSyncAdapter {
   private final PokemonCatalogStore store;
   private final PokemonCatalogSeeder seeder;
   private final PokemonPaletteSync palettes;
-  private final SyncHttpClient http;
+  private final SyncHttp http;
   private final PokeApiUrls urls;
   private final SeederLimits limits;
   private final Clock clock;
 
   public PokemonDataSync(PokemonCatalogStore store, PokemonCatalogSeeder seeder, PokemonPaletteSync palettes,
-      SyncHttpClient http, PokeApiUrls urls, SeederLimits limits, Clock clock) {
+      SyncHttp http, PokeApiUrls urls, SeederLimits limits, Clock clock) {
     this.store = store;
     this.seeder = seeder;
     this.palettes = palettes;

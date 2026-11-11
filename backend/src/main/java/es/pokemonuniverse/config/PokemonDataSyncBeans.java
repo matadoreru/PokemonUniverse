@@ -1,12 +1,12 @@
 package es.pokemonuniverse.config;
 
-import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
 import es.pokemonuniverse.application.datasync.pokemon.PokeApiUrls;
 import es.pokemonuniverse.application.datasync.pokemon.PokemonCatalogSeeder;
 import es.pokemonuniverse.application.datasync.pokemon.PokemonCatalogStore;
 import es.pokemonuniverse.application.datasync.pokemon.PokemonDataSync;
 import es.pokemonuniverse.application.datasync.pokemon.PokemonPaletteSync;
 import es.pokemonuniverse.application.datasync.pokemon.SeederLimits;
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
@@ -25,13 +25,13 @@ import javax.sql.DataSource;
 public class PokemonDataSyncBeans {
 
   @Singleton
-  PokemonPaletteSync pokemonPaletteSync(PokemonCatalogStore store, SyncHttpClient http, Clock clock,
+  PokemonPaletteSync pokemonPaletteSync(PokemonCatalogStore store, SyncHttp http, Clock clock,
       PuConfig.DataSync config) {
     return new PokemonPaletteSync(store, http, config.spriteBaseUrl(), clock);
   }
 
   @Singleton
-  PokemonCatalogSeeder pokemonCatalogSeeder(PokemonCatalogStore store, SyncHttpClient http, Clock clock,
+  PokemonCatalogSeeder pokemonCatalogSeeder(PokemonCatalogStore store, SyncHttp http, Clock clock,
       PuConfig.DataSync config) {
     return new PokemonCatalogSeeder(store, http, new PokeApiUrls(config.pokeapiBaseUrl()), clock);
   }
@@ -43,7 +43,7 @@ public class PokemonDataSyncBeans {
 
   @Singleton
   PokemonDataSync pokemonDataSync(PokemonCatalogStore store, PokemonCatalogSeeder seeder, PokemonPaletteSync palettes,
-      SyncHttpClient http, Clock clock, PuConfig.DataSync config, SeederLimits limits) {
+      SyncHttp http, Clock clock, PuConfig.DataSync config, SeederLimits limits) {
     return new PokemonDataSync(store, seeder, palettes, http, new PokeApiUrls(config.pokeapiBaseUrl()), limits,
         clock);
   }

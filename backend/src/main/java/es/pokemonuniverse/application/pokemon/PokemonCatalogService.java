@@ -10,7 +10,7 @@ import es.pokemonuniverse.adapters.out.persistence.PokemonEvolutionRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonLevelUpMoveRepository;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
-import es.pokemonuniverse.adapters.out.storage.FilesystemArtworkCatalog;
+import es.pokemonuniverse.application.ports.ArtworkCatalog;
 import es.pokemonuniverse.application.rooms.GameCatalogProvider;
 import es.pokemonuniverse.application.rooms.GameCatalogs;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonAudioCatalog;
@@ -23,11 +23,9 @@ import es.pokemonuniverse.domain.pokemon.PokemonEvolutionInfo;
 import es.pokemonuniverse.domain.pokemon.PokemonEvolutionLink;
 import es.pokemonuniverse.domain.pokemon.RegionalForms;
 import es.pokemonuniverse.domain.text.Collations;
-import io.micronaut.context.annotation.Property;
 import io.micronaut.data.model.Sort;
 import jakarta.inject.Singleton;
 import java.time.Duration;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,7 +68,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
   private final PokedexEntryRepository pokedexEntries;
   private final PokemonEvolutionRepository evolutionLinks;
   private final JpaPokemonAudioCatalog audio;
-  private final Path artworkDir;
+  private final ArtworkCatalog artworks;
   private final CatalogSnapshotCache<InMemoryPokemonCatalog> cache =
       new CatalogSnapshotCache<>(this::load, TTL, Instant::now);
   private final CatalogSnapshotCache<InMemoryPokemonCatalog> selectorCache =
@@ -78,15 +76,14 @@ public class PokemonCatalogService implements GameCatalogProvider {
 
   public PokemonCatalogService(PokemonRepository repository, MoveRepository moves,
       PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries,
-      PokemonEvolutionRepository evolutionLinks, JpaPokemonAudioCatalog audio,
-      @Property(name = "pu.artwork-dir") String artworkDir) {
+      PokemonEvolutionRepository evolutionLinks, JpaPokemonAudioCatalog audio, ArtworkCatalog artworks) {
     this.repository = repository;
     this.moves = moves;
     this.learnsets = learnsets;
     this.pokedexEntries = pokedexEntries;
     this.evolutionLinks = evolutionLinks;
     this.audio = audio;
-    this.artworkDir = Path.of(artworkDir);
+    this.artworks = artworks;
   }
 
   /**
@@ -127,7 +124,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
   @Override
   public GameCatalogs loadPokemonCatalog() {
     var pokemon = catalog();
-    return new GameCatalogs(pokemon, new FilesystemArtworkCatalog(artworkDir, ids(pokemon)), audio.load());
+    return new GameCatalogs(pokemon, artworks.load(ids(pokemon)), audio.load());
   }
 
   /**
@@ -151,7 +148,7 @@ public class PokemonCatalogService implements GameCatalogProvider {
         if (e.getCause() instanceof Error cause) throw cause;
         throw e;
       }
-      var visuals = new FilesystemArtworkCatalog(artworkDir, ids(pokemon));
+      var visuals = artworks.load(ids(pokemon));
       cache.replace(pokemon);
       // Sin volver a la base de datos: el constructor de un argumento reaplica el mismo filtro (idempotente).
       selectorCache.replace(new InMemoryPokemonCatalog(pokemon.all()));

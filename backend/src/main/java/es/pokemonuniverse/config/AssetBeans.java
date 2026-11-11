@@ -1,11 +1,13 @@
 package es.pokemonuniverse.config;
 
 import es.pokemonuniverse.adapters.out.assets.TrustedAssetSourceLoader;
+import es.pokemonuniverse.adapters.out.storage.FilesystemArtworkCatalog;
 import es.pokemonuniverse.adapters.out.storage.FilesystemSpriteStorage;
 import es.pokemonuniverse.application.assets.AssetSourceLoader;
 import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.pokemon.PokemonSpriteService;
 import es.pokemonuniverse.application.pokemon.StoredSpriteSourceLoader;
+import es.pokemonuniverse.application.ports.ArtworkCatalog;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Property;
 import jakarta.inject.Singleton;
@@ -21,6 +23,13 @@ public class AssetBeans {
   @Singleton
   AssetSourceLoader assetSourceLoader(@Property(name = "pu.artwork-dir") String artworkDir) {
     return new TrustedAssetSourceLoader(Path.of(artworkDir));
+  }
+
+  /** Los artworks de las partidas salen del mismo directorio de confianza; se vuelven a indexar en cada recarga. */
+  @Singleton
+  ArtworkCatalog artworkCatalog(@Property(name = "pu.artwork-dir") String artworkDir) {
+    var dir = Path.of(artworkDir);
+    return catalogIds -> new FilesystemArtworkCatalog(dir, catalogIds);
   }
 
   @Singleton

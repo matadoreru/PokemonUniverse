@@ -1,10 +1,10 @@
 package es.pokemonuniverse.application.datasync.tcg;
 
-import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
 import es.pokemonuniverse.application.datasync.DataSyncAdapter;
 import es.pokemonuniverse.application.datasync.DataSyncMode;
 import es.pokemonuniverse.application.datasync.DataSyncSource;
 import es.pokemonuniverse.application.datasync.SyncResult;
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
@@ -31,12 +31,12 @@ public class TcgDataSync implements DataSyncAdapter {
   static final long BATCH_PAUSE_MS = 100;
 
   private final TcgCatalogStore store;
-  private final SyncHttpClient http;
+  private final SyncHttp http;
   private final TcgDexUrls urls;
-  private final SyncHttpClient.Sleeper sleeper;
+  private final SyncHttp.Sleeper sleeper;
   private final Clock clock;
 
-  public TcgDataSync(TcgCatalogStore store, SyncHttpClient http, TcgDexUrls urls, SyncHttpClient.Sleeper sleeper,
+  public TcgDataSync(TcgCatalogStore store, SyncHttp http, TcgDexUrls urls, SyncHttp.Sleeper sleeper,
       Clock clock) {
     this.store = store;
     this.http = http;

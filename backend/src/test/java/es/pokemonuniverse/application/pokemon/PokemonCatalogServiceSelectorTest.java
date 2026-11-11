@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.adapters.out.persistence.PokemonEntity;
 import es.pokemonuniverse.adapters.out.persistence.PokemonRepository;
+import es.pokemonuniverse.adapters.out.storage.FilesystemArtworkCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import io.micronaut.data.model.Sort;
 import java.lang.reflect.Proxy;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,8 @@ class PokemonCatalogServiceSelectorTest {
         row("bulbasaur-dup", 1, "bulbasaur", true),
         // Forma no admitida: tampoco entra.
         row("ivysaur-gmax", 2, "ivysaur", false)));
-    var service = new PokemonCatalogService(repository, null, null, null, null, null, "/tmp/sin-artworks");
+    var service = new PokemonCatalogService(repository, null, null, null, null, null,
+        ids -> new FilesystemArtworkCatalog(Path.of("/tmp/sin-artworks"), ids));
 
     var ids = service.selectorSearch(new PokemonSearchQuery(List.of(), true)).stream().map(Pokemon::id).toList();
 

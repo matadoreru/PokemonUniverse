@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.out.http;
 
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.JsonMapper;
@@ -36,7 +37,7 @@ import java.util.function.IntSupplier;
  * o la indicada por {@code Retry-After} (tope 60 s). Los demás 4xx fallan sin reintento.
  */
 @Singleton
-public class SyncHttpClient {
+public class SyncHttpClient implements SyncHttp {
 
   public static final String SIZE_LIMIT = "La respuesta supera el límite permitido.";
   static final String USER_AGENT = "PokemonUniverse-DataSync/1.0";
@@ -48,31 +49,6 @@ public class SyncHttpClient {
   /** Parámetros del cliente (constraint 5 del plan). */
   public record Options(int attempts, long baseDelayMs, long timeoutMs, long maxBytes) {
     public static final Options DEFAULTS = new Options(4, 500, 30_000, 16L * 1024 * 1024);
-  }
-
-  /** Espera entre intentos; inyectada para que las pruebas no duerman. */
-  @FunctionalInterface
-  public interface Sleeper {
-    void sleep(long millis) throws InterruptedException;
-  }
-
-  /** Fallo de una petición; {@link #status()} es el código HTTP o 0 si no hubo respuesta válida. */
-  public static class SyncHttpException extends RuntimeException {
-
-    private final int status;
-
-    public SyncHttpException(String message) {
-      this(message, 0);
-    }
-
-    public SyncHttpException(String message, int status) {
-      super(message);
-      this.status = status;
-    }
-
-    public int status() {
-      return status;
-    }
   }
 
   private final JsonMapper json;
@@ -99,6 +75,7 @@ public class SyncHttpClient {
   }
 
   /** Descarga y parsea JSON; un JSON inválido no se reintenta (en Node {@code JSON.parse} va fuera del bucle). */
+  @Override
   public JsonNode json(URI uri, String label) {
     var body = request(uri, label, "application/json");
     try {
@@ -109,6 +86,7 @@ public class SyncHttpClient {
   }
 
   /** Descarga binaria (sprites); {@code Accept: image/*} como en Node. */
+  @Override
   public byte[] bytes(URI uri, String label) {
     return request(uri, label, "image/*");
   }

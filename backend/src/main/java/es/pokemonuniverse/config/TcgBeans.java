@@ -1,9 +1,9 @@
 package es.pokemonuniverse.config;
 
-import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
 import es.pokemonuniverse.application.datasync.tcg.TcgCatalogStore;
 import es.pokemonuniverse.application.datasync.tcg.TcgDataSync;
 import es.pokemonuniverse.application.datasync.tcg.TcgDexUrls;
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.tcg.CachedTcgCardCatalog;
 import es.pokemonuniverse.application.tcg.TcgCardRepository;
 import es.pokemonuniverse.application.time.Clock;
@@ -27,7 +27,7 @@ public class TcgBeans {
   }
 
   @Singleton
-  TcgDataSync tcgDataSync(TcgCatalogStore store, SyncHttpClient http, Clock clock, PuConfig.DataSync config) {
+  TcgDataSync tcgDataSync(TcgCatalogStore store, SyncHttp http, Clock clock, PuConfig.DataSync config) {
     return new TcgDataSync(store, http, new TcgDexUrls(config.tcgdexBaseUrl()), Thread::sleep, clock);
   }
 }

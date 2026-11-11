@@ -1,7 +1,7 @@
 package es.pokemonuniverse.application.datasync.pokemon;
 
-import es.pokemonuniverse.adapters.out.http.SyncHttpClient;
 import es.pokemonuniverse.application.datasync.PokemonPaletteCount;
+import es.pokemonuniverse.application.ports.SyncHttp;
 import es.pokemonuniverse.application.time.Clock;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.json.tree.JsonNode;
@@ -38,11 +38,11 @@ public class PokemonPaletteSync implements PokemonPaletteCount {
   private enum Outcome { UPDATED, SKIPPED, FAILED }
 
   private final PokemonCatalogStore store;
-  private final SyncHttpClient http;
+  private final SyncHttp http;
   private final String spriteBase;
   private final Clock clock;
 
-  public PokemonPaletteSync(PokemonCatalogStore store, SyncHttpClient http, String spriteBase, Clock clock) {
+  public PokemonPaletteSync(PokemonCatalogStore store, SyncHttp http, String spriteBase, Clock clock) {
     this.store = store;
     this.http = http;
     this.spriteBase = spriteBase.endsWith("/") ? spriteBase.substring(0, spriteBase.length() - 1) : spriteBase;
