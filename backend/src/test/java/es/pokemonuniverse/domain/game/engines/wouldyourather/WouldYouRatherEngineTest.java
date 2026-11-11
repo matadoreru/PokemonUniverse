@@ -10,7 +10,7 @@ import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.WouldYouRatherPromptPair;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
-import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherConfig.PromptSource;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import es.pokemonuniverse.domain.game.engines.wouldyourather.WouldYouRatherTypes.WouldYouRatherOption;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;

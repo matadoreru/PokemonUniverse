@@ -1,6 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.secretranking;
 
 import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.List;
@@ -17,9 +18,6 @@ public record SecretRankingConfig(List<Integer> generations, int rounds, int rou
   public SecretRankingConfig {
     generations = List.copyOf(generations);
   }
-
-  /** {@code subjectivePromptSourceSchema} de {@code games/config.ts}. */
-  public enum PromptSource { OFFICIAL, CUSTOM, BOTH }
 
   /** {@code defaultSecretRankingConfig}. */
   public static SecretRankingConfig defaults() {

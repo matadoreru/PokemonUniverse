@@ -1,6 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.mostlikelyto;
 
 import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.List;
@@ -17,9 +18,6 @@ public record MostLikelyToConfig(List<Integer> generations, int rounds, int sele
   public MostLikelyToConfig {
     generations = List.copyOf(generations);
   }
-
-  /** {@code subjectivePromptSourceSchema} de {@code games/config.ts}. */
-  public enum PromptSource { OFFICIAL, CUSTOM, BOTH }
 
   /** {@code defaultMostLikelyToConfig}. */
   public static MostLikelyToConfig defaults() {

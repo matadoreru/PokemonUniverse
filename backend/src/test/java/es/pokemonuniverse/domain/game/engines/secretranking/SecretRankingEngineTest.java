@@ -11,7 +11,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
-import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingConfig.PromptSource;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.golden.GoldenCatalogs;

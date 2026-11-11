@@ -1,6 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.wouldyourather;
 
 import es.pokemonuniverse.domain.game.engine.infra.ConfigReader;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.annotation.Serdeable;
 import java.util.Set;
@@ -10,9 +11,6 @@ import java.util.Set;
 public record WouldYouRatherConfig(int rounds, int roundSeconds, PromptSource promptSource) {
 
   private static final Set<String> KEYS = Set.of("rounds", "roundSeconds", "promptSource");
-
-  /** {@code subjectivePromptSourceSchema} de {@code games/config.ts}. */
-  public enum PromptSource { OFFICIAL, CUSTOM, BOTH }
 
   /** {@code defaultWouldYouRatherConfig}. */
   public static WouldYouRatherConfig defaults() {

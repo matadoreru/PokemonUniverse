@@ -10,10 +10,11 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
+import es.pokemonuniverse.domain.game.engine.infra.PromptDeck;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
-import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingConfig.PromptSource;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingRules.RankingDistance;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingAction;
 import es.pokemonuniverse.domain.game.engines.secretranking.SecretRankingTypes.SecretRankingConsensus;
@@ -101,24 +102,10 @@ public final class SecretRankingEngine
     return pool;
   }
 
-  private record ChosenPrompt(String promptId, List<String> usedPromptIds) {}
-
   private record ChosenPokemon(List<String> pokemonIds, List<String> usedPokemonIds) {}
 
-  /** Consume una extracción de {@code random}. */
-  private static ChosenPrompt choosePrompt(SecretRankingState state, GameContext context) {
-    var unused = state.promptPool().stream().filter(prompt -> !state.usedPromptIds().contains(prompt.id())).toList();
-    var candidates = !unused.isEmpty() ? unused : state.promptPool();
-    var selected = candidates.get((int) Math.floor(context.random().getAsDouble() * candidates.size()));
-    List<String> usedPromptIds;
-    if (unused.isEmpty()) {
-      usedPromptIds = List.of(selected.id());
-    } else {
-      usedPromptIds = new ArrayList<>(state.usedPromptIds());
-      usedPromptIds.add(selected.id());
-    }
-    return new ChosenPrompt(selected.id(),
-        usedPromptIds.size() >= state.promptPool().size() ? List.of() : usedPromptIds);
+  private static PromptDeck.Choice choosePrompt(SecretRankingState state, GameContext context) {
+    return PromptDeck.choose(state.promptPool(), state.usedPromptIds(), SubjectiveCategory::id, context.random());
   }
 
   /**

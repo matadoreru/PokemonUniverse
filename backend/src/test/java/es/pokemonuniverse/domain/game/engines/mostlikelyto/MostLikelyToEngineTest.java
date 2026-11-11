@@ -13,7 +13,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
-import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToConfig.PromptSource;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToAction;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToPlayerState;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToState;

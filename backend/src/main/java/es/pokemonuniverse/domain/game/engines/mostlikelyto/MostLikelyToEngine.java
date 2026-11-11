@@ -11,9 +11,10 @@ import es.pokemonuniverse.domain.game.engine.GamePlayer;
 import es.pokemonuniverse.domain.game.engine.GameResults;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engine.infra.RunoffVoting;
+import es.pokemonuniverse.domain.game.engine.infra.PromptDeck;
+import es.pokemonuniverse.domain.game.engine.infra.PromptSource;
 import es.pokemonuniverse.domain.game.engine.infra.TimedLifecycle;
 import es.pokemonuniverse.domain.game.engine.infra.Timing;
-import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToConfig.PromptSource;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToAction;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToPlayerState;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToTypes.MostLikelyToPokemon;
@@ -92,22 +93,8 @@ public final class MostLikelyToEngine
     return pool;
   }
 
-  private record ChosenPrompt(String promptId, List<String> usedPromptIds) {}
-
-  /** Consume una extracción de {@code random}. */
-  private static ChosenPrompt choosePrompt(MostLikelyToState state, GameContext context) {
-    var unused = state.promptPool().stream().filter(prompt -> !state.usedPromptIds().contains(prompt.id())).toList();
-    var candidates = !unused.isEmpty() ? unused : state.promptPool();
-    var selected = candidates.get((int) Math.floor(context.random().getAsDouble() * candidates.size()));
-    List<String> usedPromptIds;
-    if (unused.isEmpty()) {
-      usedPromptIds = List.of(selected.id());
-    } else {
-      usedPromptIds = new ArrayList<>(state.usedPromptIds());
-      usedPromptIds.add(selected.id());
-    }
-    return new ChosenPrompt(selected.id(),
-        usedPromptIds.size() >= state.promptPool().size() ? List.of() : usedPromptIds);
+  private static PromptDeck.Choice choosePrompt(MostLikelyToState state, GameContext context) {
+    return PromptDeck.choose(state.promptPool(), state.usedPromptIds(), SubjectiveCategory::id, context.random());
   }
 
   private static String promptText(MostLikelyToState state) {
