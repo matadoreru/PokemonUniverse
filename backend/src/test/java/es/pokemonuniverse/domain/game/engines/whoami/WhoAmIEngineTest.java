@@ -247,6 +247,29 @@ class WhoAmIEngineTest {
   }
 
   @Test
+  void answersStayHiddenWhileAnswering() {
+    var context = context(4, 11);
+    var state = started(config(10), context);
+    state = accepted(state, "p1", ask("¿Tengo alas?"), context, 2_000);
+    state = accepted(state, "p2", answer(WhoAmIAnswer.NO), context, 3_000);
+    state = accepted(state, "p3", answer(WhoAmIAnswer.YES), context, 4_000);
+    // Faltan respuestas: se sabe quién respondió, pero no qué, ni en el estado público ni en el cable.
+    var publicState = view(state, context);
+    assertEquals(WhoAmITurnStep.ANSWERING, publicState.turnStep());
+    assertEquals(List.of(), publicState.currentQuestion().answers());
+    assertEquals(List.of("p2", "p3"), publicState.currentQuestion().answeredPlayerIds());
+    assertFalse(wire(publicState).contains("\"answer\":"));
+    // La respuesta propia sí llega a quien respondió.
+    assertEquals(WhoAmIAnswer.NO, player(state, "p2", context).ownAnswer());
+
+    state = accepted(state, "p4", answer(WhoAmIAnswer.UNKNOWN), context, 5_000);
+    publicState = view(state, context);
+    assertEquals(WhoAmITurnStep.DECIDING, publicState.turnStep());
+    assertEquals(List.of(new WhoAmIAnswerEntry("p2", WhoAmIAnswer.NO), new WhoAmIAnswerEntry("p3", WhoAmIAnswer.YES),
+        new WhoAmIAnswerEntry("p4", WhoAmIAnswer.UNKNOWN)), publicState.currentQuestion().answers());
+  }
+
+  @Test
   void timeoutsAdvanceEachStep() {
     var context = context(3, 12);
     var state = started(config(10), context);

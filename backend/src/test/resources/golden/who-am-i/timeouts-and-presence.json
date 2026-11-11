@@ -695,12 +695,7 @@
             "turnStep": "ANSWERING",
             "currentQuestion": {
               "text": "¿Soy de tipo planta?",
-              "answers": [
-                {
-                  "playerId": "p1",
-                  "answer": "YES"
-                }
-              ],
+              "answers": [],
               "answeredPlayerIds": [
                 "p1"
               ]
@@ -1281,12 +1276,7 @@
             "turnStep": "ANSWERING",
             "currentQuestion": {
               "text": "¿Soy morado?",
-              "answers": [
-                {
-                  "playerId": "p1",
-                  "answer": "YES"
-                }
-              ],
+              "answers": [],
               "answeredPlayerIds": [
                 "p1"
               ]

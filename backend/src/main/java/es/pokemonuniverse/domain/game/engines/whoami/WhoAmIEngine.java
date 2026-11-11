@@ -366,11 +366,16 @@ public final class WhoAmIEngine
         .toList();
   }
 
-  /** No lleva ningún Pokémon asignado hasta {@code GAME_RESULTS}, donde {@code results} los revela todos. */
+  /**
+   * No lleva ningún Pokémon asignado hasta {@code GAME_RESULTS}, donde {@code results} los revela todos. Mientras se
+   * responde ({@code ANSWERING}) solo se publica quién ha respondido: qué respondió cada uno sale en {@code DECIDING}
+   * (la respuesta propia va en {@code ownAnswer}, en la proyección de cada jugador).
+   */
   @Override
   public WhoAmIPublicState getPublicState(WhoAmIState state, GameContext context) {
     var question = state.currentQuestion();
-    var current = question == null ? null : new WhoAmICurrentQuestion(question.text(), question.answers(),
+    var current = question == null ? null : new WhoAmICurrentQuestion(question.text(),
+        state.turnStep() == WhoAmITurnStep.ANSWERING ? List.of() : question.answers(),
         question.answers().stream().map(WhoAmIAnswerEntry::playerId).toList());
     return WhoAmIPublicState.builder()
         .gameId(ID)
