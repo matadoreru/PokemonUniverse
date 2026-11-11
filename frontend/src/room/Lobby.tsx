@@ -10,7 +10,8 @@ import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
 import { allowedModesOf, compatibleSelectedGameIds, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, rotationGameConfig, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
-import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
+import { connectedCount, emptyRoomState, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
+import { useRoomLinkShare } from './room-link';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
 import { ignoreFailure } from './room-command';
@@ -62,6 +63,12 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   const canManageRoles = hasRoomPermission(roomRole, 'MANAGE_ROLES');
   const gameClient = clientGameRegistry.get(room.selectedGameId);
   const connectedPlayers = connectedCount(room.members);
+  // Sala vacía: con un solo jugador, la placa de jugadores ofrece copiar el enlace y, con amigos, invitarlos (el botón
+  // «Invitar amigos» de encima pasa a ese estado vacío mientras tanto, para no repetirlo).
+  const alone = connectedPlayers <= 1;
+  const link = useRoomLinkShare(room.code);
+  const friends = useOptionalFriends();
+  const emptyRoom = alone ? emptyRoomState({ copied: link.copied, onCopy: link.share, onInvite: friends?.enabled ? friends.openDrawer : null }) : null;
   const pendingReady = room.members.filter((member) => member.presence === 'CONNECTED' && member.id !== room.hostId && !member.ready);
   const hostMember = room.members.find((member) => member.id === room.hostId);
   const [readyBusy, setReadyBusy] = useState(false);
@@ -177,8 +184,8 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
 
   const side = (
     <div className={s.side}>
-      <LobbyInviteButton room={room} />
-      <RoomPlayersPanel className={s.playersPanel ?? ''} bodyClassName={s.playersBody ?? ''} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} onSetChatMute={setChatMute} />
+      {!alone && <LobbyInviteButton room={room} />}
+      <RoomPlayersPanel className={s.playersPanel ?? ''} bodyClassName={s.playersBody ?? ''} empty={emptyRoom} members={room.members} maxPlayers={room.maxPlayers} selfId={selfId} canManage={canManageRoles} onSetRoomRole={(id, role) => void onSetRoomRole(id, role).catch(ignoreFailure)} onTransferHost={transferHost} onKick={kick} onSetChatMute={setChatMute} />
       {wide && chatPanel}
     </div>
   );
@@ -295,7 +302,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
       {/* El código y «Salir» están en la placa de la sala de la cabecera (RoomPlate); aquí queda el encabezado para el foco de ruta. */}
       <h1 className="sr-only">Lobby de la sala</h1>
       {/* Siempre montada y fuera de los paneles de pestaña: se oye también con la pestaña «Chat» cerrada. */}
-      <p className="sr-only" role="status" aria-live="polite"><span>{hostReconnecting ? HOST_RECONNECTING : ''}</span><span key={chatAnnouncement.id}>{chatAnnouncement.text}</span></p>
+      <p className="sr-only" role="status" aria-live="polite"><span>{hostReconnecting ? HOST_RECONNECTING : alone && link.copied ? 'Enlace copiado' : ''}</span><span key={chatAnnouncement.id}>{chatAnnouncement.text}</span></p>
       {hostReconnecting && (
         <div className={s.notice}>
           <span className={s.noticeBadge}><Icon icon={WifiOff} size={22} /></span>

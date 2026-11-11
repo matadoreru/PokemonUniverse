@@ -1,15 +1,25 @@
-import { Hourglass, Inbox, TriangleAlert } from 'lucide-react';
+import { Hourglass, Inbox, TriangleAlert, type LucideIcon } from 'lucide-react';
 import { cx } from './cx';
 import { Icon } from './Icon';
 import { Pill } from './Pill';
 import s from './StateBox.module.css';
+
+/** Acción de un `StateBox`, con su icono opcional. */
+export interface StateBoxAction {
+  label: string;
+  onClick(): void;
+  icon?: LucideIcon;
+  'aria-label'?: string;
+}
 
 export interface StateBoxProps {
   kind: 'empty' | 'loading' | 'error';
   title: string;
   text?: string;
   /** En error la acción es una píldora amarilla («Reintentar» la pone quien llama). */
-  action?: { label: string; onClick(): void };
+  action?: StateBoxAction;
+  /** Segunda acción, en crema detrás de la principal (p. ej. «Invitar amigos» junto a «Copiar enlace»). */
+  secondaryAction?: StateBoxAction;
   /** Sobre fondo crema. */
   onCream?: boolean;
   /**
@@ -19,7 +29,7 @@ export interface StateBoxProps {
   live?: boolean;
 }
 
-export function StateBox({ kind, title, text, action, onCream, live = true }: StateBoxProps) {
+export function StateBox({ kind, title, text, action, secondaryAction, onCream, live = true }: StateBoxProps) {
   if (kind === 'loading') {
     return (
       <div className={s.ghost} {...(live ? { role: 'status', 'aria-live': 'polite' as const, 'aria-label': title } : {})} aria-busy="true">
@@ -36,11 +46,25 @@ export function StateBox({ kind, title, text, action, onCream, live = true }: St
       <Icon icon={kind === 'error' ? TriangleAlert : kind === 'empty' ? Inbox : Hourglass} size={32} className={s.icon} />
       <strong className={s.title}>{title}</strong>
       {text && <p className={s.text}>{text}</p>}
-      {action && (
-        <Pill size="small" variant={kind === 'error' ? 'yellow' : 'blue'} onClick={action.onClick} className={s.action}>
+      {action && !secondaryAction && (
+        <Pill size="small" variant={kind === 'error' ? 'yellow' : 'blue'} onClick={action.onClick} className={s.action} {...actionAttrs(action)}>
           {action.label}
         </Pill>
       )}
+      {action && secondaryAction && (
+        <span className={s.actions}>
+          <Pill size="small" variant={kind === 'error' ? 'yellow' : 'blue'} onClick={action.onClick} {...actionAttrs(action)}>
+            {action.label}
+          </Pill>
+          <Pill size="small" variant="cream" onClick={secondaryAction.onClick} {...actionAttrs(secondaryAction)}>
+            {secondaryAction.label}
+          </Pill>
+        </span>
+      )}
     </div>
   );
+}
+
+function actionAttrs(action: StateBoxAction) {
+  return { ...(action.icon ? { icon: action.icon } : {}), ...(action['aria-label'] ? { 'aria-label': action['aria-label'] } : {}) };
 }

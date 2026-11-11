@@ -35,6 +35,14 @@
 .action {
   margin-top: 6px;
 }
+/* Dos acciones: en fila y centradas; si no caben, una debajo de otra. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin-top: 6px;
+}
 
 /* Esqueleto de 3 filas que late con opacidad: el único bucle permitido. */
 .ghost {

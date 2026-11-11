@@ -1,3 +1,5 @@
+import { Check, Link2, UserPlus } from 'lucide-react';
+import type { StateBoxProps } from '../ui';
 import { formatPendingReadyNames, type MiniGameManifest, type RoomMemberView, type SessionMode } from '@pokemon-universe/shared/public';
 
 /** El modo por partidas con otro número de partidas; conserva «La última partida vale doble». */
@@ -80,4 +82,18 @@ export function lobbyStartReason({ canStart, selectedGames, compatibleCount, pen
         : null
     : compatibleCount === 0 ? 'Ningún minijuego elegido admite el número actual de jugadores.' : null;
   return playerCountReason ?? configReason;
+}
+
+/**
+ * Estado vacío de la placa de jugadores con un solo jugador conectado: «Copiar enlace» (o «Enlace copiado» justo
+ * después) y, si hay panel de amigos, «Invitar amigos», que lo abre.
+ */
+export function emptyRoomState({ copied, onCopy, onInvite }: { copied: boolean; onCopy(): void; onInvite: (() => void) | null }): Omit<StateBoxProps, 'live'> {
+  return {
+    kind: 'empty',
+    title: 'Aún no ha llegado nadie',
+    text: 'Comparte el enlace de la sala para que entre tu grupo.',
+    action: { label: copied ? 'Enlace copiado' : 'Copiar enlace', icon: copied ? Check : Link2, onClick: onCopy },
+    ...(onInvite ? { secondaryAction: { label: 'Invitar amigos', icon: UserPlus, onClick: onInvite } } : {}),
+  };
 }

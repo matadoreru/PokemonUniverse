@@ -5,7 +5,7 @@
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
-import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -267,6 +267,9 @@ function StateBoxSection() {
     <Section name="statebox" title="StateBox">
       <Fig id="statebox-empty" caption="Vacío sobre crema" cream>
         <StateBox kind="empty" title="Nada por aquí" text="Crea una sala para empezar." onCream />
+      </Fig>
+      <Fig id="statebox-empty-actions" caption="Vacío con dos acciones (sala con un solo jugador)">
+        <StateBox kind="empty" title="Aún no ha llegado nadie" text="Comparte el enlace de la sala para que entre tu grupo." action={{ label: 'Copiar enlace', icon: Link2, onClick: noop }} secondaryAction={{ label: 'Invitar amigos', icon: UserPlus, onClick: noop }} live={false} />
       </Fig>
       <Fig id="statebox-loading" caption="Cargando sobre crema" cream>
         <StateBox kind="loading" title="Cargando" onCream />

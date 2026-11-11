@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { connectedCount, filterGames, lobbyActionStatus, lobbyStartReason, normalizeSearch, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
+import { connectedCount, emptyRoomState, filterGames, lobbyActionStatus, lobbyStartReason, emptyRoomState, normalizeSearch, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
 
 describe('la última partida vale doble', () => {
   it('cambiar el número de partidas conserva la opción', () => {
@@ -84,5 +84,16 @@ describe('lobbyStartReason', () => {
     expect(lobbyStartReason({ ...two, compatibleCount: 1, connectedPlayers: 2 })).toBeNull();
     expect(lobbyStartReason({ ...two, compatibleCount: 0, connectedPlayers: 1 })).toBe('Ningún minijuego elegido admite el número actual de jugadores.');
     expect(lobbyStartReason({ ...base, selectedGames: [undefined], compatibleCount: 0 })).toBe('Ningún minijuego elegido admite el número actual de jugadores.');
+  });
+});
+
+describe('emptyRoomState', () => {
+  it('offers to copy the link and, with the friends panel, to invite friends', () => {
+    const onCopy = () => undefined; const onInvite = () => undefined;
+    const state = emptyRoomState({ copied: false, onCopy, onInvite });
+    expect(state).toMatchObject({ kind: 'empty', title: 'Aún no ha llegado nadie', action: { label: 'Copiar enlace', onClick: onCopy }, secondaryAction: { label: 'Invitar amigos', onClick: onInvite } });
+    const copied = emptyRoomState({ copied: true, onCopy, onInvite: null });
+    expect(copied).not.toHaveProperty('secondaryAction');
+    expect(copied.action?.label).toBe('Enlace copiado');
   });
 });
