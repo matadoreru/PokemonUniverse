@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 /**
- * Traducción literal de {@code pokemon-bluff-auction/conditions.ts}: las condiciones de la subasta salen del
- * generador compartido ({@code domain/pokemon/conditions}) más condiciones y categorías curadas. Solo el generador
- * compartido consume {@code random}.
+ * Traducción literal del TS que antes estaba en {@code pokemon-bluff-auction/conditions.ts}: las condiciones de la
+ * subasta salen del generador compartido ({@code domain/pokemon/conditions}) más condiciones y categorías curadas. Solo
+ * el generador compartido consume {@code random}.
  */
 public final class PokemonBluffAuctionConditions {
 

@@ -3,7 +3,7 @@ package es.pokemonuniverse.domain.pokemon;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/** Traducción literal de {@code isSupportedRegionalFormId} de packages/shared. */
+/** Traducción literal de {@code isSupportedRegionalFormId}, que antes estaba en {@code packages/shared}. */
 public final class RegionalForms {
 
   private static final Pattern TOTEM = Pattern.compile("-totem(?:-|$)");

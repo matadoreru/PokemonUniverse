@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Traducción literal de {@code timedGameLifecycle} ({@code games/infrastructure/lifecycle.ts}). Los campos se fijan por
- * nombre en un {@link Builder}; los no fijados son el {@code undefined} de TS.
+ * Traducción literal de {@code timedGameLifecycle}, que antes estaba en {@code games/infrastructure/lifecycle.ts}. Los
+ * campos se fijan por nombre en un {@link Builder}; los no fijados son el {@code undefined} de TS.
  */
 public final class TimedLifecycle {
 

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal de {@code type-duel/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code type-duel/rules.ts}. */
 public final class TypeDuelRules {
 
   public static final int WIN_POINTS = 5;

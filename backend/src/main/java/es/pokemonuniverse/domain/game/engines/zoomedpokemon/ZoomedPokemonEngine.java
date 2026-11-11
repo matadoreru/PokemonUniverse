@@ -51,7 +51,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/** Traducción literal de {@code zoomed-pokemon/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code zoomed-pokemon/server.ts}. */
 public final class ZoomedPokemonEngine
     implements GameEngine<ZoomedPokemonConfig, ZoomedPokemonState, ZoomedPokemonAction, ZoomedPokemonPublicState> {
 

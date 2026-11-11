@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code higher-lower/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code higher-lower/server.ts}. */
 public final class HigherLowerEngine
     implements GameEngine<HigherLowerConfig, HigherLowerState, HigherLowerAction, HigherLowerPublicState> {
 

@@ -37,7 +37,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/** Traducción literal de {@code pokemon-bingo/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-bingo/server.ts}. */
 public final class PokemonBingoEngine
     implements GameEngine<PokemonBingoConfig, PokemonBingoState, PokemonBingoAction, PokemonBingoPublicState> {
 

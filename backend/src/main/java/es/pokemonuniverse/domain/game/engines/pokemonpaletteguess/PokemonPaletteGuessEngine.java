@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-palette-guess/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-palette-guess/server.ts}. */
 public final class PokemonPaletteGuessEngine implements
     GameEngine<PokemonPaletteGuessConfig, PokemonPaletteGuessState, PokemonPaletteGuessAction,
         PokemonPaletteGuessPublicState> {

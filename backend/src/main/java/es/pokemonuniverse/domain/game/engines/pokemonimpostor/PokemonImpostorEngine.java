@@ -42,7 +42,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 
-/** Traducción literal de {@code pokemon-impostor/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-impostor/server.ts}. */
 public final class PokemonImpostorEngine implements
     GameEngine<PokemonImpostorConfig, PokemonImpostorState, PokemonImpostorAction, PokemonImpostorPublicState> {
 

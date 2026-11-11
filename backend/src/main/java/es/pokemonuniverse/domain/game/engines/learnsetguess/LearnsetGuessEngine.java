@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-/** Traducción literal de {@code learnset-guess/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code learnset-guess/server.ts}. */
 public final class LearnsetGuessEngine
     implements GameEngine<LearnsetGuessConfig, LearnsetGuessState, LearnsetGuessAction, LearnsetGuessPublicState> {
 

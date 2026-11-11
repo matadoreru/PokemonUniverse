@@ -33,7 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-bluff-auction/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-bluff-auction/server.ts}. */
 public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffAuctionConfig,
     PokemonBluffAuctionState, PokemonBluffAuctionAction, PokemonBluffAuctionPublicState> {
 

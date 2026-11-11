@@ -5,7 +5,7 @@ import io.micronaut.serde.annotation.Serdeable;
 import java.util.HashSet;
 import java.util.List;
 
-/** Traducción literal de {@code rooms/game-skip.ts}. */
+/** Traducción literal del TS que antes estaba en {@code rooms/game-skip.ts}. */
 public final class GameSkip {
 
   /** {@code GameSkipStateView}. */

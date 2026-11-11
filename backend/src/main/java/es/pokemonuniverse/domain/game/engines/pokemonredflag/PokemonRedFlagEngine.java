@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-red-flag/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-red-flag/server.ts}. */
 public final class PokemonRedFlagEngine
     implements GameEngine<PokemonRedFlagConfig, PokemonRedFlagState, PokemonRedFlagAction, PokemonRedFlagPublicState> {
 

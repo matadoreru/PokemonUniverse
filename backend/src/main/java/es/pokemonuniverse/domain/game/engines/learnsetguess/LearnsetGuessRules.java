@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/** Traducción literal de {@code learnset-guess/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code learnset-guess/rules.ts}. */
 public final class LearnsetGuessRules {
 
   public static final int LEARNSET_INITIAL_POINTS = 5;

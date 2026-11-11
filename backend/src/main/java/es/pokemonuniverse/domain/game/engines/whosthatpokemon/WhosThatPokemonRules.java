@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/** Traducción literal de {@code whos-that-pokemon/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code whos-that-pokemon/rules.ts}. */
 public final class WhosThatPokemonRules {
 
   private static final Pattern IMAGE_PATH = Pattern.compile("\\.(png|webp)$", Pattern.CASE_INSENSITIVE);

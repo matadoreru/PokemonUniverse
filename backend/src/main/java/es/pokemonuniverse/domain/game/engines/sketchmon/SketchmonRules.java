@@ -6,7 +6,7 @@ import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.Sketchmon
 import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.SketchmonState;
 import java.util.Comparator;
 
-/** Traducción literal de {@code sketchmon/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code sketchmon/rules.ts}. */
 public final class SketchmonRules {
 
   /** {@code SKETCHMON_DRAWER_POINTS}. */

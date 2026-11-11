@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/** Traducción literal de {@code pokemon-connections/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-connections/server.ts}. */
 public final class PokemonConnectionsEngine implements GameEngine<PokemonConnectionsConfig, PokemonConnectionsState,
     PokemonConnectionsAction, PokemonConnectionsPublicState> {
 

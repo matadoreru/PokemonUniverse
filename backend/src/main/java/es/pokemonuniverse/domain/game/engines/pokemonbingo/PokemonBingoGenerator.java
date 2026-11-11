@@ -20,10 +20,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Traducción literal de {@code pokemon-bingo/generator.ts}; las plantillas salen del generador compartido
- * ({@code ConditionGenerator}). Consume {@code random} como el TS: {@link #buildBingoConditionTemplates} solo baraja
- * las plantillas simples cuando hay casillas de dos condiciones, y {@link #generateBingoBoard} saca una extracción
- * por casilla y por intento, también en los intentos que se descartan.
+ * Traducción literal del TS que antes estaba en {@code pokemon-bingo/generator.ts}; las plantillas salen del generador
+ * compartido ({@code ConditionGenerator}). Consume {@code random} como el TS: {@link #buildBingoConditionTemplates}
+ * solo baraja las plantillas simples cuando hay casillas de dos condiciones, y {@link #generateBingoBoard} saca una
+ * extracción por casilla y por intento, también en los intentos que se descartan.
  */
 public final class PokemonBingoGenerator {
 

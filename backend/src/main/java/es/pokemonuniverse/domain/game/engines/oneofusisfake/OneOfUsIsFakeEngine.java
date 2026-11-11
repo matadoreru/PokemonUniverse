@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code one-of-us-is-fake/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code one-of-us-is-fake/server.ts}. */
 public final class OneOfUsIsFakeEngine
     implements GameEngine<OneOfUsIsFakeConfig, OneOfUsIsFakeState, OneOfUsIsFakeAction, OneOfUsIsFakePublicState> {
 

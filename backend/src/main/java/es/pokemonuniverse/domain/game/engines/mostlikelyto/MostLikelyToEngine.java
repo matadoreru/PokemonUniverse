@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code most-likely-to/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code most-likely-to/server.ts}. */
 public final class MostLikelyToEngine
     implements GameEngine<MostLikelyToConfig, MostLikelyToState, MostLikelyToAction, MostLikelyToPublicState> {
 

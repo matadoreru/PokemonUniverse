@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Traducción literal de {@code whos-that-pokemon/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code whos-that-pokemon/server.ts}. */
 public final class WhosThatPokemonEngine implements
     GameEngine<WhosThatPokemonConfig, WhosThatPokemonState, WhosThatPokemonAction, WhosThatPokemonPublicState> {
 

@@ -9,8 +9,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Traducción literal de {@code games/infrastructure/random.ts}: consume {@code random} el mismo número de veces y en
- * el mismo orden que el TS.
+ * Traducción literal del TS que antes estaba en {@code games/infrastructure/random.ts}: consume {@code random} el mismo
+ * número de veces y en el mismo orden que el TS.
  */
 public final class Randoms {
 

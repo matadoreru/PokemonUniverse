@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Traducción literal de {@code poke-taboo/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code poke-taboo/server.ts}. */
 public final class PokeTabooEngine
     implements GameEngine<PokeTabooConfig, PokeTabooState, PokeTabooAction, PokeTabooPublicState> {
 

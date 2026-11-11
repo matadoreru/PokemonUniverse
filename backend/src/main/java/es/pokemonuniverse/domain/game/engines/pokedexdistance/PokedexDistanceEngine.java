@@ -40,7 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-/** Traducción literal de {@code pokedex-distance/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokedex-distance/server.ts}. */
 public final class PokedexDistanceEngine implements
     GameEngine<PokedexDistanceConfig, PokedexDistanceState, PokedexDistanceAction, PokedexDistancePublicState> {
 

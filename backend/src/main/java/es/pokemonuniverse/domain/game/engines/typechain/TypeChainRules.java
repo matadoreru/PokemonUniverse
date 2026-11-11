@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-/** Traducción literal de {@code type-chain/rules.ts}. */
+/** Traducción literal del TS que antes estaba en {@code type-chain/rules.ts}. */
 public final class TypeChainRules {
 
   private TypeChainRules() {}

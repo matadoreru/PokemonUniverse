@@ -40,7 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
-/** Traducción literal de {@code type-chain/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code type-chain/server.ts}. */
 public final class TypeChainEngine
     implements GameEngine<TypeChainConfig, TypeChainState, TypeChainAction, TypeChainPublicState> {
 

@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokedex-entry-guess/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokedex-entry-guess/server.ts}. */
 public final class PokedexEntryGuessEngine implements
     GameEngine<PokedexEntryGuessConfig, PokedexEntryGuessState, PokedexEntryGuessAction, PokedexEntryGuessPublicState> {
 

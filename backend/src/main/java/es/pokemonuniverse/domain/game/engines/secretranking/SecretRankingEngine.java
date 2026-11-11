@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code secret-ranking/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code secret-ranking/server.ts}. */
 public final class SecretRankingEngine
     implements GameEngine<SecretRankingConfig, SecretRankingState, SecretRankingAction, SecretRankingPublicState> {
 

@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Traducción literal de {@code sketchmon/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code sketchmon/server.ts}. */
 public final class SketchmonEngine
     implements GameEngine<SketchmonConfig, SketchmonState, SketchmonAction, SketchmonPublicState> {
 

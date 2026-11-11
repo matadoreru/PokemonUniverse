@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Traducción literal de {@code shiny-vote/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code shiny-vote/server.ts}. */
 public final class ShinyVoteEngine
     implements GameEngine<ShinyVoteConfig, ShinyVoteState, ShinyVoteAction, ShinyVotePublicState> {
 

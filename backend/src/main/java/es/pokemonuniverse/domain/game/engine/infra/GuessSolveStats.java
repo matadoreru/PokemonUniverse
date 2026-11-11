@@ -1,8 +1,8 @@
 package es.pokemonuniverse.domain.game.engine.infra;
 
 /**
- * Contadores comunes de aciertos ({@code GuessSolveStats} de {@code guessing-round.ts}). Cada motor lo implementa con
- * su record de estadísticas; {@link #withSolve} devuelve una copia que conserva sus campos propios (p. ej.
+ * Contadores comunes de aciertos ({@code GuessSolveStats}, antes en {@code guessing-round.ts}). Lo implementa
+ * {@link GuessPlayerStats}; {@link #withSolve} devuelve una copia que conserva los campos que no cuenta (p. ej.
  * {@code missed}), como el {@code { ...stats, ... }} de TS.
  */
 public interface GuessSolveStats<T extends GuessSolveStats<T>> {

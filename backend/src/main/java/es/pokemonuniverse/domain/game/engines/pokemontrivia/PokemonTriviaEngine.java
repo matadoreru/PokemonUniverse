@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-trivia/server.ts}; la generación de preguntas está en {@link PokemonTriviaQuestions}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code pokemon-trivia/server.ts}; la generación de preguntas está en
+ * {@link PokemonTriviaQuestions}.
+ */
 public final class PokemonTriviaEngine
     implements GameEngine<PokemonTriviaConfig, PokemonTriviaState, PokemonTriviaAction, PokemonTriviaPublicState> {
 

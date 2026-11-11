@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-/** Traducción literal de {@code games/infrastructure/guessing-round.ts}: contabilidad común de aciertos. */
+/**
+ * Piezas comunes de los juegos de adivinar: guardas de la acción, contabilidad de aciertos y fallos por vista. La
+ * contabilidad es la traducción literal del TS que antes estaba en {@code games/infrastructure/guessing-round.ts}.
+ */
 public final class GuessingRound {
 
   private GuessingRound() {}

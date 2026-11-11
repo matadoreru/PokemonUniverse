@@ -4,7 +4,7 @@ import es.pokemonuniverse.domain.identity.AuthUser;
 import java.util.Comparator;
 import java.util.Optional;
 
-/** Traducción literal de {@code rooms/presence.ts}. */
+/** Traducción literal del TS que antes estaba en {@code rooms/presence.ts}. */
 public final class Presence {
 
   private Presence() {}

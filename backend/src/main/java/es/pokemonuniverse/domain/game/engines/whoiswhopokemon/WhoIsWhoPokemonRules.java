@@ -7,7 +7,10 @@ import es.pokemonuniverse.domain.game.engines.whoiswhopokemon.WhoIsWhoPokemonTyp
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 
-/** Traducción literal de {@code who-is-who-pokemon/rules.ts}; el {@code choose} de {@code server.ts} es {@code Randoms.takeRandom}. */
+/**
+ * Traducción literal del TS que antes estaba en {@code who-is-who-pokemon/rules.ts}; el {@code choose} de su
+ * {@code server.ts} es {@code Randoms.takeRandom}.
+ */
 public final class WhoIsWhoPokemonRules {
 
   /** {@code WHO_IS_WHO_WIN_POINTS}. */

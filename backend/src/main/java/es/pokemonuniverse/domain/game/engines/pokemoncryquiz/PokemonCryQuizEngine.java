@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-/** Traducción literal de {@code pokemon-cry-quiz/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-cry-quiz/server.ts}. */
 public final class PokemonCryQuizEngine implements
     GameEngine<PokemonCryQuizConfig, PokemonCryQuizState, PokemonCryQuizAction, PokemonCryQuizPublicState> {
 

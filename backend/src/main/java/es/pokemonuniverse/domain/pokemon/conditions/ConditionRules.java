@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Traducción literal de {@code pokemon/conditions/rules.ts}, más el formato {@code toLocaleString('es-ES')}. La
- * comparten Pokémon Bingo y Pokémon Bluff Auction.
+ * Traducción literal del TS que antes estaba en {@code pokemon/conditions/rules.ts}, más el formato
+ * {@code toLocaleString('es-ES')}. La comparten Pokémon Bingo y Pokémon Bluff Auction.
  */
 public final class ConditionRules {
 

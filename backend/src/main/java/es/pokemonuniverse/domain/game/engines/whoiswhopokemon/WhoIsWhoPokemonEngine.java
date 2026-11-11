@@ -43,9 +43,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Traducción literal de {@code who-is-who-pokemon/server.ts}. Dos equipos por turnos ({@code currentTeam},
- * {@code turnNumber}); la fase activa es siempre {@code TURN_ACTIVE} y {@code roundEndsAt} es el plazo de selección o
- * el del turno. Comparte cursores en vivo con el propio equipo ({@link #getCursorChannel}).
+ * Traducción literal del TS que antes estaba en {@code who-is-who-pokemon/server.ts}. Dos equipos por turnos
+ * ({@code currentTeam}, {@code turnNumber}); la fase activa es siempre {@code TURN_ACTIVE} y {@code roundEndsAt} es el
+ * plazo de selección o el del turno. Comparte cursores en vivo con el propio equipo ({@link #getCursorChannel}).
  */
 public final class WhoIsWhoPokemonEngine
     implements GameEngine<WhoIsWhoPokemonConfig, WhoIsWhoState, WhoIsWhoPokemonAction, WhoIsWhoPublicState> {

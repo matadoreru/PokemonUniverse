@@ -31,7 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/** Traducción literal de {@code type-duel/server.ts}; {@code handleTimeout} es propio (cinco fases temporizadas). */
+/**
+ * Traducción literal del TS que antes estaba en {@code type-duel/server.ts}; {@code handleTimeout} es propio (cinco
+ * fases temporizadas).
+ */
 public final class TypeDuelEngine
     implements GameEngine<TypeDuelConfig, TypeDuelState, TypeDuelAction, TypeDuelPublicState> {
 
@@ -177,9 +180,9 @@ public final class TypeDuelEngine
   }
 
   /**
-   * {@code COOP}: toda la sala busca a la vez los Pokémon de una combinación sorteada entre las que tienen alguno en las
-   * generaciones elegidas (primero las que aún no han salido). Consume {@code random} una vez; sin ninguna combinación
-   * posible, la partida termina.
+   * {@code COOP}: toda la sala busca a la vez los Pokémon de una combinación sorteada entre las que tienen alguno en
+   * las generaciones elegidas (primero las que aún no han salido). Consume {@code random} una vez; sin ninguna
+   * combinación posible, la partida termina.
    */
   private static TypeDuelState startCoopRound(TypeDuelState state, GameContext context) {
     var pool = context.pokemon().forGenerations(state.config().generations(), true);

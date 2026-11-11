@@ -31,7 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-/** Traducción literal de {@code pokemon-team-auction/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code pokemon-team-auction/server.ts}. */
 public final class PokemonTeamAuctionEngine implements GameEngine<PokemonTeamAuctionConfig, PokemonTeamAuctionState,
     PokemonTeamAuctionAction, PokemonTeamAuctionPublicState> {
 

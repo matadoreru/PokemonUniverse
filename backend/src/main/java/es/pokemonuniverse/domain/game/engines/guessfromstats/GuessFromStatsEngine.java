@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-/** Traducción literal de {@code guess-from-stats/server.ts}. */
+/** Traducción literal del TS que antes estaba en {@code guess-from-stats/server.ts}. */
 public final class GuessFromStatsEngine
     implements GameEngine<GuessFromStatsConfig, GuessFromStatsState, GuessFromStatsAction, GuessFromStatsPublicState> {
 

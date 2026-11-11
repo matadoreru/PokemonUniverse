@@ -28,8 +28,8 @@ proyección, el orden de claves del cable y los mensajes de error. Un cambio de 
   servidor y las acciones solo existen aquí; las proyecciones (`*PublicState`, `*PlayerState`) llevan los mismos
   nombres que sus tipos TS en `packages/shared/src/games/<id>/types.ts`.
 - `<Juego>Rules`: las reglas puras del juego (puntuación, pistas, resultados).
-- `<Juego>Engine`: el port de `server.ts`. Recibe en el constructor el `GameManifest` de `games/registry.json`; el
-  manifiesto no se duplica a mano.
+- `<Juego>Engine`: el motor, port del `server.ts` que había en TS. Recibe en el constructor el `GameManifest` de
+  `games/registry.json`; el manifiesto no se duplica a mano.
 - Las condiciones de `pokemon/conditions/*` (tipos, reglas y generador) están en `domain/pokemon/conditions/`, que
   comparten Pokémon Bingo y Pokémon Bluff Auction; cada juego pasa sus familias en `ConditionGenerationOptions`.
 

@@ -13,8 +13,8 @@ import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
 /**
- * Traducción literal de {@code pokemon/conditions/generator.ts}. La comparten Pokémon Bingo y Pokémon Bluff Auction;
- * cada juego pasa sus familias, su {@code maxConditions} y su {@code combinationLimit}.
+ * Traducción literal del TS que antes estaba en {@code pokemon/conditions/generator.ts}. La comparten Pokémon Bingo y
+ * Pokémon Bluff Auction; cada juego pasa sus familias, su {@code maxConditions} y su {@code combinationLimit}.
  */
 public final class ConditionGenerator {
 
