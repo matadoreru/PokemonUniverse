@@ -1575,7 +1575,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 331000,
+            "nextDeadline": 316000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -1729,7 +1729,7 @@
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
-            "nextTransitionAt": 331000,
+            "nextTransitionAt": 316000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -3097,7 +3097,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 661000,
+            "nextDeadline": 646000,
             "actionEpoch": "[\"ROUND_RESULTS\",2,331000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -3251,7 +3251,7 @@
             },
             "roundStartedAt": 331000,
             "roundEndsAt": null,
-            "nextTransitionAt": 661000,
+            "nextTransitionAt": 646000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -3477,7 +3477,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 661000,
+            "nextDeadline": 646000,
             "actionEpoch": "[\"ROUND_RESULTS\",2,331000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -3631,7 +3631,7 @@
             },
             "roundStartedAt": 331000,
             "roundEndsAt": null,
-            "nextTransitionAt": 661000,
+            "nextTransitionAt": 646000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -4431,7 +4431,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 991500,
+            "nextDeadline": 976500,
             "actionEpoch": "[\"ROUND_RESULTS\",3,661500,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -4585,7 +4585,7 @@
             },
             "roundStartedAt": 661500,
             "roundEndsAt": null,
-            "nextTransitionAt": 991500,
+            "nextTransitionAt": 976500,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [

@@ -842,7 +842,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 23500,
+            "nextDeadline": 20500,
             "actionEpoch": "[\"ROUND_RESULTS\",1,9500,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -887,7 +887,7 @@
             },
             "roundStartedAt": 9500,
             "roundEndsAt": null,
-            "nextTransitionAt": 23500,
+            "nextTransitionAt": 20500,
             "lastRound": {
               "reason": "INVALID_COMBINATION",
               "winnerId": null,
@@ -1467,7 +1467,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 29600,
+            "nextDeadline": 26600,
             "actionEpoch": "[\"ROUND_RESULTS\",2,17500,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -1537,7 +1537,7 @@
             },
             "roundStartedAt": 17500,
             "roundEndsAt": null,
-            "nextTransitionAt": 29600,
+            "nextTransitionAt": 26600,
             "lastRound": {
               "reason": "WINNER",
               "winnerId": "p2",

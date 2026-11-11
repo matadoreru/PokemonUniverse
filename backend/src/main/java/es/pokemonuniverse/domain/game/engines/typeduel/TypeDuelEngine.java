@@ -41,7 +41,7 @@ public final class TypeDuelEngine
   public static final String ID = "type-duel";
   private static final long TYPE_REVEAL_MS = 2_000;
   private static final long INVALID_COMBINATION_MS = 3_000;
-  public static final long RESULT_MS = 10_000;
+  public static final long RESULT_MS = 7_000;
   /** {@code COOP}: el Pokémon ya está en la lista del grupo (lo encontrara quien lo encontrase). */
   public static final String COOP_DUPLICATE_MESSAGE = "Ya lo ha encontrado alguien.";
 

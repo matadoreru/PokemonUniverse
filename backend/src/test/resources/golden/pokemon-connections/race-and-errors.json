@@ -8525,7 +8525,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 168000,
+            "nextDeadline": 153000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -8644,7 +8644,7 @@
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
-            "nextTransitionAt": 168000,
+            "nextTransitionAt": 153000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -10465,7 +10465,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 318000,
+            "nextDeadline": 303000,
             "actionEpoch": "[\"ROUND_RESULTS\",2,168000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -10584,7 +10584,7 @@
             },
             "roundStartedAt": 168000,
             "roundEndsAt": null,
-            "nextTransitionAt": 318000,
+            "nextTransitionAt": 303000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [

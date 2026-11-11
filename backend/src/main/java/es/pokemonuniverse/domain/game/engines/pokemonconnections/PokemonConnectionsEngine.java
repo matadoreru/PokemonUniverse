@@ -39,7 +39,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     PokemonConnectionsAction, PokemonConnectionsPublicState> {
 
   public static final String ID = "pokemon-connections";
-  static final long POKEMON_CONNECTIONS_REVEAL_MS = 30_000;
+  static final long POKEMON_CONNECTIONS_REVEAL_MS = 15_000;
   /** Recortes de {@code usedPuzzleKeys.slice(-50)} y {@code recentCategoryIds.slice(-12)}. */
   private static final int USED_PUZZLE_KEYS_LIMIT = 50;
   private static final int RECENT_CATEGORY_IDS_LIMIT = 12;

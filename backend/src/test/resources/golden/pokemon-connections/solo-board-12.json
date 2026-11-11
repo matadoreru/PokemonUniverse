@@ -679,7 +679,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 64000,
+            "nextDeadline": 49000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -763,7 +763,7 @@
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
-            "nextTransitionAt": 64000,
+            "nextTransitionAt": 49000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -888,7 +888,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 64000,
+            "nextDeadline": 49000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -972,7 +972,7 @@
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
-            "nextTransitionAt": 64000,
+            "nextTransitionAt": 49000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -1097,7 +1097,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 64000,
+            "nextDeadline": 49000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,1000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -1181,7 +1181,7 @@
             },
             "roundStartedAt": 1000,
             "roundEndsAt": null,
-            "nextTransitionAt": 64000,
+            "nextTransitionAt": 49000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [
@@ -1412,7 +1412,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 126000,
+            "nextDeadline": 111000,
             "actionEpoch": "[\"ROUND_RESULTS\",2,66000,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -1496,7 +1496,7 @@
             },
             "roundStartedAt": 66000,
             "roundEndsAt": null,
-            "nextTransitionAt": 126000,
+            "nextTransitionAt": 111000,
             "lastRound": {
               "source": "DYNAMIC",
               "groups": [

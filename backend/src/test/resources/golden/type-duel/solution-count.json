@@ -681,7 +681,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 15000,
+            "nextDeadline": 12000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,4400,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -738,7 +738,7 @@
             },
             "roundStartedAt": 4400,
             "roundEndsAt": null,
-            "nextTransitionAt": 15000,
+            "nextTransitionAt": 12000,
             "lastRound": {
               "reason": "WINNER",
               "winnerId": "p1",
@@ -797,7 +797,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 15000,
+            "nextDeadline": 12000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,4400,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -854,7 +854,7 @@
             },
             "roundStartedAt": 4400,
             "roundEndsAt": null,
-            "nextTransitionAt": 15000,
+            "nextTransitionAt": 12000,
             "lastRound": {
               "reason": "WINNER",
               "winnerId": "p1",
@@ -913,7 +913,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 15000,
+            "nextDeadline": 12000,
             "actionEpoch": "[\"ROUND_RESULTS\",1,4400,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -970,7 +970,7 @@
             },
             "roundStartedAt": 4400,
             "roundEndsAt": null,
-            "nextTransitionAt": 15000,
+            "nextTransitionAt": 12000,
             "lastRound": {
               "reason": "WINNER",
               "winnerId": "p1",
@@ -1721,7 +1721,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 52200,
+            "nextDeadline": 49200,
             "actionEpoch": "[\"ROUND_RESULTS\",2,22200,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -1768,7 +1768,7 @@
             },
             "roundStartedAt": 22200,
             "roundEndsAt": null,
-            "nextTransitionAt": 52200,
+            "nextTransitionAt": 49200,
             "lastRound": {
               "reason": "TIMEOUT",
               "winnerId": null,
@@ -2255,7 +2255,7 @@
         "snapshot": {
           "lifecycle": {
             "phase": "ROUND_RESULTS",
-            "nextDeadline": 76200,
+            "nextDeadline": 73200,
             "actionEpoch": "[\"ROUND_RESULTS\",3,46200,null,null,null,null,null]",
             "spectatorIds": []
           },
@@ -2303,7 +2303,7 @@
             },
             "roundStartedAt": 46200,
             "roundEndsAt": null,
-            "nextTransitionAt": 76200,
+            "nextTransitionAt": 73200,
             "lastRound": {
               "reason": "TIMEOUT",
               "winnerId": null,
