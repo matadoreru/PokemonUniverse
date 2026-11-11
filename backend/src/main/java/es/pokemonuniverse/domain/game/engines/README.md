@@ -130,9 +130,12 @@ Cada fixture guarda una entrada (jugadores, `seed`, `now`, configuración, conte
    `engines.put(<Juego>Engine.ID, new <Juego>Engine(manifest(manifests, <Juego>Engine.ID)))`. Su manifiesto y su
    configuración por defecto se escriben a mano en `src/main/resources/games/registry.json`, la fuente de los dos;
    la `default<Juego>Config` de `packages/shared` tiene que coincidir (lo comprueba `registry-defaults.test.ts`). En
-   `packages/shared/src/games/<id>/` van solo `config.ts` (esquema Zod y configuración por defecto), en `types.ts` las
-   proyecciones que lee la web y lo que referencian, y las constantes o textos que muestre la pantalla; ni estado de
-   servidor, ni acciones, ni reglas.
+   `packages/shared/src/games/<id>/` van `config.ts` (esquema Zod y configuración por defecto), en `types.ts` las
+   proyecciones que lee la web y lo que referencian, y las constantes o textos que muestre la pantalla. No va el
+   estado de servidor ni ninguna regla autoritativa. Las excepciones son las acciones que construye la web
+   (`shinyVoteActionSchema`, `sketchmonActionSchema`, `whoIsWhoCursorPositionSchema`) y las copias de presentación de
+   reglas del motor (`learnsetPoints`, `learnsetManualRevealPoints`, `normalizeTabooText`, `tabooBaseId`): si cambia
+   el motor, cámbialas también.
    Escribe sus escenarios como en el paso 2 y grábalos. `GoldenReplayTest` los recoge solo y
    `GoldenRegistryConsistencyTest` exige que todo motor registrado tenga fixtures y viceversa. Todo en el mismo commit.
 4. Termina con `./gradlew check` y, en la raíz, con `npm run lint && npm test`.

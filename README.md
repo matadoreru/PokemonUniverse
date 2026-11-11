@@ -49,7 +49,7 @@ Las salas admiten hasta 8 jugadores por defecto. Si alguien se desconecta, conse
 ## Tecnología
 
 - **Monorepo** con npm workspaces y TypeScript estricto.
-- **`packages/shared`**: contratos Zod, tipos de las proyecciones, configuraciones por defecto y puntuación que usa el frontend. Los motores de los minijuegos solo están en el backend Java.
+- **`packages/shared`**: lo que usa el frontend: esquemas Zod y valores por defecto de cada configuración, tipos de las proyecciones y ayudas de presentación. Los motores, sus reglas autoritativas y el contenido oficial solo están en el backend Java; shared conserva las acciones que construye la web (Shiny Vote, Sketchmon y el cursor de Quién es Quién) y copias de presentación de algunas reglas (los puntos de Learnset Guess y la normalización de Poké Taboo).
 - **`backend`**: el servidor, en Java 25 con Micronaut, Gradle y PostgreSQL. Es la autoridad de la partida: temporizadores, secretos y ganadores se deciden aquí (ver abajo).
 - **`frontend`**: React 19, Vite y Tailwind. Solo muestra lo que el servidor le envía a cada jugador.
 - **`e2e`**: pruebas end-to-end con Playwright.
