@@ -41,7 +41,6 @@ import es.pokemonuniverse.domain.room.MemberRole;
 import es.pokemonuniverse.domain.room.NextGameVote;
 import es.pokemonuniverse.domain.room.Presence;
 import es.pokemonuniverse.domain.room.PresenceStatus;
-import es.pokemonuniverse.domain.room.RoomChat;
 import es.pokemonuniverse.domain.room.RoomCodes;
 import es.pokemonuniverse.domain.room.RoomMember;
 import es.pokemonuniverse.domain.room.RoomPermission;
@@ -111,6 +110,7 @@ public class RoomCoordinator {
   private final PendingTasks pending = new PendingTasks();
   final RoomStore store = new RoomStore();
   private final CursorRelay cursors;
+  private final RoomChatCommands chat;
   private final RoomViews views;
 
   private final GameRegistry registry;
@@ -131,8 +131,6 @@ public class RoomCoordinator {
   private final Map<String, ErasedEngine> engines = new LinkedHashMap<>();
   /** Experiencia de las cuentas al entrar (nivel del avatar); sin BD, ninguna. */
   private final UserExperienceReader experience;
-  /** Palabras que el chat sustituye por asteriscos. */
-  private final ChatFilter chatFilter;
   /** Presencia de amigos: escucha los cambios de sala. */
   private final RoomActivity activity;
   /** Partidas del reto diario; sin él, nadie las registra. */
@@ -153,7 +151,6 @@ public class RoomCoordinator {
       @Nullable DailyRunListener dailyRuns) {
     this.tcgCards = tcgCards;
     this.experience = experience;
-    this.chatFilter = chatFilter;
     this.activity = activity;
     this.dailyRuns = dailyRuns != null ? dailyRuns : DailyRunListener.NONE;
     this.registry = registry;
@@ -169,6 +166,7 @@ public class RoomCoordinator {
     this.settings = settings;
     this.assets = assets;
     this.cursors = new CursorRelay(events, clock);
+    this.chat = new RoomChatCommands(events, clock, chatFilter);
     this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
     this.currentCatalog = snapshot(catalog.loadPokemonCatalog());
     for (var manifest : registry.list()) {
@@ -369,7 +367,7 @@ public class RoomCoordinator {
       var host = room.members.get(room.hostId);
       if (host != null && !host.connected && host.disconnectTimer == null) transferHost(room);
       events.sendToMember(identity.id(), connectionId, "session:restored", view(room, identity.id()));
-      sendChatHistory(room, identity.id(), connectionId);
+      chat.sendHistory(room, identity.id(), connectionId);
       applyPresenceChange(room);
       return null;
     });
@@ -460,7 +458,7 @@ public class RoomCoordinator {
           if (participant != null) participant.identity = identity;
           else room.sessionParticipants.put(identity.id(),
               new SessionParticipant(identity, current != null ? current.sessionPoints : 0));
-          sendChatHistory(room, identity.id(), connectionId);
+          chat.sendHistory(room, identity.id(), connectionId);
           applyPresenceChange(room);
           roomActivity(identity);
           return view(room, identity.id());
@@ -810,20 +808,11 @@ public class RoomCoordinator {
 
   // ------------------------------------------------------------------------------------------------ chat
 
-  private static final String CHAT_ONLY_LOBBY = "Chat is only available in the lobby";
-  private static final String NO_PERMISSION = "No tienes permiso para realizar esta acción.";
-
   /** {@code room:chat:send}; un {@code text} que no sea cadena cuenta como ausente. */
   public void sendChat(String playerId, @Nullable JsonNode text) {
     inRequiredRoom(playerId, room -> {
       assertNotDaily(room);
-      assertChatLobby(room);
-      var member = room.members.get(playerId);
-      if (member == null) throw new RoomException("Not in a room");
-      var raw = text != null && text.isString() ? text.getStringValue() : null;
-      var message = chatRejections(() -> room.chat.post(playerId, member.identity.displayName(), raw,
-          room.hostId.equals(playerId), clock.now(), chatFilter));
-      sendToChatMembers(room, "room:chat:message", new ChatEvents.Message(room.historyId, message));
+      chat.send(room, playerId, text);
       return null;
     });
   }
@@ -833,19 +822,9 @@ public class RoomCoordinator {
     inRequiredRoom(actorId, current -> {
       assertNotDaily(current);
       var room = requiredRoom(actorId);
-      assertChatLobby(room);
+      RoomChatCommands.assertLobby(room);
       permissionRoom(actorId, RoomPermission.MODERATE_CHAT);
-      var id = chatSeq(seq);
-      var message = room.chat.find(id);
-      if (message == null) throw new RoomException(RoomChat.NOT_FOUND);
-      if (message.authorId().equals(room.hostId) && !actorId.equals(room.hostId)) {
-        throw new RoomException(NO_PERMISSION);
-      }
-      chatRejections(() -> {
-        room.chat.delete(id);
-        return null;
-      });
-      sendToChatMembers(room, "room:chat:deleted", new ChatEvents.Deleted(room.historyId, id));
+      chat.delete(room, actorId, seq);
       return null;
     });
   }
@@ -855,53 +834,12 @@ public class RoomCoordinator {
     inRequiredRoom(actorId, current -> {
       assertNotDaily(current);
       var room = requiredRoom(actorId);
-      assertChatLobby(room);
+      RoomChatCommands.assertLobby(room);
       permissionRoom(actorId, RoomPermission.MODERATE_CHAT);
-      if (muted == null || !muted.isBoolean()) throw new RoomException("Invalid chat command");
-      if (actorId.equals(playerId)) throw new RoomException(RoomChat.CANNOT_MUTE_SELF);
-      var target = playerId == null ? null : room.members.get(playerId);
-      if (target == null) throw new RoomException("Player not found");
-      if (room.hostId.equals(playerId)
-          || (target.roomRole == RoomRole.CO_HOST && !actorId.equals(room.hostId))) {
-        throw new RoomException(NO_PERMISSION);
-      }
-      room.chat.setMuted(playerId, muted.getBooleanValue());
+      chat.setMute(room, actorId, playerId, muted);
       broadcast(room);
       return null;
     });
-  }
-
-  private static void assertChatLobby(LiveRoom room) {
-    if (room.phase != RoomPhase.LOBBY) throw new RoomException(CHAT_ONLY_LOBBY);
-  }
-
-  /** Un número entero; cualquier otra cosa no es un mensaje que exista. */
-  private static long chatSeq(@Nullable JsonNode seq) {
-    if (seq == null || !seq.isNumber()) throw new RoomException(RoomChat.NOT_FOUND);
-    double value = seq.getDoubleValue();
-    if (!isInteger(value) || Math.abs(value) > 9_007_199_254_740_991d) throw new RoomException(RoomChat.NOT_FOUND);
-    return (long) value;
-  }
-
-  private static <T> T chatRejections(Supplier<T> operation) {
-    try {
-      return operation.get();
-    } catch (RoomChat.Rejected e) {
-      throw new RoomException(e.getMessage());
-    }
-  }
-
-  private void sendToChatMembers(LiveRoom room, String event, Object payload) {
-    for (var member : room.members.values()) {
-      if (member.connectionId != null && member.presence != PresenceStatus.LEFT) {
-        events.sendToMember(member.identity.id(), member.connectionId, event, payload);
-      }
-    }
-  }
-
-  private void sendChatHistory(LiveRoom room, String playerId, String connectionId) {
-    events.sendToMember(playerId, connectionId, "room:chat:history",
-        new ChatEvents.History(room.historyId, room.chat.history()));
   }
 
   public void kick(String actorId, @Nullable String playerId) {
