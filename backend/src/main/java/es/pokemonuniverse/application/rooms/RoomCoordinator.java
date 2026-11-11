@@ -84,7 +84,9 @@ import org.slf4j.LoggerFactory;
  * camino toma dos locks de sala a la vez, así que no hay interbloqueos. Los temporizadores se crean y se asignan antes
  * de programarse; el callback re-entra por el lock y comprueba {@code room.transitionTimer == timer} (Review Focus 2).
  *
- * <p>Los mensajes de error son los de {@code manager.ts}, sin traducir; viajan en {@link RoomException}.
+ * <p>Los colaboradores ({@link RoomChatCommands}, {@link GameRotation}, {@link NextGameVoting},
+ * {@link DailyRoomLifecycle}, {@link CursorRelay} y {@link RoomViews}) reciben la sala ya bloqueada: nunca toman el lock
+ * ni programan temporizadores. Los mensajes de error viajan sin traducir en {@link RoomException}.
  */
 @Singleton
 public class RoomCoordinator {
