@@ -1,6 +1,6 @@
 name: Deploy scripts
 
-# Simulación del despliegue (scripts/test-deploy-rollback.sh: docker y git falsos, configuración real de
+# Simulación del despliegue (scripts/test-deploy-rollback.sh: docker falso, configuración real de
 # `docker compose config`, sin daemon) y shellcheck de los scripts. Independiente de main.yml: no construye imágenes.
 on:
   pull_request:
@@ -32,9 +32,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-        with:
-          # El test lee compose.yaml de commits anteriores (9275fd9 y ac5b3ff).
-          fetch-depth: 0
 
       - name: Shellcheck
         run: shellcheck scripts/*.sh

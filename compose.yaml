@@ -56,12 +56,9 @@ services:
       # Java es el único servidor: salas en /ws, salas y partidas abiertas por el proceso anterior marcadas
       # INTERRUPTED al arrancar, y sincronización con PokéAPI y TCGdex. No dependen de PU_ROOMS_ENABLED ni
       # PU_DATA_SYNC_ENABLED: un .env antiguo con esos valores a false (los de antes del corte 2D) no los apaga.
-      # PU_CUTOVER_ROLLBACK_JAVA es interna de scripts/deploy.sh (nunca en .env): solo el rollback del primer despliegue
-      # tras el corte la pone a false, cuando vuelve a arrancar Node sin el compose anterior; Node y Java nunca sirven
-      # salas ni sincronizan a la vez.
-      ROOMS_ENABLED: "${PU_CUTOVER_ROLLBACK_JAVA:-true}"
-      INTERRUPT_STALE_ROOMS: "${PU_CUTOVER_ROLLBACK_JAVA:-true}"
-      BACKEND_DATA_SYNC_ENABLED: "${PU_CUTOVER_ROLLBACK_JAVA:-true}"
+      ROOMS_ENABLED: "true"
+      INTERRUPT_STALE_ROOMS: "true"
+      BACKEND_DATA_SYNC_ENABLED: "true"
       DATA_SYNC_HOUR: "${PU_DATA_SYNC_HOUR:-6}"
       DATA_SYNC_MINUTE: "${PU_DATA_SYNC_MINUTE:-0}"
       DATA_SYNC_TIMEZONE: "${PU_DATA_SYNC_TIMEZONE:-Europe/Madrid}"
