@@ -131,8 +131,13 @@
   --t-screen: 220ms;
   --t-bounce: 220ms;
   --t-reveal: 360ms;
+  /* Lo que dura un cut-in entero (entrada, pausa y salida): `CUTIN_HOLD_MS` de ui/Cutin.tsx lo copia. */
   --t-cutin: 1400ms;
   --t-fade: 120ms;
+  /* «+N» flotante (`SCORE_POP_MS` de ui/ScorePop.tsx) y latidos de urgencia o de puja. */
+  --t-pop: 400ms;
+  /* Respiración de los esqueletos de carga y de las ondas del grito (ciclos infinitos y lentos). */
+  --t-pulse: 900ms;
 
   /* ---------- capas (§3.5); los diálogos usan la capa superior nativa ---------- */
   --z-content: 1;
@@ -165,6 +170,8 @@
     --t-bounce: 0ms;
     --t-reveal: 0ms;
     --t-cutin: 0ms;
+    --t-pop: 0ms;
+    --t-pulse: 0ms;
   }
 }
 /* La clase `static` del body (E2E) lo apaga todo, fundidos incluidos. */
@@ -175,6 +182,8 @@
   --t-reveal: 0ms;
   --t-cutin: 0ms;
   --t-fade: 0ms;
+  --t-pop: 0ms;
+  --t-pulse: 0ms;
 }
 
 /* Alto contraste: contornos de 4 px y sin rayas. */

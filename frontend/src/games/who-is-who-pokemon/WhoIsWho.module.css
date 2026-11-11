@@ -144,14 +144,9 @@
 .cursorName {
   transition: opacity var(--t-fade) linear;
 }
-/* Quieta 1,5 s: solo queda la flecha de color (con movimiento reducido se apaga sin transición). */
+/* Quieta 1,5 s: solo queda la flecha de color. Es un fundido de opacidad: sigue con movimiento reducido (§3.4). */
 .quiet {
   opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  .cursorName {
-    transition: none;
-  }
 }
 :global(body.static) .cursorName {
   transition: none;

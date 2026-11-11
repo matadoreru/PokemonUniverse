@@ -12,9 +12,9 @@
   top: -0.5rem;
   margin-right: var(--sp-2);
 }
-/* 400 ms fijos (no hay token): debe coincidir con `SCORE_POP_MS` de ScorePop.tsx, que lo desmonta a ese tiempo. */
+/* `--t-pop` (400 ms): coincide con `SCORE_POP_MS` de ScorePop.tsx, que lo desmonta a ese tiempo. */
 .anim {
-  animation: rise 400ms var(--ease) both;
+  animation: rise var(--t-pop) var(--ease) both;
 }
 @keyframes rise {
   0% {

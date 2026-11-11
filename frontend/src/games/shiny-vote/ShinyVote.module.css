@@ -152,7 +152,7 @@
   border-radius: var(--r-badge);
   background: var(--navy);
   opacity: 0.18;
-  animation: ghost 900ms ease-in-out infinite alternate;
+  animation: ghost var(--t-pulse) ease-in-out infinite alternate;
 }
 @keyframes ghost {
   to {

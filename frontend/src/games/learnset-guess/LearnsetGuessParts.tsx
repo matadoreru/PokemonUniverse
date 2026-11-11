@@ -48,7 +48,8 @@ export function LearnsetHints({ evolutionHint, className }: { evolutionHint: str
 export function LearnsetNotices({ lastWarning, lastWarningAnnouncement, solver, announcement }: { lastWarning: string | null; /** Texto fijo del último aviso para lectores (el chip visible cuenta los segundos y no se anuncia). */ lastWarningAnnouncement: string | null; solver: { key: string; member: RoomMemberView; text: string } | null; announcement: string }) {
   const visible = Boolean(lastWarning || solver);
   return <div role="status" aria-live="polite" className={cx(s.notices, !visible && s.noticesIdle)}>
-    {lastWarning && <span className={s.warning} aria-hidden="true"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
+    {/* Un solo rebote al aparecer cada aviso (la clave es su texto fijo, no la cuenta atrás): el latido de urgencia ya es el del reloj. */}
+    {lastWarning && <span key={lastWarningAnnouncement ?? lastWarning} className={cx(s.warning, 'motion-bump')} aria-hidden="true"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
     {lastWarningAnnouncement && <span className="sr-only">{lastWarningAnnouncement}</span>}
     {solver && <span key={solver.key} className={cx(s.solver, 'motion-bump')}><Chip tone="ok" icon={<Avatar name={solver.member.displayName} avatar={solver.member.avatar} size="xs" />}>{solver.text}</Chip></span>}
     <span className="sr-only">{announcement}</span>

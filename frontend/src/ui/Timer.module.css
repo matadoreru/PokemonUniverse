@@ -29,7 +29,7 @@
 }
 .urgent .num {
   color: var(--yellow);
-  animation: pulse 400ms ease-in-out infinite alternate;
+  animation: pulse var(--t-pop) ease-in-out infinite alternate;
 }
 @keyframes pulse {
   to {

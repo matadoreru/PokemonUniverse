@@ -84,9 +84,22 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes motion-enter-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes motion-enter-left { from { opacity: 0; transform: translateX(-1.5rem); } to { opacity: 1; transform: translateX(0); } }
 @keyframes motion-enter-right { from { opacity: 0; transform: translateX(1.5rem); } to { opacity: 1; transform: translateX(0); } }
-/* Con reducción de movimiento no se mueven (y su nombre calculado es `none`). El resto baja a 0 ms con los tokens. */
+/* Entrada de un fallo («X no era»): aparece y se sacude a los lados una vez. */
+.motion-shake { animation: motion-shake var(--t-reveal) var(--ease) both; }
+@keyframes motion-shake {
+  0% { opacity: 0; transform: translateX(0); }
+  20% { opacity: 1; transform: translateX(-6px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes motion-fade-in { from { opacity: 0; } to { opacity: 1; } }
+/* Con reducción de movimiento no se mueven (y su nombre calculado es `none`); el fallo se queda en un fundido de 120 ms.
+   El resto baja a 0 ms con los tokens. */
 @media (prefers-reduced-motion: reduce) {
   .motion-bump, .motion-enter-up, .motion-enter-left, .motion-enter-right { animation: none; }
+  .motion-shake { animation: motion-fade-in var(--t-fade) var(--ease) both; }
 }
 
 /* Modo estático de los E2E (spec §3.4): .static lo apaga todo. */

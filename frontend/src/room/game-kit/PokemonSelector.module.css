@@ -41,13 +41,13 @@
   padding: var(--sp-2);
   border-radius: var(--r-card);
   background: var(--cream);
-  animation: ghost 900ms ease-in-out infinite alternate;
+  animation: ghost var(--t-pulse) ease-in-out infinite alternate;
 }
 .skeleton:nth-child(2n) {
-  animation-delay: 300ms;
+  animation-delay: calc(var(--t-pulse) / 3);
 }
 .skeleton:nth-child(3n) {
-  animation-delay: 600ms;
+  animation-delay: calc(var(--t-pulse) * 2 / 3);
 }
 .skeletonArt,
 .skeletonName {

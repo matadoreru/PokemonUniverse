@@ -103,7 +103,7 @@
   align-items: baseline;
   gap: var(--sp-1);
   white-space: nowrap;
-  animation: bid-bump 360ms var(--ease-bounce) both;
+  animation: bid-bump var(--t-reveal) var(--ease-bounce) both;
 }
 .amount strong {
   line-height: 1.05;
@@ -299,7 +299,7 @@
   border-color: var(--red-l);
 }
 .fresh {
-  animation: award-in var(--t-cutin, 420ms) var(--ease) both;
+  animation: award-in var(--t-reveal) var(--ease) both;
 }
 @keyframes award-in {
   from {

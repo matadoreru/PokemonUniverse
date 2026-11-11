@@ -8,8 +8,8 @@ import s from './Cutin.module.css';
 
 export type CutinTone = 'yellow' | 'red' | 'info' | 'ok';
 
-/** Duración por defecto de la capa (entrada, pausa y salida). */
-export const CUTIN_HOLD_MS = 1_600;
+/** Duración por defecto de la capa (entrada, pausa y salida): la de `--t-cutin` en tokens.css. */
+export const CUTIN_HOLD_MS = 1_400;
 /** Pausa antes de la `delayedLine`. */
 export const CUTIN_DELAYED_LINE_MS = 1_000;
 

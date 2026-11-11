@@ -139,8 +139,8 @@ export interface AuctionAwardProps {
 
 /**
  * Banda de la adjudicación: azul noche con bordes del tono, a todo el ancho del lote, con el kicker, el título y la
- * cantidad. Sin región viva propia (lo anuncia la de `AuctionScreen`): por eso no es un `Cutin`, que monta la suya.
- * Se queda hasta la siguiente adjudicación. `data-testid="auction-award"`.
+ * cantidad. Sin región viva propia (lo anuncia la de `AuctionScreen`). No es un `Cutin` (ni un `MomentCutin`): se queda
+ * en su sitio hasta la siguiente adjudicación, y un cut-in es una capa que se va sola. `data-testid="auction-award"`.
  */
 export function AuctionAward({ tone, kicker, title, detail, sprite, fresh = false }: AuctionAwardProps) {
   return <div className={cx(s.award, tone === 'unsold' && s.unsold, fresh && s.fresh)} data-testid="auction-award" data-fresh={fresh || undefined}>

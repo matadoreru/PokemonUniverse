@@ -8,6 +8,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import tailwind from '../../tailwind.config.js';
+import { CUTIN_HOLD_MS } from '../ui/Cutin';
+import { SCORE_POP_MS } from '../ui/ScorePop';
 import { bestInk, colors, contrast, cssName, fontSizes, layers, typeColors, typeInk, type PokemonType } from './tokens';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -243,6 +245,17 @@ describe('reducción de movimiento (§3.4)', () => {
       expect(apagadas, clase).toMatch(new RegExp(`\\.${clase}\\b[^{]*\\{[^}]*animation:\\s*none`));
     }
   });
+  it('el fallo (motion-shake) queda en un fundido de 120 ms', () => {
+    expect(bloquesReduce(styles).join('\n')).toMatch(/\.motion-shake\b[^{]*\{[^}]*animation:\s*motion-fade-in var\(--t-fade\)/);
+  });
+  it('--t-pop y --t-pulse bajan a 0 con reducción y con la clase static', () => {
+    const reduce = bloquesReduce(css).join('\n');
+    const stat = css.slice(css.indexOf('.static {'), css.indexOf('}', css.indexOf('.static {')));
+    for (const token of ['--t-pop', '--t-pulse']) {
+      expect(reduce, token).toContain(`${token}: 0ms;`);
+      expect(stat, token).toContain(`${token}: 0ms;`);
+    }
+  });
   it('toda animación o transición con duración literal tiene su media query de movimiento', () => {
     // Las duraciones de los tokens ya bajan a 0 con reducción; una literal no, así que su hoja debe decidirlo.
     const literal = /(?:animation|transition)(?:-duration)?:([^;]*);/g;
@@ -252,5 +265,19 @@ describe('reducción de movimiento (§3.4)', () => {
       return conLiteral && !texto.includes('prefers-reduced-motion');
     }).map((f) => path.relative(root, f));
     expect(sinCubrir).toEqual([]);
+  });
+});
+
+describe('duraciones de los tokens ↔ temporizadores JS', () => {
+  const ms = (name: string): number => {
+    const m = rootBlock.match(new RegExp(`^\\s*${name}:\\s*(\\d+)ms;`, 'm'));
+    if (!m) throw new Error(`token ${name} no encontrado en tokens.css`);
+    return Number(m[1]);
+  };
+  it('el «+N» se desmonta cuando acaba su animación (--t-pop)', () => {
+    expect(ms('--t-pop')).toBe(SCORE_POP_MS);
+  });
+  it('el cut-in dura lo que dice --t-cutin', () => {
+    expect(ms('--t-cutin')).toBe(CUTIN_HOLD_MS);
   });
 });

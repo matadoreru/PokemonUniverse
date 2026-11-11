@@ -41,7 +41,7 @@
   transition: transform var(--t-reveal) var(--ease);
 }
 .on > i {
-  animation: pulse 900ms var(--ease) var(--d, 0ms) infinite alternate;
+  animation: pulse var(--t-pulse) var(--ease) var(--d, 0ms) infinite alternate;
 }
 @keyframes pulse {
   from {
