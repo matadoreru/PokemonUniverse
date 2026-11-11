@@ -5,7 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { guessSprite } from '../../room/guess-kit';
 import { trimSprite } from './sprite-trim';
 import { playerColor } from '../../room/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, RowButton } from '../../ui';
 import { bingoCellLabel, bingoPlayerOrder, bingoProgressText } from './presentation';
 import s from './PokemonBingo.module.css';
 
@@ -131,16 +131,14 @@ export function BingoPlayers({ game, members, colors, selfId, onOpen, className 
       const name = member?.displayName ?? 'Entrenador';
       const self = id === selfId;
       const winner = id === game.winnerId;
-      const row = <Row rank={index + 1} name={self ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={self} highlight={winner} disconnected={offline(member)}
-        avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
-        meta={<span className={s.rowMeta}>
+      const row = { rank: index + 1, name: self ? `${name} (tú)` : name, color: playerColor(colors.get(id) ?? 0), self, highlight: winner, disconnected: offline(member),
+        avatar: <Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />,
+        meta: <span className={s.rowMeta}>
           {winner ? <Chip tone="ok" icon={<Icon icon={Trophy} size={18} />}>¡Bingo!</Chip> : <span className={s.rowProgress}>{bingoProgressText(board)}</span>}
-        </span>}
-        value={<span className={s.rowValue}>{board.completed}<small>/{board.total}</small></span>}>
-        {!self && <span className={s.open} aria-hidden="true"><Icon icon={Eye} size={18} />Ver</span>}
-      </Row>;
+        </span>,
+        value: <span className={s.rowValue}>{board.completed}<small>/{board.total}</small></span> };
       return <li key={id} data-testid="bingo-player-row" aria-current={self ? 'true' : undefined}>
-        {self ? row : <button type="button" className={s.rowButton} aria-label={`Ver tablero de ${name}: ${bingoProgressText(board)}${winner ? ', ¡bingo!' : ''}`} onClick={() => onOpen(id)}>{row}</button>}
+        {self ? <Row {...row} /> : <RowButton {...row} label={`Ver tablero de ${name}: ${bingoProgressText(board)}${winner ? ', ¡bingo!' : ''}`} onClick={() => onOpen(id)} cue={{ icon: Eye, text: 'Ver' }} />}
       </li>;
     })}</ol>
   </Panel>;

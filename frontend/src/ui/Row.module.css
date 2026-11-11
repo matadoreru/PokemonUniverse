@@ -119,3 +119,31 @@
 .link:not([aria-current]):hover .row {
   background: var(--cream-2);
 }
+
+/* Franja botón: igual que el enlace (solo transform), sin fondo propio; el foco es el anillo común de los botones. */
+.button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-franja);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition: transform var(--t-press) var(--ease);
+}
+.button:hover {
+  transform: translateY(-1px);
+}
+.button:active {
+  transform: translateY(2px);
+}
+.cue {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}

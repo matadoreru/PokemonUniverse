@@ -3,7 +3,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { Card } from './Card';
-import { Row, RowLink } from './Row';
+import { Eye } from 'lucide-react';
+import { Row, RowButton, RowLink } from './Row';
 
 describe('Row', () => {
   it('desconectado dice «Sin conexión» y el nombre lleva title', () => {
@@ -42,6 +43,16 @@ describe('RowLink', () => {
   });
   it('la abierta lleva aria-current', () => {
     expect(link(true)).toContain('aria-current="true"');
+  });
+});
+
+describe('RowButton', () => {
+  it('es un botón con su nombre accesible, la franja dentro y la indicación decorativa', () => {
+    const html = renderToStaticMarkup(createElement(RowButton, { label: 'Ver tablero de Misty', onClick: () => undefined, name: 'Misty', highlight: true, cue: { icon: Eye, text: 'Ver' } }));
+    expect(html).toMatch(/^<button type="button"[^>]*aria-label="Ver tablero de Misty"/);
+    expect(html).toContain('data-highlight="true"');
+    expect(html).toMatch(/<span class="[^"]*cue[^"]*" aria-hidden="true">/);
+    expect(html).toContain('Ver</span>');
   });
 });
 

@@ -5,7 +5,7 @@
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
-import { Bell, Bug, Code2, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, Code2, Eye, Gamepad2, Heart, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, Volume2, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -42,7 +42,7 @@ import { Panel } from '../Panel';
 import { HighlightCard, PatchHero, SectionRule, Timeline, TimelineLink } from '../Patch';
 import type { PatchTone } from '../Patch';
 import { Pill, PillAnchor, PillLink } from '../Pill';
-import { Row, RowLink } from '../Row';
+import { Row, RowButton, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
 import { AchievementTile } from '../AchievementTile';
 import { ScreenSplit } from '../ScreenSplit';
@@ -629,6 +629,12 @@ function RowSection() {
       </Fig>
       <Fig id="row-link-current" caption="Enlace · abierta ahora" wide>
         <RowLink to="/dev/ui" name="v0.8.0 · Una sala más completa" meta="11 de septiembre de 2026" current />
+      </Fig>
+      <Fig id="row-button" caption="Botón (abre el tablero de un rival) · suena «tap»" wide>
+        <RowButton label="Ver tablero de Misty: 3 de 6 aciertos" onClick={noop} rank={1} name="Misty" meta="3 de 6 aciertos" value="3/6" color="var(--info)" cue={{ icon: Eye, text: 'Ver' }} />
+      </Fig>
+      <Fig id="row-button-highlight" caption="Botón · destacada (acaba de resolver)" wide>
+        <RowButton label="Ver tablero de Brock: resuelto" onClick={noop} rank={2} name="Brock" meta="Resuelto" value="6/6" color="var(--ok)" highlight cue={{ icon: Eye, text: 'Ver' }} />
       </Fig>
     </Section>
   );

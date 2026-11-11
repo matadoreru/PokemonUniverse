@@ -5,7 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
-import { Badge, Chip, cx, Dialog, Icon, Panel, Row, StateBox } from '../ui';
+import { Badge, Chip, cx, Dialog, Icon, Panel, Row, RowButton, StateBox } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, GuessScreen, guessSprite, type GuessPlateContent } from './guess-kit';
 import { PokeddleBoard, PokeddleLegend } from './PokeddleBoard';
@@ -48,17 +48,15 @@ function RacePanel({ game, members, colors, selfId, onOpen }: { game: PokeddleRa
       const chip = rivalChip[status.kind];
       const justSolved = board.solved && board.solvedRound === game.roundNumber && game.phase === 'ROUND_RESULTS';
       const self = id === selfId;
-      const row = <Row name={self ? `${name} (tú)` : name} color={playerColor(colors.get(id) ?? 0)} self={self} highlight={justSolved} disconnected={offline(member)}
-        avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
-        meta={<span className={s.rowMeta}>
+      const row = { name: self ? `${name} (tú)` : name, color: playerColor(colors.get(id) ?? 0), self, highlight: justSolved, disconnected: offline(member),
+        avatar: <Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />,
+        meta: <span className={s.rowMeta}>
           <Chip tone={chip.tone} icon={<Icon icon={chip.icon} size={18} />}>{status.label}</Chip>
           <span className={s.detail}>{status.detail}</span>
-        </span>}
-        {...(secret ? { value: <img className={s.rowSprite} src={guessSprite(secret.sprite)} alt="" /> } : {})}>
-        {!self && <span className={s.open} aria-hidden="true"><Icon icon={Eye} size={18} />Ver</span>}
-      </Row>;
+        </span>,
+        ...(secret ? { value: <img className={s.rowSprite} src={guessSprite(secret.sprite)} alt="" /> } : {}) };
       return <li key={id} data-testid="pokeddle-race-row" aria-current={self ? 'true' : undefined}>
-        {self ? row : <button type="button" className={s.rowButton} aria-label={`Ver tablero de ${name}: ${status.label}, ${status.detail}`} onClick={() => onOpen(id)}>{row}</button>}
+        {self ? <Row {...row} /> : <RowButton {...row} label={`Ver tablero de ${name}: ${status.label}, ${status.detail}`} onClick={() => onOpen(id)} cue={{ icon: Eye, text: 'Ver' }} />}
       </li>;
     })}</ol>
   </Panel>;

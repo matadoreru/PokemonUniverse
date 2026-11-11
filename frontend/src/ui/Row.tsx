@@ -1,7 +1,9 @@
+import type { LucideIcon } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
+import { Icon } from './Icon';
 import s from './Row.module.css';
 
 export interface RowProps {
@@ -65,5 +67,33 @@ export function RowLink({ to, current, self, ...row }: RowLinkProps) {
     <Link to={to} className={s.link} aria-current={current ? 'true' : undefined} onClick={() => uiSound('tap')}>
       <Row {...row} self={Boolean(current || self)} />
     </Link>
+  );
+}
+
+export interface RowButtonProps extends RowProps {
+  /** Nombre accesible del botón: dice qué abre y lo que la franja muestra (el contenido no se lee por separado). */
+  label: string;
+  onClick(): void;
+  /** Indicación a la derecha de lo que hace al pulsarla (p. ej. ojo y «Ver»); decorativa, la acción va en `label`. */
+  cue?: { icon: LucideIcon; text: string } | undefined;
+}
+
+/**
+ * Franja que abre algo en la misma pantalla (el tablero de un rival): toda la franja es el botón y suena «tap» como
+ * `RowLink`. Sube 1 px al pasar y baja al pulsar; el fondo es el de la franja (no tapa la propia ni la destacada).
+ */
+export function RowButton({ label, onClick, cue, children, ...row }: RowButtonProps) {
+  return (
+    <button type="button" className={s.button} aria-label={label} onClick={() => { uiSound('tap'); onClick(); }}>
+      <Row {...row}>
+        {children}
+        {cue && (
+          <span className={s.cue} aria-hidden="true">
+            <Icon icon={cue.icon} size={18} />
+            {cue.text}
+          </span>
+        )}
+      </Row>
+    </button>
   );
 }

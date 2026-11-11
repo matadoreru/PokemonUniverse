@@ -266,33 +266,6 @@
 .rowValue small {
   font: 800 var(--fs-13) / 1 var(--font-text);
 }
-/* Franja de un rival: toda ella es el botón que abre su tablero (objetivo ≥44 px; el foco rodea la franja). */
-.rowButton {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  border-radius: var(--r-franja);
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: inherit;
-  cursor: pointer;
-  transition: transform var(--t-press) var(--ease);
-}
-.rowButton:hover {
-  transform: translateY(-1px);
-}
-.rowButton:active {
-  transform: translateY(2px);
-}
-.open {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font: 800 var(--fs-13) / 1 var(--font-text);
-}
 
 /* Placa inferior: lo que dijo el último intento y «Quitar Pokémon», en línea. */
 .plateNotes {
