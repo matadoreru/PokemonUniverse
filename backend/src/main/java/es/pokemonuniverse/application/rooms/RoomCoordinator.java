@@ -26,7 +26,6 @@ import es.pokemonuniverse.domain.identity.AvatarRef;
 import es.pokemonuniverse.domain.progression.Experience;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.domain.room.ChatFilter;
-import es.pokemonuniverse.domain.room.DailyRoom;
 import es.pokemonuniverse.domain.room.ErasedEngine;
 import es.pokemonuniverse.domain.room.GameCatalogSnapshot;
 import es.pokemonuniverse.domain.room.GameFinishReason;
@@ -107,6 +106,7 @@ public class RoomCoordinator {
   private final RoomChatCommands chat;
   final GameRotation rotation;
   final NextGameVoting voting;
+  private final DailyRoomLifecycle dailyRooms;
   private final RoomViews views;
 
   private final GameRegistry registry;
@@ -129,8 +129,6 @@ public class RoomCoordinator {
   private final UserExperienceReader experience;
   /** Presencia de amigos: escucha los cambios de sala. */
   private final RoomActivity activity;
-  /** Partidas del reto diario; sin él, nadie las registra. */
-  private final DailyRunListener dailyRuns;
 
   /**
    * {@code tcgCards}: el catálogo TCG en memoria que comparten todas las salas (no se fija por partida: Node pasa la
@@ -148,7 +146,6 @@ public class RoomCoordinator {
     this.tcgCards = tcgCards;
     this.experience = experience;
     this.activity = activity;
-    this.dailyRuns = dailyRuns != null ? dailyRuns : DailyRunListener.NONE;
     this.registry = registry;
     this.json = json;
     this.events = events;
@@ -169,6 +166,8 @@ public class RoomCoordinator {
       broadcast(room);
       schedule(room);
     });
+    this.dailyRooms = new DailyRoomLifecycle(store, cursors, pending,
+        dailyRuns != null ? dailyRuns : DailyRunListener.NONE, this::context, this::roomActivity, this::claimGameFinish);
     this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
     this.currentCatalog = snapshot(catalog.loadPokemonCatalog());
     for (var manifest : registry.list()) {
@@ -601,7 +600,7 @@ public class RoomCoordinator {
     if (member == null) return;
     if (!explicit && member.connected) return;
     if (room.daily != null) {
-      closeDailyRoom(room, member);
+      dailyRooms.close(room, member);
       return;
     }
     clearWhoIsWhoCursor(room, playerId);
@@ -625,32 +624,6 @@ public class RoomCoordinator {
       return;
     }
     applyPresenceChange(room);
-  }
-
-  /**
-   * El jugador del reto sale (o vence su gracia): la sala se cierra sin auditoría. Con la partida a medias se avisa del
-   * abandono; tras los resultados, no.
-   */
-  private void closeDailyRoom(LiveRoom room, RoomMember member) {
-    var playerId = member.identity.id();
-    clearWhoIsWhoCursor(room, playerId);
-    Presence.markLeft(member);
-    room.members.remove(playerId);
-    store.detachPlayer(playerId, room.code);
-    room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
-    store.delete(room.code);
-    roomActivity(member.identity);
-    var game = room.game;
-    if (game != null && claimGameFinish(room, game, GameFinishReason.ABANDONED)) {
-      // Como en finishDailyGame: un fallo síncrono del oyente se registra y no escapa de leave().
-      CompletableFuture<Void> recorded;
-      try {
-        recorded = dailyRuns.abandoned(room.daily);
-      } catch (RuntimeException error) {
-        recorded = CompletableFuture.failedFuture(error);
-      }
-      pending.track(recorded.exceptionally(error -> logged("Failed to record abandoned daily run", error)));
-    }
   }
 
   private void transferHost(LiveRoom room) {
@@ -1204,22 +1177,9 @@ public class RoomCoordinator {
     schedule(room);
   }
 
-  /**
-   * Solo memoria, con el lock tomado: el oyente apunta las rondas cerradas del estado público. Un fallo del oyente se
-   * registra y no rompe la difusión ni la partida.
-   */
-  private void observeDaily(LiveRoom room, DailyRoom daily, GameRuntime game) {
-    var publicState = game.engine.getPublicState(game.state, context(room));
-    try {
-      dailyRuns.observe(daily, publicState);
-    } catch (RuntimeException error) {
-      LOG.error("Failed to observe daily run", error);
-    }
-  }
-
   private void finishGame(LiveRoom room, GameRuntime game) {
     if (room.daily != null) {
-      finishDailyGame(room, room.daily, game);
+      dailyRooms.finish(room, room.daily, game);
       return;
     }
     if (!claimGameFinish(room, game, GameFinishReason.COMPLETED)) return;
@@ -1263,29 +1223,6 @@ public class RoomCoordinator {
         .thenCompose(ignored -> results.persist(resultRoom, resultSnapshot, game.resultId, game.startedAt, game.gameId,
             game.configTree))
         .exceptionally(error -> logged("Failed to persist game results", error)));
-  }
-
-  /**
-   * Final de una partida del reto: sin puntos de sesión, XP, auditoría ni {@link GameResultsPersister}. Se observa el
-   * estado final (la última ronda y el historial de Distance) antes de que el oyente fije {@code daily.outcome}, que la
-   * difusión siguiente ya publica; la escritura del resultado va en segundo plano, fuera del lock.
-   */
-  private void finishDailyGame(LiveRoom room, DailyRoom daily, GameRuntime game) {
-    if (!claimGameFinish(room, game, GameFinishReason.COMPLETED)) return;
-    resetWhoIsWhoCursors(room);
-    game.skipVoterIds.clear();
-    game.resultsApplied = true;
-    room.gamesPlayed += 1;
-    room.phase = RoomPhase.GAME_RESULTS;
-    observeDaily(room, daily, game);
-    var gameResults = copyResults(game.engine.getResults(game.state));
-    CompletableFuture<Void> recorded;
-    try {
-      recorded = dailyRuns.finished(daily, gameResults);
-    } catch (RuntimeException error) {
-      recorded = CompletableFuture.failedFuture(error);
-    }
-    pending.track(recorded.exceptionally(error -> logged("Failed to record daily run", error)));
   }
 
   /** Ganadores de la partida para el historial de la sesión; una partida sin clasificar (cooperativa) no tiene. */
@@ -1595,9 +1532,9 @@ public class RoomCoordinator {
 
   void broadcast(LiveRoom room) {
     // Reto: cada difusión de la partida viva se observa (Learnset solo publica la última ronda en ROUND_RESULTS); el
-    // estado final lo observa finishDailyGame antes de fijar el resultado.
+    // estado final lo observa DailyRoomLifecycle.finish antes de fijar el resultado.
     var game = room.game;
-    if (room.daily != null && game != null && game.finishReason == null) observeDaily(room, room.daily, game);
+    if (room.daily != null && game != null && game.finishReason == null) dailyRooms.observe(room, room.daily, game);
     room.revision += 1;
     room.updatedAt = clock.now();
     views.broadcast(room, context(room), hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size());
@@ -1635,7 +1572,7 @@ public class RoomCoordinator {
   }
 
   /** {@code structuredClone(results)}: la persistencia asíncrona nunca comparte mapas mutables con el motor. */
-  private static GameResults copyResults(GameResults source) {
+  static GameResults copyResults(GameResults source) {
     return new GameResults(source.winnerId(), source.standings().stream().map(standing -> new GameStanding(
         standing.playerId(), standing.position(), standing.points(), standing.won(),
         new LinkedHashMap<String, Number>(standing.stats()))).toList(), source.ranked());
