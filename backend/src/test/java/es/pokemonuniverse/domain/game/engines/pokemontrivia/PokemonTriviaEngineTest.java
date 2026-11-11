@@ -1,5 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.pokemontrivia;
 
+import static es.pokemonuniverse.support.EngineTestKit.context;
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,24 +9,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
-import es.pokemonuniverse.domain.game.engine.GamePlayer;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaDifficulty;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaConfig.PokemonTriviaQuestionType;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaOptionId;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaQuestion;
 import es.pokemonuniverse.domain.game.engines.pokemontrivia.PokemonTriviaTypes.PokemonTriviaState;
 import es.pokemonuniverse.domain.json.JsonTree;
-import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
 import es.pokemonuniverse.golden.GoldenRun;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -35,16 +30,6 @@ import org.junit.jupiter.api.Test;
 class PokemonTriviaEngineTest {
 
   private final PokemonTriviaEngine engine = new PokemonTriviaEngine(GoldenManifests.of(PokemonTriviaEngine.ID));
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
-  private static GameContext context(int players) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(1000).build();
-  }
 
   @Test
   void defaultConfigMatchesTheRegistryManifest() {

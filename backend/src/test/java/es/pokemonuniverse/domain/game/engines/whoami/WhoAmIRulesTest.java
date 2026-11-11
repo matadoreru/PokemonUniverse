@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.whoami;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,8 +11,6 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engines.whoami.WhoAmITypes.WhoAmIState;
 import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -23,10 +22,6 @@ import org.junit.jupiter.api.Test;
 class WhoAmIRulesTest {
 
   private static final InMemoryPokemonCatalog GOLDEN = GoldenCatalogs.load("gen1-2");
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
 
   private static void assertInvalid(String text) {
     assertThrows(ConfigValidationException.class, () -> WhoAmIConfig.parse(json(text)), text);

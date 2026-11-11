@@ -1,5 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.pokemonbingo;
 
+import static es.pokemonuniverse.support.EngineTestKit.context;
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -8,22 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
-import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
-import es.pokemonuniverse.domain.game.engine.GamePlayer;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoAction;
 import es.pokemonuniverse.domain.game.engines.pokemonbingo.PokemonBingoTypes.PokemonBingoState;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.conditions.ConditionGenerationOptions;
-import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
 import es.pokemonuniverse.golden.GoldenRun;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -37,16 +32,6 @@ import org.junit.jupiter.api.Test;
 class PokemonBingoEngineTest {
 
   private final PokemonBingoEngine engine = new PokemonBingoEngine(GoldenManifests.of(PokemonBingoEngine.ID));
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
-  private static GameContext context(int players) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(1000).build();
-  }
 
   private static PokemonBingoConfig withFamilies(PokemonBingoConfig base, int width, int height,
       List<Integer> generations, String onlyFamily) {

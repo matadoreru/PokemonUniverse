@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines.unowntranslator;
 
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,8 +12,6 @@ import es.pokemonuniverse.domain.pokemon.InMemoryPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import es.pokemonuniverse.golden.GoldenCatalogs;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -25,10 +24,6 @@ class UnownTranslatorRulesTest {
   private static final InMemoryPokemonCatalog GOLDEN = GoldenCatalogs.load("gen1-2");
   private static final List<Integer> KEY = List.of(5, 9, 0, 3, 7, 1, 2, 4, 6, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18,
       19, 20, 21, 22, 23, 24, 25);
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
 
   private static UnownTranslatorConfig config(UnownTranslatorMode mode, int rounds, List<Integer> generations) {
     return new UnownTranslatorConfig(generations, rounds, 60, 6, mode);

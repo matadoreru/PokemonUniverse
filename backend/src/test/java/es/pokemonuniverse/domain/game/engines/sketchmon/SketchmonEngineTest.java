@@ -1,5 +1,7 @@
 package es.pokemonuniverse.domain.game.engines.sketchmon;
 
+import static es.pokemonuniverse.support.EngineTestKit.context;
+import static es.pokemonuniverse.support.EngineTestKit.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -11,8 +13,6 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
-import es.pokemonuniverse.domain.game.engine.GamePlayer;
-import es.pokemonuniverse.domain.game.engine.infra.Mulberry32;
 import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.SketchmonAction;
 import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.SketchmonDrawOperation;
 import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.SketchmonGalleryEntry;
@@ -21,11 +21,8 @@ import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.Sketchmon
 import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.SketchmonStroke;
 import es.pokemonuniverse.domain.game.engines.sketchmon.SketchmonTypes.SketchmonTool;
 import es.pokemonuniverse.domain.json.JsonTree;
-import es.pokemonuniverse.golden.GoldenCatalogs;
 import es.pokemonuniverse.golden.GoldenManifests;
 import es.pokemonuniverse.golden.GoldenReplayer;
-import io.micronaut.json.tree.JsonNode;
-import io.micronaut.serde.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,16 +38,6 @@ import org.junit.jupiter.api.Test;
 class SketchmonEngineTest {
 
   private final SketchmonEngine engine = new SketchmonEngine(GoldenManifests.of(SketchmonEngine.ID));
-
-  private static JsonNode json(String text) throws IOException {
-    return ObjectMapper.getDefault().readValue(text, JsonNode.class);
-  }
-
-  private static GameContext context(int players) {
-    var list = new ArrayList<GamePlayer>();
-    for (int index = 1; index <= players; index++) list.add(new GamePlayer("p" + index, "Player " + index));
-    return GameContext.builder(GoldenCatalogs.load("gen1-2"), new Mulberry32(1)).players(list).now(1000).build();
-  }
 
   private static SketchmonConfig config(List<Integer> generations) {
     return SketchmonConfig.builder().generations(generations).roundSeconds(60).laps(1).hintsEnabled(false)
