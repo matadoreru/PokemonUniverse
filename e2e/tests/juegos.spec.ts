@@ -41,7 +41,7 @@ const DISTANCE_PICKED = '✓ Ya ha elegido';
 const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
 
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
-const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'absurd-pokedex', 'unown-translator', 'pokemon-team-auction', 'pokemon-bluff-auction']);
+const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'absurd-pokedex', 'unown-translator', 'who-am-i', 'pokemon-team-auction', 'pokemon-bluff-auction']);
 
 /** Texto del aviso de error del lobby o de la sala, si hay alguno visible. */
 async function avisos(page: Page): Promise<string> {
@@ -4826,6 +4826,137 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     await expect(host.page.getByText('El último mensaje decía')).toBeVisible();
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-unown-translator-clasificacion');
+    for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
+  } finally {
+    await sala.cerrar();
+  }
+});
+
+const escaparRegExp = (texto: string) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/** El Pokémon de `dueno` tal como lo ve `page` en su carta («X, de Nombre: ver sus pistas»): el dueño nunca lo ve. */
+async function pokemonDe(page: Page, dueno: string): Promise<string> {
+  const carta = page.getByTestId('who-am-i-cards').getByRole('button', { name: new RegExp(`, de ${escaparRegExp(dueno)}: ver sus pistas$`) });
+  const etiqueta = await carta.getAttribute('aria-label', { timeout: 10_000 });
+  return /^(.+), de .+: ver sus pistas$/.exec(etiqueta ?? '')![1]!;
+}
+
+/** Abre el buscador con «Adivinar», escribe `nombre` y espera a que su carta salga en la bandeja (sin elegirla). */
+async function buscarEnQuienSoy(page: Page, nombre: string): Promise<Locator> {
+  await page.getByRole('button', { name: 'Adivinar', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '¿Qué Pokémon eres?' })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Buscar tu Pokémon' }).fill(nombre, { timeout: 20_000 });
+  const opcion = page.locator('.pokemon-selector-results').getByRole('button', { name: nombre, exact: true });
+  await expect(opcion).toBeEnabled({ timeout: 10_000 });
+  return opcion;
+}
+
+/**
+ * ¿Quién soy? con tres jugadores y 3 vueltas como mucho. El primero pregunta una pregunta de 120 caracteres sin espacios
+ * (no debe ensanchar la página a 390); los otros dos responden con botones distintos y, mientras se responde, el que
+ * pregunta solo ve quién ha respondido. En `DECIDING` ve cada respuesta, falla con un Pokémon que no tiene nadie y
+ * le queda «Probó con …» en sus pistas (la captura «decidir», ya en el turno de B). Después cada uno lee su Pokémon en la carta de otro y lo adivina en su turno
+ * (el segundo, con el buscador capturado) hasta la clasificación.
+ */
+test('quién soy: preguntar, responder, adivinar y clasificación', async ({ browser }) => {
+  test.setTimeout(300_000);
+  const sala = await crearSalaConJugadores(browser, 3);
+  try {
+    const { host, invitados, jugadores } = sala;
+    const paginas = jugadores.map((j) => j.page);
+    await seleccionarJuego(host.page, '¿Quién soy?');
+    await host.page.getByRole('tab', { name: 'Configuración' }).click();
+    await ajustarRango(host.page, 'Número de vueltas', 'Home', '3');
+    // Plazos largos: las capturas a tres tamaños no deben llegar al final de un paso.
+    await ajustarRango(host.page, 'Tiempo para preguntar', 'End', '90');
+    await ajustarRango(host.page, 'Tiempo para responder', 'End', '60');
+    await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+    await iniciarPartida(host.page, invitados.map((j) => j.page));
+    await esperarPartida(paginas);
+
+    const viva = (page: Page) => page.getByTestId('social-screen').locator('[aria-live]');
+    const campo = (page: Page) => page.getByRole('textbox', { name: 'Escribe una pregunta de sí o no' });
+    const pistas = (page: Page) => page.getByTestId('who-am-i-clues');
+    const jugadorDe = (page: Page) => jugadores.find((j) => j.page === page)!;
+    for (const page of paginas) await expect(page.getByTestId('who-am-i-cards')).toBeVisible({ timeout: 20_000 });
+    for (const page of paginas) await expect(viva(page)).toHaveCount(1);
+
+    // Turno del primero: su carta lleva «?» y en las de los demás está el Pokémon de cada uno.
+    const turnoA = await primeraVisible(paginas, campo);
+    const a = jugadorDe(turnoA);
+    const [b, c] = jugadores.filter((j) => j !== a) as [Jugador, Jugador];
+    await expect(a.page.getByTestId('who-am-i-cards').getByText('Tu Pokémon', { exact: true })).toBeVisible();
+    for (const otro of [b, c]) await expect(otro.page.getByText(`Turno de ${a.name}`).first()).toBeVisible();
+    const asignados = new Map<string, string>([
+      [a.name, await pokemonDe(b.page, a.name)],
+      [b.name, await pokemonDe(a.page, b.name)],
+      [c.name, await pokemonDe(a.page, c.name)],
+    ]);
+    test.info().annotations.push({ type: 'reparto', description: [...asignados].map(([nombre, pokemon]) => `${nombre}: ${pokemon}`).join(' · ') });
+    // Nadie ve el suyo: ni en su carta ni en ningún texto de su página.
+    for (const j of jugadores) await expect(j.page.getByTestId('who-am-i-cards').getByText(asignados.get(j.name)!, { exact: true })).toHaveCount(0);
+
+    // Una pregunta de 120 caracteres sin espacios: el campo, la placa y el título la parten sin scroll horizontal.
+    const pregunta = `¿${'SoyDeTipoFuegoOVolador'.repeat(6)}`.slice(0, 119) + '?';
+    expect(pregunta).toHaveLength(120);
+    await campo(a.page).fill(pregunta);
+    await expect(a.page.getByText('120/120')).toBeVisible();
+    await capturarTamanos(a.page, 'juego-who-am-i-preguntar', { sigue: campo(a.page) });
+    await a.page.getByRole('button', { name: 'Enviar' }).click();
+
+    // B responde «Sí»; el que pregunta ve que B ha respondido, pero no qué.
+    const respuestas = (page: Page) => page.getByRole('group', { name: 'Tu respuesta' });
+    for (const otro of [b, c]) await expect(respuestas(otro.page)).toBeVisible({ timeout: 10_000 });
+    await respuestas(b.page).getByRole('button', { name: 'Sí', exact: true }).click();
+    await expect(respuestas(b.page).getByRole('button', { name: 'Sí', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(a.page.getByText(`${b.name} · Respondió`)).toBeVisible();
+    await expect(a.page.getByText(`${c.name} · Pendiente`)).toBeVisible();
+    await expect(a.page.getByText(`${b.name} · Sí`)).toHaveCount(0);
+    await expect(c.page.getByText(`${b.name} · Sí`)).toHaveCount(0);
+    await capturarTamanos(c.page, 'juego-who-am-i-responder', { sigue: respuestas(c.page) });
+    await respuestas(c.page).getByRole('button', { name: 'A medias', exact: true }).click();
+
+    // `DECIDING`: el que pregunta ve cada respuesta y elige entre adivinar o pasar.
+    const decidir = a.page.getByRole('heading', { name: '¿Adivinas o pasas?' });
+    await expect(decidir).toBeVisible({ timeout: 10_000 });
+    await expect(a.page.getByText(`${b.name} · Sí`)).toBeVisible();
+    await expect(a.page.getByText(`${c.name} · A medias`)).toBeVisible();
+    await expect(a.page.getByRole('button', { name: 'Pasar' })).toBeEnabled();
+    await capturarTamanos(a.page, 'juego-who-am-i-adivinar-o-pasar', { sigue: decidir });
+
+    // Falla con un Pokémon que no tiene nadie (el de otro jugador sale bloqueado): «Probó con …» en sus pistas.
+    const fallo = ['Pikachu', 'Bulbasaur', 'Charmander', 'Squirtle'].find((nombre) => ![...asignados.values()].includes(nombre))!;
+    await (await buscarEnQuienSoy(a.page, fallo)).click();
+    await expect(pistas(a.page).getByText(`Probó con ${fallo}`)).toBeVisible({ timeout: 10_000 });
+    await expect(pistas(a.page).getByText(pregunta)).toBeVisible();
+    await expect(pistas(a.page).getByText(`${b.name}:`)).toBeVisible();
+    // Ya en el turno de B: las pistas de A con la pregunta larga, las dos respuestas y el fallo.
+    await expect(a.page.getByText(`Turno de ${b.name}`).first()).toBeVisible();
+    await capturarTamanos(a.page, 'juego-who-am-i-decidir', { sigue: pistas(a.page) });
+
+    // Cada uno lee su Pokémon en la carta de otro y lo adivina en su turno; el buscador se captura en el de B.
+    let capturado = false;
+    const resueltos = new Set<string>();
+    while (resueltos.size < jugadores.length) {
+      const turno = jugadorDe(await primeraVisible(paginas.filter((page) => !resueltos.has(jugadorDe(page).name)), campo));
+      const suyo = asignados.get(turno.name)!;
+      const opcion = await buscarEnQuienSoy(turno.page, suyo);
+      if (!capturado) {
+        await capturarTamanos(turno.page, 'juego-who-am-i-adivinar', { sigue: opcion });
+        capturado = true;
+      }
+      await opcion.click();
+      resueltos.add(turno.name);
+      if (resueltos.size < jugadores.length) {
+        await expect(viva(turno.page)).toContainText(`¡Eras ${suyo}!`, { timeout: 10_000 });
+        await expect(turno.page.getByTestId('who-am-i-cards').getByText(suyo, { exact: true })).toBeVisible();
+      }
+    }
+
+    await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 20_000 });
+    for (const [nombre, pokemon] of asignados) await expect(host.page.getByText(`Era ${pokemon} · Acertó`).first(), nombre).toBeVisible();
+    await sinScorePop(host.page);
+    await capturarTamanos(host.page, 'juego-who-am-i-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();
