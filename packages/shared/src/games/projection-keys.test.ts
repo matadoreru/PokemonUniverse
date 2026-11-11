@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import type { AbsurdPokedexPlayerState, AbsurdPokedexPublicState, GuessFromStatsPlayerState, GuessFromStatsPublicState, HigherLowerPlayerState, HigherLowerPublicState, LearnsetGuessPlayerState, LearnsetGuessPublicState, MostLikelyToPlayerState, MostLikelyToPublicState, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, PokeddleRacePlayerState, PokeddleRacePublicState, PokedexDistancePlayerState, PokedexDistancePublicState, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState, PokemonBingoPlayerState, PokemonBingoPublicState, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, PokemonConnectionsPlayerState, PokemonConnectionsPublicState, PokemonCryQuizPlayerState, PokemonCryQuizPublicState, PokemonImpostorPlayerState, PokemonImpostorPublicState, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, PokemonRedFlagPlayerState, PokemonRedFlagPublicState, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, PokemonTriviaPlayerState, PokemonTriviaPublicState, PokeTabooPlayerState, PokeTabooPublicState, SecretRankingPlayerState, SecretRankingPublicState, ShinyVotePlayerState, ShinyVotePublicState, SketchmonPlayerState, SketchmonPublicState, TcgHigherLowerPlayerState, TcgHigherLowerPublicState, TypeChainPlayerState, TypeChainPublicState, TypeDuelPlayerState, TypeDuelPublicState, UnownTranslatorPlayerState, UnownTranslatorPublicState, WhoAmIPlayerState, WhoAmIPublicState, WhoIsWhoPlayerState, WhoIsWhoPublicState, WhosThatPokemonPlayerState, WhosThatPokemonPublicState, WouldYouRatherPlayerState, WouldYouRatherPublicState, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '../public.js';
+import type { AbsurdPokedexPlayerState, GameResults, GameStanding, AbsurdPokedexPublicState, GuessFromStatsPlayerState, GuessFromStatsPublicState, HigherLowerPlayerState, HigherLowerPublicState, LearnsetGuessPlayerState, LearnsetGuessPublicState, MostLikelyToPlayerState, MostLikelyToPublicState, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, PokeddleRacePlayerState, PokeddleRacePublicState, PokedexDistancePlayerState, PokedexDistancePublicState, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState, PokemonBingoPlayerState, PokemonBingoPublicState, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, PokemonConnectionsPlayerState, PokemonConnectionsPublicState, PokemonCryQuizPlayerState, PokemonCryQuizPublicState, PokemonImpostorPlayerState, PokemonImpostorPublicState, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, PokemonRedFlagPlayerState, PokemonRedFlagPublicState, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, PokemonTriviaPlayerState, PokemonTriviaPublicState, PokeTabooPlayerState, PokeTabooPublicState, SecretRankingPlayerState, SecretRankingPublicState, ShinyVotePlayerState, ShinyVotePublicState, SketchmonPlayerState, SketchmonPublicState, TcgHigherLowerPlayerState, TcgHigherLowerPublicState, TypeChainPlayerState, TypeChainPublicState, TypeDuelPlayerState, TypeDuelPublicState, UnownTranslatorPlayerState, UnownTranslatorPublicState, WhoAmIPlayerState, WhoAmIPublicState, WhoIsWhoPlayerState, WhoIsWhoPublicState, WhosThatPokemonPlayerState, WhosThatPokemonPublicState, WouldYouRatherPlayerState, WouldYouRatherPublicState, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '../public.js';
 
 /**
  * Las proyecciones del `/ws` las escribe Java y la web las lee con los tipos `*PublicState` y `*PlayerState` de este
@@ -16,6 +16,9 @@ import type { AbsurdPokedexPlayerState, AbsurdPokedexPublicState, GuessFromStats
  *
  * `KeyList` obliga a listar todas las claves del tipo, de todas las variantes de una unión, y a marcar opcional
  * justo lo que el tipo declara opcional.
+ *
+ * Por debajo del primer nivel solo se mira `results` (y sus `standings`), que es el `GameResults` de todos los juegos
+ * menos ¿Quién soy?. El resto de objetos anidados (`lastRound` y compañía, un tipo por juego) queda sin guarda.
  */
 type AllKeys<T> = T extends unknown ? keyof T : never;
 type OptionalIn<T, K extends PropertyKey> = T extends unknown ? (K extends keyof T ? (Partial<Pick<T, K>> extends Pick<T, K> ? true : never) : never) : never;
@@ -167,6 +170,16 @@ function snapshots(id: string): { file: string; snapshot: Snapshot }[] {
 
 const required = (keys: Keys): string[] => Object.keys(keys).filter((key) => keys[key] === true).sort();
 
+const resultsKeys = { winnerId: true, standings: true, ranked: 'opcional' } satisfies KeyList<GameResults>;
+const standingKeys = { playerId: true, position: true, points: true, won: 'opcional', stats: true } satisfies KeyList<GameStanding>;
+
+/** Ninguna clave que el tipo no declare y todas las obligatorias. */
+function checkObject(value: Record<string, unknown>, keys: Keys, where: string): void {
+  const present = Object.keys(value);
+  expect(present.filter((key) => !(key in keys)), `${where}: claves que el tipo no declara`).toEqual([]);
+  expect(required(keys).filter((key) => !present.includes(key)), `${where}: claves obligatorias ausentes`).toEqual([]);
+}
+
 it('hay una lista por cada juego con doradas, y ninguna de más', () => {
   expect(Object.keys(projections).sort()).toEqual(ids);
 });
@@ -177,12 +190,13 @@ describe.each(ids)('proyecciones de %s frente a sus doradas', (id) => {
 
   it('publicState', () => {
     expect(all.length).toBeGreaterThan(0);
-    const seen = new Set<string>();
     for (const { file, snapshot } of all) {
-      const keys = Object.keys(snapshot.publicState);
-      keys.forEach((key) => seen.add(key));
-      expect(keys.filter((key) => !(key in lists.publicState)), `${file}: claves que el tipo no declara`).toEqual([]);
-      expect(required(lists.publicState).filter((key) => !keys.includes(key)), `${file}: claves obligatorias ausentes`).toEqual([]);
+      checkObject(snapshot.publicState, lists.publicState, file);
+      const results = snapshot.publicState.results as { standings: Record<string, unknown>[] } | null | undefined;
+      // ¿Quién soy? publica su propia lista de resultados, no un `GameResults`.
+      if (!results || Array.isArray(results)) continue;
+      checkObject(results, resultsKeys, `${file} results`);
+      results.standings.forEach((standing, index) => checkObject(standing, standingKeys, `${file} results.standings[${index}]`));
     }
   });
 
