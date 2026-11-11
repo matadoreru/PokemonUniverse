@@ -79,9 +79,9 @@ describe('higherLowerOutcomeLine', () => {
 
 describe('higherLowerStreakMilestone', () => {
   it('celebra las rachas de 3, 5 y 10', () => {
-    expect(higherLowerStreakMilestone(outcome(3, 1, 0))).toEqual({ title: '¡Racha ×3!', subtitle: '+1' });
-    expect(higherLowerStreakMilestone(outcome(5, 2, 1))).toEqual({ title: '¡Racha ×5!', subtitle: '+2' });
-    expect(higherLowerStreakMilestone(outcome(10, 0, 0))).toEqual({ title: '¡Racha ×10!', subtitle: '¡Sigue así!' });
+    expect(higherLowerStreakMilestone(outcome(3, 1, 0))).toEqual({ title: '¡Racha ×3!', subtitle: '+1', spoken: 'Hito: 3 aciertos seguidos, +1 de bonus de racha.' });
+    expect(higherLowerStreakMilestone(outcome(5, 2, 1))).toEqual({ title: '¡Racha ×5!', subtitle: '+2', spoken: 'Hito: 5 aciertos seguidos, +2 de bonus de racha.' });
+    expect(higherLowerStreakMilestone(outcome(10, 0, 0))).toEqual({ title: '¡Racha ×10!', subtitle: '¡Sigue así!', spoken: 'Hito: 10 aciertos seguidos.' });
   });
   it('no celebra otras rachas ni un fallo', () => {
     expect(higherLowerStreakMilestone(outcome(4, 1, 0))).toBeNull();

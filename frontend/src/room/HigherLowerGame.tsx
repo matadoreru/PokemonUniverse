@@ -107,13 +107,14 @@ export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; se
     <GameSkipSlot className={s.skip} />
   </div>;
 
-  const announcement = higherLowerAnnouncement({ kind, roundNumber: game.roundNumber, category, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant, endless, eliminated });
+  // El hito de racha va en la región de la placa: el cut-in solo se ve.
+  const announcement = [higherLowerAnnouncement({ kind, roundNumber: game.roundNumber, category, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant, endless, eliminated }), milestone?.spoken].filter(Boolean).join(' ');
   const bottom = <HigherLowerPlate kind={kind} answer={answer?.choice ?? null} pending={pending} correctAnswer={lastRound?.correctAnswer ?? null} outcome={selfOutcome}
     participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={eliminated ? 'Eliminado' : higherLowerVerdict(selfOutcome, participant)}
     announcement={announcement} titleRef={titleRef} onAnswer={(choice) => void submit(choice)} endless={endless} eliminated={eliminated} streak={selfStreak} />;
 
   return <div className={cx('content-row', s.screen)}>
-    {milestone && <RevealCutIn key={game.roundNumber} tone="electric" title={milestone.title} subtitle={milestone.subtitle} />}
+    {milestone && <RevealCutIn key={game.roundNumber} tone="electric" title={milestone.title} subtitle={milestone.subtitle} live={false} />}
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
   </div>;
 }

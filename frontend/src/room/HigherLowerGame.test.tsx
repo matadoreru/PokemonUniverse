@@ -89,6 +89,14 @@ describe('HigherLowerGame', () => {
   it('keeps exactly one live region on screen', () => {
     for (const view of [room('ROUND_ACTIVE'), room('ROUND_RESULTS')]) expectSingleLiveRegion(render(view));
   });
+  it('the streak milestone cut-in is not a second live region: the screen region says it', () => {
+    const base = (room('ROUND_RESULTS').game as HigherLowerPublicState).lastRound!;
+    const lastRound = { ...base, outcomes: { ...base.outcomes, p1: { ...base.outcomes.p1!, streak: 3, streakBonus: 1 } } };
+    const html = render(room('ROUND_RESULTS', { lastRound }));
+    expect(html).toContain('¡Racha ×3!');
+    expectSingleLiveRegion(html);
+    expect(html).toMatch(/role="status" aria-live="polite">[^<]*3 aciertos seguidos/);
+  });
   it('bumps only the streaks above zero', () => {
     const html = render(room('ROUND_RESULTS'));
     expect(html.match(/motion-bump/g)).toHaveLength(1);

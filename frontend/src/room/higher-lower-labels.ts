@@ -23,10 +23,17 @@ export function higherLowerOutcomeStatus(outcome: HigherLowerOutcome | undefined
 
 const STREAK_MILESTONES: readonly number[] = [3, 5, 10];
 
-/** Hito de racha propio (3, 5 o 10 aciertos seguidos) para el cut-in, o `null` si no toca. */
-export function higherLowerStreakMilestone(outcome: HigherLowerOutcome): { title: string; subtitle: string } | null {
+/**
+ * Hito de racha propio (3, 5 o 10 aciertos seguidos) para el cut-in, o `null` si no toca. `spoken` es lo que dice la
+ * región viva de la pantalla (el cut-in no es región propia).
+ */
+export function higherLowerStreakMilestone(outcome: HigherLowerOutcome): { title: string; subtitle: string; spoken: string } | null {
   if (!outcome.correct || !STREAK_MILESTONES.includes(outcome.streak)) return null;
-  return { title: `¡Racha ×${outcome.streak}!`, subtitle: outcome.streakBonus ? `+${outcome.streakBonus}` : '¡Sigue así!' };
+  return {
+    title: `¡Racha ×${outcome.streak}!`,
+    subtitle: outcome.streakBonus ? `+${outcome.streakBonus}` : '¡Sigue así!',
+    spoken: `Hito: ${outcome.streak} aciertos seguidos${outcome.streakBonus ? `, +${outcome.streakBonus} de bonus de racha` : ''}.`,
+  };
 }
 
 export interface HigherLowerBarsView { previousScale: number; currentScale: number; leader: 'previous' | 'current' | 'tie'; diffLabel: string }
