@@ -5,7 +5,7 @@ import { useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNod
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, StateBox, TypeBadge, TypeOption } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, ScoreValue, StateBox, TypeBadge, TypeOption } from '../../ui';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { typeDuelMemberStatus, typeGridMove, typeLabel, type TypeDuelPlateKind } from './presentation';
@@ -129,7 +129,7 @@ export function TypeDuelSidebar({ game, members, colors, selfId, className }: { 
             <MemberChip game={game} id={id} />
             {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
           </span>}
-          value={<span className={s.score}>{points(id)}<small> pts</small></span>} />
+          value={<ScoreValue value={points(id)} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small> pts</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

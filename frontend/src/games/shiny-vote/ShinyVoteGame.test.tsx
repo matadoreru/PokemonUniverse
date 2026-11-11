@@ -335,7 +335,7 @@ describe('Shiny Quiz · Supervivencia', () => {
     expect(html).toContain('2 en pie');
     expect(html).toContain('1 / 2 votos');
     expect(html.match(/Eliminado/g)).toHaveLength(3);
-    expect(html).toMatch(/1<small> rondas<\/small>/);
+    expect(html).toMatch(/>1<\/span><small> rondas<\/small>/);
     expectSingleLiveRegion(html);
     // En Clásico, nada de esto.
     const classic = render(publicGame());

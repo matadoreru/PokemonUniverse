@@ -5,7 +5,7 @@ import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
-import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, ScoreValue } from '../../ui';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { formatTcgPrice, TCG_CHOICE_ORDER, tcgChoiceLabels, tcgCurrencySymbol, tcgMemberStatus, tcgOutcomeStatus, tcgPriceDiff, type TcgPlateKind } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
@@ -104,7 +104,7 @@ export function TcgSidebar({ game, lastRound, members, colors, selfId, className
             {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
             <span key={streak} className={cx(hl.streak, streak > 0 && 'motion-bump')} data-streak={id}><Badge tone={streak > 0 ? 'yellow' : 'cream'}><Icon icon={Flame} size={18} />Racha {streak}</Badge></span>
           </span>}
-          value={<span className={hl.score}>{points(id)}<small> pts</small></span>} />
+          value={<ScoreValue value={points(id)} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={hl.score}><small> pts</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

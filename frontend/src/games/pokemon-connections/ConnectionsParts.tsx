@@ -5,7 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
 import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
-import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, ScoreValue } from '../../ui';
 import { higherLowerRanking } from '../higher-lower/presentation';
 import { connectionsRevealOrder, connectionsRoundLine, connectionsStatusLabels, connectionsStatusTone } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
@@ -124,7 +124,7 @@ export function ConnectionsProgress({ game, members, colors, selfId, className }
             <span key={progress.foundGroups} className={cx(s.groups, progress.foundGroups > 0 && 'motion-bump')} data-found={id}>{progress.foundGroups}/{game.groupCount} grupos</span>
             {sharesPosition(ranking, id, points, true) && <Chip tone="warn" icon={<Icon icon={Equal} size={18} />}>Empate</Chip>}
           </span>}
-          value={<span className={s.score}>{points(id)}<small> pts</small></span>} />
+          value={<ScoreValue value={points(id)} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small> pts</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

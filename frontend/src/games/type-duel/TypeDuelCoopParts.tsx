@@ -4,7 +4,7 @@ import { CheckCircle2, Clock3, Eye, Search, Target, Trophy, Users } from 'lucide
 import type { CSSProperties, ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, StateBox, TypeBadge } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, ScoreValue, StateBox, TypeBadge } from '../../ui';
 import { typeDuelCoopRanking, typeLabel } from './presentation';
 import { typeDuelSprite } from './TypeDuelParts';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
@@ -82,7 +82,7 @@ export function TypeDuelCoopContributions({ playerIds, contributions, members, c
       return <li key={id} aria-current={id === selfId ? 'true' : undefined}>
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
           avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
-          value={<span className={s.score}>{count}<small> Pokémon</small></span>} />
+          value={<ScoreValue value={count} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small> Pokémon</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;

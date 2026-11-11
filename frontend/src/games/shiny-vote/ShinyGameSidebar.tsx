@@ -2,7 +2,7 @@ import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/sha
 import { Check, CircleDashed, Eye, UserX, X } from 'lucide-react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
+import { Badge, Chip, Icon, Panel, Row, ScoreValue } from '../../ui';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './ShinyVote.module.css';
 
@@ -59,7 +59,7 @@ export function ShinyGameSidebar({ game, members, colors, selfId, className }: {
         <Row rank={position} name={name} color={playerColor(colors.get(id) ?? 0)} self={id === selfId} disconnected={member?.presence !== undefined && member.presence !== 'CONNECTED'}
           avatar={<Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" />}
           meta={<span className={s.rowMeta}>{status}</span>}
-          value={<span className={cx(s.score)}>{game.scores[id] ?? 0}<small>{survival ? ' rondas' : ' pts'}</small></span>} />
+          value={<ScoreValue value={game.scores[id] ?? 0} self={id === selfId} quiet color={playerColor(colors.get(id) ?? 0)} className={s.score}><small>{survival ? ' rondas' : ' pts'}</small></ScoreValue>} />
       </li>;
     })}</ol>
   </Panel>;
