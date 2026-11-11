@@ -1,4 +1,4 @@
-import type { PokemonTriviaPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonTriviaPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Target, Timer } from 'lucide-react';
 import { triviaAccuracy, triviaCategoryScores } from '../games/pokemon-trivia/presentation';
 import { Chip, Icon } from '../ui';
@@ -7,6 +7,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
 
 /**
@@ -14,7 +15,7 @@ import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
  * aciertos, la precisión y los aciertos por categoría de cada jugador («Tipos 2/3»). Al lado, los récords: más
  * aciertos, la respuesta correcta más rápida y la mejor precisión. Un empate a cero no corona.
  */
-export function PokemonTriviaResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokemonTriviaResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokemonTriviaPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

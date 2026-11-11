@@ -1,4 +1,4 @@
-import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type PokemonImpostorConfig, type PokemonImpostorPlayerState, type PokemonImpostorPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type PokemonImpostorConfig, type PokemonImpostorPlayerState, type PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
 import { Check, Clock3, Eye, Hourglass, Lock, MousePointerClick, Send, TimerOff, UserX, Vote } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -17,10 +17,8 @@ import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { PokemonSelector } from './PokemonSelector';
 import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/pokemon-impostor/PokemonImpostor.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /**
  * Pokémon Impostor (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda (fase y tiempo) y la escena de la fase
@@ -31,7 +29,7 @@ const ignoreFailure = () => undefined;
  * enseñan hasta los resultados). En la expulsión, nada que dependa del rol entra en el DOM antes de la pausa de 1 s del
  * cut-in (al momento con reducción de movimiento).
  */
-export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonImpostorPublicState;
   const player = room.gamePlayerState as PokemonImpostorPlayerState;
   const config = room.selectedGameConfig as PokemonImpostorConfig;

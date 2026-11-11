@@ -4,6 +4,7 @@ import type {
 } from '@pokemon-universe/shared/public';
 import { SKETCHMON_COLORS } from '@pokemon-universe/shared/public';
 import type { PhaseStep } from '../../room/social-kit';
+import type { GameAction } from '../../room/room-command';
 
 /**
  * Textos y lógica pura de Sketchmon (Arcade DS F8): las herramientas del lienzo (nombres de colores y grosores, la
@@ -117,7 +118,7 @@ export function takeDrawBatch(pending: readonly DrawOperation[]): { batch: DrawO
  * Envía un lote de trazos. Van varias veces por segundo mientras se dibuja: con `report: false` no limpian ni publican
  * el aviso global de la sala (un dueño por error); su fallo lo enseña el lienzo.
  */
-export function sendDrawBatch(onAction: (action: unknown, options?: { report?: boolean }) => Promise<void>, operations: DrawOperation[]): Promise<void> {
+export function sendDrawBatch(onAction: GameAction, operations: DrawOperation[]): Promise<void> {
   return onAction({ type: 'DRAW_BATCH', operations } satisfies SketchmonAction, { report: false });
 }
 

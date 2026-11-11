@@ -13,6 +13,7 @@ import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition'
 import { guessSprite, pointsWord } from './guess-kit';
 import { playerColor } from './player-color';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, socialFocusKey, type SocialPlateContent } from './social-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/secret-ranking/SecretRanking.module.css';
 
 const GAME_NAME = 'Secret Ranking';
@@ -140,7 +141,7 @@ function ClosenessPanel({ result, room, selfId }: { result: SecretRankingRoundRe
  * Privacidad: el orden propio solo vuelve en `ownRanking`; los de los demás solo en `lastRound`, que la pantalla lee
  * únicamente en `ROUND_RESULTS`.
  */
-export function SecretRankingGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function SecretRankingGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as SecretRankingPublicState;
   const player = room.gamePlayerState as SecretRankingPlayerState | null;
   const config = room.selectedGameConfig as Partial<SecretRankingConfig> | null;

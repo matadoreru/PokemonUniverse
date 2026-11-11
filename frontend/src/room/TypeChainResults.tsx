@@ -1,4 +1,4 @@
-import type { RoomView, TypeChainPublicState } from '@pokemon-universe/shared/public';
+import type { TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { Equal, ListOrdered, ShieldCheck, Skull, XCircle } from 'lucide-react';
 import { typeChainEliminationLabels } from '../games/type-chain/presentation';
 import { Chip, Icon } from '../ui';
@@ -7,6 +7,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 const count = (value: number, one: string, many: string) => `${value} ${value === 1 ? one : many}`;
 
@@ -16,7 +17,7 @@ const count = (value: number, one: string, many: string) => `${value} ${value ==
  * y cómo cayó cada uno (superviviente, o eliminado por tiempo o por desconexión y en qué orden); la regla y la cadena
  * más larga, en el subtítulo. Al lado, los récords: más Pokémon nombrados y menos fallos.
  */
-export function TypeChainResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function TypeChainResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TypeChainPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

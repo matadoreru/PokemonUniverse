@@ -1,4 +1,4 @@
-import { gameModeLabel, type PokedexDistanceConfig, type PokedexDistancePlayerState, type PokedexDistancePublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type PokedexDistanceConfig, type PokedexDistancePlayerState, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode, RefObject } from 'react';
 import { useRef } from 'react';
@@ -19,17 +19,15 @@ import { PlayerList } from './PlayerList';
 import { playerColor } from './player-color';
 import { PokemonSelector } from './PokemonSelector';
 import { DISTANCE_EXACT_HIT_TITLE, distanceAnnouncement, distancePointsText, distanceScoreboard, distanceExactAtReveal, distanceFocusKey, distancePickedCountText, distanceRoundOutcome, distanceRoundRows, distanceSpectatorHint } from './pokedex-distance-selection';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from './PokedexDistanceGame.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /**
  * Pokédex Distance (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, el objetivo y el tiempo, quién ha
  * elegido y, al revelar, la regla. Abajo se actúa: el buscador o la elección bloqueada (y, al revelar, el veredicto con
  * el tiempo hasta la siguiente ronda). En la columna lateral, los jugadores de la ronda y, al revelar, sus distancias.
  */
-export function PokedexDistanceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokedexDistancePublicState;
   const playerState = room.gamePlayerState as PokedexDistancePlayerState | null;
   const config = room.selectedGameConfig as PokedexDistanceConfig;

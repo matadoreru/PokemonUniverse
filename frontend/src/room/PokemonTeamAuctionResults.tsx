@@ -1,4 +1,4 @@
-import { type PokemonTeamAuctionPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { type PokemonTeamAuctionPublicState } from '@pokemon-universe/shared/public';
 import { Coins, Equal, Gavel, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
 import { teamStatsLine } from '../games/pokemon-team-auction/presentation';
@@ -9,6 +9,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Pokémon Team Auction: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
@@ -16,7 +17,7 @@ import { ResultsShell, type ResultsStanding } from './ResultsShell';
  * sprites del equipo; la regla del desempate. Al lado, los récords y los Pokémon sin dueño. Abajo, la acción del host
  * («Ver clasificación final» si la sesión ha terminado). Sin medallas emoji.
  */
-export function PokemonTeamAuctionResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokemonTeamAuctionResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokemonTeamAuctionPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

@@ -1,4 +1,4 @@
-import type { AbsurdPokedexConfig, AbsurdPokedexPlayerState, AbsurdPokedexPokemon, AbsurdPokedexPublicState, PokemonType, RoomView } from '@pokemon-universe/shared/public';
+import type { AbsurdPokedexConfig, AbsurdPokedexPlayerState, AbsurdPokedexPokemon, AbsurdPokedexPublicState, PokemonType } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, ABSURD_POKEDEX_MAX_ENTRY_LENGTH, absurdPokedexScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, Send, Trophy, Vote, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type Ref } from 'react';
@@ -10,12 +10,11 @@ import { Card, Chip, cx, Icon, Panel, Pill, TextArea } from '../ui';
 import { useFocusOnTransition, useRefocusAfterReject } from './focus-transition';
 import { guessSprite, pointsWord } from './guess-kit';
 import { playerColor } from './player-color';
-import type { GameActionOptions } from './room-command';
+import { type ActiveGameProps, type GameAction, ignoreFailure } from './room-command';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, socialFocusKey, votesText } from './social-kit';
 import s from '../games/absurd-pokedex/AbsurdPokedex.module.css';
 
 const GAME_NAME = 'Pokédex Absurda';
-const ignoreFailure = () => undefined;
 
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 
@@ -74,7 +73,7 @@ function AbsurdWriter({ label, initialDraft, canSubmit, roundEndsAt, serverOffse
  * graciosa» es un conmutador local (nunca en la propia) y «Es la real» envía el voto con la graciosa marcada; en
  * Clásico, un solo botón «La más absurda». El voto es uno solo y final.
  */
-function AbsurdBallot({ game, player, titleRef, onAction }: { game: AbsurdPokedexPublicState; player: AbsurdPokedexPlayerState | null; titleRef: Ref<HTMLHeadingElement>; onAction(action: unknown, options?: GameActionOptions): Promise<void> }) {
+function AbsurdBallot({ game, player, titleRef, onAction }: { game: AbsurdPokedexPublicState; player: AbsurdPokedexPlayerState | null; titleRef: Ref<HTMLHeadingElement>; onAction: GameAction }) {
   const [funny, setFunny] = useState<string | null>(null);
   const real = game.mode === 'REAL_ENTRY';
   const ownId = player?.ownEntry?.id ?? null;
@@ -122,7 +121,7 @@ function AbsurdBallot({ game, player, titleRef, onAction }: { game: AbsurdPokede
  *
  * Anónimo: antes de `ROUND_RESULTS` no se pinta ningún autor ni cuál es la oficial; el `lastRound` solo se lee en su fase.
  */
-export function AbsurdPokedexGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown, options?: GameActionOptions): Promise<void> }) {
+export function AbsurdPokedexGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as AbsurdPokedexPublicState;
   const player = room.gamePlayerState as AbsurdPokedexPlayerState | null;
   const config = room.selectedGameConfig as Partial<AbsurdPokedexConfig> | null;

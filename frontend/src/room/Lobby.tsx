@@ -13,6 +13,7 @@ import { allowedModesOf, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSl
 import { connectedCount, filterGames, lobbyActionStatus, playerRangeLabel } from './lobby-state';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
 import { SessionScreen } from './SessionScreen';
+import { ignoreFailure } from './room-command';
 import s from './Lobby.module.css';
 
 interface Props {
@@ -103,8 +104,6 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
     return () => window.clearTimeout(preloadTimer);
   }, [gameClient]);
 
-  // El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí solo se captura.
-  const ignoreFailure = () => undefined;
   const toggleReady = async () => {
     if (!self || self.roomRole === 'HOST' || readyBusy) return;
     setReadyBusy(true);

@@ -1,4 +1,4 @@
-import { WOULD_YOU_RATHER_PREDICTION_POINTS, type RoomView, type WouldYouRatherConfig, type WouldYouRatherOption, type WouldYouRatherPlayerState, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
+import { WOULD_YOU_RATHER_PREDICTION_POINTS, type WouldYouRatherConfig, type WouldYouRatherOption, type WouldYouRatherPlayerState, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Lock, Scale, Send, Trophy, Users, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import {
@@ -10,6 +10,7 @@ import { Chip, Icon, Pill } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { pointsWord } from './guess-kit';
 import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialScreen, VoteTally, socialFocusKey, type ChoiceOption, type TallyOption } from './social-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/would-you-rather/WouldYouRather.module.css';
 
 const GAME_NAME = 'Would You Rather Pokémon';
@@ -23,7 +24,7 @@ const GAME_NAME = 'Would You Rather Pokémon';
  * Privacidad: la papeleta propia solo vuelve en `ownBallot`; las de los demás solo en `lastRound`, que la pantalla lee
  * únicamente en `ROUND_RESULTS`.
  */
-export function WouldYouRatherGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function WouldYouRatherGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as WouldYouRatherPublicState;
   const player = room.gamePlayerState as WouldYouRatherPlayerState | null;
   const config = room.selectedGameConfig as Partial<WouldYouRatherConfig> | null;

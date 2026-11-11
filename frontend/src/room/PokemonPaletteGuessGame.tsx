@@ -1,4 +1,4 @@
-import type { PokemonPaletteGuessConfig, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonPaletteGuessConfig, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
 import { describePaletteHint, paletteSwatches } from '../games/pokemon-palette-guess/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
@@ -7,6 +7,7 @@ import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/pokemon-palette-guess/Palette.module.css';
 
 const GAME_NAME = 'Adivina por la Paleta';
@@ -44,7 +45,7 @@ export function PaletteClue({ colors, weights, className }: { colors: readonly s
  * Privacidad: la respuesta (nombre y sprite) solo llega en `lastRound`, que el servidor manda al revelar; aun así la
  * pantalla solo la usa en `ROUND_RESULTS`.
  */
-export function PokemonPaletteGuessGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonPaletteGuessGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonPaletteGuessPublicState;
   const player = room.gamePlayerState as PokemonPaletteGuessPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonPaletteGuessConfig> | null;

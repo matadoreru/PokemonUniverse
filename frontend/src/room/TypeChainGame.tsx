@@ -1,4 +1,4 @@
-import type { RoomView, TypeChainConfig, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
+import type { TypeChainConfig, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, Hourglass, Search, Skull, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { TypeChainAttempts, TypeChainChain, TypeChainHud, TypeChainPlayers, TypeChainStage } from '../games/type-chain/TypeChainParts';
@@ -9,6 +9,7 @@ import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, cx, Icon, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/type-chain/TypeChain.module.css';
 
 /**
@@ -22,7 +23,7 @@ import s from '../games/type-chain/TypeChain.module.css';
  * No tiene revelación: el servidor encadena turnos (`TURN_ACTIVE`) hasta que queda uno (`GAME_RESULTS`). El fallo de
  * una orden lo dice el aviso global de la sala (el kit lo descarta con `ignoreFailure`).
  */
-export function TypeChainGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function TypeChainGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TypeChainPublicState;
   const player = room.gamePlayerState as TypeChainPlayerState | null;
   const config = room.selectedGameConfig as Partial<TypeChainConfig> | null;

@@ -1,4 +1,4 @@
-import type { PokemonConnectionsPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
 import { Equal, Medal, Puzzle, Timer } from 'lucide-react';
 import { connectionsStatsLine } from '../games/pokemon-connections/presentation';
 import { Chip, Icon } from '../ui';
@@ -7,13 +7,14 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Pokémon Connections: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
  * insignia y «+N», y la línea de grupos, tableros, errores, intentos a una y podios de cada uno) y, al lado, los récords
  * de la partida (más grupos, resolución más rápida y más podios; empates juntos). Un empate a cero no corona.
  */
-export function PokemonConnectionsResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokemonConnectionsResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokemonConnectionsPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

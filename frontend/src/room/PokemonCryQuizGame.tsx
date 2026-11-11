@@ -1,4 +1,4 @@
-import type { PokemonCryQuizConfig, PokemonCryQuizPlayerState, PokemonCryQuizPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonCryQuizConfig, PokemonCryQuizPlayerState, PokemonCryQuizPublicState } from '@pokemon-universe/shared/public';
 import { Play, RotateCcw, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CRY_PLAY_FAILED, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
@@ -8,6 +8,7 @@ import {
   GuessAttemptsFeed, GuessClue, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/pokemon-cry-quiz/Cry.module.css';
 
 const GAME_NAME = 'Adivina el Grito';
@@ -67,7 +68,7 @@ export function CryPlayer({ source, replay = false, onError }: { source: string;
  * Privacidad: el grito llega por una ruta opaca (`/options/cry/audio`, sin nombre ni número); la respuesta solo llega
  * en `lastRound`, que el servidor manda al revelar, y la pantalla solo la usa en `ROUND_RESULTS`.
  */
-export function PokemonCryQuizGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonCryQuizGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonCryQuizPublicState;
   const player = room.gamePlayerState as PokemonCryQuizPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonCryQuizConfig> | null;

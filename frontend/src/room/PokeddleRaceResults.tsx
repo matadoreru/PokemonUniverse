@@ -1,4 +1,4 @@
-import type { PokeddleRacePublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokeddleRacePublicState } from '@pokemon-universe/shared/public';
 import { Flag, ListChecks, Timer, X, Check } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessSeconds, guessSprite, guessTop } from './guess-kit';
@@ -6,6 +6,7 @@ import { playerColor } from './player-color';
 import { pokeddleAttemptsText, pokeddleVisibleSecret } from './pokeddle-presentation';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 const num = (stats: Record<string, number>, key: string) => Number(stats[key] ?? 0);
 
@@ -25,7 +26,7 @@ export function pokeddleStatsLine(stats: Record<string, number>): string {
  * resolución en menos rondas, con menos intentos y la más rápida desde el inicio; empates juntos). Abajo, la acción del
  * host. Nadie resuelto no corona a nadie.
  */
-export function PokeddleRaceResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokeddleRaceResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokeddleRacePublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

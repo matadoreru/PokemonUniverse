@@ -1,4 +1,4 @@
-import type { PokemonTeamAuctionConfig, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonTeamAuctionConfig, PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Coins, Crown, Eye, Hourglass, Lock, PackageCheck, SkipForward } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
@@ -14,12 +14,11 @@ import {
 } from './auction-kit';
 import { useFocusOnTransition } from './focus-transition';
 import { playerColor } from './player-color';
+import type { ActiveGameProps } from './room-command';
 
 const GAME_NAME = 'Pokémon Team Auction';
 const STATUS_ICON: Record<TeamStatus, LucideIcon> = { leading: Crown, passed: SkipForward, full: PackageCheck, noBudget: Coins, bidding: Hourglass, closed: Lock };
 const STATUS_TONE: Record<TeamStatus, NonNullable<ChipProps['tone']>> = { leading: 'ok', passed: 'neutral', full: 'ok', noBudget: 'bad', bidding: 'neutral', closed: 'neutral' };
-
-type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
 /**
  * Pokémon Team Auction con el kit de subasta (spec §2 y §6 «Juegos»): arriba, la placa con el lote como título
@@ -32,7 +31,7 @@ type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<v
  * Privacidad: la subasta es visible; el motor publica pujas, monedas y equipos de todos y la pantalla no pinta nada más.
  * El BST del lote en subasta no llega (se juzga sin él); el de los equipos, sí.
  */
-export function PokemonTeamAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+export function PokemonTeamAuctionGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonTeamAuctionPublicState;
   const player = room.gamePlayerState as PokemonTeamAuctionPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonTeamAuctionConfig> | null;

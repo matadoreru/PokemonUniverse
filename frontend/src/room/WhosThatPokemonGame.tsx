@@ -1,4 +1,4 @@
-import { whoPokemonScoringLabel, type RoomView, type WhosThatPokemonConfig, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
+import { whoPokemonScoringLabel, type WhosThatPokemonConfig, type WhosThatPokemonPlayerState, type WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
 import { Lightbulb } from 'lucide-react';
 import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
@@ -7,6 +7,7 @@ import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
 } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/whos-that-pokemon/WhosThat.module.css';
 
 const GAME_NAME = '¿Quién es ese Pokémon?';
@@ -20,7 +21,7 @@ const GAME_NAME = '¿Quién es ese Pokémon?';
  * Privacidad: la silueta es una imagen opaca sin nombre (`alt` genérico). La respuesta solo llega en `lastRound`, que
  * el servidor manda en `ROUND_RESULTS`; aun así la pantalla solo la usa en esa fase.
  */
-export function WhosThatPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function WhosThatPokemonGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as WhosThatPokemonPublicState;
   const player = room.gamePlayerState as WhosThatPokemonPlayerState | null;
   const config = room.selectedGameConfig as Partial<WhosThatPokemonConfig> | null;

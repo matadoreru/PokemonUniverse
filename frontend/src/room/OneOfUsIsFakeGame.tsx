@@ -1,4 +1,4 @@
-import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type FakePokemonChoice, type FakeRoundResult, type OneOfUsIsFakeConfig, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState, type RoomMemberView, type RoomView } from '@pokemon-universe/shared/public';
+import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type FakePokemonChoice, type FakeRoundResult, type OneOfUsIsFakeConfig, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState, type RoomMemberView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, HelpCircle, Search, ShieldAlert, Sparkles, Trophy, UserRoundX, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -14,12 +14,11 @@ import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, tallyOutcome,
   type BallotOption, type SocialPlateContent, type TallyOption,
 } from './social-kit';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/one-of-us-is-fake/OneOfUsIsFake.module.css';
 
 const GAME_NAME = 'One of Us Is Fake';
 const EMPTY_LOCKED = new Set<string>();
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 type Seat = { member: RoomMemberView; index: number };
 
@@ -93,7 +92,7 @@ function FakeReveal({ result, seats }: { result: FakeRoundResult; seats: Readonl
  * es); las elecciones ajenas llegan en `revealedChoices` (desde la revelación), y el fake, la otra categoría y los votos
  * solo en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
  */
-export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function OneOfUsIsFakeGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as OneOfUsIsFakePublicState;
   const player = room.gamePlayerState as OneOfUsIsFakePlayerState | null;
   const config = room.selectedGameConfig as Partial<OneOfUsIsFakeConfig> | null;

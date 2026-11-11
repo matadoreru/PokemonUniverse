@@ -1,4 +1,4 @@
-import type { PokeddlePublicBoard, PokeddleRaceConfig, PokeddleRacePlayerState, PokeddleRacePublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
+import type { PokeddlePublicBoard, PokeddleRaceConfig, PokeddleRacePlayerState, PokeddleRacePublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, Flag, Search, Send, Users } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -15,6 +15,7 @@ import {
   pokeddleAnnouncement, pokeddleAttemptsText, pokeddleFocusKey, pokeddleMatchCount, pokeddlePlateKind, pokeddleRivalStatus, pokeddleVisibleSecret,
   type PokeddlePlateKind, type PokeddleRivalStatus,
 } from './pokeddle-presentation';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/pokeddle-race/PokeddleRace.module.css';
 
 const GAME_NAME = 'Pokédle Race';
@@ -94,7 +95,7 @@ function plateContent(kind: PokeddlePlateKind, { game, own, submitted, countdown
  * Privacidad: cada jugador tiene su Pokémon secreto. Solo se pinta el de quien ya lo encontró (o al terminar la partida),
  * por `pokeddleVisibleSecret`; de los rivales solo se ve lo que ya era público (resuelto, intento enviado y cuentas).
  */
-export function PokeddleRaceGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokeddleRaceGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokeddleRacePublicState;
   const player = room.gamePlayerState as PokeddleRacePlayerState | null;
   const config = room.selectedGameConfig as Partial<PokeddleRaceConfig> | null;

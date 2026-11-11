@@ -1,4 +1,4 @@
-import type { MoveCategory, PokemonType, RoomView, UnownTranslatorPublicState, UnownTranslatorRoundResult } from '@pokemon-universe/shared/public';
+import type { MoveCategory, PokemonType, UnownTranslatorPublicState, UnownTranslatorRoundResult } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, EyeOff, Zap } from 'lucide-react';
 import { categoryLabel } from '../games/learnset-guess/presentation';
@@ -8,6 +8,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords, type ResultsRecordItem } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/unown-translator/UnownTranslator.module.css';
 
 const GAME_NAME = 'Traductor Unown';
@@ -55,7 +56,7 @@ export function unownStatsLine(stats: Stats): string {
  * el último mensaje descifrado; al lado, los récords (más descifrados, más veces el primero y más letras ocultas al
  * acertar; empates juntos). Abajo, la acción del host. Un empate a cero no corona.
  */
-export function UnownTranslatorResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function UnownTranslatorResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as UnownTranslatorPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

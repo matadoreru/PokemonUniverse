@@ -1,4 +1,4 @@
-import type { LearnsetGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { LearnsetGuessPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Lightbulb, Trophy } from 'lucide-react';
 import { learnsetRecords, learnsetStatsLine } from '../games/learnset-guess/presentation';
 import { learnsetModeLabel } from './learnset-texts';
@@ -7,6 +7,7 @@ import { sharesPosition } from './results-ties';
 import { playerColor } from './player-color';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Learnset Guess: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
@@ -14,7 +15,7 @@ import { ResultsShell, type ResultsStanding } from './ResultsShell';
  * aciertos, más aciertos con las pistas iniciales y la mejor ronda; empates juntos). Abajo, la acción del host. Un
  * empate a cero no corona.
  */
-export function LearnsetGuessResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function LearnsetGuessResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as LearnsetGuessPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

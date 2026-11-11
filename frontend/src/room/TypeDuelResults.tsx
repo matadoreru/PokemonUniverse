@@ -1,4 +1,4 @@
-import { gameModeLabel, type RoomView, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import { Equal, HandHeart, Percent, Swords, Timer, Users } from 'lucide-react';
 import { sharesPosition } from './results-ties';
 import { typeDuelCoopStatsLine, typeDuelRecords, typeDuelStatsLine } from '../games/type-duel/presentation';
@@ -6,6 +6,7 @@ import { Chip, Icon } from '../ui';
 import { playerColor } from './player-color';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Type Duel: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con insignia y
@@ -14,7 +15,7 @@ import { ResultsShell, type ResultsStanding } from './ResultsShell';
  * corona. En Cooperativo no hay ganador: la clasificación es la aportación de cada uno (el servidor ya ordena por ella) y
  * al lado van el total del grupo y la mayor aportación.
  */
-export function TypeDuelResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function TypeDuelResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TypeDuelPublicState; const host = room.hostId === selfId;
   if (game.mode === 'COOP') return <TypeDuelCoopResults room={room} selfId={selfId} onLobby={onLobby} onEnd={onEnd} />;
   const standings = game.results?.standings ?? [];
@@ -45,7 +46,7 @@ export function TypeDuelResults({ room, selfId, onLobby, onEnd }: { room: RoomVi
 
 const coopPoints = (points: number) => `${points} Pokémon`;
 
-function TypeDuelCoopResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+function TypeDuelCoopResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TypeDuelPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

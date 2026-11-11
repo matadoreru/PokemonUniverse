@@ -5,6 +5,7 @@ import {
 } from '../games/sketchmon/presentation';
 import { typingTarget } from './shortcuts';
 import { cx } from '../ui';
+import type { GameAction } from './room-command';
 import s from '../games/sketchmon/Sketchmon.module.css';
 
 /**
@@ -12,8 +13,6 @@ import s from '../games/sketchmon/Sketchmon.module.css';
  * escala 0–1 (todos ven el mismo dibujo a cualquier tamaño) y, para quien dibuja, `useSketchPad`: el trazo optimista,
  * el envío de los trazos en lotes y las acciones de historial (deshacer, rehacer y limpiar).
  */
-
-type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
 const FLUSH_INTERVAL_MS = 250;
 

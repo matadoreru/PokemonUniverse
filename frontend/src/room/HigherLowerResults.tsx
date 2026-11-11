@@ -1,4 +1,4 @@
-import { gameModeLabel, type HigherLowerPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Flame, Target } from 'lucide-react';
 import { higherLowerRecord } from '../games/higher-lower/presentation';
@@ -8,6 +8,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
   { key: 'bestStreak', title: 'Mejor racha', icon: Flame, unit: (value) => value === 1 ? 'acierto seguido' : 'aciertos seguidos' },
@@ -24,7 +25,7 @@ const endlessPoints = (points: number) => `Racha ${points}`;
  * En Racha infinita la puntuación es la racha (el servidor ya ordena por ella), cada fila dice en qué ronda cayó y el
  * único récord es la mejor racha.
  */
-export function HigherLowerResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function HigherLowerResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as HigherLowerPublicState; const host = room.hostId === selfId;
   const endless = game.mode === 'ENDLESS';
   const modeLabel = gameModeLabel('higher-lower', game);

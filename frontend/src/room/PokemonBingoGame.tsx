@@ -1,4 +1,4 @@
-import type { BingoPublicCell, PokemonBingoConfig, PokemonBingoPlayerState, PokemonBingoPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { BingoPublicCell, PokemonBingoConfig, PokemonBingoPlayerState, PokemonBingoPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, CheckCircle2, Clock3, Eye, Grid3x3, Hourglass, Lock, Trash2, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
@@ -11,10 +11,8 @@ import { Chip, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/pokemon-bingo/PokemonBingo.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /** Mover un Pokémon que ya está en otra casilla: espera la confirmación del `Dialog`. */
 interface PendingMove { pokemonId: string; pokemonName: string; from: BingoPublicCell; to: BingoPublicCell }
@@ -28,7 +26,7 @@ interface PendingMove { pokemonId: string; pokemonName: string; from: BingoPubli
  * Al cantar bingo (`ROUND_RESULTS`, 8 s): un `Cutin` «¡BINGO!» con el ganador y, en la placa, quién ganó, la cuenta
  * atrás de la clasificación y, para el host, «Saltar y continuar».
  */
-export function PokemonBingoGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonBingoPublicState;
   const player = room.gamePlayerState as PokemonBingoPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonBingoConfig> | null;

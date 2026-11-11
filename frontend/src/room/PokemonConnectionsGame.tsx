@@ -1,4 +1,4 @@
-import type { PokemonConnectionsConfig, PokemonConnectionsPlayerState, PokemonConnectionsPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonConnectionsConfig, PokemonConnectionsPlayerState, PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, Check, CheckCircle2, Clock3, Eye, Lightbulb, MousePointerClick, ShieldX, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScorePop } from '../components/ScorePop';
@@ -11,10 +11,8 @@ import { Chip, cx, Icon, Pill, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, type GuessPlateContent } from './guess-kit';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/pokemon-connections/PokemonConnections.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /**
  * Pokémon Connections (spec §2 y §6 «Juegos»). Arriba se mira: la placa del puzle con el plazo y el tablero, una
@@ -28,7 +26,7 @@ const ignoreFailure = () => undefined;
  * Privacidad: durante la ronda solo se pintan los grupos propios (`foundGroups` del estado del jugador); `lastRound`
  * solo se lee en `ROUND_RESULTS`.
  */
-export function PokemonConnectionsGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonConnectionsGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonConnectionsPublicState;
   const player = room.gamePlayerState as PokemonConnectionsPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonConnectionsConfig> | null;

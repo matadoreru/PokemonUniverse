@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
+import { ignoreFailure } from './room-command';
 
 /**
  * Envío de una orden de una en una: `pending` es la que va en camino (o `null`) y `submit` no hace nada mientras otra

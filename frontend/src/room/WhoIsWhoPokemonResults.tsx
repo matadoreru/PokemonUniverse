@@ -1,4 +1,4 @@
-import type { RoomView, WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
+import type { WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
 import { Crown, Equal, Flag } from 'lucide-react';
 import { useMemo, type CSSProperties } from 'react';
 import { TEAM_COLOR, TEAM_NAME, TEAMS, whoResultRule, whoResultTitle, whoStatsLine } from '../games/who-is-who-pokemon/presentation';
@@ -7,6 +7,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
 
 /**
@@ -14,7 +15,7 @@ import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
  * del catálogo con los aciertos y fallos de cada uno y, al lado, los dos equipos con su secreto ya revelado y sus
  * jugadores. Abajo, la acción del host. Un empate a cero no corona a nadie.
  */
-export function WhoIsWhoPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function WhoIsWhoPokemonResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as WhoIsWhoPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

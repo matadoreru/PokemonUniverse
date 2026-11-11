@@ -1,9 +1,10 @@
-import { gameModeLabel, type RoomView, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Target } from 'lucide-react';
 import { shinyRecords } from '../games/shiny-vote/presentation';
 import { playerColor } from './player-color';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /** Línea de estadísticas de un puesto: aciertos y precisión. */
 export function shinyStatsLine(stats: { correctVotes?: number | undefined; accuracy?: number | undefined }): string {
@@ -20,7 +21,7 @@ const survivalPoints = (points: number) => `${points} ${points === 1 ? 'ronda' :
  * superadas (el servidor ya ordena por ellas), cada fila dice si sigue en pie o en qué ronda cayó y el único récord es
  * el de más rondas superadas.
  */
-export function ShinyVoteResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function ShinyVoteResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as ShinyVotePublicState;
   const host = room.hostId === selfId;
   const survival = game.mode === 'SURVIVAL';

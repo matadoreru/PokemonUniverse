@@ -1,4 +1,4 @@
-import type { RoomView, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
+import type { ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Timer, ZoomIn } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessRecords, guessStatsLine, guessTop } from './guess-kit';
@@ -6,6 +6,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Zoomed Pokémon: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
@@ -13,7 +14,7 @@ import { ResultsShell, type ResultsStanding } from './ResultsShell';
  * los aciertos a máximo zoom) y, al lado, los récords de la partida (más aciertos, acierto más rápido y a máximo zoom;
  * empates juntos). Abajo, la acción del host. Un empate a cero no corona.
  */
-export function ZoomedPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function ZoomedPokemonResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as ZoomedPokemonPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

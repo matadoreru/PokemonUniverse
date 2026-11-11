@@ -1,4 +1,4 @@
-import type { RoomView, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
+import type { TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { Equal, Flame, Target } from 'lucide-react';
 import { higherLowerRecord } from '../games/higher-lower/presentation';
@@ -8,6 +8,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
   { key: 'bestStreak', title: 'Mejor racha', icon: Flame, unit: (value) => value === 1 ? 'acierto seguido' : 'aciertos seguidos' },
@@ -20,7 +21,7 @@ const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: num
  * `standings`: podio, ganador con insignia y «+N», y la línea de aciertos, iguales, mejor racha y precisión de cada uno)
  * y, al lado, los récords de la partida (empates juntos). Abajo, la acción del host. Un empate a cero no corona.
  */
-export function TcgHigherLowerResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function TcgHigherLowerResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as TcgHigherLowerPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

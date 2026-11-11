@@ -1,4 +1,4 @@
-import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type OneOfUsIsFakePublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type OneOfUsIsFakePublicState } from '@pokemon-universe/shared/public';
 import { Equal, Search, ShieldAlert, ShieldQuestion } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -6,6 +6,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/one-of-us-is-fake/OneOfUsIsFake.module.css';
 
 type Stats = NonNullable<OneOfUsIsFakePublicState['results']>['standings'][number]['stats'];
@@ -29,7 +30,7 @@ export function fakeStatsLine(stats: Stats): string {
  * al lado, los récords (mejor fake, mejor detective y más veces fake; empates juntos). Abajo, la acción del host.
  * Un empate a cero no corona.
  */
-export function OneOfUsIsFakeResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function OneOfUsIsFakeResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as OneOfUsIsFakePublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

@@ -1,4 +1,4 @@
-import type { RoomView, ZoomedPokemonConfig, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
+import type { ZoomedPokemonConfig, ZoomedPokemonPlayerState, ZoomedPokemonPublicState } from '@pokemon-universe/shared/public';
 import { ZoomOut } from 'lucide-react';
 import { describeZoomedHint, zoomedSourceLabel, zoomLabel } from '../games/zoomed-pokemon/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
@@ -7,6 +7,7 @@ import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/zoomed-pokemon/Zoomed.module.css';
 
 const GAME_NAME = 'Zoomed Pokémon';
@@ -32,7 +33,7 @@ export function ZoomViewport({ source, sourceType, alt, className }: { source: s
  * Privacidad: el recorte es una imagen opaca sin nombre. La respuesta (nombre e imagen completa) solo llega en
  * `lastRound`, que el servidor manda al revelar; aun así la pantalla solo la usa en `ROUND_RESULTS`.
  */
-export function ZoomedPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function ZoomedPokemonGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as ZoomedPokemonPublicState;
   const player = room.gamePlayerState as ZoomedPokemonPlayerState | null;
   const config = room.selectedGameConfig as Partial<ZoomedPokemonConfig> | null;

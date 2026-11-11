@@ -1,4 +1,4 @@
-import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useMemo, useRef } from 'react';
 import { RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
@@ -13,6 +13,7 @@ import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, high
 import { useFocusOnTransition } from './focus-transition';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/higher-lower/HigherLower.module.css';
 
 /**
@@ -27,7 +28,7 @@ import s from '../games/higher-lower/HigherLower.module.css';
  * Privacidad: solo se pinta lo proyectado. El valor del actual llega en `null` hasta el revelado, y con «Al revelar» las
  * respuestas ajenas también (solo `answeredIds`). Los sprites van por el proxy opaco y nunca se pinta el número de Pokédex.
  */
-export function HigherLowerGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function HigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as HigherLowerPublicState;
   const config = room.selectedGameConfig as Partial<HigherLowerConfig> | null;
   const player = room.gamePlayerState as HigherLowerPlayerState | null;

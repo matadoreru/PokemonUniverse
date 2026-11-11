@@ -1,4 +1,4 @@
-import type { AbsurdPokedexPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { AbsurdPokedexPublicState } from '@pokemon-universe/shared/public';
 import { absurdPokedexScoringLabel } from '@pokemon-universe/shared/public';
 import { Equal, Laugh, Search, Trophy, VenetianMask, Vote } from 'lucide-react';
 import { Chip, Icon } from '../ui';
@@ -7,6 +7,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords, type ResultsRecordItem } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/absurd-pokedex/AbsurdPokedex.module.css';
 
 type Stats = NonNullable<AbsurdPokedexPublicState['results']>['standings'][number]['stats'];
@@ -22,7 +23,7 @@ export function absurdStatsLine(stats: Stats, mode: AbsurdPokedexPublicState['mo
 }
 
 /** Resultados de Pokédex Absurda: clasificación, regla de puntos y récords del modo; abajo, la acción del host. */
-export function AbsurdPokedexResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function AbsurdPokedexResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as AbsurdPokedexPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

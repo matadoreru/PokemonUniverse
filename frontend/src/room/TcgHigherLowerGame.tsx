@@ -1,4 +1,4 @@
-import type { RoomView, TcgHigherLowerChoice, TcgHigherLowerConfig, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
+import type { TcgHigherLowerChoice, TcgHigherLowerConfig, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useMemo, useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { HigherLowerHud } from '../games/higher-lower/HigherLowerParts';
@@ -12,6 +12,7 @@ import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
 import { GameSkipSlot } from './GameSkipSlot';
 import { higherLowerRevealCountdown } from './higher-lower-labels';
+import type { ActiveGameProps } from './room-command';
 import hl from '../games/higher-lower/HigherLower.module.css';
 import s from '../games/tcg-higher-lower/TcgHigherLower.module.css';
 
@@ -24,7 +25,7 @@ import s from '../games/tcg-higher-lower/TcgHigherLower.module.css';
  * Privacidad: el precio de la nueva carta y `lastRound` solo se leen en `ROUND_RESULTS` (el servidor ya los manda en
  * `null` antes; aquí además no se pintan aunque llegaran). Las respuestas ajenas no se proyectan en la ronda.
  */
-export function TcgHigherLowerGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function TcgHigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TcgHigherLowerPublicState;
   const config = room.selectedGameConfig as Partial<TcgHigherLowerConfig> | null;
   const player = room.gamePlayerState as TcgHigherLowerPlayerState | null;

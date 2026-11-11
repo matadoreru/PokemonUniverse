@@ -1,4 +1,4 @@
-import type { PokemonBingoPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonBingoPublicState } from '@pokemon-universe/shared/public';
 import { Grid3x3, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { BingoBoard } from '../games/pokemon-bingo/BingoParts';
@@ -7,13 +7,14 @@ import { Chip, Icon, Panel, TabPanel, Tabs } from '../ui';
 import { playerColor } from './player-color';
 import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Pokémon Bingo: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
  * insignia y «+N», y la línea de casillas, correctos, fallos y el tiempo del bingo) y, al lado, el tablero final de cada
  * jugador en pestañas (`Tabs`), con los Pokémon que valían en las casillas que quedaron vacías («Podías usar»).
  */
-export function PokemonBingoResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokemonBingoResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokemonBingoPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

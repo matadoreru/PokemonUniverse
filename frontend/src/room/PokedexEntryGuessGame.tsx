@@ -1,4 +1,4 @@
-import type { PokedexEntryGuessConfig, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokedexEntryGuessConfig, PokedexEntryGuessPlayerState, PokedexEntryGuessPublicState } from '@pokemon-universe/shared/public';
 import { BookOpenText } from 'lucide-react';
 import { useLayoutEffect, useRef } from 'react';
 import { describePokedexEntryHint, entrySegments, fitFontSize } from '../games/pokedex-entry-guess/presentation';
@@ -8,6 +8,7 @@ import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/pokedex-entry-guess/Entry.module.css';
 
 const GAME_NAME = 'Pokédex Entry Guess';
@@ -58,7 +59,7 @@ export function EntryText({ text }: { text: string }) {
  * Privacidad: la entrada llega con el nombre tapado («???»); la respuesta solo llega en `lastRound`, que el servidor
  * manda al revelar, y la pantalla solo la usa en `ROUND_RESULTS`.
  */
-export function PokedexEntryGuessGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokedexEntryGuessGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokedexEntryGuessPublicState;
   const player = room.gamePlayerState as PokedexEntryGuessPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokedexEntryGuessConfig> | null;

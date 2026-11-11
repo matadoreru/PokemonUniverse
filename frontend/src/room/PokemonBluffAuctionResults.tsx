@@ -1,4 +1,4 @@
-import { type PokemonBluffAuctionPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { type PokemonBluffAuctionPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Gavel, Trophy } from 'lucide-react';
 import { useMemo } from 'react';
 import { bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
@@ -9,13 +9,14 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de Pokémon Bluff Auction: la clasificación del catálogo (`ResultsShell` con `standings`: ganador con
  * insignia, sin medallas emoji) con, en texto, rondas ganadas, apuestas cumplidas, récord, correctos e imposibles; la
  * regla de la puntuación y del desempate. Al lado, los récords. Abajo, la acción del host.
  */
-export function PokemonBluffAuctionResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokemonBluffAuctionResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokemonBluffAuctionPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

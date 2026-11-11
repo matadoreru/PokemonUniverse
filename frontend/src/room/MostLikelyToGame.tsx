@@ -1,4 +1,4 @@
-import { MOST_LIKELY_TO_WIN_POINTS, type MostLikelyToConfig, type MostLikelyToPlayerState, type MostLikelyToPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { MOST_LIKELY_TO_WIN_POINTS, type MostLikelyToConfig, type MostLikelyToPlayerState, type MostLikelyToPublicState } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, Search, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { mostLikelyAnnouncement, mostLikelyCurrentStep, mostLikelyHeading, mostLikelySteps, mostLikelyVerdict } from '../games/most-likely-to/presentation';
@@ -13,12 +13,11 @@ import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
   type BallotOption, type SocialPlateContent, type TallyOption,
 } from './social-kit';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/most-likely-to/MostLikelyTo.module.css';
 
 const GAME_NAME = 'Most Likely To';
 const EMPTY_LOCKED = new Set<string>();
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /**
  * Most Likely To con el kit social (spec §2 y §6 «Juegos»). Arriba: la placa de la ronda con el plazo y «Saltar», las
@@ -29,7 +28,7 @@ const ignoreFailure = () => undefined;
  * Privacidad: las respuestas de los demás solo llegan en `revealedAnswers` (votación) y los votos solo en `lastRound`,
  * que la pantalla lee únicamente en `ROUND_RESULTS`.
  */
-export function MostLikelyToGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function MostLikelyToGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as MostLikelyToPublicState;
   const player = room.gamePlayerState as MostLikelyToPlayerState | null;
   const config = room.selectedGameConfig as Partial<MostLikelyToConfig> | null;

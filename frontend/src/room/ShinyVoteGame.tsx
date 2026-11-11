@@ -1,4 +1,4 @@
-import { type RoomMemberView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { type RoomMemberView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { ShinyGameHeader } from '../games/shiny-vote/ShinyGameHeader';
@@ -14,6 +14,7 @@ import { cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './GameSkipSlot';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/shiny-vote/ShinyVote.module.css';
 
 /**
@@ -47,7 +48,7 @@ function useShinyCardsReady(roundKey: string, total: number) {
  * Supervivencia (`game.alive` presente): la placa dice cuántos candidatos hay, el marcador quién sigue en pie y quien
  * cayó en una ronda anterior deja de jugar (mira la partida con su propia placa).
  */
-export function ShinyVoteGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function ShinyVoteGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as ShinyVotePublicState;
   const config = room.selectedGameConfig as ShinyVoteConfig;
   const playerState = room.gamePlayerState as ShinyVotePlayerState | null;

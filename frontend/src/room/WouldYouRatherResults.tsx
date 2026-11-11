@@ -1,4 +1,4 @@
-import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, type RoomView, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
+import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
 import { Equal, Sparkles, Target, Users } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -6,6 +6,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/would-you-rather/WouldYouRather.module.css';
 
 type Stats = NonNullable<WouldYouRatherPublicState['results']>['standings'][number]['stats'];
@@ -31,7 +32,7 @@ export function wouldYouRatherStatsLine(stats: Stats): string {
  * puntos y, al lado, los récords (más predicciones, más veces en la mayoría y rondas perfectas; empates juntos). Abajo, la
  * acción del host. Un empate a cero no corona.
  */
-export function WouldYouRatherResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function WouldYouRatherResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as WouldYouRatherPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

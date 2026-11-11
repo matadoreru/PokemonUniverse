@@ -1,11 +1,10 @@
 import { validateGameConfigReadiness, type GameConfigReadinessContext, type RoomView } from '@pokemon-universe/shared/public';
-import type { GameActionOptions } from '../room/room-command';
+import type { ActiveGameProps, GameResultsProps } from '../room/room-command';
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
 import { validateGuessFromStatsConfig } from './guess-from-stats/validation';
 import { validateZoomedPokemonConfig } from './zoomed-pokemon/validation';
 
-export interface ActiveGameProps { room: RoomView; selfId: string; onAction(action: unknown, options?: GameActionOptions): Promise<void> }
-export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
+export type { ActiveGameProps, GameResultsProps };
 export interface GameConfigProps { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }
 export interface MiniGameClientModule {
   id: string;

@@ -1,4 +1,4 @@
-import type { RoomView, WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
+import type { WhosThatPokemonPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Target, Timer } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessRecords, guessStatsLine } from './guess-kit';
@@ -6,6 +6,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 
 /**
  * Resultados de ¿Quién es ese Pokémon?: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador
@@ -13,7 +14,7 @@ import { ResultsShell, type ResultsStanding } from './ResultsShell';
  * y, al lado, los récords de la partida (más aciertos, acierto más rápido y al primer intento; empates juntos). Abajo,
  * la acción del host. Un empate a cero no corona.
  */
-export function WhosThatPokemonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function WhosThatPokemonResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as WhosThatPokemonPublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const nameOf = (playerId: string) => room.members.find((member) => member.id === playerId)?.displayName ?? 'Entrenador';

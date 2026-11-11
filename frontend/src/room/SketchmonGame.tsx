@@ -1,4 +1,4 @@
-import type { PokemonType, RoomView, SketchmonConfig, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
+import type { PokemonType, SketchmonConfig, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Brush, Check, Clock3, Eye, Hourglass, Palette, Radio, Trophy, X } from 'lucide-react';
@@ -16,6 +16,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from './guess-kit';
 import { useSketchPad } from './SketchmonCanvas';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/sketchmon/Sketchmon.module.css';
 
 const GAME_NAME = 'Sketchmon';
@@ -25,8 +26,6 @@ const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? 
 
 const TURN_ICON: Record<SketchTurnStatus, LucideIcon> = { drawing: Brush, drew: Brush, next: ArrowRight, done: Check, pending: Hourglass };
 const TURN_TONE: Record<SketchTurnStatus, NonNullable<ChipProps['tone']>> = { drawing: 'warn', drew: 'info', next: 'info', done: 'neutral', pending: 'neutral' };
-
-type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
 /**
  * Sketchmon con el kit social (spec §2 y §6 «Juegos»): Poké Taboo con un lienzo en lugar de pistas de texto. Arriba, la
@@ -38,7 +37,7 @@ type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<v
  * Privacidad: el secreto solo llega en el estado propio de quien dibuja (`secretPokemon`) y solo se pinta con él; la
  * respuesta para los demás solo llega en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
  */
-export function SketchmonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+export function SketchmonGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as SketchmonPublicState;
   const player = room.gamePlayerState as SketchmonPlayerState | null;
   const config = room.selectedGameConfig as Partial<SketchmonConfig> | null;

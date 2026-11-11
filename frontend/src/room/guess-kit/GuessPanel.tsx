@@ -6,12 +6,10 @@ import { Badge, Chip, cx, Icon, Panel } from '../../ui';
 import { PokemonSelector } from '../PokemonSelector';
 import type { PokemonSearchOption } from '../pokemon-search';
 import { attemptsText, guessSearchAutoFocus, guessSeconds, ordinal, pointsWord, type GuessPanelKind, type GuessVerdict } from './presentation';
+import { ignoreFailure } from '../room-command';
 import s from './GuessPanel.module.css';
 
 const EMPTY_LOCKED = new Set<string>();
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /** El buscador de cada juego (se conservan su etiqueta y su `key` por ronda). */
 export interface GuessSelectorProps {

@@ -1,4 +1,4 @@
-import type { GuessFromStatsConfig, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat, RoomView } from '@pokemon-universe/shared/public';
+import type { GuessFromStatsConfig, GuessFromStatsPlayerState, GuessFromStatsPokemonReveal, GuessFromStatsPublicState, GuessFromStatsVisibleStat } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
 import { describeStatsHint, fullStats, statLabels, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
@@ -8,6 +8,7 @@ import {
   GuessAttemptsFeed, GuessClue, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal, GuessScreen,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from './guess-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/guess-from-stats/Stats.module.css';
 
 const GAME_NAME = 'Guess from Stats';
@@ -45,7 +46,7 @@ function AnswerSheet({ pokemon, big = false }: { pokemon: GuessFromStatsPokemonR
  * Privacidad: las estadísticas no dicen el nombre; las respuestas solo llegan en `lastRound`, que el servidor manda al
  * revelar, y la pantalla solo las usa en `ROUND_RESULTS`.
  */
-export function GuessFromStatsGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function GuessFromStatsGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as GuessFromStatsPublicState;
   const player = room.gamePlayerState as GuessFromStatsPlayerState | null;
   const config = room.selectedGameConfig as Partial<GuessFromStatsConfig> | null;

@@ -1,4 +1,4 @@
-import type { RoomView, WhoIsWhoPlayerState, WhoIsWhoPokemonConfig, WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
+import type { WhoIsWhoPlayerState, WhoIsWhoPokemonConfig, WhoIsWhoPublicState } from '@pokemon-universe/shared/public';
 import { Clock3, Eye, Hourglass, MessageCircleQuestion, Target, X } from 'lucide-react';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useServerOffset } from '../hooks/useServerTime';
@@ -9,11 +9,10 @@ import {
 import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel } from '../games/who-is-who-pokemon/WhoIsWhoParts';
 import { useFocusOnTransition } from './focus-transition';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
 
 const GAME_NAME = 'Quién es Quién';
-
-type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
 /**
  * Quién es Quién Pokémon con el catálogo (spec §2 y §6 «Juegos»), en un único `SocialScreen`: arriba la placa
@@ -25,7 +24,7 @@ type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<v
  * cartas bajadas, igual (`discardedPokemonIds` es el del propio equipo). Los cursores van por su canal propio: moverse
  * no toca el aviso global. Los fallos de las acciones van al aviso global de la sala (no hay error local).
  */
-export function WhoIsWhoPokemonGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+export function WhoIsWhoPokemonGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as WhoIsWhoPublicState;
   const player = room.gamePlayerState as WhoIsWhoPlayerState | null;
   const config = room.selectedGameConfig as Partial<WhoIsWhoPokemonConfig> | null;

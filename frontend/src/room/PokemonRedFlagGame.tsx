@@ -1,4 +1,4 @@
-import { RED_FLAG_WIN_POINTS, type PokemonRedFlagConfig, type PokemonRedFlagPlayerState, type PokemonRedFlagPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { RED_FLAG_WIN_POINTS, type PokemonRedFlagConfig, type PokemonRedFlagPlayerState, type PokemonRedFlagPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, ThumbsDown, ThumbsUp, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -7,7 +7,7 @@ import { RedFlagWriter } from '../games/pokemon-red-flag/RedFlagWriter';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Icon } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
-import type { GameActionOptions } from './room-command';
+import type { ActiveGameProps } from './room-command';
 import { guessSprite, pointsWord } from './guess-kit';
 import { playerColor } from './player-color';
 import {
@@ -27,7 +27,7 @@ const GAME_NAME = 'La Frase Pokémon';
  * Anónimo: durante la votación las respuestas son «Respuesta N» con su texto, sin autor en el DOM (ni en `aria-label` ni
  * en `data-*`); los autores y los votos solo llegan en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
  */
-export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown, options?: GameActionOptions): Promise<void> }) {
+export function PokemonRedFlagGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonRedFlagPublicState;
   const player = room.gamePlayerState as PokemonRedFlagPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonRedFlagConfig> | null;

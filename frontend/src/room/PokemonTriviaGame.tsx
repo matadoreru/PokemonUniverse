@@ -1,4 +1,4 @@
-import type { PokemonTriviaConfig, PokemonTriviaOptionId, PokemonTriviaPlayerState, PokemonTriviaPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokemonTriviaConfig, PokemonTriviaOptionId, PokemonTriviaPlayerState, PokemonTriviaPublicState } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, MousePointerClick, Send, TimerOff, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { TriviaAnswersBoard, TriviaBoard, TriviaScoreboard } from '../games/pokemon-trivia/TriviaParts';
@@ -13,6 +13,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel, GuessScreen, type GuessPlateContent } from './guess-kit';
 import { useChoiceShortcuts } from './useChoiceShortcuts';
 import { usePendingAction } from './usePendingAction';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
 
 /**
@@ -24,7 +25,7 @@ import s from '../games/pokemon-trivia/PokemonTrivia.module.css';
  * Privacidad: la respuesta correcta solo llega en `lastRound`, que el servidor manda en la revelación; aun así la
  * pantalla solo lo lee en `ROUND_RESULTS` (`triviaVisibleRound`).
  */
-export function PokemonTriviaGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokemonTriviaGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonTriviaPublicState;
   const player = room.gamePlayerState as PokemonTriviaPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonTriviaConfig> | null;

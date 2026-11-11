@@ -1,10 +1,11 @@
-import { gameModeLabel, type PokedexDistancePublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { gameModeLabel, type PokedexDistancePublicState } from '@pokemon-universe/shared/public';
 import { Crosshair, Target } from 'lucide-react';
 import { cx, Icon, Panel } from '../ui';
 import { playerColor } from './player-color';
 import { distanceBestLabel, distanceCell, type DistanceCellTone, distanceResultsSummary, distanceResultsTitle, distanceRoundLabel, distanceStandingLabel, distanceStatsLine, distanceTableFootnote } from './pokedex-distance-results';
 import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from './PokedexDistanceResults.module.css';
 
 const CELL_TONE: Record<DistanceCellTone, string | undefined> = {
@@ -20,7 +21,7 @@ const CELL_TONE: Record<DistanceCellTone, string | undefined> = {
  * insignia y «+N», la ronda en la que cayó cada uno y sus estadísticas) y, al lado, sus métricas: el mejor acierto y la
  * distancia por ronda (con los desempates como columnas). Abajo, la acción del host.
  */
-export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokedexDistancePublicState; const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
   const winnerId = game.results?.winnerId ?? null;

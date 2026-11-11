@@ -1,5 +1,6 @@
 import type { AbsurdPokedexEntryResult, AbsurdPokedexMode, AbsurdPokedexRoundResult, GamePhase } from '@pokemon-universe/shared/public';
 import { namesList, type PhaseStep } from '../../room/social-kit';
+import type { GameAction } from '../../room/room-command';
 
 /**
  * Textos de la pantalla de Pokédex Absurda: título del modo, fases, región viva y la revelación. Anónimo: nada de aquí
@@ -29,7 +30,7 @@ export function sortedRoundEntries(lastRound: AbsurdPokedexRoundResult): AbsurdP
 /**
  * Envía el borrador sin pasar por el aviso global: teclear para corregir no borra el error de un envío rechazado.
  */
-export function sendAbsurdDraft(onAction: (action: unknown, options?: { report?: boolean }) => Promise<void>, text: string): Promise<void> {
+export function sendAbsurdDraft(onAction: GameAction, text: string): Promise<void> {
   return onAction({ type: 'UPDATE_ABSURD_DRAFT', text }, { report: false });
 }
 

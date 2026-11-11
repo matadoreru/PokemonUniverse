@@ -1,4 +1,4 @@
-import type { RoomView, SecretRankingPublicState } from '@pokemon-universe/shared/public';
+import type { SecretRankingPublicState } from '@pokemon-universe/shared/public';
 import { Crosshair, Equal, Sparkles, Trophy } from 'lucide-react';
 import { closestAverage, formatDistance, secretRankingStatsLine } from '../games/secret-ranking/presentation';
 import { Chip, Icon } from '../ui';
@@ -7,6 +7,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/secret-ranking/SecretRanking.module.css';
 
 /**
@@ -15,7 +16,7 @@ import s from '../games/secret-ranking/SecretRanking.module.css';
  * de los puntos y, al lado, los récords (más victorias, coincidencias perfectas y menor distancia media; empates juntos).
  * Abajo, la acción del host. Un empate a cero no corona.
  */
-export function SecretRankingResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function SecretRankingResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as SecretRankingPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

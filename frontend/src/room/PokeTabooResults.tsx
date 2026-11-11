@@ -1,4 +1,4 @@
-import type { PokeTabooPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokeTabooPublicState } from '@pokemon-universe/shared/public';
 import { POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import { Equal, Mic, Search, Target } from 'lucide-react';
 import { tabooStatsLine } from '../games/poke-taboo/presentation';
@@ -8,6 +8,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/poke-taboo/PokeTaboo.module.css';
 
 /**
@@ -16,7 +17,7 @@ import s from '../games/poke-taboo/PokeTaboo.module.css';
  * describir), la regla de los puntos y, al lado, los récords (más adivinados, al primer intento y mejor descriptor;
  * empates juntos). Abajo, la acción del host. Un empate a cero no corona.
  */
-export function PokeTabooResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokeTabooResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokeTabooPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

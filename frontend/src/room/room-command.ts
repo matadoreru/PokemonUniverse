@@ -1,3 +1,5 @@
+import type { RoomView } from '@pokemon-universe/shared/public';
+
 /** Aviso global de errores de la sala (el que pinta `RoomSessionLayout`). */
 export interface RoomErrorReporter {
   clear(): void;
@@ -6,6 +8,18 @@ export interface RoomErrorReporter {
 
 /** Opciones de `gameAction`. `report: false`: ni limpia ni publica el aviso global (borradores que se envían a cada pulsación). */
 export interface GameActionOptions { report?: boolean }
+
+/** La orden de juego que reciben las pantallas (`gameAction` de la sala). */
+export type GameAction = (action: unknown, options?: GameActionOptions) => Promise<void>;
+
+/** Props de la pantalla de un minijuego en curso (`ActiveGame` del registro). */
+export interface ActiveGameProps { room: RoomView; selfId: string; onAction: GameAction }
+
+/** Props de los resultados de un minijuego (`Results` del registro). */
+export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }
+
+/** Para `.catch`: el fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext) y aquí no se repite. */
+export const ignoreFailure = () => undefined;
 
 /**
  * El aviso global para una orden: con `report`, limpia y publica el fallo (ya en español con `translate`), pero solo si

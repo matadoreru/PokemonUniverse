@@ -3,6 +3,7 @@ import { MessageSquare, MessageSquareOff, Trash2 } from 'lucide-react';
 import { useRef, useState, type RefObject } from 'react';
 import { ChatComposer, ChatLog, Dialog, Panel, Pill, StateBox, type ChatLogItem } from '../../ui';
 import { playerColor } from '../player-color';
+import { ignoreFailure } from '../room-command';
 import s from './LobbyChat.module.css';
 
 const MUTED_REASON = 'Un moderador te ha silenciado en el chat de esta sala.';
@@ -85,8 +86,6 @@ export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelet
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
   const [moderating, setModerating] = useState<number | null>(null);
-  // El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí solo se captura.
-  const ignoreFailure = () => undefined;
   const self = members.find((member) => member.id === selfId);
   const muted = Boolean(self?.chatMuted) && selfRole !== 'HOST';
   const canModerate = hasRoomPermission(selfRole, 'MODERATE_CHAT');

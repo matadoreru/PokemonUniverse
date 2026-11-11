@@ -1,4 +1,4 @@
-import type { RoomView, UnownAlphabetEntry, UnownToken, UnownTranslatorConfig, UnownTranslatorPlayerState, UnownTranslatorPublicState } from '@pokemon-universe/shared/public';
+import type { UnownAlphabetEntry, UnownToken, UnownTranslatorConfig, UnownTranslatorPlayerState, UnownTranslatorPublicState } from '@pokemon-universe/shared/public';
 import { gameModeName, UNOWN_GLYPH_COUNT, UNOWN_MAX_GUESS_LENGTH, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Hourglass, Languages, Send, Trophy, X } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type RefObject } from 'react';
@@ -11,12 +11,11 @@ import { attemptsText, GuessClue, GuessScreen, guessSeconds, ordinal, pointsWord
 import { guessSearchAutoFocus } from './guess-kit/presentation';
 import { ResponseProgress, SocialPlate, type SocialPlateContent } from './social-kit';
 import { hiddenLettersText, UnownRoundReveal } from './UnownTranslatorResults';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/unown-translator/UnownTranslator.module.css';
 
 const GAME_NAME = 'Traductor Unown';
 const QUESTION = 'Descifra el mensaje';
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /** Una pieza del mensaje: el glifo (oculto o con su letra debajo) o el carácter que no se cifra. */
 function MessageToken({ token }: { token: UnownToken }) {
@@ -110,7 +109,7 @@ function useUnownAnnouncement(game: UnownTranslatorPublicState, player: UnownTra
  * Privacidad: el mensaje llega como piezas (el servidor solo traduce los glifos del alfabeto). La respuesta solo llega
  * en `lastRound` y en la `answer` propia de quien ya acertó; `lastRound` solo se lee en `ROUND_RESULTS`.
  */
-export function UnownTranslatorGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as UnownTranslatorPublicState;
   const player = room.gamePlayerState as UnownTranslatorPlayerState | null;
   const config = room.selectedGameConfig as Partial<UnownTranslatorConfig> | null;

@@ -1,4 +1,4 @@
-import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionConfig, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionConfig, PokemonBluffAuctionPlayerState, PokemonBluffAuctionPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Copy, Crown, Eye, Hourglass, Mic2, Search, ShieldQuestion, SkipForward, X, XCircle } from 'lucide-react';
 import { useMemo, useRef, type ReactNode } from 'react';
@@ -15,14 +15,13 @@ import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, Budge
 import { useFocusOnTransition } from './focus-transition';
 import { GuessPanel } from './guess-kit';
 import { playerColor } from './player-color';
+import type { ActiveGameProps } from './room-command';
 import b from '../games/pokemon-bluff-auction/BluffAuction.module.css';
 
 const SEAT_ICON: Record<BluffSeatStatus, LucideIcon> = { leading: Crown, passed: SkipForward, bidding: Hourglass, demonstrating: Search, waiting: Eye };
 const SEAT_TONE: Record<BluffSeatStatus, NonNullable<ChipProps['tone']>> = { leading: 'ok', passed: 'neutral', bidding: 'neutral', demonstrating: 'warn', waiting: 'neutral' };
 const ATTEMPT_ICON: Record<BluffAuctionAttempt['result'], LucideIcon> = { CORRECT: CheckCircle2, INCORRECT: XCircle, DUPLICATE: Copy };
 const ATTEMPT_TONE: Record<BluffAuctionAttempt['result'], NonNullable<ChipProps['tone']>> = { CORRECT: 'ok', INCORRECT: 'bad', DUPLICATE: 'neutral' };
-
-type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
 
 /** La condición de la ronda: lo que se subasta (texto grande que escala con su hueco y las cláusulas en chips). */
 function Condition({ description, clauses, compact = false }: { description: string; clauses?: readonly string[]; compact?: boolean }) {
@@ -66,7 +65,7 @@ function AttemptsPanel({ attempts }: { attempts: readonly BluffAuctionAttempt[] 
  *
  * Privacidad: lo único oculto es cuántos Pokémon cumplen la condición; `lastRound` solo se lee en `ROUND_RESULTS`.
  */
-export function PokemonBluffAuctionGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokemonBluffAuctionPublicState;
   const player = room.gamePlayerState as PokemonBluffAuctionPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokemonBluffAuctionConfig> | null;

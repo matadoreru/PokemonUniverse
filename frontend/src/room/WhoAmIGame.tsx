@@ -1,4 +1,4 @@
-import type { PokemonType, RoomView, WhoAmIAnswer, WhoAmIConfig, WhoAmICurrentQuestion, WhoAmIHistoryEntry, WhoAmIPlayerState, WhoAmIPokemon, WhoAmIPublicState } from '@pokemon-universe/shared/public';
+import type { PokemonType, WhoAmIAnswer, WhoAmIConfig, WhoAmICurrentQuestion, WhoAmIHistoryEntry, WhoAmIPlayerState, WhoAmIPokemon, WhoAmIPublicState } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, WHO_AM_I_ANSWERS, WHO_AM_I_MAX_QUESTION_LENGTH } from '@pokemon-universe/shared/public';
 import { ArrowLeft, Check, CheckCircle2, Clock3, Eye, Hourglass, MessageCircleQuestion, Search, Send, SkipForward, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
@@ -10,11 +10,9 @@ import { useFocusOnTransition } from './focus-transition';
 import { guessSprite } from './guess-kit';
 import { PokemonSelector } from './PokemonSelector';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/who-am-i/WhoAmI.module.css';
 
-type GameAction = (action: unknown, options?: { report?: boolean }) => Promise<void>;
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 /** Plazo de `DECIDING` (`DECIDE_MS` del motor): no es configurable. */
 const DECIDE_MS = 20_000;
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
@@ -153,7 +151,7 @@ function useWhoAmIAnnouncement(game: WhoAmIPublicState, player: WhoAmIPlayerStat
  * `others` ni de ningún otro sitio, y los resultados (`game.results`) solo los lee `WhoAmIResults`. Un jugador original
  * desconectado sigue siendo `PLAYER` con `self` nulo: ve «?» igual.
  */
-export function WhoAmIGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction: GameAction }) {
+export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as WhoAmIPublicState;
   const player = room.gamePlayerState as WhoAmIPlayerState | null;
   const config = room.selectedGameConfig as Partial<WhoAmIConfig> | null;

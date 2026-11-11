@@ -1,4 +1,4 @@
-import { TYPE_DUEL_MAX_INVALID_COMBINATIONS, type PokemonType, type RoomView, type TypeDuelConfig, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
+import { TYPE_DUEL_MAX_INVALID_COMBINATIONS, type PokemonType, type TypeDuelConfig, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import { useMemo, useRef, useState } from 'react';
 import { Avatar } from '../components/Avatar';
 import { ServerTimer } from '../components/ServerTimer';
@@ -16,18 +16,14 @@ import { PokemonSelector } from './PokemonSelector';
 import { typeDuelIsLastResult, typeDuelPhaseCue, typeDuelWillRetry } from './type-duel-flow';
 import { typeDuelHeading, typeDuelResultText } from './type-duel-result';
 import { TypeDuelVersus } from './TypeDuelVersus';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/type-duel/TypeDuel.module.css';
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /** Puntos del ganador de un duelo (regla del motor). */
 const WIN_POINTS = 5;
 
-type TypeDuelScreenProps = { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> };
-
 /** Type Duel: el duelo por parejas (Clásico) o la búsqueda de toda la sala (Cooperativo), según `mode`. */
-export function TypeDuelGame(props: TypeDuelScreenProps) {
+export function TypeDuelGame(props: ActiveGameProps) {
   return (props.room.game as TypeDuelPublicState).mode === 'COOP' ? <TypeDuelCoopGame {...props} /> : <TypeDuelClassicGame {...props} />;
 }
 
@@ -41,7 +37,7 @@ export function TypeDuelGame(props: TypeDuelScreenProps) {
  * (`typeSelectionCompletedIds`); los tipos salen cuando el servidor los revela (`revealedTypes`), el propio antes solo
  * desde el estado del jugador (`ownType`).
  */
-function TypeDuelClassicGame({ room, selfId, onAction }: TypeDuelScreenProps) {
+function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TypeDuelPublicState;
   const player = room.gamePlayerState as TypeDuelPlayerState | null;
   const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;
@@ -147,7 +143,7 @@ function TypeDuelClassicGame({ room, selfId, onAction }: TypeDuelScreenProps) {
  * dijo, y la aportación de cada jugador en la partida. Un duplicado lo rechaza el servidor con «Ya lo ha encontrado
  * alguien.», que sale en el aviso de la sala (aquí no se repite).
  */
-function TypeDuelCoopGame({ room, selfId, onAction }: TypeDuelScreenProps) {
+function TypeDuelCoopGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TypeDuelPublicState;
   const player = room.gamePlayerState as TypeDuelPlayerState | null;
   const config = room.selectedGameConfig as Partial<TypeDuelConfig> | null;

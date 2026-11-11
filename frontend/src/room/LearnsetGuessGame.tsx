@@ -1,4 +1,4 @@
-import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState } from '@pokemon-universe/shared/public';
 import { useMemo, useRef } from 'react';
 import { ServerTimer } from '../components/ServerTimer';
 import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from '../games/learnset-guess/LearnsetGuessParts';
@@ -12,13 +12,11 @@ import { GameSkipSlot } from './GameSkipSlot';
 import { useFocusOnTransition } from './focus-transition';
 import { learnsetGroupProgress, learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetManualStakeText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 import { PokemonSelector } from './PokemonSelector';
+import { type ActiveGameProps, ignoreFailure } from './room-command';
 import s from '../games/learnset-guess/LearnsetGuess.module.css';
 
 /** Lo que dura en pantalla el aviso «X ha acertado» para los demás. */
 const SOLVED_NOTICE_MS = 2_000;
-
-/** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
-const ignoreFailure = () => undefined;
 
 /**
  * Learnset Guess (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda, los avisos (último aviso, quién acaba de
@@ -32,7 +30,7 @@ const ignoreFailure = () => undefined;
  * Privacidad: solo se pinta lo proyectado. La respuesta solo llega en `lastRound`, que el servidor manda únicamente en
  * `ROUND_RESULTS`; aun así la pantalla solo la usa en esa fase.
  */
-export function LearnsetGuessGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function LearnsetGuessGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as LearnsetGuessPublicState;
   const player = room.gamePlayerState as LearnsetGuessPlayerState | null;
   const config = room.selectedGameConfig as Partial<LearnsetGuessConfig> | null;

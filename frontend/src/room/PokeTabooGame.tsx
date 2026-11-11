@@ -1,4 +1,4 @@
-import type { PokeTabooConfig, PokeTabooPlayerState, PokeTabooPublicState, RoomView } from '@pokemon-universe/shared/public';
+import type { PokeTabooConfig, PokeTabooPlayerState, PokeTabooPublicState } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Check, Clock3, Eye, Hourglass, Mic, PenLine, Trophy, X } from 'lucide-react';
@@ -14,6 +14,7 @@ import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from './guess-kit';
 import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from './social-kit';
+import type { ActiveGameProps } from './room-command';
 import s from '../games/poke-taboo/PokeTaboo.module.css';
 
 const GAME_NAME = 'PokéTaboo';
@@ -32,7 +33,7 @@ const TURN_TONE: Record<TabooTurnStatus, NonNullable<ChipProps['tone']>> = { des
  * Privacidad: el secreto solo llega en el estado propio de quien describe (`secretPokemon`) y solo se pinta con él; la
  * respuesta para los demás solo llega en `lastRound`, que la pantalla lee únicamente en `ROUND_RESULTS`.
  */
-export function PokeTabooGame({ room, selfId, onAction }: { room: RoomView; selfId: string; onAction(action: unknown): Promise<void> }) {
+export function PokeTabooGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as PokeTabooPublicState;
   const player = room.gamePlayerState as PokeTabooPlayerState | null;
   const config = room.selectedGameConfig as Partial<PokeTabooConfig> | null;

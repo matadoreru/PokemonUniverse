@@ -1,4 +1,4 @@
-import type { PokemonType, RoomView, WhoAmIPublicState } from '@pokemon-universe/shared/public';
+import type { PokemonType, WhoAmIPublicState } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS, whoAmIScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, X } from 'lucide-react';
 import { questionsText, WHO_AM_I_NAME } from '../games/who-am-i/presentation';
@@ -8,6 +8,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/who-am-i/WhoAmI.module.css';
 
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
@@ -17,7 +18,7 @@ const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? 
  * uno) con la regla de puntos y, al lado, el Pokémon que tenía cada jugador, ya revelado. Abajo, la acción del host.
  * Un empate a cero no corona.
  */
-export function WhoAmIResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function WhoAmIResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as WhoAmIPublicState;
   const host = room.hostId === selfId;
   const results = [...(game.results ?? [])].sort((a, b) => a.rank - b.rank);

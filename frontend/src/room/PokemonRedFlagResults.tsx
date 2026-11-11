@@ -1,4 +1,4 @@
-import { RED_FLAG_WIN_POINTS, type PokemonRedFlagPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { RED_FLAG_WIN_POINTS, type PokemonRedFlagPublicState } from '@pokemon-universe/shared/public';
 import { Equal, MessageSquareHeart, Trophy, Vote } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -6,6 +6,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/pokemon-red-flag/PokemonRedFlag.module.css';
 
 type Stats = NonNullable<PokemonRedFlagPublicState['results']>['standings'][number]['stats'];
@@ -31,7 +32,7 @@ export function redFlagStatsLine(stats: Stats): string {
  * los 3 puntos y, al lado, los récords (más victorias, más votos recibidos y victorias en solitario; empates juntos).
  * Abajo, la acción del host. Un empate a cero no corona.
  */
-export function PokemonRedFlagResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function PokemonRedFlagResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as PokemonRedFlagPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];

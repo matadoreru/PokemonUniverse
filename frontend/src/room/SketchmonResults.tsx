@@ -1,4 +1,4 @@
-import type { RoomView, SketchmonPublicState } from '@pokemon-universe/shared/public';
+import type { SketchmonPublicState } from '@pokemon-universe/shared/public';
 import { SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import { Brush, Equal, Search, Target } from 'lucide-react';
 import { useMemo } from 'react';
@@ -10,6 +10,7 @@ import { playerColor } from './player-color';
 import { sharesPosition } from './results-ties';
 import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import type { GameResultsProps } from './room-command';
 import s from '../games/sketchmon/Sketchmon.module.css';
 
 /**
@@ -18,7 +19,7 @@ import s from '../games/sketchmon/Sketchmon.module.css';
  * regla de los puntos; al lado, los récords (más adivinados, al primer intento y mejor dibujante; empates juntos) y la
  * galería con los dibujos de la partida. Abajo, la acción del host. Un empate a cero no corona.
  */
-export function SketchmonResults({ room, selfId, onLobby, onEnd }: { room: RoomView; selfId: string; onLobby(): void; onEnd(): void }) {
+export function SketchmonResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as SketchmonPublicState;
   const host = room.hostId === selfId;
   const standings = game.results?.standings ?? [];
