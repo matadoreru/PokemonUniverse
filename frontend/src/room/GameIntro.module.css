@@ -10,6 +10,19 @@
   }
 }
 
+/* Columna principal: en escritorio la placa llena el alto y centra el juego y sus reglas. */
+.top {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* Hueco para la sombra dura de la placa (la columna recorta lo que se sale al desplazarse). */
+  padding-bottom: var(--sp-2);
+}
+@media (min-width: 1024px) {
+  .top {
+    height: 100%;
+  }
+}
 /* Cabecera con el arte y el nombre del juego; entra con un salto corto. */
 .hero {
   flex: 1 1 auto;
@@ -17,7 +30,14 @@
 .heroBody {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: var(--sp-4);
+}
+@media (min-width: 1024px) {
+  .heroBody {
+    height: 100%;
+    gap: var(--sp-5);
+  }
 }
 .head {
   display: flex;
@@ -195,24 +215,41 @@
   font: 800 var(--fs-13) / 1.35 var(--font-text);
   color: var(--ink-2);
 }
-.clock {
-  flex: none;
+/* En el móvil la placa es baja: la explicación se queda en escritorio (el título ya dice qué hacer). */
+@media (max-width: 639.98px) {
+  .help {
+    display: none;
+  }
 }
-.buttons {
+/* Cuenta atrás y «¡Listo!» en una fila; «Saltar minijuego» debajo en el móvil y al lado en escritorio. */
+.controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--sp-2) var(--sp-3);
 }
-.buttons > :first-child {
-  flex: 1 1 auto;
+.clock {
+  flex: none;
+}
+.ready {
+  display: flex;
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+.skip {
+  display: flex;
+  flex: 1 1 100%;
+  justify-content: flex-end;
 }
 @media (min-width: 1024px) {
-  .buttons {
+  .controls {
     flex: none;
     flex-wrap: nowrap;
   }
-  .buttons > :first-child {
+  .ready {
+    flex: none;
+  }
+  .skip {
     flex: none;
   }
 }

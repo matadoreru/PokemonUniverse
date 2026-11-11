@@ -49,7 +49,7 @@ export function GameIntro({ room, selfId, onReady, skip }: GameIntroProps) {
     finally { setSending(false); }
   }
 
-  const top = <Panel variant="dark" as="section" aria-labelledby="game-intro-title" className={cx(s.hero)} bodyClassName={cx(s.heroBody)}>
+ const top = <div className={s.top}><Panel variant="dark" as="section" aria-labelledby="game-intro-title" className={cx(s.hero)} bodyClassName={cx(s.heroBody)}>
     <div className={s.head}>
       <span className={s.art}><GameArt gameId={gameId} size={32} /></span>
       <div className={s.headText}>
@@ -63,7 +63,7 @@ export function GameIntro({ room, selfId, onReady, skip }: GameIntroProps) {
         <span className={s.ruleText}>{rule}</span>
       </li>)}
     </ol>
-  </Panel>;
+  </Panel></div>;
 
   const side = <Panel title="Jugadores" right={<Chip tone="info" icon={<Icon icon={UsersRound} size={18} />}><span className={s.tabular}>{status.readyCount}/{status.total} listos</span></Chip>} scroll scrollLabel="Jugadores de la partida" className={cx(s.sidePanel)}>
     <ul className={s.players}>
@@ -79,12 +79,14 @@ export function GameIntro({ room, selfId, onReady, skip }: GameIntroProps) {
       <p className={s.actionTitle}>{introActionTitle(status)}</p>
       <p className={s.help}>{status.counts ? 'La partida empieza al acabar la cuenta atrás o cuando todos estéis listos.' : 'La partida empieza al acabar la cuenta atrás o cuando los jugadores estén listos.'}</p>
     </div>
-    <div className={s.clock}><ServerTimer deadline={room.intro?.endsAt ?? null} serverOffset={serverOffset} label="Empieza en" /></div>
-    <div className={s.buttons}>
-      {status.counts
-        ? <Pill variant="yellow" size="main" icon={Check} loading={sending} disabled={status.ready || !instanceId} onClick={() => void markReady()}>{status.ready ? 'Listo' : '¡Listo!'}</Pill>
-        : <Badge tone="navy"><Icon icon={Eye} size={18} />Espectador</Badge>}
-      {skip}
+    <div className={s.controls}>
+      <div className={s.clock}><ServerTimer deadline={room.intro?.endsAt ?? null} serverOffset={serverOffset} label="Empieza en" /></div>
+      <div className={s.ready}>
+        {status.counts
+          ? <Pill variant="yellow" size="main" block icon={Check} loading={sending} disabled={status.ready || !instanceId} onClick={() => void markReady()}>{status.ready ? 'Listo' : '¡Listo!'}</Pill>
+          : <Badge tone="navy"><Icon icon={Eye} size={18} />Espectador</Badge>}
+      </div>
+      {skip && <div className={s.skip}>{skip}</div>}
     </div>
   </Panel>;
 

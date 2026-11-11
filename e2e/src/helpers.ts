@@ -355,7 +355,8 @@ export function botonListo(page: Page): Locator {
 export async function pasarIntro(pages: readonly Page[]): Promise<void> {
   for (const page of pages) {
     const visible = await page.getByTestId('game-intro').waitFor({ state: 'visible', timeout: 10_000 }).then(() => true, () => false);
-    if (visible && await botonListo(page).isVisible()) await botonListo(page).click({ timeout: 5_000 }).catch(() => undefined);
+    // Con `listoAutomatico`, el manejador pulsa antes que este clic, que entonces ya no encuentra «¡Listo!»: espera corta.
+    if (visible && await botonListo(page).isVisible()) await botonListo(page).click({ timeout: 1_000 }).catch(() => undefined);
   }
   for (const page of pages) await expect(page.getByTestId('game-intro')).toBeHidden({ timeout: 30_000 });
 }
