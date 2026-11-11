@@ -21,7 +21,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code pokemon-cry-quiz/types.ts}. {@code PokemonCryVersion} es {@link CryVersion} del catálogo de audio.
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code pokemon-cry-quiz/types.ts}.
+ * {@code PokemonCryVersion} es {@link CryVersion} del catálogo de audio.
  * Los {@code Record<string, …>} son mapas inmutables con orden de inserción ({@code Immutables.frozenMap}); cada
  * transición crea un estado nuevo con {@code toBuilder()}.
  */

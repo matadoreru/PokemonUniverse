@@ -20,7 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code pokemon-connections/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code pokemon-connections/types.ts}.
+ * Los {@code Record<string, …>} son mapas inmutables con orden de
  * inserción ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}. Los estados
  * de jugador ({@code ConnectionPlayerStatus}) son {@code PLAYING}, {@code SOLVED}, {@code ELIMINATED} y
  * {@code TIMED_OUT}.

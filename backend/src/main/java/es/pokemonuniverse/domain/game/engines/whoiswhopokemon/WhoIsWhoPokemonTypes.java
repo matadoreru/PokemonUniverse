@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * Tipos de {@code who-is-who-pokemon/types.ts}. Los {@code Record<WhoIsWhoTeam, …>} son records con un componente por
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code who-is-who-pokemon/types.ts}.
+ * Los {@code Record<WhoIsWhoTeam, …>} son records con un componente por
  * equipo, serializados como {@code BLUE} y luego {@code RED} (el orden de {@code teams} en {@code server.ts}).
  */
 public final class WhoIsWhoPokemonTypes {

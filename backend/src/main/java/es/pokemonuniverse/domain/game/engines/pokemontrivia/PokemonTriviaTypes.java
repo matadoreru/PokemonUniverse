@@ -21,7 +21,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code pokemon-trivia/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de inserción
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code pokemon-trivia/types.ts}.
+ * Los {@code Record<string, …>} son mapas inmutables con orden de inserción
  * ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}.
  */
 public final class PokemonTriviaTypes {

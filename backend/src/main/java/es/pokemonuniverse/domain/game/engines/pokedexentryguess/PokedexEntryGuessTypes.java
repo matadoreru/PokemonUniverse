@@ -20,7 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code pokedex-entry-guess/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code pokedex-entry-guess/types.ts}.
+ * Los {@code Record<string, …>} son mapas inmutables con orden de
  * inserción ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}.
  */
 public final class PokedexEntryGuessTypes {

@@ -20,7 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code pokemon-bingo/types.ts}; las condiciones y las casillas son las compartidas de
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code pokemon-bingo/types.ts}.
+ * Las condiciones y las casillas son las compartidas de
  * {@code domain/pokemon/conditions}. Los {@code Record<string, …>} son mapas inmutables con orden de inserción
  * ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}.
  */

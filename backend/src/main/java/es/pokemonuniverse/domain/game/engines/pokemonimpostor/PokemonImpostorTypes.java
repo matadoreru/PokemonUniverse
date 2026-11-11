@@ -21,7 +21,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * Tipos de {@code pokemon-impostor/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de inserción
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code pokemon-impostor/types.ts}.
+ * Los {@code Record<string, …>} son mapas inmutables con orden de inserción
  * ({@code Immutables.frozenMap}); {@code clues} es un {@code Record<number, …>} ({@code Immutables.frozenSortedMap}).
  * Cada transición crea un estado nuevo con {@code toBuilder()}.
  */

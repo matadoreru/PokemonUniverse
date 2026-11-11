@@ -20,7 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code zoomed-pokemon/types.ts}. {@code 'SPRITE' | 'ARTWORK'} es {@link Source} del catálogo visual. Los
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code zoomed-pokemon/types.ts}.
+ * {@code 'SPRITE' | 'ARTWORK'} es {@link Source} del catálogo visual. Los
  * {@code Record<string, …>} son mapas inmutables con orden de inserción ({@code Immutables.frozenMap}); cada
  * transición crea un estado nuevo con {@code toBuilder()}.
  */

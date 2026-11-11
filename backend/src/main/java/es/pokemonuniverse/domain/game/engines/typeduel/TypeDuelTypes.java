@@ -17,7 +17,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code type-duel/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de inserción
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code type-duel/types.ts}.
+ * Los {@code Record<string, …>} son mapas inmutables con orden de inserción
  * ({@code Immutables.frozenMap}); cada transición crea un estado nuevo con {@code toBuilder()}. Los tipos Pokémon son
  * las cadenas en minúscula de {@code POKEMON_TYPES}, como en el catálogo.
  */

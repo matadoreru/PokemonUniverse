@@ -18,7 +18,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Tipos de {@code tcg-higher-lower/types.ts}. Los {@code Record<string, …>} son mapas inmutables con orden de
+ * Estado, acciones y proyecciones; las proyecciones tienen su tipo TS en {@code tcg-higher-lower/types.ts}.
+ * Los {@code Record<string, …>} son mapas inmutables con orden de
  * inserción; cada transición crea un estado nuevo con {@code toBuilder()}.
  */
 public final class TcgHigherLowerTypes {
