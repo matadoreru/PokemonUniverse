@@ -5,7 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { CUT_IN_DELAYED_LINE_MS, RevealCutIn } from '../components/RevealCutIn';
 import { ServerTimer } from '../components/ServerTimer';
 import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from '../games/pokemon-impostor/ImpostorParts';
-import { impostorAnnouncement, impostorFocusKey, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel } from '../games/pokemon-impostor/presentation';
+import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from '../games/pokemon-impostor/presentation';
 import { validateImpostorClue } from '../games/pokemon-impostor/validation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
@@ -17,7 +17,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { PokemonSelector } from './PokemonSelector';
 import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { type ActiveGameProps, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-impostor/PokemonImpostor.module.css';
 
@@ -62,25 +62,20 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   useFocusOnTransition(impostorFocusKey(game, player), player.canSubmitClue ? inputRef : titleRef);
 
   async function submitClue() {
-    if (!player.canSubmitClue || !clueText.trim() || clueError || clueLength > IMPOSTOR_CLUE_MAX_CODE_POINTS || submitting) return;
-    setSubmitting(true);
-    try { await onAction({ type: 'SUBMIT_CLUE', text: clueText }).catch(ignoreFailure); }
-    finally { setSubmitting(false); }
+    const action = impostorClueAction(player, clueText, clueError, clueLength);
+    if (!action || submitting) return;
+    await sendWithBusy(setSubmitting, () => onAction(action));
   }
   async function submitVote() {
-    if (!player.canVote || !voteDraft || submitting) return;
-    setSubmitting(true);
-    try { await onAction({ type: 'VOTE', targetId: voteDraft }).catch(ignoreFailure); }
-    finally { setSubmitting(false); }
+    const action = impostorVoteAction(player, voteDraft);
+    if (!action || submitting) return;
+    await sendWithBusy(setSubmitting, () => onAction(action));
   }
   // Nunca rechaza (el buscador pintaría el error en línea): el aviso de la sala ya lo dice. Solo cierra si sale bien.
   async function guessPokemon(pokemonId: string) {
-    if (!player.canGuessPokemon || submitting) return;
-    setSubmitting(true);
-    try {
-      const sent = await onAction({ type: 'GUESS_POKEMON', pokemonId }).then(() => true, () => false);
-      if (sent) setShowGuess(false);
-    } finally { setSubmitting(false); }
+    const action = impostorGuessAction(player, pokemonId);
+    if (!action || submitting) return;
+    await sendWithBusy(setSubmitting, () => onAction(action), () => setShowGuess(false));
   }
 
   const orderedIds = game.phase === 'CLUE_PHASE'

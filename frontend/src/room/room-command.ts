@@ -22,6 +22,24 @@ export interface GameResultsProps { room: RoomView; selfId: string; onLobby(): v
 export const ignoreFailure = () => undefined;
 
 /**
+ * Envío con estado de ocupado, sin React (para probarlo): lo marca, espera la orden y lo suelta siempre, salga bien o
+ * mal. Con éxito, `onSent` corre antes de soltarlo, en el mismo paso: así no hay un render sin ocupado y con lo ya
+ * enviado aún en pantalla. Nunca rechaza: devuelve si salió bien (el fallo ya sale en el aviso global de la sala).
+ */
+export async function sendWithBusy(setBusy: (busy: boolean) => void, send: () => Promise<unknown>, onSent?: () => void): Promise<boolean> {
+  setBusy(true);
+  try {
+    await send();
+    onSent?.();
+    return true;
+  } catch {
+    return false;
+  } finally {
+    setBusy(false);
+  }
+}
+
+/**
  * El aviso global para una orden: con `report`, limpia y publica el fallo (ya en español con `translate`), pero solo si
  * el socket sigue siendo el mismo (`isCurrent`); sin `report`, `null`, y el aviso global no se toca.
  */

@@ -1,6 +1,11 @@
 import type { ConnectionAttemptFeedback, ConnectionPlayerStatus, PokemonConnectionsPlayerState, PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
 import { plural } from '../../lib/format';
 
+/** El grupo que se envía, o `null` si no se puede elegir o aún no está completo. */
+export function connectionsGroupAction(canSelect: boolean, selected: string[], groupSize: number): { type: 'SUBMIT_GROUP'; pokemonIds: string[] } | null {
+  return canSelect && selected.length === groupSize ? { type: 'SUBMIT_GROUP', pokemonIds: selected } : null;
+}
+
 /** Estado de un jugador en texto (además del color del chip). */
 export const connectionsStatusLabels: Record<ConnectionPlayerStatus, string> = { PLAYING: 'Resolviendo', SOLVED: 'Completado', ELIMINATED: 'Sin intentos', TIMED_OUT: 'Sin tiempo' };
 

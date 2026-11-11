@@ -9,7 +9,7 @@ import {
 import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel } from '../games/who-is-who-pokemon/WhoIsWhoParts';
 import { useFocusOnTransition } from './focus-transition';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
-import type { ActiveGameProps } from './room-command';
+import { type ActiveGameProps, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/who-is-who-pokemon/WhoIsWho.module.css';
 
@@ -58,10 +58,7 @@ export function WhoIsWhoPokemonGame({ room, selfId, onAction }: ActiveGameProps)
     if (active instanceof HTMLButtonElement && active.disabled && actionsRef.current?.contains(active)) titleRef.current?.focus({ preventScroll: true });
   }, [canGuess, canAct, busy]);
 
-  const send = async (action: unknown): Promise<boolean> => {
-    setBusy(true);
-    try { await onAction(action); return true; } catch { return false; } finally { setBusy(false); }
-  };
+  const send = (action: unknown): Promise<boolean> => sendWithBusy(setBusy, () => onAction(action));
   const toggle = (pokemonId: string) => { void onAction({ type: 'TOGGLE_DISCARD', pokemonId }).catch(() => undefined); };
   const confirm = async (pokemonId: string) => {
     const ok = await send(dialog === 'secret' ? { type: 'SELECT_SECRET', pokemonId } : { type: 'GUESS_POKEMON', pokemonId });

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ignoreFailure } from './room-command';
+import { sendWithBusy } from './room-command';
 
 /**
  * Envío de una orden de una en una: `pending` es la que va en camino (o `null`) y `submit` no hace nada mientras otra
@@ -12,14 +12,7 @@ export function usePendingAction<T>(run: (value: T) => Promise<unknown>): { pend
   useEffect(() => { runRef.current = run; }, [run]);
   const submit = useCallback(async (value: T) => {
     if (busy.current) return;
-    busy.current = true;
-    setPending(value);
-    try {
-      await runRef.current(value).catch(ignoreFailure);
-    } finally {
-      busy.current = false;
-      setPending(null);
-    }
+    await sendWithBusy((on) => { busy.current = on; setPending(on ? value : null); }, () => runRef.current(value));
   }, []);
   return { pending, submit };
 }

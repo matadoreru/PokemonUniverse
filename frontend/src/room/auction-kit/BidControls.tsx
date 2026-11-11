@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type Ref } from '
 import { cx, Dialog, Field, Icon, Panel, Pill } from '../../ui';
 import { useRefocusAfterReject } from '../focus-transition';
 import g from '../guess-kit/GuessPanel.module.css';
+import { sendWithBusy } from '../room-command';
 import { bindChoiceShortcuts } from '../social-kit';
 import { bidDraftError, bidShortcutsLive, bidSteps, clampBid, parseBid, safeAmount, type BidBlock, type BidBlockReason } from './presentation';
 import s from './BidControls.module.css';
@@ -87,8 +88,8 @@ export function BidControls({ titleRef, block, min, max, unit = 'monedas', epoch
 
   async function send(kind: 'bid' | 'pass', request: () => Promise<void>) {
     if (busy) return;
-    setBusy(kind);
-    try { await request(); } catch { /* El aviso global de la sala ya lo dice; el foco vuelve a «Pujar». */ } finally { setBusy(null); }
+    // El fallo ya sale en el aviso global de la sala; el foco vuelve a «Pujar».
+    await sendWithBusy((on) => setBusy(on ? kind : null), request);
   }
   function submit(event: FormEvent) {
     event.preventDefault();

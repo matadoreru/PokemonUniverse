@@ -10,7 +10,7 @@ import { useFocusOnTransition } from './focus-transition';
 import { guessSprite } from './guess-kit';
 import { PokemonSelector } from './PokemonSelector';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from './social-kit';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { type ActiveGameProps, ignoreFailure, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/who-am-i/WhoAmI.module.css';
 
@@ -62,8 +62,7 @@ function AskForm({ fieldRef, canGuess, onAsk, onGuess }: { fieldRef: RefObject<H
     event.preventDefault();
     const value = text.trim();
     if (!value || busy) return;
-    setBusy(true);
-    void onAsk(value).catch(ignoreFailure).finally(() => setBusy(false));
+    void sendWithBusy(setBusy, () => onAsk(value));
   };
   return <form className={s.ask} onSubmit={submit}>
     <div className={s.askField}>
@@ -82,8 +81,7 @@ function AnswerButtons({ ownAnswer, canAnswer, onAnswer }: { ownAnswer: WhoAmIAn
   const [sending, setSending] = useState<WhoAmIAnswer | null>(null);
   const answer = (value: WhoAmIAnswer) => {
     if (sending || !canAnswer) return;
-    setSending(value);
-    void onAnswer(value).catch(ignoreFailure).finally(() => setSending(null));
+    void sendWithBusy((busy) => setSending(busy ? value : null), () => onAnswer(value));
   };
   return <div className={s.answerButtons} role="group" aria-label="Tu respuesta">
     {WHO_AM_I_ANSWERS.map((value) => <Pill key={value} variant={ownAnswer === value ? 'yellow' : 'cream'} aria-pressed={ownAnswer === value} loading={sending === value}

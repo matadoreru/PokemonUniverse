@@ -16,7 +16,7 @@ import { PokemonSelector } from './PokemonSelector';
 import { typeDuelIsLastResult, typeDuelPhaseCue, typeDuelWillRetry } from './type-duel-flow';
 import { typeDuelHeading, typeDuelResultText } from './type-duel-result';
 import { TypeDuelVersus } from './TypeDuelVersus';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { type ActiveGameProps, ignoreFailure, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/type-duel/TypeDuel.module.css';
 
@@ -73,13 +73,11 @@ function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
 
   async function pick(type: PokemonType) {
     if (pendingType || !player?.canSelectType) return;
-    setPendingType(type);
-    try { await onAction({ type: 'SELECT_TYPE', pokemonType: type }).catch(ignoreFailure); } finally { setPendingType(null); }
+    await sendWithBusy((busy) => setPendingType(busy ? type : null), () => onAction({ type: 'SELECT_TYPE', pokemonType: type }));
   }
   async function continueNow() {
     if (continuing) return;
-    setContinuing(true);
-    try { await onAction({ type: 'CONTINUE' }).catch(ignoreFailure); } finally { setContinuing(false); }
+    await sendWithBusy(setContinuing, () => onAction({ type: 'CONTINUE' }));
   }
 
   const totalMs = game.phase === 'SELECTING_TYPES' ? (config?.typeSelectSeconds ?? 15) * 1_000 : game.phase === 'POKEMON_SEARCH' ? (config?.searchSeconds ?? 20) * 1_000 : undefined;
@@ -174,8 +172,7 @@ function TypeDuelCoopGame({ room, selfId, onAction }: ActiveGameProps) {
 
   async function continueNow() {
     if (continuing) return;
-    setContinuing(true);
-    try { await onAction({ type: 'CONTINUE' }).catch(ignoreFailure); } finally { setContinuing(false); }
+    await sendWithBusy(setContinuing, () => onAction({ type: 'CONTINUE' }));
   }
 
   const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={game.phase === 'POKEMON_SEARCH' ? 'Buscar' : last ? 'Clasificación' : 'Siguiente ronda'}

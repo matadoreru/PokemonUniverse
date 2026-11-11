@@ -11,7 +11,7 @@ import { Chip, Cutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from './guess-kit';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { type ActiveGameProps, ignoreFailure, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-bingo/PokemonBingo.module.css';
 
@@ -74,12 +74,7 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
     void onAction({ type: 'REMOVE_POKEMON', cellId: selectedCell.id }).catch(ignoreFailure);
   }
   async function skip() {
-    setSkipping(true);
-    try {
-      await onAction({ type: 'SKIP_RESULTS' }).catch(ignoreFailure);
-    } finally {
-      setSkipping(false);
-    }
+    await sendWithBusy(setSkipping, () => onAction({ type: 'SKIP_RESULTS' }));
   }
 
   // Quien no tiene tablero (espectador) ve en grande el del que va primero; todos se abren desde el lateral.

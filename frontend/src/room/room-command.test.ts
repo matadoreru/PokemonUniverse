@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { commandRequest, gameActionPayload, requestCommand, roomErrorReporter } from './room-command';
+import { commandRequest, gameActionPayload, requestCommand, roomErrorReporter, sendWithBusy } from './room-command';
 import { roomActionErrorMessage } from './roomCode';
 
 function reporter() {
@@ -87,5 +87,44 @@ describe('roomErrorReporter: los borradores no tocan el aviso global', () => {
     const { state, setError } = notice(null);
     await expect(requestCommand(() => Promise.reject(new Error('tarde')), roomErrorReporter(true, setError, translate, () => false))).rejects.toThrow('tarde');
     expect(state.error).toBeNull();
+  });
+});
+
+describe('sendWithBusy: el estado de ocupado de un envío', () => {
+  /** Registra cada cambio de ocupado y lo que pasa entre medias. */
+  function track() {
+    const log: string[] = [];
+    return { log, setBusy: (busy: boolean) => log.push(busy ? 'ocupado' : 'libre'), onSent: () => log.push('enviado') };
+  }
+
+  it('con éxito: ocupado mientras va, `onSent` antes de soltarlo y devuelve true', async () => {
+    const { log, setBusy, onSent } = track();
+    const send = vi.fn(() => { log.push('orden'); return Promise.resolve(); });
+    expect(await sendWithBusy(setBusy, send, onSent)).toBe(true);
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(log).toEqual(['ocupado', 'orden', 'enviado', 'libre']);
+  });
+
+  it('si el servidor la rechaza: suelta el ocupado, no llama a `onSent` y devuelve false sin relanzar', async () => {
+    const { log, setBusy, onSent } = track();
+    await expect(sendWithBusy(setBusy, () => Promise.reject(new Error('Not your turn')), onSent)).resolves.toBe(false);
+    expect(log).toEqual(['ocupado', 'libre']);
+  });
+
+  it('un fallo síncrono de la orden también suelta el ocupado', async () => {
+    const { log, setBusy } = track();
+    expect(await sendWithBusy(setBusy, () => { throw new Error('boom'); })).toBe(false);
+    expect(log).toEqual(['ocupado', 'libre']);
+  });
+
+  it('sigue ocupado hasta que el servidor contesta', async () => {
+    const { log, setBusy } = track();
+    let answer!: () => void;
+    const pending = sendWithBusy(setBusy, () => new Promise<void>((resolve) => { answer = resolve; }));
+    await Promise.resolve();
+    expect(log).toEqual(['ocupado']);
+    answer();
+    expect(await pending).toBe(true);
+    expect(log).toEqual(['ocupado', 'libre']);
   });
 });

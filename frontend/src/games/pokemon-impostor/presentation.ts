@@ -1,7 +1,23 @@
-import type { ImpostorVoteResult, PokemonImpostorPlayerState, PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
+import { IMPOSTOR_CLUE_MAX_CODE_POINTS, type ImpostorVoteResult, type PokemonImpostorPlayerState, type PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
 import { impostorCluePhaseTitle, impostorFellowsShort } from '../../room/pokemon-impostor-texts';
 
 type NameOf = (id: string) => string;
+
+/** La pista que se envía, o `null` si no toca: no es tu turno, está vacía, el campo la rechaza o pasa del máximo. */
+export function impostorClueAction(player: Pick<PokemonImpostorPlayerState, 'canSubmitClue'>, text: string, error: string | null, length: number): { type: 'SUBMIT_CLUE'; text: string } | null {
+  if (!player.canSubmitClue || !text.trim() || error || length > IMPOSTOR_CLUE_MAX_CODE_POINTS) return null;
+  return { type: 'SUBMIT_CLUE', text };
+}
+
+/** El voto que se confirma, o `null` si no puedes votar o no has marcado a nadie. */
+export function impostorVoteAction(player: Pick<PokemonImpostorPlayerState, 'canVote'>, targetId: string | null): { type: 'VOTE'; targetId: string } | null {
+  return player.canVote && targetId ? { type: 'VOTE', targetId } : null;
+}
+
+/** El intento de adivinar el Pokémon, o `null` si no te toca. */
+export function impostorGuessAction(player: Pick<PokemonImpostorPlayerState, 'canGuessPokemon'>, pokemonId: string): { type: 'GUESS_POKEMON'; pokemonId: string } | null {
+  return player.canGuessPokemon ? { type: 'GUESS_POKEMON', pokemonId } : null;
+}
 
 type RoundLabelGame = Pick<PokemonImpostorPublicState, 'phase' | 'roundNumber'> & { mode?: PokemonImpostorPublicState['mode'] };
 

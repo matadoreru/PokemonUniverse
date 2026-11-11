@@ -4,14 +4,14 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScorePop } from '../components/ScorePop';
 import { ServerTimer } from '../components/ServerTimer';
 import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from '../games/pokemon-connections/ConnectionsParts';
-import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from '../games/pokemon-connections/presentation';
+import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsGroupAction, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from '../games/pokemon-connections/presentation';
 import { useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, cx, Icon, Pill, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { GuessPanel, type GuessPlateContent } from './guess-kit';
-import { type ActiveGameProps, ignoreFailure } from './room-command';
+import { type ActiveGameProps, sendWithBusy } from './room-command';
 import { useRoomMembers } from './room-members';
 import s from '../games/pokemon-connections/PokemonConnections.module.css';
 
@@ -62,21 +62,13 @@ export function PokemonConnectionsGame({ room, selfId, onAction }: ActiveGamePro
     setSelected((current) => current.includes(id) ? current.filter((candidate) => candidate !== id) : current.length < game.groupSize ? [...current, id] : current);
   }
   async function submit() {
-    if (!canSelect || selected.length !== game.groupSize) return;
-    setSubmitting(true);
-    try {
-      await onAction({ type: 'SUBMIT_GROUP', pokemonIds: selected }).then(() => setSelected([]), ignoreFailure);
-    } finally {
-      setSubmitting(false);
-    }
+    const action = connectionsGroupAction(canSelect, selected, game.groupSize);
+    if (!action) return;
+    // Con éxito, la selección se vacía antes de soltar «enviando»: no se puede reenviar el mismo grupo.
+    await sendWithBusy(setSubmitting, () => onAction(action), () => setSelected([]));
   }
   async function advance() {
-    setAdvancing(true);
-    try {
-      await onAction({ type: 'ADVANCE_ROUND' }).catch(ignoreFailure);
-    } finally {
-      setAdvancing(false);
-    }
+    await sendWithBusy(setAdvancing, () => onAction({ type: 'ADVANCE_ROUND' }));
   }
 
   const ownResult = lastRound?.players[selfId] ?? null;
