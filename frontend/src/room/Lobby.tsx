@@ -5,7 +5,7 @@ import { useOptionalFriends } from '../friends/FriendsContext';
 import { canInviteFriend } from '../friends/FriendsDrawer';
 import { clientGameRegistry } from '../games/registry';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import { Badge, Card, Chip, cx, Field, Icon, Panel, Pill, StateBox, TabPanel, Tabs, Toggle, type TabItem } from '../ui';
+import { Badge, Card, Chip, cx, Field, Icon, Notice, Panel, Pill, StateBox, TabPanel, Tabs, Toggle, type TabItem } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
@@ -304,13 +304,7 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
       {/* Siempre montada y fuera de los paneles de pestaña: se oye también con la pestaña «Chat» cerrada. */}
       <p className="sr-only" role="status" aria-live="polite"><span>{hostReconnecting ? HOST_RECONNECTING : alone && link.copied ? 'Enlace copiado' : ''}</span><span key={chatAnnouncement.id}>{chatAnnouncement.text}</span></p>
       {hostReconnecting && (
-        <div className={s.notice}>
-          <span className={s.noticeBadge}><Icon icon={WifiOff} size={22} /></span>
-          <span>
-            <strong className={s.noticeTitle}>El host está reconectando.</strong>
-            <span className={s.noticeText}>La sala conserva la configuración y esperará antes de transferir el control.</span>
-          </span>
-        </div>
+        <Notice icon={WifiOff} tone="warn" title="El host está reconectando." text="La sala conserva la configuración y esperará antes de transferir el control." />
       )}
       <div className={s.tabbed}>
         <Tabs items={tabs} active={shownTab} onChange={setActiveTab} label="Secciones del lobby" idBase={TAB_ID} className={cx(s.tabs)} />

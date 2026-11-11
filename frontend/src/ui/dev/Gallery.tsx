@@ -5,7 +5,7 @@
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
-import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, Volume2, Wrench, Zap } from 'lucide-react';
+import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Search, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, Volume2, WifiOff, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { AudioSettingsPanel } from '../../components/AudioSettingsDialog';
@@ -57,6 +57,7 @@ import { ScreenTransition } from '../ScreenTransition';
 import { Segmented } from '../Segmented';
 import { Slider } from '../Slider';
 import { StateBox } from '../StateBox';
+import { Notice } from '../Notice';
 import { TabPanel, Tabs } from '../Tabs';
 import { Timer } from '../Timer';
 import { ToastStack, useToasts } from '../Toast';
@@ -276,11 +277,30 @@ function StateBoxSection() {
       <Fig id="statebox-empty-actions" caption="Vacío compacto con dos acciones (sala con un solo jugador)">
         <StateBox kind="empty" compact title="Aún no ha llegado nadie" action={{ label: 'Copiar enlace', icon: Link2, onClick: noop }} secondaryAction={{ label: 'Invitar amigos', icon: UserPlus, onClick: noop }} live={false} />
       </Fig>
+      <Fig id="statebox-empty-icon" caption="Vacío con icono propio, sin región viva (intentos de un juego)">
+        <StateBox kind="empty" icon={Search} title="Todavía no hay intentos." text="El primero que acierte gana la ronda." live={false} />
+      </Fig>
       <Fig id="statebox-loading" caption="Cargando sobre crema" cream>
         <StateBox kind="loading" title="Cargando" onCream />
       </Fig>
       <Fig id="statebox-error" caption="Error sobre crema" cream>
         <StateBox kind="error" title="Algo falló" text="Inténtalo de nuevo." action={{ label: 'Reintentar', onClick: noop }} onCream />
+      </Fig>
+    </Section>
+  );
+}
+
+function NoticeSection() {
+  return (
+    <Section name="notice" title="Notice">
+      <Fig id="notice-warn" caption="En línea · esperando (host reconectando)" wide>
+        <Notice icon={WifiOff} tone="warn" title="El host está reconectando." text="La sala conserva la configuración y esperará antes de transferir el control." />
+      </Fig>
+      <Fig id="notice-busy" caption="Flotante · en marcha, con anillo (conectando)" wide>
+        <Notice floating busy icon={WifiOff} tone="warn" title="Conectando con la sala" text="Estamos recuperando el estado de la sesión." />
+      </Fig>
+      <Fig id="notice-bad" caption="Flotante · perdido (conexión perdida)" wide>
+        <Notice floating icon={WifiOff} tone="bad" title="Conexión perdida" text="Reconectando… Tu sesión sigue guardada." />
       </Fig>
     </Section>
   );
@@ -1466,6 +1486,7 @@ export function Gallery() {
       <PillSection />
       <PanelSection />
       <StateBoxSection />
+      <NoticeSection />
       <IconSection />
       <TabsSection />
       <SegmentedSection />

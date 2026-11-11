@@ -10,6 +10,8 @@ export { ActionPlate } from './ActionPlate';
 export type { ActionPlateProps, ActionPlateTone } from './ActionPlate';
 export { StateBox } from './StateBox';
 export type { StateBoxAction, StateBoxProps } from './StateBox';
+export { Notice } from './Notice';
+export type { NoticeProps } from './Notice';
 export { Tabs, TabPanel, nextTab } from './Tabs';
 export type { TabItem, TabsProps, TabPanelProps } from './Tabs';
 export { Segmented } from './Segmented';

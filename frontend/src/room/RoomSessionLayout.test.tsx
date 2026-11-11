@@ -115,7 +115,7 @@ describe('room connection notice', () => {
 
   it('renders the connecting and lost notices as a floating card, with a spinner only while connecting', () => {
     const connecting = renderToStaticMarkup(createElement(ConnectionNoticeRegion, { kind: 'connecting' }));
-    expect(connecting).toMatch(/class="connection-notice [^"]*card/);
+    expect(connecting).toMatch(/class="[^"]*notice[^"]*floating[^"]* connection-notice"/);
     expect(connecting).toContain('spinner');
     expect(connecting).toContain('Conectando con la sala');
     expect(connecting).not.toMatch(/\bfixed\b/);

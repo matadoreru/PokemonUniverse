@@ -8,7 +8,7 @@ import { gameWinCue, roomRevealKey, useSfxCue } from '../hooks/useSfxCue';
 import { HEADER_NOTICES_ID } from '../components/Layout';
 import { useFeedbackTarget } from '../components/feedback-target';
 import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
-import { ConfirmDialog, cx, Icon } from '../ui';
+import { ConfirmDialog, Notice } from '../ui';
 import { createConnectionNotice, type ConnectionNoticeKind } from './connection-notice';
 import n from './ConnectionNotice.module.css';
 import { useRoom } from './RoomContext';
@@ -18,21 +18,14 @@ import { SkipGameControl } from './SkipGameControl';
 
 /**
  * Región `status` del aviso de conexión: siempre montada para que se anuncie el cambio; vacía no se ve. Con aviso es una
- * ventana flotante (crema, contorno y sombra dura) con un anillo que gira mientras conecta. Las clases globales
+ * ventana flotante (`Notice`) con un anillo que gira mientras conecta. Las clases globales
  * `connection-notice*` solo sirven de gancho a las E2E.
  */
 export function ConnectionNoticeRegion({ kind }: { kind: ConnectionNoticeKind }) {
   return <div className={`connection-notice-region ${n.region}`} role="status" aria-live="polite" data-layer="notice">
-    {kind && <div className={cx('connection-notice', n.card, kind === 'lost' && n.lost)}>
-      <span className={n.badge}>
-        <Icon icon={WifiOff} size={22} />
-        {kind === 'connecting' && <span className={n.spinner} aria-hidden="true" />}
-      </span>
-      <span className={n.text}>
-        <strong className={n.title}>{kind === 'lost' ? 'Conexión perdida' : 'Conectando con la sala'}</strong>
-        <span className={n.line}>{kind === 'lost' ? 'Reconectando… Tu sesión sigue guardada.' : 'Estamos recuperando el estado de la sesión.'}</span>
-      </span>
-    </div>}
+    {kind && <Notice floating className="connection-notice" icon={WifiOff} tone={kind === 'lost' ? 'bad' : 'warn'} busy={kind === 'connecting'}
+      title={kind === 'lost' ? 'Conexión perdida' : 'Conectando con la sala'}
+      text={kind === 'lost' ? 'Reconectando… Tu sesión sigue guardada.' : 'Estamos recuperando el estado de la sesión.'} />}
   </div>;
 }
 
