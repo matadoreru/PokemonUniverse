@@ -49,7 +49,7 @@ export interface RoomMemberView {
   chatMuted?: boolean;
 }
 
-/** Longitud máxima de un mensaje del chat del lobby, en caracteres (`RoomChat.MAX_LENGTH` en el backend). */
+/** Longitud máxima de un mensaje del chat del lobby, en unidades UTF-16 como `maxLength` (`RoomChat.MAX_LENGTH` en el backend). */
 export const CHAT_MESSAGE_MAX_LENGTH = 200;
 
 /** Mensaje del chat del lobby; `seq` crece por sala y no se reutiliza, `sentAt` son milisegundos epoch. */

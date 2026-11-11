@@ -1,12 +1,10 @@
-import { hasRoomPermission, type ChatMessage, type RoomMemberView, type RoomRole } from '@pokemon-universe/shared/public';
+import { CHAT_MESSAGE_MAX_LENGTH, hasRoomPermission, type ChatMessage, type RoomMemberView, type RoomRole } from '@pokemon-universe/shared/public';
 import { MessageSquare, MessageSquareOff, Trash2 } from 'lucide-react';
 import { useRef, useState, type RefObject } from 'react';
 import { ChatComposer, ChatLog, Dialog, Panel, Pill, StateBox, type ChatLogItem } from '../../ui';
 import { playerColor } from '../player-color';
 import s from './LobbyChat.module.css';
 
-/** Igual que el servidor (`RoomChat`): unidades UTF-16, como `maxLength`. */
-const MAX_LENGTH = 200;
 const MUTED_REASON = 'Un moderador te ha silenciado en el chat de esta sala.';
 
 /** Tras el ack solo se vacía el campo si sigue con el texto enviado: lo escrito mientras tanto se conserva. */
@@ -131,7 +129,7 @@ export function LobbyChat({ messages, members, selfId, selfRole, onSend, onDelet
     <Panel title="Chat" titleRef={title} aria-label="Chat" className={className ?? ''} bodyClassName={s.body ?? ''}>
       <ChatLog items={items} label="Mensajes del chat" empty={empty} className={s.log ?? ''} active={active}
         {...(canModerate ? { onModerate: (id: string) => setModerating(Number(id)), moderateLabel: (item: ChatLogItem) => `Moderar el mensaje de ${item.author}` } : {})} />
-      <ChatComposer value={draft} onChange={setDraft} onSubmit={() => void send()} label="Escribe un mensaje" maxLength={MAX_LENGTH} busy={busy} disabledReason={muted ? MUTED_REASON : null} />
+      <ChatComposer value={draft} onChange={setDraft} onSubmit={() => void send()} label="Escribe un mensaje" maxLength={CHAT_MESSAGE_MAX_LENGTH} busy={busy} disabledReason={muted ? MUTED_REASON : null} />
       {canModerate && (
         <Dialog open={Boolean(target)} title={target ? `Mensaje de ${target.authorName}` : 'Mensaje'} onClose={close} width={420}
           actions={[{ label: 'Cancelar', variant: 'blue', autoFocus: true, onClick: () => undefined }]}>
