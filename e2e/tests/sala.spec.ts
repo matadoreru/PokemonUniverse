@@ -336,6 +336,34 @@ test('lobby con 8 jugadores a 390×844: la lista tiene tope y las pestañas sigu
 });
 
 /**
+ * Teclado virtual (Q4): Playwright no abre un teclado de verdad, así que se simula como lo hace Chrome en Android con
+ * `interactive-widget=resizes-content`, encogiendo la vista con el campo del chat enfocado. El campo tiene que seguir a
+ * la vista dentro del `main` (lo desplaza `useKeepFocusedInView`), sin que el documento se desplace. iOS (solo encoge la
+ * vista visible) no se puede simular aquí: lo cubren los tests de `keyboardViewportHeight`.
+ */
+test('a 390 px, el campo del chat sigue a la vista cuando el teclado encoge la pantalla', async ({ crearJugador }) => {
+  const host = await crearJugador('Teclado', SIZES[2].w, SIZES[2].h);
+  await createRoom(host.page);
+  const campo = host.page.getByLabel('Escribe un mensaje');
+  const pestana = host.page.getByRole('tab', { name: /^Chat/ });
+  await pestana.click();
+  await expect(campo).toBeVisible();
+  await campo.focus();
+  // Teclado de 380 px: la vista pasa de 844 a 464 px de alto.
+  await host.page.setViewportSize({ width: SIZES[2].w, height: 464 });
+  await expect.poll(() => campo.evaluate((input) => {
+    const main = document.querySelector('main')!.getBoundingClientRect();
+    const box = input.getBoundingClientRect();
+    return box.top >= main.top - 1 && box.bottom <= main.bottom + 1;
+  }), { message: 'el campo del chat queda dentro del main visible', timeout: 3_000 }).toBe(true);
+  await expect(campo).toBeFocused();
+  expect(await host.page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight + 1), 'sin scroll de documento').toBe(true);
+  // En Android la vista entera encoge: la app no fija ningún alto propio (eso queda para iOS).
+  expect(await host.page.evaluate(() => document.documentElement.style.getPropertyValue('--keyboard-viewport'))).toBe('');
+  expect(host.errors).toEqual([]);
+});
+
+/**
  * Fija el aviso de conexión sin depender de lo que tarde el backend en frío. Con `perdida = false` el `/ws` de la sala
  * se queda en CONNECTING para siempre («Conectando con la sala»); con `perdida = true` el primero abre y se cae al
  * momento y los siguientes intentos se quedan en CONNECTING («Conexión perdida»). El resto de WebSockets (HMR de

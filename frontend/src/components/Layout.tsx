@@ -3,6 +3,7 @@ import { House, LogOut, MessageSquareWarning, ShieldCheck } from 'lucide-react';
 import { Suspense } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { useKeepFocusedInView } from '../hooks/useKeepFocusedInView';
 import { ActionToastStack, cx, HudPlate, Pill, PillLink, ScreenTransition } from '../ui';
 import { Avatar } from './Avatar';
 import { FeedbackTargetProvider, useFeedbackHref } from './feedback-target';
@@ -121,6 +122,9 @@ function AppToasts() {
  * desplaza por dentro solo en el móvil; en escritorio el E2E exige que no se desborde. Cada ruta nueva entra con
  * `ScreenTransition`.
  *
+ * Con el teclado virtual abierto, `useKeepFocusedInView` deja a la vista el campo en el que se escribe; en iOS, donde
+ * `100dvh` no encoge con el teclado, fija además `--keyboard-viewport` al alto visible y la rejilla lo usa en su lugar.
+ *
  * El `main` es `relative` para ser el bloque contenedor de todo lo `absolute` sin antepasado posicionado (los `sr-only`
  * de una leyenda o de una etiqueta oculta): si no, su bloque contenedor es la vista inicial, escapan del recorte del
  * `main` y alargan el documento (401 px en la rotación del lobby a 390 px).
@@ -129,11 +133,12 @@ export function Layout() {
   const { user, level, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  useKeepFocusedInView();
   return (
     <FeedbackTargetProvider>
       {/* Primer elemento de la página: salta la cabecera y lleva el foco al `main` (sin tocar la URL ni el historial). */}
       <a href={`#${MAIN_ID}`} className={s.skip} onClick={(event) => { event.preventDefault(); document.getElementById(MAIN_ID)?.focus(); }}>Saltar al contenido</a>
-      <div className="grid h-[100dvh] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
+      <div className="grid h-[var(--keyboard-viewport,100dvh)] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)]">
         <AppHeader user={user} level={level} onLogout={() => void logout().then(() => navigate('/'))} />
         <main id={MAIN_ID} tabIndex={-1} className={cx('relative min-h-0 overflow-y-auto [scrollbar-gutter:stable]', s.main)}>
           {/* Hueco de avisos flotantes (conexión de la sala): capa de alto cero pegada arriba, bajo la cabecera. */}
