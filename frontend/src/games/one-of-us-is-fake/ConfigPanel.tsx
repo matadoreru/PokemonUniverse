@@ -1,12 +1,12 @@
-import type { OneOfUsIsFakeConfig, RoomView, SubjectivePromptSource } from '@pokemon-universe/shared/public';
-import { useAuth } from '../../auth/AuthContext';
+import type { OneOfUsIsFakeConfig, RoomView } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
-import { Segmented, Toggle } from '../../ui';
-import { CustomCategoryManager } from './CustomCategoryManager';
+import { Toggle } from '../../ui';
+import { CustomCategoryManager } from '../prompt-source/CustomCategoryManager';
 import c from '../ConfigPanel.module.css';
+import { PromptSourceField, type PromptSourceOption } from '../prompt-source/PromptSourceField';
 
-const categorySources: Array<{ id: SubjectivePromptSource; title: string; detail: string }> = [
+const categorySources: PromptSourceOption[] = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Categorías incluidas y listas para jugar.' },
   { id: 'CUSTOM', title: 'Propias', detail: 'Solo las categorías activas del host (al menos 2).' },
   { id: 'BOTH', title: 'Ambas', detail: 'Mezcla el catálogo oficial con las categorías del host.' },
@@ -18,14 +18,10 @@ const minutes = (value: number) => (value < 60 ? seconds(value) : value % 60 ===
 /**
  * Ajustes de One of Us Is Fake con los controles del catálogo: generaciones (el selector heredado, F9), rondas y tiempos
  * (`ConfigRange`, que incluyen los valores de los antiguos atajos), si el fake sabe que lo es y las formas regionales
- * (`Toggle`), la fuente de categorías (`Segmented`, con el detalle de la elegida) y el gestor de categorías del host.
+ * (`Toggle`), la fuente de categorías (`PromptSourceField`, con el detalle de la elegida) y el gestor de categorías del host.
  */
 export function OneOfUsIsFakeConfigPanel({ config, disabled, room, selfId, onChange }: { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }) {
   const value = config as OneOfUsIsFakeConfig;
-  const { user } = useAuth();
-  const isHost = room.hostId === selfId;
-  const registeredHost = isHost && user?.kind === 'USER';
-  const source = categorySources.find((entry) => entry.id === value.categorySource) ?? categorySources[0]!;
   return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada elección debe existir en este pool; la interpretación de la categoría siempre es libre." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
@@ -34,10 +30,8 @@ export function OneOfUsIsFakeConfigPanel({ config, disabled, room, selfId, onCha
       <ConfigRange label="Tiempo de debate y voto" value={value.discussionSeconds} min={30} max={600} step={15} disabled={disabled} formatValue={minutes} hint="Con empate hay otra vuelta con el mismo tiempo." onCommit={(discussionSeconds) => onChange({ ...value, discussionSeconds })} />
     </div>
     <Toggle label="El fake sabe que es fake" hint="Por defecto nadie sabe si recibió la categoría diferente." checked={value.fakeKnows} disabled={disabled} onChange={(fakeKnows) => void onChange({ ...value, fakeKnows })} />
-    <Segmented label="Fuente de categorías" showLabel hint={source.detail} value={value.categorySource} options={categorySources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(categorySource) => void onChange({ ...value, categorySource })} />
-    {registeredHost
-      ? <CustomCategoryManager disabled={disabled} />
-      : <p className={c.note}>{isHost ? 'Crea una cuenta para guardar categorías personales de forma permanente.' : `Las categorías personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}
+    <PromptSourceField label="Fuente de categorías" sources={categorySources} value={value.categorySource} disabled={disabled} onChange={(categorySource) => void onChange({ ...value, categorySource })} room={room} selfId={selfId}
+      noun="categorías" hostCount={room.hostCustomCategoryCount} manager={<CustomCategoryManager disabled={disabled} />} />
     <Toggle label="Formas regionales" hint="Cada forma se considera una elección exacta e independiente." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => void onChange({ ...value, includeRegionalForms })} />
   </fieldset>;
 }

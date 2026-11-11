@@ -35,7 +35,7 @@ interface CustomCategoryManagerProps {
 }
 
 /**
- * Categorías personales del host (One of Us Is Fake; Most Likely To las usa como preguntas) con los controles del
+ * Categorías personales del host (One of Us Is Fake; Most Likely To y Secret Ranking las usan como preguntas) con los controles del
  * catálogo: alta con un `Field` y «Añadir», y la lista con activar/desactivar, editar y eliminar (con confirmación en un
  * `Dialog`). Se guardan en la cuenta del host. Los errores salen en castellano bajo el alta.
  */

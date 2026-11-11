@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { OneOfUsIsFakeConfigPanel } from '../games/one-of-us-is-fake/ConfigPanel';
-import { categoryErrorMessage } from '../games/one-of-us-is-fake/CustomCategoryManager';
+import { categoryErrorMessage } from '../games/prompt-source/CustomCategoryManager';
 import { ApiError } from '../lib/api';
 import { OneOfUsIsFakeGame } from './OneOfUsIsFakeGame';
 import { OneOfUsIsFakeResults } from './OneOfUsIsFakeResults';
