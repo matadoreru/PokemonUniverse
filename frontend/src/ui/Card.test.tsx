@@ -47,6 +47,14 @@ describe('Card con marcas en la esquina', () => {
     expect(render({ name: 'Mew', sprite: '/mew.png', marks: 'corner' })).not.toContain('data-mark');
   });
 
+  it('selectedMark: el tic de elegida solo en la carta elegida, en su esquina y no en el hueco del sprite', () => {
+    const selected = render({ name: 'Infinita', art: '∞', state: 'selected', selectedMark: true, onSelect: () => undefined });
+    expect(selected).toMatch(/data-part="name"[\s\S]*data-mark="selected"/);
+    expect(selected.match(/data-mark=/g)).toHaveLength(1);
+    expect(render({ name: 'Infinita', art: '∞', selectedMark: true, onSelect: () => undefined })).not.toContain('data-mark');
+    expect(render({ name: 'Infinita', art: '∞', state: 'selected', onSelect: () => undefined })).not.toContain('data-mark');
+  });
+
   it('la capa del sprite va dentro del hueco del sprite', () => {
     const html = render({ name: 'Mew', sprite: '/mew.png', artOverlay: createElement('span', { 'data-testid': 'capa' }) });
     expect(html).toMatch(/data-part="art"[^>]*>[\s\S]*data-testid="capa"[\s\S]*data-part="name"/);

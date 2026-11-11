@@ -3,7 +3,7 @@
  * `tests/juegos.spec.ts` y los helpers que comparten los specs de juegos, en `src/juegos.ts`.
  */
 import { expect, test } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../../src/helpers.js';
+import { capture, crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../../src/helpers.js';
 import { capturarTamanos, esSelector, capturarAnotando, buscadorRespuesta, adivinar, sinScorePop, textoDeMain } from '../../src/juegos.js';
 
 /**
@@ -71,6 +71,20 @@ test('whos-that-pokemon: una ronda corta con un fallo, la revelación por tiempo
     const antes = await textoDeMain(host.page);
 
     await capturarTamanos(primero.page, 'juego-whos-that-pokemon-pista', { sigue: primero.page.getByRole('img', { name: 'Silueta de un Pokémon misterioso' }) });
+    // V3: a 390 px, un título largo de la placa baja a dos líneas (el `title` no se ve en táctil) y no pasa de dos.
+    {
+      const pagina = primero.page;
+      await pagina.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
+      const titulo = pagina.locator('main h1').first();
+      const original = await titulo.textContent();
+      await titulo.evaluate((h1) => { h1.textContent = 'Un título larguísimo de la placa que no cabe en una sola línea ni en dos a 390 píxeles de ancho'; });
+      const medida = await titulo.evaluate((h1) => ({ alto: h1.clientHeight, linea: parseFloat(getComputedStyle(h1).lineHeight), corta: h1.scrollHeight > h1.clientHeight + 1 }));
+      expect(Math.round(medida.alto / medida.linea), `líneas del título: ${JSON.stringify(medida)}`).toBe(2);
+      expect(medida.corta, 'el resto se corta con elipsis en la segunda línea').toBe(true);
+      await capture(pagina, 'juego-titulo-largo');
+      await titulo.evaluate((h1, texto) => { h1.textContent = texto; }, original ?? '');
+      await pagina.setViewportSize({ width: 1280, height: 720 });
+    }
     if (resultado === 'fallo') {
       // A 390×844, sin desplazar: la silueta y el buscador a la vista.
       await host.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
