@@ -1,5 +1,5 @@
 import type { PokemonType, RoomView, SketchmonConfig, SketchmonPlayerState, SketchmonPublicState } from '@pokemon-universe/shared/public';
-import { POKEMON_TYPE_LABELS, SKETCHMON_DRAWER_POINTS } from '@pokemon-universe/shared/public';
+import { POKEMON_TYPE_LABELS, SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Brush, Check, Clock3, Eye, Hourglass, Palette, Radio, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
@@ -19,8 +19,8 @@ import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressSt
 import s from '../games/sketchmon/Sketchmon.module.css';
 
 const GAME_NAME = 'Sketchmon';
-const SCORING = 'Cuanto antes aciertes, más puntos (de 5 a 2); tras un fallo hay una breve espera.';
-const RULE = `Quien acierta suma de 5 a 2 puntos según lo rápido; quien dibuja, ${SKETCHMON_DRAWER_POINTS} si alguien acierta.`;
+const SCORING = `Cuanto antes aciertes, más puntos (de ${SKETCHMON_GUESSER_MAX_POINTS} a ${SKETCHMON_GUESSER_MIN_POINTS}); tras un fallo hay una breve espera.`;
+const RULE = `Quien acierta suma de ${SKETCHMON_GUESSER_MAX_POINTS} a ${SKETCHMON_GUESSER_MIN_POINTS} puntos según lo rápido; quien dibuja, ${SKETCHMON_DRAWER_POINTS} si alguien acierta.`;
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 
 const TURN_ICON: Record<SketchTurnStatus, LucideIcon> = { drawing: Brush, drew: Brush, next: ArrowRight, done: Check, pending: Hourglass };

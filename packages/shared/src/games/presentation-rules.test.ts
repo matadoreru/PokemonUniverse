@@ -1,0 +1,47 @@
+import { readFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import {
+  LEARNSET_INITIAL_POINTS, LEARNSET_MIN_POINTS, LEARNSET_ORDER_BONUSES, learnsetManualRevealPoints, learnsetPoints,
+  normalizeTabooText, POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS,
+  SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS, TYPE_DUEL_MAX_INVALID_COMBINATIONS,
+  WHO_IS_WHO_WIN_POINTS,
+} from '../public.js';
+
+/**
+ * La web explica la puntuación con copias de reglas de los motores. `web-contracts/presentation-rules.json` lo graba
+ * `WebPresentationRulesTest` desde Java (aquí solo se lee): si cambia un número en Java, este test falla hasta que la
+ * copia TS diga lo mismo.
+ */
+interface PresentationRules {
+  'learnset-guess': { initialPoints: number; minPoints: number; orderBonuses: number[]; learnsetPoints: Record<string, number>; learnsetManualRevealPoints: Record<string, number> };
+  'poke-taboo': { guesserMaxPoints: number; guesserMinPoints: number; descriptorPoints: number; normalizeTabooText: Record<string, string> };
+  sketchmon: { drawerPoints: number; guesserMaxPoints: number; guesserMinPoints: number };
+  'type-duel': { maxInvalidCombinations: number };
+  'who-is-who-pokemon': { winPoints: number };
+}
+
+const rules = JSON.parse(readFileSync(new URL('../../../../backend/src/test/resources/web-contracts/presentation-rules.json', import.meta.url), 'utf8')) as PresentationRules;
+const pairs = (table: Record<string, number>) => Object.entries(table).map(([key, value]) => [...key.split(',').map(Number), value] as [number, number, number]);
+
+describe('reglas de presentación frente a Java', () => {
+  it('Learnset Guess: constantes, learnsetPoints y learnsetManualRevealPoints', () => {
+    const java = rules['learnset-guess'];
+    expect({ initialPoints: LEARNSET_INITIAL_POINTS, minPoints: LEARNSET_MIN_POINTS, orderBonuses: [...LEARNSET_ORDER_BONUSES] })
+      .toEqual({ initialPoints: java.initialPoints, minPoints: java.minPoints, orderBonuses: java.orderBonuses });
+    for (const [stage, order, points] of pairs(java.learnsetPoints)) expect(learnsetPoints(stage, order), `${stage},${order}`).toBe(points);
+    for (const [total, visible, points] of pairs(java.learnsetManualRevealPoints)) expect(learnsetManualRevealPoints(total, visible), `${total},${visible}`).toBe(points);
+  });
+
+  it('Poké Taboo: puntos y normalizeTabooText', () => {
+    const java = rules['poke-taboo'];
+    expect({ guesserMaxPoints: POKE_TABOO_GUESSER_MAX_POINTS, guesserMinPoints: POKE_TABOO_GUESSER_MIN_POINTS, descriptorPoints: POKE_TABOO_DESCRIPTOR_POINTS })
+      .toEqual({ guesserMaxPoints: java.guesserMaxPoints, guesserMinPoints: java.guesserMinPoints, descriptorPoints: java.descriptorPoints });
+    for (const [input, output] of Object.entries(java.normalizeTabooText)) expect(normalizeTabooText(input), input).toBe(output);
+  });
+
+  it('Sketchmon, Type Duel y Quién es Quién', () => {
+    expect({ drawerPoints: SKETCHMON_DRAWER_POINTS, guesserMaxPoints: SKETCHMON_GUESSER_MAX_POINTS, guesserMinPoints: SKETCHMON_GUESSER_MIN_POINTS }).toEqual(rules.sketchmon);
+    expect({ maxInvalidCombinations: TYPE_DUEL_MAX_INVALID_COMBINATIONS }).toEqual(rules['type-duel']);
+    expect({ winPoints: WHO_IS_WHO_WIN_POINTS }).toEqual(rules['who-is-who-pokemon']);
+  });
+});
