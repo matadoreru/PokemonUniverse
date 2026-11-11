@@ -45,6 +45,8 @@ import type { PatchTone } from '../Patch';
 import { Pill, PillAnchor, PillLink } from '../Pill';
 import { Row, RowButton, RowLink } from '../Row';
 import { ScorePop } from '../ScorePop';
+import { ScoreValue } from '../ScoreValue';
+import { MomentCutin } from '../MomentCutin';
 import { AchievementTile } from '../AchievementTile';
 import { Screen, ScreenHeader, type ScreenWidth } from '../Screen';
 import { ScreenSplit } from '../ScreenSplit';
@@ -1020,6 +1022,43 @@ function ScorePopSection() {
   );
 }
 
+function ScoreValueSection() {
+  const [points, setPoints] = useState(12);
+  return (
+    <Section name="scorevalue" title="ScoreValue">
+      <Fig id="scorevalue-self" caption="Marcador propio: rebota y lanza el +N al subir">
+        <span className={s.iconRow}>
+          <Pill size="small" onClick={() => setPoints((v) => v + 3)}>
+            Sumar 3
+          </Pill>
+          <Pill size="small" variant="cream" onClick={() => setPoints(0)}>
+            A cero
+          </Pill>
+          <strong className={s.popFigure}><ScoreValue value={points} self color="var(--yellow)"><small> pts</small></ScoreValue></strong>
+        </span>
+      </Fig>
+      <Fig id="scorevalue-other" caption="Marcador de otro jugador: solo rebota">
+        <strong className={s.popFigure}><ScoreValue value={points}><small> pts</small></ScoreValue></strong>
+      </Fig>
+    </Section>
+  );
+}
+
+function MomentCutinSection() {
+  const [shown, setShown] = useState<{ n: number; confetti: boolean } | null>(null);
+  return (
+    <Section name="momentcutin" title="MomentCutin">
+      <Fig id="momentcutin-plain" caption="Momento sin región viva: clic o Espacio lo saltan">
+        <Pill variant="cream" onClick={() => setShown((prev) => ({ n: (prev?.n ?? 0) + 1, confetti: false }))}>Hito</Pill>
+      </Fig>
+      <Fig id="momentcutin-confetti" caption="Con confeti (nunca con movimiento reducido)">
+        <Pill variant="cream" onClick={() => setShown((prev) => ({ n: (prev?.n ?? 0) + 1, confetti: true }))}>¡BINGO!</Pill>
+      </Fig>
+      {shown && <MomentCutin key={shown.n} tone="yellow" title={shown.confetti ? '¡BINGO!' : '¡Racha de 5!'} subtitle="Momento de ejemplo" confetti={shown.confetti} confettiSeed={shown.n} onDone={() => setShown(null)} />}
+    </Section>
+  );
+}
+
 function AchievementTileSection() {
   const art = <Icon icon={Trophy} size={32} />;
   return (
@@ -1411,6 +1450,8 @@ export function Gallery() {
       <ActionToastSection />
       <CutinSection />
       <ScorePopSection />
+      <ScoreValueSection />
+      <MomentCutinSection />
       <AchievementTileSection />
       <UnownGlyphSection />
       <ConfettiSection />

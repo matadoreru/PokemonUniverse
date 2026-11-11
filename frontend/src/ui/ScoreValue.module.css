@@ -1,0 +1,8 @@
+/* Cifra de marcador: el «+N» (`placement="before"`) se coloca respecto a ella. */
+.value {
+  position: relative;
+}
+/* Caja propia para que el rebote (`transform`) se aplique a la cifra en línea. */
+.number {
+  display: inline-block;
+}
