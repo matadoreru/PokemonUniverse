@@ -6,6 +6,7 @@ import { PokedexEntryGuessConfigPanel } from '../games/pokedex-entry-guess/Confi
 import { describePokedexEntryHint, entrySegments, fitFontSize } from '../games/pokedex-entry-guess/presentation';
 import { PokedexEntryGuessGame } from './PokedexEntryGuessGame';
 import { PokedexEntryGuessResults } from './PokedexEntryGuessResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -94,7 +95,7 @@ describe('Pokédex Entry Guess: pantalla', () => {
     expect(html).toContain('Ana probó');
     expect(html).toContain('Umbreon');
     expect(html).toContain('Ronda 1 de 10');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html.match(/role="alert"/g)).toBeNull();
     expect(html).not.toMatch(/btn-|reveal-pop|text-berry|text-leaf|text-aqua|class="label|aria-live="polite" class="max-h/);
   });

@@ -6,6 +6,7 @@ import { TypeChainConfigPanel } from '../games/type-chain/ConfigPanel';
 import { chainTypeText, typeChainAnnouncement, typeChainEventView, typeChainFocusKey, typeChainMemberStatus, typeChainNamed, typeChainPlateKind, typeChainSearchAutoFocus } from '../games/type-chain/presentation';
 import { TypeChainGame } from './TypeChainGame';
 import { TypeChainResults } from './TypeChainResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -121,8 +122,7 @@ describe('Type Chain: pantalla', () => {
 
   it('tiene una sola región viva y ningún error propio', () => {
     const markup = render(publicGame(), { ...turn, lastAttempt: { reason: 'WRONG_TYPE', pokemonName: 'Pikachu', attemptedAt: 1_500 }, cooldownUntil: Date.now() + 800 });
-    expect(markup.match(/aria-live/g)).toHaveLength(1);
-    expect(markup.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(markup);
     expect(markup).not.toContain('role="alert"');
     // La espera tras el fallo se ve (oculta a los lectores: ya la dice la región viva).
     expect(markup).toContain('data-testid="type-chain-cooldown"'); expect(markup).toContain('Nuevo intento en');

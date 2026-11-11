@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { SecretRankingConfigPanel } from '../games/secret-ranking/ConfigPanel';
 import { SecretRankingGame } from './SecretRankingGame';
 import { SecretRankingResults } from './SecretRankingResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -49,7 +50,6 @@ const render = (game: SecretRankingPublicState, player: SecretRankingPlayerState
 const visible = (html: string) => html.replace(/<[^>]*?(?:alt|title|aria-label)="([^"]*)"[^>]*>/g, ' $1 ').replace(/<[^>]+>/g, ' ');
 /** Nombres de la lista que se ordena, en su orden. */
 const listOrder = (html: string) => [...html.matchAll(/data-ranking-item="([^"]+)"/g)].map((match) => match[1]);
-const liveRegions = (html: string) => html.match(/aria-live=/g)?.length ?? 0;
 
 describe('Secret Ranking: ordenar', () => {
   it('lista de cinco con «Subir X» y «Bajar X», el primero sin subir y el último sin bajar, y «Bloquear ranking»', () => {
@@ -78,7 +78,7 @@ describe('Secret Ranking: ordenar', () => {
     expect(html).toContain('Solo se muestra quién ha terminado');
     expect(html).toContain('Ordenar');
     expect(html).toContain('Para ordenar');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 
@@ -138,7 +138,7 @@ describe('Secret Ranking: revelación', () => {
     expect(html).toContain('Siguiente ronda en');
     expect(html).toContain('excluye siempre su propio ranking');
     expect(html.match(/role="meter" aria-label="Cercanía de/g)?.length).toBe(2);
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
     expect(html).not.toMatch(MEDALS);
   });

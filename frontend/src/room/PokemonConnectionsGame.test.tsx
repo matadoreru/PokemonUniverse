@@ -6,6 +6,7 @@ import { PokemonConnectionsConfigPanel } from '../games/pokemon-connections/Conf
 import { connectionsSnapSeconds, nextAttemptFocus, connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsLivesText, connectionsPlateKind, connectionsRevealOrder, connectionsRoundLine, connectionsStatsLine, connectionsTimeLabel } from '../games/pokemon-connections/presentation';
 import { PokemonConnectionsGame } from './PokemonConnectionsGame';
 import { PokemonConnectionsResults } from './PokemonConnectionsResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -71,7 +72,7 @@ describe('PokemonConnectionsGame', () => {
     expect(html).toContain('Comprobar 0/4');
     expect(html).toContain('Pokémon 16');
     // Una sola región viva y ningún heredado.
-    expect(html.match(/aria-live=/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(/class="[^"]*\b(btn-primary|btn-ghost|card|chip|label|reveal-pop|connections-submit)\b/);
     expect(html).not.toMatch(/🥇|🥈|🥉/);
   });

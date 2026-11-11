@@ -4,6 +4,7 @@ import type { HigherLowerPlayerState, HigherLowerPublicState, RoomView } from '@
 import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerMemberStatus, higherLowerPlateKind, higherLowerRanking, higherLowerRecord, higherLowerVerdict } from '../games/higher-lower/presentation';
 import { HigherLowerGame } from './HigherLowerGame';
 import { HigherLowerResults } from './HigherLowerResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -86,7 +87,7 @@ describe('HigherLowerGame', () => {
     expect(html).not.toContain('Respuestas privadas');
   });
   it('keeps exactly one live region on screen', () => {
-    for (const view of [room('ROUND_ACTIVE'), room('ROUND_RESULTS')]) expect(render(view).match(/role="status"/g)).toHaveLength(1);
+    for (const view of [room('ROUND_ACTIVE'), room('ROUND_RESULTS')]) expectSingleLiveRegion(render(view));
   });
   it('bumps only the streaks above zero', () => {
     const html = render(room('ROUND_RESULTS'));
@@ -192,7 +193,7 @@ describe('Higher or Lower · Racha infinita', () => {
     expect(board).toContain('2<small> racha</small>');
     expect(html).toContain('Un fallo y estás fuera');
     expect(html).not.toContain('Igual vale más puntos');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
   });
 
   it('the eliminated player watches the rest of the game and cannot answer', () => {
@@ -200,7 +201,7 @@ describe('Higher or Lower · Racha infinita', () => {
     expect(html).toContain('Eliminado');
     expect(html).toContain('Sigues la partida como espectador');
     expect(html).not.toContain('aria-label="Mayor"');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
   });
 
   it('at the reveal, the one who fails is out with their streak, and nobody left means the ranking is next', () => {

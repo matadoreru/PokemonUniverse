@@ -9,6 +9,7 @@ import { shinyStatusAnnouncement } from '../games/shiny-vote/ShinyVoteStatus';
 import { shouldMoveFocusOnTransition } from './focus-transition';
 import { ShinyVoteGame } from './ShinyVoteGame';
 import { ShinyVoteResults, shinyStatsLine } from './ShinyVoteResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -252,7 +253,7 @@ describe('Shiny Quiz UI', () => {
       render(revealGame(), player({ canVote: false, vote: { optionId: 'B', votedAt: 2_000 }, roundResult: { correct: true, points: 4 } })),
     ];
     for (const html of states) {
-      expect(html.match(/role="status"/g)).toHaveLength(1);
+      expectSingleLiveRegion(html);
       expect(html).toMatch(/<p class="sr-only" role="status" aria-live="polite">/);
       expect(html).toMatch(/<h2 tabindex="-1" class="[^"]*actionTitle/);
     }
@@ -353,7 +354,7 @@ describe('Shiny Quiz · Supervivencia', () => {
     expect(html).toContain('1 / 2 votos');
     expect(html.match(/Eliminado/g)).toHaveLength(3);
     expect(html).toMatch(/1<small> rondas<\/small>/);
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     // En Clásico, nada de esto.
     const classic = render(publicGame());
     expect(classic).not.toContain('candidatos');
@@ -368,7 +369,7 @@ describe('Shiny Quiz · Supervivencia', () => {
     expect(html).not.toContain('Confirmar voto');
     expect(html).not.toContain('Tiempo agotado');
     expect(html).toContain('Estás eliminado: sigues la partida como espectador.');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
   });
 
   it('al revelar dice si sigues en pie o quedas eliminado', () => {

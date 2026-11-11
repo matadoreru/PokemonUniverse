@@ -7,6 +7,7 @@ import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffRe
 import { bidBlock } from './auction-kit';
 import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -61,7 +62,7 @@ describe('Pokémon Bluff Auction: subasta', () => {
   it('con el kit: la condición, la puja actual, el turno, la mesa con quien pasó y una sola región viva', () => {
     const html = play(game(), turn);
     expect(html).toContain('data-testid="auction-screen"');
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).toContain('Ronda 2 de 10 · Subasta');
     expect(html).toContain('Tipo Agua + Velocidad &gt; 80');
@@ -200,7 +201,7 @@ describe('Pokémon Bluff Auction: demostración', () => {
       expect(html).toContain('Todos veis los intentos en tiempo real.');
       expect(html).toContain('>Carlos demuestra</h1>');
       expect(html).toContain('Dragonite');
-      expect(html.match(/aria-live/g)).toHaveLength(1);
+      expectSingleLiveRegion(html);
     }
     // Quien apostó y recarga sin su permiso de búsqueda todavía: lo dice.
     expect(play(searching(), idle, 'p3')).toContain('Reconectando con la demostración…');
@@ -246,7 +247,7 @@ describe('Pokémon Bluff Auction: resultado de la ronda', () => {
     expect(html).toContain('El farol te da puntos');
     expect(html).toContain('+2');
     expect(html.match(/data-testid="bluff-metric"/g)).toHaveLength(3);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toContain('Siguiente ronda');
     expect(html).not.toContain('Clasificación');
     // En la última ronda, el plazo lleva a la clasificación, no a otra ronda.

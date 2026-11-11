@@ -6,6 +6,7 @@ import { WhosThatPokemonConfigPanel } from '../games/whos-that-pokemon/ConfigPan
 import { describeWhosThatHint } from '../games/whos-that-pokemon/presentation';
 import { WhosThatPokemonGame } from './WhosThatPokemonGame';
 import { WhosThatPokemonResults } from './WhosThatPokemonResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -62,7 +63,7 @@ describe('¿Quién es ese Pokémon?: pantalla', () => {
     expect(html).toContain('Ana probó');
     expect(html).toContain('Raichu');
     expect(html).toContain('Ronda 1 de 10');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
   });
 
   it('acertado: «¡Acertado!» con puesto y puntos, sin buscador; el marcador lo dice en texto', () => {

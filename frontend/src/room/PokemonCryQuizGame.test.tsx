@@ -6,6 +6,7 @@ import { PokemonCryQuizConfigPanel } from '../games/pokemon-cry-quiz/ConfigPanel
 import { CRY_UNAVAILABLE, cryAudioEvents, cryVersionLabel, releaseCryDuck } from '../games/pokemon-cry-quiz/presentation';
 import { PokemonCryQuizGame } from './PokemonCryQuizGame';
 import { PokemonCryQuizResults } from './PokemonCryQuizResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -87,7 +88,7 @@ describe('Adivina el Grito: pantalla', () => {
     expect(html).toContain('Ana probó');
     expect(html).toContain('Raichu');
     expect(html).toContain('Ronda 1 de 10');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(/btn-|reveal-pop|text-berry|text-leaf|text-aqua|text-electric|animate-pulse/);
   });
 

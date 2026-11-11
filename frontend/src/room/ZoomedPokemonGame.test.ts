@@ -7,6 +7,7 @@ import { ZoomedPokemonConfigPanel } from '../games/zoomed-pokemon/ConfigPanel';
 import { describeZoomedHint } from '../games/zoomed-pokemon/presentation';
 import { ZoomedPokemonGame, ZoomViewport } from './ZoomedPokemonGame';
 import { ZoomedPokemonResults } from './ZoomedPokemonResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -93,7 +94,7 @@ describe('Zoomed Pokémon: pantalla', () => {
     expect(html).toContain('Ana probó');
     expect(html).toContain('Raichu');
     expect(html).toContain('Ronda 1 de 10');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     // Sin las clases heredadas.
     expect(html).not.toMatch(/btn-|reveal-pop|text-berry|text-leaf/);
   });

@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { PLAYER_COLORS, playerColor } from './player-color';
 import { ResultsShell, type ResultsStanding } from './ResultsShell';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 const STANDINGS: ResultsStanding[] = [
   { id: 'a', position: 1, name: 'Misty', points: 12, color: 'var(--info)', meta: '3 aciertos' },
@@ -46,8 +47,7 @@ describe('ResultsShell', () => {
   });
   it('hasExactlyOneLiveRegion', () => {
     const html = shell({ standings: STANDINGS, aside: createElement('p', null, 'Métricas') });
-    expect(html.match(/aria-live=/g)).toHaveLength(1);
-    expect(html.match(/role="(status|alert)"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toContain('<p class="sr-only" role="status" aria-live="polite"></p>');
   });
   it('puntos con etiqueta propia', () => {

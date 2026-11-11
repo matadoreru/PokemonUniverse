@@ -7,6 +7,7 @@ import { categoryErrorMessage } from '../games/one-of-us-is-fake/CustomCategoryM
 import { ApiError } from '../lib/api';
 import { OneOfUsIsFakeGame } from './OneOfUsIsFakeGame';
 import { OneOfUsIsFakeResults } from './OneOfUsIsFakeResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -220,7 +221,7 @@ describe('One of Us Is Fake: pantalla', () => {
   it('una sola región viva', () => {
     for (const phase of ['ROUND_ACTIVE', 'CHOICE_REVEAL', 'DISCUSSION', 'ROUND_RESULTS'] as const) {
       const html = render(publicGame(phase, phase === 'ROUND_RESULTS' ? result : null), normal({ canSelect: phase === 'ROUND_ACTIVE' }));
-      expect(html.match(/aria-live=/g)?.length, phase).toBe(1);
+      expectSingleLiveRegion(html, phase);
     }
   });
 });

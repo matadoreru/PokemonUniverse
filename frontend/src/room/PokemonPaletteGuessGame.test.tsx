@@ -6,6 +6,7 @@ import { PokemonPaletteGuessConfigPanel } from '../games/pokemon-palette-guess/C
 import { colorName, describePaletteHint, paletteSwatches } from '../games/pokemon-palette-guess/presentation';
 import { PokemonPaletteGuessGame } from './PokemonPaletteGuessGame';
 import { PokemonPaletteGuessResults } from './PokemonPaletteGuessResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -94,7 +95,7 @@ describe('Adivina por la Paleta: pantalla', () => {
     expect(html).toContain('Ana probó');
     expect(html).toContain('Raichu');
     expect(html).toContain('Ronda 1 de 10');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(/btn-|reveal-pop|text-berry|text-leaf|aria-live="polite" class="max-h/);
   });
 

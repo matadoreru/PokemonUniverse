@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { PokeTabooConfigPanel } from '../games/poke-taboo/ConfigPanel';
 import { PokeTabooGame } from './PokeTabooGame';
 import { PokeTabooResults } from './PokeTabooResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -69,7 +70,6 @@ function visible(html: string): string {
   const attrs = [...html.matchAll(/(?:alt|title|aria-label)="([^"]*)"/g)].map((match) => match[1]);
   return `${html.replace(/<[^>]+>/g, ' ')} ${attrs.join(' ')}`;
 }
-const liveRegions = (html: string) => html.match(/aria-live=/g)?.length ?? 0;
 
 describe('PokéTaboo: quien describe', () => {
   it('ve su Pokémon secreto con las palabras prohibidas y la ficha completa en un Panel', () => {
@@ -99,7 +99,7 @@ describe('PokéTaboo: quien describe', () => {
     const html = describer();
     expect(html).toContain('Turno 1 de 3 · Vuelta 1 de 1');
     expect(html).toContain('Describe tu Pokémon');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).not.toMatch(LEGACY);
   });
@@ -122,7 +122,7 @@ describe('PokéTaboo: privacidad del secreto', () => {
     expect(html).toContain('Buscar respuesta para la ronda 1');
     expect(html).toContain('Tu respuesta · 1 intento');
     expect(html).toContain('Riolu');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).not.toMatch(LEGACY);
   });
@@ -164,7 +164,7 @@ describe('PokéTaboo: revelación', () => {
     expect(html).toMatch(/Ana[^]*Describió[^]*\+2/);
     expect(html).toContain('¡Lo adivinaste en 2 intentos!');
     expect(html).toContain('Es de tipo lucha');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 

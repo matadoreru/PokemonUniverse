@@ -6,6 +6,7 @@ import { PokemonRedFlagConfigPanel } from '../games/pokemon-red-flag/ConfigPanel
 import { redFlagAnnouncement, redFlagHeading, redFlagVerdict, sendRedFlagDraft } from '../games/pokemon-red-flag/presentation';
 import { PokemonRedFlagGame } from './PokemonRedFlagGame';
 import { PokemonRedFlagResults } from './PokemonRedFlagResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -80,7 +81,7 @@ describe('Pokémon Red Flag: pantalla', () => {
     expect(html).toContain('Ningún texto ni autor se revela antes de la votación.');
     expect(html).toContain('Para escribir');
     expect(html).toMatch(/aria-current="step" data-phase="write"/);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).not.toContain('placeholder=');
     expect(html).not.toMatch(LEGACY);
@@ -176,7 +177,7 @@ describe('Pokémon Red Flag: pantalla', () => {
     expect(html).toContain('Tu respuesta: 1 voto');
     expect(html).toContain('Siguiente ronda en');
     expect(html).toMatch(/aria-current="step" data-phase="result"/);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 

@@ -7,6 +7,7 @@ import { WhoAmIConfigPanel } from '../games/who-am-i/ConfigPanel';
 import s from '../games/who-am-i/WhoAmI.module.css';
 import { WhoAmIGame } from './WhoAmIGame';
 import { WhoAmIResults } from './WhoAmIResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -162,7 +163,7 @@ describe('¿Quién soy?: pantalla', () => {
     ['al empezar', publicGame({ phase: 'GAME_STARTING', turnPlayerId: null, turnStep: null, turnEndsAt: null }), playerState()],
   ] as const)('%s: hay exactamente una región viva', (_label, game, player) => {
     const html = render(game, player);
-    expect(count(html, 'aria-live')).toBe(1);
+    expectSingleLiveRegion(html);
     expect(count(html, 'role="alert"')).toBe(0);
   });
 

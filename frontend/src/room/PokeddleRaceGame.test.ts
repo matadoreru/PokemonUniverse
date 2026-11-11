@@ -11,6 +11,7 @@ import {
 } from './pokeddle-presentation';
 import { PokeddleRaceGame } from './PokeddleRaceGame';
 import { PokeddleRaceResults } from './PokeddleRaceResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -239,7 +240,7 @@ describe('Pokédle Race: pantalla', () => {
     expect(html).toContain('Sin conexión');
     expect(html).toContain('Ronda 3 de 10');
     expect(html).toMatch(/<h1[^>]*>Busca tu Pokémon<\/h1>/);
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('aria-live="polite" role');
     expect(html).not.toMatch(/reveal-pop|btn-|role="tablist"/);
   });

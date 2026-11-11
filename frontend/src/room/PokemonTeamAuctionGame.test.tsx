@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { PokemonTeamAuctionConfigPanel } from '../games/pokemon-team-auction/ConfigPanel';
 import { PokemonTeamAuctionGame } from './PokemonTeamAuctionGame';
 import { PokemonTeamAuctionResults } from './PokemonTeamAuctionResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -40,7 +41,7 @@ describe('Pokémon Team Auction client', () => {
   it('pinta con el kit de subasta: lote en carta, líder, presupuestos, historial, adjudicación y una sola región viva', () => {
     const markup = play(publicGame(), player);
     expect(markup).toContain('data-testid="auction-screen"');
-    expect(markup.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(markup);
     // El título es el lote; el turno va solo en el reloj (y marcado en el orden de turno).
     expect(markup).toContain('>Lote 3 de 12 · pikachu</h1>');
     expect(markup).not.toContain('Subasta ascendente visible');

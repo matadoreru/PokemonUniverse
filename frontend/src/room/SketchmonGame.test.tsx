@@ -6,6 +6,7 @@ import { SketchmonConfigPanel } from '../games/sketchmon/ConfigPanel';
 import { SketchmonGame } from './SketchmonGame';
 import { brushDotSize } from './SketchmonCanvas';
 import { SketchmonResults } from './SketchmonResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -72,7 +73,6 @@ function visible(html: string): string {
   const attrs = [...html.matchAll(/(?:alt|title|aria-label)="([^"]*)"/g)].map((match) => match[1]);
   return `${html.replace(/<[^>]+>/g, ' ')} ${attrs.join(' ')}`;
 }
-const liveRegions = (html: string) => html.match(/aria-live=/g)?.length ?? 0;
 
 describe('Sketchmon: quien dibuja', () => {
   it('ve su Pokémon secreto en un Panel, solo para él, con la regla', () => {
@@ -110,7 +110,7 @@ describe('Sketchmon: quien dibuja', () => {
     const html = drawer();
     expect(html).toContain('Dibujo 1 de 3 · Vuelta 1 de 1');
     expect(html).toContain('Dibujas tú');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).not.toMatch(LEGACY);
   });
@@ -151,7 +151,7 @@ describe('Sketchmon: privacidad del secreto', () => {
     expect(html).toContain('Tu respuesta · 1 intento');
     expect(html).toContain('Gengar');
     expect(html).not.toContain('aria-label="Herramientas de dibujo"');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).not.toMatch(LEGACY);
   });
@@ -192,7 +192,7 @@ describe('Sketchmon: revelación', () => {
     expect(html).toMatch(/Pedro[^]*Acertó · 2 intentos[^]*\+5/);
     expect(html).toMatch(/Ana[^]*Dibujó[^]*\+3/);
     expect(html).toContain('¡Lo adivinaste en 2 intentos!');
-    expect(liveRegions(html)).toBe(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 

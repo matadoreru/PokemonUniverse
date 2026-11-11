@@ -4,6 +4,7 @@ import type { LearnsetGuessPlayerState, LearnsetGuessPublicState, LearnsetRoundR
 import { learnsetAnnouncement, learnsetClueOrder, learnsetFocusKey, learnsetPlateKind, learnsetPositions, learnsetRecords, learnsetStatsLine, learnsetVerdict } from '../games/learnset-guess/presentation';
 import { LearnsetGuessGame } from './LearnsetGuessGame';
 import { LearnsetGuessResults } from './LearnsetGuessResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -87,7 +88,7 @@ describe('LearnsetGuessGame: pantalla', () => {
   });
   it('has exactly one live region, with the last warning and the solver notice but not the E2E texts', () => {
     const html = render(room('ROUND_ACTIVE', { lastWarning: true, solvedPlayers: [{ playerId: 'p2', solveOrder: 1 }], scores: { p1: 0, p2: 7, p3: 0 } }));
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toMatch(/role="status"[^]*¡Último aviso! Solo faltas tú: \d+ segundos?\./);
     // El chip visible cuenta los segundos y no se anuncia; para los lectores, un texto fijo.
     expect(html).toMatch(/aria-hidden="true"><span[^>]*>[^]*?¡Último aviso! Solo faltas tú: \d+ segundos?\./);
@@ -143,7 +144,7 @@ describe('LearnsetGuessGame: Revelación manual', () => {
     expect(html).not.toMatch(/Nueva pista en/);
     // max(1, 3 − 2 + 1) × 10
     expect(html).toMatch(/data-testid="learnset-stake"[^]*Ahora vale 20 pts/);
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
   });
   it('never uses public groups in this mode and lists only the own attempts', () => {
     const html = render(manualRoom('ROUND_ACTIVE', { visibleGroups: groups }));

@@ -6,6 +6,7 @@ import { GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessReve
 import {
   guessAnnouncement, guessFocusKey, guessOwnLastAttempt, guessPanelKind, guessRevealLines, guessScoreboard, guessSearchAutoFocus, guessSolvedOrders, guessVerdict,
 } from './presentation';
+import { expectSingleLiveRegion } from '../test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('../RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -225,11 +226,11 @@ describe('guess-kit: paneles', () => {
     const html = renderToStaticMarkup(<GuessScreen gameName="¿Quién es ese Pokémon?" roundNumber={2} totalRounds={5} heading="Reconoce su silueta"
       timer={{ deadline: 30_000, serverOffset: 0, label: 'Tiempo' }} announcement="Ronda 2 terminada: era Lucario."
       clue={<p>pista</p>} side={<p>lado</p>} bottom={<p>abajo</p>} />);
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toContain('aria-live="polite">Ronda 2 terminada: era Lucario.</p>');
     expect(html).toContain('Ronda 2 de 5');
     expect(html).toMatch(/<h1[^>]*>Reconoce su silueta<\/h1>/);
     const silent = renderToStaticMarkup(<GuessScreen gameName="x" roundNumber={1} totalRounds={1} heading="h" timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={null} side={null} bottom={null} />);
-    expect(silent.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(silent);
   });
 });

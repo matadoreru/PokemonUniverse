@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, type BallotOption, type ChoiceOption, type VoteBallotProps } from '.';
+import { expectSingleLiveRegion } from '../test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('../RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -213,7 +214,7 @@ describe('social-kit: marco', () => {
       stage={<SocialPrompt kicker="La pregunta del grupo" text="¿Quién llegaría tarde a una cita?" />}
       side={<ResponseProgress members={members} playerIds={['p1']} doneIds={[]} selfId="p1" />}
       bottom={<SocialPlate titleRef={{ current: null }} content={{ icon: Search, tone: 'info', kicker: 'Tu respuesta', title: 'Elige un Pokémon' }} />} />);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toContain('Votación abierta.');
     expect(html).toContain('Ronda 1 de 3');
     expect(html).toContain('¿Quién llegaría tarde a una cita?');

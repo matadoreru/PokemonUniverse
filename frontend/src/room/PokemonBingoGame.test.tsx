@@ -6,6 +6,7 @@ import { PokemonBingoConfigPanel } from '../games/pokemon-bingo/ConfigPanel';
 import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoClock, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoPlayerOrder, bingoProgressText, bingoStatsLine } from '../games/pokemon-bingo/presentation';
 import { PokemonBingoGame } from './PokemonBingoGame';
 import { PokemonBingoResults } from './PokemonBingoResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -82,7 +83,7 @@ describe('PokemonBingoGame', () => {
     expect(html).toContain('Tu progreso · 1/4');
     expect(html).toContain('7 pts');
     // Una sola región viva, «Saltar minijuego» dentro de la pantalla y nada heredado.
-    expect(html.match(/aria-live=/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toContain('data-testid="pokemon-bingo-screen"');
     expect(html).not.toMatch(LEGACY);
     expect(html).not.toContain('🎉');

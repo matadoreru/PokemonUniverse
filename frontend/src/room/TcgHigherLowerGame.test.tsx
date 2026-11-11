@@ -6,6 +6,7 @@ import { TcgHigherLowerConfigPanel } from '../games/tcg-higher-lower/ConfigPanel
 import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgMemberStatus, tcgPlateKind, tcgPriceDiff, tcgStatsLine, tcgVerdict } from '../games/tcg-higher-lower/presentation';
 import { TcgHigherLowerGame } from './TcgHigherLowerGame';
 import { TcgHigherLowerResults } from './TcgHigherLowerResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -54,7 +55,7 @@ describe('TcgHigherLowerGame', () => {
     for (const [label, key] of [['Más', '1'], ['Igual', '2'], ['Menos', '3']] as const) expect(html).toContain(`aria-label="${label}" aria-keyshortcuts="${key}"`);
     expect(html).not.toContain('data-testid="tcg-prices"');
     // Una sola región viva y ningún heredado.
-    expect(html.match(/aria-live=/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(/class="[^"]*\b(btn-primary|btn-ghost|card|chip|label|reveal-pop)\b/);
   });
 

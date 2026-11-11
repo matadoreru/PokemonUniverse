@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { AbsurdPokedexConfigPanel } from '../games/absurd-pokedex/ConfigPanel';
 import { AbsurdPokedexGame } from './AbsurdPokedexGame';
 import { AbsurdPokedexResults } from './AbsurdPokedexResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -124,7 +125,7 @@ describe('Pokédex Absurda: pantalla', () => {
 
   it('hay exactamente una región viva en cada fase', () => {
     for (const html of [render(publicGame('ROUND_ACTIVE'), WRITING), render(publicGame('VOTING'), VOTER), render(publicGame('ROUND_RESULTS', 'CLASSIC', lastRound('CLASSIC')), VOTER)]) {
-      expect(html.match(/aria-live=/g)).toHaveLength(1);
+      expectSingleLiveRegion(html);
     }
   });
 });

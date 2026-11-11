@@ -6,6 +6,7 @@ import { GuessFromStatsConfigPanel, validateGuessFromStatsConfig } from '../game
 import { describeStatsHint, statMax, statsAnswerText } from '../games/guess-from-stats/presentation';
 import { GuessFromStatsGame } from './GuessFromStatsGame';
 import { GuessFromStatsResults } from './GuessFromStatsResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -96,7 +97,7 @@ describe('Guess from Stats: pantalla', () => {
     expect(html).toContain('Ana probó');
     expect(html).toContain('Gallade');
     expect(html).toContain('Ronda 1 de 10');
-    expect(html.match(/role="status"/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html.match(/role="alert"/g)).toBeNull();
     expect(html).not.toMatch(/btn-|reveal-pop|text-berry|text-leaf|text-aqua|class="label|aria-live="polite" class="max-h/);
   });

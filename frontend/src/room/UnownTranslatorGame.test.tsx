@@ -7,6 +7,7 @@ import { UnownTranslatorConfigPanel } from '../games/unown-translator/ConfigPane
 import s from '../games/unown-translator/UnownTranslator.module.css';
 import { UnownTranslatorGame } from './UnownTranslatorGame';
 import { UnownTranslatorResults } from './UnownTranslatorResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -164,7 +165,7 @@ describe('Traductor Unown: pantalla', () => {
     ['ROUND_RESULTS', null, pokemonRound],
   ] as const)('%s: hay exactamente una región viva', (phase, player, round) => {
     const html = render(publicGame(phase, { round }), player);
-    expect(count(html, 'aria-live')).toBe(1);
+    expectSingleLiveRegion(html);
     expect(count(html, 'role="alert"')).toBe(0);
   });
 

@@ -8,6 +8,7 @@ import {
 } from '../games/pokemon-trivia/presentation';
 import { PokemonTriviaGame } from './PokemonTriviaGame';
 import { PokemonTriviaResults } from './PokemonTriviaResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -99,7 +100,7 @@ describe('Pokémon Trivia: pantalla', () => {
     expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>[\s\S]*?Confirmar respuesta/);
     expect(markup).toContain('Enter confirma');
     expect(markup).not.toContain('data-mark');
-    expect(markup.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(markup);
     expect(markup).not.toContain('role="alert"');
   });
 
@@ -121,7 +122,7 @@ describe('Pokémon Trivia: pantalla', () => {
     expect(markup).toContain('Elegida por Ana');
     expect(markup).toContain('Acertó</span><span'); expect(markup).toContain('Eligió 2 · Charmander'); expect(markup).toContain('Falló</span><span'); expect(markup).toContain('Eligió 1 · Pikachu'); expect(markup).toContain('Nadie la eligió');
     expect(markup).toContain('¡Correcta! Elegiste 2 · Charmander'); expect(markup).toContain('+180');
-    expect(markup.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(markup);
   });
 
   it('espectador sin estado de jugador: observa sin botones', () => {

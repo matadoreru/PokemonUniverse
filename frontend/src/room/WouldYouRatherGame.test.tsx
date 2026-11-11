@@ -7,6 +7,7 @@ import { CustomWouldYouRatherPromptManager } from '../games/would-you-rather/Cus
 import { wouldYouRatherAnnouncement, wouldYouRatherHeading, wouldYouRatherSummary, wouldYouRatherVerdict } from '../games/would-you-rather/presentation';
 import { WouldYouRatherGame } from './WouldYouRatherGame';
 import { WouldYouRatherResults } from './WouldYouRatherResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -74,7 +75,7 @@ describe('Would You Rather: pantalla', () => {
     expect(html).toContain('Sin conexión');
     expect(html).toContain('Para decidir');
     expect(html).toMatch(/aria-current="step" data-phase="ballot"/);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toContain('role="alert"');
     expect(html).not.toMatch(LEGACY);
   });
@@ -117,7 +118,7 @@ describe('Would You Rather: pantalla', () => {
     expect(html).toContain('¡Ronda perfecta!');
     expect(html).toContain('Siguiente ronda en');
     expect(html).toMatch(/aria-current="step" data-phase="result"/);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 

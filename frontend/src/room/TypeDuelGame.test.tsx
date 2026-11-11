@@ -4,6 +4,7 @@ import type { TypeDuelPlayerState, TypeDuelPublicState, RoomView } from '@pokemo
 import { typeDuelAnnouncement, typeDuelCoopAnnouncement, typeDuelCoopRanking, typeDuelCoopRoundTitle, typeDuelCoopStatsLine, typeDuelFocusKey, typeDuelMemberStatus, typeDuelOwnLastAttempt, typeDuelPlateKind, typeDuelRecords, typeDuelStatsLine, typeDuelVerdict, typeGridMove } from '../games/type-duel/presentation';
 import { TypeDuelGame } from './TypeDuelGame';
 import { TypeDuelResults } from './TypeDuelResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -88,7 +89,7 @@ describe('TypeDuelGame: pantalla', () => {
   it('has a single live region that never repeats the texts the E2E look for', () => {
     for (const view of [room('SELECTING_TYPES'), room('TYPE_REVEAL', { revealedTypes: { p1: 'fire', p2: 'fire' }, requiredTypes: ['fire'], solutionCount: 36 })]) {
       const html = render(view);
-      expect(html.match(/role="status"/g)).toHaveLength(1);
+      expectSingleLiveRegion(html);
       const live = /role="status" aria-live="polite">([^<]*)</.exec(html)?.[1] ?? '';
       for (const text of ['Elegid un tipo en secreto', 'Duelo de tipos', 'Monotipo', 'Tiempo agotado']) expect(live).not.toContain(text);
     }
@@ -203,7 +204,7 @@ describe('TypeDuelGame: Cooperativo', () => {
   it('has exactly one live region, and it never repeats the duplicate message', () => {
     for (const view of [coop('POKEMON_SEARCH'), coop('POKEMON_SEARCH', { attempts: [attempt('p1', 'Wooper', true, 2_000)], found: [find('wooper', 'p1')] })]) {
       const html = render(view);
-      expect(html.match(/role="status"/g)).toHaveLength(1);
+      expectSingleLiveRegion(html);
       expect(html).not.toContain('Ya lo ha encontrado alguien.');
     }
   });

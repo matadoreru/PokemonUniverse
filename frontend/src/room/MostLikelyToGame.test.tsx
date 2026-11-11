@@ -6,6 +6,7 @@ import { MostLikelyToConfigPanel } from '../games/most-likely-to/ConfigPanel';
 import { mostLikelyAnnouncement, mostLikelyHeading, mostLikelyVerdict } from '../games/most-likely-to/presentation';
 import { MostLikelyToGame } from './MostLikelyToGame';
 import { MostLikelyToResults } from './MostLikelyToResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -80,7 +81,7 @@ describe('Most Likely To: pantalla', () => {
     expect(html).toContain('Respondió');
     expect(html).toContain('Para responder');
     expect(html).toMatch(/aria-current="step" data-phase="choose"/);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 
@@ -149,7 +150,7 @@ describe('Most Likely To: pantalla', () => {
     expect(html).toContain('Tu respuesta: 1 voto');
     expect(html).toContain('Siguiente ronda en');
     expect(html).toMatch(/aria-current="step" data-phase="result"/);
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).not.toMatch(LEGACY);
   });
 

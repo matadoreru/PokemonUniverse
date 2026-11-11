@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { GUESS_SIDE_FIT } from '../guess-kit';
 import { AuctionAward, AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidLog, turnOrderEntries, type BidBlockInput, type BidControlsProps } from '.';
+import { expectSingleLiveRegion } from '../test-support/live-regions';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('../RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -166,7 +167,7 @@ describe('auction-kit: lateral y marco', () => {
     const html = renderToStaticMarkup(<AuctionScreen gameName="Subasta" roundNumber={1} totalRounds={4} roundLabel="Lote 1 de 4" heading="Tu turno" timer={{ deadline: null, serverOffset: 0, label: 'Turno de puja' }}
       announcement="Lote 1 de 4: Pikachu." stage={<p>lote</p>} side={<p>lado</p>} bottom={<p>abajo</p>} />);
     expect(html).toContain('data-testid="auction-screen"');
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html).toContain('Lote 1 de 4');
     // La insignia va envuelta para partir en dos líneas en el móvil (sin `roundLabel`, «Ronda N de M»).
     expect(html).toMatch(/class="[^"]*roundLabel[^"]*">Lote 1 de 4<\/span>/);

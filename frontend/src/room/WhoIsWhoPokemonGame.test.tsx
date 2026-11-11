@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { WhoIsWhoPokemonConfigPanel } from '../games/who-is-who-pokemon/ConfigPanel';
 import { WhoIsWhoPokemonGame } from './WhoIsWhoPokemonGame';
 import { WhoIsWhoPokemonResults } from './WhoIsWhoPokemonResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -78,7 +79,7 @@ describe('Quién es Quién: tablero, secreto y turno', () => {
 
   it('una sola región viva, sin errores locales ni clases heredadas', () => {
     for (const html of [render(bluePlayer), render(redPlayer, game(), 'red-1'), render(spectator, game(), 'spectator')]) {
-      expect(html.match(/aria-live=/g)).toHaveLength(1);
+      expectSingleLiveRegion(html);
       expect(html).not.toContain('role="alert"');
       expect(html).not.toMatch(LEGACY);
     }
