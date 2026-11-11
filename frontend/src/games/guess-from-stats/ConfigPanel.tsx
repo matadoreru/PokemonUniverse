@@ -1,6 +1,6 @@
 import type { GuessFromStatsConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Chip, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';

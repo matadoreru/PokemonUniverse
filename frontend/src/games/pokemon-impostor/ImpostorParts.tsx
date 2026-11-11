@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Brain, Check, CircleDashed, Eye, ShieldCheck, Skull, SkipForward, UserX, Users } from 'lucide-react';
 import { Fragment, type CSSProperties, type ReactNode, type Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row } from '../../ui';
 import { impostorClueGroupLabel, impostorClueLine, impostorTallies, votesLabel } from './presentation';
 import { impostorFellowsLead, impostorFellowsShort, impostorVoteHeadline, impostorVoteTargetLabel } from '../../room/pokemon-impostor-texts';

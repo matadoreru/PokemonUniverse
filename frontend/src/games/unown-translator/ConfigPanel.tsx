@@ -1,7 +1,7 @@
 import type { UnownTranslatorConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField } from '../../room/GameModeField';
+import { ConfigRange } from '../common/ConfigRange';
+import { GameModeField } from '../common/GameModeField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 

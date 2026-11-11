@@ -1,6 +1,6 @@
 import type { PokemonRedFlagConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';

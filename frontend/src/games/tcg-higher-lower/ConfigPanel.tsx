@@ -4,7 +4,7 @@ import { useEffect, useId, useMemo, useState } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/api-errors';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Chip, Field, Icon, StateBox, Toggle } from '../../ui';
 import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';

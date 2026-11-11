@@ -11,7 +11,7 @@ import { useSfxCue } from '../hooks/useSfxCue';
 import { cx, ScreenSplit } from '../ui';
 import { GameSkipSlot } from './game-kit/GameSkipSlot';
 import { useFocusOnTransition } from './game-kit/focus-transition';
-import { playerColor } from './player-color';
+import { playerColor } from '../lib/player-color';
 import { PokemonSelector } from './game-kit/PokemonSelector';
 import { typeDuelIsLastResult, typeDuelPhaseCue, typeDuelWillRetry } from './type-duel-flow';
 import { typeDuelHeading, typeDuelResultText } from './type-duel-result';

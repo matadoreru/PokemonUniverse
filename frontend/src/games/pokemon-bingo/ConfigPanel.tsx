@@ -1,6 +1,6 @@
 import { BINGO_FAMILY_KEYS, bingoFamilyLabels, validateGameConfigReadiness, type BingoFamilyKey, type PokemonBingoConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Chip, Segmented, Toggle } from '../../ui';
 import { bingoClock } from './presentation';
 import c from '../ConfigPanel.module.css';

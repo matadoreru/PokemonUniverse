@@ -1,6 +1,6 @@
 import type { PokemonPaletteGuessConfig, PokemonPaletteHintKind } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';

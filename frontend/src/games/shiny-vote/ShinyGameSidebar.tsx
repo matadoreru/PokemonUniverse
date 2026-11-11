@@ -1,7 +1,7 @@
 import type { RoomMemberView, ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { Check, CircleDashed, Eye, UserX, X } from 'lucide-react';
 import { Avatar } from '../../components/Avatar';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './ShinyVote.module.css';

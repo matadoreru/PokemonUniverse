@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { playerColor } from './player-color';
+import { playerColor } from '../lib/player-color';
 import { roomMembers } from './room-members';
 import { standingRows } from './game-kit/ResultsShell';
 import { member } from './test-support/room-view';

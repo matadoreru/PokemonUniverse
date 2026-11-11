@@ -1,8 +1,8 @@
 import { GENERATION_LEARNSET_SOURCES, type LearnsetGuessConfig } from '@pokemon-universe/shared/public';
 import { BookOpenCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField, useModeShown } from '../../room/GameModeField';
+import { ConfigRange } from '../common/ConfigRange';
+import { GameModeField, useModeShown } from '../common/GameModeField';
 import { Badge, Icon, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';

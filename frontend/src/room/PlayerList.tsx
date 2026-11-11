@@ -7,7 +7,7 @@ import { useOptionalFriends, type FriendsContextValue } from '../friends/Friends
 import { friendErrorMessage, friendRelation, isGuestId, sentText } from '../friends/friends-state';
 import { Badge, Chip, Dialog, Icon, Pill, Row } from '../ui';
 import { canMuteInChat } from './chat/LobbyChat';
-import { playerColor } from './player-color';
+import { playerColor } from '../lib/player-color';
 import { distanceMemberStatus, distanceMemberStatusLabels } from './pokedex-distance-selection';
 import s from './PlayerList.module.css';
 

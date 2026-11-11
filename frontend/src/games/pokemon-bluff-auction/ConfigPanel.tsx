@@ -1,7 +1,7 @@
 import type { PokemonBluffAuctionConfig } from '@pokemon-universe/shared/public';
 import { ShieldCheck } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Icon, Segmented } from '../../ui';
 import c from '../ConfigPanel.module.css';
 import s from './BluffAuction.module.css';

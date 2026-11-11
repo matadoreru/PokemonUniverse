@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FriendsContextValue } from '../friends/FriendsContext';
 import type { FriendsResponse } from '../lib/api-contract';
 import { MemberMenu, memberReadiness, PlayerList } from './PlayerList';
-import { playerColor } from './player-color';
+import { playerColor } from '../lib/player-color';
 import { member } from './test-support/room-view';
 
 

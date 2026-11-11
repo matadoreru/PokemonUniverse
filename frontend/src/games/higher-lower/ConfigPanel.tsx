@@ -8,10 +8,10 @@ import {
   type HigherLowerDifficulty,
 } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField, useModeShown } from '../../room/GameModeField';
+import { ConfigRange } from '../common/ConfigRange';
+import { GameModeField, useModeShown } from '../common/GameModeField';
 import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
-import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
+import { LIVE_VISIBILITY_WARNING } from '../common/live-visibility';
 import { Card, cx, Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';

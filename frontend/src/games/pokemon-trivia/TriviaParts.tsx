@@ -3,7 +3,7 @@ import { Brain, Check, CheckCircle2, CircleDashed, Equal, Lightbulb, MinusCircle
 import { Avatar } from '../../components/Avatar';
 import { AvatarStack, avatarStackLabel } from '../../components/AvatarStack';
 import { guessSprite } from '../../room/guess-kit';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, type CardState } from '../../ui';
 import { triviaComparedValue, triviaOptionLabel, triviaRanking, triviaShortcut } from './presentation';
 import s from './PokemonTrivia.module.css';

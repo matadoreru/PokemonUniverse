@@ -1,7 +1,7 @@
 import { CLASSIC_MODE_LABEL, gameModeCatalog } from '@pokemon-universe/shared/public';
 import { Check } from 'lucide-react';
 import { createContext, useContext, useId, type ReactNode } from 'react';
-import { Pill, Segmented } from '../ui';
+import { Pill, Segmented } from '../../ui';
 import s from './GameModeField.module.css';
 
 const MODE_LABEL = 'Modo';

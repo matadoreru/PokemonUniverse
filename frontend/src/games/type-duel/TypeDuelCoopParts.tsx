@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Eye, Search, Target, Trophy, Users } from 'lucide-react';
 import type { CSSProperties, ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
 import { typeDuelCoopRanking, typeLabel } from './presentation';
 import { typeDuelSprite } from './TypeDuelParts';

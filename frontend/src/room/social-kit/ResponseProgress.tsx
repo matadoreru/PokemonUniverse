@@ -4,7 +4,7 @@ import { Check, Hourglass, LockKeyhole } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { Badge, Chip, cx, Icon, Panel, Row, type ChipProps } from '../../ui';
-import { playerColor } from '../player-color';
+import { playerColor } from '../../lib/player-color';
 import s from './SocialSide.module.css';
 
 /** Estado de un jugador en el progreso, en texto (el color del chip nunca va solo). */

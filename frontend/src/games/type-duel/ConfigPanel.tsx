@@ -1,7 +1,7 @@
 import { TYPE_DUEL_COOP_SECONDS_RANGE, type TypeDuelConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField, useModeShown } from '../../room/GameModeField';
+import { ConfigRange } from '../common/ConfigRange';
+import { GameModeField, useModeShown } from '../common/GameModeField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 

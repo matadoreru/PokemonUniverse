@@ -1,6 +1,6 @@
 import type { WhoIsWhoPokemonConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Segmented, Toggle } from '../../ui';
 import c from '../ConfigPanel.module.css';
 

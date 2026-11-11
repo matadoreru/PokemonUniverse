@@ -1,7 +1,7 @@
 import type { PokemonConnectionsConfig } from '@pokemon-universe/shared/public';
 import { Lightbulb } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Icon, Segmented } from '../../ui';
 import { CONNECTIONS_TIME, connectionsSnapSeconds, connectionsTimeLabel } from './presentation';
 import c from '../ConfigPanel.module.css';

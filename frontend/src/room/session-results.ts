@@ -1,5 +1,5 @@
 import type { RoomView } from '@pokemon-universe/shared/public';
-import { playerColor } from './player-color';
+import { playerColor } from '../lib/player-color';
 import type { ResultsStanding } from './game-kit/ResultsShell';
 
 export interface SessionPodium {

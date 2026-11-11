@@ -4,7 +4,7 @@ import { useEffect, useRef, type CSSProperties, type ReactNode, type RefObject }
 import { Avatar } from '../../components/Avatar';
 import { guessSprite } from '../../room/guess-kit';
 import { trimSprite } from './sprite-trim';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Row, RowButton } from '../../ui';
 import { bingoCellLabel, bingoPlayerOrder, bingoProgressText } from './presentation';
 import s from './PokemonBingo.module.css';

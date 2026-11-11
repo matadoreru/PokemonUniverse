@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop } from '../../ui';
 import { higherLowerRanking } from '../higher-lower/presentation';

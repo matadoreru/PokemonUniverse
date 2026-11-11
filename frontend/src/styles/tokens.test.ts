@@ -153,7 +153,7 @@ describe('sin alias heredados (§11, F9)', () => {
     ['ui/Drawer.module.css', '.drawer', true],
     ['ui/Card.module.css', '.card', false],
     ['ui/dev/Gallery.module.css', '.cream', true],
-    ['room/ConfigRange.module.css', '.range', true],
+    ['games/common/ConfigRange.module.css', '.range', true],
     ['room/game-kit/PokemonSelector.module.css', '.tray', true],
   ])('%s %s compone la superficie crema', (file, selector, ink) => {
     const source = readFileSync(path.join(here, '..', file), 'utf8');

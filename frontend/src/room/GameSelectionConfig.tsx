@@ -6,7 +6,7 @@ import { clientGameRegistry } from '../games/registry';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, StateBox } from '../ui';
 import { GameArt } from '../games/GameArt';
 import { summarizeGameConfig } from './game-config-summary';
-import { SessionModesProvider, type SessionModes } from './GameModeField';
+import { SessionModesProvider, type SessionModes } from '../games/common/GameModeField';
 import g from './GameSelectionConfig.module.css';
 import { playerRangeLabel } from './lobby-state';
 

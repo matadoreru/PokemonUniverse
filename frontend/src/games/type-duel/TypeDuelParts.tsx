@@ -4,7 +4,7 @@ import { ArrowRight, Check, CircleDashed, Clock3, Equal, Eye, Hourglass, LockKey
 import { useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode, type Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, TypeBadge, TypeOption } from '../../ui';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { higherLowerRanking } from '../higher-lower/presentation';

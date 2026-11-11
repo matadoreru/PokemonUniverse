@@ -1,6 +1,6 @@
 import { POKEMON_TRIVIA_QUESTION_TYPES, type PokemonTriviaConfig, type PokemonTriviaQuestionType } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Chip, Segmented, Toggle } from '../../ui';
 import { triviaCategoryLabels, triviaDifficultyLabels } from './presentation';
 import { secondsLabel } from '../../lib/format';

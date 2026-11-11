@@ -4,7 +4,7 @@ import { AlarmClock, BookOpen, Check, CheckCircle2, CircleDashed, Clock3, Coins,
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { learnsetGroupProgress, learnsetRevealStatus } from '../../room/learnset-texts';
 import { revealedLearnsetFlags } from '../../room/learnset-reveal';
 import { GuessHints } from '../../room/guess-kit';

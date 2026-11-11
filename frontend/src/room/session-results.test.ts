@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PLAYER_COLORS } from './player-color';
+import { PLAYER_COLORS } from '../lib/player-color';
 import { sessionPodium } from './session-results';
 import { member } from './test-support/room-view';
 

@@ -5,7 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { clearWhoIsWhoCursor, sendWhoIsWhoCursor, subscribeWhoIsWhoCursors } from '../../room/who-is-who-cursor-channel';
 import { normalizeBoardPointer, projectBoardCursor } from '../../room/who-is-who-cursor-position';
 import { useRefocusAfterReject } from '../../room/game-kit/focus-transition';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { searchPokemonOptions } from '../../room/game-kit/pokemon-search';
 import { Badge, Card, Chip, cx, Dialog, Field, Icon, Panel, Pill, Row, StateBox } from '../../ui';
 import { boardLayout, boardMove, CARD_RATIO, cursorLabel, downCountText, TEAM_COLOR, TEAM_NAME, teamStatus, type BoardLayout } from './presentation';

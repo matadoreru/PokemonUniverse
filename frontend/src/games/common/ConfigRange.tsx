@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from 'react';
-import { Slider } from '../ui';
+import { Slider } from '../../ui';
 import s from './ConfigRange.module.css';
 
 export interface RangeDraftState {

@@ -1,6 +1,6 @@
 import type { OneOfUsIsFakeConfig, RoomView } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { Toggle } from '../../ui';
 import { CustomCategoryManager } from '../prompt-source/CustomCategoryManager';
 import c from '../ConfigPanel.module.css';

@@ -2,7 +2,7 @@ import { CHAT_MESSAGE_MAX_LENGTH, hasRoomPermission, type ChatMessage, type Room
 import { MessageSquare, MessageSquareOff, Trash2 } from 'lucide-react';
 import { useRef, useState, type RefObject } from 'react';
 import { ChatComposer, ChatLog, Dialog, Panel, Pill, StateBox, type ChatLogItem } from '../../ui';
-import { playerColor } from '../player-color';
+import { playerColor } from '../../lib/player-color';
 import { ignoreFailure } from '../room-command';
 import s from './LobbyChat.module.css';
 

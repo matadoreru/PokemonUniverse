@@ -1,6 +1,6 @@
 import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { useMemo } from 'react';
-import { playerColor } from './player-color';
+import { playerColor } from '../lib/player-color';
 
 /** Nombre de un jugador que ya no está en `room.members` (nunca su id interno). */
 export const UNKNOWN_PLAYER_NAME = 'Entrenador';

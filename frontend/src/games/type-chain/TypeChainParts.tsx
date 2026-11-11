@@ -6,7 +6,7 @@ import { Avatar } from '../../components/Avatar';
 import { ServerTimer } from '../../components/ServerTimer';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { Badge, Chip, cx, Icon, Panel, Row, TypeBadge } from '../../ui';
 import { typeChainCooldownText, typeChainEliminationLabels, typeChainEventView, typeChainMemberStatus, typeChainNamed, typeChainReasonShort, typeLabel } from './presentation';
 import s from './TypeChain.module.css';

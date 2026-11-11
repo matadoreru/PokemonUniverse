@@ -1,8 +1,8 @@
 import { POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE, POKEDEX_DISTANCE_SELECTION_VISIBILITIES, type PokedexDistanceConfig, type PokedexDistanceSelectionVisibility } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField, useModeShown } from '../../room/GameModeField';
-import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
+import { ConfigRange } from '../common/ConfigRange';
+import { GameModeField, useModeShown } from '../common/GameModeField';
+import { LIVE_VISIBILITY_WARNING } from '../common/live-visibility';
 import { DISTANCE_SELECTION_VISIBILITY_LABEL, distanceSelectionVisibilityLabels } from '../../room/pokedex-distance-selection';
 import { Segmented } from '../../ui';
 import { secondsLabel } from '../../lib/format';

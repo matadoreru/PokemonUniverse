@@ -1,9 +1,9 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { defaultTypeDuelConfig } from '@pokemon-universe/shared/public';
-import { TypeDuelConfigPanel } from '../games/type-duel/ConfigPanel';
+import { TypeDuelConfigPanel } from '../type-duel/ConfigPanel';
 import { GameModeField, SessionModesProvider, toggleAllowedMode } from './GameModeField';
-import { labelledRadiogroup } from '../ui/segmented-markup';
+import { labelledRadiogroup } from '../../ui/segmented-markup';
 
 const render = (gameId: string, value: string | undefined) =>
   renderToStaticMarkup(<GameModeField gameId={gameId} value={value} onChange={() => undefined} disabled={false} />);

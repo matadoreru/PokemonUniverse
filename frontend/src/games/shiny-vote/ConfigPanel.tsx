@@ -1,9 +1,9 @@
 import { SHINY_REVEAL_SECONDS_RANGE, SHINY_VOTE_VISIBILITIES, type ShinyCandidateMode, type ShinyVoteConfig, type ShinyVoteVisibility } from '@pokemon-universe/shared/public';
 import { Layers3, Shuffle, type LucideIcon } from 'lucide-react';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
-import { GameModeField } from '../../room/GameModeField';
-import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
+import { ConfigRange } from '../common/ConfigRange';
+import { GameModeField } from '../common/GameModeField';
+import { LIVE_VISIBILITY_WARNING } from '../common/live-visibility';
 import { Card, Icon, Segmented } from '../../ui';
 import { SHINY_REVEAL_DURATION_LABEL, shinyRevealSecondsLabel } from './reveal';
 import { SHINY_VOTE_VISIBILITY_LABEL, shinyVisibilityLabels } from './vote-visibility';

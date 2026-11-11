@@ -3,7 +3,7 @@ import { Check, Equal, Search, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { Badge, Chip, cx, Icon, Panel, Row } from '../../ui';
-import { playerColor } from '../player-color';
+import { playerColor } from '../../lib/player-color';
 import { attemptsText, guessSeconds, guessSprite, ordinal, type GuessAttemptLike, type GuessRevealLine, type GuessRevealSolveLike, type GuessScoreLine } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../room-members';
 import s from './GuessSide.module.css';

@@ -1,6 +1,6 @@
 /* Ajuste de configuración: caja crema con contorno para que el deslizador se lea sobre cualquier fondo. */
 .range {
-  composes: cream from '../ui/surfaces.module.css';
+  composes: cream from '../../ui/surfaces.module.css';
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);

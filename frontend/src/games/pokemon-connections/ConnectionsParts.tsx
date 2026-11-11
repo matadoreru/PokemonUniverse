@@ -3,7 +3,7 @@ import { CheckCircle2, Equal, Puzzle, Users, XCircle } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
-import { playerColor } from '../../room/player-color';
+import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Row } from '../../ui';
 import { higherLowerRanking } from '../higher-lower/presentation';

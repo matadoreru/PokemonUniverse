@@ -1,7 +1,7 @@
 import type { PokemonTeamAuctionConfig } from '@pokemon-universe/shared/public';
 import { useEffect, useRef, useState } from 'react';
 import { GenerationSelector } from '../../components/GenerationSelector';
-import { ConfigRange } from '../../room/ConfigRange';
+import { ConfigRange } from '../common/ConfigRange';
 import { cx, Field, Segmented, Toggle } from '../../ui';
 import c from '../ConfigPanel.module.css';
 import s from './TeamAuction.module.css';
