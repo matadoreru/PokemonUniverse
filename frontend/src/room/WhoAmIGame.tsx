@@ -3,7 +3,7 @@ import { WHO_AM_I_ANSWERS, WHO_AM_I_MAX_QUESTION_LENGTH } from '@pokemon-univers
 import { ArrowLeft, Check, CheckCircle2, Clock3, Eye, Hourglass, MessageCircleQuestion, Search, Send, SkipForward, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
 import { pokemonTypeLabels } from '../components/pokemon-type-labels';
-import { answerLabel, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from '../games/who-am-i/presentation';
+import { answerLabel, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from '../games/who-am-i/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Field, Icon, Panel, Pill } from '../ui';
@@ -166,7 +166,9 @@ export function WhoAmIGame({ room, selfId, onAction }: { room: RoomView; selfId:
   const settings = config ?? {};
   const { pokemon, error: loadError, loading: poolLoading, retry } = usePokemonPool({ generations: settings.generations ?? [], includeForms: false, enabled: canGuess });
   const ownHistory = useMemo(() => (participating ? game.history[selfId] ?? [] : []), [participating, game.history, selfId]);
-  const triedIds = useMemo(() => new Set(ownHistory.flatMap((entry) => (entry.kind === 'GUESS' ? [entry.pokemon.id] : []))), [ownHistory]);
+  // Bloqueados: los ya probados y los de los demás (el servidor no deja adivinar con el Pokémon de otro).
+  const others = participating ? player.others : null;
+  const lockedIds = useMemo(() => lockedGuessIds(ownHistory, others ?? {}), [ownHistory, others]);
 
   const titleRef = useRef<HTMLHeadingElement>(null);
   const fieldRef = useRef<HTMLInputElement>(null);
@@ -213,7 +215,7 @@ export function WhoAmIGame({ room, selfId, onAction }: { room: RoomView; selfId:
   if (guessing) {
     search = true;
     content = { icon: Search, tone: 'info', kicker: 'Adivinar', title: '¿Qué Pokémon eres?', text: 'Un solo intento: acertar o fallar pasa el turno.', aside: <Pill variant="cream" icon={ArrowLeft} onClick={() => setGuessingKey(null)}>Volver</Pill> };
-    body = <PokemonSelector key={turnKey} pokemon={pokemon} loading={poolLoading} loadError={loadError} onRetry={retry} locked={triedIds} disabled={!canGuess} variant="embedded" autoFocus={false}
+    body = <PokemonSelector key={turnKey} pokemon={pokemon} loading={poolLoading} loadError={loadError} onRetry={retry} locked={lockedIds} disabled={!canGuess} variant="embedded" autoFocus={false}
       inputLabel="Buscar tu Pokémon" onSelect={(pokemonId) => send({ type: 'GUESS_SELF', pokemonId })} />;
   } else if (ownTurn && step === 'ASKING' && player?.canAsk) {
     content = { icon: MessageCircleQuestion, tone: 'warn', kicker: 'Tu turno', title: 'Pregunta sobre tu Pokémon', text: 'Los demás responden con Sí, No, A medias o No lo sé. Cuantas menos preguntas, más puntos.' };

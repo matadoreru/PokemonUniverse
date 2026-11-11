@@ -311,6 +311,29 @@ class WhoAmIEngineTest {
   }
 
   @Test
+  void rejectsGuessingAnotherPlayersPokemon() {
+    var context = context(3, 23);
+    var state = started(config(10), context);
+    // En ASKING: rechazo sin historial, sin fallo y con el mismo turno y paso.
+    rejected(state, "p1", guess(own(state, "p2")), context, 2_000, "Ese Pokémon lo tiene otro jugador.");
+    // En DECIDING, igual.
+    state = accepted(state, "p1", ask("¿Soy grande?"), context, 3_000);
+    state = accepted(state, "p2", answer(WhoAmIAnswer.NO), context, 3_500);
+    state = accepted(state, "p3", answer(WhoAmIAnswer.NO), context, 4_000);
+    rejected(state, "p1", guess(own(state, "p3")), context, 5_000, "Ese Pokémon lo tiene otro jugador.");
+    assertEquals(WhoAmITurnStep.DECIDING, state.turnStep());
+    assertEquals("p1", turnPlayer(state));
+    assertEquals(List.of(), state.history().get("p1"));
+    assertEquals(0, state.wrongGuesses().get("p1"));
+    // Las comprobaciones de paso y de generaciones van antes.
+    var answering = accepted(engine.handleTimeout(state, context.withNow(25_000)), "p2", ask("¿Vuelo?"), context, 26_000);
+    rejected(answering, "p2", guess(own(answering, "p1")), context, 26_500, "Ahora no puedes adivinar.");
+    // El propio sigue siendo un acierto.
+    state = accepted(state, "p1", guess(own(state, "p1")), context, 6_000);
+    assertEquals(List.of("p1"), state.solvedPlayerIds());
+  }
+
+  @Test
   void wrongGuessEndsTheTurnAndGoesToHistory() {
     var context = context(3, 14);
     var state = started(config(10), context);

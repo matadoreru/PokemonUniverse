@@ -53,6 +53,9 @@ su propio misterio, y las preguntas y respuestas van dentro de la app, sin llama
      (`PASS_TURN`). Si se agota el tiempo, pasa.
 - **Adivinar:**
   - El `pokemonId` tiene que estar entre las formas por defecto de las generaciones elegidas; si no, se rechaza.
+  - El Pokémon de otro jugador se rechaza («Ese Pokémon lo tiene otro jugador.»): no entra en el historial, no cuenta
+    como fallo y el turno sigue. Si entrara como fallo, su dueño lo vería en el historial público; quien adivina ya ve
+    esa carta, así que el rechazo no le revela nada. El buscador de la web los bloquea junto a los ya probados.
   - **Acierto:** el jugador queda resuelto, suma puntos y ya no tiene más turnos, pero sigue respondiendo a los
     demás. El turno pasa al siguiente.
   - **Fallo:** el intento se añade a su historial público («probó con Charmander») y el turno pasa al siguiente.

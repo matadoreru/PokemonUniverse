@@ -72,6 +72,15 @@
       "kind": "action",
       "playerId": "p1",
       "action": {
+        "type": "GUESS_SELF",
+        "pokemonId": "ponyta"
+      },
+      "now": 1794427205500
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
         "type": "ASK_QUESTION",
         "text": "¿Soy de tipo tierra?"
       },
@@ -656,6 +665,89 @@
       {
         "accepted": false,
         "error": "Ese Pokémon no está en las generaciones de la partida.",
+        "snapshot": {
+          "lifecycle": {
+            "phase": "TURN_ACTIVE",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"TURN_ACTIVE\",1,1794427200000,null,0,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "who-am-i",
+            "phase": "TURN_ACTIVE",
+            "lap": 1,
+            "maxLaps": 10,
+            "playerIds": [
+              "p1",
+              "p2"
+            ],
+            "turnPlayerId": "p1",
+            "turnStep": "ASKING",
+            "currentQuestion": null,
+            "history": {
+              "p1": [],
+              "p2": []
+            },
+            "solvedPlayerIds": [],
+            "questionsAsked": {
+              "p1": 0,
+              "p2": 0
+            },
+            "scores": {
+              "p1": 0,
+              "p2": 0
+            },
+            "turnEndsAt": 1794427245000,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "role": "PLAYER",
+              "others": {
+                "p2": {
+                  "id": "ponyta",
+                  "name": "Ponyta",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/77.png",
+                  "nationalDexNumber": 77,
+                  "types": [
+                    "fire"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": true,
+              "canAnswer": false,
+              "canGuess": true,
+              "canPass": false,
+              "ownAnswer": null
+            },
+            "p2": {
+              "role": "PLAYER",
+              "others": {
+                "p1": {
+                  "id": "dugtrio",
+                  "name": "Dugtrio",
+                  "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png",
+                  "nationalDexNumber": 51,
+                  "types": [
+                    "ground"
+                  ]
+                }
+              },
+              "self": null,
+              "canAsk": false,
+              "canAnswer": false,
+              "canGuess": false,
+              "canPass": false,
+              "ownAnswer": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": false,
+        "error": "Ese Pokémon lo tiene otro jugador.",
         "snapshot": {
           "lifecycle": {
             "phase": "TURN_ACTIVE",
@@ -1686,5 +1778,5 @@
       }
     ]
   },
-  "stoppedAt": 15
+  "stoppedAt": 16
 }

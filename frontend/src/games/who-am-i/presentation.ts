@@ -1,4 +1,4 @@
-import type { WhoAmIAnswer, WhoAmIAnswerEntry, WhoAmIPublicState } from '@pokemon-universe/shared/public';
+import type { WhoAmIAnswer, WhoAmIAnswerEntry, WhoAmIHistoryEntry, WhoAmIPokemon, WhoAmIPublicState } from '@pokemon-universe/shared/public';
 import { WHO_AM_I_ANSWERS } from '@pokemon-universe/shared/public';
 
 export const WHO_AM_I_NAME = '¿Quién soy?';
@@ -62,4 +62,14 @@ export function whoAmIAnnouncement(before: WhoAmIAnnounceSnapshot, now: WhoAmIAn
   if (now.turnKey !== null && now.turnKey !== before.turnKey && now.turnPlayerId) parts.push(`Turno de ${nameOf(now.turnPlayerId)}.`);
   if (now.questionKey !== null && now.questionKey !== before.questionKey && now.questionText) parts.push(`Pregunta: ${now.questionText}`);
   return parts.join(' ');
+}
+
+/**
+ * Ids que el buscador de adivinar bloquea: los ya probados (entradas `GUESS` del historial propio) y los Pokémon de los
+ * demás jugadores, que el servidor rechaza («Ese Pokémon lo tiene otro jugador.»).
+ */
+export function lockedGuessIds(history: readonly WhoAmIHistoryEntry[], others: Readonly<Record<string, WhoAmIPokemon>>): Set<string> {
+  const locked = new Set(history.flatMap((entry) => (entry.kind === 'GUESS' ? [entry.pokemon.id] : [])));
+  for (const pokemon of Object.values(others)) locked.add(pokemon.id);
+  return locked;
 }

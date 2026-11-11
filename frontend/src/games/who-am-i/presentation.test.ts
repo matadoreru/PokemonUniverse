@@ -1,6 +1,6 @@
 import type { WhoAmIPublicState } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { answerCounts, answerLabel, turnHeadline, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
+import { answerCounts, answerLabel, lockedGuessIds, turnHeadline, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
 
 const NAMES: Record<string, string> = { p1: 'Eru', p2: 'Ana', p3: 'Leo' };
 const nameOf = (id: string) => NAMES[id] ?? 'Entrenador';
@@ -46,5 +46,16 @@ describe('¿Quién soy?: textos', () => {
     expect(whoAmIAnnouncement(idle, { ...idle, turnKey: '1:p2', turnPlayerId: 'p2' }, nameOf)).toBe('Turno de Ana.');
     expect(whoAmIAnnouncement(idle, { ...idle, questionKey: '1:p1|¿Vuelo?', questionText: '¿Vuelo?' }, nameOf)).toBe('Pregunta: ¿Vuelo?');
     expect(whoAmIAnnouncement(idle, { ...idle, turnKey: '1:p2', turnPlayerId: 'p2', solvedAs: 'Mewtwo' }, nameOf)).toBe('¡Eras Mewtwo! Turno de Ana.');
+  });
+});
+
+describe('lockedGuessIds', () => {
+  it('bloquea los Pokémon ya probados y los de los demás jugadores', () => {
+    const pokemon = (id: string) => ({ id, name: id, sprite: `${id}.png`, nationalDexNumber: 1, types: ['normal'] });
+    const locked = lockedGuessIds(
+      [{ kind: 'QUESTION', text: '¿Vuelo?', answers: [] }, { kind: 'GUESS', pokemon: pokemon('rapidash') }],
+      { p2: pokemon('ponyta'), p3: pokemon('dugtrio') },
+    );
+    expect([...locked].sort()).toEqual(['dugtrio', 'ponyta', 'rapidash']);
   });
 });

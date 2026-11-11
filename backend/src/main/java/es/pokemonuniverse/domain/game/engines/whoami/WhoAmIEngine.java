@@ -291,7 +291,10 @@ public final class WhoAmIEngine
     return GameActionResult.accept(closeAnsweringIfComplete(next, context));
   }
 
-  /** Vale en {@code ASKING} y en {@code DECIDING}; acierte o falle, el turno pasa (así solo se adivina una vez). */
+  /**
+   * Vale en {@code ASKING} y en {@code DECIDING}; acierte o falle, el turno pasa (así solo se adivina una vez). El
+   * Pokémon de otro jugador se rechaza sin más.
+   */
   private static GameActionResult<WhoAmIState> handleGuess(WhoAmIState state, String playerId, String pokemonId,
       GameContext context) {
     if (state.turnStep() != WhoAmITurnStep.ASKING && state.turnStep() != WhoAmITurnStep.DECIDING) {
@@ -303,6 +306,11 @@ public final class WhoAmIEngine
       return GameActionResult.reject(state, "Ese Pokémon no está en las generaciones de la partida.");
     }
     var own = Objects.requireNonNull(state.assignments().get(playerId), "assignment");
+    // El de otro jugador nunca es el propio, y como fallo entraría en el historial público: su dueño lo vería.
+    // Quien adivina ya ve esa carta, así que el rechazo no le revela nada. No cuenta como fallo ni pasa el turno.
+    boolean takenByOther = state.assignments().entrySet().stream()
+        .anyMatch(entry -> !entry.getKey().equals(playerId) && entry.getValue().id().equals(pokemonId));
+    if (takenByOther) return GameActionResult.reject(state, "Ese Pokémon lo tiene otro jugador.");
     if (own.id().equals(pokemonId)) {
       int order = state.solvedPlayerIds().size() + 1;
       int points = WhoAmIRules.solvePoints(state.questionsAsked().getOrDefault(playerId, 0), order);
