@@ -117,6 +117,9 @@ export const SERVER_SPANISH_MESSAGES = ['Estás jugando en dos pestañas o dispo
 
 const SPANISH = new Set<string>([OFFLINE_MESSAGE, TIMEOUT_MESSAGE, ...SERVER_SPANISH_MESSAGES]);
 
+/** Palabras que delatan un rechazo del lobby en español (la mayoría ya llegan así). */
+const LOBBY_SPANISH_HINT = /[áéíóúñü¿¡]|\b(?:el|la|los|las|de|del|que|un|una|ya|se|en|tu|al|por|para|con|hay|puedes|jugador|jugadores|minijuego|minijuegos|sala|partida|host)\b/i;
+
 /** Texto en español para un error al crear, unirse o salir de una sala. */
 export function roomErrorMessage(error: unknown): string {
   const raw = errorText(error);
@@ -138,6 +141,7 @@ export function roomActionErrorMessage(error: unknown): string {
   const raw = errorText(error);
   if (Object.hasOwn(ROOM_ERROR_TRANSLATIONS, raw)) return ROOM_ERROR_TRANSLATIONS[raw]!;
   if (SPANISH.has(raw)) return raw;
-  // `looksSpanish` descarta las incidencias de validación en JSON y los textos en inglés con «Pokémon».
-  return looksSpanish(raw) ? raw : GENERIC;
+  // Pasa lo que tiene pista de español y además `looksSpanish` acepta: así se descartan los textos en inglés con
+  // «Pokémon» o «host» sin dejar pasar más rechazos que antes.
+  return LOBBY_SPANISH_HINT.test(raw) && looksSpanish(raw) ? raw : GENERIC;
 }

@@ -95,6 +95,9 @@ describe('roomActionErrorMessage', () => {
     expect(roomActionErrorMessage(new Error(JSON.stringify([{ code: 'too_big', path: ['impostorCount'], message: 'Too big' }])))).toBe(generic);
     expect(roomActionErrorMessage(new Error('Action rejected'))).toBe(generic);
     expect(roomActionErrorMessage(new Error('Internal Server Error'))).toBe(generic);
+    // La «é» de «Pokémon» no basta para pasar un texto en inglés.
+    expect(roomActionErrorMessage(new Error('Pokémon is not in the configured pool'))).toBe(generic);
+    expect(roomActionErrorMessage(new Error('The selected generations have no Pokémon'))).toBe(generic);
     expect(roomActionErrorMessage(null)).toBe(generic);
   });
 });
