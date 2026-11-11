@@ -37,7 +37,6 @@ import es.pokemonuniverse.domain.room.GameSelectionMode;
 import es.pokemonuniverse.domain.room.GameSkip;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.MemberRole;
-import es.pokemonuniverse.domain.room.NextGameVote;
 import es.pokemonuniverse.domain.room.Presence;
 import es.pokemonuniverse.domain.room.PresenceStatus;
 import es.pokemonuniverse.domain.room.RoomCodes;
@@ -93,10 +92,6 @@ public class RoomCoordinator {
 
   /** Comandos de lobby y de sesión en una sala del reto diario. */
   public static final String DAILY_UNAVAILABLE = "Not available in the daily challenge";
-  static final long NEXT_GAME_VOTE_MS = 15_000;
-  /** {@code NEXT_GAME_VOTE_OPTIONS} de {@code room.ts}: opciones como máximo de la votación del siguiente juego. */
-  static final int NEXT_GAME_VOTE_OPTIONS = 3;
-  static final long NEXT_GAME_VOTE_RESULT_MS = 3_000;
   static final int MAX_SESSION_HISTORY = 100;
   /** {@code scheduleDeadline(..., toleranceMs = 5)}. */
   static final long DEADLINE_TOLERANCE_MS = 5;
@@ -111,6 +106,7 @@ public class RoomCoordinator {
   private final CursorRelay cursors;
   private final RoomChatCommands chat;
   final GameRotation rotation;
+  final NextGameVoting voting;
   private final RoomViews views;
 
   private final GameRegistry registry;
@@ -169,6 +165,10 @@ public class RoomCoordinator {
     this.chat = new RoomChatCommands(events, clock, chatFilter);
     this.rotation = new GameRotation(registry, engines, random, this::toTree, this::readinessContext,
         room -> context(room, catalogSnapshot()));
+    this.voting = new NextGameVoting(registry, rotation, clock, room -> resetToLobby(room, false), room -> {
+      broadcast(room);
+      schedule(room);
+    });
     this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
     this.currentCatalog = snapshot(catalog.loadPokemonCatalog());
     for (var manifest : registry.list()) {
@@ -1121,91 +1121,18 @@ public class RoomCoordinator {
     return true;
   }
 
-  private List<String> eligibleNextGameVoterIds(LiveRoom room) {
-    return room.members.values().stream().filter(member -> member.presence == PresenceStatus.CONNECTED)
-        .map(member -> member.identity.id()).toList();
-  }
-
-  boolean beginNextGameVote(LiveRoom room) {
-    return beginNextGameVote(room, rotation.playablePicks(room, room.gameSelectionMode.gameIds()));
-  }
-
-  /**
-   * Votación entre hasta {@code NEXT_GAME_VOTE_OPTIONS} pares de {@code candidates} (cada modo permitido de un juego
-   * es una opción); con menos de dos no hay votación.
-   */
-  private boolean beginNextGameVote(LiveRoom room, List<GamePick> candidates) {
-    if (!(room.gameSelectionMode instanceof GameSelectionMode.Vote)) return false;
-    var options = rotation.shuffled(candidates);
-    var picks = options.subList(0, Math.min(NEXT_GAME_VOTE_OPTIONS, options.size()));
-    if (picks.size() < 2) return false;
-    room.nextGameVote = new NextGameVote(picks, clock.now() + NEXT_GAME_VOTE_MS);
-    room.phase = RoomPhase.NEXT_GAME_VOTE;
-    return true;
-  }
-
-  private void resolveNextGameVote(LiveRoom room) {
-    var vote = room.nextGameVote;
-    if (vote == null || room.phase != RoomPhase.NEXT_GAME_VOTE) return;
-    var tallies = new LinkedHashMap<String, Integer>();
-    for (var optionId : vote.optionIds) tallies.put(optionId, 0);
-    for (var optionId : vote.votes.values()) tallies.merge(optionId, 1, Integer::sum);
-    int playerCount = rotation.connectedPlayerCount(room);
-    var playable = vote.options.stream().filter(option -> rotation.playable(room, option.pick(), playerCount)).toList();
-    if (playable.isEmpty()) {
-      resetToLobby(room, false);
-      return;
-    }
-    int maximum = playable.stream().mapToInt(option -> tallies.getOrDefault(option.id(), 0)).max().orElse(0);
-    var tied = playable.stream().filter(option -> Objects.equals(tallies.get(option.id()), maximum)).toList();
-    var resolved = rotation.randomItem(tied);
-    vote.endsAt = null;
-    vote.resolvedOptionId = resolved.id();
-    vote.tallies = tallies;
-    vote.nextTransitionAt = clock.now() + NEXT_GAME_VOTE_RESULT_MS;
-    // El modo votado sobrevive a la vuelta al lobby de tick(): launchGame lo consume al arrancar.
-    room.selectedGameId = resolved.gameId();
-    room.selectedMode = resolved.mode();
-    room.phase = RoomPhase.NEXT_GAME_VOTE_RESULTS;
-  }
-
   /** {@code optionId}: el id de la opción (el del juego si sale con un solo modo, {@code juego:MODO} si no). */
   public void voteNextGame(String playerId, @Nullable String optionId) {
     inRequiredRoom(playerId, room -> {
       assertNotDaily(room);
-      var vote = room.nextGameVote;
-      if (vote == null || room.phase != RoomPhase.NEXT_GAME_VOTE) {
-        throw new RoomException("No hay una votación de minijuegos activa.");
-      }
-      var member = room.members.get(playerId);
-      if (member == null || member.presence != PresenceStatus.CONNECTED) {
-        throw new RoomException("No puedes votar en este momento.");
-      }
-      if (vote.endsAt != null && clock.now() >= vote.endsAt) {
-        resolveNextGameVote(room);
-        broadcast(room);
-        schedule(room);
-        throw new RoomException("La votación ha terminado.");
-      }
-      var option = vote.option(optionId);
-      if (option == null) throw new RoomException("Ese minijuego no es una opción válida.");
-      var manifest = registry.get(option.gameId()).orElse(null);
-      if (manifest == null || !ManifestView.supportsPlayerCount(manifest, rotation.connectedPlayerCount(room))) {
-        throw new RoomException("Ese minijuego ya no admite el número actual de jugadores.");
-      }
-      if (vote.votes.containsKey(playerId)) throw new RoomException("Tu voto ya está bloqueado.");
-      vote.votes.put(playerId, option.id());
-      var eligibleIds = eligibleNextGameVoterIds(room);
-      if (vote.votes.keySet().containsAll(eligibleIds)) resolveNextGameVote(room);
-      broadcast(room);
-      schedule(room);
+      voting.vote(room, playerId, optionId);
       return null;
     });
   }
 
   void tick(LiveRoom room) {
     if (room.phase == RoomPhase.NEXT_GAME_VOTE) {
-      resolveNextGameVote(room);
+      voting.resolve(room);
       broadcast(room);
       schedule(room);
       return;
@@ -1243,8 +1170,7 @@ public class RoomCoordinator {
     }
     if (room.nextGameVote != null) {
       if (room.phase == RoomPhase.NEXT_GAME_VOTE) {
-        var eligibleIds = eligibleNextGameVoterIds(room);
-        if (room.nextGameVote.votes.keySet().containsAll(eligibleIds)) resolveNextGameVote(room);
+        voting.resolveIfEveryoneVoted(room);
       }
       broadcast(room);
       schedule(room);
@@ -1489,7 +1415,7 @@ public class RoomCoordinator {
       throw new RoomException("Ningún minijuego elegido admite el número actual de jugadores.");
     }
     resetToLobby(room, false);
-    if (beginNextGameVote(room, candidates)) {
+    if (voting.begin(room, candidates)) {
       broadcast(room);
       schedule(room);
       return;

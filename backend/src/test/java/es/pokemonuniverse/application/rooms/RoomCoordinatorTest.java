@@ -1132,7 +1132,7 @@ class RoomCoordinatorTest {
     assertEquals(new GameSelectionMode.Order(List.of()), room.gameSelectionMode);
     // Sin juegos no hay votación del siguiente.
     room.gameSelectionMode = new GameSelectionMode.Vote(List.of());
-    assertFalse(kit.manager.beginNextGameVote(room));
+    assertFalse(RoomTestKit.beginNextGameVote(kit.manager, room));
     // Elegir uno vuelve a permitir empezar.
     kit.manager.updateGameSelection("host", json("{\"type\":\"ORDER\",\"gameIds\":[\"higher-lower\"]}"));
     kit.startReady(room, "host");
@@ -1293,7 +1293,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit("shiny-vote");
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote"));
-    assertTrue(kit.manager.beginNextGameVote(room));
+    assertTrue(RoomTestKit.beginNextGameVote(kit.manager, room));
     assertEquals(Set.of("higher-lower", "shiny-vote"), Set.copyOf(room.nextGameVote.optionIds));
 
     var single = new RoomTestKit();
@@ -1319,7 +1319,7 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     room.gameSelectionMode = new GameSelectionMode.Vote(
         List.of("pokemon-impostor", "pokemon-bingo", "one-of-us-is-fake", "pokedex-distance", "shiny-vote"));
-    assertTrue(kit.manager.beginNextGameVote(room));
+    assertTrue(RoomTestKit.beginNextGameVote(kit.manager, room));
     assertEquals(Set.of("pokemon-bingo", "pokedex-distance", "shiny-vote"), Set.copyOf(room.nextGameVote.optionIds));
   }
 
@@ -1334,7 +1334,7 @@ class RoomCoordinatorTest {
     var room = kit.room(10, people.toArray(AuthUser[]::new));
     room.gameSelectionMode = new GameSelectionMode.Vote(
         List.of("pokemon-bingo", "whos-that-pokemon", "pokedex-distance", "higher-lower", "shiny-vote"));
-    assertFalse(kit.manager.beginNextGameVote(room));
+    assertFalse(RoomTestKit.beginNextGameVote(kit.manager, room));
     assertNull(room.nextGameVote);
   }
 
@@ -1347,7 +1347,7 @@ class RoomCoordinatorTest {
     for (int index = 1; index <= 7; index++) people.add(guest("guest-" + index, "Guest " + index));
     var room = kit.room(10, people.toArray(AuthUser[]::new));
     room.gameSelectionMode = new GameSelectionMode.Vote(List.of("pokemon-bingo", "whos-that-pokemon", "zoomed-pokemon"));
-    assertTrue(kit.manager.beginNextGameVote(room));
+    assertTrue(RoomTestKit.beginNextGameVote(kit.manager, room));
     RoomTestKit.join(kit.manager, guest("guest-8", "Guest 8"), "socket-guest-8", room.code);
     assertMessage("Ese minijuego ya no admite el número actual de jugadores.",
         () -> kit.manager.voteNextGame("host", "pokemon-bingo"));
@@ -1416,7 +1416,7 @@ class RoomCoordinatorTest {
     var kit = new RoomTestKit(80_000, UserGameConfigPreferences.NO_OP, "shiny-vote", "pokemon-bingo");
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote", "pokemon-bingo"));
-    kit.manager.beginNextGameVote(room);
+    RoomTestKit.beginNextGameVote(kit.manager, room);
     kit.manager.schedule(room);
     kit.time.advance(15_004);
     assertEquals(RoomPhase.NEXT_GAME_VOTE, room.phase);
@@ -1439,7 +1439,7 @@ class RoomCoordinatorTest {
       var room = manager.store.get(manager.create(guest("host", "Host"), "h", null).code());
       RoomTestKit.join(manager, guest("guest", "Ana"), "g", room.code);
       room.gameSelectionMode = new GameSelectionMode.Vote(List.of("higher-lower", "shiny-vote", "pokemon-bingo"));
-      manager.beginNextGameVote(room);
+      RoomTestKit.beginNextGameVote(manager, room);
       var options = room.nextGameVote.optionIds;
       manager.voteNextGame("host", options.get(0));
       manager.voteNextGame("guest", options.get(1));
@@ -1649,7 +1649,7 @@ class RoomCoordinatorTest {
     var room = kit.room(8, guest("host", "Host"), guest("guest", "Ana"));
     kit.manager.updateGameSelection("host", json("{\"type\":\"VOTE\",\"gameIds\":[\"higher-lower\"]}"));
     kit.manager.updateAllowedModes("host", "higher-lower", json("[\"CLASSIC\",\"ENDLESS\"]"));
-    assertTrue(kit.manager.beginNextGameVote(room));
+    assertTrue(RoomTestKit.beginNextGameVote(kit.manager, room));
     assertEquals(Set.of("higher-lower:CLASSIC", "higher-lower:ENDLESS"), Set.copyOf(room.nextGameVote.optionIds));
     var view = kit.manager.view(room, "guest").nextGameVote();
     assertEquals(Set.of("CLASSIC", "ENDLESS"),

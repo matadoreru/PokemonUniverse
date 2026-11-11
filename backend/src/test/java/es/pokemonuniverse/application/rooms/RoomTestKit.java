@@ -130,6 +130,11 @@ final class RoomTestKit {
     return manager.rotation.playablePicks(room, gameIds).stream().map(GamePick::gameId).distinct().toList();
   }
 
+  /** Abre la votación del siguiente juego entre los pares jugables de la selección de la sala. */
+  static boolean beginNextGameVote(RoomCoordinator manager, LiveRoom room) {
+    return manager.voting.begin(room, manager.rotation.playablePicks(room, room.gameSelectionMode.gameIds()));
+  }
+
   /** {@code room:set-ready} con un booleano. */
   static void setReady(RoomCoordinator manager, String playerId, boolean ready) {
     manager.setReady(playerId, JsonNode.createBooleanNode(ready));
