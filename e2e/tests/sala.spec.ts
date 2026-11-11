@@ -68,7 +68,7 @@ test('dos jugadores crean una sala, se unen y empiezan la partida', async ({ cre
   await expect(host.page.locator('#start-help')).toHaveText('La sala está lista.');
   await capture(host.page, 'lobby-host-lista');
   await host.page.getByRole('button', { name: 'Empezar partida' }).click();
-  // Pokédex Distance (el juego por defecto) empieza al momento.
+  // Pokédex Distance (el juego por defecto) empieza tras la intro (esperarPartida pulsa «¡Listo!» por los dos).
   await esperarPartida([host.page, guest.page]);
   await expect(host.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible({ timeout: 20_000 });
   await expect(guest.page.getByRole('heading', { name: 'En la ronda' })).toBeVisible({ timeout: 20_000 });

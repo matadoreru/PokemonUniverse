@@ -134,6 +134,8 @@ test('pokemon-palette-guess: una ronda con un fallo, el acierto, la revelación 
     await expect(acertado).toBeFocused();
     await expect(host.page.getByText('1.º en acertar', { exact: true })).toBeVisible();
     await expect(primero.page.getByTestId('guess-score-row').first()).toContainText('Acertó · 1.º');
+    // El «+N» de los puntos pasa por encima del chip del marcador mientras dura: se captura sin él, como los demás juegos.
+    await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-pokemon-palette-guess-acertado', { sigue: acertado });
     await capturarTamanos(primero.page, 'juego-pokemon-palette-guess-marcador', { sigue: buscador(primero.page) });
 
