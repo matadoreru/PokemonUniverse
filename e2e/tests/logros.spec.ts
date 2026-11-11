@@ -5,7 +5,7 @@
  * «Primera partida» solo se desbloquea una vez. La prueba ENDLESS comprueba que con racha 0 no hay récord.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, iniciarPartida, esperarPartida, nuevaCuenta, registrarPorApi, seleccionarJuego, SIZES, totalDeLogros, type CuentaE2E } from '../src/helpers.js';
+import { borrarCuentas, capture, collectErrors, comprobarBdE2E, createRoom, iniciarPartida, esperarPartida, nuevaCuenta, registrarPorApi, seleccionarJuego, SIZES, terminarSesion, totalDeLogros, type CuentaE2E } from '../src/helpers.js';
 
 const cuentas: CuentaE2E[] = [];
 
@@ -82,7 +82,7 @@ for (const { w, h } of SIZES) {
 
       // Vuelta a la sala: se cierra la sesión y se juega otra partida; «Primera partida» no vuelve a salir.
       await page.goBack();
-      await page.getByRole('button', { name: 'Terminar sesión' }).click({ timeout: 20_000 });
+      await terminarSesion(page, { timeout: 20_000 });
       await page.getByRole('button', { name: 'Volver al lobby' }).click({ timeout: 20_000 });
       await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
       await iniciarPartida(page, []);

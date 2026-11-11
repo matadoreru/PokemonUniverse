@@ -190,6 +190,18 @@ export async function joinRoom(page: Page, code: string): Promise<void> {
   await expect(page).toHaveURL(/\/room$/);
 }
 
+/**
+ * «Terminar sesión» (resultados, votación) o «Finalizar sesión y ver clasificación» (lobby) y su confirmación: el
+ * diálogo «¿Terminar la sesión?», con «Cancelar» primero y enfocado.
+ */
+export async function terminarSesion(page: Page, { boton = 'Terminar sesión', timeout = 15_000 }: { boton?: string; timeout?: number } = {}): Promise<void> {
+  await page.getByRole('button', { name: boton, exact: true }).click({ timeout });
+  const dialogo = page.getByRole('dialog', { name: '¿Terminar la sesión?' });
+  await expect(dialogo.getByRole('button', { name: 'Cancelar' })).toBeFocused();
+  await dialogo.getByRole('button', { name: 'Terminar sesión' }).click();
+  await expect(dialogo).toHaveCount(0);
+}
+
 /** Un jugador de una sala: su contexto aislado (cookies propias), su página y sus errores. */
 export interface Jugador {
   context: BrowserContext;

@@ -3,7 +3,7 @@
  * `tests/juegos.spec.ts` y los helpers que comparten los specs de juegos, en `src/juegos.ts`.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, type Jugador } from '../../src/helpers.js';
+import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, terminarSesion, type Jugador } from '../../src/helpers.js';
 import { capturarTamanos, juegoEnTrama, sinScorePop, tramasRetenibles, ajustarRango } from '../../src/juegos.js';
 
 /**
@@ -133,7 +133,7 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     await descifrarUnown(b.page);
     await descifrarUnown(host.page);
     await expect(host.page.getByRole('heading', { name: 'Clasificación final' })).toBeVisible({ timeout: 20_000 });
-    await host.page.getByRole('button', { name: 'Terminar sesión' }).click();
+    await terminarSesion(host.page);
     await host.page.getByRole('button', { name: 'Volver al lobby' }).click({ timeout: 15_000 });
     await expect(host.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });

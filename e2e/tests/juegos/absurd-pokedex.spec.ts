@@ -3,7 +3,7 @@
  * `tests/juegos.spec.ts` y los helpers que comparten los specs de juegos, en `src/juegos.ts`.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, type Jugador } from '../../src/helpers.js';
+import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, terminarSesion, type Jugador } from '../../src/helpers.js';
 import { capturarTamanos, juegoEnTrama, sinScorePop, tramasRetenibles, elegirModo, ajustarRango } from '../../src/juegos.js';
 
 /**
@@ -86,7 +86,7 @@ test('pokédex absurda: escribir, votar la más absurda y la real, y la clasific
     // Resultados de la partida y vuelta al lobby (Continuar → clasificación de la sesión → Volver al lobby).
     await expect(host.page.getByRole('heading', { name: 'Las entradas más absurdas', level: 1 })).toBeVisible({ timeout: 20_000 });
     await expect(host.page.getByText('+1 por cada voto y +2 a la más votada.')).toBeVisible();
-    await host.page.getByRole('button', { name: 'Terminar sesión' }).click();
+    await terminarSesion(host.page);
     await host.page.getByRole('button', { name: 'Volver al lobby' }).click({ timeout: 15_000 });
     await expect(host.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached({ timeout: 15_000 });
     await expect(b.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeVisible({ timeout: 15_000 });

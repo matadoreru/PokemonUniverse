@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { anadirJuegos, capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../src/helpers.js';
+import { anadirJuegos, capture, crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, SIZES, terminarSesion, type Jugador } from '../src/helpers.js';
 
 /**
  * Captura a los tres tamaños de revisión: sin scroll de página ni de `main` en escritorio y texto de 13 px o más.
@@ -111,7 +111,15 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     for (const page of pages) await page.getByRole('button', { name: 'Votar para saltar el minijuego' }).click({ timeout: 20_000 });
     await expect(titulo(host.page)).toBeVisible({ timeout: 15_000 });
     await expect(invitado.page.getByRole('button', { name: 'Terminar sesión' })).toHaveCount(0);
-    await host.page.getByRole('button', { name: 'Terminar sesión' }).click();
+    // «Terminar sesión» pide confirmación: «Cancelar» va primero y con el foco, y cancelar deja la votación como estaba.
+    await host.page.getByRole('button', { name: 'Terminar sesión', exact: true }).click();
+    const dialogo = host.page.getByRole('dialog', { name: '¿Terminar la sesión?' });
+    await expect(dialogo.getByRole('button', { name: 'Cancelar' })).toBeFocused();
+    await capturarPantalla(host.page, 'sesion-terminar-confirmar', dialogo.getByRole('button', { name: 'Terminar sesión' }));
+    await dialogo.getByRole('button', { name: 'Cancelar' }).click();
+    await expect(dialogo).toHaveCount(0);
+    await expect(titulo(host.page)).toBeVisible();
+    await terminarSesion(host.page);
 
     // Clasificación final: podio en franjas, la evolución por partida y «Volver al lobby» solo para el host.
     // Si nadie sumó puntos (los dos fallan la única ronda) no hay campeón ni insignia «Ganador»: «Sesión sin ganador».
