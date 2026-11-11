@@ -36,6 +36,8 @@ public final class UnownTranslatorRules {
   public static final int MIN_LETTERS = 3;
   /** {@code UNOWN_GLYPH_COUNT}: un glifo por letra. */
   public static final int GLYPH_COUNT = 26;
+  /** Hasta esta cantidad de letras {@code A}-{@code Z}, la ronda empieza con una letra revelada; con más, con dos. */
+  public static final int SHORT_MESSAGE_LETTERS = 6;
 
   private static final Pattern MARKS = Pattern.compile("\\p{M}+");
   private static final Pattern NOT_ALPHANUMERIC = Pattern.compile("[^A-Z0-9]");
@@ -103,6 +105,16 @@ public final class UnownTranslatorRules {
       if (cipherable(c) && !alphabet.contains(String.valueOf(c))) hidden.add(String.valueOf(c));
     }
     return List.copyOf(hidden);
+  }
+
+  /**
+   * Letras distintas que se revelan al empezar la ronda: 1 si el mensaje tiene {@value #SHORT_MESSAGE_LETTERS} letras
+   * {@code A}-{@code Z} o menos y 2 si tiene más, sin pasar de las letras distintas menos una (nunca sale entero).
+   */
+  public static int initialLetterCount(String normalized) {
+    int wanted = letterCount(normalized) <= SHORT_MESSAGE_LETTERS ? 1 : 2;
+    int distinct = hiddenDistinctLetters(normalized, List.of()).size();
+    return Math.max(0, Math.min(wanted, distinct - 1));
   }
 
   /** Un punto por descifrar y uno más por cada posición que seguía oculta. */

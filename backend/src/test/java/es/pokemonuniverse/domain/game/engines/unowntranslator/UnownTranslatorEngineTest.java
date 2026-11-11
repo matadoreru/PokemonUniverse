@@ -162,16 +162,22 @@ class UnownTranslatorEngineTest {
     var context = context(1, 11);
     // 60 s con pistas cada 3 s: caben 19 pistas (la 20.ª caería justo en roundEndsAt).
     var state = started(config(UnownTranslatorMode.CLASSIC, 3, 60, 3), context);
+    int initial = UnownTranslatorRules.initialLetterCount(normalized(state));
+    assertEquals(initial, state.alphabet().size());
+    assertEquals(0, state.hintsGiven());
     assertEquals(4_000L, state.nextTransitionAt());
     assertEquals(4_000L, view(state, context).nextHintAt());
     assertEquals(4_000L, engine.getLifecycle(state).nextDeadline());
     assertSame(state, engine.handleTimeout(state, context.withNow(3_999)));
     var distinct = UnownTranslatorRules.hiddenDistinctLetters(normalized(state), List.of());
+    var hidden = UnownTranslatorRules.hiddenDistinctLetters(normalized(state), state.alphabet());
+    assertEquals(distinct.size() - initial, hidden.size());
     long now = 4_000;
-    for (int hint = 1; hint <= distinct.size(); hint++) {
+    for (int hint = 1; hint <= hidden.size(); hint++) {
       state = engine.handleTimeout(state, context.withNow(now));
-      assertEquals(hint, state.alphabet().size());
-      assertTrue(distinct.contains(state.alphabet().getLast()));
+      assertEquals(initial + hint, state.alphabet().size());
+      assertEquals(hint, state.hintsGiven());
+      assertTrue(hidden.contains(state.alphabet().getLast()));
       now += 3_000;
     }
     assertEquals(new HashSet<>(distinct), new HashSet<>(state.alphabet()));
@@ -183,53 +189,102 @@ class UnownTranslatorEngineTest {
 
     // Con pistas cada 15 s en 30 s, la segunda caería en roundEndsAt: no se anuncia.
     var short_ = started(config(UnownTranslatorMode.CLASSIC, 3, 30, 15), context(1, 11));
+    int shortInitial = short_.alphabet().size();
     assertEquals(16_000L, view(short_, context).nextHintAt());
     short_ = engine.handleTimeout(short_, context.withNow(16_000));
-    assertEquals(1, short_.alphabet().size());
+    assertEquals(shortInitial + 1, short_.alphabet().size());
     assertNull(view(short_, context).nextHintAt());
     assertEquals(31_000L, engine.getLifecycle(short_).nextDeadline());
     var resolved = engine.handleTimeout(short_, context.withNow(31_000));
     assertEquals(GamePhase.ROUND_RESULTS, resolved.phase());
-    assertEquals(1, resolved.alphabet().size());
+    assertEquals(shortInitial + 1, resolved.alphabet().size());
   }
 
   @Test
   void lateTickRevealsEveryDueHint() {
     var context = context(1, 11);
     var state = started(config(UnownTranslatorMode.CLASSIC, 3, 60, 3), context);
-    var distinct = UnownTranslatorRules.hiddenDistinctLetters(normalized(state), List.of());
-    assertTrue(distinct.size() >= 4, "el mensaje del azar fijo tiene al menos 4 letras distintas");
+    int initial = state.alphabet().size();
+    var hidden = UnownTranslatorRules.hiddenDistinctLetters(normalized(state), state.alphabet());
+    assertTrue(hidden.size() >= 4, "el mensaje del azar fijo tiene al menos 4 letras distintas ocultas");
     // Vencen las pistas de 4000, 7000 y 10000.
     state = engine.handleTimeout(state, context.withNow(10_500));
-    assertEquals(3, state.alphabet().size());
-    assertEquals(3, new HashSet<>(state.alphabet()).size());
-    assertTrue(distinct.containsAll(state.alphabet()));
+    assertEquals(initial + 3, state.alphabet().size());
+    assertEquals(initial + 3, new HashSet<>(state.alphabet()).size());
+    assertTrue(hidden.containsAll(state.alphabet().subList(initial, initial + 3)));
     assertEquals(13_000L, state.nextTransitionAt());
     assertEquals(13_000L, view(state, context).nextHintAt());
   }
 
   @Test
-  void alphabetPersistsAcrossRoundsAndOnlyGrowsWithHints() {
+  void everyRoundStartsWithOneOrTwoLettersOfItsOwnMessage() {
+    // Varias partidas con azares distintos: salen mensajes cortos (una letra inicial) y largos (dos).
+    var counts = new HashSet<Integer>();
+    for (long seed = 1; seed <= 40; seed++) {
+      var context = context(1, seed);
+      var state = started(config(UnownTranslatorMode.CLASSIC, 3, 60, 6), context);
+      for (int round = 1; round <= 3; round++) {
+        var message = normalized(state);
+        int letters = UnownTranslatorRules.letterCount(message);
+        int distinct = UnownTranslatorRules.hiddenDistinctLetters(message, List.of()).size();
+        int expected = Math.min(letters <= 6 ? 1 : 2, distinct - 1);
+        assertEquals(expected, state.alphabet().size(), message);
+        counts.add(expected);
+        assertEquals(expected, new HashSet<>(state.alphabet()).size(), message);
+        for (var letter : state.alphabet()) assertTrue(message.contains(letter), message + " " + letter);
+        assertFalse(UnownTranslatorRules.hiddenDistinctLetters(message, state.alphabet()).isEmpty(), message);
+        assertEquals(0, state.hintsGiven());
+        assertEquals(state.roundStartedAt() + 6_000L, state.nextTransitionAt());
+        // Las iniciales salen traducidas en las piezas y en el alfabeto público.
+        var publicState = view(state, context);
+        assertEquals(state.alphabet(), publicState.alphabet().stream().map(UnownAlphabetEntry::letter).toList());
+        long translated = publicState.tokens().stream().filter(token -> token instanceof UnownToken.Letter).count();
+        assertEquals(letters - UnownTranslatorRules.hiddenLetters(message, state.alphabet()), translated);
+        state = act(state, "p1", answer(state), context, state.roundStartedAt() + 1_000).state();
+        if (round < 3) state = engine.handleTimeout(state, context.withNow(state.nextTransitionAt()));
+      }
+    }
+    assertEquals(new HashSet<>(List.of(1, 2)), counts);
+  }
+
+  @Test
+  void alphabetResetsEveryRound() {
     var context = context(1, 23);
     var state = started(config(UnownTranslatorMode.CLASSIC, 2, 60, 6), context);
     state = engine.handleTimeout(state, context.withNow(7_000));
+    int initial = UnownTranslatorRules.initialLetterCount(normalized(state));
     var alphabet = state.alphabet();
-    assertEquals(1, alphabet.size());
-    var first = normalized(state);
+    assertEquals(initial + 1, alphabet.size());
     state = act(state, "p1", answer(state), context, 8_000).state();
     assertEquals(GamePhase.ROUND_RESULTS, state.phase());
+    // En la revelación el alfabeto sigue siendo el de la ronda que acaba.
     assertEquals(alphabet, state.alphabet());
     assertEquals(14_000L, state.nextTransitionAt());
     state = engine.handleTimeout(state, context.withNow(14_000));
     assertEquals(GamePhase.ROUND_ACTIVE, state.phase());
     assertEquals(2, state.roundNumber());
-    assertEquals(alphabet, state.alphabet());
-    for (var letter : UnownTranslatorRules.hiddenDistinctLetters(first, alphabet)) {
-      assertFalse(state.alphabet().contains(letter), letter);
-    }
-    var publicAlphabet = view(state, context).alphabet();
-    var letter = alphabet.getFirst();
-    assertEquals(List.of(new UnownAlphabetEntry(state.key().get(letter.charAt(0) - 'A'), letter)), publicAlphabet);
+    // Ronda nueva: solo sus letras iniciales, ninguna arrastrada de la anterior si no está en el mensaje nuevo.
+    var second = normalized(state);
+    assertEquals(UnownTranslatorRules.initialLetterCount(second), state.alphabet().size());
+    for (var letter : state.alphabet()) assertTrue(second.contains(letter), letter);
+    assertEquals(0, state.hintsGiven());
+    assertEquals(20_000L, state.nextTransitionAt());
+    var second_ = state;
+    assertEquals(second_.alphabet().stream()
+        .map(letter -> new UnownAlphabetEntry(second_.key().get(letter.charAt(0) - 'A'), letter)).toList(),
+        view(second_, context).alphabet());
+  }
+
+  @Test
+  void initialLettersCountAsRevealedForThePoints() {
+    var context = context(1, 29);
+    var state = started(config(UnownTranslatorMode.CLASSIC, 1, 60, 6), context);
+    var message = normalized(state);
+    int hidden = UnownTranslatorRules.hiddenLetters(message, state.alphabet());
+    assertTrue(hidden < UnownTranslatorRules.letterCount(message));
+    state = act(state, "p1", answer(state), context, 2_000).state();
+    assertEquals(1 + hidden, state.scores().get("p1"));
+    assertEquals(hidden, state.solves().get("p1").hiddenLetters());
   }
 
   @Test
@@ -303,8 +358,8 @@ class UnownTranslatorEngineTest {
     var context = context(2, 41);
     var state = started(config(UnownTranslatorMode.CLASSIC, 3, 30, 6), context);
     var text = answer(state);
-    // Sin pistas todavía: cada letra del mensaje sigue oculta.
-    int letters = UnownTranslatorRules.letterCount(normalized(state));
+    // Sin pistas todavía: solo están a la vista las letras iniciales.
+    int letters = UnownTranslatorRules.hiddenLetters(normalized(state), state.alphabet());
     state = act(state, "p1", text, context, 2_000).state();
     state = act(state, "p2", text, context, 3_000).state();
     assertEquals(GamePhase.ROUND_RESULTS, state.phase());

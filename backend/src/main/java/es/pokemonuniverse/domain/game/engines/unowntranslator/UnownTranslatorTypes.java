@@ -154,7 +154,7 @@ public final class UnownTranslatorTypes {
   /**
    * Estado opaco del servidor; nunca se serializa hacia los clientes. Se construye solo con {@link #builder()} o
    * {@link #toBuilder()}. {@code key} es la clave del cifrado (26 glifos, uno por letra) y {@code alphabet} las letras
-   * descubiertas, en orden de descubrimiento.
+   * descubiertas en la ronda (las iniciales y las pistas), en orden de descubrimiento; se vacía al empezar cada ronda.
    */
   public record UnownTranslatorState(
       GamePhase phase,

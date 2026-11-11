@@ -2626,7 +2626,7 @@
     "id": "unown-translator",
     "name": "Traductor Unown",
     "icon": "🔣",
-    "description": "Descifra nombres escritos con glifos Unown: cada pista revela una letra que ya no se olvida.",
+    "description": "Descifra nombres escritos con glifos Unown: cada ronda empieza con una o dos letras y las pistas van revelando más.",
     "experimental": false,
     "minPlayers": 1,
     "maxPlayers": 8,

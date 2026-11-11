@@ -37,9 +37,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 /**
- * Traductor Unown: un nombre cifrado con glifos Unown y una clave barajada una vez por partida. Cada
- * {@code hintSeconds} una pista revela una letra oculta del mensaje, que se queda en el alfabeto de la partida; gana
- * más quien descifra con menos letras a la vista. Sigue a Zoomed Pokémon en el ciclo por tiempo, el bloqueo tras un
+ * Traductor Unown: un nombre cifrado con glifos Unown y una clave barajada una vez por partida. El alfabeto es de la
+ * ronda: cada una empieza con una o dos letras del mensaje ya reveladas ({@link UnownTranslatorRules#initialLetterCount})
+ * y cada {@code hintSeconds} una pista revela otra; gana más quien descifra con menos letras a la vista. Sigue a Zoomed Pokémon en el ciclo por tiempo, el bloqueo tras un
  * fallo y los aciertos en carrera.
  */
 public final class UnownTranslatorEngine implements
@@ -170,14 +170,23 @@ public final class UnownTranslatorEngine implements
   }
 
   /**
-   * Ronda nueva con el alfabeto de la partida intacto: las letras de rondas anteriores salen ya traducidas. La primera
-   * pista es nula si el mensaje ya se ve entero.
+   * Ronda nueva con el alfabeto vacío y las letras iniciales del mensaje ya reveladas, cada una con un {@code random()}
+   * entre las letras distintas que siguen ocultas, en orden alfabético (como las pistas). Las letras iniciales no son
+   * pistas: {@code hintsGiven} empieza en 0 y la primera pista llega a los {@code hintSeconds}. La primera pista es nula
+   * si el mensaje ya se ve entero (no pasa: las iniciales dejan siempre una letra distinta oculta).
    */
   private static UnownTranslatorState beginRound(UnownTranslatorState state, GameContext context) {
     long roundStartedAt = context.now();
+    var message = state.messages().get(state.roundNumber());
+    var alphabet = new ArrayList<String>();
+    for (int i = UnownTranslatorRules.initialLetterCount(message.normalized()); i > 0; i--) {
+      alphabet.add(Randoms.randomItem(UnownTranslatorRules.hiddenDistinctLetters(message.normalized(), alphabet),
+          context.random()));
+    }
     var next = state.toBuilder()
         .phase(GamePhase.ROUND_ACTIVE)
         .roundNumber(state.roundNumber() + 1)
+        .alphabet(alphabet)
         .hintsGiven(0)
         .solves(Map.of())
         .attemptCounts(Map.of())
@@ -190,7 +199,7 @@ public final class UnownTranslatorEngine implements
     return next.toBuilder().nextTransitionAt(nextHintAt(next)).build();
   }
 
-  /** Cierra la ronda: quien no acertó suma un fallo. Las letras que seguían ocultas no pasan al alfabeto. */
+  /** Cierra la ronda: quien no acertó suma un fallo. El alfabeto se queda como estaba hasta la ronda siguiente. */
   private static UnownTranslatorState resolveRound(UnownTranslatorState state, GameContext context) {
     if (state.phase() != GamePhase.ROUND_ACTIVE) return state;
     var message = currentMessage(state);
@@ -310,8 +319,8 @@ public final class UnownTranslatorEngine implements
   }
 
   /**
-   * Las piezas solo salen en {@code ROUND_ACTIVE}; el alfabeto lleva solo las letras reveladas como pista, con su
-   * glifo. {@code lastRound} sale en los resultados de ronda y en los finales.
+   * Las piezas solo salen en {@code ROUND_ACTIVE}; el alfabeto lleva solo las letras reveladas en la ronda (las
+   * iniciales y las pistas), con su glifo. {@code lastRound} sale en los resultados de ronda y en los finales.
    */
   @Override
   public UnownTranslatorPublicState getPublicState(UnownTranslatorState state, GameContext context) {

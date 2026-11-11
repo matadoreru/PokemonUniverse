@@ -262,8 +262,9 @@
             "glyph": 7
           },
           {
-            "kind": "GLYPH",
-            "glyph": 25
+            "kind": "LETTER",
+            "glyph": 25,
+            "letter": "O"
           },
           {
             "kind": "GLYPH",
@@ -278,11 +279,21 @@
             "glyph": 1
           },
           {
-            "kind": "GLYPH",
-            "glyph": 8
+            "kind": "LETTER",
+            "glyph": 8,
+            "letter": "X"
           }
         ],
-        "alphabet": [],
+        "alphabet": [
+          {
+            "glyph": 25,
+            "letter": "O"
+          },
+          {
+            "glyph": 8,
+            "letter": "X"
+          }
+        ],
         "solvedPlayerIds": [],
         "roundPointsByPlayer": {},
         "scores": {
@@ -359,8 +370,9 @@
                 "glyph": 7
               },
               {
-                "kind": "GLYPH",
-                "glyph": 25
+                "kind": "LETTER",
+                "glyph": 25,
+                "letter": "O"
               },
               {
                 "kind": "GLYPH",
@@ -375,11 +387,21 @@
                 "glyph": 1
               },
               {
-                "kind": "GLYPH",
-                "glyph": 8
+                "kind": "LETTER",
+                "glyph": 8,
+                "letter": "X"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
@@ -455,8 +477,9 @@
                 "glyph": 7
               },
               {
-                "kind": "GLYPH",
-                "glyph": 25
+                "kind": "LETTER",
+                "glyph": 25,
+                "letter": "O"
               },
               {
                 "kind": "GLYPH",
@@ -471,11 +494,21 @@
                 "glyph": 1
               },
               {
-                "kind": "GLYPH",
-                "glyph": 8
+                "kind": "LETTER",
+                "glyph": 8,
+                "letter": "X"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
@@ -555,8 +588,9 @@
                 "glyph": 7
               },
               {
-                "kind": "GLYPH",
-                "glyph": 25
+                "kind": "LETTER",
+                "glyph": 25,
+                "letter": "O"
               },
               {
                 "kind": "GLYPH",
@@ -571,11 +605,21 @@
                 "glyph": 1
               },
               {
-                "kind": "GLYPH",
-                "glyph": 8
+                "kind": "LETTER",
+                "glyph": 8,
+                "letter": "X"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
@@ -654,8 +698,9 @@
                 "glyph": 7
               },
               {
-                "kind": "GLYPH",
-                "glyph": 25
+                "kind": "LETTER",
+                "glyph": 25,
+                "letter": "O"
               },
               {
                 "kind": "GLYPH",
@@ -670,19 +715,29 @@
                 "glyph": 1
               },
               {
-                "kind": "GLYPH",
-                "glyph": 8
+                "kind": "LETTER",
+                "glyph": 8,
+                "letter": "X"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [
               "p1"
             ],
             "roundPointsByPlayer": {
-              "p1": 8
+              "p1": 6
             },
             "scores": {
-              "p1": 8,
+              "p1": 6,
               "p2": 0,
               "p3": 0
             },
@@ -758,8 +813,9 @@
                 "glyph": 7
               },
               {
-                "kind": "GLYPH",
-                "glyph": 25
+                "kind": "LETTER",
+                "glyph": 25,
+                "letter": "O"
               },
               {
                 "kind": "GLYPH",
@@ -774,19 +830,29 @@
                 "glyph": 1
               },
               {
-                "kind": "GLYPH",
-                "glyph": 8
+                "kind": "LETTER",
+                "glyph": 8,
+                "letter": "X"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [
               "p1"
             ],
             "roundPointsByPlayer": {
-              "p1": 8
+              "p1": 6
             },
             "scores": {
-              "p1": 8,
+              "p1": 6,
               "p2": 0,
               "p3": 0
             },
@@ -861,8 +927,9 @@
                 "glyph": 7
               },
               {
-                "kind": "GLYPH",
-                "glyph": 25
+                "kind": "LETTER",
+                "glyph": 25,
+                "letter": "O"
               },
               {
                 "kind": "GLYPH",
@@ -877,22 +944,32 @@
                 "glyph": 1
               },
               {
-                "kind": "GLYPH",
-                "glyph": 8
+                "kind": "LETTER",
+                "glyph": 8,
+                "letter": "X"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [
               "p1",
               "p2"
             ],
             "roundPointsByPlayer": {
-              "p1": 8,
-              "p2": 8
+              "p1": 6,
+              "p2": 6
             },
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": 1794340830000,
@@ -959,18 +1036,27 @@
               "p3"
             ],
             "tokens": [],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [
               "p1",
               "p2"
             ],
             "roundPointsByPlayer": {
-              "p1": 8,
-              "p2": 8
+              "p1": 6,
+              "p2": 6
             },
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": null,
@@ -992,14 +1078,14 @@
               "solves": [
                 {
                   "playerId": "p1",
-                  "points": 8,
-                  "hiddenLetters": 7,
+                  "points": 6,
+                  "hiddenLetters": 5,
                   "solvedAt": 1794340804500
                 },
                 {
                   "playerId": "p2",
-                  "points": 8,
-                  "hiddenLetters": 7,
+                  "points": 6,
+                  "hiddenLetters": 5,
                   "solvedAt": 1794340806000
                 }
               ],
@@ -1069,18 +1155,27 @@
               "p3"
             ],
             "tokens": [],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 25,
+                "letter": "O"
+              },
+              {
+                "glyph": 8,
+                "letter": "X"
+              }
+            ],
             "solvedPlayerIds": [
               "p1",
               "p2"
             ],
             "roundPointsByPlayer": {
-              "p1": 8,
-              "p2": 8
+              "p1": 6,
+              "p2": 6
             },
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": null,
@@ -1102,14 +1197,14 @@
               "solves": [
                 {
                   "playerId": "p1",
-                  "points": 8,
-                  "hiddenLetters": 7,
+                  "points": 6,
+                  "hiddenLetters": 5,
                   "solvedAt": 1794340804500
                 },
                 {
                   "playerId": "p2",
-                  "points": 8,
-                  "hiddenLetters": 7,
+                  "points": 6,
+                  "hiddenLetters": 5,
                   "solvedAt": 1794340806000
                 }
               ],
@@ -1194,20 +1289,27 @@
                 "glyph": 24
               },
               {
-                "kind": "GLYPH",
-                "glyph": 16
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
               },
               {
-                "kind": "GLYPH",
-                "glyph": 16
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": 1794340843000,
@@ -1285,20 +1387,27 @@
                 "glyph": 24
               },
               {
-                "kind": "GLYPH",
-                "glyph": 16
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
               },
               {
-                "kind": "GLYPH",
-                "glyph": 16
+                "kind": "LETTER",
+                "glyph": 16,
+                "letter": "L"
               }
             ],
-            "alphabet": [],
+            "alphabet": [
+              {
+                "glyph": 16,
+                "letter": "L"
+              }
+            ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": 1794340843000,
@@ -1364,8 +1473,9 @@
                 "glyph": 14
               },
               {
-                "kind": "GLYPH",
-                "glyph": 1
+                "kind": "LETTER",
+                "glyph": 1,
+                "letter": "A"
               },
               {
                 "kind": "GLYPH",
@@ -1390,13 +1500,17 @@
               {
                 "glyph": 16,
                 "letter": "L"
+              },
+              {
+                "glyph": 1,
+                "letter": "A"
               }
             ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": 1794340843000,
@@ -1463,13 +1577,17 @@
               {
                 "glyph": 16,
                 "letter": "L"
+              },
+              {
+                "glyph": 1,
+                "letter": "A"
               }
             ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": null,
@@ -1555,8 +1673,9 @@
                 "glyph": 18
               },
               {
-                "kind": "GLYPH",
-                "glyph": 24
+                "kind": "LETTER",
+                "glyph": 24,
+                "letter": "I"
               },
               {
                 "kind": "GLYPH",
@@ -1571,38 +1690,44 @@
                 "glyph": 22
               },
               {
-                "kind": "GLYPH",
-                "glyph": 4
+                "kind": "LETTER",
+                "glyph": 4,
+                "letter": "E"
               },
               {
-                "kind": "GLYPH",
-                "glyph": 4
+                "kind": "LETTER",
+                "glyph": 4,
+                "letter": "E"
               },
               {
                 "kind": "GLYPH",
                 "glyph": 10
               },
               {
-                "kind": "GLYPH",
-                "glyph": 4
+                "kind": "LETTER",
+                "glyph": 4,
+                "letter": "E"
               },
               {
-                "kind": "LETTER",
-                "glyph": 16,
-                "letter": "L"
+                "kind": "GLYPH",
+                "glyph": 16
               }
             ],
             "alphabet": [
               {
-                "glyph": 16,
-                "letter": "L"
+                "glyph": 24,
+                "letter": "I"
+              },
+              {
+                "glyph": 4,
+                "letter": "E"
               }
             ],
             "solvedPlayerIds": [],
             "roundPointsByPlayer": {},
             "scores": {
-              "p1": 8,
-              "p2": 8,
+              "p1": 6,
+              "p2": 6,
               "p3": 0
             },
             "roundEndsAt": 1794340879000,

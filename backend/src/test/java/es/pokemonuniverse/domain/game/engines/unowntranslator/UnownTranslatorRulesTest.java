@@ -104,6 +104,21 @@ class UnownTranslatorRulesTest {
   }
 
   @Test
+  void initialLettersDependOnTheMessageLengthAndNeverRevealItAll() {
+    // Seis letras A-Z o menos: una; los espacios y los signos no cuentan («Mr. Mime» tiene 6).
+    assertEquals(1, UnownTranslatorRules.initialLetterCount("ABRA"));
+    assertEquals(1, UnownTranslatorRules.initialLetterCount("MR. MIME"));
+    assertEquals(1, UnownTranslatorRules.initialLetterCount("ARCEUS"));
+    // Siete o más: dos.
+    assertEquals(2, UnownTranslatorRules.initialLetterCount("PIKACHU"));
+    assertEquals(2, UnownTranslatorRules.initialLetterCount("PUNO TRUENO"));
+    // Nunca todas las letras distintas: con dos distintas, solo una; con una, ninguna.
+    assertEquals(1, UnownTranslatorRules.initialLetterCount("ABABABAB"));
+    assertEquals(0, UnownTranslatorRules.initialLetterCount("AAAAAAAA"));
+    assertEquals(0, UnownTranslatorRules.initialLetterCount("AAA"));
+  }
+
+  @Test
   void pointsCountHiddenPositions() {
     assertEquals(2, UnownTranslatorRules.hiddenLetters("PIPI", List.of("P")));
     assertEquals(3, UnownTranslatorRules.solvePoints(UnownTranslatorRules.hiddenLetters("PIPI", List.of("P"))));
