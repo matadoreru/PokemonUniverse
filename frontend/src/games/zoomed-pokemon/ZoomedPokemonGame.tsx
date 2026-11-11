@@ -3,11 +3,11 @@ import { ZoomOut } from 'lucide-react';
 import { describeZoomedHint, zoomedSourceLabel, zoomLabel } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { Chip, cx, Icon } from '../../ui';
+import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
 } from '../../room/guess-kit';
-import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
 import type { ActiveGameProps } from '../../room/room-command';
 import s from './Zoomed.module.css';
 
