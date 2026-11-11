@@ -19,7 +19,6 @@ function gridColumns(buttons: readonly HTMLElement[]): number {
 export function PokemonSelector({ pokemon, locked, disabled, confirmationDisabled = false, variant = 'card', autoFocus = true, inputLabel = 'Buscar Pokémon', maxResults = 40, loading = false, loadError = '', onRetry, initialQuery = '', onSelect }: { pokemon: readonly PokemonSearchOption[]; locked: ReadonlySet<string>; disabled: boolean; confirmationDisabled?: boolean; variant?: 'card' | 'embedded'; autoFocus?: boolean; inputLabel?: string; maxResults?: number; loading?: boolean; loadError?: string; onRetry?(): void; /** Búsqueda inicial (galería y pruebas). */ initialQuery?: string; onSelect(id: string): Promise<void> }) {
   const [query, setQuery] = useState(initialQuery);
   const [pending, setPending] = useState('');
-  const [error, setError] = useState('');
   const submitting = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -43,8 +42,8 @@ export function PokemonSelector({ pokemon, locked, disabled, confirmationDisable
   const firstSelectableId = results.find((entry) => !locked.has(entry.id))?.id;
   async function select(id: string) {
     if (submitting.current || disabled || confirmationDisabled || locked.has(id)) return;
-    submitting.current = true; setPending(id); setError('');
-    try { await onSelect(id); } catch (caught) { setError(caught instanceof Error ? caught.message : 'Selección rechazada'); }
+    submitting.current = true; setPending(id);
+    try { await onSelect(id); } catch { /* El aviso global de la sala ya lo dice: la pantalla tiene su única región viva. */ }
     finally { submitting.current = false; setPending(''); }
   }
   /** Flechas, Inicio, Fin y Escape entre el campo y la rejilla; Enter en una carta la elige (es un botón). */
@@ -70,10 +69,10 @@ export function PokemonSelector({ pokemon, locked, disabled, confirmationDisable
   }
 
   const body = <div className={s.selector}>
-    <Field ref={inputRef} label={inputLabel} aria-label={inputLabel} hideLabel icon={Search} large placeholder="Buscar Pokémon…" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKey} disabled={disabled} autoComplete="off" error={error || null} hint="Enter elige la primera · ↓ recorre la lista" />
-    {view === 'loading' && <div aria-busy="true" role="status" className={s.tray}><span className="sr-only">Cargando Pokémon…</span><div className={s.grid} aria-hidden="true">{Array.from({ length: SKELETON_CARDS }, (_, index) => <span key={index} data-skeleton className={s.skeleton}><i className={s.skeletonArt} /><i className={s.skeletonName} /></span>)}</div></div>}
+    <Field ref={inputRef} label={inputLabel} aria-label={inputLabel} hideLabel icon={Search} large placeholder="Buscar Pokémon…" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKey} disabled={disabled} autoComplete="off" hint="Enter elige la primera · ↓ recorre la lista" />
+    {view === 'loading' && <div aria-busy="true" className={s.tray}><span className="sr-only">Cargando Pokémon…</span><div className={s.grid} aria-hidden="true">{Array.from({ length: SKELETON_CARDS }, (_, index) => <span key={index} data-skeleton className={s.skeleton}><i className={s.skeletonArt} /><i className={s.skeletonName} /></span>)}</div></div>}
     {view === 'error' && <div ref={errorRef} className={s.tray}><StateBox kind="error" onCream title={loadError} {...(onRetry ? { action: { label: 'Reintentar', onClick: retry } } : {})} /></div>}
-    {view === 'no-matches' && <div className={s.tray}><StateBox kind="empty" onCream title={`Ningún Pokémon coincide con “${query.trim()}”.`} text="Prueba con otra parte del nombre: no hace falta escribir tildes." action={{ label: 'Borrar búsqueda', onClick: clearQuery }} /></div>}
+    {view === 'no-matches' && <div className={s.tray}><StateBox kind="empty" onCream live={false} title={`Ningún Pokémon coincide con “${query.trim()}”.`} text="Prueba con otra parte del nombre: no hace falta escribir tildes." action={{ label: 'Borrar búsqueda', onClick: clearQuery }} /></div>}
     {view === 'results' && <div className={s.tray}><div ref={gridRef} aria-busy={Boolean(pending)} className={`pokemon-selector-results ${s.grid} ${s.scroll}`} onKeyDown={onGridKey}>{results.map((entry) => {
       const unavailable = locked.has(entry.id);
       const primary = entry.id === firstSelectableId && !blocked;

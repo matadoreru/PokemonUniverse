@@ -174,7 +174,7 @@ describe('Pokémon Bluff Auction: demostración', () => {
     expect(html).toMatch(/data-testid="auction-screen"/);
     expect(html).toMatch(/class="[^"]*unpinned[^"]*"[^>]*data-testid="auction-screen"/);
     expect(play(game(), turn)).not.toContain('unpinned');
-    expect(html.match(/aria-live/g)).toHaveLength(1);
+    expectSingleLiveRegion(html);
     expect(html.match(/data-testid="bluff-metric"/g)).toHaveLength(3);
     for (const label of ['Correctos', 'Faltan', 'Incorrectos']) expect(html).toContain(`role="meter" aria-label="${label}"`);
     expect(html).toContain('1 de 5');

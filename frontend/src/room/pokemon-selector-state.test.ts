@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { PokemonSelector } from './PokemonSelector';
 import { resultFocusTarget, selectorView } from './pokemon-selector-state';
+import { liveRegions } from './test-support/live-regions';
 
 const base = { loading: false, loadError: '', query: '', resultCount: 0 };
 const POKEMON = [
@@ -39,8 +40,12 @@ describe('PokemonSelector estados', () => {
     const markup = selector({ loading: true });
     expect(markup).toContain('aria-busy="true"');
     expect(markup.match(/data-skeleton/g)).toHaveLength(6);
-    expect(markup).toContain('role="status"');
     expect(markup).toContain('Cargando Pokémon…');
+  });
+  it('no añade regiones vivas a la pantalla: ni la carga, ni el vacío, ni los resultados (la pantalla tiene la suya)', () => {
+    for (const markup of [selector({ loading: true }), selector({ pokemon: POKEMON, initialQuery: 'zzzz' }), selector({ pokemon: POKEMON, initialQuery: 'chu' }), selector({ pokemon: POKEMON })]) {
+      expect(liveRegions(markup)).toEqual([]);
+    }
   });
   it('pinta el error con role="alert" y la acción de reintentar', () => {
     const markup = selector({ loadError: 'No se pudo cargar el buscador.', onRetry: () => undefined });
