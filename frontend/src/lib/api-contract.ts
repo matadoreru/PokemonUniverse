@@ -7,9 +7,9 @@ type JsonBody<P extends keyof paths, M extends keyof paths[P], S extends number>
 
 /**
  * Puente tipado entre el contrato generado (`Wire`) y el tipo público de shared (`Public`).
- * El OpenAPI de Java es mas laxo que shared (enums como string, `email?: string | null`), asi que el
- * tipo generado no es asignable al de shared. `Public extends Wire` hace fallar la compilacion si el
- * tipo de shared deja de ser asignable al contrato generado (deriva del contrato Java); no hay casts de valor.
+ * `Public extends Wire` hace fallar la compilacion si el tipo de shared deja de ser asignable al contrato
+ * generado (deriva del contrato Java); no hay casts de valor. El sentido contrario (el contrato generado
+ * asignable a shared) lo comprueba `api-types.test.ts`.
  */
 type Bridge<Wire, Public extends Wire> = Public;
 
@@ -18,11 +18,6 @@ export type LoginResponse = { user: Bridge<JsonBody<'/api/auth/login', 'post', 2
 export type RegisterResponse = { user: Bridge<JsonBody<'/api/auth/register', 'post', 201>['user'] & {}, AuthUser> };
 export type ResetPasswordResponse = { user: Bridge<JsonBody<'/api/auth/password/reset', 'post', 200>['user'] & {}, AuthUser> };
 export type GuestResponse = { user: Bridge<JsonBody<'/api/auth/guest', 'post', 201>['user'] & {}, AuthUser> };
-/**
- * Sin puente (los call sites de perfil y juegos siguen con los tipos de shared): shared usa arrays `readonly`
- * y `boolean` no nulo donde el contrato generado tiene arrays mutables y `boolean | null`.
- */
-export type ProfileResponse = JsonBody<'/api/auth/profile', 'get', 200>;
 export type ProgressResponse = { progress: Bridge<JsonBody<'/api/auth/progress', 'get', 200>['progress'], LevelProgress> };
 export type ChangelogResponse = { entries: Bridge<JsonBody<'/api/changelog', 'get', 200>['entries'][number], ChangelogEntry>[] };
 export type FeedbackCreateResponse = { feedback: Bridge<JsonBody<'/api/feedback', 'post', 201>['feedback'], FeedbackItem> };
@@ -31,15 +26,14 @@ export type AchievementResponse = AchievementsResponse['achievements'][number];
 type PublicProfileWire = JsonBody<'/api/users/{username}/profile', 'get', 200>['profile'];
 /**
  * Perfil de otra cuenta (`/u/:username`): sin `progress`, `stats` ni `achievements` si es privado para quien mira.
- * `stats` con los tipos de shared del perfil propio (mismo motivo que `ProfileResponse`: arrays `readonly`).
+ * `stats` con los tipos de shared del perfil propio: shared usa arrays `readonly` y el contrato generado, mutables.
  */
 export type PublicProfileResponse = Omit<PublicProfileWire, 'stats'> & { stats?: Pick<UserProfileResponse, 'globalStats' | 'games'> | null };
 export type ProfileSettingsResponse = JsonBody<'/api/auth/profile', 'patch', 200>;
 export type FriendsResponse = JsonBody<'/api/friends', 'get', 200>;
 export type FriendRequestResponse = JsonBody<'/api/friends/requests', 'post', 201>['request'];
 export type FriendResponse = JsonBody<'/api/friends/requests/{id}/accept', 'post', 200>['friend'];
-/** Reto diario de hoy (`gameId` y `status` llegan como `string`: se estrechan con `isDailyGameId` y `DailyStatus`). */
+/** Reto diario de hoy (`gameId` llega como `string`: se estrecha con `isDailyGameId`). */
 export type DailyOverviewResponse = JsonBody<'/api/daily', 'get', 200>;
 export type DailyLeaderboardResponse = JsonBody<'/api/daily/leaderboard', 'get', 200>;
-export type GamesResponse = JsonBody<'/api/games', 'get', 200>;
 export type PokemonSelectorResponse = JsonBody<'/api/pokemon/selector', 'get', 200>;

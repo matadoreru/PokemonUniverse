@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import type { AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, FeedbackItem, TcgFilterOptions } from '@pokemon-universe/shared/public';
+import type { AchievementFamily, AdminActiveRoom, AdminDataSyncItem, AdminGameHistoryItem, AdminRoomHistoryItem, AdminSummary, AdminUserItem, AuthUser, ChangelogEntry, CustomCategoryView, CustomWouldYouRatherPromptView, DailyStatus, FeedbackItem, LevelProgress, MiniGameManifest, TcgFilterOptions, UserProfileResponse } from '@pokemon-universe/shared/public';
 import type { components, paths } from './api-types';
 import type { ChangelogResponse, DailyLeaderboardResponse, DailyOverviewResponse, FeedbackCreateResponse, MeResponse } from './api-contract';
 
@@ -39,6 +39,25 @@ describe('contrato OpenAPI generado', () => {
   });
   it('el usuario compartido es asignable al contrato generado', () => {
     expectTypeOf<AuthUser>().toMatchTypeOf<NonNullable<MeResponse['user']>>();
+  });
+  it('el contrato generado es asignable a los tipos de shared (enumerados y opcionales sin null)', () => {
+    type Body<P extends keyof paths, M extends keyof paths[P], S extends number> =
+      paths[P][M] extends { responses: Record<S, { content: { 'application/json': infer B } }> } ? B : never;
+    expectTypeOf<NonNullable<MeResponse['user']>>().toEqualTypeOf<AuthUser>();
+    expectTypeOf<NonNullable<Body<'/api/auth/me', 'get', 200>['user']>>().toMatchTypeOf<AuthUser>();
+    expectTypeOf<Body<'/api/auth/progress', 'get', 200>['progress']>().toMatchTypeOf<LevelProgress>();
+    expectTypeOf<Body<'/api/changelog', 'get', 200>['entries'][number]>().toMatchTypeOf<ChangelogEntry>();
+    expectTypeOf<Body<'/api/feedback', 'post', 201>['feedback']>().toMatchTypeOf<FeedbackItem>();
+    expectTypeOf<Body<'/api/auth/profile', 'get', 200>['profile']>().toMatchTypeOf<UserProfileResponse>();
+    expectTypeOf<Body<'/api/games', 'get', 200>['games'][number]>().toMatchTypeOf<MiniGameManifest>();
+    expectTypeOf<Body<'/api/admin/active-rooms', 'get', 200>['items'][number]>().toMatchTypeOf<AdminActiveRoom>();
+    expectTypeOf<Body<'/api/admin/rooms', 'get', 200>['items'][number]>().toMatchTypeOf<AdminRoomHistoryItem>();
+    expectTypeOf<Body<'/api/admin/games', 'get', 200>['items'][number]>().toMatchTypeOf<AdminGameHistoryItem>();
+    expectTypeOf<Body<'/api/admin/users', 'get', 200>['items'][number]>().toMatchTypeOf<AdminUserItem>();
+    expectTypeOf<Body<'/api/admin/data-sync', 'get', 200>['sources'][number]>().toMatchTypeOf<AdminDataSyncItem>();
+    expectTypeOf<Body<'/api/achievements', 'get', 200>['achievements'][number]['family']>().toEqualTypeOf<AchievementFamily>();
+    expectTypeOf<DailyOverviewResponse['status']>().toEqualTypeOf<DailyStatus>();
+    expectTypeOf<DailyLeaderboardResponse['me']['status']>().toEqualTypeOf<DailyStatus>();
   });
   it('changelog y feedback usan los tipos de shared, validados contra el contrato generado', () => {
     expectTypeOf<ChangelogResponse['entries'][number]>().toEqualTypeOf<ChangelogEntry>();
