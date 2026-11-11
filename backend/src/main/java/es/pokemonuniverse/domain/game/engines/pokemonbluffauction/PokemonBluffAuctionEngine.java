@@ -324,31 +324,42 @@ public final class PokemonBluffAuctionEngine implements GameEngine<PokemonBluffA
       return GameActionResult.reject(state, "No puedes actuar ahora.");
     }
     if (action instanceof PokemonBluffAuctionAction.RaiseBid || action instanceof PokemonBluffAuctionAction.PassBid) {
-      if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La subasta ya ha terminado.");
-      if (!playerId.equals(currentTurnPlayerId(state))) return GameActionResult.reject(state, "No es tu turno.");
-      if (state.passedPlayerIds().contains(playerId)) {
-        return GameActionResult.reject(state, "Ya has pasado esta ronda.");
-      }
-      if (action instanceof PokemonBluffAuctionAction.RaiseBid raise) {
-        int minimum = (state.currentBid() == null ? 0 : state.currentBid()) + 1;
-        if (raise.amount() < minimum) return GameActionResult.reject(state, "La puja mínima es " + minimum + ".");
-        if (raise.amount() > state.poolIds().size()) {
-          return GameActionResult.reject(state, "La puja máxima es " + state.poolIds().size() + ".");
-        }
-        int amount = (int) raise.amount();
-        var next = state.toBuilder()
-            .currentBid(amount)
-            .currentBidderId(playerId)
-            .bidHistory(Immutables.appended(state.bidHistory(), BluffAuctionBidEvent.bid(playerId, amount)))
-            .build();
-        return GameActionResult.accept(advanceTurn(next, context));
-      }
-      return GameActionResult.accept(passAndAdvance(state, playerId, context));
+      return bidOrPass(state, playerId, action, context);
     }
+    return submitPokemon(state, playerId, (PokemonBluffAuctionAction.SubmitPokemon) action, context);
+  }
+
+  /** Turno de la subasta: subir la puja o pasar. */
+  private static GameActionResult<PokemonBluffAuctionState> bidOrPass(PokemonBluffAuctionState state,
+      String playerId, PokemonBluffAuctionAction action, GameContext context) {
+    if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La subasta ya ha terminado.");
+    if (!playerId.equals(currentTurnPlayerId(state))) return GameActionResult.reject(state, "No es tu turno.");
+    if (state.passedPlayerIds().contains(playerId)) {
+      return GameActionResult.reject(state, "Ya has pasado esta ronda.");
+    }
+    if (action instanceof PokemonBluffAuctionAction.RaiseBid raise) {
+      int minimum = (state.currentBid() == null ? 0 : state.currentBid()) + 1;
+      if (raise.amount() < minimum) return GameActionResult.reject(state, "La puja mínima es " + minimum + ".");
+      if (raise.amount() > state.poolIds().size()) {
+        return GameActionResult.reject(state, "La puja máxima es " + state.poolIds().size() + ".");
+      }
+      int amount = (int) raise.amount();
+      var next = state.toBuilder()
+          .currentBid(amount)
+          .currentBidderId(playerId)
+          .bidHistory(Immutables.appended(state.bidHistory(), BluffAuctionBidEvent.bid(playerId, amount)))
+          .build();
+      return GameActionResult.accept(advanceTurn(next, context));
+    }
+    return GameActionResult.accept(passAndAdvance(state, playerId, context));
+  }
+
+  /** El apostador demuestra la apuesta: cada acierto o fallo mueve el plazo, y la ronda acaba al llegar a la puja. */
+  private static GameActionResult<PokemonBluffAuctionState> submitPokemon(PokemonBluffAuctionState state,
+      String playerId, PokemonBluffAuctionAction.SubmitPokemon submit, GameContext context) {
     if (state.phase() != GamePhase.POKEMON_SEARCH || !playerId.equals(state.bidderId())) {
       return GameActionResult.reject(state, "Solo el apostador puede demostrar la apuesta.");
     }
-    var submit = (PokemonBluffAuctionAction.SubmitPokemon) action;
     var found = context.pokemon().byId(submit.pokemonId());
     if (found.isEmpty() || !state.poolIds().contains(found.get().id())) {
       return GameActionResult.reject(state, "Ese Pokémon no pertenece al pool de especies configurado.");

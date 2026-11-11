@@ -429,23 +429,35 @@ public final class LearnsetGuessEngine
       return GameActionResult.reject(state, "Pokémon no disponible en esta partida.");
     }
     var stats = state.playerStats().getOrDefault(playerId, LearnsetGuessPlayerStats.ZERO);
+    return guessed.id().equals(state.correctPokemonId())
+        ? correctGuess(state, playerId, stats, manual, context)
+        : wrongGuess(state, playerId, guessed, stats, manual, context);
+  }
+
+  /** Acierto: puntos según los grupos a la vista ({@code MANUAL_REVEAL}) o la fase de revelado y el orden. */
+  private static GameActionResult<LearnsetGuessState> correctGuess(LearnsetGuessState state, String playerId,
+      LearnsetGuessPlayerStats stats, boolean manual, GameContext context) {
     var playerStats = new LinkedHashMap<>(state.playerStats());
-    if (guessed.id().equals(state.correctPokemonId())) {
-      int totalGroups = groupLearnset(state.learnset()).size();
-      int visible = manual ? manualVisibleCount(state, playerId, totalGroups) : 0;
-      int revealStage = manual ? visible - 1 : state.revealedExtraGroups();
-      int solveOrder = state.solves().size() + 1;
-      int points = manual
-          ? LearnsetGuessRules.manualRevealPoints(totalGroups, visible)
-          : LearnsetGuessRules.learnsetPoints(revealStage, solveOrder);
-      var solves = new LinkedHashMap<>(state.solves());
-      solves.put(playerId, new LearnsetGuessSolve(solveOrder, context.now(), revealStage, points));
-      var scores = new LinkedHashMap<>(state.scores());
-      scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
-      playerStats.put(playerId, stats.afterSolve(revealStage, points));
-      var next = state.toBuilder().solves(solves).scores(scores).playerStats(playerStats).build();
-      return GameActionResult.accept(applyLastWarning(resolveIfComplete(next, context), context));
-    }
+    int totalGroups = groupLearnset(state.learnset()).size();
+    int visible = manual ? manualVisibleCount(state, playerId, totalGroups) : 0;
+    int revealStage = manual ? visible - 1 : state.revealedExtraGroups();
+    int solveOrder = state.solves().size() + 1;
+    int points = manual
+        ? LearnsetGuessRules.manualRevealPoints(totalGroups, visible)
+        : LearnsetGuessRules.learnsetPoints(revealStage, solveOrder);
+    var solves = new LinkedHashMap<>(state.solves());
+    solves.put(playerId, new LearnsetGuessSolve(solveOrder, context.now(), revealStage, points));
+    var scores = new LinkedHashMap<>(state.scores());
+    scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
+    playerStats.put(playerId, stats.afterSolve(revealStage, points));
+    var next = state.toBuilder().solves(solves).scores(scores).playerStats(playerStats).build();
+    return GameActionResult.accept(applyLastWarning(resolveIfComplete(next, context), context));
+  }
+
+  /** Fallo: enfriamiento y, en {@code MANUAL_REVEAL}, un grupo más a la vista de quien falla. */
+  private static GameActionResult<LearnsetGuessState> wrongGuess(LearnsetGuessState state, String playerId,
+      Pokemon guessed, LearnsetGuessPlayerStats stats, boolean manual, GameContext context) {
+    var playerStats = new LinkedHashMap<>(state.playerStats());
     var attempts = new ArrayList<>(state.attempts());
     attempts.add(LearnsetGuessAttempt.of(playerId, guessed, context.now()));
     playerStats.put(playerId, stats.afterIncorrectGuess());
