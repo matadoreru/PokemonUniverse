@@ -12,6 +12,7 @@ import {
 import { Search } from 'lucide-react';
 import { useEffect, useState, type Ref } from 'react';
 import { api } from '../lib/api';
+import { apiErrorMessage } from '../lib/api-errors';
 import { Badge, Chip, cx, Field, Panel, SelectField, StateBox, type ChipProps } from '../ui';
 import { adminListStatus, pickSelected } from './admin-format';
 import { Detail, DetailGrid, ListDetail, MetaParts, Pagination, rowControlId, SelectRow, useListDetail } from './AdminParts';
@@ -177,7 +178,7 @@ export function AdminFeedbackPanel() {
           setItems(response.items); setOverview(response.overview); setTotal(response.total); setTotalPages(response.totalPages);
           setSelectedId((current) => response.items.some((item) => item.id === current) ? current : response.items[0]?.id ?? null);
         })
-        .catch((caught: Error) => { if (active) setError(caught.message); })
+        .catch((caught: unknown) => { if (active) setError(apiErrorMessage(caught)); })
         .finally(() => { if (active) setLoading(false); });
     }, 250);
     return () => { active = false; window.clearTimeout(timer); };
@@ -195,7 +196,7 @@ export function AdminFeedbackPanel() {
         setItems((current) => current.filter((item) => item.id !== response.feedback.id));
         setTotal((current) => Math.max(0, current - 1));
       }
-    } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo actualizar el estado.'); }
+    } catch (caught) { setError(apiErrorMessage(caught, { fallback: 'No se pudo actualizar el estado.' })); }
     finally { setSaving(false); }
   }
 

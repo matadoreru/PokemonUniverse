@@ -8,6 +8,7 @@ import { useListDetail } from '../admin/AdminParts';
 import { AdminRecordsView, type AdminRecords } from '../admin/AdminRecords';
 import { AdminSyncView, type SyncSource } from '../admin/AdminSyncPanel';
 import { api } from '../lib/api';
+import { apiErrorMessage } from '../lib/api-errors';
 import { cx, Dialog, HudPlate, Icon, Screen, TabPanel, Tabs, type TabItem } from '../ui';
 import tone from '../styles/tones.module.css';
 
@@ -75,12 +76,12 @@ export function AdminPage() {
     const timer = setTimeout(() => {
       if (tab === 'changelog' || tab === 'feedback') {
         setLoading(false); setError('');
-        void api<AdminSummary>('/admin/summary').then((data) => { if (active) setSummary(data); }).catch((caught: Error) => { if (active) setError(caught.message); });
+        void api<AdminSummary>('/admin/summary').then((data) => { if (active) setSummary(data); }).catch((caught: unknown) => { if (active) setError(apiErrorMessage(caught)); });
         return;
       }
       if (tab === 'sync') {
         setLoading(true); setError('');
-        void api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync').then((data) => { if (active) setSyncSources(data.sources); }).catch((caught: Error) => { if (active) setError(caught.message); }).finally(() => { if (active) setLoading(false); });
+        void api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync').then((data) => { if (active) setSyncSources(data.sources); }).catch((caught: unknown) => { if (active) setError(apiErrorMessage(caught)); }).finally(() => { if (active) setLoading(false); });
         return;
       }
       const params = new URLSearchParams({ page: String(page) });
@@ -97,7 +98,7 @@ export function AdminPage() {
           else if (tab === 'games') setGames(data as PaginatedAdminResponse<AdminGameHistoryItem>);
           else setUsers(data as PaginatedAdminResponse<AdminUserItem>);
         })
-        .catch((caught: Error) => { if (active) setError(caught.message); })
+        .catch((caught: unknown) => { if (active) setError(apiErrorMessage(caught)); })
         .finally(() => { if (active) setLoading(false); });
     }, 250);
     return () => { active = false; clearTimeout(timer); };
@@ -124,7 +125,7 @@ export function AdminPage() {
     try {
       await api(`/admin/data-sync/${source}`, { method: 'POST', body: JSON.stringify({ full, confirmFull: full }) });
       const data = await api<{ sources: AdminDataSyncItem[] }>('/admin/data-sync'); setSyncSources(data.sources);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : 'No se pudo iniciar la sincronización'); }
+    } catch (caught) { setError(apiErrorMessage(caught, { fallback: 'No se pudo iniciar la sincronización' })); }
     finally { setSyncing(''); }
   }
 

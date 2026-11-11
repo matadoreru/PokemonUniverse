@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { useChangelog } from '../changelog/ChangelogContext';
 import { formatChangelogDate } from '../changelog/ChangelogEntryView';
 import { api } from '../lib/api';
+import { apiErrorMessage } from '../lib/api-errors';
 import { cx, Chip, Dialog, Field, Panel, Pill, SelectField, TextArea, Toggle, ToastStack, useToasts, type StateBoxProps } from '../ui';
 import { ListDetail, rowControlId, SelectRow, useListDetail } from './AdminParts';
 import tone from '../styles/tones.module.css';
@@ -118,7 +119,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
   const load = useCallback(async () => {
     setLoading(true); setLoadError('');
     try { setEntries((await api<{ entries: ChangelogEntry[] }>('/admin/changelog')).entries); }
-    catch (caught) { setLoadError(caught instanceof Error ? caught.message : 'No se pudo cargar el changelog.'); }
+    catch (caught) { setLoadError(apiErrorMessage(caught, { fallback: 'No se pudo cargar el changelog.' })); }
     finally { setLoading(false); }
   }, []);
 
@@ -154,7 +155,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
       detail.setSelectedId(result.entry.id);
       await refreshPublicChangelog();
       push('ok', result.entry.published ? `v${result.entry.version} está publicada.` : `Borrador v${result.entry.version} guardado.`);
-    } catch (caught) { push('error', caught instanceof Error ? caught.message : 'No se pudo guardar la versión.'); }
+    } catch (caught) { push('error', apiErrorMessage(caught, { fallback: 'No se pudo guardar la versión.' })); }
     finally { setSaving(false); }
   }
 
@@ -169,7 +170,7 @@ export function AdminChangelogPanel({ onDirtyChange }: { onDirtyChange?(dirty: b
       setForm(next); setSavedForm(next); setInvalid([]);
       detail.setSelectedId(NEW_ID);
       push('ok', 'Versión eliminada.');
-    } catch (caught) { push('error', caught instanceof Error ? caught.message : 'No se pudo eliminar la versión.'); }
+    } catch (caught) { push('error', apiErrorMessage(caught, { fallback: 'No se pudo eliminar la versión.' })); }
     finally { setSaving(false); }
   }
 
