@@ -16,8 +16,8 @@ const room: RoomView = roomView({
     member({ id: 'guest', displayName: 'Ana', ready: true }),
   ],
   availableGames: [
-    { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', recommended: true, minPlayers: 2, profileStats: { metrics: [] } },
-    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', experimental: true, minPlayers: 1, profileStats: { metrics: [] } },
+    { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', howTo: [], recommended: true, minPlayers: 2, profileStats: { metrics: [] } },
+    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', howTo: [], experimental: true, minPlayers: 1, profileStats: { metrics: [] } },
   ],
   selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1], roundSeconds: 20 },
 });
@@ -184,7 +184,7 @@ describe('lobby game modes', () => {
 });
 
 describe('lobby impostor parity', () => {
-  const impostorManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
+  const impostorManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', howTo: [], minPlayers: 3, profileStats: { metrics: [] } };
   const members = ['host', 'p2', 'p3', 'p4'].map((id) => member({ id, displayName: id, roomRole: id === 'host' ? 'HOST' : 'MEMBER', isHost: id === 'host', ready: true }));
   const parityRoom: RoomView = {
     ...room, members, availableGames: [...room.availableGames, impostorManifest],

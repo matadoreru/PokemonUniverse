@@ -46,7 +46,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 
 function room(game: PokemonConnectionsPublicState, player: PokemonConnectionsPlayerState): RoomView {
   return roomView({ phase: game.phase,
-    availableGames: [{ id: 'pokemon-connections', name: 'Pokémon Connections', icon: '🧩', description: 'Conexiones', minPlayers: 1, profileStats: { metrics: [] } }],
+    availableGames: [{ id: 'pokemon-connections', name: 'Pokémon Connections', icon: '🧩', description: 'Conexiones', howTo: [], minPlayers: 1, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-connections', selectedGameConfig: { ...defaultPokemonConnectionsConfig, generations: [1] }, game, gamePlayerState: player,
     members: [
       member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 7 }),

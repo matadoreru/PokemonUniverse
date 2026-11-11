@@ -5,6 +5,7 @@
  *   contenido editable. Con el foco en un botón, un enlace, una casilla o un deslizador, los números y las letras sí son
  *   atajo.
  * - Intro y Espacio nunca son atajo con el foco en un control (`controlTarget`): siguen activando ese control.
+ * - Con el foco dentro de un diálogo abierto (p. ej. «Cómo se juega») no hay atajos del juego.
  * - Las teclas con Ctrl, Alt o Meta, las mantenidas (`repeat`) y las que otro ya atendió (`defaultPrevented`) no son
  *   atajo.
  */
@@ -22,6 +23,7 @@ interface ShortcutElement {
   type?: unknown;
   isContentEditable?: unknown;
   getAttribute?: (name: string) => string | null;
+  closest?: (selector: string) => unknown;
 }
 
 function shortcutElement(target: unknown): ShortcutElement | null {
@@ -78,10 +80,16 @@ export interface ShortcutEvent {
   target?: unknown;
 }
 
+/** ¿El foco está dentro de un `<dialog>` abierto? Mientras tanto la pantalla de debajo no recibe atajos. */
+export function dialogTarget(target: unknown): boolean {
+  const element = shortcutElement(target);
+  return typeof element?.closest === 'function' && element.closest('dialog[open]') != null;
+}
+
 /** La tecla del evento si cuenta como atajo, o `null` (ver el criterio al principio del módulo). */
 export function shortcutKey(event: ShortcutEvent): string | null {
   if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return null;
-  if (typingTarget(event.target)) return null;
+  if (typingTarget(event.target) || dialogTarget(event.target)) return null;
   if (ACTIVATION_KEYS.has(event.key) && controlTarget(event.target)) return null;
   return event.key;
 }

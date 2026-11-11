@@ -55,7 +55,7 @@ function room(player: SketchmonPlayerState | null, game: SketchmonPublicState = 
       member({ id: 'p3', displayName: 'Carlos' }),
       member({ id: 'p4', displayName: 'Eru', role: 'SPECTATOR' }),
     ],
-    availableGames: [{ id: 'sketchmon', name: 'Sketchmon', icon: '🎨', description: 'Dibuja', minPlayers: 2, profileStats: { metrics: [] } }],
+    availableGames: [{ id: 'sketchmon', name: 'Sketchmon', icon: '🎨', description: 'Dibuja', howTo: [], minPlayers: 2, profileStats: { metrics: [] } }],
     selectedGameId: 'sketchmon', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 90, laps: 1, hintsEnabled: true, memoryPreviewEnabled: false, includeForms: false }, game, gamePlayerState: player,
   });
 }

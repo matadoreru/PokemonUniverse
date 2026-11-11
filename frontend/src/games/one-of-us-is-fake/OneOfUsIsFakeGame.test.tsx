@@ -61,7 +61,7 @@ function publicGame(phase: Phase = 'ROUND_ACTIVE', lastRound: FakeRoundResult | 
 function room(game: OneOfUsIsFakePublicState, player: OneOfUsIsFakePlayerState | null): RoomView {
   const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
   return roomView({ phase: game.phase, members,
-    availableGames: [{ id: 'one-of-us-is-fake', name: 'One of Us Is Fake', icon: '🕵️', description: 'Categorías', minPlayers: 3, profileStats: { metrics: [] } }],
+    availableGames: [{ id: 'one-of-us-is-fake', name: 'One of Us Is Fake', icon: '🕵️', description: 'Categorías', howTo: [], minPlayers: 3, profileStats: { metrics: [] } }],
     selectedGameId: 'one-of-us-is-fake', selectedGameConfig: defaultOneOfUsIsFakeConfig, game, gamePlayerState: player,
   });
 }

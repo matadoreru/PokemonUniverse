@@ -27,8 +27,8 @@ it('votesLabel', () => {
 });
 
 it('voteOptionName: «Juego · Modo», salvo Clásico como única opción del juego o un juego sin modos', () => {
-  const higherLower: MiniGameManifest = { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: '', minPlayers: 1, profileStats: { metrics: [] } };
-  const bingo: MiniGameManifest = { id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎱', description: '', minPlayers: 1, profileStats: { metrics: [] } };
+  const higherLower: MiniGameManifest = { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: '', howTo: [], minPlayers: 1, profileStats: { metrics: [] } };
+  const bingo: MiniGameManifest = { id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎱', description: '', howTo: [], minPlayers: 1, profileStats: { metrics: [] } };
   const classic = { id: 'higher-lower:CLASSIC', game: higherLower, mode: 'CLASSIC' };
   const endless = { id: 'higher-lower:ENDLESS', game: higherLower, mode: 'ENDLESS' };
   const plain = { id: 'pokemon-bingo', game: bingo, mode: null };

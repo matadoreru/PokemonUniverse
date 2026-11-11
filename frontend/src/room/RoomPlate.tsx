@@ -4,6 +4,7 @@ import { useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { HEADER_ROOM_ID } from '../components/Layout';
 import { HudPlate, Pill } from '../ui';
+import { GameHelpButton } from './GameHelpButton';
 import { useRoomLinkShare } from './room-link';
 import s from './RoomPlate.module.css';
 
@@ -53,6 +54,7 @@ export function RoomPlate({ room, onLeave }: { room: RoomView; onLeave(): void }
           </Pill>
           <span className="sr-only" aria-live="polite">{copied ? 'Código copiado' : ''}</span>
         </>}
+        <GameHelpButton room={room} />
         <span className="contents lg:hidden">
           <Pill size="round" variant="ghost" icon={DoorOpen} aria-label="Salir de la sala" title="Salir de la sala" onClick={onLeave} />
         </span>

@@ -43,7 +43,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 
 function room(game: SecretRankingPublicState, player: SecretRankingPlayerState | null): RoomView {
   const members = ['Eru', 'Ana', 'Leo'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return roomView({ phase: game.phase, availableGames: [{ id: 'secret-ranking', name: 'Secret Ranking', icon: '📋', description: 'Ranking', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'secret-ranking', selectedGameConfig: defaultSecretRankingConfig, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'secret-ranking', name: 'Secret Ranking', icon: '📋', description: 'Ranking', howTo: [], minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'secret-ranking', selectedGameConfig: defaultSecretRankingConfig, game, gamePlayerState: player, members });
 }
 
 const render = (game: SecretRankingPublicState, player: SecretRankingPlayerState | null, selfId = 'p1') => renderToStaticMarkup(createElement(SecretRankingGame, { room: room(game, player), selfId, onAction: async () => undefined }));

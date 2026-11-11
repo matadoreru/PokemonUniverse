@@ -45,7 +45,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'ROUND_RESULTS' | 'GAME_RESULTS' = '
 
 function room(game: PokemonBingoPublicState, player: PokemonBingoPlayerState | null, hostId = 'p1'): RoomView {
   return roomView({ phase: game.phase, hostId,
-    availableGames: [{ id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Bingo', minPlayers: 1, profileStats: { metrics: [] } }],
+    availableGames: [{ id: 'pokemon-bingo', name: 'Pokémon Bingo', icon: '🎉', description: 'Bingo', howTo: [], minPlayers: 1, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-bingo', selectedGameConfig: { ...defaultPokemonBingoConfig, width: 2, height: 2, generations: [1] }, game, gamePlayerState: player,
     members: [
       member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 7 }),

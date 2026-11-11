@@ -10,7 +10,7 @@ export function member(overrides: Partial<RoomMemberView> & Pick<RoomMemberView,
 
 /** Manifiesto mínimo de un juego (sin métricas de perfil). */
 export function manifest(overrides: Partial<MiniGameManifest> & Pick<MiniGameManifest, 'id' | 'name'>): MiniGameManifest {
-  return { icon: '🎮', description: '', minPlayers: 1, profileStats: { metrics: [] }, ...overrides };
+  return { icon: '🎮', description: '', howTo: [], minPlayers: 1, profileStats: { metrics: [] }, ...overrides };
 }
 
 /**

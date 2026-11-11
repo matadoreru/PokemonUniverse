@@ -43,7 +43,7 @@ function publicGame(phase: Phase, mode: Mode = 'REAL_ENTRY', round: AbsurdPokede
 
 function room(game: AbsurdPokedexPublicState, player: AbsurdPokedexPlayerState | null): RoomView {
   const members = NAMES.map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return roomView({ phase: game.phase, availableGames: [{ id: 'absurd-pokedex', name: 'Pokédex Absurda', icon: '📖', description: 'Entradas', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'absurd-pokedex', selectedGameConfig: { ...defaultAbsurdPokedexConfig, mode: game.mode }, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'absurd-pokedex', name: 'Pokédex Absurda', icon: '📖', description: 'Entradas', howTo: [], minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'absurd-pokedex', selectedGameConfig: { ...defaultAbsurdPokedexConfig, mode: game.mode }, game, gamePlayerState: player, members });
 }
 
 const WRITING: AbsurdPokedexPlayerState = { role: 'PLAYER', canSubmit: true, ownDraft: '', ownEntry: null, canVote: false, ownVoteEntryId: null, ownFunnyEntryId: null };

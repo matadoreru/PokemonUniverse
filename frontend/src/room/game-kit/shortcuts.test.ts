@@ -65,6 +65,14 @@ describe('atajos: qué tecla cuenta', () => {
     expect(shortcutKey({ key: 'Enter' })).toBe('Enter');
   });
 
+  it('con el foco dentro de un diálogo abierto, nada (la pantalla de debajo no recibe atajos)', () => {
+    const inDialog = { ...element('BUTTON'), closest: (selector: string) => selector === 'dialog[open]' ? {} : null };
+    const outside = { ...element('BODY'), closest: () => null };
+    expect(shortcutKey({ key: '1', target: inDialog })).toBeNull();
+    expect(shortcutKey({ key: '?', target: inDialog })).toBeNull();
+    expect(shortcutKey({ key: '1', target: outside })).toBe('1');
+  });
+
   it('con Ctrl, Alt o Meta, con la tecla mantenida o ya atendida, nada', () => {
     expect(shortcutKey({ key: '1', ctrlKey: true })).toBeNull();
     expect(shortcutKey({ key: '1', altKey: true })).toBeNull();

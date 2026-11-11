@@ -46,7 +46,7 @@ function room(game: WouldYouRatherPublicState, player: WouldYouRatherPlayerState
     const off = disconnected.includes(id);
     return member({ id, displayName, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[id] ?? 0 });
   });
-  return roomView({ phase: game.phase, availableGames: [{ id: 'would-you-rather', name: 'Would You Rather Pokémon', icon: '⚖️', description: 'Dilemas', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'would-you-rather', selectedGameConfig: defaultWouldYouRatherConfig, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'would-you-rather', name: 'Would You Rather Pokémon', icon: '⚖️', description: 'Dilemas', howTo: [], minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'would-you-rather', selectedGameConfig: defaultWouldYouRatherConfig, game, gamePlayerState: player, members });
 }
 
 const OPEN: WouldYouRatherPlayerState = { role: 'PLAYER', canSubmit: true, ownBallot: null };

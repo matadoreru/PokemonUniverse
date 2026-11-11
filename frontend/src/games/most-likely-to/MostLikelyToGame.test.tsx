@@ -57,7 +57,7 @@ function room(game: MostLikelyToPublicState, player: MostLikelyToPlayerState | n
     const off = disconnected.includes(id);
     return member({ id, displayName, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[id] ?? 0 });
   });
-  return roomView({ phase: game.phase, availableGames: [{ id: 'most-likely-to', name: 'Most Likely To', icon: '👉', description: 'Votación', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'most-likely-to', selectedGameConfig: defaultMostLikelyToConfig, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'most-likely-to', name: 'Most Likely To', icon: '👉', description: 'Votación', howTo: [], minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'most-likely-to', selectedGameConfig: defaultMostLikelyToConfig, game, gamePlayerState: player, members });
 }
 
 const PLAYER_VOTING: MostLikelyToPlayerState = { role: 'PLAYER', canSelect: false, ownChoice: choices[0]!, canVote: true, ownVotePlayerId: null };

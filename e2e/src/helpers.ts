@@ -235,6 +235,7 @@ export async function crearSalaConJugadores(browser: Browser, n: number, viewpor
     for (let i = 0; i < n; i++) {
       const context = await browser.newContext({ viewport });
       const page = await context.newPage();
+      await listoAutomatico(page);
       const jugador: Jugador = { context, page, errors: collectErrors(page), name: uniqueName(prefijos?.[i] ?? (i === 0 ? 'Host' : `Inv${i}`)), websockets: [], sockets: [] };
       page.on('websocket', (ws) => { jugador.websockets.push(ws.url()); jugador.sockets.push(ws); });
       jugadores.push(jugador);
@@ -333,11 +334,39 @@ export async function iniciarPartida(host: Page, invitados: readonly Page[]): Pr
 }
 
 /**
- * Tras «Empezar partida», espera (15 s como máximo) a que cada página salga del lobby: el minijuego empieza al
- * momento, sin intro.
+ * Tras «Empezar partida», espera (15 s como máximo) a que cada página salga del lobby y pasa la intro de la partida
+ * (`pasarIntro`): al volver, la primera ronda ya ha empezado.
  */
 export async function esperarPartida(pages: readonly Page[]): Promise<void> {
   for (const page of pages) await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toBeHidden({ timeout: 15_000 });
+  await pasarIntro(pages);
+}
+
+/** «¡Listo!» de la intro de partida (E1); un espectador no lo tiene y quien ya pulsó ve «Listo», deshabilitado. */
+export function botonListo(page: Page): Locator {
+  return page.getByTestId('game-intro').getByRole('button', { name: '¡Listo!', exact: true });
+}
+
+/**
+ * Intro de partida (E1): cada página que la muestra pulsa «¡Listo!» y luego se espera a que todas pasen a la primera
+ * ronda. La intro termina antes cuando todos los jugadores conectados están listos; si una página no llega a verla
+ * (otro arranque, o ya había terminado), sigue sin esperar.
+ */
+export async function pasarIntro(pages: readonly Page[]): Promise<void> {
+  for (const page of pages) {
+    const visible = await page.getByTestId('game-intro').waitFor({ state: 'visible', timeout: 10_000 }).then(() => true, () => false);
+    if (visible && await botonListo(page).isVisible()) await botonListo(page).click({ timeout: 5_000 }).catch(() => undefined);
+  }
+  for (const page of pages) await expect(page.getByTestId('game-intro')).toBeHidden({ timeout: 30_000 });
+}
+
+/**
+ * Red de seguridad para los arranques que no pasan por `esperarPartida` (seguir la sesión, la votación, el reto): antes
+ * de cada acción o comprobación de la página, si la intro le ofrece «¡Listo!», lo pulsa. El spec de la intro la quita
+ * (`page.removeLocatorHandler(botonListo(page))`) para capturarla.
+ */
+export async function listoAutomatico(page: Page): Promise<void> {
+  await page.addLocatorHandler(botonListo(page), async (boton) => { await boton.click({ timeout: 2_000 }).catch(() => undefined); }, { noWaitAfter: true });
 }
 
 /**
@@ -430,6 +459,7 @@ export async function persona(browser: Browser, cuentas: CuentaE2E[], prefijo: s
   cuentas.push(cuenta);
   const context = await browser.newContext({ viewport: { width: w, height: h } });
   const page = await context.newPage();
+  await listoAutomatico(page);
   const errors = collectErrors(page);
   await registrarPorApi(page, cuenta);
   if (enJugar) {

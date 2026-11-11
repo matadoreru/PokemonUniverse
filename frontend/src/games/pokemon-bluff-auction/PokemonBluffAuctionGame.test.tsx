@@ -40,7 +40,7 @@ const impossible: BluffAuctionRoundResult = {
 
 function room(publicGame: PokemonBluffAuctionPublicState, player: PokemonBluffAuctionPlayerState): RoomView {
   return roomView({ phase: publicGame.phase, members: players,
-    availableGames: [{ id: 'pokemon-bluff-auction', name: 'Pokémon Bluff Auction', icon: '🔨', description: 'Pujas', minPlayers: 2, profileStats: { metrics: [] } }],
+    availableGames: [{ id: 'pokemon-bluff-auction', name: 'Pokémon Bluff Auction', icon: '🔨', description: 'Pujas', howTo: [], minPlayers: 2, profileStats: { metrics: [] } }],
     selectedGameId: 'pokemon-bluff-auction', selectedGameConfig: { generations: [1, 2, 3], demonstrationSeconds: 30, rounds: 10, bidSeconds: 20 }, game: publicGame, gamePlayerState: player,
   });
 }

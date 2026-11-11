@@ -52,7 +52,7 @@ function publicGame(phase: Phase, { mode = 'CLASSIC', text = 'PIKACHU', known = 
 
 function room(game: UnownTranslatorPublicState, player: UnownTranslatorPlayerState | null): RoomView {
   const members = NAMES.map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return roomView({ phase: game.phase, availableGames: [{ id: 'unown-translator', name: 'Traductor Unown', icon: '🔣', description: 'Glifos', minPlayers: 1, profileStats: { metrics: [] } }], selectedGameId: 'unown-translator', selectedGameConfig: { ...defaultUnownTranslatorConfig, mode: game.mode }, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'unown-translator', name: 'Traductor Unown', icon: '🔣', description: 'Glifos', howTo: [], minPlayers: 1, profileStats: { metrics: [] } }], selectedGameId: 'unown-translator', selectedGameConfig: { ...defaultUnownTranslatorConfig, mode: game.mode }, game, gamePlayerState: player, members });
 }
 
 const GUESSING: UnownTranslatorPlayerState = { role: 'PLAYER', canGuess: true, solved: false, answer: null, cooldownUntil: null, attemptCount: 0, lastAttempt: null };

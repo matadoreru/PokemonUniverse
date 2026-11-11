@@ -127,6 +127,14 @@
     height: calc(var(--sp-6) * 12);
   }
 }
+/* Marco de alto fijo para la intro de partida (pantalla doble que llena su alto). */
+.introFrame {
+  height: calc(var(--sp-6) * 20);
+  overflow: auto;
+  border: var(--ol-2) solid var(--navy-3);
+  border-radius: var(--r-card);
+  background: var(--band);
+}
 /* Marco de alto fijo para `Screen`: llena el alto de su caja desde 1024 px; aquí, el del marco (con su propio scroll). */
 .screenFrame {
   height: calc(var(--sp-6) * 8);

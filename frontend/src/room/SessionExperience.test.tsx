@@ -27,8 +27,8 @@ describe('priority session experience', () => {
       phase: 'SESSION_RESULTS', hostId: 'host',
       members: [member({ id: 'host', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 8 })],
       availableGames: [
-        { id: 'one', name: 'Juego uno', icon: '①', description: 'Uno', minPlayers: 1, profileStats: { metrics: [] } },
-        { id: 'two', name: 'Juego dos', icon: '②', description: 'Dos', minPlayers: 1, profileStats: { metrics: [] } },
+        { id: 'one', name: 'Juego uno', icon: '①', description: 'Uno', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
+        { id: 'two', name: 'Juego dos', icon: '②', description: 'Dos', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
       ],
       selectedGameId: 'two', selectedGameConfig: {}, sessionMode: { type: 'GAME_COUNT', target: 2 }, gamesPlayed: 2,
       sessionStandings: [

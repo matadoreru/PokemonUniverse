@@ -19,6 +19,9 @@ import { ConfigRange } from '../../games/common/ConfigRange';
 import { playerColor } from '../../lib/player-color';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { ResultsShell } from '../../room/game-kit/ResultsShell';
+import { GameIntro } from '../../room/GameIntro';
+import { GameHelpButton } from '../../room/GameHelpButton';
+import { manifest as roomManifest, member as roomMember, roomView } from '../../room/test-support/room-view';
 import type { ResultsStanding } from '../../room/game-kit/ResultsShell';
 import type { PokemonType } from '../../styles/tokens';
 import { typeColors } from '../../styles/tokens';
@@ -1272,6 +1275,42 @@ function ScreenSplitSection() {
   );
 }
 
+/* Intro de partida (E1) y «Cómo se juega» (Q2), con una sala ficticia de Pokémon Trivia. */
+const INTRO_TRIVIA = roomManifest({ id: 'pokemon-trivia', name: 'Pokémon Trivia', howTo: [
+  'Responded preguntas sobre tipos, generaciones, estadísticas y medidas.',
+  'Cada acierto vale 100 puntos, y hasta 100 más cuanto antes respondáis.',
+  'Solo hay una respuesta por pregunta: en cuanto elegís, queda bloqueada.',
+] });
+const INTRO_MEMBERS = [roomMember({ id: 'misty', displayName: 'Misty', isHost: true, roomRole: 'HOST' }), roomMember({ id: 'ash', displayName: 'Ash' }),
+  roomMember({ id: 'brock', displayName: 'Brock' }), roomMember({ id: 'gary', displayName: 'Gary', role: 'SPECTATOR' })];
+
+function introRoom(readyPlayerIds: string[], now: number) {
+  return roomView({ phase: 'GAME_INTRO', selectedGameId: 'pokemon-trivia', availableGames: [INTRO_TRIVIA], members: INTRO_MEMBERS, serverNow: now,
+    gameSkipState: { gameInstanceId: '00000000-0000-4000-8000-000000000001', voterIds: [], votes: 0, requiredVotes: 3, currentUserVoted: false, canVote: true },
+    intro: { endsAt: now + 6_000, playerIds: ['misty', 'ash', 'brock'], readyPlayerIds } });
+}
+
+function GameIntroSection() {
+  // Hora fija al montar: la cuenta atrás corre, pero no depende de cuándo se capture.
+  const [now] = useState(() => Date.now());
+  return (
+    <Section name="game-intro" title="Intro de partida y «Cómo se juega»">
+      <Fig id="game-intro-reading" caption="Intro · nadie listo todavía (jugador: «¡Listo!» activo)" wide>
+        <div className={s.introFrame}><GameIntro room={introRoom([], now)} selfId="ash" onReady={asyncNoop} /></div>
+      </Fig>
+      <Fig id="game-intro-ready" caption="Intro · ya listo, esperando al resto (Misty también)" wide>
+        <div className={s.introFrame}><GameIntro room={introRoom(['misty', 'ash'], now)} selfId="ash" onReady={asyncNoop} /></div>
+      </Fig>
+      <Fig id="game-intro-spectator" caption="Intro · espectador: la ve, pero no cuenta" wide>
+        <div className={s.introFrame}><GameIntro room={introRoom(['ash'], now)} selfId="gary" onReady={asyncNoop} /></div>
+      </Fig>
+      <Fig id="game-help-button" caption="«Cómo se juega» · píldora «?» de la placa de la sala (abre el diálogo; también con la tecla «?»)">
+        <GameHelpButton room={{ ...introRoom([], now), phase: 'ROUND_ACTIVE', intro: null }} />
+      </Fig>
+    </Section>
+  );
+}
+
 /* Piezas que comparten los minijuegos (F4): buscador, temporizador de servidor, deslizador, avatar y resultados. */
 const SELECTOR_POKEMON = ['Pikachu', 'Pichu', 'Raichu', 'Pikachu Libre', 'Pikachu Coqueta', 'Chikorita', 'Chinchou'].map((name) => ({ id: name.toLowerCase(), name, sprite: '' }));
 const asyncNoop = async () => undefined;
@@ -1459,6 +1498,7 @@ export function Gallery() {
       <ActionPlateSection />
       <ScreenSection />
       <ScreenSplitSection />
+      <GameIntroSection />
       <AuctionSection />
       <GamePiecesSection />
       <ToastStack toasts={toasts} onClose={close} />

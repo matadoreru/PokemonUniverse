@@ -22,7 +22,7 @@ function publicGame(phase: 'ROUND_ACTIVE' | 'GAME_RESULTS' = 'ROUND_ACTIVE'): Po
 }
 
 function room(game: PokemonTeamAuctionPublicState, player: PokemonTeamAuctionPlayerState): RoomView {
-  return roomView({ phase: game.phase, availableGames: [{ id: 'pokemon-team-auction', name: 'Pokémon Team Auction', icon: '💰', description: 'Subasta', minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-team-auction', selectedGameConfig: defaultPokemonTeamAuctionConfig, game, gamePlayerState: player, members: [member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 534 }), member({ id: 'p2', displayName: 'Ana' })] });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'pokemon-team-auction', name: 'Pokémon Team Auction', icon: '💰', description: 'Subasta', howTo: [], minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-team-auction', selectedGameConfig: defaultPokemonTeamAuctionConfig, game, gamePlayerState: player, members: [member({ id: 'p1', displayName: 'Eru', roomRole: 'HOST', isHost: true, sessionPoints: 534 }), member({ id: 'p2', displayName: 'Ana' })] });
 }
 
 const player: PokemonTeamAuctionPlayerState = { role: 'PLAYER', canRaise: true, canPass: true, minimumBid: 5, coins: 20, team: [won] };

@@ -1,0 +1,27 @@
+/* Reglas del diálogo «Cómo se juega»: lista numerada, como en la intro. */
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rule {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  font: 800 var(--fs-15) / var(--lh-text) var(--font-text);
+}
+.number {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: var(--ol-2) solid var(--navy-2);
+  border-radius: var(--r-pill);
+  background: var(--yellow);
+  color: var(--navy);
+  font: 800 var(--fs-15) / 1 var(--font-display);
+}

@@ -25,6 +25,8 @@ export interface MiniGameManifest {
   name: string;
   icon: string;
   description: string;
+  /** «Cómo se juega»: tres frases cortas (qué hacer, cómo se puntúa y un consejo), en la intro y en la ayuda. */
+  howTo: string[];
   /** Marks recently introduced games that may still receive rule or balance changes. */
   experimental?: boolean;
   /** Highlights polished, approachable games in selection surfaces. */
@@ -84,7 +86,7 @@ export interface UserProfileResponse {
   globalStats: { gamesPlayed: number; gamesWon: number; totalPoints: number };
   /** Ausente en el oráculo Node, que no tiene experiencia. */
   progress?: LevelProgress;
-  games: Array<MiniGameManifest & { stats: ProfileGameStats }>;
+  games: Array<Omit<MiniGameManifest, 'howTo'> & { stats: ProfileGameStats }>;
   /** Ausente en respuestas anteriores al ajuste; sin él vale `EVERYONE`. */
   profileVisibility?: ProfileVisibility;
 }

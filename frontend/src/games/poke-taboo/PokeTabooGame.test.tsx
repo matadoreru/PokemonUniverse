@@ -53,7 +53,7 @@ function room(player: PokeTabooPlayerState | null, game: PokeTabooPublicState = 
       member({ id: 'p3', displayName: 'Carlos' }),
       member({ id: 'p4', displayName: 'Eru', role: 'SPECTATOR' }),
     ],
-    availableGames: [{ id: 'poke-taboo', name: 'PokéTaboo', icon: '🎙️', description: 'Describe', minPlayers: 2, profileStats: { metrics: [] } }],
+    availableGames: [{ id: 'poke-taboo', name: 'PokéTaboo', icon: '🎙️', description: 'Describe', howTo: [], minPlayers: 2, profileStats: { metrics: [] } }],
     selectedGameId: 'poke-taboo', selectedGameConfig: { ...config, generations: [1, 4], roundSeconds: 60, laps: 1, includeRegionalForms: true }, game, gamePlayerState: player,
   });
 }

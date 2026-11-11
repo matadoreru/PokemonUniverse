@@ -53,7 +53,7 @@ function room(game: PokemonRedFlagPublicState, player: PokemonRedFlagPlayerState
     const off = disconnected.includes(id);
     return member({ id, displayName, connected: !off, presence: off ? 'TEMPORARILY_DISCONNECTED' : 'CONNECTED', roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[id] ?? 0 });
   });
-  return roomView({ phase: game.phase, availableGames: [{ id: 'pokemon-red-flag', name: 'La Frase Pokémon', icon: '💬', description: 'Frases', minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-red-flag', selectedGameConfig: defaultPokemonRedFlagConfig, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'pokemon-red-flag', name: 'La Frase Pokémon', icon: '💬', description: 'Frases', howTo: [], minPlayers: 3, profileStats: { metrics: [] } }], selectedGameId: 'pokemon-red-flag', selectedGameConfig: defaultPokemonRedFlagConfig, game, gamePlayerState: player, members });
 }
 
 const WRITING: PokemonRedFlagPlayerState = { role: 'PLAYER', canSubmit: true, ownDraft: '', ownAnswer: null, canVote: false, ownVoteAnswerId: null, ownAnswerId: 'rf-1-x' };

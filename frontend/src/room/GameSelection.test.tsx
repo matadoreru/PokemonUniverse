@@ -8,9 +8,9 @@ import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
 
 const games: MiniGameManifest[] = [
-  { id: 'one', name: 'Juego uno', icon: '①', description: 'Primera opción.', minPlayers: 1, profileStats: { metrics: [] } },
-  { id: 'two', name: 'Juego dos', icon: '②', description: 'Segunda opción.', minPlayers: 2, maxPlayers: 8, profileStats: { metrics: [] } },
-  { id: 'three', name: 'Juego tres', icon: '③', description: 'Tercera opción.', minPlayers: 3, profileStats: { metrics: [] } },
+  { id: 'one', name: 'Juego uno', icon: '①', description: 'Primera opción.', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
+  { id: 'two', name: 'Juego dos', icon: '②', description: 'Segunda opción.', howTo: [], minPlayers: 2, maxPlayers: 8, profileStats: { metrics: [] } },
+  { id: 'three', name: 'Juego tres', icon: '③', description: 'Tercera opción.', howTo: [], minPlayers: 3, profileStats: { metrics: [] } },
 ];
 
 function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
@@ -41,10 +41,10 @@ function room(phase: 'NEXT_GAME_VOTE' | 'NEXT_GAME_VOTE_RESULTS'): RoomView {
 
 describe('game selection UI', () => {
   it('marks an Impostor excluded by parity as skipped instead of needing review', () => {
-    const impostor: MiniGameManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', minPlayers: 3, profileStats: { metrics: [] } };
+    const impostor: MiniGameManifest = { id: 'pokemon-impostor', name: 'Pokémon Impostor', icon: '🕵️', description: 'Encuentra al impostor.', howTo: [], minPlayers: 3, profileStats: { metrics: [] } };
     const rotation: MiniGameManifest[] = [
-      { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', minPlayers: 2, profileStats: { metrics: [] } },
-      { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', minPlayers: 1, profileStats: { metrics: [] } },
+      { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige el número más cercano.', howTo: [], minPlayers: 2, profileStats: { metrics: [] } },
+      { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
       impostor,
     ];
     const gameIds = rotation.map((game) => game.id);
@@ -104,8 +104,8 @@ describe('game selection UI', () => {
   });
 
   const realGames: MiniGameManifest[] = [
-    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', minPlayers: 1, maxPlayers: 8, profileStats: { metrics: [] } },
-    { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Mayor o menor.', minPlayers: 1, profileStats: { metrics: [] } },
+    { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero.', howTo: [], minPlayers: 1, maxPlayers: 8, profileStats: { metrics: [] } },
+    { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Mayor o menor.', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
   ];
   const lobbyWith = (gameIds: string[]): RoomView => ({ ...room('NEXT_GAME_VOTE'), phase: 'LOBBY', nextGameVote: null, availableGames: realGames, selectedGameId: gameIds[0]!, gameSelectionMode: { type: 'ORDER', gameIds } });
 

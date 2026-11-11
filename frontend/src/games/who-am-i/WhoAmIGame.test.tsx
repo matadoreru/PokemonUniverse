@@ -43,7 +43,7 @@ function playerState(overrides: Partial<WhoAmIPlayerState> = {}): WhoAmIPlayerSt
 
 function room(game: WhoAmIPublicState, player: WhoAmIPlayerState | null): RoomView {
   const members = NAMES.map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0, sessionPoints: game.scores[`p${index + 1}`] ?? 0 }));
-  return roomView({ phase: game.phase, availableGames: [{ id: 'who-am-i', name: '¿Quién soy?', icon: '🎭', description: 'Adivina', minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'who-am-i', selectedGameConfig: defaultWhoAmIConfig, game, gamePlayerState: player, members });
+  return roomView({ phase: game.phase, availableGames: [{ id: 'who-am-i', name: '¿Quién soy?', icon: '🎭', description: 'Adivina', howTo: [], minPlayers: 2, profileStats: { metrics: [] } }], selectedGameId: 'who-am-i', selectedGameConfig: defaultWhoAmIConfig, game, gamePlayerState: player, members });
 }
 
 const render = (game: WhoAmIPublicState, player: WhoAmIPlayerState | null, selfId = 'p1') => renderToStaticMarkup(createElement(WhoAmIGame, { room: room(game, player), selfId, onAction: async () => undefined }));

@@ -18,3 +18,18 @@ describe('configuraciones por defecto del registro', () => {
     expect((contracts as Record<string, unknown>)[name]).toEqual(defaultConfig);
   });
 });
+
+/** «Cómo se juega» de la intro y de la ayuda: tres frases cortas y no vacías, que la web muestra tal cual. */
+describe('howTo del registro', () => {
+  const manifests = registry as Array<{ id: string; howTo?: unknown }>;
+  it.each(manifests.map((game) => [game.id, game.howTo] as const))('%s tiene tres frases', (_id, howTo) => {
+    expect(Array.isArray(howTo)).toBe(true);
+    const sentences = howTo as unknown[];
+    expect(sentences).toHaveLength(3);
+    for (const sentence of sentences) {
+      expect(typeof sentence).toBe('string');
+      expect((sentence as string).trim()).not.toBe('');
+      expect((sentence as string).length).toBeLessThanOrEqual(90);
+    }
+  });
+});

@@ -3,9 +3,9 @@ import { GameOrderChoice, SelectedGamesConfig } from '../room/GameSelectionConfi
 import { Panel, Screen } from '../ui';
 
 const games = [
-  { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.', minPlayers: 2, profileStats: { metrics: [] } },
-  { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero entre varios candidatos.', minPlayers: 1, profileStats: { metrics: [] } },
-  { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Acierta si la estadística del siguiente Pokémon es mayor o menor.', minPlayers: 1, profileStats: { metrics: [] } },
+  { id: 'pokedex-distance', name: 'Pokédex Distance', icon: '🎯', description: 'Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.', howTo: [], minPlayers: 2, profileStats: { metrics: [] } },
+  { id: 'shiny-vote', name: 'Shiny Quiz', icon: '✨', description: 'Encuentra el shiny verdadero entre varios candidatos.', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
+  { id: 'higher-lower', name: 'Higher or Lower', icon: '📈', description: 'Acierta si la estadística del siguiente Pokémon es mayor o menor.', howTo: [], minPlayers: 1, profileStats: { metrics: [] } },
 ];
 
 const room: RoomView = {
