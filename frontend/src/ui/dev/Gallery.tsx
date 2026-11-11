@@ -1026,7 +1026,7 @@ function ScoreValueSection() {
   const [points, setPoints] = useState(12);
   return (
     <Section name="scorevalue" title="ScoreValue">
-      <Fig id="scorevalue-self" caption="Marcador propio: rebota y lanza el +N al subir">
+      <Fig id="scorevalue-self" caption="Marcador propio: rebota y lanza el +N al subir" cream>
         <span className={s.iconRow}>
           <Pill size="small" onClick={() => setPoints((v) => v + 3)}>
             Sumar 3
@@ -1037,7 +1037,7 @@ function ScoreValueSection() {
           <strong className={s.popFigure}><ScoreValue value={points} self color="var(--yellow)"><small> pts</small></ScoreValue></strong>
         </span>
       </Fig>
-      <Fig id="scorevalue-other" caption="Marcador de otro jugador: solo rebota">
+      <Fig id="scorevalue-other" caption="Marcador de otro jugador: solo rebota" cream>
         <strong className={s.popFigure}><ScoreValue value={points}><small> pts</small></ScoreValue></strong>
       </Fig>
     </Section>

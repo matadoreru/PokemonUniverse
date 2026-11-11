@@ -48,7 +48,7 @@ export function ScoreValue({ value, self = false, quiet = false, color, children
   const next = nextScoreState(state, value);
   if (next !== state) setState(next);
   return <span className={cx(className, s.value)} {...(testId ? { 'data-testid': testId } : {})}>
-    {scoreValuePops(next, self) && <ScorePop key={next.changes} points={next.delta} color={color} placement="before" self={!quiet} />}
-    <span key={next.changes} className={cx(s.number, next.changes > 0 && 'motion-bump')}>{value}</span>{children}
+    {scoreValuePops(next, self) && <ScorePop key={`pop-${next.changes}`} points={next.delta} color={color} placement="before" self={!quiet} />}
+    <span key={`n-${next.changes}`} className={cx(s.number, next.changes > 0 && 'motion-bump')}>{value}</span>{children}
   </span>;
 }

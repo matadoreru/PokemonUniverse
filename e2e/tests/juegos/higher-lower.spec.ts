@@ -118,6 +118,14 @@ test('higher-lower: revelado y clasificación', async ({ browser }) => {
     await expect(host.page.getByText(/\d+ aciertos? · \d+ igual(es)? · mejor racha/).first()).toBeVisible();
     await expect(host.page.getByText(/(^|\D)1 (aciertos|iguales)/)).toHaveCount(0);
     await capturarTamanos(host.page, 'juego-higher-lower-clasificacion', { sigue: clasificacion });
+    // Celebración común (con reducción de movimiento): solo quien acertó gana; los otros dos, a cero, sin podio; nunca confeti.
+    const celebraciones = await Promise.all(jugadores.map(async ({ page }) => {
+      await expect(page.getByRole('heading', { name: 'Clasificación Higher or Lower' })).toBeVisible({ timeout: 15_000 });
+      await expect(page.getByTestId('confetti')).toHaveCount(0);
+      return page.locator('[data-celebration]').getAttribute('data-celebration', { timeout: 500 }).catch(() => null);
+    }));
+    expect(celebraciones.filter((c) => c === 'win'), 'una sola victoria').toHaveLength(1);
+    expect(celebraciones.filter((c) => c === 'podium'), 'sin podio a cero puntos').toHaveLength(0);
     const delatoras = imagenes.filter((url) => /githubusercontent|\/sprites\/pokemon\/|\/\d+\.(png|gif|webp|svg)(\?|$)|\/pokemon\/\d+(\/|$)/.test(url));
     expect(delatoras, 'ninguna imagen de la partida delata el número de Pokédex').toEqual([]);
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
