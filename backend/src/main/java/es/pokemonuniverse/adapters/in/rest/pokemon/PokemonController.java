@@ -83,7 +83,7 @@ public class PokemonController {
   @ApiResponse(responseCode = "503", description = "Demasiados recursos en curso", content = @Content(schema = @Schema(implementation = ApiError.class)))
   @Get("/{id}/sprite")
   public HttpResponse<byte[]> sprite(String id) {
-    var pokemon = service.catalog().byId(id);
+    var pokemon = service.selectorCatalog().byId(id);
     if (pokemon.isEmpty()) return HttpResponse.notFound();
     var asset = sprites.sprite(pokemon.get());
     // Solo se reenvían imágenes: cualquier otra cosa del origen (HTML de error, audio…) es un fallo de la pasarela.

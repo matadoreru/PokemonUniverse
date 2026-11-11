@@ -45,7 +45,9 @@ import java.util.stream.Collectors;
  * evolutivas como
  * {@code loadPokemonCatalog} de Node, aplica el filtro de formas del catálogo y cachea el resultado una hora. La
  * recarga al caducar es de un solo vuelo ({@link CatalogSnapshotCache}): las lecturas no toman cerrojo y N peticiones
- * concurrentes al caducar comparten una única carga.
+ * concurrentes al caducar comparten una única carga. El buscador y sus miniaturas usan otra instantánea ligera
+ * ({@link #selectorCatalog()}) que solo lee la tabla de Pokémon: su recarga horaria no arrastra movimientos, learnsets
+ * ni entradas de Pokédex, que solo necesitan las partidas.
  */
 @Singleton
 public class PokemonCatalogService implements GameCatalogProvider {
@@ -71,6 +73,8 @@ public class PokemonCatalogService implements GameCatalogProvider {
   private final Path artworkDir;
   private final CatalogSnapshotCache<InMemoryPokemonCatalog> cache =
       new CatalogSnapshotCache<>(this::load, TTL, Instant::now);
+  private final CatalogSnapshotCache<InMemoryPokemonCatalog> selectorCache =
+      new CatalogSnapshotCache<>(this::loadSelector, TTL, Instant::now);
 
   public PokemonCatalogService(PokemonRepository repository, MoveRepository moves,
       PokemonLevelUpMoveRepository learnsets, PokedexEntryRepository pokedexEntries,
@@ -95,12 +99,20 @@ public class PokemonCatalogService implements GameCatalogProvider {
     var order = Comparator.comparing(Pokemon::name, Collations.names())
         .thenComparing(p -> p.isDefault() ? 0 : 1)
         .thenComparing(Pokemon::id);
-    return catalog().all().stream()
+    return selectorCatalog().all().stream()
         .filter(p -> allowed.isEmpty()
             ? query.includeForms() || p.isDefault()
             : RegionalForms.inGenerations(p, allowed, query.includeForms()))
         .sorted(order)
         .toList();
+  }
+
+  /**
+   * Instantánea ligera para el buscador y sus miniaturas: los mismos Pokémon (mismo filtro de formas y orden) que
+   * {@link #catalog()}, sin movimientos, learnsets, entradas de Pokédex ni evoluciones.
+   */
+  public InMemoryPokemonCatalog selectorCatalog() {
+    return selectorCache.get();
   }
 
   /** Instantánea cacheada del catálogo para las partidas (mismo filtro y orden que {@code loadPokemonCatalog} de Node). */
@@ -141,6 +153,8 @@ public class PokemonCatalogService implements GameCatalogProvider {
       }
       var visuals = new FilesystemArtworkCatalog(artworkDir, ids(pokemon));
       cache.replace(pokemon);
+      // Sin volver a la base de datos: el constructor de un argumento reaplica el mismo filtro (idempotente).
+      selectorCache.replace(new InMemoryPokemonCatalog(pokemon.all()));
       return new GameCatalogs(pokemon, visuals, sounds);
     }
   }
@@ -149,9 +163,17 @@ public class PokemonCatalogService implements GameCatalogProvider {
     return pokemon.all().stream().map(Pokemon::id).collect(Collectors.toUnmodifiableSet());
   }
 
-  /** Descarta la caché; la siguiente consulta recarga desde la base de datos. */
+  /** Descarta las dos cachés; la siguiente consulta recarga desde la base de datos. */
   public void refresh() {
     cache.invalidate();
+    selectorCache.invalidate();
+  }
+
+  /** Solo la tabla de Pokémon, con el mismo orden base que {@link #load()}. */
+  private InMemoryPokemonCatalog loadSelector() {
+    var pokemon = new ArrayList<Pokemon>();
+    for (var row : repository.findAll(BASE_ORDER)) pokemon.add(toPokemon(row));
+    return new InMemoryPokemonCatalog(pokemon);
   }
 
   private InMemoryPokemonCatalog load() {
