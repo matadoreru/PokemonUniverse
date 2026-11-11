@@ -85,15 +85,34 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       # Como npm run db:seed: el backend con data-sync aplica Flyway y carga el catálogo de PokéAPI antes de abrir
-      # :8080. Después se para y se espera a que el puerto quede libre, porque con CI=true Playwright no reutiliza un
-      # servidor y arranca el suyo.
+      # :8080; la importación INITIAL de TCGdex sigue en segundo plano y se espera en la tabla DataSyncRun (la BD del
+      # job está vacía, así que siempre hay una). Después se para el proceso y se espera a que salga, porque con
+      # CI=true Playwright no reutiliza un servidor y arranca el suyo.
       - name: Seed the catalog
+        env:
+          PG_CONTAINER: ${{ job.services.postgres.id }}
         shell: bash
         run: |
           set -uo pipefail
-          cd backend
-          BACKEND_DATA_SYNC_ENABLED=true MICRONAUT_ENVIRONMENTS=dev PORT=8080 \
-            ./gradlew run --no-daemon --quiet > ../seed.log 2>&1 &
+          app='es\.pokemonuniverse\.Application'
+          query() { docker exec -i "$PG_CONTAINER" psql -U pokemon -d pokemon_universe -At -c "$1" 2> /dev/null; }
+          stop_backend() {
+            kill "$pid" 2> /dev/null || true
+            pkill -TERM -f "$app" 2> /dev/null || true
+            for _ in $(seq 1 30); do
+              pgrep -f "$app" > /dev/null || break
+              sleep 2
+            done
+            if pgrep -f "$app" > /dev/null; then
+              echo '::warning::El backend de la siembra no salió en 60 s: se mata con KILL.'
+              pkill -KILL -f "$app" 2> /dev/null || true
+              sleep 2
+            fi
+            wait "$pid" 2> /dev/null || true
+            (cd backend && ./gradlew --stop > /dev/null 2>&1) || true
+          }
+          (cd backend && BACKEND_DATA_SYNC_ENABLED=true MICRONAUT_ENVIRONMENTS=dev PORT=8080 \
+            exec ./gradlew run --no-daemon --quiet) > seed.log 2>&1 &
           pid=$!
           ready=false
           for _ in $(seq 1 180); do
@@ -101,22 +120,27 @@ jobs:
             if ! kill -0 "$pid" 2> /dev/null; then break; fi
             sleep 10
           done
-          kill "$pid" 2> /dev/null || true
-          # La aplicación es un JVM hijo de Gradle: se para también por su clase principal.
-          pkill -f 'es\.pokemonuniverse\.Application' 2> /dev/null || true
-          fuser -k -TERM 8080/tcp 2> /dev/null || true
-          for _ in $(seq 1 30); do
-            curl -fsS http://localhost:8080/health > /dev/null 2>&1 || break
-            sleep 2
-          done
-          ./gradlew --stop > /dev/null 2>&1 || true
           if [ "$ready" != true ]; then
+            stop_backend
             echo '::error::El backend no respondió en /health durante la siembra (ver el artefacto e2e-logs).'
-            tail -n 100 ../seed.log
+            tail -n 100 seed.log
             exit 1
           fi
-          if curl -fsS http://localhost:8080/health > /dev/null 2>&1; then
-            echo '::error::El backend de la siembra sigue ocupando :8080.'
+          # TCGdex: hasta 30 min a que su ejecución termine (COMPLETED o FAILED) sin ninguna pendiente.
+          tcg=timeout
+          for _ in $(seq 1 180); do
+            open=$(query "SELECT count(*) FROM \"DataSyncRun\" WHERE source = 'TCGDEX' AND status IN ('PENDING', 'RUNNING')")
+            last=$(query "SELECT status FROM \"DataSyncRun\" WHERE source = 'TCGDEX' AND status IN ('COMPLETED', 'FAILED') ORDER BY \"createdAt\" DESC LIMIT 1")
+            if [ "$open" = 0 ] && [ -n "$last" ]; then tcg=$last; break; fi
+            sleep 10
+          done
+          echo "Siembra de TCGdex: $tcg" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "$tcg" != COMPLETED ]; then
+            echo "::warning::TCGdex no quedó sembrado ($tcg): tcg-higher-lower se saltará."
+          fi
+          stop_backend
+          if pgrep -f "$app" > /dev/null; then
+            echo '::error::El backend de la siembra sigue en marcha.'
             exit 1
           fi
 
@@ -135,7 +159,7 @@ jobs:
           npm run test:e2e -- "${filters[@]}"
 
       - name: Upload test results and screenshots
-        if: failure()
+        if: ${{ failure() || cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: e2e-results
@@ -145,7 +169,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload logs
-        if: failure()
+        if: ${{ failure() || cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: e2e-logs
