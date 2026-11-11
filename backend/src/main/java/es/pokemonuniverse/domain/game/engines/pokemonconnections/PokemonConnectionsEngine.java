@@ -241,15 +241,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     if (state.phase() == GamePhase.ROUND_ACTIVE && Timing.deadlineReached(context.now(), state.roundEndsAt())) {
       return GameActionResult.reject(state, "El tiempo ha terminado.");
     }
-    if (action instanceof PokemonConnectionsAction.AdvanceRound) {
-      if (state.phase() != GamePhase.ROUND_RESULTS) {
-        return GameActionResult.reject(state, "La solución aún no se está mostrando.");
-      }
-      if (!context.isHost(playerId)) {
-        return GameActionResult.reject(state, "Solo el Host puede avanzar el puzle.");
-      }
-      return GameActionResult.accept(beginNextRound(state, context));
-    }
+    if (action instanceof PokemonConnectionsAction.AdvanceRound) return advanceRound(state, playerId, context);
     var submit = (PokemonConnectionsAction.SubmitGroup) action;
     if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La ronda no está activa.");
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
@@ -259,16 +251,44 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     if (current == null || !PokemonConnectionsTypes.PLAYING.equals(current.status())) {
       return GameActionResult.reject(state, "Ya no puedes enviar más grupos en esta ronda.");
     }
-    int groupSize = state.config().groupSize();
     // new Set(action.pokemonIds): orden de primera aparición.
     var uniqueIds = new LinkedHashSet<>(submit.pokemonIds());
+    var rejection = selectionRejection(state, current, submit, uniqueIds);
+    if (rejection != null) return GameActionResult.reject(state, rejection);
+    var remainingGroups = state.answerGroups().stream()
+        .filter(group -> !current.foundGroupIds().contains(group.id()))
+        .toList();
+    var attempted = List.copyOf(uniqueIds);
+    var matched = exactGroup(remainingGroups, uniqueIds);
+    var next = matched != null
+        ? applyMatch(state, playerId, current, matched, attempted, context)
+        : applyMiss(state, playerId, current, remainingGroups, uniqueIds, attempted, context);
+    return GameActionResult.accept(settle(next, context));
+  }
+
+  /** Solo el host pasa al siguiente puzle mientras se muestra la solución. */
+  private static GameActionResult<PokemonConnectionsState> advanceRound(PokemonConnectionsState state,
+      String playerId, GameContext context) {
+    if (state.phase() != GamePhase.ROUND_RESULTS) {
+      return GameActionResult.reject(state, "La solución aún no se está mostrando.");
+    }
+    if (!context.isHost(playerId)) {
+      return GameActionResult.reject(state, "Solo el Host puede avanzar el puzle.");
+    }
+    return GameActionResult.accept(beginNextRound(state, context));
+  }
+
+  /** El motivo de rechazo de la selección, o {@code null} si es un intento válido. */
+  private static @Nullable String selectionRejection(PokemonConnectionsState state, PokemonConnectionsProgress current,
+      PokemonConnectionsAction.SubmitGroup submit, Set<String> uniqueIds) {
+    int groupSize = state.config().groupSize();
     if (uniqueIds.size() != groupSize || submit.pokemonIds().size() != groupSize) {
-      return GameActionResult.reject(state, "Selecciona exactamente " + groupSize + " Pokémon distintos.");
+      return "Selecciona exactamente " + groupSize + " Pokémon distintos.";
     }
     var boardIds = new HashSet<String>();
     for (var pokemon : state.board()) boardIds.add(pokemon.id());
     if (!boardIds.containsAll(uniqueIds)) {
-      return GameActionResult.reject(state, "La selección contiene un Pokémon ajeno al tablero.");
+      return "La selección contiene un Pokémon ajeno al tablero.";
     }
     var foundIds = new HashSet<String>();
     for (var groupId : current.foundGroupIds()) {
@@ -276,40 +296,44 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
           .ifPresent(group -> group.pokemon().forEach(pokemon -> foundIds.add(pokemon.id())));
     }
     if (uniqueIds.stream().anyMatch(foundIds::contains)) {
-      return GameActionResult.reject(state, "Ese Pokémon ya pertenece a un grupo encontrado.");
+      return "Ese Pokémon ya pertenece a un grupo encontrado.";
     }
-    var remainingGroups = state.answerGroups().stream()
-        .filter(group -> !current.foundGroupIds().contains(group.id()))
-        .toList();
-    var attempted = List.copyOf(uniqueIds);
-    var matched = exactGroup(remainingGroups, uniqueIds);
-    if (matched != null) {
-      var foundGroupIds = Immutables.appended(current.foundGroupIds(), matched.id());
-      boolean solved = foundGroupIds.size() == state.answerGroups().size();
-      Integer completionRank = solved ? Integer.valueOf(state.completionOrder().size() + 1) : null;
-      int bonus = completionRank == null ? 0 : PokemonConnectionsRules.completionBonus(completionRank);
-      var progressEntry = current.toBuilder()
-          .foundGroupIds(foundGroupIds)
-          .status(solved ? PokemonConnectionsTypes.SOLVED : PokemonConnectionsTypes.PLAYING)
-          .completedAt(solved ? Long.valueOf(context.now()) : null)
-          .completionRank(completionRank)
-          .roundPoints(current.roundPoints() + 1 + bonus)
-          .lastAttempt(ConnectionAttemptFeedback.correct(attempted, context.now()))
-          .build();
-      var progress = new LinkedHashMap<>(state.progress());
-      progress.put(playerId, progressEntry);
-      var scores = new LinkedHashMap<>(state.scores());
-      scores.put(playerId, Objects.requireNonNullElse(state.scores().get(playerId), 0) + 1 + bonus);
-      var playerStats = new LinkedHashMap<>(state.playerStats());
-      playerStats.put(playerId, stats(state, playerId).afterGroupFound());
-      var next = state.toBuilder()
-          .progress(progress)
-          .completionOrder(solved ? Immutables.appended(state.completionOrder(), playerId) : state.completionOrder())
-          .scores(scores)
-          .playerStats(playerStats)
-          .build();
-      return GameActionResult.accept(settle(next, context));
-    }
+    return null;
+  }
+
+  /** Grupo acertado: un punto, más la bonificación de puesto si con él completa el tablero. */
+  private static PokemonConnectionsState applyMatch(PokemonConnectionsState state, String playerId,
+      PokemonConnectionsProgress current, ConnectionAnswerGroup matched, List<String> attempted, GameContext context) {
+    var foundGroupIds = Immutables.appended(current.foundGroupIds(), matched.id());
+    boolean solved = foundGroupIds.size() == state.answerGroups().size();
+    Integer completionRank = solved ? Integer.valueOf(state.completionOrder().size() + 1) : null;
+    int bonus = completionRank == null ? 0 : PokemonConnectionsRules.completionBonus(completionRank);
+    var progressEntry = current.toBuilder()
+        .foundGroupIds(foundGroupIds)
+        .status(solved ? PokemonConnectionsTypes.SOLVED : PokemonConnectionsTypes.PLAYING)
+        .completedAt(solved ? Long.valueOf(context.now()) : null)
+        .completionRank(completionRank)
+        .roundPoints(current.roundPoints() + 1 + bonus)
+        .lastAttempt(ConnectionAttemptFeedback.correct(attempted, context.now()))
+        .build();
+    var progress = new LinkedHashMap<>(state.progress());
+    progress.put(playerId, progressEntry);
+    var scores = new LinkedHashMap<>(state.scores());
+    scores.put(playerId, Objects.requireNonNullElse(state.scores().get(playerId), 0) + 1 + bonus);
+    var playerStats = new LinkedHashMap<>(state.playerStats());
+    playerStats.put(playerId, stats(state, playerId).afterGroupFound());
+    return state.toBuilder()
+        .progress(progress)
+        .completionOrder(solved ? Immutables.appended(state.completionOrder(), playerId) : state.completionOrder())
+        .scores(scores)
+        .playerStats(playerStats)
+        .build();
+  }
+
+  /** Grupo fallado: gasta un error y elimina al jugador si agota los permitidos. */
+  private static PokemonConnectionsState applyMiss(PokemonConnectionsState state, String playerId,
+      PokemonConnectionsProgress current, List<ConnectionAnswerGroup> remainingGroups, Set<String> uniqueIds,
+      List<String> attempted, GameContext context) {
     boolean nearMiss = isNearMiss(remainingGroups, uniqueIds);
     int mistakesUsed = current.mistakesUsed() + 1;
     var progressEntry = current.toBuilder()
@@ -322,8 +346,7 @@ public final class PokemonConnectionsEngine implements GameEngine<PokemonConnect
     progress.put(playerId, progressEntry);
     var playerStats = new LinkedHashMap<>(state.playerStats());
     playerStats.put(playerId, stats(state, playerId).afterMistake(nearMiss));
-    var next = state.toBuilder().progress(progress).playerStats(playerStats).build();
-    return GameActionResult.accept(settle(next, context));
+    return state.toBuilder().progress(progress).playerStats(playerStats).build();
   }
 
   @Override

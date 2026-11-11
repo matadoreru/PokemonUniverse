@@ -258,15 +258,7 @@ public final class PokemonBingoEngine
   @Override
   public GameActionResult<PokemonBingoState> handleAction(PokemonBingoState state, String playerId,
       PokemonBingoAction action, GameContext context) {
-    if (action instanceof PokemonBingoAction.SkipResults) {
-      if (state.phase() != GamePhase.ROUND_RESULTS) {
-        return GameActionResult.reject(state, "El resultado todavía no se puede saltar.");
-      }
-      if (!context.isHost(playerId)) {
-        return GameActionResult.reject(state, "Solo el host puede continuar.");
-      }
-      return GameActionResult.accept(finish(state));
-    }
+    if (action instanceof PokemonBingoAction.SkipResults) return skipResults(state, playerId, context);
     if (state.phase() != GamePhase.ROUND_ACTIVE) return GameActionResult.reject(state, "La partida ya ha terminado.");
     if (!state.playerIds().contains(playerId) || !context.isPlayerRequired(playerId)) {
       return GameActionResult.reject(state, "No puedes modificar este tablero.");
@@ -275,44 +267,69 @@ public final class PokemonBingoEngine
     if (timeUp) return GameActionResult.reject(finish(state), "El tiempo ha terminado.");
     var board = state.boards().get(playerId);
     if (action instanceof PokemonBingoAction.RemovePokemon remove) {
-      if (findCell(board, remove.cellId()).isEmpty()) return GameActionResult.reject(state, "Casilla desconocida.");
-      var current = board.assignments().get(remove.cellId());
-      if (current == null || current.isEmpty()) return GameActionResult.reject(state, "La casilla ya está vacía.");
-      var assignments = new LinkedHashMap<>(board.assignments());
-      assignments.remove(remove.cellId());
-      return GameActionResult.accept(state.toBuilder()
-          .boards(with(state.boards(), playerId, board.withProgress(assignments, context.now())))
-          .build());
+      return removePokemon(state, playerId, board, remove, context);
     }
     if (Timing.cooldownRemainingMs(context.now(), state.cooldownUntil().get(playerId)) > 0) {
       return GameActionResult.reject(state, "Espera un momento antes de confirmar otro Pokémon.");
     }
-    if (action instanceof PokemonBingoAction.MovePokemon move) {
-      if (move.fromCellId().equals(move.toCellId())) {
-        return GameActionResult.reject(state, "Selecciona otra casilla de destino.");
-      }
-      var target = findCell(board, move.toCellId());
-      var pokemonId = board.assignments().get(move.fromCellId());
-      var pokemon = pokemonId != null && !pokemonId.isEmpty()
-          ? context.pokemon().byId(pokemonId)
-          : Optional.<Pokemon>empty();
-      if (findCell(board, move.fromCellId()).isEmpty() || target.isEmpty() || pokemon.isEmpty()) {
-        return GameActionResult.reject(state, "Movimiento inválido.");
-      }
-      var moved = pokemon.get();
-      if (!ConditionRules.pokemonMatchesBingoCell(moved, target.get())) {
-        var attempt = BingoPrivateAttempt.of(target.get().id(), moved, context.now(), false,
-            "❌ " + moved.name() + " no cumple la casilla de destino.");
-        return GameActionResult.accept(incorrectAttempt(state, playerId, attempt));
-      }
-      var assignments = new LinkedHashMap<>(board.assignments());
-      assignments.remove(move.fromCellId());
-      assignments.put(move.toCellId(), moved.id());
-      var nextBoard = board.withProgress(assignments, context.now());
-      return GameActionResult.accept(
-          validAssignmentState(state, playerId, nextBoard, moved, move.toCellId(), context));
+    if (action instanceof PokemonBingoAction.MovePokemon move) return movePokemon(state, playerId, board, move, context);
+    return assignPokemon(state, playerId, board, (PokemonBingoAction.AssignPokemon) action, context);
+  }
+
+  /** Solo el host salta la pantalla de resultado. */
+  private static GameActionResult<PokemonBingoState> skipResults(PokemonBingoState state, String playerId,
+      GameContext context) {
+    if (state.phase() != GamePhase.ROUND_RESULTS) {
+      return GameActionResult.reject(state, "El resultado todavía no se puede saltar.");
     }
-    var assign = (PokemonBingoAction.AssignPokemon) action;
+    if (!context.isHost(playerId)) {
+      return GameActionResult.reject(state, "Solo el host puede continuar.");
+    }
+    return GameActionResult.accept(finish(state));
+  }
+
+  /** Vaciar una casilla no tiene enfriamiento. */
+  private static GameActionResult<PokemonBingoState> removePokemon(PokemonBingoState state, String playerId,
+      BingoBoardState board, PokemonBingoAction.RemovePokemon remove, GameContext context) {
+    if (findCell(board, remove.cellId()).isEmpty()) return GameActionResult.reject(state, "Casilla desconocida.");
+    var current = board.assignments().get(remove.cellId());
+    if (current == null || current.isEmpty()) return GameActionResult.reject(state, "La casilla ya está vacía.");
+    var assignments = new LinkedHashMap<>(board.assignments());
+    assignments.remove(remove.cellId());
+    return GameActionResult.accept(state.toBuilder()
+        .boards(with(state.boards(), playerId, board.withProgress(assignments, context.now())))
+        .build());
+  }
+
+  private static GameActionResult<PokemonBingoState> movePokemon(PokemonBingoState state, String playerId,
+      BingoBoardState board, PokemonBingoAction.MovePokemon move, GameContext context) {
+    if (move.fromCellId().equals(move.toCellId())) {
+      return GameActionResult.reject(state, "Selecciona otra casilla de destino.");
+    }
+    var target = findCell(board, move.toCellId());
+    var pokemonId = board.assignments().get(move.fromCellId());
+    var pokemon = pokemonId != null && !pokemonId.isEmpty()
+        ? context.pokemon().byId(pokemonId)
+        : Optional.<Pokemon>empty();
+    if (findCell(board, move.fromCellId()).isEmpty() || target.isEmpty() || pokemon.isEmpty()) {
+      return GameActionResult.reject(state, "Movimiento inválido.");
+    }
+    var moved = pokemon.get();
+    if (!ConditionRules.pokemonMatchesBingoCell(moved, target.get())) {
+      var attempt = BingoPrivateAttempt.of(target.get().id(), moved, context.now(), false,
+          "❌ " + moved.name() + " no cumple la casilla de destino.");
+      return GameActionResult.accept(incorrectAttempt(state, playerId, attempt));
+    }
+    var assignments = new LinkedHashMap<>(board.assignments());
+    assignments.remove(move.fromCellId());
+    assignments.put(move.toCellId(), moved.id());
+    var nextBoard = board.withProgress(assignments, context.now());
+    return GameActionResult.accept(
+        validAssignmentState(state, playerId, nextBoard, moved, move.toCellId(), context));
+  }
+
+  private static GameActionResult<PokemonBingoState> assignPokemon(PokemonBingoState state, String playerId,
+      BingoBoardState board, PokemonBingoAction.AssignPokemon assign, GameContext context) {
     var cell = findCell(board, assign.cellId());
     var pokemon = context.pokemon().byId(assign.pokemonId());
     if (cell.isEmpty() || pokemon.isEmpty() || !state.poolIds().contains(pokemon.get().id())) {
