@@ -17,10 +17,13 @@ public record WhosThatPokemonConfig(
     int rounds,
     boolean hintsEnabled,
     boolean includeRegionalForms,
-    boolean publicAttempts) {
+    boolean publicAttempts,
+    /** Rachas: el segundo acierto seguido suma +1, el tercero +2 y, desde el cuarto, +3 ({@code SpeedPodiumScore}). */
+    boolean streakBonus) {
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "rounds", "hintsEnabled", "includeRegionalForms", "publicAttempts");
+      Set.of("generations", "roundSeconds", "rounds", "hintsEnabled", "includeRegionalForms", "publicAttempts",
+          "streakBonus");
 
   public WhosThatPokemonConfig {
     generations = List.copyOf(generations);
@@ -29,7 +32,7 @@ public record WhosThatPokemonConfig(
   /** {@code defaultWhosThatPokemonConfig}. */
   public static WhosThatPokemonConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new WhosThatPokemonConfig(generations, 20, 10, false, true, true);
+    return new WhosThatPokemonConfig(generations, 20, 10, false, true, true, false);
   }
 
   /**
@@ -45,7 +48,8 @@ public record WhosThatPokemonConfig(
     boolean hintsEnabled = config.bool("hintsEnabled");
     boolean includeRegionalForms = config.bool("includeRegionalForms");
     var publicAttempts = config.boolOrDefault("publicAttempts", true);
+    var streakBonus = config.boolOrDefault("streakBonus", false);
     return new WhosThatPokemonConfig(generations, roundSeconds, rounds, hintsEnabled, includeRegionalForms,
-        publicAttempts);
+        publicAttempts, streakBonus);
   }
 }

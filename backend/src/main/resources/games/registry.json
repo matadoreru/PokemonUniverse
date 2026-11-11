@@ -820,7 +820,8 @@
       "rounds": 10,
       "hintsEnabled": false,
       "includeRegionalForms": true,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -2310,7 +2311,8 @@
       "rounds": 10,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -2643,7 +2645,8 @@
         "TYPE",
         "EVOLUTION"
       ],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {

@@ -117,7 +117,8 @@
       "rounds": 3,
       "cryVersion": "LEGACY",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

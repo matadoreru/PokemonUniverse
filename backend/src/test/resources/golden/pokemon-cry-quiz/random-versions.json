@@ -213,7 +213,8 @@
       "rounds": 4,
       "cryVersion": "RANDOM",
       "includeRegionalForms": true,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

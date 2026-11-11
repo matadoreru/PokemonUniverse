@@ -1,4 +1,4 @@
-import type { PokemonPaletteGuessConfig, PokemonPaletteGuessPlayerState, PokemonPaletteGuessPublicState } from '@pokemon-universe/shared/public';
+import { speedPodiumScoringText, type PokemonPaletteGuessConfig, type PokemonPaletteGuessPlayerState, type PokemonPaletteGuessPublicState } from '@pokemon-universe/shared/public';
 import type { CSSProperties } from 'react';
 import { describePaletteHint, paletteSwatches } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
@@ -7,13 +7,13 @@ import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+  GuessStreakChip, speedPodiumSolveDetail,
 } from '../../room/guess-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import s from './Palette.module.css';
 
 const GAME_NAME = 'Adivina por la Paleta';
 const QUESTION = '¿De quién son estos colores?';
-const SCORING = 'Cuanto antes aciertes, más puntos; el primero suma un extra.';
 
 /**
  * La paleta: una barra con una franja por color (tan ancha como su peso aproximado) y, debajo, la leyenda con el nombre
@@ -68,15 +68,15 @@ export function PokemonPaletteGuessGame({ room, selfId, onAction }: ActiveGamePr
 
   const side = lastRound
     ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
-      detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
+      detail={({ solve }) => solve ? speedPodiumSolveDetail(solve) : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
       {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
-  const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME} solvedTitle="¡Paleta acertada!"
+  const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={speedPodiumScoringText(config?.streakBonus)} gameName={GAME_NAME} solvedTitle="¡Paleta acertada!"
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la paleta ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer} meta={<GuessStreakChip streak={player?.streak} />}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }

@@ -9,8 +9,9 @@ export { GuessPlayersPanel, GuessAttemptsFeed, GuessRevealBoard } from './GuessS
 export { GuessHints } from './GuessHints';
 export type { GuessHint } from './GuessHints';
 export { GuessRoundReveal } from './GuessRoundReveal';
+export { GuessStreakChip } from './GuessStreakChip';
 export type { GuessAnswer } from './GuessRoundReveal';
-export { attemptsText, guessOwnLastAttempt, guessPublicAttempts, guessRevealLines, guessScoreboard, guessSeconds, guessSolvedOrders, guessSprite, ordinal, pointsWord } from './presentation';
+export { attemptsText, guessOwnLastAttempt, guessPublicAttempts, guessRevealLines, guessScoreboard, guessSeconds, guessSolvedOrders, guessSprite, guessStreakLabel, ordinal, pointsWord, speedPodiumSolveDetail } from './presentation';
 export { guessTop } from './results';
 export type { GuessStats } from './results';
 export { useGuessRound } from './useGuessRound';

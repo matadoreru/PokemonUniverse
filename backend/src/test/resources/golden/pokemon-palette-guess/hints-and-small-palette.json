@@ -544,7 +544,8 @@
         "TYPE_COUNT",
         "GENERATION"
       ],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

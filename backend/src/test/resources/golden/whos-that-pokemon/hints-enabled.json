@@ -166,7 +166,8 @@
       "rounds": 3,
       "hintsEnabled": true,
       "includeRegionalForms": true,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

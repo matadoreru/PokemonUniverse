@@ -10,6 +10,8 @@ export const pokemonCryQuizConfigSchema = z.object({
   includeRegionalForms: z.boolean(),
   /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
   publicAttempts: z.boolean().default(true),
+  /** Rachas: el segundo acierto seguido suma +1, el tercero +2 y, desde el cuarto, +3 (`speedPodiumStreakBonus`). */
+  streakBonus: z.boolean().default(false),
 }).strict();
 
 export type PokemonCryQuizConfig = z.infer<typeof pokemonCryQuizConfigSchema>;
@@ -21,4 +23,5 @@ export const defaultPokemonCryQuizConfig: PokemonCryQuizConfig = {
   cryVersion: 'LATEST',
   includeRegionalForms: false,
   publicAttempts: true,
+  streakBonus: false,
 };

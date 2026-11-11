@@ -21,7 +21,8 @@
       "rounds": 3,
       "hintsEnabled": false,
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -43,7 +44,8 @@
       "rounds": 3,
       "hintsEnabled": false,
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -65,7 +67,8 @@
       "rounds": 1,
       "hintsEnabled": false,
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -87,7 +90,8 @@
       "rounds": 20,
       "hintsEnabled": false,
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -109,7 +113,8 @@
       "rounds": 3,
       "hintsEnabled": false,
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -131,7 +136,8 @@
       "rounds": 3,
       "hintsEnabled": true,
       "includeRegionalForms": true,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -317,7 +323,8 @@
       "rounds": 3,
       "hintsEnabled": false,
       "includeRegionalForms": false,
-      "publicAttempts": false
+      "publicAttempts": false,
+      "streakBonus": false
     }
   },
   {
@@ -347,6 +354,48 @@
       "hintsEnabled": false,
       "includeRegionalForms": false,
       "publicAttempts": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "streakBonus": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "publicAttempts": true,
+      "streakBonus": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "hintsEnabled": false,
+      "includeRegionalForms": false,
+      "streakBonus": "sí"
     },
     "valid": false
   }

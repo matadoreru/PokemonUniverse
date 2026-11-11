@@ -24,10 +24,13 @@ public record PokemonPaletteGuessConfig(
     int paletteSize,
     boolean hintsEnabled,
     List<PokemonPaletteHintKind> hintKinds,
-    boolean publicAttempts) {
+    boolean publicAttempts,
+    /** Rachas: el segundo acierto seguido suma +1, el tercero +2 y, desde el cuarto, +3 ({@code SpeedPodiumScore}). */
+    boolean streakBonus) {
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "rounds", "paletteSize", "hintsEnabled", "hintKinds", "publicAttempts");
+      Set.of("generations", "roundSeconds", "rounds", "paletteSize", "hintsEnabled", "hintKinds", "publicAttempts",
+          "streakBonus");
 
   public PokemonPaletteGuessConfig {
     generations = List.copyOf(generations);
@@ -41,7 +44,7 @@ public record PokemonPaletteGuessConfig(
   public static PokemonPaletteGuessConfig defaults() {
     var generations = ConfigReader.allGenerations();
     return new PokemonPaletteGuessConfig(generations, 25, 10, 8, false, List.of(PokemonPaletteHintKind.GENERATION,
-        PokemonPaletteHintKind.TYPE, PokemonPaletteHintKind.EVOLUTION), true);
+        PokemonPaletteHintKind.TYPE, PokemonPaletteHintKind.EVOLUTION), true, false);
   }
 
   /**
@@ -66,7 +69,8 @@ public record PokemonPaletteGuessConfig(
       }
     }
     var publicAttempts = config.boolOrDefault("publicAttempts", true);
+    var streakBonus = config.boolOrDefault("streakBonus", false);
     return new PokemonPaletteGuessConfig(generations, roundSeconds, rounds, paletteSize, hintsEnabled,
-        new ArrayList<>(hintKinds), publicAttempts);
+        new ArrayList<>(hintKinds), publicAttempts, streakBonus);
   }
 }

@@ -48,7 +48,7 @@ class PokemonCryQuizEngineTest {
   }
 
   private static PokemonCryQuizConfig config(List<Integer> generations, CryVersionMode version) {
-    return new PokemonCryQuizConfig(generations, 20, 3, version, false, true);
+    return new PokemonCryQuizConfig(generations, 20, 3, version, false, true, false);
   }
 
   private static final Cries PIKACHU = new Cries(Map.of("pikachu", List.of("latest/25.ogg", "legacy/25.ogg")));
@@ -143,7 +143,7 @@ class PokemonCryQuizEngineTest {
     var context = context(cries).toBuilder()
         .players(List.of(new GamePlayer("p1", "Ana"), new GamePlayer("p2", "Bruno"))).build();
     for (boolean visible : List.of(true, false)) {
-      var config = new PokemonCryQuizConfig(List.of(1), 20, 3, CryVersionMode.LATEST, false, visible);
+      var config = new PokemonCryQuizConfig(List.of(1), 20, 3, CryVersionMode.LATEST, false, visible, false);
       var started = engine.start(engine.createInitialState(config, context), context);
       var wrong = "pikachu".equals(started.targetPokemonId()) ? "bulbasaur" : "pikachu";
       var state = engine.handleAction(started, "p2", new PokemonCryQuizTypes.PokemonCryQuizAction(wrong),

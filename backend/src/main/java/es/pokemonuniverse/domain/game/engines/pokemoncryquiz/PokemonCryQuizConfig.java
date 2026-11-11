@@ -17,13 +17,16 @@ public record PokemonCryQuizConfig(
     int rounds,
     CryVersionMode cryVersion,
     boolean includeRegionalForms,
-    boolean publicAttempts) {
+    boolean publicAttempts,
+    /** Rachas: el segundo acierto seguido suma +1, el tercero +2 y, desde el cuarto, +3 ({@code SpeedPodiumScore}). */
+    boolean streakBonus) {
 
   /** {@code z.enum(['LATEST', 'LEGACY', 'RANDOM'])}. */
   public enum CryVersionMode { LATEST, LEGACY, RANDOM }
 
   private static final Set<String> KEYS =
-      Set.of("generations", "roundSeconds", "rounds", "cryVersion", "includeRegionalForms", "publicAttempts");
+      Set.of("generations", "roundSeconds", "rounds", "cryVersion", "includeRegionalForms", "publicAttempts",
+          "streakBonus");
 
   public PokemonCryQuizConfig {
     generations = List.copyOf(generations);
@@ -32,7 +35,7 @@ public record PokemonCryQuizConfig(
   /** {@code defaultPokemonCryQuizConfig}. */
   public static PokemonCryQuizConfig defaults() {
     var generations = ConfigReader.allGenerations();
-    return new PokemonCryQuizConfig(generations, 20, 10, CryVersionMode.LATEST, false, true);
+    return new PokemonCryQuizConfig(generations, 20, 10, CryVersionMode.LATEST, false, true, false);
   }
 
   /**
@@ -50,7 +53,8 @@ public record PokemonCryQuizConfig(
         config.enumValue("cryVersion", CryVersionMode.class, "cryVersion debe ser LATEST, LEGACY o RANDOM");
     boolean includeRegionalForms = config.bool("includeRegionalForms");
     var publicAttempts = config.boolOrDefault("publicAttempts", true);
+    var streakBonus = config.boolOrDefault("streakBonus", false);
     return new PokemonCryQuizConfig(generations, roundSeconds, rounds, cryVersion, includeRegionalForms,
-        publicAttempts);
+        publicAttempts, streakBonus);
   }
 }

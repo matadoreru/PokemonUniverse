@@ -42,6 +42,7 @@ export * from './games/pokemon-bingo/types.js';
 export * from './games/whos-that-pokemon/config.js';
 export * from './games/whos-that-pokemon/types.js';
 export * from './games/whos-that-pokemon/rules.js';
+export * from './games/speed-podium.js';
 export * from './games/pokedex-entry-guess/config.js';
 export * from './games/pokedex-entry-guess/types.js';
 export * from './games/type-chain/config.js';

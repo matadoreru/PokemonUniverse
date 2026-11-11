@@ -6,7 +6,7 @@ import { Chip, Icon } from '../../ui';
 import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
 import {
   GuessAttemptsFeed, GuessHints, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
-  guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, useGuessRound,
+  guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, guessSprite, GuessStreakChip, speedPodiumSolveDetail, useGuessRound,
 } from '../../room/guess-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import s from './WhosThat.module.css';
@@ -33,7 +33,7 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: ActiveGameProps)
   const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : 'Reconoce su silueta';
 
   const clue = lastRound
-    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {whoPokemonScoringLabel()}</>}
+    ? <GuessRoundReveal answers={[{ name: lastRound.pokemon.name, sprite: lastRound.pokemon.sprite }]} details={<>Generación {lastRound.pokemon.generation} · {whoPokemonScoringLabel(config?.streakBonus)}</>}
       clueTitle="Así era su silueta" clue={<span className={s.revealShadow}><img src={guessSprite(lastRound.pokemon.sprite)} alt="" /></span>} />
     : <GamePanel label="Silueta misteriosa normalizada" className={s.stage}>
       <span className={s.mark} aria-hidden="true">?</span>
@@ -47,15 +47,15 @@ export function WhosThatPokemonGame({ room, selfId, onAction }: ActiveGameProps)
 
   const side = lastRound
     ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
-      detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
+      detail={({ solve }) => solve ? speedPodiumSolveDetail(solve) : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, solved)} selfId={selfId} />
       {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
-  const bottom = <GuessPanel {...round.panel} question={GAME_NAME} guessText={whoPokemonScoringLabel()} gameName={GAME_NAME}
+  const bottom = <GuessPanel {...round.panel} question={GAME_NAME} guessText={whoPokemonScoringLabel(config?.streakBonus)} gameName={GAME_NAME}
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para la ronda ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer} meta={<GuessStreakChip streak={player?.streak} />}
     announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} />;
 }

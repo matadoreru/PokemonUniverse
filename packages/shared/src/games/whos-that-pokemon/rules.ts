@@ -1,3 +1,6 @@
-export function whoPokemonScoringLabel(): string {
-  return '1–10 pts por rapidez · bonus de orden +3 / +2 / +1';
+import { speedPodiumScoringLabel } from '../speed-podium.js';
+
+/** Ayuda de puntos de ¿Quién es ese Pokémon? (la de `SpeedPodiumScore`). */
+export function whoPokemonScoringLabel(streakBonus = false): string {
+  return speedPodiumScoringLabel(streakBonus);
 }

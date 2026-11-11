@@ -13,6 +13,8 @@ export const pokemonPaletteGuessConfigSchema = z.object({
   hintKinds: z.array(z.enum(POKEMON_PALETTE_HINT_KINDS)).transform((values) => [...new Set(values)]),
   /** Fallos de la ronda visibles para todos; apagado, cada jugador solo ve los suyos (el servidor no envía los demás). */
   publicAttempts: z.boolean().default(true),
+  /** Rachas: el segundo acierto seguido suma +1, el tercero +2 y, desde el cuarto, +3 (`speedPodiumStreakBonus`). */
+  streakBonus: z.boolean().default(false),
 }).strict();
 
 export type PokemonPaletteGuessConfig = z.infer<typeof pokemonPaletteGuessConfigSchema>;
@@ -26,4 +28,5 @@ export const defaultPokemonPaletteGuessConfig: PokemonPaletteGuessConfig = {
   hintsEnabled: false,
   hintKinds: ['GENERATION', 'TYPE', 'EVOLUTION'],
   publicAttempts: true,
+  streakBonus: false,
 };

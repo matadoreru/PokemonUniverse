@@ -11,6 +11,8 @@ import es.pokemonuniverse.domain.game.engine.ConfigValidationException;
 import es.pokemonuniverse.domain.game.engine.EngineException;
 import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.GamePhase;
+import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonAction;
+import es.pokemonuniverse.domain.game.engines.whosthatpokemon.WhosThatPokemonTypes.WhosThatPokemonSolve;
 import es.pokemonuniverse.domain.json.JsonTree;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
 import es.pokemonuniverse.golden.GoldenCatalogs;
@@ -19,6 +21,7 @@ import es.pokemonuniverse.golden.GoldenReplayer;
 import es.pokemonuniverse.support.EngineTestKit;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +35,7 @@ class WhosThatPokemonEngineTest {
   }
 
   private static WhosThatPokemonConfig config(List<Integer> generations) {
-    return new WhosThatPokemonConfig(generations, 20, 3, false, false, true);
+    return new WhosThatPokemonConfig(generations, 20, 3, false, false, true, false);
   }
 
   private static Pokemon withSprite(Pokemon pokemon, String sprite) {
@@ -42,6 +45,52 @@ class WhosThatPokemonEngineTest {
         pokemon.baseStatTotal(), pokemon.heightDecimeters(), pokemon.weightHectograms(), pokemon.evolutionStage(),
         pokemon.evolutionStageCount(), pokemon.legendaryStatus(), pokemon.color(), pokemon.abilities(),
         pokemon.names(), pokemon.types());
+  }
+
+  /** Juega {@code rounds} rondas: {@code p1} acierta las marcadas a los 2 s y {@code p2} no acierta ninguna. */
+  private List<WhosThatPokemonSolve> playP1(boolean streakBonus, List<Boolean> p1Solves,
+      List<Integer> streaksSeen) {
+    var context = context(2);
+    var config = new WhosThatPokemonConfig(List.of(1), 20, p1Solves.size(), false, false, true, streakBonus);
+    var state = engine.start(engine.createInitialState(config, context), context);
+    var solves = new ArrayList<WhosThatPokemonSolve>();
+    for (boolean solves1 : p1Solves) {
+      var now = context.withNow(state.roundStartedAt() + 2_000);
+      streaksSeen.add(engine.getPlayerState(state, "p1", now).streak());
+      if (solves1) {
+        state = engine.handleAction(state, "p1", new WhosThatPokemonAction(state.targetPokemonId()), now).state();
+        solves.add(state.solves().get("p1"));
+      }
+      state = engine.handleTimeout(state, context.withNow(state.roundEndsAt()));
+      assertEquals(GamePhase.ROUND_RESULTS, state.phase());
+      state = engine.handleTimeout(state, context.withNow(state.nextTransitionAt()));
+    }
+    assertEquals(GamePhase.GAME_RESULTS, state.phase());
+    return solves;
+  }
+
+  /** E6: la racha suma +1 en el segundo acierto seguido, +2 en el tercero y +3 desde el cuarto; fallar la rompe. */
+  @Test
+  void streakBonusGrowsUpToThreeAndBreaksOnAMiss() {
+    var streaks = new ArrayList<Integer>();
+    var solves = playP1(true, List.of(true, true, true, true, true, false, true), streaks);
+    assertEquals(List.of(0, 1, 2, 3, 3, 0), solves.stream().map(WhosThatPokemonSolve::streakBonus).toList());
+    for (var solve : solves) {
+      assertEquals(solve.speedPoints() + solve.placementBonus() + solve.streakBonus(), solve.points());
+    }
+    // Lo que ve p1 al empezar cada ronda: sus aciertos seguidos hasta la anterior.
+    assertEquals(List.of(0, 1, 2, 3, 4, 5, 0), streaks);
+  }
+
+  @Test
+  void withoutStreakBonusNothingChanges() {
+    var streaks = new ArrayList<Integer>();
+    var solves = playP1(false, List.of(true, true, true), streaks);
+    for (var solve : solves) {
+      assertEquals(null, solve.streakBonus());
+      assertEquals(solve.speedPoints() + solve.placementBonus(), solve.points());
+    }
+    assertEquals(Arrays.asList(null, null, null), streaks);
   }
 
   @Test

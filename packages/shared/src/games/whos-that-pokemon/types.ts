@@ -17,6 +17,8 @@ export interface WhosThatPokemonSolve {
   placementBonus: number;
   points: number;
   attempts: number;
+  /** Solo con `streakBonus`: lo que suma la racha en este acierto (ya incluido en `points`). */
+  streakBonus?: number;
 }
 
 export interface WhosThatPokemonRoundPublicResult {
@@ -52,4 +54,6 @@ export interface WhosThatPokemonPlayerState {
   lastAttempt: GuessAttemptOutcome | null;
   /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
   attempts?: WhosThatPokemonAttempt[];
+  /** Solo con `streakBonus`: rondas seguidas acertadas hasta ahora (0 si la última se falló). */
+  streak?: number;
 }

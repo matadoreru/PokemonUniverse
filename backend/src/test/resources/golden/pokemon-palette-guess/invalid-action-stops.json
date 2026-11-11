@@ -426,7 +426,8 @@
       "paletteSize": 8,
       "hintsEnabled": false,
       "hintKinds": [],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

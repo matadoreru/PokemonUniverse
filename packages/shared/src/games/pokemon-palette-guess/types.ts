@@ -3,7 +3,9 @@ import type { GuessAttemptOutcome, GuessedPokemon, PokemonGuessHintWithTypes } f
 
 export interface PokemonPaletteAttempt { playerId: string; guessedPokemon: GuessedPokemon; attemptedAt: number }
 export type PokemonPaletteHint = PokemonGuessHintWithTypes;
-export interface PokemonPaletteSolve { solveOrder: number; solvedAt: number; elapsedMs: number; speedPoints: number; placementBonus: number; points: number; attempts: number }
+export interface PokemonPaletteSolve { solveOrder: number; solvedAt: number; elapsedMs: number; speedPoints: number; placementBonus: number; points: number; attempts: number;
+  /** Solo con `streakBonus`: lo que suma la racha en este acierto (ya incluido en `points`). */
+  streakBonus?: number }
 
 export interface PokemonPaletteGuessPublicState {
   gameId: 'pokemon-palette-guess'; phase: GamePhase; roundNumber: number; totalRounds: number; colors: string[]; colorWeights: number[]; hints: PokemonPaletteHint[]; attempts: PokemonPaletteAttempt[]; solvedPlayers: Array<{ playerId: string; solveOrder: number }>;
@@ -13,4 +15,6 @@ export interface PokemonPaletteGuessPublicState {
 
 export interface PokemonPaletteGuessPlayerState { role: 'PLAYER' | 'SPECTATOR'; canGuess: boolean; solved: boolean; solveOrder: number | null; cooldownUntil: number | null; roundPoints: number; attemptCount: number; lastAttempt: GuessAttemptOutcome | null;
   /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
-  attempts?: PokemonPaletteAttempt[] }
+  attempts?: PokemonPaletteAttempt[];
+  /** Solo con `streakBonus`: rondas seguidas acertadas hasta ahora (0 si la última se falló). */
+  streak?: number }

@@ -184,12 +184,20 @@ public final class WhosThatPokemonEngine implements
         playerStats.put(playerId, playerStats.getOrDefault(playerId, GuessPlayerStats.ZERO).afterMiss());
       }
     }
+    // Quien no acierta la ronda pierde la racha.
+    var streaks = new LinkedHashMap<>(state.streaks());
+    if (state.config().streakBonus()) {
+      for (var playerId : state.playerIds()) {
+        if (!state.solves().containsKey(playerId)) streaks.put(playerId, 0);
+      }
+    }
     var lastRound = new WhosThatPokemonRoundResult(
         new WhosThatPokemonRoundPokemon(target.id(), target.name(), target.sprite(), target.generation()),
         new LinkedHashMap<>(state.solves()), new LinkedHashMap<>(state.attemptCounts()));
     return state.toBuilder()
         .phase(GamePhase.ROUND_RESULTS)
         .playerStats(playerStats)
+        .streaks(streaks)
         .roundEndsAt(null)
         .nextTransitionAt(context.now() + REVEAL_MS)
         .lastRound(lastRound)
@@ -269,9 +277,18 @@ public final class WhosThatPokemonEngine implements
       int solveOrder = state.solves().size() + 1;
       var score = SpeedPodiumScore.of(roundStartedAt, state.config().roundSeconds(), context.now(),
           solveOrder);
-      int points = score.totalPoints();
+      // Racha: los aciertos seguidos de este jugador, este incluido (solo con la opción).
+      var streaks = new LinkedHashMap<>(state.streaks());
+      Integer streakBonus = null;
+      if (state.config().streakBonus()) {
+        int streak = streaks.getOrDefault(playerId, 0) + 1;
+        streaks.put(playerId, streak);
+        streakBonus = SpeedPodiumScore.streakBonus(streak);
+      }
+      int points = score.totalPoints() + (streakBonus == null ? 0 : streakBonus);
       var solves = new LinkedHashMap<>(state.solves());
-      solves.put(playerId, WhosThatPokemonSolve.of(solveOrder, context.now(), elapsedMs, score, attemptCount));
+      solves.put(playerId,
+          WhosThatPokemonSolve.of(solveOrder, context.now(), elapsedMs, score, attemptCount, streakBonus));
       lastAttemptResult.put(playerId, new GuessLastAttempt(GuessAttemptOutcome.CORRECT, context.now()));
       var scores = new LinkedHashMap<>(state.scores());
       scores.put(playerId, state.scores().getOrDefault(playerId, 0) + points);
@@ -282,6 +299,7 @@ public final class WhosThatPokemonEngine implements
           .lastAttemptResult(lastAttemptResult)
           .scores(scores)
           .playerStats(playerStats)
+          .streaks(streaks)
           .build();
       return GameActionResult.accept(resolveIfComplete(next, context));
     }
@@ -345,7 +363,8 @@ public final class WhosThatPokemonEngine implements
         state.attemptCounts().getOrDefault(playerId, 0),
         state.lastAttemptResult().get(playerId),
         GuessingRound.ownAttempts(state.config().publicAttempts(), state.attempts(),
-            WhosThatPokemonAttempt::playerId, playerId));
+            WhosThatPokemonAttempt::playerId, playerId),
+        state.config().streakBonus() ? state.streaks().getOrDefault(playerId, 0) : null);
   }
 
   /**

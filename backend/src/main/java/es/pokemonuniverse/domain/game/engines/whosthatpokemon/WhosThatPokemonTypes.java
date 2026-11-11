@@ -80,11 +80,13 @@ public final class WhosThatPokemonTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record WhosThatPokemonSolve(int solveOrder, long solvedAt, long elapsedMs, int speedPoints,
-      int placementBonus, int points, int attempts) {
+      int placementBonus, int points, int attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer streakBonus) {
 
-    static WhosThatPokemonSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score, int attempts) {
+    static WhosThatPokemonSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score, int attempts,
+        @Nullable Integer streakBonus) {
       return new WhosThatPokemonSolve(solveOrder, solvedAt, elapsedMs, score.speedPoints(), score.placementBonus(),
-          score.totalPoints(), attempts);
+          score.totalPoints() + (streakBonus == null ? 0 : streakBonus), attempts, streakBonus);
     }
   }
 
@@ -121,6 +123,7 @@ public final class WhosThatPokemonTypes {
       Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
       Map<String, GuessPlayerStats> playerStats,
+      Map<String, Integer> streaks,
       int revealedHintCount,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
@@ -138,6 +141,7 @@ public final class WhosThatPokemonTypes {
       lastAttemptResult = frozenMap(lastAttemptResult);
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
+      streaks = frozenMap(streaks);
     }
 
     public static Builder builder() {
@@ -148,7 +152,7 @@ public final class WhosThatPokemonTypes {
       return new Builder().phase(phase).config(config).assetToken(assetToken).playerIds(playerIds).poolIds(poolIds)
           .roundNumber(roundNumber).targetPokemonId(targetPokemonId).usedPokemonIds(usedPokemonIds).attempts(attempts)
           .attemptCounts(attemptCounts).solves(solves).cooldownUntil(cooldownUntil)
-          .lastAttemptResult(lastAttemptResult).scores(scores).playerStats(playerStats)
+          .lastAttemptResult(lastAttemptResult).scores(scores).playerStats(playerStats).streaks(streaks)
           .revealedHintCount(revealedHintCount).roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
           .nextTransitionAt(nextTransitionAt).lastRound(lastRound);
     }
@@ -175,6 +179,7 @@ public final class WhosThatPokemonTypes {
       private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
       private Map<String, GuessPlayerStats> playerStats = Map.of();
+      private Map<String, Integer> streaks = Map.of();
       private int revealedHintCount;
       private Long roundStartedAt;
       private Long roundEndsAt;
@@ -216,6 +221,9 @@ public final class WhosThatPokemonTypes {
 
       public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
+      /** Aciertos seguidos de cada jugador hasta la última ronda (solo con {@code streakBonus}). */
+      public Builder streaks(Map<String, Integer> value) { streaks = value; return this; }
+
       public Builder revealedHintCount(int value) { revealedHintCount = value; return this; }
 
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
@@ -230,7 +238,7 @@ public final class WhosThatPokemonTypes {
         return new WhosThatPokemonState(Objects.requireNonNull(phase, "phase"),
             Objects.requireNonNull(config, "config"), Objects.requireNonNull(assetToken, "assetToken"), playerIds,
             poolIds, roundNumber, targetPokemonId, usedPokemonIds, attempts, attemptCounts, solves, cooldownUntil,
-            lastAttemptResult, scores, playerStats, revealedHintCount, roundStartedAt, roundEndsAt, nextTransitionAt,
+            lastAttemptResult, scores, playerStats, streaks, revealedHintCount, roundStartedAt, roundEndsAt, nextTransitionAt,
             lastRound);
       }
     }
@@ -274,7 +282,8 @@ public final class WhosThatPokemonTypes {
   public record WhosThatPokemonPlayerState(boolean canGuess, boolean solved, @Nullable Integer solveOrder,
       @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
       @Nullable GuessLastAttempt lastAttempt,
-      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<WhosThatPokemonAttempt> attempts) {}
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<WhosThatPokemonAttempt> attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer streak) {}
 
   /** {@code whosThatPokemonActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record WhosThatPokemonAction(String pokemonId) {

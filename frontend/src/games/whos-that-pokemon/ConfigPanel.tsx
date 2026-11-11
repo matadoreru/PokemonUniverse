@@ -2,6 +2,7 @@ import type { WhosThatPokemonConfig } from '@pokemon-universe/shared/public';
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../common/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
+import { StreakBonusToggle } from '../common/StreakBonusToggle';
 import { Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
@@ -23,6 +24,9 @@ export function WhosThatPokemonConfigPanel({ config, disabled, onChange }: { con
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <p className={c.note}>Las formas Gigamax y otras variantes no se activan: el catálogo solo normaliza de forma fiable las formas regionales.</p>
-    <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
+    <div className={c.pair}>
+      <PublicAttemptsToggle checked={value.publicAttempts} disabled={disabled} onChange={(publicAttempts) => void onChange({ ...value, publicAttempts })} />
+      <StreakBonusToggle checked={value.streakBonus} disabled={disabled} onChange={(streakBonus) => void onChange({ ...value, streakBonus })} />
+    </div>
   </fieldset>;
 }

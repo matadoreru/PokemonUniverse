@@ -344,7 +344,8 @@
       "rounds": 5,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

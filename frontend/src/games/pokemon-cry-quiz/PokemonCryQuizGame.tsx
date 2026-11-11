@@ -1,4 +1,4 @@
-import type { PokemonCryQuizConfig, PokemonCryQuizPlayerState, PokemonCryQuizPublicState } from '@pokemon-universe/shared/public';
+import { speedPodiumScoringText, type PokemonCryQuizConfig, type PokemonCryQuizPlayerState, type PokemonCryQuizPublicState } from '@pokemon-universe/shared/public';
 import { Play, RotateCcw, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CRY_PLAY_FAILED, cryAnnouncement, cryAudioEvents, cryVersionLabel, releaseCryDuck } from './presentation';
@@ -8,13 +8,13 @@ import { GamePanel, GameScreen } from '../../room/game-kit/GameScreen';
 import {
   GuessAttemptsFeed, GuessPanel, GuessPlayersPanel, GuessRevealBoard, GuessRoundReveal,
   guessPublicAttempts, guessRevealLines, guessScoreboard, guessSolvedOrders, useGuessRound,
+  GuessStreakChip, speedPodiumSolveDetail,
 } from '../../room/guess-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import s from './Cry.module.css';
 
 const GAME_NAME = 'Adivina el Grito';
 const QUESTION = '¿De quién es este grito?';
-const SCORING = 'Escúchalo las veces que quieras: cuanto antes aciertes, más puntos.';
 /** Alturas (y desfase del latido) de las barras del ecualizador decorativo. */
 const WAVES = [38, 62, 84, 56, 100, 72, 46, 90, 64, 34, 58].map((height, index) => ({ height, delay: (index * 137) % 600 }));
 
@@ -88,16 +88,16 @@ export function PokemonCryQuizGame({ room, selfId, onAction }: ActiveGameProps) 
 
   const side = lastRound
     ? <GuessRevealBoard lines={guessRevealLines(room.members, lastRound.solves, lastRound.attemptCounts)} selfId={selfId}
-      detail={({ solve }) => solve ? `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}` : null} />
+      detail={({ solve }) => solve ? speedPodiumSolveDetail(solve) : null} />
     : <>
       <GuessPlayersPanel lines={guessScoreboard(room.members, game.scores, guessSolvedOrders(game.solvedPlayers))} selfId={selfId} />
       {guessPublicAttempts(config) && <GuessAttemptsFeed attempts={game.attempts} members={members} colors={colors} />}
     </>;
 
-  const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={SCORING} gameName={GAME_NAME} solvedTitle="¡Grito acertado!"
+  const bottom = <GuessPanel {...round.panel} question={QUESTION} guessText={`Escúchalo las veces que quieras. ${speedPodiumScoringText(config?.streakBonus)}`} gameName={GAME_NAME} solvedTitle="¡Grito acertado!"
     watchingText="Puedes escuchar el grito y seguir el marcador."
     selector={{ pokemon, loading: poolLoading, loadError, onRetry: retryPool, inputLabel: `Buscar respuesta para el grito ${game.roundNumber}`, roundKey: game.roundNumber, onGuess: (pokemonId) => onAction({ type: 'GUESS_POKEMON', pokemonId }) }} />;
 
-  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer}
+  return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} timer={timer} meta={<GuessStreakChip streak={player?.streak} />}
     announcement={cryAnnouncement(announcement, audioError)} clue={clue} side={side} bottom={bottom} />;
 }

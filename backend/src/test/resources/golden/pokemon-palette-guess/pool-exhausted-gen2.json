@@ -157,7 +157,8 @@
       "hintKinds": [
         "GENERATION"
       ],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     },
     "initial": {
       "lifecycle": {

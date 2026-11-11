@@ -1,5 +1,6 @@
 package es.pokemonuniverse.domain.game.engines;
 
+import es.pokemonuniverse.domain.game.engine.infra.SpeedPodiumScore;
 import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessRules;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToRules;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeRules;
@@ -38,6 +39,7 @@ class WebPresentationRulesTest {
     sketchmon.put("guesserMaxPoints", SketchmonRules.guesserPoints(0));
     sketchmon.put("guesserMinPoints", SketchmonRules.guesserPoints(Long.MAX_VALUE));
     rules.put("sketchmon", sketchmon);
+    rules.put("speed-podium", speedPodium());
     rules.put("tcg-higher-lower", ordered("samePoints", TcgHigherLowerRules.SAME_POINTS,
         "correctPoints", TcgHigherLowerRules.CORRECT_POINTS));
     rules.put("type-duel", Map.of("maxInvalidCombinations", TypeDuelRules.TYPE_DUEL_MAX_INVALID_COMBINATIONS));
@@ -52,6 +54,19 @@ class WebPresentationRulesTest {
     var out = new LinkedHashMap<String, Object>();
     out.put(firstKey, first);
     out.put(secondKey, second);
+    return out;
+  }
+
+  /** {@code SpeedPodiumScore}: Who's That, Cry Quiz y Palette (rapidez, podio y la racha opcional). */
+  private static Map<String, Object> speedPodium() {
+    var out = new LinkedHashMap<String, Object>();
+    out.put("maxSpeedPoints", SpeedPodiumScore.MAX_SPEED_POINTS);
+    out.put("minSpeedPoints", SpeedPodiumScore.MIN_SPEED_POINTS);
+    out.put("podiumBonuses", SpeedPodiumScore.podiumBonuses());
+    out.put("maxStreakBonus", SpeedPodiumScore.MAX_STREAK_BONUS);
+    var streak = new LinkedHashMap<String, Integer>();
+    for (int solves = 1; solves <= 6; solves++) streak.put(String.valueOf(solves), SpeedPodiumScore.streakBonus(solves));
+    out.put("streakBonus", streak);
     return out;
   }
 

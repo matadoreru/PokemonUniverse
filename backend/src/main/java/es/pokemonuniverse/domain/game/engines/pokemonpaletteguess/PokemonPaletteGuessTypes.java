@@ -86,12 +86,14 @@ public final class PokemonPaletteGuessTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokemonPaletteSolve(int solveOrder, long solvedAt, long elapsedMs, int speedPoints, int placementBonus,
-      int points, int attempts) {
+      int points, int attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer streakBonus) {
 
     static PokemonPaletteSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score,
-        int attempts) {
+        int attempts,
+        @Nullable Integer streakBonus) {
       return new PokemonPaletteSolve(solveOrder, solvedAt, elapsedMs, score.speedPoints(), score.placementBonus(),
-          score.totalPoints(), attempts);
+          score.totalPoints() + (streakBonus == null ? 0 : streakBonus), attempts, streakBonus);
     }
   }
 
@@ -148,6 +150,7 @@ public final class PokemonPaletteGuessTypes {
       Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
       Map<String, GuessPlayerStats> playerStats,
+      Map<String, Integer> streaks,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
@@ -164,6 +167,7 @@ public final class PokemonPaletteGuessTypes {
       lastAttemptResult = frozenMap(lastAttemptResult);
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
+      streaks = frozenMap(streaks);
     }
 
     public static Builder builder() {
@@ -174,7 +178,7 @@ public final class PokemonPaletteGuessTypes {
       return new Builder().phase(phase).config(config).playerIds(playerIds).poolIds(poolIds).roundNumber(roundNumber)
           .targetPokemonId(targetPokemonId).usedPokemonIds(usedPokemonIds).attempts(attempts)
           .attemptCounts(attemptCounts).solves(solves).cooldownUntil(cooldownUntil)
-          .lastAttemptResult(lastAttemptResult).scores(scores).playerStats(playerStats)
+          .lastAttemptResult(lastAttemptResult).scores(scores).playerStats(playerStats).streaks(streaks)
           .roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt).nextTransitionAt(nextTransitionAt)
           .lastRound(lastRound);
     }
@@ -200,6 +204,7 @@ public final class PokemonPaletteGuessTypes {
       private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
       private Map<String, GuessPlayerStats> playerStats = Map.of();
+      private Map<String, Integer> streaks = Map.of();
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
@@ -238,6 +243,9 @@ public final class PokemonPaletteGuessTypes {
 
       public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
+      /** Aciertos seguidos de cada jugador hasta la última ronda (solo con {@code streakBonus}). */
+      public Builder streaks(Map<String, Integer> value) { streaks = value; return this; }
+
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
       public Builder roundEndsAt(@Nullable Long value) { roundEndsAt = value; return this; }
@@ -249,7 +257,7 @@ public final class PokemonPaletteGuessTypes {
       public PokemonPaletteGuessState build() {
         return new PokemonPaletteGuessState(Objects.requireNonNull(phase, "phase"),
             Objects.requireNonNull(config, "config"), playerIds, poolIds, roundNumber, targetPokemonId, usedPokemonIds,
-            attempts, attemptCounts, solves, cooldownUntil, lastAttemptResult, scores, playerStats, roundStartedAt,
+            attempts, attemptCounts, solves, cooldownUntil, lastAttemptResult, scores, playerStats, streaks, roundStartedAt,
             roundEndsAt, nextTransitionAt, lastRound);
       }
     }
@@ -284,7 +292,8 @@ public final class PokemonPaletteGuessTypes {
   public record PokemonPaletteGuessPlayerState(PokemonPaletteRole role, boolean canGuess, boolean solved,
       @Nullable Integer solveOrder, @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
       @Nullable GuessLastAttempt lastAttempt,
-      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonPaletteAttempt> attempts) {}
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonPaletteAttempt> attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer streak) {}
 
   /** {@code pokemonPaletteGuessActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record PokemonPaletteGuessAction(String pokemonId) {

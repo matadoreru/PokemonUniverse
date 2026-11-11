@@ -166,3 +166,14 @@ export function guessAnnouncement({ kind, roundNumber, answer, solveOrder, round
  * guardada sin la clave los muestra. Apagado, el servidor ya no envía los fallos ajenos: esto solo quita el panel.
  */
 export const guessPublicAttempts = (config: { publicAttempts?: boolean | undefined } | null | undefined): boolean => config?.publicAttempts !== false;
+
+/** «Racha ×N» de quien lleva al menos dos aciertos seguidos (solo con `streakBonus`); si no, `null`. */
+export function guessStreakLabel(streak: number | null | undefined): string | null {
+  return streak !== undefined && streak !== null && streak >= 2 ? `Racha ×${streak}` : null;
+}
+
+/** Desglose de un acierto en la revelación: «Rapidez 8 + orden 3» y, si la racha sumó, « + racha 2». */
+export function speedPodiumSolveDetail(solve: { speedPoints: number; placementBonus: number; streakBonus?: number | undefined }): string {
+  const streak = solve.streakBonus ? ` + racha ${solve.streakBonus}` : '';
+  return `Rapidez ${solve.speedPoints} + orden ${solve.placementBonus}${streak}`;
+}

@@ -45,11 +45,13 @@ public final class PokemonCryQuizTypes {
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record PokemonCryQuizSolve(int solveOrder, long solvedAt, long elapsedMs, int speedPoints,
-      int placementBonus, int points, int attempts) {
+      int placementBonus, int points, int attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer streakBonus) {
 
-    static PokemonCryQuizSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score, int attempts) {
+    static PokemonCryQuizSolve of(int solveOrder, long solvedAt, long elapsedMs, SpeedPodiumScore score, int attempts,
+        @Nullable Integer streakBonus) {
       return new PokemonCryQuizSolve(solveOrder, solvedAt, elapsedMs, score.speedPoints(), score.placementBonus(),
-          score.totalPoints(), attempts);
+          score.totalPoints() + (streakBonus == null ? 0 : streakBonus), attempts, streakBonus);
     }
   }
 
@@ -87,6 +89,7 @@ public final class PokemonCryQuizTypes {
       Map<String, GuessLastAttempt> lastAttemptResult,
       Map<String, Integer> scores,
       Map<String, GuessPlayerStats> playerStats,
+      Map<String, Integer> streaks,
       @Nullable Long roundStartedAt,
       @Nullable Long roundEndsAt,
       @Nullable Long nextTransitionAt,
@@ -103,6 +106,7 @@ public final class PokemonCryQuizTypes {
       lastAttemptResult = frozenMap(lastAttemptResult);
       scores = frozenMap(scores);
       playerStats = frozenMap(playerStats);
+      streaks = frozenMap(streaks);
     }
 
     public static Builder builder() {
@@ -114,7 +118,7 @@ public final class PokemonCryQuizTypes {
           .roundNumber(roundNumber).targetPokemonId(targetPokemonId).currentCryVersion(currentCryVersion)
           .usedPokemonIds(usedPokemonIds).attempts(attempts)
           .attemptCounts(attemptCounts).solves(solves).cooldownUntil(cooldownUntil)
-          .lastAttemptResult(lastAttemptResult).scores(scores).playerStats(playerStats)
+          .lastAttemptResult(lastAttemptResult).scores(scores).playerStats(playerStats).streaks(streaks)
           .roundStartedAt(roundStartedAt).roundEndsAt(roundEndsAt)
           .nextTransitionAt(nextTransitionAt).lastRound(lastRound);
     }
@@ -142,6 +146,7 @@ public final class PokemonCryQuizTypes {
       private Map<String, GuessLastAttempt> lastAttemptResult = Map.of();
       private Map<String, Integer> scores = Map.of();
       private Map<String, GuessPlayerStats> playerStats = Map.of();
+      private Map<String, Integer> streaks = Map.of();
       private Long roundStartedAt;
       private Long roundEndsAt;
       private Long nextTransitionAt;
@@ -184,6 +189,9 @@ public final class PokemonCryQuizTypes {
 
       public Builder playerStats(Map<String, GuessPlayerStats> value) { playerStats = value; return this; }
 
+      /** Aciertos seguidos de cada jugador hasta la última ronda (solo con {@code streakBonus}). */
+      public Builder streaks(Map<String, Integer> value) { streaks = value; return this; }
+
       public Builder roundStartedAt(@Nullable Long value) { roundStartedAt = value; return this; }
 
       public Builder roundEndsAt(@Nullable Long value) { roundEndsAt = value; return this; }
@@ -196,7 +204,7 @@ public final class PokemonCryQuizTypes {
         return new PokemonCryQuizState(Objects.requireNonNull(phase, "phase"),
             Objects.requireNonNull(config, "config"), Objects.requireNonNull(assetToken, "assetToken"), playerIds,
             poolIds, roundNumber, targetPokemonId, currentCryVersion, usedPokemonIds, attempts, attemptCounts, solves,
-            cooldownUntil, lastAttemptResult, scores, playerStats, roundStartedAt, roundEndsAt, nextTransitionAt,
+            cooldownUntil, lastAttemptResult, scores, playerStats, streaks, roundStartedAt, roundEndsAt, nextTransitionAt,
             lastRound);
       }
     }
@@ -240,7 +248,8 @@ public final class PokemonCryQuizTypes {
   public record PokemonCryQuizPlayerState(PokemonCryQuizRole role, boolean canGuess, boolean solved,
       @Nullable Integer solveOrder, @Nullable Long cooldownUntil, int roundPoints, int attemptCount,
       @Nullable GuessLastAttempt lastAttempt,
-      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonCryQuizAttempt> attempts) {}
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) List<PokemonCryQuizAttempt> attempts,
+      @Nullable @JsonInclude(JsonInclude.Include.NON_NULL) Integer streak) {}
 
   /** {@code whosThatPokemonActionSchema}: {@code { type: 'GUESS_POKEMON', pokemonId }} estricto, id de 1 a 96. */
   public record PokemonCryQuizAction(String pokemonId) {

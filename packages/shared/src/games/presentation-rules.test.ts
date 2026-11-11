@@ -4,7 +4,7 @@ import {
   LEARNSET_INITIAL_POINTS, LEARNSET_MIN_POINTS, LEARNSET_ORDER_BONUSES, learnsetManualRevealPoints, learnsetPoints,
   MOST_LIKELY_TO_WIN_POINTS, normalizeTabooText, ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS,
   POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS, RED_FLAG_WIN_POINTS,
-  SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS, TCG_HIGHER_LOWER_SAME_POINTS,
+  SKETCHMON_DRAWER_POINTS, SPEED_PODIUM_BONUSES, SPEED_PODIUM_MAX_POINTS, SPEED_PODIUM_MAX_STREAK_BONUS, SPEED_PODIUM_MIN_POINTS, speedPodiumScoringText, speedPodiumStreakBonus, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS, TCG_HIGHER_LOWER_SAME_POINTS,
   TYPE_DUEL_MAX_INVALID_COMBINATIONS, WHO_IS_WHO_WIN_POINTS, WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS,
 } from '../public.js';
 
@@ -22,6 +22,7 @@ interface PresentationRules {
   'would-you-rather': { majorityPoints: number; predictionPoints: number };
   'poke-taboo': { guesserMaxPoints: number; guesserMinPoints: number; descriptorPoints: number; normalizeTabooText: Record<string, string> };
   sketchmon: { drawerPoints: number; guesserMaxPoints: number; guesserMinPoints: number };
+  'speed-podium': { maxSpeedPoints: number; minSpeedPoints: number; podiumBonuses: number[]; maxStreakBonus: number; streakBonus: Record<string, number> };
   'type-duel': { maxInvalidCombinations: number };
   'who-is-who-pokemon': { winPoints: number };
 }
@@ -49,6 +50,16 @@ describe('reglas de presentación frente a Java', () => {
     expect({ drawerPoints: SKETCHMON_DRAWER_POINTS, guesserMaxPoints: SKETCHMON_GUESSER_MAX_POINTS, guesserMinPoints: SKETCHMON_GUESSER_MIN_POINTS }).toEqual(rules.sketchmon);
     expect({ maxInvalidCombinations: TYPE_DUEL_MAX_INVALID_COMBINATIONS }).toEqual(rules['type-duel']);
     expect({ winPoints: WHO_IS_WHO_WIN_POINTS }).toEqual(rules['who-is-who-pokemon']);
+  });
+
+  it('rapidez y podio (Who\'s That, Cry Quiz y Palette): constantes, racha y el texto de ayuda', () => {
+    const java = rules['speed-podium'];
+    expect({ maxSpeedPoints: SPEED_PODIUM_MAX_POINTS, minSpeedPoints: SPEED_PODIUM_MIN_POINTS, podiumBonuses: [...SPEED_PODIUM_BONUSES], maxStreakBonus: SPEED_PODIUM_MAX_STREAK_BONUS })
+      .toEqual({ maxSpeedPoints: java.maxSpeedPoints, minSpeedPoints: java.minSpeedPoints, podiumBonuses: java.podiumBonuses, maxStreakBonus: java.maxStreakBonus });
+    for (const [solves, bonus] of Object.entries(java.streakBonus)) expect(speedPodiumStreakBonus(Number(solves)), solves).toBe(bonus);
+    // La ayuda sale de las constantes: dice los tres extras del podio (antes Palette decía «el primero suma un extra»).
+    expect(speedPodiumScoringText()).toBe(`Cuanto antes aciertes, más puntos; los 3 primeros suman ${java.podiumBonuses.slice(0, -1).join(', ')} y ${java.podiumBonuses.at(-1)} extra.`);
+    expect(speedPodiumScoringText(true)).toContain(`hasta +${java.maxStreakBonus}`);
   });
 
   it('juegos de votar y Higher or Lower TCG', () => {

@@ -23,7 +23,8 @@
       "paletteSize": 8,
       "hintsEnabled": false,
       "hintKinds": [],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -47,7 +48,8 @@
       "paletteSize": 8,
       "hintsEnabled": false,
       "hintKinds": [],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -81,7 +83,8 @@
         "GENERATION",
         "CATEGORY"
       ],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -105,7 +108,8 @@
       "paletteSize": 5,
       "hintsEnabled": false,
       "hintKinds": [],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -129,7 +133,8 @@
       "paletteSize": 8,
       "hintsEnabled": false,
       "hintKinds": [],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -153,7 +158,8 @@
       "paletteSize": 8,
       "hintsEnabled": true,
       "hintKinds": [],
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -384,7 +390,8 @@
       "paletteSize": 8,
       "hintsEnabled": false,
       "hintKinds": [],
-      "publicAttempts": false
+      "publicAttempts": false,
+      "streakBonus": false
     }
   },
   {
@@ -416,6 +423,51 @@
       "hintsEnabled": false,
       "hintKinds": [],
       "publicAttempts": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "streakBonus": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "publicAttempts": true,
+      "streakBonus": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 3,
+      "paletteSize": 8,
+      "hintsEnabled": false,
+      "hintKinds": [],
+      "streakBonus": "sí"
     },
     "valid": false
   }

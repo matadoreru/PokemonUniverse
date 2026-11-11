@@ -80,7 +80,7 @@ const projections: Record<string, { publicState: Keys; playerState: Keys }> = {
   },
   'pokemon-cry-quiz': {
     publicState: { gameId: true, phase: true, roundNumber: true, totalRounds: true, cryUrl: true, attempts: true, solvedPlayers: true, scores: true, roundStartedAt: true, roundEndsAt: true, nextTransitionAt: true, lastRound: true, results: true } satisfies KeyList<PokemonCryQuizPublicState>,
-    playerState: { role: true, canGuess: true, solved: true, solveOrder: true, cooldownUntil: true, roundPoints: true, attemptCount: true, lastAttempt: true, attempts: 'opcional' } satisfies KeyList<PokemonCryQuizPlayerState>,
+    playerState: { role: true, canGuess: true, solved: true, solveOrder: true, cooldownUntil: true, roundPoints: true, attemptCount: true, lastAttempt: true, attempts: 'opcional', streak: 'opcional' } satisfies KeyList<PokemonCryQuizPlayerState>,
   },
   'pokemon-impostor': {
     publicState: { gameId: true, phase: true, mode: true, playerIds: true, aliveIds: true, eliminatedIds: true, spectatorIds: true, roundNumber: true, clues: true, clueOrder: true, currentClueTurnIndex: true, currentCluePlayerId: true, cluePendingIds: true, voteCompletedIds: true, voteCandidateIds: true, votingRound: true, roundStartedAt: true, roundEndsAt: true, nextTransitionAt: true, lastVoteResult: true, eliminationReveal: true, winnerTeam: true, finishReason: true, results: true, clueLap: 'opcional' } satisfies KeyList<PokemonImpostorPublicState>,
@@ -88,7 +88,7 @@ const projections: Record<string, { publicState: Keys; playerState: Keys }> = {
   },
   'pokemon-palette-guess': {
     publicState: { gameId: true, phase: true, roundNumber: true, totalRounds: true, colors: true, colorWeights: true, hints: true, attempts: true, solvedPlayers: true, scores: true, roundStartedAt: true, roundEndsAt: true, nextTransitionAt: true, lastRound: true, results: true } satisfies KeyList<PokemonPaletteGuessPublicState>,
-    playerState: { role: true, canGuess: true, solved: true, solveOrder: true, cooldownUntil: true, roundPoints: true, attemptCount: true, lastAttempt: true, attempts: 'opcional' } satisfies KeyList<PokemonPaletteGuessPlayerState>,
+    playerState: { role: true, canGuess: true, solved: true, solveOrder: true, cooldownUntil: true, roundPoints: true, attemptCount: true, lastAttempt: true, attempts: 'opcional', streak: 'opcional' } satisfies KeyList<PokemonPaletteGuessPlayerState>,
   },
   'pokemon-red-flag': {
     publicState: { gameId: true, phase: true, roundNumber: true, totalRounds: true, pokemon: true, flagMode: true, playerIds: true, submittedPlayerIds: true, revealedAnswers: true, votedPlayerIds: true, voteCandidateIds: true, voteRoundNumber: true, scores: true, roundEndsAt: true, nextTransitionAt: true, lastRound: true, results: true } satisfies KeyList<PokemonRedFlagPublicState>,
@@ -140,7 +140,7 @@ const projections: Record<string, { publicState: Keys; playerState: Keys }> = {
   },
   'whos-that-pokemon': {
     publicState: { gameId: true, phase: true, roundNumber: true, totalRounds: true, silhouetteSprite: true, visibleHints: true, attempts: true, solvedPlayers: true, scores: true, roundStartedAt: true, roundEndsAt: true, nextTransitionAt: true, lastRound: true, results: true } satisfies KeyList<WhosThatPokemonPublicState>,
-    playerState: { canGuess: true, solved: true, solveOrder: true, cooldownUntil: true, roundPoints: true, attemptCount: true, lastAttempt: true, attempts: 'opcional' } satisfies KeyList<WhosThatPokemonPlayerState>,
+    playerState: { canGuess: true, solved: true, solveOrder: true, cooldownUntil: true, roundPoints: true, attemptCount: true, lastAttempt: true, attempts: 'opcional', streak: 'opcional' } satisfies KeyList<WhosThatPokemonPlayerState>,
   },
   'would-you-rather': {
     publicState: { gameId: true, phase: true, roundNumber: true, totalRounds: true, prompt: true, playerIds: true, submittedPlayerIds: true, scores: true, roundEndsAt: true, nextTransitionAt: true, lastRound: true, results: true } satisfies KeyList<WouldYouRatherPublicState>,

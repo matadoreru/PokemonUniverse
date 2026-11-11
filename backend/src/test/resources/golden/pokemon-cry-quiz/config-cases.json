@@ -21,7 +21,8 @@
       "rounds": 5,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -43,7 +44,8 @@
       "rounds": 5,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -65,7 +67,8 @@
       "rounds": 1,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -87,7 +90,8 @@
       "rounds": 20,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -109,7 +113,8 @@
       "rounds": 5,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -131,7 +136,8 @@
       "rounds": 5,
       "cryVersion": "LEGACY",
       "includeRegionalForms": true,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -153,7 +159,8 @@
       "rounds": 5,
       "cryVersion": "RANDOM",
       "includeRegionalForms": false,
-      "publicAttempts": true
+      "publicAttempts": true,
+      "streakBonus": false
     }
   },
   {
@@ -341,7 +348,8 @@
       "rounds": 5,
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
-      "publicAttempts": false
+      "publicAttempts": false,
+      "streakBonus": false
     }
   },
   {
@@ -371,6 +379,48 @@
       "cryVersion": "LATEST",
       "includeRegionalForms": false,
       "publicAttempts": null
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "streakBonus": true
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "publicAttempts": true,
+      "streakBonus": true
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        2
+      ],
+      "roundSeconds": 20,
+      "rounds": 5,
+      "cryVersion": "LATEST",
+      "includeRegionalForms": false,
+      "streakBonus": "sí"
     },
     "valid": false
   }

@@ -15,6 +15,8 @@ export interface PokemonCryQuizSolve {
   placementBonus: number;
   points: number;
   attempts: number;
+  /** Solo con `streakBonus`: lo que suma la racha en este acierto (ya incluido en `points`). */
+  streakBonus?: number;
 }
 
 export interface PokemonCryQuizPublicState {
@@ -44,4 +46,6 @@ export interface PokemonCryQuizPlayerState {
   lastAttempt: GuessAttemptOutcome | null;
   /** Solo con `publicAttempts` apagado: los fallos propios de la ronda (los de los demás no llegan). */
   attempts?: PokemonCryQuizAttempt[];
+  /** Solo con `streakBonus`: rondas seguidas acertadas hasta ahora (0 si la última se falló). */
+  streak?: number;
 }
