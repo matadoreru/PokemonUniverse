@@ -323,14 +323,14 @@ function TabsSection() {
   );
 }
 
-function SegmentedDemo({ forced, disabledOption }: { forced?: ForcedState; disabledOption?: boolean }) {
+function SegmentedDemo({ forced, disabledOption, showLabel, hint }: { forced?: ForcedState; disabledOption?: boolean; showLabel?: boolean; hint?: string }) {
   const [value, setValue] = useState(60);
   const options = [
     { value: 30, label: '30 s' },
     { value: 60, label: '60 s' },
     { value: 90, label: '90 s', disabled: Boolean(disabledOption) },
   ];
-  return <Segmented value={value} options={options} onChange={setValue} label="Tiempo por ronda" {...force(forced)} />;
+  return <Segmented value={value} options={options} onChange={setValue} label="Tiempo por ronda" {...force(forced)} {...(showLabel ? { showLabel } : {})} {...(hint ? { hint } : {})} />;
 }
 
 function SegmentedSection() {
@@ -343,6 +343,15 @@ function SegmentedSection() {
       ))}
       <Fig id="segmented-disabled" caption="Con una opción deshabilitada">
         <SegmentedDemo disabledOption />
+      </Fig>
+      <Fig id="segmented-label" caption="Sobre crema con etiqueta visible" cream>
+        <SegmentedDemo showLabel />
+      </Fig>
+      <Fig id="segmented-label-hint" caption="Sobre crema con etiqueta y ayuda" cream>
+        <SegmentedDemo showLabel hint="Cuanto antes aciertes, más puntos." />
+      </Fig>
+      <Fig id="segmented-label-hint-focus" caption="Sobre crema con etiqueta y ayuda · foco" cream>
+        <SegmentedDemo showLabel hint="Cuanto antes aciertes, más puntos." forced="focus" />
       </Fig>
     </Section>
   );

@@ -1,4 +1,4 @@
-import type { KeyboardEvent, ReactNode } from 'react';
+import { useId, type KeyboardEvent, type ReactNode } from 'react';
 import { uiSound } from '../audio/uiSound';
 import { cx } from './cx';
 import type { ForcedState } from './cx';
@@ -16,13 +16,21 @@ export interface SegmentedProps<T extends string | number> {
   options: SegmentedOption<T>[];
   onChange: (v: T) => void;
   label: string;
+  /** Pinta `label` encima del grupo, que lo toma como nombre (`aria-labelledby`); sin ella es solo `aria-label`. */
+  showLabel?: boolean;
+  /** Ayuda debajo del grupo, que la lee como descripción (`aria-describedby`). */
+  hint?: string | undefined;
+  /** Con `showLabel` o `hint`, va en el envoltorio que agrupa etiqueta, grupo y ayuda; si no, en el propio grupo. */
   className?: string;
   /** Solo galería: estado forzado de la opción activa. */
   forced?: ForcedState;
 }
 
 /** Selector de un valor entre 2–5: grupo de radio con foco itinerante y flechas circulares. */
-export function Segmented<T extends string | number>({ value, options, onChange, label, className, forced }: SegmentedProps<T>) {
+export function Segmented<T extends string | number>({ value, options, onChange, label, showLabel, hint, className, forced }: SegmentedProps<T>) {
+  const labelId = useId();
+  const hintId = useId();
+  const wrapped = Boolean(showLabel || hint);
   const items = options.map((o) => ({ key: o.value, disabled: o.disabled }));
   const pick = (v: T) => {
     if (v === value) return;
@@ -36,8 +44,14 @@ export function Segmented<T extends string | number>({ value, options, onChange,
     pick(v);
     focusByIndex(e.currentTarget, 'radio', options.findIndex((o) => o.value === v));
   };
-  return (
-    <div className={cx(s.seg, className)} role="radiogroup" aria-label={label} onKeyDown={onKeyDown}>
+  const group = (
+    <div
+      className={cx(s.seg, !wrapped && className)}
+      role="radiogroup"
+      {...(showLabel ? { 'aria-labelledby': labelId } : { 'aria-label': label })}
+      {...(hint ? { 'aria-describedby': hintId } : {})}
+      onKeyDown={onKeyDown}
+    >
       {options.map((o) => (
         <button
           key={o.value}
@@ -52,6 +66,14 @@ export function Segmented<T extends string | number>({ value, options, onChange,
           {o.label}
         </button>
       ))}
+    </div>
+  );
+  if (!wrapped) return group;
+  return (
+    <div className={cx(s.field, className)}>
+      {showLabel && <span id={labelId} className={s.label}>{label}</span>}
+      {group}
+      {hint && <p id={hintId} className={s.hint}>{hint}</p>}
     </div>
   );
 }
