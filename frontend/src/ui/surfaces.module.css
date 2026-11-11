@@ -9,3 +9,25 @@
   --focus-ring: var(--navy);
   --focus-ring-on-yellow: var(--navy);
 }
+
+/*
+ * Fondo de los tonos de estado (`Tone` sin `neutral`): el icono de las placas, las casillas de pista. Se componen con
+ * `composes: tone_ok from '…/ui/surfaces.module.css'`. Fijan `--tone-bg` además del fondo: una pieza cuyo fondo base
+ * gana en la cascada (va después en el CSS) lo lee con `background: var(--tone-bg, <base>)`.
+ */
+.tone_ok {
+  --tone-bg: var(--ok);
+  background: var(--tone-bg);
+}
+.tone_bad {
+  --tone-bg: var(--bad);
+  background: var(--tone-bg);
+}
+.tone_info {
+  --tone-bg: var(--info);
+  background: var(--tone-bg);
+}
+.tone_warn {
+  --tone-bg: var(--warn);
+  background: var(--tone-bg);
+}

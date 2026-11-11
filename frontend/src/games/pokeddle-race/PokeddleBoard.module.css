@@ -150,18 +150,18 @@
   padding: 2px;
   border: var(--ol-2) solid var(--navy);
   border-radius: var(--r-badge);
-  background: var(--cream-2);
+  background: var(--tone-bg, var(--cream-2));
   color: var(--navy);
   text-align: center;
 }
 .tone_ok {
-  background: var(--ok);
+  composes: tone_ok from '../../ui/surfaces.module.css';
 }
 .tone_warn {
-  background: var(--warn);
+  composes: tone_warn from '../../ui/surfaces.module.css';
 }
 .tone_bad {
-  background: var(--bad);
+  composes: tone_bad from '../../ui/surfaces.module.css';
 }
 .cellLabel {
   display: none;

@@ -23,16 +23,16 @@
   box-shadow: var(--sh-hard-3);
 }
 .tone_ok {
-  background: var(--ok);
+  composes: tone_ok from './surfaces.module.css';
 }
 .tone_bad {
-  background: var(--bad);
+  composes: tone_bad from './surfaces.module.css';
 }
 .tone_info {
-  background: var(--info);
+  composes: tone_info from './surfaces.module.css';
 }
 .tone_warn {
-  background: var(--warn);
+  composes: tone_warn from './surfaces.module.css';
 }
 .text {
   flex: 1 1 auto;
