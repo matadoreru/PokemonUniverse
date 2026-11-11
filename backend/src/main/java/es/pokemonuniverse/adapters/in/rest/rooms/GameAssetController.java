@@ -3,14 +3,11 @@ package es.pokemonuniverse.adapters.in.rest.rooms;
 import es.pokemonuniverse.adapters.in.rest.ApiError;
 import es.pokemonuniverse.application.assets.GameAssetService;
 import es.pokemonuniverse.application.assets.LoadedAsset;
-import es.pokemonuniverse.application.assets.ResourceCapacityException;
 import es.pokemonuniverse.application.rooms.RoomCoordinator;
-import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Error;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.scheduling.annotation.ExecuteOn;
@@ -63,12 +60,6 @@ public class GameAssetController {
     if (audio.isEmpty()) return HttpResponse.notFound();
     if (!AUDIO_TYPE.matcher(audio.get().contentType()).find()) return HttpResponse.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     return ok(audio.get());
-  }
-
-  /** {@code ResourceCapacityError} de Node: 503 con su mensaje. */
-  @Error(exception = ResourceCapacityException.class)
-  public HttpResponse<ApiError> capacity(HttpRequest<?> request, ResourceCapacityException error) {
-    return HttpResponse.<ApiError>status(HttpStatus.SERVICE_UNAVAILABLE).body(ApiError.of(error.getMessage()));
   }
 
   /** Vacío si la ronda no es un entero o el motor no resuelve el recurso; los fallos del origen se propagan (500). */

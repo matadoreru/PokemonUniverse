@@ -1,6 +1,7 @@
 package es.pokemonuniverse.adapters.in.rest.feedback;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
+import es.pokemonuniverse.adapters.in.rest.RequestValidation;
 import es.pokemonuniverse.adapters.in.rest.ApiException;
 import es.pokemonuniverse.adapters.in.rest.ApiValidationException;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
@@ -20,7 +21,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import java.util.Optional;
 
@@ -45,9 +45,7 @@ public class FeedbackController {
   @Post
   public HttpResponse<FeedbackResponse> submit(@Body CreateFeedbackRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var author = current.orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Authentication required"));
-    var request = body.normalized();
-    var violations = validator.validate(request);
-    if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
+    var request = RequestValidation.valid(validator, body.normalized());
     var issues = request.crossFieldIssues();
     if (!issues.isEmpty()) throw new ApiValidationException(issues);
     var submitted = service.submit(author, request.toCommand());

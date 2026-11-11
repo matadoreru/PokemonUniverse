@@ -4,6 +4,7 @@ import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.registered
 import static es.pokemonuniverse.adapters.in.rest.UserContentRequests.validId;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
+import es.pokemonuniverse.adapters.in.rest.RequestValidation;
 import es.pokemonuniverse.adapters.in.rest.identity.Identity;
 import es.pokemonuniverse.application.friends.FriendService;
 import es.pokemonuniverse.application.friends.SendResult;
@@ -23,7 +24,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import java.util.Optional;
 
@@ -57,9 +57,7 @@ public class FriendsController {
   @Post("/requests")
   public HttpResponse<?> send(@Body SendFriendRequest body, @Parameter(hidden = true) @Identity Optional<AuthUser> current) {
     var userId = registeredUserId(current);
-    var request = body.normalized();
-    var violations = validator.validate(request);
-    if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
+    var request = RequestValidation.valid(validator, body.normalized());
     return switch (friends.sendRequest(userId, request.username())) {
       case SendResult.Requested requested ->
           HttpResponse.created(new RequestBody(FriendRequestResponse.outgoing(requested.request())));

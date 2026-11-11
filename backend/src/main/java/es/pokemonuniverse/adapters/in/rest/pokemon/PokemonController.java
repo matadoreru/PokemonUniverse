@@ -1,17 +1,14 @@
 package es.pokemonuniverse.adapters.in.rest.pokemon;
 
 import es.pokemonuniverse.adapters.in.rest.ApiError;
-import es.pokemonuniverse.application.assets.ResourceCapacityException;
 import es.pokemonuniverse.application.pokemon.PokemonCatalogService;
 import es.pokemonuniverse.application.pokemon.PokemonSearchQuery;
 import es.pokemonuniverse.application.pokemon.PokemonSpriteService;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Error;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.QueryValue;
@@ -90,12 +87,6 @@ public class PokemonController {
     if (!IMAGE_TYPE.matcher(asset.contentType()).find()) return HttpResponse.status(HttpStatus.BAD_GATEWAY);
     return HttpResponse.ok(asset.body()).contentType(MediaType.of(asset.contentType()))
         .header("Cache-Control", SPRITE_CACHE_CONTROL);
-  }
-
-  /** {@code ResourceCapacityError} de Node: 503 con su mensaje, como en {@code GameAssetController}. */
-  @Error(exception = ResourceCapacityException.class)
-  public HttpResponse<ApiError> capacity(HttpRequest<?> request, ResourceCapacityException error) {
-    return HttpResponse.<ApiError>status(HttpStatus.SERVICE_UNAVAILABLE).body(ApiError.of(error.getMessage()));
   }
 
   /** Solo enteros 1 a 9, sin duplicados; el resto de valores se ignora. */
