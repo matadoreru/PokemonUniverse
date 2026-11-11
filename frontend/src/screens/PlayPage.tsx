@@ -1,11 +1,12 @@
 import { CalendarDays, Crown, DoorOpen, Gamepad2, KeyRound, LogOut, Plus, Users } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { DailyPanel } from '../daily/DailyPanel';
 import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
 import { useDailyOverview } from '../daily/useDailyOverview';
 import { useRoom } from '../room/RoomContext';
+import { parseRoomLinkCode, ROOM_LINK_PARAM } from '../room/room-link';
 import { normalizeRoomCode, ROOM_CODE_LENGTH, roomErrorMessage } from '../room/roomCode';
 import { ConfirmDialog, cx, Field, Icon, Panel, Pill, Screen, ScreenHeader, StateBox } from '../ui';
 import tone from '../styles/tones.module.css';
@@ -23,6 +24,8 @@ function PanelTitle({ icon, children }: { icon: typeof Crown; children: string }
  * en columnas desde `lg` (apilados por debajo), centrados en la pantalla (`Screen`). En escritorio cabe sin scroll y
  * crece a 1536 y 1920 px. Si ya hay una sala activa, solo se ofrece volver a ella o salir, en una tarjeta centrada en el
  * hueco libre (con sus textos de reto si la sala es del reto). Una sala del reto ya en resultados se cierra sola.
+ * Un enlace `/play?sala=CÓDIGO` rellena el código y entra en cuanto hay conexión (una vez por código; si ya estás en
+ * otra sala, se queda en «Ya tienes una sala activa» y no sale de ella).
  */
 export function PlayPage() {
   const { createRoom, joinRoom, leaveRoom, startDaily, connected, room: currentRoom } = useRoom();
@@ -47,7 +50,11 @@ export function PlayPage() {
   // Si la recarga tras un fallo de «Jugar» trae otro estado (ya jugado, en curso), el error ya no viene a cuento.
   const dailyStatus = daily.overview?.status;
   useEffect(() => { if (dailyStatus && dailyStatus !== 'AVAILABLE') setDailyError(null); }, [dailyStatus]);
-  const [code, setCode] = useState('');
+  const [params, setParams] = useSearchParams();
+  const linkCode = parseRoomLinkCode(params.get(ROOM_LINK_PARAM));
+  const [code, setCode] = useState(() => linkCode ?? '');
+  // El último código de enlace ya atendido: StrictMode repite el efecto y la sala tarda en llegar tras el ack.
+  const linkHandled = useRef<string | null>(null);
   const [busy, setBusy] = useState<Busy>(null);
   const [createError, setCreateError] = useState('');
   const [joinError, setJoinError] = useState('');
@@ -89,11 +96,29 @@ export function PlayPage() {
       codeInput.current?.focus();
       return;
     }
+    await joinWith(code);
+  }
+
+  /** Une a la sala; desde un enlace, sustituye `/play?sala=` en el historial (Atrás no vuelve a entrar). */
+  async function joinWith(target: string, fromLink = false) {
     setBusy('join');
-    try { await joinRoom(code); navigate('/room'); }
-    catch (caught) { setJoinError(roomErrorMessage(caught)); codeInput.current?.focus(); }
+    try { await joinRoom(target); navigate('/room', { replace: fromLink }); }
+    catch (caught) {
+      setJoinError(roomErrorMessage(caught)); codeInput.current?.focus();
+      if (fromLink) setParams((current) => { const next = new URLSearchParams(current); next.delete(ROOM_LINK_PARAM); return next; }, { replace: true });
+    }
     finally { setBusy(null); }
   }
+
+  // Entrar por enlace: con conexión y sin sala propia; si el enlace es de la sala en la que ya estás, vuelve a ella.
+  useEffect(() => {
+    if (!linkCode || !connected || finishedDaily || linkHandled.current === linkCode) return;
+    linkHandled.current = linkCode;
+    if (currentRoom) { if (currentRoom.code === linkCode) navigate('/room', { replace: true }); return; }
+    resetErrors(); setCode(linkCode);
+    // `joinWith` no va en las dependencias: el enlace se atiende una sola vez por código.
+    void joinWith(linkCode, true);
+  }, [linkCode, connected, finishedDaily, currentRoom, navigate]);
 
   async function leave() {
     setBusy('leave'); setLeaveError('');

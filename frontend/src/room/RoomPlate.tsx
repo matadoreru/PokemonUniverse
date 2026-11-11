@@ -1,9 +1,10 @@
 import { gameModeLabel, type RoomView } from '@pokemon-universe/shared/public';
 import { Check, Copy, DoorOpen } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { HEADER_ROOM_ID } from '../components/Layout';
 import { HudPlate, Pill } from '../ui';
+import { useRoomLinkShare } from './room-link';
 import s from './RoomPlate.module.css';
 
 /**
@@ -29,22 +30,16 @@ export function roomPlateHeading(room: RoomView): { kicker: string; title: strin
 }
 
 /**
- * Placa de la sala (antes la barra del lobby): antetítulo, título, el código con su botón de copiar y «Salir». El título
+ * Placa de la sala (antes la barra del lobby): antetítulo, título, el código con su botón de copiar el enlace de la sala
+ * (`/play?sala=CÓDIGO`; en táctil abre el menú de compartir) y «Salir». El título
  * es texto, no `h1`: el encabezado de cada pantalla sigue en el `main`, que es donde lo busca el foco de ruta.
  * A menos de 1024 px «Salir» es una píldora redonda; a menos de 640 px se oculta además el texto (antetítulo y título) y
  * solo quedan el código y «Salir». Fuera del lobby, «Salir» pide confirmación (lo decide `onLeave`, en la sesión). La
  * sala del reto diario es privada: sin código ni botón de copiar.
  */
 export function RoomPlate({ room, onLeave }: { room: RoomView; onLeave(): void }) {
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<number | undefined>(undefined);
-  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const { copied, share } = useRoomLinkShare(room.code);
   const { kicker, title } = roomPlateHeading(room);
-  const copyCode = () => void navigator.clipboard.writeText(room.code).then(() => {
-    setCopied(true);
-    window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setCopied(false), 1_800);
-  }).catch(() => undefined);
   return (
     <HudPlate className={s.plate ?? ''}>
       <span className={s.text} title={`${kicker} · ${title}`}>
@@ -53,7 +48,7 @@ export function RoomPlate({ room, onLeave }: { room: RoomView; onLeave(): void }
       </span>
       <span className={s.actions}>
         {!room.daily && <>
-          <Pill variant="cream" icon={copied ? Check : Copy} onClick={copyCode} aria-label={`Copiar código de sala ${room.code}`} title="Copiar código">
+          <Pill variant="cream" icon={copied ? Check : Copy} onClick={share} aria-label={`Copiar enlace de la sala ${room.code}`} title="Copiar enlace de la sala">
             <span className={s.code}>{room.code}</span>
           </Pill>
           <span className="sr-only" aria-live="polite">{copied ? 'Código copiado' : ''}</span>

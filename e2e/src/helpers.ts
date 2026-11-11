@@ -173,7 +173,7 @@ export async function createRoom(page: Page): Promise<string> {
   await expect(crear).toBeEnabled();
   await crear.click();
   await expect(page).toHaveURL(/\/room$/);
-  const copiar = page.getByRole('button', { name: /Copiar código de sala/ });
+  const copiar = page.getByRole('button', { name: /Copiar enlace de la sala/ });
   await expect(copiar).toBeVisible();
   const label = (await copiar.getAttribute('aria-label')) ?? '';
   const code = label.match(/([A-Z2-9]{6})$/)?.[1];

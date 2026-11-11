@@ -60,7 +60,7 @@ describe('room plate', () => {
   it('shows the code with its copy button and an accessible «Salir de la sala»', () => {
     const room = roomView({ selectedGameId: 'higher-lower' });
     const markup = renderToStaticMarkup(createElement(RoomPlate, { room, onLeave: vi.fn() }));
-    expect(markup).toContain('aria-label="Copiar código de sala ABC234"');
+    expect(markup).toContain('aria-label="Copiar enlace de la sala ABC234"');
     expect(markup).toContain('Lobby de la sala');
     expect(markup).toContain('Prepara la partida');
     expect(markup.match(/aria-label="Salir de la sala"/g)).toHaveLength(2);
@@ -97,7 +97,7 @@ describe('daily room plate', () => {
   it('no enseña el código ni su botón de copiar, pero sí «Salir»', () => {
     const markup = renderToStaticMarkup(createElement(RoomPlate, { room: room('ROUND_ACTIVE'), onLeave: vi.fn() }));
     expect(markup).not.toContain('DAILY1');
-    expect(markup).not.toContain('Copiar código');
+    expect(markup).not.toContain('Copiar enlace');
     expect(markup).not.toContain('aria-live');
     expect(markup.match(/aria-label="Salir de la sala"/g)).toHaveLength(2);
   });

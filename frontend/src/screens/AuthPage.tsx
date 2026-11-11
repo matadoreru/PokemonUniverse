@@ -1,6 +1,7 @@
 import { ChartColumn, ImagePlus, ListPlus, LogIn, SlidersHorizontal, TrendingUp, User, UserPlus, Users, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { authRedirectTarget } from '../auth/auth-redirect';
 import { useAuth } from '../auth/AuthContext';
 import { authError, type AuthError, type AuthField } from '../auth/authErrors';
 import { LegalLine } from '../components/LegalLine';
@@ -63,6 +64,8 @@ export function AuthPage() {
   const errorBox = useRef<HTMLDivElement>(null);
   const auth = useAuth();
   const navigate = useNavigate();
+  // Tras entrar, vuelve a la ruta protegida que trajo aquí (con su `?sala=`) o a Jugar.
+  const { state } = useLocation();
 
   // Foco inicial solo al llegar: al cambiar de pestaña el foco se queda en la lista de pestañas.
   useEffect(() => { form.current?.querySelector('input')?.focus(); }, []);
@@ -84,7 +87,7 @@ export function AuthPage() {
       if (mode === 'login') await auth.login(String(data.get('identifier')), String(data.get('password')));
       if (mode === 'register') await auth.register(String(data.get('username')), String(data.get('email')), String(data.get('password')));
       if (mode === 'guest') await auth.guest(String(data.get('displayName')));
-      navigate('/play');
+      navigate(authRedirectTarget(state), { replace: true });
     } catch (caught) { setError(authError(caught)); } finally { setBusy(false); }
   }
 

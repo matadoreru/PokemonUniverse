@@ -57,7 +57,7 @@ async function empezarReto(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Lobby de la sala' })).toHaveCount(0);
   // La placa lleva «Reto diario» (a menos de 640 px oculta el texto de toda placa y deja solo «Salir»).
   await expect(page.getByText('Reto diario', { exact: true }).first()).toBeAttached();
-  await expect(page.getByRole('button', { name: /Copiar código de sala/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Copiar enlace de la sala/ })).toHaveCount(0);
 }
 
 function finishedHoy(): number {

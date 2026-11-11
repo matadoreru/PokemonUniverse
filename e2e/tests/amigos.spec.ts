@@ -129,7 +129,7 @@ for (const { w, h } of SIZES) {
       await capture(b.page, 'invitacion');
       await aviso(b.page).getByRole('button', { name: 'Unirse' }).click();
       await expect(b.page).toHaveURL(/\/room$/);
-      await expect(b.page.getByRole('button', { name: new RegExp(`Copiar código de sala.*${codigo}$`) })).toBeVisible();
+      await expect(b.page.getByRole('button', { name: new RegExp(`Copiar enlace de la sala.*${codigo}$`) })).toBeVisible();
       await expect(aviso(b.page)).toHaveCount(0);
 
       // 5b. En el lobby, «Gestionar a A» de B (no es host) solo trae la amistad: ya lo son.
@@ -172,7 +172,7 @@ for (const { w, h } of SIZES) {
       const confirmar = b.page.getByRole('dialog', { name: '¿Cambiar de sala?' });
       await expect(confirmar).toContainText(`Saldrás de tu sala actual. ¿Unirte a la sala de ${c.cuenta.username}?`);
       await confirmar.getByRole('button', { name: 'Unirme' }).click();
-      await expect(b.page.getByRole('button', { name: new RegExp(`Copiar código de sala.*${codigoC}$`) })).toBeVisible();
+      await expect(b.page.getByRole('button', { name: new RegExp(`Copiar enlace de la sala.*${codigoC}$`) })).toBeVisible();
 
       // 7. D invita a B y cierra su sala antes de que B pulse «Unirse»: B ve el error traducido.
       await hacerAmigosPorApi({ page: d.page, cuenta: d.cuenta }, { page: b.page, cuenta: b.cuenta });
