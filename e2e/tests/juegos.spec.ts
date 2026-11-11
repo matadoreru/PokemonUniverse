@@ -37,9 +37,6 @@ const SOCKET_IO = /\/socket\.io\//;
 /** Estado de un jugador de Pokédex Distance que ya ha elegido con las elecciones ocultas (`pokedex-distance-selection.ts`). */
 const DISTANCE_PICKED = '✓ Ya ha elegido';
 
-/** Lo que el backend decía de un juego sin motor; ya no puede salir (el registro exige un motor por manifiesto). */
-const NOT_PORTED = 'Este minijuego todavía no está disponible en el servidor Java.';
-
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
 const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'absurd-pokedex', 'unown-translator', 'who-am-i', 'pokemon-team-auction', 'pokemon-bluff-auction']);
 
@@ -98,8 +95,6 @@ for (const manifest of registry) {
         ]);
         if (outcome === 'unavailable') {
           const texto = await avisos(host.page);
-          expect(texto).not.toContain(NOT_PORTED);
-          await expect(host.page.getByText(NOT_PORTED)).toHaveCount(0);
           test.skip(true, `El servidor declara el juego no disponible: ${texto}`);
           return;
         }
@@ -115,10 +110,6 @@ for (const manifest of registry) {
       for (const jugador of jugadores) {
         expect(jugador.websockets, `${jugador.name}: WebSocket de la sala`).toContainEqual(expect.stringMatching(JAVA_WS));
         expect(jugador.websockets, `${jugador.name}: sin Socket.IO`).not.toContainEqual(expect.stringMatching(SOCKET_IO));
-      }
-      for (const jugador of jugadores) {
-        expect(await avisos(jugador.page)).not.toContain(NOT_PORTED);
-        await expect(jugador.page.getByText(NOT_PORTED)).toHaveCount(0);
       }
 
       if (asset) {
