@@ -34,6 +34,12 @@ describe('resultsCelebration', () => {
     expect(resultsCelebration({ won: false, standings })).toBeNull();
     expect(resultsCelebration({ won: false, podium: true })).toBe('podium');
   });
+  it('sin al menos 3 clasificados no hay podio: el que pierde un 1 contra 1 no lo oye', () => {
+    const duel = [{ id: 'a', position: 1, points: 9 }, { id: 'b', position: 2, points: 5 }];
+    expect(resultsCelebration({ won: false, standings: duel, selfId: 'b' })).toBeNull();
+    expect(resultsCelebration({ won: false, standings: duel, selfId: 'a' })).toBe('win');
+    expect(resultsCelebration({ won: false, standings: [...duel, { id: 'c', position: 3, points: 1 }], selfId: 'b' })).toBe('podium');
+  });
   it('las partidas cooperativas no celebran', () => {
     expect(resultsCelebration({ won: true, noWinner: true })).toBeNull();
     expect(resultsCelebration({ won: false, standings, selfId: 'b', noWinner: true })).toBeNull();

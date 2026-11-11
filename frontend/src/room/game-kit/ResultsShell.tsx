@@ -31,8 +31,8 @@ export interface CelebrationInput {
 /**
  * Celebración de los resultados de una partida para el jugador local: `win` si ganó (lo dice el juego con `won`, o la
  * clasificación con la insignia «Ganador»: 1.º y, con `winnersNeedPoints`, con puntos, así los empates en cabeza
- * también celebran), `podium` si quedó 2.º o 3.º (con `winnersNeedPoints`, solo con puntos) y nada en otro caso o en
- * las partidas cooperativas (`noWinner`).
+ * también celebran), `podium` si quedó 2.º o 3.º con al menos 3 jugadores clasificados (con `winnersNeedPoints`, solo
+ * con puntos; el que pierde un 1 contra 1 no tiene podio) y nada en otro caso o en las partidas cooperativas (`noWinner`).
  */
 export function resultsCelebration({ won, podium = false, standings, selfId, noWinner = false, winnersNeedPoints = false }: CelebrationInput): 'win' | 'podium' | null {
   if (noWinner) return null;
@@ -40,7 +40,8 @@ export function resultsCelebration({ won, podium = false, standings, selfId, noW
   if (podium) return 'podium';
   const own = selfId === undefined ? undefined : standings?.find((standing) => standing.id === selfId);
   if (!own || own.position > 3 || (winnersNeedPoints && own.points <= 0)) return null;
-  return own.position === 1 ? 'win' : 'podium';
+  if (own.position === 1) return 'win';
+  return (standings?.length ?? 0) >= 3 ? 'podium' : null;
 }
 
 /** Puesto de la clasificación de unos resultados. */
