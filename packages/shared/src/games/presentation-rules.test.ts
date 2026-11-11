@@ -2,9 +2,10 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   LEARNSET_INITIAL_POINTS, LEARNSET_MIN_POINTS, LEARNSET_ORDER_BONUSES, learnsetManualRevealPoints, learnsetPoints,
-  normalizeTabooText, POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS,
-  SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS, TYPE_DUEL_MAX_INVALID_COMBINATIONS,
-  WHO_IS_WHO_WIN_POINTS,
+  MOST_LIKELY_TO_WIN_POINTS, normalizeTabooText, ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS,
+  POKE_TABOO_DESCRIPTOR_POINTS, POKE_TABOO_GUESSER_MAX_POINTS, POKE_TABOO_GUESSER_MIN_POINTS, RED_FLAG_WIN_POINTS,
+  SKETCHMON_DRAWER_POINTS, SKETCHMON_GUESSER_MAX_POINTS, SKETCHMON_GUESSER_MIN_POINTS, TCG_HIGHER_LOWER_SAME_POINTS,
+  TYPE_DUEL_MAX_INVALID_COMBINATIONS, WHO_IS_WHO_WIN_POINTS, WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS,
 } from '../public.js';
 
 /**
@@ -14,6 +15,11 @@ import {
  */
 interface PresentationRules {
   'learnset-guess': { initialPoints: number; minPoints: number; orderBonuses: number[]; learnsetPoints: Record<string, number>; learnsetManualRevealPoints: Record<string, number> };
+  'most-likely-to': { winPoints: number };
+  'one-of-us-is-fake': { normalRoundPoints: number; fakeRoundPoints: number };
+  'pokemon-red-flag': { winPoints: number };
+  'tcg-higher-lower': { samePoints: number; correctPoints: number };
+  'would-you-rather': { majorityPoints: number; predictionPoints: number };
   'poke-taboo': { guesserMaxPoints: number; guesserMinPoints: number; descriptorPoints: number; normalizeTabooText: Record<string, string> };
   sketchmon: { drawerPoints: number; guesserMaxPoints: number; guesserMinPoints: number };
   'type-duel': { maxInvalidCombinations: number };
@@ -43,5 +49,14 @@ describe('reglas de presentación frente a Java', () => {
     expect({ drawerPoints: SKETCHMON_DRAWER_POINTS, guesserMaxPoints: SKETCHMON_GUESSER_MAX_POINTS, guesserMinPoints: SKETCHMON_GUESSER_MIN_POINTS }).toEqual(rules.sketchmon);
     expect({ maxInvalidCombinations: TYPE_DUEL_MAX_INVALID_COMBINATIONS }).toEqual(rules['type-duel']);
     expect({ winPoints: WHO_IS_WHO_WIN_POINTS }).toEqual(rules['who-is-who-pokemon']);
+  });
+
+  it('juegos de votar y Higher or Lower TCG', () => {
+    expect({ winPoints: MOST_LIKELY_TO_WIN_POINTS }).toEqual(rules['most-likely-to']);
+    expect({ normalRoundPoints: ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, fakeRoundPoints: ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS }).toEqual(rules['one-of-us-is-fake']);
+    expect({ winPoints: RED_FLAG_WIN_POINTS }).toEqual(rules['pokemon-red-flag']);
+    expect({ majorityPoints: WOULD_YOU_RATHER_MAJORITY_POINTS, predictionPoints: WOULD_YOU_RATHER_PREDICTION_POINTS }).toEqual(rules['would-you-rather']);
+    // Los demás aciertos valen 1: la web lo da por hecho («+1 punto»).
+    expect({ samePoints: TCG_HIGHER_LOWER_SAME_POINTS, correctPoints: 1 }).toEqual(rules['tcg-higher-lower']);
   });
 });

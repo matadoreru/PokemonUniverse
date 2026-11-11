@@ -1,4 +1,4 @@
-import type { MostLikelyToConfig, MostLikelyToPlayerState, MostLikelyToPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { MOST_LIKELY_TO_WIN_POINTS, type MostLikelyToConfig, type MostLikelyToPlayerState, type MostLikelyToPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Check, CheckCircle2, Clock3, Eye, Search, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { mostLikelyAnnouncement, mostLikelyCurrentStep, mostLikelyHeading, mostLikelySteps, mostLikelyVerdict } from '../games/most-likely-to/presentation';
@@ -118,7 +118,7 @@ export function MostLikelyToGame({ room, selfId, onAction }: { room: RoomView; s
     const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
     bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
       icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
-      text: 'Cada victoria vale 3 puntos; en un empate, los 3 puntos van a cada autor empatado.',
+      text: `Cada victoria vale ${MOST_LIKELY_TO_WIN_POINTS} puntos; en un empate, los ${MOST_LIKELY_TO_WIN_POINTS} puntos van a cada autor empatado.`,
       ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
     }} />;
   } else {

@@ -1,4 +1,4 @@
-import type { RoomView, WouldYouRatherConfig, WouldYouRatherOption, WouldYouRatherPlayerState, WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
+import { WOULD_YOU_RATHER_PREDICTION_POINTS, type RoomView, type WouldYouRatherConfig, type WouldYouRatherOption, type WouldYouRatherPlayerState, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Lock, Scale, Send, Trophy, Users, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import {
@@ -91,7 +91,7 @@ export function WouldYouRatherGame({ room, selfId, onAction }: { room: RoomView;
     const ready = current.preference !== null && current.prediction !== null;
     bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
       icon: Scale, tone: 'info', kicker: 'Paso 2 · Lee la sala', title: '¿Cuál será la mayoría?',
-      text: 'Puedes predecir la misma opción que elegiste o la contraria. Acertarla vale 2 puntos.',
+      text: `Puedes predecir la misma opción que elegiste o la contraria. Acertarla vale ${WOULD_YOU_RATHER_PREDICTION_POINTS} puntos.`,
     }}>
       <div className={s.ballotRow}>
         <div className={s.predictions} role="group" aria-label="Tu predicción de la mayoría">

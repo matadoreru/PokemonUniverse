@@ -1,4 +1,4 @@
-import type { GamePhase, WouldYouRatherOption, WouldYouRatherRoundResult } from '@pokemon-universe/shared/public';
+import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, type GamePhase, type WouldYouRatherOption, type WouldYouRatherRoundResult } from '@pokemon-universe/shared/public';
 import { namesList, type PhaseStep, type RunoffRoundLike } from '../../room/social-kit';
 
 /**
@@ -56,7 +56,7 @@ export function wouldYouRatherPlayerLine(result: WouldYouRatherRoundResult, play
 
 /** Veredicto propio de la revelación (kicker de la placa), sus puntos y de dónde salen. */
 export function wouldYouRatherVerdict(result: WouldYouRatherRoundResult, selfId: string, participating: boolean): { tone: 'ok' | 'bad' | 'info'; text: string; points: number; detail: string } {
-  const rule = result.majority ? '1 punto por estar en la mayoría y 2 por haberla predicho.' : 'En empate no se reparten puntos de elección ni de predicción.';
+  const rule = result.majority ? `${WOULD_YOU_RATHER_MAJORITY_POINTS} ${WOULD_YOU_RATHER_MAJORITY_POINTS === 1 ? 'punto' : 'puntos'} por estar en la mayoría y ${WOULD_YOU_RATHER_PREDICTION_POINTS} por haberla predicho.` : 'En empate no se reparten puntos de elección ni de predicción.';
   if (!participating) return { tone: 'info', text: 'Estás observando', points: 0, detail: rule };
   const own = result.players.find((entry) => entry.playerId === selfId);
   if (!own) return { tone: 'bad', text: 'No enviaste papeleta', points: 0, detail: rule };

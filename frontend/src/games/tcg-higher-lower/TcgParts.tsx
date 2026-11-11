@@ -1,4 +1,4 @@
-import type { RoomMemberView, TcgCardPublicView, TcgHigherLowerChoice, TcgHigherLowerOutcome, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
+import { TCG_HIGHER_LOWER_SAME_POINTS, type RoomMemberView, type TcgCardPublicView, type TcgHigherLowerChoice, type TcgHigherLowerOutcome, type TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
@@ -177,7 +177,7 @@ function plateContent({ kind, answer, pending, correctAnswer, outcome, participa
     case 'waiting': return { icon: Clock3, tone: 'info', kicker: 'Higher or Lower: Cartas', title: 'Preparando la ronda…', text: 'El servidor elige las dos cartas.' };
     default: return {
       icon: MousePointerClick, tone: 'warn', kicker: 'Tu respuesta', title: '¿La nueva carta vale más, igual o menos?',
-      text: <span className={hl.shortcuts}>Atajos: 1, 2 y 3 · Igual vale 2 puntos</span>,
+      text: <span className={hl.shortcuts}>Atajos: 1, 2 y 3 · Igual vale {TCG_HIGHER_LOWER_SAME_POINTS} puntos</span>,
       aside: <>{TCG_CHOICE_ORDER.map((choice, index) => <Pill key={choice} variant={choice === 'SAME' ? 'yellow' : 'blue'} icon={TCG_CHOICE_ICONS[choice]} badge={String(index + 1)}
         aria-label={tcgChoiceLabels[choice]} aria-keyshortcuts={String(index + 1)} className={hl.choice}
         loading={pending === choice} disabled={pending !== null && pending !== choice} onClick={() => onAnswer(choice)}>{tcgChoiceLabels[choice]}</Pill>)}</>,

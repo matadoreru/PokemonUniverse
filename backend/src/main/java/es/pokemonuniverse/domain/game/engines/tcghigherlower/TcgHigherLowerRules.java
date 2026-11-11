@@ -11,6 +11,12 @@ import java.util.LinkedHashMap;
 /** Traducción literal del TS que antes estaba en {@code tcg-higher-lower/rules.ts}. */
 public final class TcgHigherLowerRules {
 
+  /** Lo que vale acertar {@code SAME}. */
+  public static final int SAME_POINTS = 2;
+
+  /** Lo que vale acertar {@code HIGHER} o {@code LOWER}. */
+  public static final int CORRECT_POINTS = 1;
+
   private TcgHigherLowerRules() {}
 
   /** {@code tcgPriceComparison}: cómo es el precio actual respecto al anterior. */

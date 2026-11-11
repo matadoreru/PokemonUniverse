@@ -1,4 +1,4 @@
-import type { PokemonRedFlagPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { RED_FLAG_WIN_POINTS, type PokemonRedFlagPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Equal, MessageSquareHeart, Trophy, Vote } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -60,6 +60,6 @@ export function PokemonRedFlagResults({ room, selfId, onLobby, onEnd }: { room: 
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las frases más votadas" subtitle={`La Frase Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
-    <p className={s.rule}>Cada victoria vale 3 puntos, también cuando el empate persiste tras la segunda vuelta.</p>
+    <p className={s.rule}>Cada victoria vale {RED_FLAG_WIN_POINTS} puntos, también cuando el empate persiste tras la segunda vuelta.</p>
   </ResultsShell>;
 }

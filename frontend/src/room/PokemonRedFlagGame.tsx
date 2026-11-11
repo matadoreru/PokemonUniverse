@@ -1,4 +1,4 @@
-import type { PokemonRedFlagConfig, PokemonRedFlagPlayerState, PokemonRedFlagPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { RED_FLAG_WIN_POINTS, type PokemonRedFlagConfig, type PokemonRedFlagPlayerState, type PokemonRedFlagPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, PenLine, ThumbsDown, ThumbsUp, Trophy, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -134,7 +134,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: { room: RoomView;
     const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
     bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
       icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
-      text: 'Cada victoria vale 3 puntos, también cuando el empate persiste tras la segunda vuelta.',
+      text: `Cada victoria vale ${RED_FLAG_WIN_POINTS} puntos, también cuando el empate persiste tras la segunda vuelta.`,
       ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
     }} />;
   } else {

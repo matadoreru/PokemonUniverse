@@ -1,4 +1,4 @@
-import type { MostLikelyToPublicState, RoomView } from '@pokemon-universe/shared/public';
+import { MOST_LIKELY_TO_WIN_POINTS, type MostLikelyToPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Equal, MessageSquareHeart, Trophy, Vote } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -59,6 +59,6 @@ export function MostLikelyToResults({ room, selfId, onLobby, onEnd }: { room: Ro
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las respuestas favoritas" subtitle={`Most Likely To · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
-    <p className={s.rule}>Cada victoria vale 3 puntos. Una victoria compartida otorga los mismos 3 puntos a cada autor empatado.</p>
+    <p className={s.rule}>Cada victoria vale {MOST_LIKELY_TO_WIN_POINTS} puntos. Una victoria compartida otorga los mismos {MOST_LIKELY_TO_WIN_POINTS} puntos a cada autor empatado.</p>
   </ResultsShell>;
 }

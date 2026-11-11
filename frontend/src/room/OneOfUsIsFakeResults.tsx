@@ -1,4 +1,4 @@
-import type { OneOfUsIsFakePublicState, RoomView } from '@pokemon-universe/shared/public';
+import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type OneOfUsIsFakePublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { Equal, Search, ShieldAlert, ShieldQuestion } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -58,6 +58,6 @@ export function OneOfUsIsFakeResults({ room, selfId, onLobby, onEnd }: { room: R
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Una partida de sospechas" subtitle={`One of Us Is Fake · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
-    <p className={s.rule}>Si el grupo expulsa al fake, cada normal gana 2 puntos; si el fake se libra, gana 4.</p>
+    <p className={s.rule}>Si el grupo expulsa al fake, cada normal gana {ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS} puntos; si el fake se libra, gana {ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS}.</p>
   </ResultsShell>;
 }

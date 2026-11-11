@@ -1,4 +1,4 @@
-import type { RoomView, WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
+import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, type RoomView, type WouldYouRatherPublicState } from '@pokemon-universe/shared/public';
 import { Equal, Sparkles, Target, Users } from 'lucide-react';
 import { Chip, Icon } from '../ui';
 import { guessTop } from './guess-kit';
@@ -10,6 +10,8 @@ import s from '../games/would-you-rather/WouldYouRather.module.css';
 
 type Stats = NonNullable<WouldYouRatherPublicState['results']>['standings'][number]['stats'];
 const num = (stats: Stats, key: string) => Number(stats[key] ?? 0);
+/** Una ronda perfecta: en la mayoría y habiéndola predicho. */
+const PERFECT_ROUND_POINTS = WOULD_YOU_RATHER_MAJORITY_POINTS + WOULD_YOU_RATHER_PREDICTION_POINTS;
 
 /** Línea de métricas en texto: predicciones acertadas, elecciones en la mayoría, papeletas enviadas y rondas perfectas. */
 export function wouldYouRatherStatsLine(stats: Stats): string {
@@ -54,10 +56,10 @@ export function WouldYouRatherResults({ room, selfId, onLobby, onEnd }: { room: 
   const aside = <ResultsRecords id="wyr-records-title" records={[
     { key: 'predictions', title: 'Mejor lectura de la sala', icon: Target, names: predictions?.names ?? null, value: String(predictions?.value ?? ''), unit: predictions?.value === 1 ? 'predicción acertada' : 'predicciones acertadas' },
     { key: 'majority', title: 'Más veces en la mayoría', icon: Users, names: majority?.names ?? null, value: String(majority?.value ?? ''), unit: majority?.value === 1 ? 'elección mayoritaria' : 'elecciones mayoritarias' },
-    { key: 'perfect', title: 'Rondas perfectas', icon: Sparkles, names: perfect?.names ?? null, value: String(perfect?.value ?? ''), unit: perfect?.value === 1 ? 'ronda con 3 puntos' : 'rondas con 3 puntos' },
+    { key: 'perfect', title: 'Rondas perfectas', icon: Sparkles, names: perfect?.names ?? null, value: String(perfect?.value ?? ''), unit: perfect?.value === 1 ? `ronda con ${PERFECT_ROUND_POINTS} puntos` : `rondas con ${PERFECT_ROUND_POINTS} puntos` },
   ]} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Quien mejor leyó la sala" subtitle={`Would You Rather Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
-    <p className={s.rule}>Cada ronda daba hasta 3 puntos: 1 por formar parte de la mayoría y 2 por predecirla.</p>
+    <p className={s.rule}>Cada ronda daba hasta {PERFECT_ROUND_POINTS} puntos: {WOULD_YOU_RATHER_MAJORITY_POINTS} por formar parte de la mayoría y {WOULD_YOU_RATHER_PREDICTION_POINTS} por predecirla.</p>
   </ResultsShell>;
 }

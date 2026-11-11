@@ -66,6 +66,13 @@
       "6,7": 10
     }
   },
+  "most-likely-to": {
+    "winPoints": 3
+  },
+  "one-of-us-is-fake": {
+    "normalRoundPoints": 2,
+    "fakeRoundPoints": 4
+  },
   "poke-taboo": {
     "guesserMaxPoints": 5,
     "guesserMinPoints": 1,
@@ -82,15 +89,26 @@
       "Type: Null": "type null"
     }
   },
+  "pokemon-red-flag": {
+    "winPoints": 3
+  },
   "sketchmon": {
     "drawerPoints": 3,
     "guesserMaxPoints": 5,
     "guesserMinPoints": 2
+  },
+  "tcg-higher-lower": {
+    "samePoints": 2,
+    "correctPoints": 1
   },
   "type-duel": {
     "maxInvalidCombinations": 3
   },
   "who-is-who-pokemon": {
     "winPoints": 10
+  },
+  "would-you-rather": {
+    "majorityPoints": 1,
+    "predictionPoints": 2
   }
 }

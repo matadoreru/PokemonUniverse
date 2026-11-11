@@ -137,7 +137,8 @@ public final class TcgHigherLowerEngine
       TcgHigherLowerChoice choice = answer == null ? null : answer.choice();
       boolean correct = choice == correctAnswer;
       int streak = correct ? streaks.getOrDefault(id, 0) + 1 : 0;
-      int awardedPoints = correct ? correctAnswer == TcgHigherLowerChoice.SAME ? 2 : 1 : 0;
+      int awardedPoints = correct ? correctAnswer == TcgHigherLowerChoice.SAME ? TcgHigherLowerRules.SAME_POINTS
+          : TcgHigherLowerRules.CORRECT_POINTS : 0;
       scores.put(id, scores.getOrDefault(id, 0) + awardedPoints);
       streaks.put(id, streak);
       var prior = Objects.requireNonNull(playerStats.get(id), "playerStats");

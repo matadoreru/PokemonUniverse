@@ -1,4 +1,4 @@
-import type { RoomView, SubjectivePromptSource, WouldYouRatherConfig } from '@pokemon-universe/shared/public';
+import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, type RoomView, type SubjectivePromptSource, type WouldYouRatherConfig } from '@pokemon-universe/shared/public';
 import { useAuth } from '../../auth/AuthContext';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Segmented } from '../../ui';
@@ -36,6 +36,6 @@ export function WouldYouRatherConfigPanel({ config, disabled, room, selfId, onCh
     {registeredHost
       ? <CustomWouldYouRatherPromptManager disabled={disabled} />
       : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar dilemas personales de forma permanente.' : `Los dilemas personales pertenecen al host. Hay ${room.hostWouldYouRatherPromptCount ?? 0} activos.`}</p>}
-    <p className={s.note}>La papeleta combina tu elección y tu predicción. Se bloquea al enviarla y permanece secreta hasta el resultado. Acertar la mayoría vale 2 puntos; formar parte de ella, 1.</p>
+    <p className={s.note}>La papeleta combina tu elección y tu predicción. Se bloquea al enviarla y permanece secreta hasta el resultado. Acertar la mayoría vale {WOULD_YOU_RATHER_PREDICTION_POINTS} puntos; formar parte de ella, {WOULD_YOU_RATHER_MAJORITY_POINTS}.</p>
   </fieldset>;
 }

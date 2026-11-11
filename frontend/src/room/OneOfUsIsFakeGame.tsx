@@ -1,4 +1,4 @@
-import type { FakePokemonChoice, FakeRoundResult, OneOfUsIsFakeConfig, OneOfUsIsFakePlayerState, OneOfUsIsFakePublicState, RoomMemberView, RoomView } from '@pokemon-universe/shared/public';
+import { ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS, ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS, type FakePokemonChoice, type FakeRoundResult, type OneOfUsIsFakeConfig, type OneOfUsIsFakePlayerState, type OneOfUsIsFakePublicState, type RoomMemberView, type RoomView } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, HelpCircle, Search, ShieldAlert, Sparkles, Trophy, UserRoundX, X } from 'lucide-react';
 import { useMemo, useRef } from 'react';
 import { Avatar } from '../components/Avatar';
@@ -205,7 +205,7 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: { room: RoomView; 
     const seconds = Math.max(1, Math.ceil(transitionMs / 1_000));
     bottom = <SocialPlate titleRef={titleRef} textClassName={s.plateHelp} content={{
       icon: verdict.tone === 'ok' ? Trophy : verdict.tone === 'bad' ? X : Eye, tone: verdict.tone, kicker: verdict.text, title: `${last ? 'Clasificación' : 'Siguiente ronda'} en ${seconds}s`,
-      text: 'Si el grupo expulsa al fake, cada normal gana 2 puntos; si no, el fake gana 4.',
+      text: `Si el grupo expulsa al fake, cada normal gana ${ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS} puntos; si no, el fake gana ${ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS}.`,
       ...(verdict.points > 0 ? { aside: <strong className={s.points}>+{verdict.points}<small> {pointsWord(verdict.points)}</small></strong> } : {}),
     }} />;
   } else {
