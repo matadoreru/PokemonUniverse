@@ -40,6 +40,22 @@ describe('UnownGlyph', () => {
     expect(html).toMatch(/>P</);
   });
 
+  it('conLetraEnSuLugarPintaLaLetraSinGlifo', () => {
+    const html = render({ glyph: 3, letter: 'P', reveal: 'replace', size: 'lg' });
+    expect(html).toContain('role="img"');
+    expect(html).toContain('aria-label="letra P"');
+    expect(html).toContain('data-reveal="replace"');
+    expect(html).toMatch(/>P</);
+    expect(html).not.toContain('<svg');
+  });
+
+  it('enSuLugarPeroSinLetraSigueSiendoUnGlifoOculto', () => {
+    const html = render({ glyph: 3, reveal: 'replace' });
+    expect(html).toContain('<svg');
+    expect(html).toContain('aria-label="glifo oculto"');
+    expect(html).not.toContain('data-reveal');
+  });
+
   it('aceptaTamañoYClase', () => {
     const html = render({ glyph: 0, size: 'lg', className: 'extra' });
     expect(html).toContain('extra');

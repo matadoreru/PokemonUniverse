@@ -1,4 +1,4 @@
-/* Glifo Unown: el dibujo en currentColor y, si ya se conoce, su letra debajo. */
+/* Glifo Unown: el dibujo en currentColor y, si ya se conoce, su letra debajo o en su lugar. */
 .glyph {
   display: inline-flex;
   flex-direction: column;
@@ -33,6 +33,35 @@
 .lg .letter {
   font-size: var(--fs-22);
 }
+/*
+ * La letra en el sitio del glifo (`reveal="replace"`): una loseta del mismo lado que el glifo, para que un mensaje medio
+ * traducido no baile. La letra ocupa unos dos tercios de la loseta y nunca baja de 13 px.
+ */
+.tile {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--glyph-size);
+  height: var(--glyph-size);
+  border-radius: var(--r-badge);
+  background: var(--yellow-l);
+  box-shadow: inset 0 0 0 var(--ol-2) var(--yellow-d);
+  color: var(--ink);
+  font: 800 max(var(--fs-13), calc(var(--glyph-size) * 0.68)) / 1 var(--font-display);
+  text-transform: uppercase;
+  animation: pop 260ms var(--ease) both;
+}
+/* La loseta aparece al descubrirse: solo opacity y transform. */
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
 /* La letra aparece al descubrirse: solo opacity y transform. */
 @keyframes reveal {
   0% {
@@ -45,7 +74,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .letter {
+  .letter,
+  .tile {
     animation: none;
   }
 }

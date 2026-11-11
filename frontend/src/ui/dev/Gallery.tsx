@@ -1031,6 +1031,17 @@ function UnownGlyphSection() {
       <Fig id="unown-glyph-known" caption="descubierto (letra P debajo)">
         <UnownGlyph glyph={15} size="lg" letter="P" />
       </Fig>
+      <Fig id="unown-glyph-replace" caption="descubierto en el mensaje (la P en lugar del glifo)" cream>
+        <UnownGlyph glyph={15} size="lg" letter="P" reveal="replace" />
+      </Fig>
+      <Fig id="unown-glyph-message" caption="mensaje medio traducido: letras y glifos del mismo tamaño" wide cream>
+        <span className={s.glyphGrid}>
+          {[...'PIKACHU'].map((letter, index) => {
+            const glyph = letter.charCodeAt(0) - 65;
+            return <UnownGlyph key={index} glyph={glyph} size="lg" reveal="replace" {...('PA'.includes(letter) ? { letter } : {})} />;
+          })}
+        </span>
+      </Fig>
       <Fig id="unown-glyph-sizes" caption="sm, md y lg" cream>
         {(['sm', 'md', 'lg'] as const).map((size) => (
           <UnownGlyph key={size} glyph={20} size={size} letter="U" />

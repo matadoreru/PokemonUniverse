@@ -36,20 +36,36 @@ const GLYPH_PATHS: readonly string[] = [
 ];
 
 export type UnownGlyphSize = 'sm' | 'md' | 'lg';
+/** Dónde va la letra descubierta: debajo del glifo (leyenda) o en su lugar (mensaje). */
+export type UnownGlyphReveal = 'below' | 'replace';
 
 export interface UnownGlyphProps {
   /** Índice del glifo (0–25); fuera de rango no se dibuja nada. */
   glyph: number;
-  /** Letra ya descubierta: se muestra debajo y da la etiqueta «letra X». Sin ella, el glifo está oculto. */
+  /** Letra ya descubierta: da la etiqueta «letra X» y se muestra según `reveal`. Sin ella, el glifo está oculto. */
   letter?: string;
+  /**
+   * `below` (por defecto): el glifo con la letra debajo. `replace`: la letra grande en una loseta del mismo tamaño que
+   * el glifo, que desaparece (así un mensaje medio traducido se lee como texto).
+   */
+  reveal?: UnownGlyphReveal;
   size?: UnownGlyphSize;
   className?: string;
 }
 
 /** Glifo Unown: un ojo central con trazos gruesos alrededor, en `currentColor` para que valga en los dos temas. */
-export function UnownGlyph({ glyph, letter, size = 'md', className }: UnownGlyphProps) {
+export function UnownGlyph({ glyph, letter, reveal = 'below', size = 'md', className }: UnownGlyphProps) {
   if (!Number.isInteger(glyph) || glyph < 0 || glyph >= GLYPH_PATHS.length) return null;
   const known = letter !== undefined && letter !== '';
+  if (known && reveal === 'replace') {
+    return (
+      <span className={cx(s.glyph, s[size], className)} data-size={size} data-reveal="replace">
+        <span className={s.tile} role="img" aria-label={`letra ${letter}`}>
+          {letter}
+        </span>
+      </span>
+    );
+  }
   return (
     <span className={cx(s.glyph, s[size], className)} data-size={size}>
       <svg className={s.svg} viewBox="0 0 48 48" role="img" aria-label={known ? `letra ${letter}` : 'glifo oculto'} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
