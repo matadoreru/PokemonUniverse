@@ -29,6 +29,13 @@ public final class GameRuntime {
   /** Participantes cuya gracia expiró o que salieron de esta instancia. */
   public final Set<String> departedParticipantIds = new LinkedHashSet<>();
   public boolean resultsApplied;
+  /**
+   * Fin de la intro (fase de sala {@code GAME_INTRO}): hasta entonces el motor no ha empezado ({@code start}).
+   * {@code null} sin intro o cuando ya terminó.
+   */
+  public @Nullable Long introEndsAt;
+  /** Jugadores que pulsaron «¡Listo!» en la intro. */
+  public final Set<String> introReadyIds = new LinkedHashSet<>();
   public CompletableFuture<Void> auditReady;
   /** Azar propio de la partida (el reto diario); {@code null} usa el de la sala. */
   public final @Nullable DoubleSupplier random;

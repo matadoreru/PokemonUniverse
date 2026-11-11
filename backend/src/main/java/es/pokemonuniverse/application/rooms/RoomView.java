@@ -50,9 +50,19 @@ public record RoomView(
     long serverNow,
     /** En {@code GAME_RESULTS}, cuándo sigue sola la sesión; {@code null} si no sigue sola o fuera de los resultados. */
     @Nullable Long resultsEndsAt,
+    /** En {@code GAME_INTRO}, su plazo y quién está listo; {@code null} fuera de la intro. */
+    @Nullable IntroView intro,
     int hostCustomCategoryCount,
     int hostWouldYouRatherPromptCount,
     @Nullable DailyView daily) {
+
+  /**
+   * {@code GameIntroView}: la intro termina en {@code endsAt} o antes, cuando todos los {@code playerIds} (los jugadores
+   * conectados de la partida) están en {@code readyPlayerIds}.
+   */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record IntroView(long endsAt, List<String> playerIds, List<String> readyPlayerIds) {}
 
   /** {@code DailyRoomInfo}: la sala es del reto diario; {@code result} llega al terminar la partida. */
   @Serdeable
@@ -115,7 +125,7 @@ public record RoomView(
         .gameConfigs(gameConfigs).customizedGameIds(customizedGameIds).gameSelectionMode(gameSelectionMode)
         .allowedModes(allowedModes).nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
         .sessionStandings(sessionStandings).sessionHistory(sessionHistory).gameActionEpoch(gameActionEpoch).game(game)
-        .gamePlayerState(gamePlayerState).serverNow(serverNow).resultsEndsAt(resultsEndsAt).hostCustomCategoryCount(hostCustomCategoryCount)
+        .gamePlayerState(gamePlayerState).serverNow(serverNow).resultsEndsAt(resultsEndsAt).intro(intro).hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount).daily(daily);
   }
 
@@ -146,6 +156,7 @@ public record RoomView(
     private JsonNode gamePlayerState;
     private long serverNow;
     private Long resultsEndsAt;
+    private IntroView intro;
     private int hostCustomCategoryCount;
     private int hostWouldYouRatherPromptCount;
     private DailyView daily;
@@ -205,6 +216,8 @@ public record RoomView(
 
     public Builder resultsEndsAt(@Nullable Long v) { resultsEndsAt = v; return this; }
 
+    public Builder intro(@Nullable IntroView v) { intro = v; return this; }
+
     public Builder hostCustomCategoryCount(int v) { hostCustomCategoryCount = v; return this; }
 
     public Builder hostWouldYouRatherPromptCount(int v) { hostWouldYouRatherPromptCount = v; return this; }
@@ -215,8 +228,8 @@ public record RoomView(
       return new RoomView(roomInstanceId, revision, gameCatalogVersion, code, phase, hostId, maxPlayers, members,
           availableGames, selectedGameId, selectedGameConfig, sessionMode, gameConfigs, customizedGameIds,
           gameSelectionMode, allowedModes, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
-          gameActionEpoch, game, gamePlayerState, serverNow, resultsEndsAt, hostCustomCategoryCount, hostWouldYouRatherPromptCount,
-          daily);
+          gameActionEpoch, game, gamePlayerState, serverNow, resultsEndsAt, intro, hostCustomCategoryCount,
+          hostWouldYouRatherPromptCount, daily);
     }
   }
 }

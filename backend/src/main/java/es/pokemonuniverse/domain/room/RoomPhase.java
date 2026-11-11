@@ -5,6 +5,8 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 /** {@code RoomPhase} de {@code room.ts}: el lobby, cualquier fase de un minijuego y las fases de sesión. */
 public enum RoomPhase {
   LOBBY,
+  // Intro de la partida (nombre, reglas y «¡Listo!») antes de start: es de la sala, no de un motor.
+  GAME_INTRO,
   GAME_STARTING,
   ROUND_ACTIVE,
   ROUND_RESULTS,

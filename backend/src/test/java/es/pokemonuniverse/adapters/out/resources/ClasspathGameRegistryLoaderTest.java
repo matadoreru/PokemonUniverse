@@ -52,10 +52,20 @@ class ClasspathGameRegistryLoaderTest {
     assertEquals(List.of(), withoutGrace);
   }
 
+  /** «Cómo se juega» de la intro y de la ayuda: tres frases cortas y no vacías en cada juego. */
+  @Test
+  void everyManifestHasThreeShortHowToSentences() {
+    var wrong = registry.list().stream().filter(manifest -> manifest.howTo() == null || manifest.howTo().size() != 3
+        || manifest.howTo().stream().anyMatch(text -> text == null || text.isBlank() || text.length() > 90
+            || !text.equals(text.strip())))
+        .map(GameManifest::id).toList();
+    assertEquals(List.of(), wrong);
+  }
+
   @Test
   void aManifestWithoutEngineFailsAtStartup() throws Exception {
     var json = """
-        [{"id":"a","name":"A","icon":"x","description":"d","minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}}]
+        [{"id":"a","name":"A","icon":"x","description":"d","howTo":[],"minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}}]
         """;
     var manifests = ClasspathGameRegistryLoader.load(mapper,
         new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8)));
@@ -75,8 +85,8 @@ class ClasspathGameRegistryLoaderTest {
   @Test
   void duplicateIdsFailAtStartup() {
     var json = """
-        [{"id":"a","name":"A","icon":"x","description":"d","minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}},
-         {"id":"a","name":"B","icon":"x","description":"d","minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}}]
+        [{"id":"a","name":"A","icon":"x","description":"d","howTo":[],"minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}},
+         {"id":"a","name":"B","icon":"x","description":"d","howTo":[],"minPlayers":1,"profileStats":{"metrics":[]},"defaultConfig":{}}]
         """;
     var in = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
     assertThrows(IllegalStateException.class, () -> ClasspathGameRegistryLoader.load(mapper, in));
@@ -85,7 +95,7 @@ class ClasspathGameRegistryLoaderTest {
   @Test
   void integralConfigNumbersRoundTripWithoutDecimals() throws Exception {
     var json = """
-        [{"id":"a","name":"A","icon":"x","description":"d","minPlayers":2,"profileStats":{"metrics":[]},
+        [{"id":"a","name":"A","icon":"x","description":"d","howTo":[],"minPlayers":2,"profileStats":{"metrics":[]},
           "defaultConfig":{"roundSeconds":30,"nested":{"list":[1,2],"flag":true,"text":"t"}}}]
         """;
     List<GameManifest> games = ClasspathGameRegistryLoader.load(mapper,

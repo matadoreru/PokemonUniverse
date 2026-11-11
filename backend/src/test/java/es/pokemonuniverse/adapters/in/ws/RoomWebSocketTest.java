@@ -204,6 +204,14 @@ class RoomWebSocketTest {
     assertEquals(Map.of(), asMap(selected.get("data")));
     assertOk(host.command("room:start-game", null));
 
+    // La intro: el juego no se proyecta hasta que los dos pulsan «¡Listo!» (room:intro-ready).
+    var intro = host.awaitPush("room:state", view -> "GAME_INTRO".equals(text(view, "phase")));
+    assertTrue(intro.get("game").isNull(), intro.toString());
+    var ready = "{\"gameInstanceId\":\"" + intro.get("gameSkipState").get("gameInstanceId").getStringValue() + "\"}";
+    assertError("Petición de «¡Listo!» no válida.", host.command("room:intro-ready", "{}"));
+    assertOk(host.command("room:intro-ready", ready));
+    assertOk(guest.command("room:intro-ready", ready));
+
     var hostState = host.awaitPush("room:state", view -> "ROUND_ACTIVE".equals(text(view, "phase")));
     guest.awaitPush("room:state", view -> "ROUND_ACTIVE".equals(text(view, "phase")));
 
@@ -364,6 +372,9 @@ class RoomWebSocketTest {
     assertOk(third.command("room:set-ready", "{\"ready\":true}"));
     assertOk(host.command("room:select-game", "{\"gameId\":\"who-is-who-pokemon\"}"));
     assertOk(host.command("room:start-game", null));
+    var intro = host.awaitPush("room:state", view -> "GAME_INTRO".equals(text(view, "phase")));
+    var ready = "{\"gameInstanceId\":\"" + intro.get("gameSkipState").get("gameInstanceId").getStringValue() + "\"}";
+    for (var socket : List.of(host, second, third)) assertOk(socket.command("room:intro-ready", ready));
 
     // Cada cliente consume hasta su vista TURN_ACTIVE: así descarta también el cursors-reset del arranque, y la vista
     // del remitente trae la época con la que luego termina el turno (los cursores no la cambian).

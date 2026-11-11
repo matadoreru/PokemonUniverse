@@ -2994,6 +2994,7 @@ components:
       required:
       - defaultConfig
       - description
+      - howTo
       - icon
       - id
       - minPlayers
@@ -3009,6 +3010,10 @@ components:
           type: string
         description:
           type: string
+        howTo:
+          type: array
+          items:
+            type: string
         experimental:
           type: boolean
           nullable: false
@@ -3519,6 +3524,7 @@ components:
         \ y las fases de sesión."
       enum:
       - LOBBY
+      - GAME_INTRO
       - GAME_STARTING
       - ROUND_ACTIVE
       - ROUND_RESULTS

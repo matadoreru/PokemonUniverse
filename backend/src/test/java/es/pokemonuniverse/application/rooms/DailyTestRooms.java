@@ -38,7 +38,7 @@ public final class DailyTestRooms {
     this.time = new ManualTime(startMs);
     this.manager = new RoomCoordinator(registry(), MAPPER, new RecordingEvents(), new RecordingAudit(),
         new RecordingPersister(), UserGameConfigPreferences.NO_OP, HostContentProvider.EMPTY, time,
-        new SeededRandom(42), time, RoomSettings.DEFAULTS, () -> GameCatalogs.of(RoomTestKit.CATALOG),
+        new SeededRandom(42), time, RoomTestKit.NO_INTRO, () -> GameCatalogs.of(RoomTestKit.CATALOG),
         RoomTestKit.ASSETS, null, UserExperienceReader.NONE, ChatFilter.NONE, RoomActivity.NONE,
         dailyRuns.apply(time)) {
       @Override

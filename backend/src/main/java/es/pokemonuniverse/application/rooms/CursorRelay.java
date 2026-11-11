@@ -5,6 +5,7 @@ import es.pokemonuniverse.application.validation.ZodIssues;
 import es.pokemonuniverse.domain.room.LiveRoom;
 import es.pokemonuniverse.domain.room.MemberRole;
 import es.pokemonuniverse.domain.room.PresenceStatus;
+import es.pokemonuniverse.domain.room.RoomPhase;
 import io.micronaut.json.tree.JsonNode;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,7 +38,9 @@ final class CursorRelay {
   void update(LiveRoom room, String playerId, JsonNode payload) {
     var member = room.members.get(playerId);
     var game = room.game;
-    var channel = game == null ? null : game.engine.getCursorChannel(game.state, playerId).orElse(null);
+    // En la intro el motor aún no ha empezado: no hay canal.
+    var channel = game == null || room.phase == RoomPhase.GAME_INTRO ? null
+        : game.engine.getCursorChannel(game.state, playerId).orElse(null);
     if (channel == null || member == null || member.presence != PresenceStatus.CONNECTED
         || member.role != MemberRole.PLAYER) {
       throw new RoomException("No puedes compartir cursor en este momento.");
@@ -72,7 +75,9 @@ final class CursorRelay {
   void clear(LiveRoom room, String playerId) {
     rates.remove(room.code + ":" + playerId);
     var game = room.game;
-    var channel = game == null ? null : game.engine.getCursorChannel(game.state, playerId).orElse(null);
+    // En la intro el motor aún no ha empezado: no hay canal.
+    var channel = game == null || room.phase == RoomPhase.GAME_INTRO ? null
+        : game.engine.getCursorChannel(game.state, playerId).orElse(null);
     if (channel == null) return;
     for (var id : channel.playerIds()) {
       var target = room.members.get(id);

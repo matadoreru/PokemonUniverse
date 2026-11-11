@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class GameRegistryTest {
 
   private static GameManifest game(String id, Boolean recommended) {
-    return new GameManifest(id, id.toUpperCase(), "x", "d", null, recommended, 1, null, null,
+    return new GameManifest(id, id.toUpperCase(), "x", "d", List.of(), null, recommended, 1, null, null,
         new GameManifest.ProfileStatsDefinition(List.of(), null), Map.of());
   }
 

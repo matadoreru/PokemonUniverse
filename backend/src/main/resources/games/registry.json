@@ -4,6 +4,11 @@
     "name": "Pokédex Distance",
     "icon": "🎯",
     "description": "Elige un Pokémon cuyo número esté lo más cerca posible del objetivo.",
+    "howTo": [
+      "Elegid un Pokémon cuyo número de Pokédex quede lo más cerca posible del objetivo.",
+      "Cada ronda cae quien más se aleje, y gana quien quede en pie al final.",
+      "Si no elegís a tiempo, quedáis fuera; si empatáis en la peor distancia, hay desempate."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -55,6 +60,11 @@
     "recommended": true,
     "icon": "✨",
     "description": "Encuentra el shiny verdadero entre varios candidatos.",
+    "howTo": [
+      "Los candidatos son el mismo Pokémon con colores distintos: elegid el shiny real.",
+      "Cada acierto suma 1 punto, y los tres primeros en acertar ganan 3, 2 y 1 extra.",
+      "Solo hay un voto por ronda: en cuanto elegís, queda bloqueado."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -120,6 +130,11 @@
     "recommended": true,
     "icon": "🕵️",
     "description": "Da pistas, detecta a quienes no conocen el Pokémon y expulsa a los impostores.",
+    "howTo": [
+      "Por turnos, dad una pista del Pokémon secreto sin decir su nombre.",
+      "Los inocentes ganan si expulsan a los impostores; ellos, si igualan en número.",
+      "Los impostores no conocen el Pokémon, pero si uno lo adivina, gana su equipo."
+    ],
     "minPlayers": 3,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -200,6 +215,11 @@
     "name": "Higher or Lower",
     "icon": "📈",
     "description": "Acierta si la stat de dos Pokémon es mayor, menor o igual.",
+    "howTo": [
+      "Decidid si la estadística del nuevo Pokémon es mayor, menor o igual que la del anterior.",
+      "Acertar «mayor» o «menor» da 1 punto, y acertar «igual», 3.",
+      "Las rachas de aciertos y responder en la primera mitad del tiempo dan puntos extra."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -280,6 +300,11 @@
     "recommended": true,
     "icon": "⚔️",
     "description": "Elige un tipo en secreto y corre contra otro entrenador para encontrar la combinación exacta.",
+    "howTo": [
+      "En cada duelo, dos entrenadores eligen un tipo en secreto y se combinan.",
+      "Gana el duelo, y 5 puntos, quien antes nombre un Pokémon con esa combinación exacta.",
+      "Si los dos elegís el mismo tipo, solo vale un Pokémon de ese único tipo."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -373,6 +398,11 @@
     "name": "Learnset Guess",
     "icon": "📚",
     "description": "Descubre el Pokémon mientras se revela progresivamente su learnset por nivel.",
+    "howTo": [
+      "Adivinad el Pokémon por los movimientos que aprende al subir de nivel.",
+      "Cuantos menos movimientos se hayan revelado, más puntos; los dos primeros ganan extra.",
+      "Cada pocos segundos se revelan más movimientos, y fallar no resta puntos."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -455,6 +485,11 @@
     "name": "Pokédle Race",
     "icon": "🏁",
     "description": "Descubre tu Pokémon secreto mediante pistas comparativas antes que tus rivales.",
+    "howTo": [
+      "Cada cual tiene un Pokémon secreto: probad uno por ronda para descubrirlo.",
+      "Gana quien lo descubra en menos rondas; si empatáis, quien acertó antes.",
+      "Cada intento compara tipos, stats y más, y os dice si el secreto está por encima o debajo."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -573,6 +608,11 @@
     "name": "Pokémon Bingo",
     "icon": "🎉",
     "description": "Completa antes que nadie un tablero de condiciones con Pokémon distintos.",
+    "howTo": [
+      "Rellenad cada casilla de vuestro tablero con un Pokémon que cumpla su condición.",
+      "Gana quien complete antes el tablero; si nadie lo logra, manda quien lleve más casillas.",
+      "No podéis repetir un Pokémon en el tablero, pero sí moverlo a otra casilla."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -679,6 +719,11 @@
     "name": "¿Quién es ese Pokémon?",
     "icon": "❓",
     "description": "Reconoce la silueta antes que nadie y suma más puntos cuanto más rápido aciertes.",
+    "howTo": [
+      "Adivinad qué Pokémon se esconde tras la silueta antes de que acabe el tiempo.",
+      "Cuanto antes acertéis, más puntos; los tres primeros ganan 3, 2 y 1 extra.",
+      "Podéis probar las veces que queráis: fallar no resta y los fallos se ven."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -783,6 +828,11 @@
     "name": "Pokédex Entry Guess",
     "icon": "📖",
     "description": "Reconoce al Pokémon por una entrada oficial de la Pokédex en español.",
+    "howTo": [
+      "Leed la entrada oficial de la Pokédex y adivinad de qué Pokémon habla.",
+      "Puntúa el orden de acierto: quien lo saca primero se lleva más puntos.",
+      "El nombre del Pokémon aparece tapado, y fallar no resta puntos."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -893,6 +943,11 @@
     "name": "Type Chain",
     "icon": "⛓️",
     "description": "Cada cadena tiene un tipo: por turnos, nombra un Pokémon de ese tipo sin repetir. Gana quien más nombre.",
+    "howTo": [
+      "Por turnos, nombrad un Pokémon del tipo de la cadena sin repetir ninguno.",
+      "Gana quien más Pokémon válidos nombre; a igualdad, quien aguantó más.",
+      "Si se os acaba el turno sin nombrar uno, quedáis fuera; un fallo solo cuesta tiempo."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -957,6 +1012,11 @@
     "name": "Guess from Stats",
     "icon": "📊",
     "description": "Reconoce Pokémon por sus estadísticas base y resuelve antes que tus rivales.",
+    "howTo": [
+      "Mirad las estadísticas base y adivinad a qué Pokémon pertenecen.",
+      "Puntúa el orden de acierto: quien lo saca primero se lleva más puntos.",
+      "Vale cualquier Pokémon con esas mismas estadísticas, y fallar no resta puntos."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -1079,6 +1139,11 @@
     "recommended": true,
     "icon": "🔎",
     "description": "Reconoce el Pokémon mientras una cámara compartida se aleja progresivamente.",
+    "howTo": [
+      "Adivinad el Pokémon mientras la cámara se aleja poco a poco de la imagen.",
+      "Puntúa el orden de acierto, más un extra mayor cuanto más zoom quede.",
+      "Fallar no resta puntos, así que probad en cuanto lo tengáis claro."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -1199,6 +1264,11 @@
     "name": "PokéTaboo",
     "icon": "🎙️",
     "description": "Describe un Pokémon sin decir su nombre y ayuda al grupo a descubrirlo.",
+    "howTo": [
+      "Por turnos, uno describe un Pokémon por escrito y el resto intenta adivinarlo.",
+      "El primero en acertar suma de 5 a 1 según lo rápido; quien describe, 2.",
+      "Las pistas no pueden contener el nombre del Pokémon: se rechazan."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -1286,6 +1356,11 @@
     "name": "One of Us Is Fake",
     "icon": "🕵️",
     "description": "Elegid Pokémon para categorías secretas y descubrid quién recibió una diferente.",
+    "howTo": [
+      "Elegid un Pokémon que encaje con vuestra categoría; uno ha recibido otra distinta.",
+      "Si la votación expulsa al fake, el resto suma 2 puntos; si no, el fake suma 4.",
+      "El fake no sabe que lo es: debatid las elecciones antes de votar."
+    ],
     "minPlayers": 3,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -1363,6 +1438,11 @@
     "name": "Pokémon Bluff Auction",
     "icon": "🔨",
     "description": "Puja cuántos Pokémon puedes nombrar y demuestra tu apuesta ante el grupo.",
+    "howTo": [
+      "Por turnos, pujad cuántos Pokémon de la condición sabéis nombrar, o pasad.",
+      "Si quien gana la puja la cumple, suma 5 puntos; si no, el resto suma 2.",
+      "En la demostración, cada acierto da 5 segundos más y cada fallo quita 3."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -1449,6 +1529,11 @@
     "name": "Sketchmon",
     "icon": "🎨",
     "description": "Dibuja un Pokémon en tiempo real para que el resto lo descubra.",
+    "howTo": [
+      "Por turnos, uno dibuja un Pokémon en directo y el resto intenta adivinarlo.",
+      "El primero en acertar suma de 5 a 2 según lo rápido; quien dibuja, 3.",
+      "La ronda acaba en cuanto alguien acierta, así que dibujad lo esencial primero."
+    ],
     "experimental": false,
     "minPlayers": 2,
     "maxPlayers": 8,
@@ -1539,6 +1624,11 @@
     "name": "Pokémon Connections",
     "icon": "🧩",
     "description": "Encuentra en privado los grupos de Pokémon que comparten una conexión.",
+    "howTo": [
+      "Agrupad en privado los Pokémon del tablero en grupos de cuatro con algo en común.",
+      "Cada grupo vale 1 punto; los tres primeros en completar el tablero suman 3, 2 y 1 más.",
+      "Si agotáis los errores permitidos, os quedáis sin ronda."
+    ],
     "experimental": false,
     "minPlayers": 1,
     "maxPlayers": 8,
@@ -1635,6 +1725,11 @@
     "recommended": true,
     "icon": "💰",
     "description": "Construye tu equipo pujando por Pokémon en una subasta visible.",
+    "howTo": [
+      "Pujad por turnos con vuestras monedas para formar un equipo de seis Pokémon.",
+      "Gana el equipo que más sume en estadísticas base; a igualdad, quien guarde más monedas.",
+      "Quien pasa en un lote vuelve a pujar en el siguiente si aún tiene huecos."
+    ],
     "experimental": false,
     "minPlayers": 2,
     "maxPlayers": 8,
@@ -1700,6 +1795,11 @@
     "name": "Secret Ranking",
     "icon": "📋",
     "description": "Ordena cinco Pokémon en secreto e intenta pensar como el resto del grupo.",
+    "howTo": [
+      "Ordenad en secreto cinco Pokémon según la consigna de la ronda.",
+      "Cuanto más se parezca vuestro orden al del resto del grupo, más puntos.",
+      "No hay orden correcto: se trata de pensar como los demás."
+    ],
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
@@ -1786,6 +1886,11 @@
     "name": "Most Likely To",
     "icon": "👉",
     "description": "Elige qué Pokémon encaja mejor con una situación y convence al grupo.",
+    "howTo": [
+      "Elegid el Pokémon que mejor encaje con la situación de la ronda.",
+      "Después se votan las respuestas y la más votada suma 3 puntos.",
+      "No podéis votar vuestra propia respuesta; un empate va a segunda vuelta."
+    ],
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
@@ -1874,6 +1979,11 @@
     "name": "Would You Rather Pokémon",
     "icon": "⚖️",
     "description": "Elige entre dos situaciones absurdas y predice qué preferirá la mayoría.",
+    "howTo": [
+      "Elegid qué preferís de las dos situaciones y predecid qué elegirá la mayoría.",
+      "Estar en la mayoría da 1 punto, y acertar la predicción, 2 más.",
+      "Si las dos opciones empatan, nadie puntúa en esa ronda."
+    ],
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
@@ -1940,6 +2050,11 @@
     "recommended": true,
     "icon": "💬",
     "description": "Escribe la frase que mejor representa al Pokémon de la ronda y gana la votación anónima.",
+    "howTo": [
+      "Escribid una frase sobre el Pokémon de la ronda que encaje con la consigna.",
+      "Las frases se votan de forma anónima y la más votada suma 3 puntos.",
+      "No podéis votar vuestra propia frase; un empate va a segunda vuelta."
+    ],
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
@@ -2028,6 +2143,11 @@
     "icon": "🃏",
     "recommended": true,
     "description": "Compara el precio actual de dos cartas Pokémon TCG.",
+    "howTo": [
+      "Decidid si la nueva carta vale más, menos o lo mismo que la anterior.",
+      "Acertar «más» o «menos» da 1 punto, y acertar «igual», 2.",
+      "A igualdad de puntos, desempata la mejor racha de aciertos."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -2099,6 +2219,11 @@
     "icon": "🔊",
     "recommended": true,
     "description": "Escucha el grito oficial y descubre qué Pokémon lo está haciendo.",
+    "howTo": [
+      "Escuchad el grito oficial y adivinad qué Pokémon lo hace.",
+      "Cuanto antes acertéis, más puntos; los tres primeros ganan 3, 2 y 1 extra.",
+      "Podéis escucharlo las veces que queráis, y fallar no resta puntos."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -2194,6 +2319,11 @@
     "icon": "🧠",
     "recommended": true,
     "description": "Responde preguntas objetivas sobre tipos, generaciones, estadísticas y medidas.",
+    "howTo": [
+      "Responded preguntas sobre tipos, generaciones, estadísticas y medidas.",
+      "Cada acierto vale 100 puntos, y hasta 100 más cuanto antes respondáis.",
+      "Solo hay una respuesta por pregunta: en cuanto elegís, queda bloqueada."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -2417,6 +2547,11 @@
     "icon": "🎨",
     "recommended": true,
     "description": "Reconoce al Pokémon usando únicamente los colores dominantes de su sprite.",
+    "howTo": [
+      "Adivinad el Pokémon fijándoos solo en los colores principales de su sprite.",
+      "Cuanto antes acertéis, más puntos; los tres primeros ganan 3, 2 y 1 extra.",
+      "Podéis probar las veces que queráis: fallar no resta y los fallos se ven."
+    ],
     "minPlayers": 1,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -2516,6 +2651,11 @@
     "name": "Quién es Quién — Pokémon",
     "icon": "🃏",
     "description": "Dos equipos se enfrentan para descubrir el Pokémon secreto rival.",
+    "howTo": [
+      "En vuestro turno, preguntad por voz al otro equipo (sí o no) y bajad cartas.",
+      "El equipo que adivine el Pokémon secreto rival gana y cada miembro suma 10.",
+      "Solo hay un intento de adivinar por turno, y fallar pasa el turno."
+    ],
     "minPlayers": 2,
     "maxPlayers": 8,
     "presenceGraceMs": 8000,
@@ -2568,6 +2708,11 @@
     "name": "Pokédex Absurda",
     "icon": "📜",
     "description": "Escribe la entrada de Pokédex más absurda para un Pokémon real, o cuela la tuya junto a la oficial.",
+    "howTo": [
+      "Escribid la entrada de Pokédex más absurda para el Pokémon de la ronda.",
+      "Cada voto recibido suma 1 punto, y la entrada más votada gana 2 más.",
+      "No podéis votar vuestra propia entrada."
+    ],
     "experimental": false,
     "minPlayers": 3,
     "maxPlayers": 8,
@@ -2650,6 +2795,11 @@
     "name": "Traductor Unown",
     "icon": "🔣",
     "description": "Descifra nombres escritos con glifos Unown: cada ronda empieza con una o dos letras y las pistas van revelando más.",
+    "howTo": [
+      "Descifrad el nombre escrito con glifos Unown antes de que acabe el tiempo.",
+      "Descifrarlo da 1 punto, más 1 por cada letra que siguiera oculta.",
+      "Cada glifo es siempre la misma letra, y un fallo os bloquea 3 segundos."
+    ],
     "experimental": false,
     "minPlayers": 1,
     "maxPlayers": 8,
@@ -2723,6 +2873,11 @@
     "name": "¿Quién soy?",
     "icon": "🎭",
     "description": "Todos ven tu Pokémon menos tú: pregunta, deduce y adivina quién eres con las menos preguntas posibles.",
+    "howTo": [
+      "Todos ven vuestro Pokémon menos vosotros: en vuestro turno, haced una pregunta.",
+      "Acertar da 10 puntos menos 1 por pregunta; los tres primeros ganan 3, 2 y 1 extra.",
+      "Solo podéis adivinar una vez por turno: acertéis o no, el turno pasa."
+    ],
     "experimental": false,
     "minPlayers": 2,
     "maxPlayers": 8,

@@ -27,9 +27,16 @@ final class FakeEngine implements GameEngine<JsonNode, FakeEngine.State, JsonNod
   record State(GamePhase phase, long roundEndsAt, List<String> playerIds, Map<String, Integer> scores) {}
 
   private final GameManifest manifest;
+  /** {@code start} falla (para probar el final de la intro). */
+  private final boolean failingStart;
 
   FakeEngine(GameManifest manifest) {
+    this(manifest, false);
+  }
+
+  FakeEngine(GameManifest manifest, boolean failingStart) {
     this.manifest = manifest;
+    this.failingStart = failingStart;
   }
 
   @Override
@@ -64,6 +71,7 @@ final class FakeEngine implements GameEngine<JsonNode, FakeEngine.State, JsonNod
 
   @Override
   public State start(State state, GameContext context) {
+    if (failingStart) throw new IllegalStateException("start falso que falla");
     return new State(GamePhase.ROUND_ACTIVE, context.now() + 10_000, state.playerIds(), state.scores());
   }
 

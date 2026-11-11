@@ -18,6 +18,8 @@ public record GameManifest(
     String name,
     String icon,
     String description,
+    /** «Cómo se juega»: tres frases cortas (qué hacer, cómo se puntúa y un consejo), en la intro y en la ayuda. */
+    List<String> howTo,
     @Nullable @Schema(nullable = false) Boolean experimental,
     @Nullable @Schema(nullable = false) Boolean recommended,
     int minPlayers,

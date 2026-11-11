@@ -111,7 +111,7 @@ class RoomCoordinatorDailyTest {
   final RecordingPersister persister = new RecordingPersister();
   final RecordingDailyRuns runs = new RecordingDailyRuns();
   final GameRegistry registry = RoomTestKit.registry();
-  RoomCoordinator manager = build(RoomSettings.DEFAULTS);
+  RoomCoordinator manager = build(RoomTestKit.NO_INTRO);
 
   private RoomCoordinator build(RoomSettings settings) {
     return RoomTestKit.coordinator(registry, events, audit, persister, UserGameConfigPreferences.NO_OP,
@@ -203,6 +203,48 @@ class RoomCoordinatorDailyTest {
     assertTrue(gameRandom.calls > afterStart, "la segunda ronda no usó el azar de la partida");
     assertEquals(0, random.nextCalls, "el azar global se usó para el contenido");
     assertEquals(CATALOG, manager.currentPokemonCatalog());
+  }
+
+  /**
+   * El reto también tiene intro: el motor empieza al pulsar «¡Listo!» (o al vencer su plazo) y la partida es la misma
+   * que sin intro, extracción a extracción del azar del reto. Durante la intro nada se observa ni consume ese azar.
+   */
+  @Test
+  void dailyHasAnIntroAndStaysDeterministic() {
+    var reference = new CountingSupplier();
+    var direct = start("pokedex-distance", reference);
+    var directState = direct.game.state;
+    int directCalls = reference.calls;
+
+    manager = build(RoomSettings.DEFAULTS);
+    var gameRandom = new CountingSupplier();
+    var room = start("pokedex-distance", gameRandom);
+    assertEquals(RoomPhase.GAME_INTRO, room.phase);
+    assertEquals(RoomPhase.GAME_INTRO, lastState().phase());
+    assertEquals(List.of(ASH.id()), lastState().intro().playerIds());
+    assertNull(lastState().game());
+    int observed = runs.observed.size();
+    int launchCalls = gameRandom.calls;
+    manager.view(room, ASH.id());
+    manager.disconnect(ASH.id(), "socket-ash");
+    manager.join(ASH, "socket-ash-2", json("\"" + room.code + "\""));
+    assertEquals(launchCalls, gameRandom.calls, "la intro no consume azar del reto");
+    assertEquals(observed, runs.observed.size(), "la intro no se observa");
+    manager.setIntroReady(ASH.id(), json("{\"gameInstanceId\":\"" + room.game.resultId + "\"}"));
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    assertEquals(directCalls, gameRandom.calls);
+    assertEquals(directState, room.game.state);
+    assertEquals(0, random.nextCalls);
+  }
+
+  @Test
+  void dailyIntroEndsOnItsDeadline() {
+    manager = build(RoomSettings.DEFAULTS);
+    var room = start("higher-lower");
+    assertEquals(RoomPhase.GAME_INTRO, room.phase);
+    time.advance(RoomSettings.DEFAULT_GAME_INTRO_MS + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+    assertEquals(RoomPhase.ROUND_ACTIVE, room.phase);
+    finishByTimeouts(room);
   }
 
   @Test
@@ -374,7 +416,7 @@ class RoomCoordinatorDailyTest {
   @Test
   void reconnectGraceExpiryMidRunCallsAbandoned() {
     // Gracia de reconexión corta: vence antes que cualquier plazo de la ronda.
-    manager = build(new RoomSettings(8, 1_000));
+    manager = build(new RoomSettings(8, 1_000).withGameIntroMs(0));
     var room = start("higher-lower");
     manager.disconnect(ASH.id(), "socket-ash");
     time.advance(1_000 + RoomCoordinator.DEADLINE_TOLERANCE_MS);

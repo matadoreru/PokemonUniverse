@@ -94,6 +94,7 @@ public class RoomCoordinator {
 
   /** Comandos de lobby y de sesión en una sala del reto diario. */
   public static final String DAILY_UNAVAILABLE = "Not available in the daily challenge";
+  static final String INTRO_NOT_OVER = "La partida todavía no ha empezado.";
   static final int MAX_SESSION_HISTORY = 100;
   /** {@code scheduleDeadline(..., toleranceMs = 5)}. */
   static final long DEADLINE_TOLERANCE_MS = 5;
@@ -938,7 +939,9 @@ public class RoomCoordinator {
     var availabilityReason = engine.checkAvailability(config, context);
     if (availabilityReason.isPresent()) throw new RoomException(module.name() + ": " + availabilityReason.get());
     var state = engine.createInitialState(config, context);
-    state = engine.start(state, context);
+    // Con intro, el motor empieza al terminarla (finishIntro): entre medias nada extrae azar de la partida.
+    boolean intro = settings.gameIntroMs() > 0;
+    if (!intro) state = engine.start(state, context);
     for (var member : room.members.values()) {
       member.role = member.presence == PresenceStatus.CONNECTED ? MemberRole.PLAYER : MemberRole.SPECTATOR;
       member.ready = false;
@@ -951,8 +954,99 @@ public class RoomCoordinator {
     room.game = new GameRuntime(catalog, resultId, module.id(), players.stream().map(GamePlayer::id).toList(), engine,
         config, configTree, state, context.now(), auditReady, gameRandom);
     resetWhoIsWhoCursors(room);
+    if (intro) {
+      room.game.introEndsAt = context.now() + settings.gameIntroMs();
+      room.phase = RoomPhase.GAME_INTRO;
+      broadcast(room);
+      schedule(room);
+      return;
+    }
     room.phase = RoomPhase.of(engine.getLifecycle(state).phase());
     syncAndBroadcast(room);
+  }
+
+  // ------------------------------------------------------------------------------------------------ intro
+
+  /**
+   * {@code room:intro-ready}; {@code payload} crudo {@code { gameInstanceId }}. Solo cuentan los jugadores conectados de
+   * la partida; cuando todos están listos, la intro termina. Un «¡Listo!» que llega cuando la intro de esa misma
+   * partida ya terminó no hace nada.
+   */
+  public void setIntroReady(String playerId, @Nullable JsonNode payload) {
+    var gameInstanceId = RoomCommandParsers.introReadyRequest(payload);
+    inRequiredRoom(playerId, room -> {
+      var game = room.game;
+      if (game == null || game.finishReason != null || !game.resultId.equals(gameInstanceId)) {
+        throw new RoomException("El minijuego ya ha cambiado.");
+      }
+      if (room.phase != RoomPhase.GAME_INTRO) return null;
+      if (!introPlayerIds(room, game).contains(playerId)) {
+        throw new RoomException("Solo los jugadores de la partida pueden marcarse como listos.");
+      }
+      if (!game.introReadyIds.add(playerId)) return null;
+      if (!finishIntroIfEveryoneReady(room, game)) broadcast(room);
+      return null;
+    });
+  }
+
+  /** Los jugadores conectados de la partida: los que cuentan para terminar la intro antes (los espectadores no). */
+  static List<String> introPlayerIds(LiveRoom room, GameRuntime game) {
+    return game.participantIds.stream().filter(playerId -> {
+      var member = room.members.get(playerId);
+      return member != null && member.presence == PresenceStatus.CONNECTED && member.role == MemberRole.PLAYER
+          && !game.departedParticipantIds.contains(playerId);
+    }).toList();
+  }
+
+  /** Termina la intro si todos los jugadores conectados (al menos uno) están listos. */
+  private boolean finishIntroIfEveryoneReady(LiveRoom room, GameRuntime game) {
+    var expected = introPlayerIds(room, game);
+    if (expected.isEmpty() || !game.introReadyIds.containsAll(expected)) return false;
+    finishIntro(room, game);
+    return true;
+  }
+
+  /**
+   * Fin de la intro (vence su plazo o todos están listos): el motor empieza ahora, con el {@code now} de este momento,
+   * y el reloj de la ronda 1 corre desde aquí. Si alguien se desconectó o salió durante la intro, el motor lo sabe a la
+   * vez. Si {@code start} fallara, la partida se salta (en el reto, la sala se cierra sin abandono, como al lanzarla).
+   */
+  private void finishIntro(LiveRoom room, GameRuntime game) {
+    if (room.game != game || game.finishReason != null || room.phase != RoomPhase.GAME_INTRO) return;
+    room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
+    game.introEndsAt = null;
+    game.introReadyIds.clear();
+    var context = context(room);
+    try {
+      var started = game.engine.start(game.state, context);
+      if (game.engine.hasPresenceHandler() && context.players().stream()
+          .anyMatch(player -> game.participantIds.contains(player.id())
+              && (!Boolean.TRUE.equals(player.connected()) || !Boolean.TRUE.equals(player.active())))) {
+        started = game.engine.handlePresenceChange(started, context);
+      }
+      game.state = started;
+    } catch (RuntimeException error) {
+      LOG.error("Game {} could not start after its intro", game.gameId, error);
+      if (room.daily != null) failDailyStart(room);
+      else if (!skipGame(room, game)) broadcast(room);
+      return;
+    }
+    room.phase = RoomPhase.of(game.engine.getLifecycle(game.state).phase());
+    syncAndBroadcast(room, game);
+  }
+
+  /** El reto no pudo empezar tras su intro: la sala desaparece sin abandono y la cuenta puede reintentarlo. */
+  private void failDailyStart(LiveRoom room) {
+    room.game = null;
+    for (var member : List.copyOf(room.members.values())) {
+      if (member.connectionId != null) {
+        events.kick(member.identity.id(), member.connectionId, "No se pudo empezar el reto. Inténtalo otra vez.");
+      }
+      store.detachPlayer(member.identity.id(), room.code);
+      roomActivity(member.identity);
+    }
+    room.members.clear();
+    store.delete(room.code);
   }
 
   // ---------------------------------------------------------------------------------------------- partida
@@ -972,6 +1066,7 @@ public class RoomCoordinator {
       if (game == null || !game.resultId.equals(request.gameInstanceId())) {
         throw new RoomException("El minijuego ya ha cambiado.");
       }
+      if (room.phase == RoomPhase.GAME_INTRO) throw new RoomException(INTRO_NOT_OVER);
       if (!game.engine.getLifecycle(game.state).actionEpoch().equals(request.actionEpoch())) {
         throw new RoomException("La ronda o el turno ya ha cambiado.");
       }
@@ -985,6 +1080,7 @@ public class RoomCoordinator {
     inRequiredRoom(playerId, room -> {
       var game = room.game;
       if (game == null || game.finishReason != null) throw new RoomException("No game in progress");
+      if (room.phase == RoomPhase.GAME_INTRO) throw new RoomException(INTRO_NOT_OVER);
       var member = room.members.get(playerId);
       if (member == null || member.presence != PresenceStatus.CONNECTED || member.role != MemberRole.PLAYER) {
         throw new RoomException("You cannot act in the current game");
@@ -1051,6 +1147,8 @@ public class RoomCoordinator {
   private boolean claimGameFinish(LiveRoom room, GameRuntime game, GameFinishReason reason) {
     if (room.game != game || game.finishReason != null) return false;
     game.finishReason = reason;
+    game.introEndsAt = null;
+    game.introReadyIds.clear();
     room.transitionTimer = RoomTimer.cancel(room.transitionTimer);
     cancelPresenceGraces(room);
     return true;
@@ -1132,6 +1230,11 @@ public class RoomCoordinator {
     if (room.phase == RoomPhase.LOBBY || room.phase == RoomPhase.SESSION_RESULTS) return;
     var game = room.game;
     if (game == null || game.finishReason != null) return;
+    if (room.phase == RoomPhase.GAME_INTRO) {
+      if (game.introEndsAt != null && clock.now() < game.introEndsAt) schedule(room);
+      else finishIntro(room, game);
+      return;
+    }
     var previousEpoch = game.engine.getLifecycle(game.state).actionEpoch();
     game.state = game.engine.handleTimeout(game.state, context(room));
     if (game.engine.hasCursorChannel() && (!game.engine.getLifecycle(game.state).actionEpoch().equals(previousEpoch)
@@ -1177,6 +1280,12 @@ public class RoomCoordinator {
     }
     var game = room.game;
     if (game != null && game.finishReason == null && resolveUnanimousGameSkip(room, game)) return;
+    // En la intro el motor aún no ha empezado: la presencia le llega al terminarla (finishIntro).
+    if (game != null && room.phase == RoomPhase.GAME_INTRO) {
+      game.introReadyIds.retainAll(introPlayerIds(room, game));
+      if (!finishIntroIfEveryoneReady(room, game)) broadcast(room);
+      return;
+    }
     if (game != null && game.engine.hasPresenceHandler()) {
       game.state = game.engine.handlePresenceChange(game.state, context(room));
       syncAndBroadcast(room, game);
@@ -1192,6 +1301,11 @@ public class RoomCoordinator {
   void syncAndBroadcast(LiveRoom room, @Nullable GameRuntime expectedGame) {
     var game = expectedGame;
     if (game == null || room.game != game || game.finishReason != null) return;
+    if (room.phase == RoomPhase.GAME_INTRO) {
+      broadcast(room);
+      schedule(room);
+      return;
+    }
     var lifecycle = game.engine.getLifecycle(game.state);
     room.phase = RoomPhase.of(lifecycle.phase());
     var spectators = new HashSet<>(lifecycle.spectatorIds());
@@ -1464,6 +1578,10 @@ public class RoomCoordinator {
     }
     var game = room.game;
     if (game == null || room.phase == RoomPhase.GAME_RESULTS || room.phase == RoomPhase.SESSION_RESULTS) return;
+    if (room.phase == RoomPhase.GAME_INTRO) {
+      if (game.introEndsAt != null) scheduleCurrent(room, game.introEndsAt);
+      return;
+    }
     var deadline = game.engine.getLifecycle(game.state).nextDeadline();
     if (deadline == null) return;
     scheduleCurrent(room, deadline);
@@ -1534,7 +1652,7 @@ public class RoomCoordinator {
     if (room == null) return Optional.empty();
     return locked(room, () -> {
       var game = room.game;
-      if (store.get(code) != room || game == null) return Optional.empty();
+      if (store.get(code) != room || game == null || room.phase == RoomPhase.GAME_INTRO) return Optional.empty();
       return game.engine.resolveAsset(game.state, new AssetRequest(assetToken, roundNumber, assetId), context(room));
     });
   }
@@ -1572,7 +1690,9 @@ public class RoomCoordinator {
     // Reto: cada difusión de la partida viva se observa (Learnset solo publica la última ronda en ROUND_RESULTS); el
     // estado final lo observa DailyRoomLifecycle.finish antes de fijar el resultado.
     var game = room.game;
-    if (room.daily != null && game != null && game.finishReason == null) dailyRooms.observe(room, room.daily, game);
+    if (room.daily != null && game != null && game.finishReason == null && room.phase != RoomPhase.GAME_INTRO) {
+      dailyRooms.observe(room, room.daily, game);
+    }
     room.revision += 1;
     room.updatedAt = clock.now();
     views.broadcast(room, context(room), hostCustomCategories(room).size(), hostWouldYouRatherPrompts(room).size());

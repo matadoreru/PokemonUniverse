@@ -128,6 +128,15 @@ public final class RoomCommandParsers {
     return new SetGameSkipVoteRequest(id, wants.getBooleanValue());
   }
 
+  /** {@code room:intro-ready} {@code { gameInstanceId }} (estricto): el id de la partida cuya intro se confirma. */
+  public static String introReadyRequest(@Nullable JsonNode raw) {
+    var id = raw == null || !raw.isObject() ? null : raw.get("gameInstanceId");
+    if (id == null || !id.isString() || !UUID.matcher(id.getStringValue()).matches() || raw.size() != 1) {
+      throw new RoomException("Petición de «¡Listo!» no válida.");
+    }
+    return id.getStringValue();
+  }
+
   /** {@code gameActionRequestSchema} (estricto; {@code action} obligatoria, aunque sea {@code null}). */
   public static GameActionRequest gameActionRequest(@Nullable JsonNode raw) {
     var issues = new ZodIssues();
