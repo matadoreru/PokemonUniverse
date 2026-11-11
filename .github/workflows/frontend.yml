@@ -13,8 +13,10 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'scripts/check-public-boundary.mjs'
+      - 'scripts/check-api-types.mjs'
       - 'backend/src/main/resources/games/registry.json'
       - 'backend/src/test/resources/golden/**'
+      - 'backend/src/test/resources/web-contracts/**'
       - 'Dockerfile'
       - 'infra/nginx.conf'
       - 'backend/openapi/**'
@@ -89,6 +91,8 @@ jobs:
         run: npm ci
       - name: Check the browser contract boundary
         run: npm run check:boundaries
+      - name: Check api-types.ts against the OpenAPI contract
+        run: npm run check:api-types
       - name: Build shared contracts
         run: npm run build -w @pokemon-universe/shared
       - name: Test web and shared
