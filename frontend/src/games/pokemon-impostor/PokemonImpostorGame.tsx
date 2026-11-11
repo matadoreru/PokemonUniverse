@@ -14,6 +14,7 @@ import { useSfxCue } from '../../hooks/useSfxCue';
 import { useDelayElapsed } from '../../hooks/useTimedVisibility';
 import { MomentCutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { roomTurnKey, TurnCutin, turnBumpClass, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { gameDraftKey } from '../../room/game-kit/game-draft';
 import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
@@ -62,6 +63,8 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
   const titleRef = useRef<HTMLHeadingElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   useFocusOnTransition(impostorFocusKey(game, player), player.canSubmitClue ? inputRef : titleRef);
+  // «¡Te toca!» cuando llega tu turno de pista (el foco ya va al campo).
+  const turnCue = useTurnCue(game.phase === 'CLUE_PHASE' && player.canSubmitClue, roomTurnKey(room, `${game.roundNumber}:${game.votingRound}`));
 
   async function submitClue() {
     const action = impostorClueAction(player, clueText, clueError, clueLength);
@@ -124,7 +127,8 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
       : <ImpostorPlate {...plate} titleRef={titleRef} />;
 
   return <div className={cx('content-row', s.screen)}>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+    <ScreenSplit fill top={top} side={side} bottom={bottom} bottomClassName={turnBumpClass(turnCue)} />
+    <TurnCutin cue={turnCue} />
     {/* Una sola región viva, siempre montada: solo cambia su texto. La expulsión también va aquí (el cut-in solo se ve). */}
     <p className="sr-only" role="status" aria-live="polite">{elimination ? impostorEliminationAnnouncement(elimination, people.nameOf(elimination.playerId), eliminationRoleShown) : impostorAnnouncement(game, player, selfId, people.nameOf)}</p>
     {elimination && eliminationCutIn && <MomentCutin key={`${game.roundNumber}:${elimination.playerId}`} tone="yellow" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}

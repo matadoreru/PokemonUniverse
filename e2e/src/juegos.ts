@@ -123,6 +123,25 @@ export async function sinScorePop(page: Page): Promise<void> {
   await expect(page.getByTestId('score-pop')).toHaveCount(0, { timeout: 3_000 });
 }
 
+/** Banda del cut-in a la vista (`data-tone` solo está en la visible: la región vacía no lo lleva). */
+export const bandaCutin = (page: Page) => page.locator('[data-layer="cutin"][data-tone]');
+
+/** «¡Te toca!» de `useTurnCue` (1 s): la banda con ese título. */
+export const teToca = (page: Page) => bandaCutin(page).filter({ hasText: '¡Te toca!' });
+
+/**
+ * ¿Sale la banda antes de `timeout`? Se arma antes de lo que la provoca (dura 1–1,4 s: un `expect` después podría
+ * llegar tarde) y nunca rechaza: `false` si no sale o si la página se cierra.
+ */
+export function veraCutin(banda: Locator, timeout = 30_000): Promise<boolean> {
+  return banda.waitFor({ state: 'visible', timeout }).then(() => true, () => false);
+}
+
+/** Espera a que se vaya el cut-in de un momento (revelación, «¡Te toca!»): las capturas de la fase van sin él. */
+export async function sinMomento(page: Page): Promise<void> {
+  await expect(bandaCutin(page)).toHaveCount(0, { timeout: 5_000 });
+}
+
 /** Texto, `alt` y `title` de `main`: lo que vería quien busca la respuesta en el DOM. */
 export async function textoDeMain(page: Page): Promise<string> {
   return page.locator('main').evaluate((main) => [(main as HTMLElement).innerText, ...[...main.querySelectorAll('[alt], [title]')].map((el) => `${el.getAttribute('alt') ?? ''} ${el.getAttribute('title') ?? ''}`)].join('\n'));

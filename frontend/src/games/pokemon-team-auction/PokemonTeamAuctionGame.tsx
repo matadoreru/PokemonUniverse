@@ -13,6 +13,7 @@ import {
   AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
 } from '../../room/auction-kit';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { useRoomMembers } from '../../room/room-members';
 import type { ActiveGameProps } from '../../room/room-command';
 
@@ -43,6 +44,8 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: ActiveGamePro
 
   const block = bidBlock(teamBlockInput(game, player, selfId, nameOf));
   const epoch = bidEpoch(game.lotNumber, game.bidHistory.length);
+  // «¡Te toca!» en cada turno propio de puja: vuelve con cada puja o pase del lote (`epoch`).
+  const turnCue = useTurnCue(game.phase === 'ROUND_ACTIVE' && game.currentTurnPlayerId === selfId, roomTurnKey(room, epoch));
   const titleRef = useRef<HTMLHeadingElement>(null);
   // Cambia con el lote y con el estado propio (al pujar, la placa pasa a «Ya vas ganando» y el botón se deshabilita).
   useFocusOnTransition(`${game.phase}-${game.lotNumber}-${block.reason}`, titleRef);
@@ -104,7 +107,7 @@ export function PokemonTeamAuctionGame({ room, selfId, onAction }: ActiveGamePro
       heading={teamHeading(game)}
       meta={bidSeconds === 0 ? <Chip tone="neutral">Sin límite de tiempo</Chip> : null}
       timer={{ deadline: game.roundEndsAt ?? null, serverOffset: offset, label: teamTimerLabel(game, selfId, nameOf), ...(bidSeconds > 0 ? { totalMs: bidSeconds * 1_000 } : {}) }}
-      announcement={teamAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />
+      announcement={teamAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} turnCue={turnCue} />
     <TeamDialog open={Boolean(teamOf && shown)} name={teamOf === selfId ? 'Tu equipo' : `Equipo de ${teamOf ? nameOf(teamOf) : ''}`} team={shown?.team ?? []} coins={shown?.coins ?? 0} onClose={() => setTeamOf(null)} />
   </>;
 }

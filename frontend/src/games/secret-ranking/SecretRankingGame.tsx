@@ -3,7 +3,7 @@ import { ArrowDown, ArrowUp, CheckCircle2, Clock3, Eye, ListOrdered, LockKeyhole
 import { useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Avatar } from '../../components/Avatar';
 import {
-  MAX_RANKING_DISTANCE, formatDistance, moveRankingItem, rankingFocusAfterMove, rankingMoveText, rankingPlayerStatus, rankingPositionOf, rankingStandings,
+  MAX_RANKING_DISTANCE, formatDistance, moveRankingItem, rankingFocusAfterMove, rankingMoveText, rankingPlayerStatus, rankingClosest, rankingPositionOf, rankingStandings,
   secretRankingAnnouncement, secretRankingCurrentStep, secretRankingHeading, secretRankingSteps, secretRankingVerdict, submitRanking,
   type MoveDirection,
 } from './presentation';
@@ -11,7 +11,7 @@ import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { Bar, Chip, cx, Icon, Panel, Pill, Row, StateBox } from '../../ui';
 import { useFocusOnTransition, useRefocusAfterReject } from '../../room/game-kit/focus-transition';
 import { guessSprite, pointsWord } from '../../room/guess-kit';
-import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, socialFocusKey, type SocialPlateContent } from '../../room/social-kit';
+import { PhaseRail, ResponseProgress, RoundPoints, SocialPlate, SocialScreen, roundWinnerMoment, socialFocusKey, type SocialPlateContent } from '../../room/social-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
 import s from './SecretRanking.module.css';
@@ -123,7 +123,7 @@ function ClosenessPanel({ result, room, selfId }: { result: SecretRankingRoundRe
               <span className={s.distanceText}>Distancia {formatDistance(player.distance)}</span>
             </span>}
           </span>}
-          value={<span className={s.value}>+{player.pointsAwarded}</span>} />
+          value={<span className={s.value}><RoundPoints points={player.pointsAwarded} self={playerId === selfId} color={members.colorOf(playerId)} /></span>} />
       </li>;
     })}</ol>
     <p className={s.closeNote}><Icon icon={LockKeyhole} size={18} />Distancia a la media de los demás: la de cada persona excluye siempre su propio ranking. Más corta, más puntos.</p>
@@ -243,6 +243,9 @@ export function SecretRankingGame({ room, selfId, onAction }: ActiveGameProps) {
 
   const announcement = secretRankingAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, locked, move: open ? current.move : null, moveSeq: current.seq, result, nameOf });
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={secretRankingHeading(game.phase, result, locked)} timer={timer}
+  // El momento de la revelación: quien más se acercó a la media del resto (puesto 1, quizá compartido).
+  const roundMoment = result && roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: rankingClosest(result), selfId, nameOf, subtitle: 'El ranking más cercano al del grupo' });
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={secretRankingHeading(game.phase, result, locked)} timer={timer} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={secretRankingSteps} current={secretRankingCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

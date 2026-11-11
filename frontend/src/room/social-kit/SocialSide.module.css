@@ -22,6 +22,10 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+/* Puntos de la ronda: el «+N» flotante se coloca respecto a la cifra. */
+.points {
+  position: relative;
+}
 .note {
   display: flex;
   align-items: flex-start;

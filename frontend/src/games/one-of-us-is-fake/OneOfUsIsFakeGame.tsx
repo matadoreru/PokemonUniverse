@@ -12,7 +12,7 @@ import { useRoomMembers, type RoomMembers } from '../../room/room-members';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import {
   PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, tallyOutcome,
-  type BallotOption, type SocialPlateContent, type TallyOption,
+  type BallotOption, type SocialPlateContent, type SocialRoundMoment, type TallyOption,
 } from '../../room/social-kit';
 import { type ActiveGameProps, ignoreFailure } from '../../room/room-command';
 import s from './OneOfUsIsFake.module.css';
@@ -165,7 +165,7 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: ActiveGameProps) {
         if (id === result.selectedPlayerId) return { tone: 'bad', text: 'Expulsado siendo normal', icon: UserRoundX };
         return { tone: result.winner === 'NORMALS' ? 'ok' : 'neutral', text: result.winner === 'NORMALS' ? 'Normal · ganó' : 'Normal', ...(result.winner === 'NORMALS' ? { icon: Trophy } : {}) };
       }}
-      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+      roundPoints={(id) => result.pointsAwarded[id] ?? 0} />
     : revealing
       ? <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={[...choices.keys()]} selfId={selfId} doneText="Revelada" pendingText="Por revelar"
         status={(id) => (picked.has(id) ? null : { tone: 'bad', text: 'Sin elección', icon: X })} note="Las categorías siguen en secreto hasta el resultado." />
@@ -210,7 +210,18 @@ export function OneOfUsIsFakeGame({ room, selfId, onAction }: ActiveGameProps) {
   }
 
   const meta = informedFake ? <Chip tone="bad" icon={<Icon icon={ShieldAlert} size={18} />}>Eres el fake</Chip> : undefined;
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={fakeHeading(game.phase, game.voteRoundNumber, result)} {...(meta ? { meta } : {})} timer={timer}
+  // El momento de la revelación: qué bando gana y quién era el fake; confeti para quien está en el bando ganador.
+  let roundMoment: SocialRoundMoment | null = null;
+  if (result) {
+    const selfFake = result.fakePlayerId === selfId;
+    const fakeName = selfFake ? 'Tú eras' : `${nameOf(result.fakePlayerId)} era`;
+    const playing = result.players.some((entry) => entry.playerId === selfId);
+    roundMoment = result.winner === 'FAKE'
+      ? { key: `${game.roundNumber}`, title: selfFake ? '¡Ganas tú!' : `¡Gana ${nameOf(result.fakePlayerId)}!`, subtitle: selfFake ? 'Eras el fake y nadie te descubrió' : `${fakeName} el fake y nadie lo descubrió`, won: selfFake }
+      : { key: `${game.roundNumber}`, title: '¡Ganan los normales!', subtitle: `${fakeName} el fake`, won: playing && !selfFake };
+  }
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={fakeHeading(game.phase, game.voteRoundNumber, result)} {...(meta ? { meta } : {})} timer={timer} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={fakeSteps(game.phase, game.voteRoundNumber, result?.voteRounds.length ?? 0)} current={fakeCurrentStep(game.phase)} />}
     stage={stage} side={side} bottom={bottom} />;
 }

@@ -136,8 +136,8 @@ describe('PokéTaboo: privacidad del secreto', () => {
   it('el orden de turnos dice en texto quién describe, quién va después y los puntos', () => {
     const html = guesser();
     expect(html).toContain('Orden de turnos');
-    expect(html).toMatch(/Ana[^]*Describe ahora[^]*2 pts/);
-    expect(html).toMatch(/Pedro[^]*Siguiente[^]*4 pts/);
+    expect(html).toMatch(/Ana[^]*Describe ahora[^]*>2<\/span><small> pts/);
+    expect(html).toMatch(/Pedro[^]*Siguiente[^]*>4<\/span><small> pts/);
     expect(html).toMatch(/Carlos[^]*Le toca después/);
   });
 

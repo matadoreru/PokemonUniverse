@@ -3,8 +3,8 @@
  * `tests/juegos.spec.ts` y los helpers que comparten los specs de juegos, en `src/juegos.ts`.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, elegirPokemon, capturarAnotando, sinScorePop, textoDeMain } from '../../src/juegos.js';
+import { conMovimiento, crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
+import { bandaCutin, capturarTamanos, elegirPokemon, capturarAnotando, sinMomento, sinScorePop, textoDeMain, veraCutin } from '../../src/juegos.js';
 
 /**
  * Most Likely To con tres jugadores y una ronda, con un empate forzado: el host y A se votan entre sí y B no vota, así
@@ -111,10 +111,26 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await expect(b.page.getByRole('heading', { name: 'Voto bloqueado' })).toBeVisible({ timeout: 15_000 });
     await expect(titulo(b.page)).toHaveText('Segunda vuelta');
     await sinVotosAjenos(b.page, 'segunda vuelta tras recargar');
+    // El cut-in del ganador sale al revelar y dura 1,4 s: se arma antes del último voto. Con movimiento, para ver el confeti.
+    for (const page of [host.page, a.page]) await conMovimiento(page);
+    const ganadorHost = veraCutin(bandaCutin(host.page).filter({ hasText: `¡Gana ${a.name}!` }));
+    const ganadorA = veraCutin(bandaCutin(a.page).filter({ hasText: '¡Ganas tú!' }));
     await opcion(host.page, 'Pikachu', a).click();
     await confirmar(host.page).click();
     await opcion(a.page, 'Bulbasaur', host).click();
     await confirmar(a.page).click();
+
+    // A5: el cut-in con el ganador y su respuesta; confeti solo para quien gana, sin región viva propia.
+    expect(await ganadorHost, 'el host ve «¡Gana A!»').toBe(true);
+    await host.page.screenshot({ path: 'screenshots/juego-most-likely-to-ganador-1280x720.png', animations: 'disabled' });
+    await expect(bandaCutin(host.page)).toContainText('Pikachu');
+    await expect(bandaCutin(host.page)).not.toHaveAttribute('role', 'status');
+    await expect(host.page.getByTestId('confetti')).toHaveCount(0);
+    expect(await ganadorA, 'A ve «¡Ganas tú!»').toBe(true);
+    await expect(a.page.getByTestId('confetti'), 'confeti para quien gana').toHaveCount(1);
+    // Y sus puntos de la ronda salen con el «+N» flotante en su franja.
+    await expect(a.page.getByTestId('social-round-points').filter({ hasText: '+' })).not.toHaveCount(0);
+    await sinMomento(host.page);
 
     // Revelación: gana Pikachu de A con 2 votos tras la segunda vuelta; las dos vueltas a la vista, primero la que decide.
     await expect(titulo(host.page)).toHaveText('La respuesta favorita', { timeout: 15_000 });

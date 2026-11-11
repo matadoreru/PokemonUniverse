@@ -9,6 +9,7 @@ import { useServerOffset } from '../../hooks/useServerTime';
 import { Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { gameDraftKey } from '../../room/game-kit/game-draft';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { guessSprite } from '../../room/guess-kit';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from '../../room/social-kit';
@@ -166,6 +167,8 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const question = active ? game.currentQuestion : null;
   const turnKey = active ? `${game.lap}:${game.turnPlayerId}:${step}` : null;
   const canGuess = Boolean(participating && player.canGuess);
+  // «¡Te toca!» al empezar tu turno (una vez por turno, no en cada paso).
+  const turnCue = useTurnCue(ownTurn, roomTurnKey(room, active ? `${game.lap}:${game.turnPlayerId}` : null));
 
   // «Adivinar» abre el buscador en la placa; se cierra solo al cambiar el turno o el paso, o si ya no se puede adivinar.
   const [guessingKey, setGuessingKey] = useState<string | null>(null);
@@ -264,5 +267,5 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const bottom = <SocialPlate titleRef={titleRef} content={content} search={search}>{body}</SocialPlate>;
 
   return <SocialScreen gameName={WHO_AM_I_NAME} roundNumber={game.lap} phase={game.phase} totalRounds={game.maxLaps} roundLabel={`Vuelta ${Math.max(1, game.lap)} de ${game.maxLaps}`}
-    heading={turnHeadline(game, selfId, nameOf)} meta={meta} timer={timer} announcement={announcement} stage={stage} side={side} bottom={bottom} className={s.screen} />;
+    heading={turnHeadline(game, selfId, nameOf)} meta={meta} timer={timer} announcement={announcement} stage={stage} side={side} bottom={bottom} className={s.screen} turnCue={turnCue} />;
 }

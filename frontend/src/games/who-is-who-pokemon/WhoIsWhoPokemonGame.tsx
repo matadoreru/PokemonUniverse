@@ -8,6 +8,7 @@ import {
 } from './presentation';
 import { WhoBoard, WhoGuessesFeed, WhoPickDialog, WhoSecretPanel, WhoTeamsPanel } from './WhoIsWhoParts';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { SocialPlate, SocialScreen, type SocialPlateContent } from '../../room/social-kit';
 import { type ActiveGameProps, sendWithBusy } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
@@ -107,11 +108,13 @@ export function WhoIsWhoPokemonGame({ room, selfId, onAction }: ActiveGameProps)
       </div>,
     };
   }
+  // «¡Te toca!» cuando empieza el turno de tu equipo (preguntar y adivinar).
+  const turnCue = useTurnCue(ready && role === 'turn', roomTurnKey(room, game.turnNumber));
   const bottom = <SocialPlate titleRef={titleRef} content={content} className={s.plate} textClassName={ownMiss && ready ? s.plateMiss : s.plateHelp} />;
 
   return <>
     <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} roundLabel={whoRoundLabel(game)} heading={heading} meta={meta} timer={timer}
-      announcement={whoAnnouncement({ game, player, nameOf })} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} />
+      announcement={whoAnnouncement({ game, player, nameOf })} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} turnCue={turnCue} />
     <WhoPickDialog open={dialog !== null} mode={dialog ?? 'guess'} cards={game.board} discardedIds={discarded} busy={busy} epoch={game.turnNumber}
       onClose={() => setDialog(null)} onConfirm={(pokemonId) => void confirm(pokemonId)} />
   </>;

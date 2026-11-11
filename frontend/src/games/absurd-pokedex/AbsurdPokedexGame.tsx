@@ -11,7 +11,7 @@ import { useFocusOnTransition, useRefocusAfterReject } from '../../room/game-kit
 import { guessSprite, pointsWord } from '../../room/guess-kit';
 import { useRoomMembers } from '../../room/room-members';
 import { type ActiveGameProps, type GameAction, ignoreFailure } from '../../room/room-command';
-import { PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, socialFocusKey, votesText } from '../../room/social-kit';
+import { PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, momentQuote, roundWinnerMoment, socialFocusKey, votesText } from '../../room/social-kit';
 import s from './AbsurdPokedex.module.css';
 
 const GAME_NAME = 'Pokédex Absurda';
@@ -198,7 +198,7 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: ActiveGameProps) {
         const own = result.entries.find((entry) => entry.authorId === id);
         return { tone: 'neutral', text: votesText(own?.votesReceived ?? 0) };
       }}
-      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+      roundPoints={(id) => result.pointsAwarded[id] ?? 0} />
     : <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={voting ? game.votedPlayerIds : game.submittedPlayerIds} selfId={selfId}
       doneText="Listo" pendingText={voting ? 'Votando…' : 'Escribiendo…'}
       note={voting ? 'Los votos permanecen secretos hasta el resultado.' : 'Ninguna entrada ni autor se revela antes de la votación.'} />;
@@ -236,6 +236,10 @@ export function AbsurdPokedexGame({ room, selfId, onAction }: ActiveGameProps) {
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={absurdHeading(game.phase, game.mode, result)} meta={modeChip} timer={timer}
+  // El momento de la revelación: quien gana la ronda y, si es uno, su entrada (en una ronda que no puntúa, nada).
+  const winnerEntry = result?.winnerPlayerIds.length === 1 ? result.entries.find((entry) => entry.authorId === result.winnerPlayerIds[0]) : undefined;
+  const roundMoment = result && !result.skipped ? roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: result.winnerPlayerIds, selfId, nameOf, subtitle: winnerEntry ? momentQuote(winnerEntry.text) : undefined }) : null;
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={absurdHeading(game.phase, game.mode, result)} meta={modeChip} timer={timer} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={absurdSteps()} current={absurdCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

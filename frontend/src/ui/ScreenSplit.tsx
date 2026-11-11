@@ -14,6 +14,8 @@ export interface ScreenSplitProps {
    */
   fill?: boolean;
   className?: string;
+  /** Clase extra de la pantalla de abajo (p. ej. el rebote de «¡Te toca!»). */
+  bottomClassName?: string | undefined;
 }
 
 /**
@@ -21,13 +23,13 @@ export interface ScreenSplitProps {
  * margen seguro inferior); `side`, si hay, entre `top` y la bisagra. Desde 1024 px: columna principal (`top` sobre
  * `bottom`) y columna lateral de 320 px, todo limitado a 1600 px.
  */
-export function ScreenSplit({ top, bottom, side, sideFirst = false, fill = false, className }: ScreenSplitProps) {
+export function ScreenSplit({ top, bottom, side, sideFirst = false, fill = false, className, bottomClassName }: ScreenSplitProps) {
   return (
     <div className={cx(s.split, side != null && s.withSide, side != null && sideFirst && s.sideFirst, fill && s.fill, className)}>
       <div className={s.top}>{top}</div>
       {side != null && <aside className={s.side}>{side}</aside>}
       {/* En móvil va pegada al fondo por encima de lo que se desplaza: es una capa (`data-layer`, lo usa el medidor de las E2E). */}
-      <div className={s.bottom} data-layer="screen-bottom">
+      <div className={cx(s.bottom, bottomClassName)} data-layer="screen-bottom">
         <div className={s.hinge} aria-hidden="true" />
         {bottom}
       </div>

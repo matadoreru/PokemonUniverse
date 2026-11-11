@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ServerTimer } from '../../components/ServerTimer';
 import { Badge, cx, Panel, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from './GameSkipSlot';
+import { TurnCutin, turnBumpClass } from './useTurnCue';
 import s from './GameScreen.module.css';
 
 /** Clase para un panel de la columna lateral que, aunque sea el último, no debe llenar el alto sobrante (vacío). */
@@ -51,6 +52,10 @@ export interface GameScreenProps {
   className?: string | undefined;
   /** `data-testid` de la pantalla (p. ej. `social-screen`, para contar su región viva en las E2E). */
   testId?: string;
+  /** Lo que devuelve `useTurnCue`: mientras no es `null`, «¡Te toca!» y el rebote de la placa de abajo. */
+  turnCue?: string | null | undefined;
+  /** Otro momento de la pantalla (un `MomentCutin`), fuera de la rejilla. */
+  moment?: ReactNode;
 }
 
 /**
@@ -83,7 +88,7 @@ export function clueEntryClass(step: number): string | undefined {
  * pista va arriba con el plazo y la placa de la acción pegada al fondo. El mismo marco sirve a la ronda y a la
  * revelación: así la región viva no se vuelve a montar al cambiar de fase.
  */
-export function GameScreen({ gameName, roundNumber, totalRounds, phase, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId }: GameScreenProps) {
+export function GameScreen({ gameName, roundNumber, totalRounds, phase, heading, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId, turnCue = null, moment }: GameScreenProps) {
   const clueStep = useStepCount(`${roundNumber}|${phase ?? ''}`);
   const top = <div className={s.top}>
     <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
@@ -106,7 +111,9 @@ export function GameScreen({ gameName, roundNumber, totalRounds, phase, heading,
   </div>;
   return <div className={cx('content-row', s.screen, className)} {...(testId ? { 'data-testid': testId } : {})}>
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-    <ScreenSplit fill top={top} side={<div className={s.side}>{side}</div>} bottom={bottom} />
+    <ScreenSplit fill top={top} side={<div className={s.side}>{side}</div>} bottom={bottom} bottomClassName={turnBumpClass(turnCue)} />
+    <TurnCutin cue={turnCue} />
+    {moment}
   </div>;
 }
 

@@ -6,6 +6,7 @@ import { chainTypeText, typeChainAnnouncement, typeChainEliminationLabels, typeC
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
+import { roomTurnKey, TurnCutin, turnBumpClass, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { Chip, cx, Icon, ScreenSplit } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from '../../room/guess-kit';
@@ -44,6 +45,8 @@ export function TypeChainGame({ room, selfId, onAction }: ActiveGameProps) {
   useOutcomeCue(lastEvent?.kind === 'SUCCESS' && lastEvent.playerId === selfId ? true : null, lastEvent?.at);
   useOutcomeCue(player?.lastAttempt ? false : null, player?.lastAttempt?.attemptedAt);
 
+  // «¡Te toca!» al empezar tu turno: suena, rebota la placa y sale el cut-in corto (el foco ya está en el buscador).
+  const turnCue = useTurnCue(kind === 'turn', roomTurnKey(room, game.turnNumber));
   const announcement = typeChainAnnouncement({ game, player, kind, nameOf });
   const ownElimination = game.eliminations.find((entry) => entry.playerId === selfId);
   const lastAttempt = kind === 'turn' && player?.lastAttempt && (game.turnStartedAt === null || player.lastAttempt.attemptedAt >= game.turnStartedAt) ? player.lastAttempt : null;
@@ -71,7 +74,8 @@ export function TypeChainGame({ room, selfId, onAction }: ActiveGameProps) {
 
   return <div className={cx('content-row', s.screen)} data-testid="type-chain-screen">
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
+    <ScreenSplit fill top={top} side={side} bottom={bottom} bottomClassName={turnBumpClass(turnCue)} />
+    <TurnCutin cue={turnCue} />
   </div>;
 }
 

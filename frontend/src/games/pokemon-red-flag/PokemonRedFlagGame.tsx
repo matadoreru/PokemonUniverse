@@ -11,7 +11,7 @@ import type { ActiveGameProps } from '../../room/room-command';
 import { guessSprite, pointsWord } from '../../room/guess-kit';
 import { useRoomMembers } from '../../room/room-members';
 import {
-  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
+  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, momentQuote, roundWinnerMoment, socialFocusKey, votesText,
   type BallotOption, type TallyOption,
 } from '../../room/social-kit';
 import s from './PokemonRedFlag.module.css';
@@ -93,7 +93,7 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: ActiveGameProps) 
         if (result.voteRounds.length > 1 && !result.voteRounds.at(-1)?.candidateIds.includes(answer.id)) return { tone: 'neutral', text: 'Fuera de la segunda vuelta' };
         return { tone: 'neutral', text: votesText(answer.votesReceived) };
       }}
-      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+      roundPoints={(id) => result.pointsAwarded[id] ?? 0} />
     : <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={voting ? game.votedPlayerIds : game.submittedPlayerIds} selfId={selfId}
       doneText="Listo" pendingText={voting ? 'Votando…' : 'Escribiendo…'}
       note={voting ? 'Los votos permanecen secretos hasta el resultado.' : 'Ningún texto ni autor se revela antes de la votación.'} />;
@@ -140,6 +140,11 @@ export function PokemonRedFlagGame({ room, selfId, onAction }: ActiveGameProps) 
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={redFlagHeading(game.phase, game.flagMode, result)} meta={modeChip} timer={timer}
+  // El momento de la revelación: el autor de la frase más votada (o los empatados) y la frase.
+  const winningAnswers = (result?.answers ?? []).filter((answer) => result?.winningAnswerIds.includes(answer.id));
+  const roundMoment = result && roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: [...new Set(winningAnswers.map((answer) => answer.authorId))], selfId, nameOf,
+    subtitle: winningAnswers.length === 1 ? momentQuote(winningAnswers[0]!.text) : undefined });
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={redFlagHeading(game.phase, game.flagMode, result)} meta={modeChip} timer={timer} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={redFlagSteps(game.phase)} current={redFlagCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

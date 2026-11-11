@@ -1,0 +1,15 @@
+/*
+ * Rebote de la placa de la acción al empezar tu turno («¡Te toca!»). Es el `motion-bump` común (misma duración y curva)
+ * con menos escala: la placa ocupa todo el ancho y a 1,12 desbordaría el `main` (que se desplaza) durante el rebote.
+ */
+.bump {
+  animation: turn-bump var(--t-bounce) var(--ease-bounce);
+}
+@keyframes turn-bump {
+  50% {
+    transform: scale(1.02);
+  }
+}
+:root[data-motion='reduce'] .bump {
+  animation: none;
+}

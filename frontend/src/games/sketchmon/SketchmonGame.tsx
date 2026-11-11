@@ -13,9 +13,10 @@ import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from '../../room/guess-kit';
 import { useSketchPad } from './SketchmonCanvas';
-import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from '../../room/social-kit';
+import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, roundWinnerMoment, type ProgressStatus } from '../../room/social-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
 import s from './Sketchmon.module.css';
@@ -116,14 +117,14 @@ export function SketchmonGame({ room, selfId, onAction }: ActiveGameProps) {
 
   const turnOrder = <ResponseProgress title="Orden de turnos" members={room.members} playerIds={game.drawerOrder} doneIds={[]} selfId={selfId} count={false}
     status={(id): ProgressStatus => { const status = sketchTurnStatus(game, id); return { tone: TURN_TONE[status], text: SKETCH_TURN_TEXT[status], icon: TURN_ICON[status] }; }}
-    value={(id) => `${game.scores[id] ?? 0} pts`} note="Cada jugador dibuja una vez por vuelta; el orden se vuelve a mezclar en la siguiente." />;
+    score={(id) => game.scores[id] ?? 0} quiet note="Cada jugador dibuja una vez por vuelta; el orden se vuelve a mezclar en la siguiente." />;
   const turnPoints = result && <ResponseProgress title="Puntos del dibujo" members={room.members} playerIds={game.drawerOrder} doneIds={[]} selfId={selfId} count={false}
     status={(id): ProgressStatus => {
       if (id === result.winnerId) return { tone: 'ok', text: `Acertó · ${result.winnerAttemptCount ?? 1} ${result.winnerAttemptCount === 1 ? 'intento' : 'intentos'}`, icon: Trophy };
       if (id === result.drawerId) return result.winnerId ? { tone: 'ok', text: 'Dibujó', icon: Brush } : { tone: 'bad', text: 'Dibujó · nadie acertó', icon: Brush };
       return { tone: 'neutral', text: 'No acertó', icon: X };
     }}
-    value={(id) => `+${id === result.winnerId ? result.guesserPoints : id === result.drawerId ? result.drawerPoints : 0}`} />;
+    roundPoints={(id) => (id === result.winnerId ? result.guesserPoints : id === result.drawerId ? result.drawerPoints : 0)} />;
   const side = <>
     {turnPoints || turnOrder}
     {feedAttempts && <GuessAttemptsFeed attempts={feedAttempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />}
@@ -148,7 +149,11 @@ export function SketchmonGame({ room, selfId, onAction }: ActiveGameProps) {
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el dibujo…', text: 'El dibujo empieza en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} roundLabel={sketchRoundLabel(game)} heading={heading} meta={meta} timer={timer}
+  // «¡Te toca!» al empezar tu turno de dibujar; en la revelación, quién lo acertó.
+  const turnCue = useTurnCue(drawing, roomTurnKey(room, game.roundNumber));
+  const roundMoment = result?.winnerId ? roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: [result.winnerId], selfId, nameOf, subtitle: `Era ${result.pokemon.name}` }) : null;
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} roundLabel={sketchRoundLabel(game)} heading={heading} meta={meta} timer={timer} turnCue={turnCue} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={SKETCH_STEPS} current={sketchCurrentStep(game.phase)} className={s.phases} />} stage={stage} side={side} bottom={bottom}
     className={cx(s.screen, drawing && s.drawing, active && s.active)} />;
 }

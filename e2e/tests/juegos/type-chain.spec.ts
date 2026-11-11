@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, psql, esperarPartida, seleccionarJuego, SIZES } from '../../src/helpers.js';
-import { capturarTamanos, primeraVisible, esSelector, sinScorePop } from '../../src/juegos.js';
+import { capturarTamanos, primeraVisible, esSelector, sinMomento, sinScorePop, teToca, veraCutin } from '../../src/juegos.js';
 
 /** Tipos de los Pokémon dados, de la BD (para saber qué Pokémon vale en la cadena de Type Chain). */
 function tiposEnBd(ids: readonly string[]): Map<string, string[]> {
@@ -48,6 +48,8 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
 
     const selector = host.page.waitForResponse(esSelector, { timeout: 30_000 });
+    // A6: «¡Te toca!» dura 1 s al empezar el turno; se arma en todas antes de empezar (solo lo verá quien tenga el turno).
+    const primerTeToca = new Map(pages.map((page) => [page, veraCutin(teToca(page), 60_000)]));
     await iniciarPartida(host.page, invitados.map((j) => j.page));
     await esperarPartida(pages);
     const { pokemon: catalogo } = await (await selector).json() as { pokemon: Array<{ id: string; name: string }> };
@@ -66,6 +68,11 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     expect(tipoCadena).toBeTruthy();
     for (const page of otros) await expect(page.getByRole('heading', { name: /^Esperando a .+…$/ })).toBeVisible();
     await expect(turno.getByRole('heading', { name: '¡Tu turno!', level: 1 })).toBeVisible();
+    // «¡Te toca!» solo para quien tiene el turno, sin región viva propia, y no quita el foco del buscador.
+    expect(await primerTeToca.get(turno), '«¡Te toca!» al empezar tu turno').toBe(true);
+    for (const page of otros) await expect(teToca(page)).toHaveCount(0);
+    await sinMomento(turno);
+    await expect(buscadorCadena(turno)).toBeFocused();
 
     const delTipo = (id: string) => (tipos.get(id) ?? []).includes(tipoCadena);
     const nombre = (id: string) => catalogo.find((p) => p.id === id)!.name;
@@ -97,7 +104,8 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     await expect(turno.getByTestId('type-chain-cooldown')).toHaveCount(0, { timeout: 5_000 });
     await expect(turno.getByTestId('type-chain-reason')).toContainText('No es del tipo de la cadena.');
 
-    // Un Pokémon del tipo (si el servidor lo saca del pool, el siguiente candidato).
+    // Un Pokémon del tipo (si el servidor lo saca del pool, el siguiente candidato). El turno pasa: se arma su «¡Te toca!».
+    const siguienteTeToca = new Map(otros.map((page) => [page, veraCutin(teToca(page), 15_000)]));
     let puesto = '';
     for (const id of validos.slice(0, 4)) {
       await expect(turno.getByTestId('type-chain-cooldown')).toHaveCount(0, { timeout: 5_000 });
@@ -113,9 +121,16 @@ test('type-chain: un fallo, un eslabón válido, dos eliminaciones por tiempo y 
     await expect(turno.getByTestId('type-chain-type')).toContainText('1 Pokémon nombrado');
     // La «revelación» de Type Chain: la franja del último movimiento, a los tres tamaños.
     const segundo = await primeraVisible(otros, buscadorCadena);
-    // El siguiente también recibe el foco en el buscador al empezar su turno.
+    // El siguiente también recibe el foco en el buscador al empezar su turno, y su «¡Te toca!».
     await expect(buscadorCadena(segundo)).toBeFocused();
+    expect(await siguienteTeToca.get(segundo), '«¡Te toca!» en el turno siguiente').toBe(true);
     const tercero = otros.find((page) => page !== segundo)!;
+    // Recargar en mitad del turno ya anunciado no lo repite (la clave del turno queda vista en la pestaña).
+    await sinMomento(segundo);
+    await segundo.reload();
+    await segundo.getByRole('button', { name: 'Volver a la sala' }).click({ timeout: 8_000 });
+    await expect(buscadorCadena(segundo)).toBeVisible({ timeout: 15_000 });
+    expect(await veraCutin(teToca(segundo), 2_000), 'sin «¡Te toca!» al volver en el mismo turno').toBe(false);
     await capturarTamanos(tercero, 'juego-type-chain-movimiento', { sigue: tercero.getByTestId('type-chain-event').filter({ hasText: `nombra a ${puesto}` }) });
 
     // El segundo deja pasar su turno: cae eliminado y lo dice en texto (su placa y la lista de jugadores).

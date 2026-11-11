@@ -1,7 +1,7 @@
 import { Search } from 'lucide-react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, type BallotOption, type ChoiceOption, type VoteBallotProps } from '.';
+import { ChoicePair, MOMENT_QUOTE_MAX, PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, momentQuote, roundWinnerMoment, type BallotOption, type ChoiceOption, type VoteBallotProps } from '.';
 import { expectSingleLiveRegion } from '../test-support/live-regions';
 import { member } from '../test-support/room-view';
 
@@ -51,6 +51,59 @@ describe('social-kit: progreso', () => {
     expect(html).toContain('Sin respuesta');
     expect(html).toContain('+3');
     expect(html).not.toContain('Pendiente');
+  });
+});
+
+describe('social-kit: marcadores', () => {
+  it('el marcador de la partida va en `ScoreValue` («N pts») en cada franja', () => {
+    const html = renderToStaticMarkup(<ResponseProgress members={members} playerIds={['p1', 'p2']} doneIds={[]} selfId="p1" count={false} score={(id) => (id === 'p1' ? 12 : 3)} />);
+    expect(html.match(/data-testid="social-score"/g)).toHaveLength(2);
+    expect(html).toMatch(/>12<\/span><small> pts<\/small>/);
+    // Al montar no rebota ni sale el «+N».
+    expect(html).not.toContain('motion-bump');
+    expect(html).not.toContain('data-testid="score-pop"');
+  });
+
+  it('los puntos de la ronda: «+N» en cada franja y el «+N» flotante solo en la propia y si suma', () => {
+    const points: Record<string, number> = { p1: 3, p2: 5, p3: 0 };
+    const html = renderToStaticMarkup(<ResponseProgress members={members} playerIds={['p1', 'p2', 'p3']} doneIds={[]} selfId="p1" count={false} roundPoints={(id) => points[id] ?? 0} />);
+    expect(html.match(/data-testid="social-round-points"/g)).toHaveLength(3);
+    expect(html.match(/data-testid="score-pop"/g)).toHaveLength(1);
+    expect(html).toContain('+5');
+    const none = renderToStaticMarkup(<ResponseProgress members={members} playerIds={['p1']} doneIds={[]} selfId="p1" count={false} roundPoints={() => 0} />);
+    expect(none).not.toContain('data-testid="score-pop"');
+    // `null`: la franja queda sin valor (Unown antes de descifrar).
+    const blank = renderToStaticMarkup(<ResponseProgress members={members} playerIds={['p1']} doneIds={[]} selfId="p1" roundPoints={() => null} />);
+    expect(blank).not.toContain('social-round-points');
+  });
+});
+
+describe('social-kit: momento de la ronda', () => {
+  const nameOf = (id: string) => ({ p1: 'Ana', p2: 'Bruno', p3: 'Carla' })[id] ?? 'Entrenador';
+  it('un ganador: su nombre, o «¡Ganas tú!» con confeti si eres tú', () => {
+    expect(roundWinnerMoment({ key: '1', winnerIds: ['p2'], selfId: 'p1', nameOf, subtitle: 'Snorlax' })).toEqual({ key: '1', won: false, title: '¡Gana Bruno!', subtitle: 'Snorlax' });
+    expect(roundWinnerMoment({ key: '1', winnerIds: ['p1'], selfId: 'p1', nameOf })).toEqual({ key: '1', won: true, title: '¡Ganas tú!' });
+  });
+  it('empate: «¡Victoria compartida!» con los nombres; sin ganadores, nada', () => {
+    expect(roundWinnerMoment({ key: '2', winnerIds: ['p1', 'p3'], selfId: 'p1', nameOf })).toEqual({ key: '2', won: true, title: '¡Victoria compartida!', subtitle: 'Tú · Carla' });
+    expect(roundWinnerMoment({ key: '2', winnerIds: [], selfId: 'p1', nameOf })).toBeNull();
+  });
+  it('la frase ganadora va entre comillas y se corta si es larga', () => {
+    expect(momentQuote(' Se come los deberes ')).toBe('“Se come los deberes”');
+    const long = momentQuote('a'.repeat(100));
+    expect([...long]).toHaveLength(MOMENT_QUOTE_MAX + 2);
+    expect(long.endsWith('…”')).toBe(true);
+  });
+  it('`SocialScreen` pinta el cut-in sin región viva propia; solo con confeti si ganas', () => {
+    const base = { gameName: 'Most Likely To', roundNumber: 1, totalRounds: 3, heading: 'La respuesta favorita', announcement: 'Ronda 1 terminada.', timer: { deadline: null, serverOffset: 0, label: 'Siguiente ronda' }, stage: null, side: null, bottom: null };
+    const other = renderToStaticMarkup(<SocialScreen {...base} roundMoment={{ key: '1', title: '¡Gana Bruno!', subtitle: 'Snorlax', won: false }} />);
+    expectSingleLiveRegion(other);
+    expect(other).toContain('data-layer="cutin"');
+    expect(other).toContain('¡Gana Bruno!');
+    expect(other).not.toContain('data-testid="confetti"');
+    const mine = renderToStaticMarkup(<SocialScreen {...base} roundMoment={{ key: '1', title: '¡Ganas tú!', won: true }} />);
+    expect(mine).toContain('data-testid="confetti"');
+    expect(renderToStaticMarkup(<SocialScreen {...base} roundMoment={null} />)).not.toContain('data-layer="cutin"');
   });
 });
 

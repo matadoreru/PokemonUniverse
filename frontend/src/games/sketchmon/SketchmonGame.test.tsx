@@ -165,8 +165,8 @@ describe('Sketchmon: privacidad del secreto', () => {
   it('el orden de turnos dice en texto quién dibuja, quién va después y los puntos', () => {
     const html = guesser();
     expect(html).toContain('Orden de turnos');
-    expect(html).toMatch(/Ana[^]*Dibuja ahora[^]*3 pts/);
-    expect(html).toMatch(/Pedro[^]*Siguiente[^]*5 pts/);
+    expect(html).toMatch(/Ana[^]*Dibuja ahora[^]*>3<\/span><small> pts/);
+    expect(html).toMatch(/Pedro[^]*Siguiente[^]*>5<\/span><small> pts/);
     expect(html).toMatch(/Carlos[^]*Le toca después/);
     expect(html).toContain('el orden se vuelve a mezclar en la siguiente');
   });

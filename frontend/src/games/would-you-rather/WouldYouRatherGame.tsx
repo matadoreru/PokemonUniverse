@@ -9,7 +9,7 @@ import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { Chip, Icon, Pill } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { pointsWord } from '../../room/guess-kit';
-import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialScreen, VoteTally, socialFocusKey, type ChoiceOption, type TallyOption } from '../../room/social-kit';
+import { ChoicePair, PhaseRail, ResponseProgress, SocialPlate, SocialScreen, VoteTally, momentQuote, socialFocusKey, type ChoiceOption, type SocialRoundMoment, type TallyOption } from '../../room/social-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
 import s from './WouldYouRather.module.css';
@@ -83,7 +83,7 @@ export function WouldYouRatherGame({ room, selfId, onAction }: ActiveGameProps) 
   const side = result
     ? <ResponseProgress title="Puntos de la ronda" members={room.members} playerIds={game.playerIds} doneIds={[]} selfId={selfId} count={false}
       status={(id) => { const line = wouldYouRatherPlayerLine(result, id); return { ...line, ...(line.tone === 'bad' ? { icon: X } : {}) }; }}
-      value={(id) => `+${result.players.find((entry) => entry.playerId === id)?.totalPoints ?? 0}`} />
+      roundPoints={(id) => result.players.find((entry) => entry.playerId === id)?.totalPoints ?? 0} />
     : <ResponseProgress title="Papeletas" members={room.members} playerIds={game.playerIds} doneIds={game.submittedPlayerIds} selfId={selfId}
       doneText="Lista" pendingText="Pensando…" note="Elección y predicción permanecen secretas hasta el resultado." />;
 
@@ -124,7 +124,14 @@ export function WouldYouRatherGame({ room, selfId, onAction }: ActiveGameProps) 
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={wouldYouRatherHeading(game.phase, result)} timer={timer}
+  // El momento de la revelación: la opción de la mayoría (sin mayoría, nada); confeti para quien estuvo en ella.
+  const roundMoment: SocialRoundMoment | null = result?.majority ? {
+    key: `${game.roundNumber}`, title: `¡Gana la opción ${result.majority}!`,
+    subtitle: momentQuote(result.majority === 'A' ? result.prompt.optionA : result.prompt.optionB),
+    won: result.players.some((entry) => entry.playerId === selfId && entry.majorityPoint),
+  } : null;
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={wouldYouRatherHeading(game.phase, result)} timer={timer} roundMoment={roundMoment}
     announcement={wouldYouRatherAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, locked, result })}
     phases={<PhaseRail steps={wouldYouRatherSteps} current={wouldYouRatherCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

@@ -10,9 +10,10 @@ import {
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useServerOffset } from '../../hooks/useServerTime';
-import { Badge, Bar, Chip, cx, Icon, Panel, Row, type ChipProps } from '../../ui';
+import { Badge, Bar, Chip, cx, Icon, Panel, Row, ScoreValue, type ChipProps } from '../../ui';
 import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, amountText, bidBlock, bidEpoch, bidLog, type BudgetEntry } from '../../room/auction-kit';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { GuessPanel } from '../../room/guess-kit';
 import { useRoomMembers } from '../../room/room-members';
 import type { ActiveGameProps } from '../../room/room-command';
@@ -84,6 +85,9 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGamePr
   useFocusOnTransition(`${game.phase}-${game.roundNumber}-${result ? 'result' : searching ? 'search' : block.reason}`, titleRef);
 
   const canSearch = Boolean(player?.canSubmitPokemon);
+  // «¡Te toca!» en cada turno propio de puja (vuelve con cada puja o pase del lote: `epoch`) y al empezar tu demostración.
+  const biddingTurn = game.phase === 'ROUND_ACTIVE' && !result && game.currentTurnPlayerId === selfId;
+  const turnCue = useTurnCue(biddingTurn || (searching && canSearch), roomTurnKey(room, searching ? `search:${game.roundNumber}` : biddingTurn ? epoch : null));
   const pool = usePokemonPool({ generations: config?.generations ?? [], includeForms: false, enabled: canSearch });
   const bidSeconds = config?.bidSeconds ?? 20;
   const order = game.bidOrder.length > 0 ? game.bidOrder : game.playerIds;
@@ -137,7 +141,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGamePr
       disconnected: member?.presence !== undefined && member.presence !== 'CONNECTED',
       avatar: avatarOf(id),
       status: { tone: SEAT_TONE[status], text: SEAT_STATUS_TEXT[status], icon: SEAT_ICON[status] },
-      detail: `Orden ${index + 1} · ${game.scores[id] ?? 0} pts`,
+      detail: <>{`Orden ${index + 1} · `}<ScoreValue value={game.scores[id] ?? 0} self={id === selfId} quiet color={colorOf(id)}> pts</ScoreValue></>,
       value: passed && game.phase === 'ROUND_ACTIVE' ? <span>Pasó</span> : bid !== undefined ? <><strong>{bid}</strong><small>{UNIT}</small></> : <span aria-label="Sin pujas">—</span>,
     };
   });
@@ -179,7 +183,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGamePr
   return <AuctionScreen gameName={GAME_NAME} roundNumber={Math.max(1, game.roundNumber)} totalRounds={game.totalRounds} roundLabel={bluffRoundLabel(game)}
     heading={bluffHeading(game, selfId, nameOf)}
     meta={<><Chip tone="info" icon={<Icon icon={Mic2} size={18} />}>Bluff por voz externa</Chip>{!result && !searching && bidSeconds === 0 && <Chip tone="neutral">Sin límite de tiempo</Chip>}</>}
-    pinBottom={!(searching && canSearch)} timer={timer} announcement={bluffAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />;
+    pinBottom={!(searching && canSearch)} turnCue={turnCue} timer={timer} announcement={bluffAnnouncement(game, selfId, nameOf)} stage={stage} side={side} bottom={bottom} />;
 }
 
 /** Escena del resultado: la condición, quién apostó, por qué acabó así y las métricas finales. */

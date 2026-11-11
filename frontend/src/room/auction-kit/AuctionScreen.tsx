@@ -33,6 +33,8 @@ export interface AuctionScreenProps {
    * placas altas (el buscador con su bandeja abierta) que, pegadas, taparían la escena; lo esencial sigue a la vista.
    */
   pinBottom?: boolean;
+  /** Lo que devuelve `useTurnCue` con tu turno de puja: «¡Te toca!» y el rebote de los controles. */
+  turnCue?: string | null | undefined;
 }
 
 /**

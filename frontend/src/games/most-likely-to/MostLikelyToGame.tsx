@@ -10,7 +10,7 @@ import { guessSprite, pointsWord } from '../../room/guess-kit';
 import { useRoomMembers } from '../../room/room-members';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import {
-  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, socialFocusKey, votesText,
+  PhaseRail, ResponseProgress, SocialPlate, SocialPrompt, SocialScreen, VoteBallot, VoteTally, roundWinnerMoment, socialFocusKey, votesText,
   type BallotOption, type SocialPlateContent, type TallyOption,
 } from '../../room/social-kit';
 import { type ActiveGameProps, ignoreFailure } from '../../room/room-command';
@@ -85,7 +85,7 @@ export function MostLikelyToGame({ room, selfId, onAction }: ActiveGameProps) {
         if (result.voteRounds.length > 1 && !result.voteRounds.at(-1)?.candidateIds.includes(id)) return { tone: 'neutral', text: 'Fuera de la segunda vuelta' };
         return { tone: 'neutral', text: votesText(answer.votesReceived) };
       }}
-      value={(id) => `+${result.pointsAwarded[id] ?? 0}`} />
+      roundPoints={(id) => result.pointsAwarded[id] ?? 0} />
     : <ResponseProgress members={room.members} playerIds={game.playerIds} doneIds={voting ? game.votedPlayerIds : game.selectionCompletedIds} selfId={selfId}
       doneText={voting ? 'Votó' : 'Respondió'} note={voting ? 'El destino de cada voto es secreto hasta el resultado.' : 'Las respuestas no se muestran hasta que termina la selección.'} />;
 
@@ -122,6 +122,10 @@ export function MostLikelyToGame({ room, selfId, onAction }: ActiveGameProps) {
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el resultado…', text: 'La ronda sigue en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={mostLikelyHeading(game.phase, result)} timer={timer}
+  // El momento de la revelación: el autor de la respuesta ganadora (o los empatados) y su Pokémon.
+  const winningPokemon = result?.winnerIds.length === 1 ? result.answers.find((answer) => answer.playerId === result.winnerIds[0])?.pokemon.name : undefined;
+  const roundMoment = result && roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: result.winnerIds, selfId, nameOf, subtitle: winningPokemon });
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={mostLikelyHeading(game.phase, result)} timer={timer} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={mostLikelySteps(game.phase)} current={mostLikelyCurrentStep(game.phase)} />} stage={stage} side={side} bottom={bottom} />;
 }

@@ -1110,17 +1110,37 @@ function ScoreValueSection() {
   );
 }
 
+type MomentSample = 'plain' | 'confetti' | 'turn' | 'winner' | 'winnerSelf';
+
+const MOMENT_SAMPLES: Record<MomentSample, { title: string; subtitle?: string; confetti?: boolean; silent?: boolean; holdMs?: number }> = {
+  plain: { title: '¡Racha de 5!', subtitle: 'Momento de ejemplo' },
+  confetti: { title: '¡BINGO!', subtitle: 'Momento de ejemplo', confetti: true },
+  turn: { title: '¡Te toca!', silent: true, holdMs: 1_000 },
+  winner: { title: '¡Gana Misty!', subtitle: '“Se come los deberes de su entrenador”', silent: true },
+  winnerSelf: { title: '¡Ganas tú!', subtitle: 'Pikachu', confetti: true, silent: true },
+};
+
 function MomentCutinSection() {
-  const [shown, setShown] = useState<{ n: number; confetti: boolean } | null>(null);
+  const [shown, setShown] = useState<{ n: number; kind: MomentSample } | null>(null);
+  const show = (kind: MomentSample) => setShown((prev) => ({ n: (prev?.n ?? 0) + 1, kind }));
   return (
     <Section name="momentcutin" title="MomentCutin">
       <Fig id="momentcutin-plain" caption="Momento sin región viva: clic o Espacio lo saltan">
-        <Pill variant="cream" onClick={() => setShown((prev) => ({ n: (prev?.n ?? 0) + 1, confetti: false }))}>Hito</Pill>
+        <Pill variant="cream" onClick={() => show('plain')}>Hito</Pill>
       </Fig>
       <Fig id="momentcutin-confetti" caption="Con confeti (nunca con movimiento reducido)">
-        <Pill variant="cream" onClick={() => setShown((prev) => ({ n: (prev?.n ?? 0) + 1, confetti: true }))}>¡BINGO!</Pill>
+        <Pill variant="cream" onClick={() => show('confetti')}>¡BINGO!</Pill>
       </Fig>
-      {shown && <MomentCutin key={shown.n} tone="yellow" title={shown.confetti ? '¡BINGO!' : '¡Racha de 5!'} subtitle="Momento de ejemplo" confetti={shown.confetti} confettiSeed={shown.n} onDone={() => setShown(null)} />}
+      <Fig id="momentcutin-turn" caption="«¡Te toca!»: corto (1 s) y sin sonido propio (suena ui.open desde useTurnCue)">
+        <Pill variant="cream" onClick={() => show('turn')}>¡Te toca!</Pill>
+      </Fig>
+      <Fig id="momentcutin-winner" caption="Ganador de la ronda social: sin sonido propio (la sala da game.reveal); confeti solo si ganas tú">
+        <span className={s.iconRow}>
+          <Pill variant="cream" onClick={() => show('winner')}>Gana otro</Pill>
+          <Pill variant="cream" onClick={() => show('winnerSelf')}>Ganas tú</Pill>
+        </span>
+      </Fig>
+      {shown && <MomentCutin key={shown.n} tone="yellow" {...MOMENT_SAMPLES[shown.kind]} confettiSeed={shown.n} onDone={() => setShown(null)} />}
     </Section>
   );
 }

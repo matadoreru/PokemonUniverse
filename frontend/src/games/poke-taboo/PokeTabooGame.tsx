@@ -13,8 +13,9 @@ import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { Chip, cx, Icon, TypeBadge, type ChipProps } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { gameDraftKey } from '../../room/game-kit/game-draft';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { GuessAttemptsFeed, GuessPanel, GuessRoundReveal, guessOwnLastAttempt, guessPublicAttempts, pointsWord } from '../../room/guess-kit';
-import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, type ProgressStatus } from '../../room/social-kit';
+import { PhaseRail, ResponseProgress, SocialPlate, SocialScreen, roundWinnerMoment, type ProgressStatus } from '../../room/social-kit';
 import type { ActiveGameProps } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
 import s from './PokeTaboo.module.css';
@@ -102,14 +103,14 @@ export function PokeTabooGame({ room, selfId, onAction }: ActiveGameProps) {
 
   const turnOrder = <ResponseProgress title="Orden de turnos" members={room.members} playerIds={game.descriptorOrder} doneIds={[]} selfId={selfId} count={false}
     status={(id): ProgressStatus => { const status = tabooTurnStatus(game, id); return { tone: TURN_TONE[status], text: TURN_STATUS_TEXT[status], icon: TURN_ICON[status] }; }}
-    value={(id) => `${game.scores[id] ?? 0} pts`} note="Cada jugador describe una vez por vuelta." />;
+    score={(id) => game.scores[id] ?? 0} quiet note="Cada jugador describe una vez por vuelta." />;
   const turnPoints = result && <ResponseProgress title="Puntos del turno" members={room.members} playerIds={game.descriptorOrder} doneIds={[]} selfId={selfId} count={false}
     status={(id): ProgressStatus => {
       if (id === result.winnerId) return { tone: 'ok', text: `Acertó · ${result.winnerAttemptCount ?? 1} ${result.winnerAttemptCount === 1 ? 'intento' : 'intentos'}`, icon: Trophy };
       if (id === result.descriptorId) return result.winnerId ? { tone: 'ok', text: 'Describió', icon: Mic } : { tone: 'bad', text: 'Describió · nadie acertó', icon: Mic };
       return { tone: 'neutral', text: 'No acertó', icon: X };
     }}
-    value={(id) => `+${id === result.winnerId ? result.guesserPoints : id === result.descriptorId ? result.descriptorPoints : 0}`} />;
+    roundPoints={(id) => (id === result.winnerId ? result.guesserPoints : id === result.descriptorId ? result.descriptorPoints : 0)} />;
   const side = <>
     {turnPoints || turnOrder}
     {feedAttempts && <GuessAttemptsFeed attempts={feedAttempts} members={members} colors={colors} emptyText="Cada fallo sale aquí para todos. Tras un fallo hay una breve espera antes del siguiente intento." />}
@@ -139,6 +140,10 @@ export function PokeTabooGame({ room, selfId, onAction }: ActiveGameProps) {
     bottom = <SocialPlate titleRef={titleRef} content={{ icon: Clock3, tone: 'info', kicker: GAME_NAME, title: 'Preparando el turno…', text: 'El turno empieza en un momento.' }} />;
   }
 
-  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} roundLabel={tabooRoundLabel(game)} heading={heading} meta={meta} timer={timer}
+  // «¡Te toca!» al empezar tu turno de describir; en la revelación, quién lo acertó.
+  const turnCue = useTurnCue(role === 'describer' && active, roomTurnKey(room, game.roundNumber));
+  const roundMoment = result?.winnerId ? roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: [result.winnerId], selfId, nameOf, subtitle: `Era ${result.pokemon.name}` }) : null;
+
+  return <SocialScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} roundLabel={tabooRoundLabel(game)} heading={heading} meta={meta} timer={timer} turnCue={turnCue} roundMoment={roundMoment}
     announcement={announcement} phases={<PhaseRail steps={TABOO_STEPS} current={tabooCurrentStep(game.phase)} className={s.phases} />} stage={stage} side={side} bottom={bottom} className={cx(s.screen)} />;
 }

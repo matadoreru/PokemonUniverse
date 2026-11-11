@@ -12,7 +12,8 @@ import { gameDraftKey } from '../../room/game-kit/game-draft';
 import { attemptsText, guessSeconds, ordinal, pointsWord } from '../../room/guess-kit';
 import { GamePanel, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { guessSearchAutoFocus } from '../../room/guess-kit/presentation';
-import { ResponseProgress, SocialPlate, type SocialPlateContent } from '../../room/social-kit';
+import { ResponseProgress, RoundMomentCutin, SocialPlate, roundWinnerMoment, type SocialPlateContent } from '../../room/social-kit';
+import { useRoomMembers } from '../../room/room-members';
 import { hiddenLettersText, UnownRoundReveal } from './UnownTranslatorResults';
 import { type ActiveGameProps, sendWithBusy } from '../../room/room-command';
 import s from './UnownTranslator.module.css';
@@ -119,6 +120,7 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
   const player = room.gamePlayerState as UnownTranslatorPlayerState | null;
   const config = room.selectedGameConfig as Partial<UnownTranslatorConfig> | null;
   const offset = useServerOffset(room.serverNow);
+  const { nameOf } = useRoomMembers(room);
   const active = game.phase === 'ROUND_ACTIVE';
   const lastRound = game.phase === 'ROUND_RESULTS' ? game.lastRound : null;
   const participating = player?.role === 'PLAYER';
@@ -160,11 +162,12 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
           const solve = solves.get(id);
           return solve ? { tone: 'ok', text: `${ordinal(solve.order)} · ${hiddenLettersText(solve.hiddenLetters)}`, icon: CheckCircle2 } : { tone: 'bad', text: 'No lo descifró', icon: X };
         }}
-        value={(id) => `+${solves.get(id)?.points ?? 0}`} />;
+        roundPoints={(id) => solves.get(id)?.points ?? 0} />;
     })()
     : <ResponseProgress title="Descifrado" members={room.members} playerIds={game.playerIds} doneIds={game.solvedPlayerIds} selfId={selfId}
       doneText="Descifrado" pendingText="Descifrando…" note="La respuesta sigue oculta hasta el final de la ronda."
-      value={(id) => (game.solvedPlayerIds.includes(id) ? `+${game.roundPointsByPlayer[id] ?? 0}` : null)} />;
+      // El «+N» propio sale al acertar, sin sonido (el acierto ya suena con `hit`); en la revelación no se repite.
+      roundPoints={(id) => (game.solvedPlayerIds.includes(id) ? game.roundPointsByPlayer[id] ?? 0 : null)} />;
 
   const points = (value: number) => <strong>+{value} {pointsWord(value)}</strong>;
   let content: SocialPlateContent;
@@ -202,6 +205,9 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
   </SocialPlate>;
 
   const heading = lastRound ? `¡Decía ${lastRound.answer}!` : QUESTION;
+  // El momento de la revelación: quien lo descifró primero (el que más suma).
+  const firstSolver = lastRound?.solves[0]?.playerId;
+  const roundMoment = firstSolver ? roundWinnerMoment({ key: `${game.roundNumber}`, winnerIds: [firstSolver], selfId, nameOf, subtitle: 'Primero en descifrarlo' }) : null;
   return <GameScreen gameName={GAME_NAME} roundNumber={game.roundNumber} phase={game.phase} totalRounds={game.totalRounds} heading={heading} meta={meta} timer={timer}
-    announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} testId="unown-screen" />;
+    announcement={announcement} clue={clue} hints={hints} side={side} bottom={bottom} testId="unown-screen" moment={<RoundMomentCutin moment={roundMoment} />} />;
 }
