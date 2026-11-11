@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { Crown, Gavel, PackageX, SkipForward } from 'lucide-react';
 import { useId, type ReactNode } from 'react';
-import { cx, Icon, Panel } from '../../ui';
+import { cx, Icon, Panel, type Tone } from '../../ui';
 import { safeAmount, type TurnOrderEntry, type TurnOrderState } from './presentation';
 import s from './AuctionLot.module.css';
 
@@ -123,8 +123,8 @@ export function AuctionPrevious({ kicker, item, winner, detail, sprite }: Auctio
 }
 
 export interface AuctionAwardProps {
-  /** `won`: con dueño; `unsold`: sin pujas (sin dueño). */
-  tone: 'won' | 'unsold';
+  /** Tono común: `ok` con dueño; `bad` sin pujas (sin dueño). */
+  tone: Extract<Tone, 'ok' | 'bad'>;
   /** «Lote 2 adjudicado», «Lote 2 sin dueño». */
   kicker: string;
   /** «Charizard para Ana». */
@@ -143,8 +143,8 @@ export interface AuctionAwardProps {
  * en su sitio hasta la siguiente adjudicación, y un cut-in es una capa que se va sola. `data-testid="auction-award"`.
  */
 export function AuctionAward({ tone, kicker, title, detail, sprite, fresh = false }: AuctionAwardProps) {
-  return <div className={cx(s.award, tone === 'unsold' && s.unsold, fresh && s.fresh)} data-testid="auction-award" data-fresh={fresh || undefined}>
-    {sprite ? <img src={sprite} alt="" className={s.awardSprite} /> : <span className={s.awardIcon}><Icon icon={tone === 'won' ? Gavel : PackageX} size={24} /></span>}
+  return <div className={cx(s.award, tone === 'bad' && s.unsold, fresh && s.fresh)} data-testid="auction-award" data-fresh={fresh || undefined}>
+    {sprite ? <img src={sprite} alt="" className={s.awardSprite} /> : <span className={s.awardIcon}><Icon icon={tone === 'ok' ? Gavel : PackageX} size={24} /></span>}
     <span className={s.awardText}>
       <span className={s.awardKicker}><span className={s.awardKickerText}>{kicker}</span>{fresh && <span className={s.awardNew}>Nuevo</span>}</span>
       <strong className={cx(s.awardTitle, 'ol')} title={title}>{title}</strong>

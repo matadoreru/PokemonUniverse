@@ -1,5 +1,6 @@
 import { type DistanceRoundRecord, MAX_TIEBREAK_DEPTH } from '@pokemon-universe/shared/public';
 import { plural } from '../../lib/format';
+import type { Tone } from '../../ui';
 
 export interface DistancePlayerSummary {
   playerId: string;
@@ -90,7 +91,8 @@ export function distanceBestLabel(best: DistanceBestHit): string {
 /** Distancia a partir de la cual una celda deja de resaltarse como «cerca». */
 export const DISTANCE_CLOSE_MAX = 10;
 
-export type DistanceCellTone = 'leaf' | 'aqua' | 'ink' | 'berry' | 'muted';
+/** Tono común de la celda: exacto `ok`, cerca `info`, lejos `neutral`, cayó `bad`; `null` si no jugaba (sin tono, texto apagado). */
+export type DistanceCellTone = Extract<Tone, 'ok' | 'info' | 'neutral' | 'bad'> | null;
 
 export interface DistanceCell {
   text: string;
@@ -105,18 +107,18 @@ export interface DistanceCell {
 /** Celda de la tabla «Distancia por ronda» para un jugador y un registro. */
 export function distanceCell(record: DistanceRoundRecord, playerId: string): DistanceCell {
   const round = distanceRoundLabel(record);
-  if (!(playerId in record.distances)) return { text: '—', mark: null, tone: 'muted', label: `${round}: no jugaba` };
+  if (!(playerId in record.distances)) return { text: '—', mark: null, tone: null, label: `${round}: no jugaba` };
   const distance = record.distances[playerId] ?? null;
   const fell = record.eliminatedIds.includes(playerId);
   const text = distance === null ? '—' : String(distance);
   const what = distance === null ? 'sin respuesta' : distance === 0 ? 'acierto exacto' : `a ${distance}`;
   if (fell) {
     const note = distanceForcedTieNote(record, playerId);
-    return { text, mark: 'fell', tone: 'berry', label: `${round}: ${what}, cayó${note ? ` (${note})` : ''}` };
+    return { text, mark: 'fell', tone: 'bad', label: `${round}: ${what}, cayó${note ? ` (${note})` : ''}` };
   }
-  if (distance === 0) return { text, mark: 'hit', tone: 'leaf', label: `${round}: ${what}` };
-  if (distance !== null && distance <= DISTANCE_CLOSE_MAX) return { text, mark: null, tone: 'aqua', label: `${round}: ${what}` };
-  return { text, mark: null, tone: 'ink', label: `${round}: ${what}` };
+  if (distance === 0) return { text, mark: 'hit', tone: 'ok', label: `${round}: ${what}` };
+  if (distance !== null && distance <= DISTANCE_CLOSE_MAX) return { text, mark: null, tone: 'info', label: `${round}: ${what}` };
+  return { text, mark: null, tone: 'neutral', label: `${round}: ${what}` };
 }
 
 /** Media con coma decimal y dos decimales como mucho: `181,75`. */

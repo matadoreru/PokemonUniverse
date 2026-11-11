@@ -75,8 +75,11 @@ export function TypeOption({ type, label, pressed, loading = false, forced, disa
   );
 }
 
+/** Tonos de estado comunes del catálogo (Chip, ActionPlate, las clases `tone_*` de `surfaces.module.css`). */
+export type Tone = 'ok' | 'warn' | 'bad' | 'info' | 'neutral';
+
 export interface ChipProps {
-  tone?: 'ok' | 'warn' | 'bad' | 'info' | 'neutral';
+  tone?: Tone;
   children: ReactNode;
   icon?: ReactNode;
 }

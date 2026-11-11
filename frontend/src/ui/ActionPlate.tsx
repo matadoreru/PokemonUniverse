@@ -1,11 +1,13 @@
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
+import type { Tone } from './Badge';
 import { cx } from './cx';
 import { Icon } from './Icon';
 import { Panel } from './Panel';
 import s from './ActionPlate.module.css';
 
-export type ActionPlateTone = 'ok' | 'bad' | 'info' | 'warn';
+/** Tonos comunes salvo `neutral`: el icono de la placa siempre lleva color. */
+export type ActionPlateTone = Exclude<Tone, 'neutral'>;
 
 /** Atributos `data-*` de un elemento de la placa (ganchos de tests y E2E). */
 type DataAttrs = Partial<Record<`data-${string}`, string | boolean | undefined>>;

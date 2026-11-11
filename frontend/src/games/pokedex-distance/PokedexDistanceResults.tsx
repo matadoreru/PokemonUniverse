@@ -8,12 +8,11 @@ import { useRoomMembers } from '../../room/room-members';
 import type { GameResultsProps } from '../../room/room-command';
 import s from './PokedexDistanceResults.module.css';
 
-const CELL_TONE: Record<DistanceCellTone, string | undefined> = {
-  leaf: s.exact,
-  aqua: s.near,
-  ink: s.far,
-  berry: s.fell,
-  muted: s.muted,
+const CELL_TONE: Record<NonNullable<DistanceCellTone>, string | undefined> = {
+  ok: s.exact,
+  info: s.near,
+  neutral: s.far,
+  bad: s.fell,
 };
 
 /**
@@ -66,7 +65,7 @@ export function PokedexDistanceResults({ room, selfId, onLobby, onEnd }: GameRes
         </tr></thead>
         <tbody>{standings.map((standing) => <tr key={standing.playerId}>
           <th scope="row" className={s.nameCell}><span className={s.truncate} title={nameOf(standing.playerId)}>{nameOf(standing.playerId)}</span></th>
-          {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={CELL_TONE[cell.tone]} title={cell.label}><span aria-hidden="true" className={s.cellValue}>{cell.mark && <Icon icon={cell.mark === 'hit' ? Check : X} size={18} />}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
+          {history.map((record) => { const cell = distanceCell(record, standing.playerId); return <td key={`${record.roundNumber}-${record.tiebreakDepth}`} className={cell.tone ? CELL_TONE[cell.tone] : s.muted} title={cell.label}><span aria-hidden="true" className={s.cellValue}>{cell.mark && <Icon icon={cell.mark === 'hit' ? Check : X} size={18} />}{cell.text}</span><span className="sr-only">{cell.label}</span></td>; })}
         </tr>)}</tbody>
       </table>
     </div>

@@ -80,7 +80,7 @@ export function ShinyOptionCard({ option, voters, selected, confirmed, interacti
   correct: boolean;
   showVoters: boolean;
   /** Puntos de la ronda para la carta propia al revelar (`shinyRoundFeedback`). */
-  feedback?: { tone: 'leaf' | 'berry'; label: string; points: number } | null;
+  feedback?: { label: string; points: number } | null;
   onSelect(): void;
   /** Avisa (una vez o más, debe ser idempotente) de que el sprite de la carta ha cargado o fallado. */
   onSettled?(optionId: ShinyOption['id']): void;

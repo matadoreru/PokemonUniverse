@@ -93,7 +93,7 @@ export function PokemonBluffAuctionGame({ room, selfId, onAction }: ActiveGamePr
   let stage: ReactNode;
   if (result) {
     stage = <Panel variant="cream" as="section" aria-label={`Resultado de la ronda ${game.roundNumber}`} className={cx(b.scene)} bodyClassName={cx(b.sceneBody)}>
-      <AuctionAward tone={result.success ? 'won' : 'unsold'} kicker={result.success ? `Ronda ${game.roundNumber} · Cumplió` : `Ronda ${game.roundNumber} · Farol`}
+      <AuctionAward tone={result.success ? 'ok' : 'bad'} kicker={result.success ? `Ronda ${game.roundNumber} · Cumplió` : `Ronda ${game.roundNumber} · Farol`}
         title={bluffResultTitle(result, nameOf)} detail={`Apostó ${amountText(result.bid, UNIT)}`} fresh />
       <ResultScene result={result} nameOf={nameOf} avatar={avatarOf(result.bidderId, 'lg')} />
     </Panel>;

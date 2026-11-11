@@ -21,7 +21,7 @@ export type { SliderProps } from './Slider';
 export { Toggle } from './Toggle';
 export type { ToggleProps } from './Toggle';
 export { Badge, TypeBadge, TypeOption, Chip } from './Badge';
-export type { BadgeProps, TypeBadgeProps, TypeOptionProps, ChipProps } from './Badge';
+export type { BadgeProps, TypeBadgeProps, TypeOptionProps, ChipProps, Tone } from './Badge';
 export { Bar, barRatio } from './Bar';
 export type { BarProps } from './Bar';
 export { Timer, timerSeconds, timerUrgent } from './Timer';

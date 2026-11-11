@@ -122,7 +122,7 @@ describe('auction-kit: lote y adjudicación', () => {
     expect(html).toMatch(/Puja mínima.*<strong>1<\/strong>/);
     expect(html).not.toContain('auction-leader');
     expect(renderToStaticMarkup(<AuctionLot kicker="Lote 1" item={null} currentBid={null} leader={null} minimumBid={1} />)).toContain('La subasta ha terminado.');
-    expect(renderToStaticMarkup(<AuctionAward tone="unsold" kicker="Lote 4 sin dueño" title="Mewtwo" />)).toContain('Lote 4 sin dueño');
+    expect(renderToStaticMarkup(<AuctionAward tone="bad" kicker="Lote 4 sin dueño" title="Mewtwo" />)).toContain('Lote 4 sin dueño');
     expect(renderToStaticMarkup(<AuctionPrevious kicker="Lote 4" item="Mewtwo" winner={null} detail="sin dueño" />)).toMatch(/Mewtwo.*sin dueño/);
   });
 });

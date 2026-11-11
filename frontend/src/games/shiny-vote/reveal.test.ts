@@ -28,12 +28,12 @@ describe('shinyRoundFeedback', () => {
   });
 
   it('shows the points in leaf on a hit', () => {
-    expect(shinyRoundFeedback({ correct: true, points: 3 }, true)).toEqual({ tone: 'leaf', label: '+3' });
+    expect(shinyRoundFeedback({ correct: true, points: 3 }, true)).toEqual({ label: '+3' });
   });
 
   it('shows +0 in berry on a miss or without a vote', () => {
-    expect(shinyRoundFeedback({ correct: false, points: 0 }, true)).toEqual({ tone: 'berry', label: '+0' });
-    expect(shinyRoundFeedback({ correct: false, points: 0 }, false)).toEqual({ tone: 'berry', label: '+0' });
+    expect(shinyRoundFeedback({ correct: false, points: 0 }, true)).toEqual({ label: '+0' });
+    expect(shinyRoundFeedback({ correct: false, points: 0 }, false)).toEqual({ label: '+0' });
   });
 });
 

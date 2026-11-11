@@ -20,7 +20,7 @@ export function shinyCardsReady(loaded: number, total: number, elapsedMs: number
 }
 
 /** Puntos de la ronda para la carta propia: `null` hasta revelar; `+0` si falla o no vota. */
-export function shinyRoundFeedback(roundResult: { correct: boolean; points: number } | null, voted: boolean): { tone: 'leaf' | 'berry'; label: string } | null {
+export function shinyRoundFeedback(roundResult: { correct: boolean; points: number } | null, voted: boolean): { label: string } | null {
   if (!roundResult) return null;
-  return roundResult.correct && voted ? { tone: 'leaf', label: `+${roundResult.points}` } : { tone: 'berry', label: '+0' };
+  return roundResult.correct && voted ? { label: `+${roundResult.points}` } : { label: '+0' };
 }

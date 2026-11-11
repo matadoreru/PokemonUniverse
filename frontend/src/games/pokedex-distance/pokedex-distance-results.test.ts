@@ -74,15 +74,15 @@ describe('Pokédex Distance: resultados', () => {
 
   it('marks each table cell with tone, symbol and an accessible label', () => {
     const [tie, tiebreak, second] = history as [DistanceRoundRecord, DistanceRoundRecord, DistanceRoundRecord];
-    expect(distanceCell(second, 'p1')).toEqual({ text: '0', mark: 'hit', tone: 'leaf', label: 'R2: acierto exacto' });
-    expect(distanceCell(tiebreak, 'p1')).toEqual({ text: '3', mark: null, tone: 'aqua', label: 'R1 · D1: a 3' });
-    expect(distanceCell(tie, 'p1')).toEqual({ text: '40', mark: null, tone: 'ink', label: 'R1: a 40' });
-    expect(distanceCell(tiebreak, 'p2')).toEqual({ text: '90', mark: 'fell', tone: 'berry', label: 'R1 · D1: a 90, cayó' });
-    expect(distanceCell(record(1, 0, { p1: null }, ['p1']), 'p1')).toEqual({ text: '—', mark: 'fell', tone: 'berry', label: 'R1: sin respuesta, cayó' });
-    expect(distanceCell(tiebreak, 'p3')).toEqual({ text: '—', mark: null, tone: 'muted', label: 'R1 · D1: no jugaba' });
-    expect(distanceCell(second, 'p3').tone).toBe('berry');
-    expect(distanceCell(record(1, 0, { p1: 10 }, []), 'p1').tone).toBe('aqua');
-    expect(distanceCell(record(1, 0, { p1: 11 }, []), 'p1').tone).toBe('ink');
+    expect(distanceCell(second, 'p1')).toEqual({ text: '0', mark: 'hit', tone: 'ok', label: 'R2: acierto exacto' });
+    expect(distanceCell(tiebreak, 'p1')).toEqual({ text: '3', mark: null, tone: 'info', label: 'R1 · D1: a 3' });
+    expect(distanceCell(tie, 'p1')).toEqual({ text: '40', mark: null, tone: 'neutral', label: 'R1: a 40' });
+    expect(distanceCell(tiebreak, 'p2')).toEqual({ text: '90', mark: 'fell', tone: 'bad', label: 'R1 · D1: a 90, cayó' });
+    expect(distanceCell(record(1, 0, { p1: null }, ['p1']), 'p1')).toEqual({ text: '—', mark: 'fell', tone: 'bad', label: 'R1: sin respuesta, cayó' });
+    expect(distanceCell(tiebreak, 'p3')).toEqual({ text: '—', mark: null, tone: null, label: 'R1 · D1: no jugaba' });
+    expect(distanceCell(second, 'p3').tone).toBe('bad');
+    expect(distanceCell(record(1, 0, { p1: 10 }, []), 'p1').tone).toBe('info');
+    expect(distanceCell(record(1, 0, { p1: 11 }, []), 'p1').tone).toBe('neutral');
   });
 
   it('writes the stats line with plurals and tiebreaks only when there are any', () => {
@@ -98,7 +98,7 @@ describe('Pokédex Distance: resultados', () => {
     const summary = distanceResultsSummary([record(1, 0, { p1: 20, p2: 20, p3: 4 }, []), forced], ['p1', 'p2', 'p3']);
     expect(summary.players.map((player) => player.eliminationNote)).toEqual([null, 'empate forzado: eligió más tarde', null]);
     expect(distanceStandingLabel(summary.players[1]!, 'p1')).toBe('Cayó en la ronda 1 · empate forzado: eligió más tarde');
-    expect(distanceCell(forced, 'p2')).toEqual({ text: '20', mark: 'fell', tone: 'berry', label: 'R1 · D3: a 20, cayó (empate forzado: eligió más tarde)' });
+    expect(distanceCell(forced, 'p2')).toEqual({ text: '20', mark: 'fell', tone: 'bad', label: 'R1 · D3: a 20, cayó (empate forzado: eligió más tarde)' });
     expect(distanceCell(forced, 'p1').label).toBe('R1 · D3: a 20');
     // Si eligieron a la vez, caen todos los empatados.
     const together = record(1, 3, { p1: 20, p2: 20 }, ['p1', 'p2']);
