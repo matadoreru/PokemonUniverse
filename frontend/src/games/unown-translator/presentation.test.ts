@@ -1,6 +1,6 @@
 import type { UnownToken, UnownTranslatorPlayerState, UnownTranslatorRoundResult } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { hintCountdownLabel, hitCueRound, newLetters, newLettersAnnouncement, splitWords } from './presentation';
+import { hintCountdownLabel, hitCueRound, lettersToAnnounce, messageMetrics, newLetters, newLettersAnnouncement, splitWords } from './presentation';
 
 const glyph = (n: number): UnownToken => ({ kind: 'GLYPH', glyph: n });
 const letter = (n: number, l: string): UnownToken => ({ kind: 'LETTER', glyph: n, letter: l });
@@ -25,6 +25,22 @@ describe('Traductor Unown: presentación', () => {
   it('newLetters devuelve dos letras nuevas en su orden', () => {
     expect(newLetters([], [{ glyph: 9, letter: 'P' }, { glyph: 1, letter: 'Q' }])).toEqual(['P', 'Q']);
     expect(newLetters([{ glyph: 9, letter: 'P' }], [{ glyph: 9, letter: 'P' }])).toEqual([]);
+  });
+
+  it('lettersToAnnounce: en la misma ronda solo las nuevas; al cambiar de ronda, todas las iniciales aunque se repitan', () => {
+    const p = { glyph: 9, letter: 'P' };
+    const q = { glyph: 1, letter: 'Q' };
+    expect(lettersToAnnounce({ roundNumber: 1, alphabet: [p] }, { roundNumber: 1, alphabet: [p, q] })).toEqual(['Q']);
+    expect(lettersToAnnounce({ roundNumber: 1, alphabet: [p, q] }, { roundNumber: 1, alphabet: [p, q] })).toEqual([]);
+    // La ronda 2 empieza con la P, que ya estaba en el alfabeto de la ronda 1 (la clave es de toda la partida).
+    expect(lettersToAnnounce({ roundNumber: 1, alphabet: [p, q] }, { roundNumber: 2, alphabet: [p] })).toEqual(['P']);
+  });
+
+  it('messageMetrics: palabras, piezas sin espacios y la palabra más larga', () => {
+    const puno = [letter(15, 'P'), glyph(20), glyph(13), glyph(14)];
+    const trueno = [glyph(19), glyph(17), glyph(20), glyph(4), glyph(13), glyph(14)];
+    expect(messageMetrics([puno, trueno])).toEqual({ words: 2, total: 10, longest: 6 });
+    expect(messageMetrics([])).toEqual({ words: 1, total: 1, longest: 1 });
   });
 
   it('hintCountdownLabel: segundos hasta la siguiente letra o que no quedan', () => {

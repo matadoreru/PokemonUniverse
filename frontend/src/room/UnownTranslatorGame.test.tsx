@@ -177,9 +177,37 @@ describe('Traductor Unown: pantalla', () => {
     expect(words).toHaveLength(3);
     // Las 20 letras están dentro de las palabras; el espacio no se pinta como pieza.
     expect(count(message, 'role="img"')).toBe(20);
-    // Cada glifo, oculto o traducido, reserva la fila de la letra (`.glyph`): así quedan alineados en la palabra.
+    // Cada pieza, glifo oculto o letra revelada, lleva `.glyph`, que les da a todas el mismo lado (`--unown-size`).
     expect(count(message, `class="[^"]*\\b${s.glyph}\\b`)).toBe(20);
-    expect(readFileSync(new URL('../games/unown-translator/UnownTranslator.module.css', import.meta.url), 'utf8')).toMatch(/\.glyph\s*\{[^}]*min-height: calc\(var\(--glyph-size\)/);
+    expect(readFileSync(new URL('../games/unown-translator/UnownTranslator.module.css', import.meta.url), 'utf8')).toMatch(/\.message \.glyph\s*\{[^}]*--glyph-size: var\(--unown-size\)/);
+    // Las medidas con las que el CSS escala el mensaje: 3 palabras, 20 piezas y 9 en la más larga.
+    expect(message).toMatch(/--words:\s*3/);
+    expect(message).toMatch(/--total:\s*20/);
+    expect(message).toMatch(/--longest:\s*9/);
+  });
+
+  it('una letra revelada sustituye a su glifo en el mensaje; en la leyenda va debajo del glifo', () => {
+    const html = render(publicGame('ROUND_ACTIVE'), GUESSING);
+    const message = block(html, 'unown-message');
+    // PIKACHU con P y A: dos losetas con la letra y sin glifo, cinco glifos ocultos.
+    expect(count(message, 'data-reveal="replace"')).toBe(2);
+    expect(count(message, 'aria-label="glifo oculto"')).toBe(5);
+    expect(message).toMatch(/aria-label="letra P">P</);
+    const legend = block(html, 'unown-alphabet');
+    expect(count(legend, 'data-reveal')).toBe(0);
+    expect(count(legend, 'viewBox="0 0 48 48"')).toBe(26);
+    expect(count(legend, 'data-known')).toBe(2);
+  });
+
+  it('la revelación de la ronda es grande y gira; la de los resultados finales, compacta y quieta', () => {
+    const round = render(publicGame('ROUND_RESULTS', { round: pokemonRound }), null);
+    expect(round).not.toContain(s.compact);
+    expect(round).toContain(s.withPokemon);
+    expect(round).toContain('Correcta');
+    const final = results(publicGame('GAME_RESULTS', { round: pokemonRound }));
+    expect(final).toContain(s.compact);
+    expect(final).toContain(s.sprite);
+    expect(final).not.toContain('Correcta');
   });
 
   it('el panel de ajustes lleva el selector de modo con Pokémon y Movimientos', () => {

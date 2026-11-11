@@ -2,7 +2,7 @@ import type { UnownAlphabetEntry, UnownToken, UnownTranslatorConfig, UnownTransl
 import { gameModeName, UNOWN_GLYPH_COUNT, UNOWN_MAX_GUESS_LENGTH, unownTranslatorScoringLabel } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Clock3, Eye, Hourglass, Languages, Send, Trophy, X } from 'lucide-react';
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type RefObject } from 'react';
-import { hintCountdownLabel, hitCueRound, newLetters, newLettersAnnouncement, splitWords } from '../games/unown-translator/presentation';
+import { hintCountdownLabel, hitCueRound, lettersToAnnounce, messageMetrics, newLettersAnnouncement, splitWords } from '../games/unown-translator/presentation';
 import { useNow, useRemainingMs, useServerOffset } from '../hooks/useServerTime';
 import { useSfxCue } from '../hooks/useSfxCue';
 import { Chip, Field, Icon, Pill, UnownGlyph } from '../ui';
@@ -17,27 +17,28 @@ import s from '../games/unown-translator/UnownTranslator.module.css';
 const GAME_NAME = 'Traductor Unown';
 const QUESTION = 'Descifra el mensaje';
 
-/** Una pieza del mensaje: el glifo (oculto o con su letra debajo) o el carácter que no se cifra. */
+/** Una pieza del mensaje: el glifo oculto, la letra ya revelada en su lugar o el carácter que no se cifra. */
 function MessageToken({ token }: { token: UnownToken }) {
   if (token.kind === 'LITERAL') return <span className={s.literal}>{token.text}</span>;
-  return <UnownGlyph glyph={token.glyph} size="lg" className={s.glyph ?? ''} {...(token.kind === 'LETTER' ? { letter: token.letter } : {})} />;
+  return <UnownGlyph glyph={token.glyph} size="lg" reveal="replace" className={s.glyph ?? ''} {...(token.kind === 'LETTER' ? { letter: token.letter } : {})} />;
 }
 
 /**
- * El mensaje cifrado: cada palabra en un bloque que no se parte; las palabras sí bajan de línea. `--longest` (las piezas
- * de la palabra más larga) deja que el CSS escale los glifos para que esa palabra quepa a lo ancho.
+ * El mensaje cifrado: cada palabra en un bloque que no se parte; las palabras sí bajan de línea. `--words`, `--total`
+ * (piezas sin los espacios) y `--longest` (piezas de la palabra más larga) dejan que el CSS escale las piezas para que el
+ * mensaje quepa entero, en una fila o con una palabra por fila.
  */
 function UnownMessage({ tokens }: { tokens: readonly UnownToken[] }) {
   const words = splitWords(tokens);
-  const longest = Math.max(1, ...words.map((word) => word.length));
-  return <div className={s.message} data-testid="unown-message" style={{ '--longest': longest } as CSSProperties}>
+  const { words: count, total, longest } = messageMetrics(words);
+  return <div className={s.message} data-testid="unown-message" style={{ '--words': count, '--total': total, '--longest': longest } as CSSProperties}>
     {words.map((word, index) => <span key={index} className={s.word}>
       {word.map((token, position) => <MessageToken key={position} token={token} />)}
     </span>)}
   </div>;
 }
 
-/** Leyenda «Alfabeto»: los 26 glifos en orden de índice, con la letra de los que ya se conocen. */
+/** Leyenda «Alfabeto»: los 26 glifos en orden de índice, con la letra de los revelados en esta ronda. */
 function UnownAlphabet({ alphabet }: { alphabet: readonly UnownAlphabetEntry[] }) {
   const known = new Map(alphabet.map((entry) => [entry.glyph, entry.letter]));
   return <section className={s.alphabet} aria-labelledby="unown-alphabet-title" data-testid="unown-alphabet">
@@ -45,7 +46,7 @@ function UnownAlphabet({ alphabet }: { alphabet: readonly UnownAlphabetEntry[] }
     <ol className={s.legend}>
       {Array.from({ length: UNOWN_GLYPH_COUNT }, (_, glyph) => {
         const letter = known.get(glyph);
-        return <li key={glyph}><UnownGlyph glyph={glyph} size="sm" className={s.legendGlyph ?? ''} {...(letter ? { letter } : {})} /></li>;
+        return <li key={glyph} {...(letter ? { 'data-known': '' } : {})}><UnownGlyph glyph={glyph} size="sm" className={s.legendGlyph ?? ''} {...(letter ? { letter } : {})} /></li>;
       })}
     </ol>
   </section>;
@@ -77,24 +78,25 @@ function UnownAnswerForm({ roundNumber, cooling, fieldRef, onGuess }: { roundNum
 }
 
 /**
- * Lo que anuncia la única región viva: «Nueva letra: P.» por cada letra nueva del alfabeto, «¡Descifrado!» al acertar
- * uno mismo, «Respuesta incorrecta (N intentos).» tras cada fallo (con la cuenta, para que dos seguidos se anuncien) y,
- * al revelar, lo que decía el mensaje. Al montarse (o al volver a conectar) no anuncia las letras que ya había.
+ * Lo que anuncia la única región viva: «Nueva letra: P.» por cada letra nueva del alfabeto (al empezar la ronda, sus
+ * letras iniciales), «¡Descifrado!» al acertar uno mismo, «Respuesta incorrecta (N intentos).» tras cada fallo (con la
+ * cuenta, para que dos seguidos se anuncien) y, al revelar, lo que decía el mensaje. Al montarse (o al volver a
+ * conectar) no anuncia las letras que ya había.
  */
 function useUnownAnnouncement(game: UnownTranslatorPublicState, player: UnownTranslatorPlayerState | null, answer: string | null): string {
   const [text, setText] = useState('');
-  const previous = useRef({ alphabet: game.alphabet, solved: player?.solved ?? false, attempts: player?.attemptCount ?? 0, answer });
+  const previous = useRef({ roundNumber: game.roundNumber, alphabet: game.alphabet, solved: player?.solved ?? false, attempts: player?.attemptCount ?? 0, answer });
   useEffect(() => {
     const before = previous.current;
     const solved = player?.solved ?? false;
     const attempts = player?.attemptCount ?? 0;
     const parts: string[] = [];
-    const letters = newLetters(before.alphabet, game.alphabet);
+    const letters = lettersToAnnounce(before, game);
     if (letters.length > 0) parts.push(newLettersAnnouncement(letters));
     if (solved && !before.solved) parts.push('¡Descifrado!');
     else if (attempts > before.attempts && player?.lastAttempt?.outcome === 'INCORRECT') parts.push(`Respuesta incorrecta (${attemptsText(attempts)}).`);
     if (answer && answer !== before.answer) parts.push(`Ronda ${game.roundNumber} terminada: decía ${answer}.`);
-    previous.current = { alphabet: game.alphabet, solved, attempts, answer };
+    previous.current = { roundNumber: game.roundNumber, alphabet: game.alphabet, solved, attempts, answer };
     if (parts.length > 0) setText(parts.join(' '));
   }, [game.alphabet, game.roundNumber, player?.solved, player?.attemptCount, player?.lastAttempt?.outcome, answer]);
   return text;

@@ -4668,10 +4668,13 @@ test('pokédex absurda: escribir, votar la más absurda y la real, y la clasific
   }
 });
 
-/** Lo que dice el mensaje de Traductor Unown con lo que ya se ve: la letra de cada glifo y los literales, palabra a palabra. */
+/**
+ * Lo que dice el mensaje de Traductor Unown con lo que ya se ve, palabra a palabra: cada pieza es un glifo oculto (`?`),
+ * una letra revelada en su lugar (imagen «letra X») o un literal.
+ */
 async function leerMensajeUnown(page: Page): Promise<string> {
   return page.getByTestId('unown-message').evaluate((mensaje) => [...mensaje.children].map((palabra) => [...palabra.children].map((pieza) => {
-    const glifo = pieza.querySelector('svg[aria-label]');
+    const glifo = pieza.querySelector('[role="img"][aria-label]');
     if (!glifo) return pieza.textContent ?? '';
     const etiqueta = glifo.getAttribute('aria-label') ?? '';
     return etiqueta.startsWith('letra ') ? etiqueta.slice('letra '.length) : '?';
@@ -4745,8 +4748,9 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     for (const page of paginas) await expect(viva(page)).toHaveCount(1);
     await expect(host.page.getByText('Pokémon', { exact: true }).first()).toBeVisible();
 
-    // Primera pista: aparece una letra en el mensaje y en el alfabeto.
+    // La ronda empieza con una o dos letras reveladas, en el mensaje (en el sitio del glifo) y en el alfabeto.
     await expect(mensaje(host.page).getByRole('img', { name: /^letra / }).first()).toBeVisible({ timeout: 10_000 });
+    await expect(mensaje(host.page).locator('[data-reveal="replace"]').first()).toBeVisible();
     await expect(host.page.getByTestId('unown-alphabet').getByRole('img', { name: /^letra / }).first()).toBeVisible();
     await expect(host.page.getByText(/^Siguiente letra en \d+ s$/)).toBeVisible();
 

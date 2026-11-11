@@ -20,22 +20,30 @@ const moveCategoryLabel = (category: string) => categoryLabel[category as MoveCa
 export const hiddenLettersText = (n: number) => plural(n, 'letra oculta', 'letras ocultas');
 
 /**
- * Lo que decía el mensaje (revelación de la ronda y último mensaje de los resultados finales): la respuesta en grande
- * y, en Pokémon, su carta con el sprite, el número y los tipos; en Movimientos, el tipo y la categoría.
+ * Lo que decía el mensaje (revelación de la ronda y último mensaje de los resultados finales). En Pokémon, su carta con
+ * el sprite grande y el número al lado de la respuesta y sus tipos; en Movimientos, la respuesta en grande con el tipo y
+ * la categoría. `compact` (resultados finales) lo encoge para que quepa junto a la clasificación: el sprite va suelto,
+ * sin carta (el nombre ya va al lado en grande), y no gira.
  */
-export function UnownRoundReveal({ round, kicker = 'El mensaje decía', className }: { round: UnownTranslatorRoundResult; kicker?: string; className?: string | undefined }) {
+export function UnownRoundReveal({ round, kicker = 'El mensaje decía', compact = false, className }: { round: UnownTranslatorRoundResult; kicker?: string; compact?: boolean; className?: string | undefined }) {
   const { pokemon, move } = round;
-  return <Panel variant="cream" as="section" aria-labelledby="unown-answer" className={className ?? ''} bodyClassName={s.reveal ?? ''}>
-    {pokemon && <span className={s.pokemon}>
-      <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} number={pokemon.nationalDexNumber} decorativeSprite size="sm" eager state="correct"
-        types={pokemon.types.map((type) => ({ type: type as PokemonType, label: typeLabel(type) }))} />
-    </span>}
-    <span className={s.revealKicker}>{kicker}</span>
-    <h2 id="unown-answer" className={cx(s.answer, 'ol')}>{round.answer}</h2>
-    {move && <div className={s.details}>
-      <TypeBadge type={move.type as PokemonType} label={typeLabel(move.type)} />
-      <Chip tone="neutral">{moveCategoryLabel(move.category)}</Chip>
-    </div>}
+  return <Panel variant="cream" as="section" aria-labelledby="unown-answer" className={className ?? ''} bodyClassName={cx(s.reveal, pokemon && s.withPokemon, compact && s.compact)}>
+    {pokemon && (compact
+      ? <img className={s.sprite} src={guessSprite(pokemon.sprite)} alt="" />
+      : <span className={s.pokemon}>
+        <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} number={pokemon.nationalDexNumber} decorativeSprite eager flip state="correct" />
+      </span>)}
+    <div className={s.text}>
+      <span className={s.revealKicker}>{kicker}</span>
+      <h2 id="unown-answer" className={cx(s.answer, 'ol')}>{round.answer}</h2>
+      {pokemon && pokemon.types.length > 0 && <div className={s.details}>
+        {pokemon.types.map((type) => <TypeBadge key={type} type={type as PokemonType} label={typeLabel(type)} size={compact ? 'md' : 'lg'} />)}
+      </div>}
+      {move && <div className={s.details}>
+        <TypeBadge type={move.type as PokemonType} label={typeLabel(move.type)} size={compact ? 'md' : 'lg'} />
+        <Chip tone="neutral">{moveCategoryLabel(move.category)}</Chip>
+      </div>}
+    </div>
   </Panel>;
 }
 
@@ -79,6 +87,6 @@ export function UnownTranslatorResults({ room, selfId, onLobby, onEnd }: GameRes
     standings={rows} selfId={selfId} winnersNeedPoints aside={<ResultsRecords id="unown-records-title" records={records} />}
     actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>{unownTranslatorScoringLabel()}</p>
-    {game.lastRound && <UnownRoundReveal round={game.lastRound} kicker="El último mensaje decía" />}
+    {game.lastRound && <UnownRoundReveal round={game.lastRound} kicker="El último mensaje decía" compact />}
   </ResultsShell>;
 }

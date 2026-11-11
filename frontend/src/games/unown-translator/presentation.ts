@@ -22,6 +22,24 @@ export function splitWords(tokens: readonly UnownToken[]): UnownToken[][] {
   return words;
 }
 
+/**
+ * Medidas del mensaje para que el CSS escale las piezas: cuántas palabras hay, cuántas piezas suman (sin los espacios)
+ * y cuántas tiene la palabra más larga. Nunca son cero.
+ */
+export function messageMetrics(words: readonly (readonly UnownToken[])[]): { words: number; total: number; longest: number } {
+  const lengths = words.map((word) => word.length);
+  return { words: Math.max(1, lengths.length), total: Math.max(1, lengths.reduce((sum, n) => sum + n, 0)), longest: Math.max(1, ...lengths) };
+}
+
+/**
+ * Las letras que anunciar al pasar de `before` a `next`: el alfabeto es de la ronda, así que al cambiar de ronda todas
+ * las de la nueva (las iniciales) son nuevas, aunque alguna coincida con la ronda anterior; en la misma ronda, solo las
+ * que no estaban.
+ */
+export function lettersToAnnounce(before: { roundNumber: number; alphabet: readonly UnownAlphabetEntry[] }, next: { roundNumber: number; alphabet: readonly UnownAlphabetEntry[] }): string[] {
+  return newLetters(before.roundNumber === next.roundNumber ? before.alphabet : [], next.alphabet);
+}
+
 /** Las letras que trae `next` y no estaban en `previous`, en su orden (para «Nueva letra: P» en la región viva). */
 export function newLetters(previous: readonly UnownAlphabetEntry[], next: readonly UnownAlphabetEntry[]): string[] {
   const known = new Set(previous.map((entry) => entry.glyph));

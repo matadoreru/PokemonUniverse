@@ -3,8 +3,10 @@
 /*
  * El mensaje: las palabras bajan de línea, pero cada una es un bloque que no se parte. Debajo, en su propia fila,
  * cuándo llega la siguiente letra (nunca encima de las letras). El cuerpo de `GuessClue` es un contenedor de tamaño:
- * el glifo crece hasta que la palabra más larga (`--longest`, que pone la pantalla) llena el ancho o la fila llena el
- * alto, entre 20 y 96 px. Si un mensaje de varias filas aun así no cabe, se desplaza dentro de su panel, nunca la página.
+ * cada pieza (glifo, letra revelada en su lugar o signo) mide lo mismo, `--unown-size`, el mayor de dos repartos que
+ * caben seguro: todo el mensaje en una fila (`--total` piezas a lo ancho) o una palabra por fila (`--longest` piezas a lo
+ * ancho y `--words` filas a lo alto). Si caben más palabras por fila, el flex las junta y ocupan aún menos alto. Si un
+ * mensaje aun así no cupiera (el suelo de 16–20 px), se desplaza dentro de su panel, nunca la página.
  */
 .stage > div {
   grid-template-rows: minmax(0, 1fr) auto;
@@ -12,61 +14,74 @@
   overflow: auto;
 }
 .message {
-  /* Lo que ocupa una fila además del glifo: la letra de debajo, la fila de la cuenta atrás (chip de 28 px) y huecos. */
-  --unown-letter: var(--fs-22);
+  /* Huecos entre piezas, entre palabras y entre filas. */
+  --unown-gap: var(--sp-2);
+  --unown-word-gap: var(--sp-6);
+  --unown-row-gap: var(--sp-3);
   --unown-floor: 20px;
-  --unown-chrome: calc(var(--sp-1) + var(--unown-letter) + var(--sp-2) + 28px);
-  --unown-size: clamp(var(--unown-floor), min(calc(100cqi / var(--longest, 8) - var(--sp-1)), calc(100cqb - var(--unown-chrome))), 96px);
+  /* Lo que ocupa a lo alto además de las filas: la fila de la cuenta atrás (chip de 28 px) y su hueco. */
+  --unown-chrome: calc(var(--sp-2) + 28px);
+  /* Margen de redondeo: a lo justo, una fila podría partirse por un píxel. */
+  --unown-slack: 4px;
+  --unown-high: calc(100cqb - var(--unown-chrome));
+  --unown-line: min(
+    calc((100cqi - var(--unown-slack) - (var(--total, 8) - var(--words, 1)) * var(--unown-gap) - (var(--words, 1) - 1) * var(--unown-word-gap)) / var(--total, 8)),
+    var(--unown-high)
+  );
+  --unown-stack: min(
+    calc((100cqi - var(--unown-slack) - (var(--longest, 8) - 1) * var(--unown-gap)) / var(--longest, 8)),
+    calc((var(--unown-high) - (var(--words, 1) - 1) * var(--unown-row-gap)) / var(--words, 1))
+  );
+  --unown-size: clamp(var(--unown-floor), max(var(--unown-line), var(--unown-stack)), 168px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-content: center;
-  gap: var(--sp-2) var(--sp-6);
+  gap: var(--unown-row-gap) var(--unown-word-gap);
   max-width: 100%;
 }
 .word {
   display: inline-flex;
   flex-wrap: nowrap;
-  align-items: flex-start;
-  gap: var(--sp-1);
+  align-items: center;
+  gap: var(--unown-gap);
   white-space: nowrap;
 }
-/*
- * Cada pieza reserva la fila de la letra (aunque el glifo siga oculto): así un glifo oculto y uno traducido quedan a
- * la misma altura. Gana al tamaño `lg` del propio glifo (`UnownGlyph`).
- */
+/* Gana al tamaño `lg` del propio glifo (`UnownGlyph`): glifos y letras reveladas, todos del mismo lado. */
 .message .glyph {
   --glyph-size: var(--unown-size);
-  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--unown-letter));
-}
-/* La letra traducida debajo del glifo (el único `span` dentro de `UnownGlyph`). */
-.message .glyph > span {
-  font-size: var(--unown-letter);
 }
 /*
- * En el móvil, un movimiento de 15 glifos («Autodestrucción») a 20 px no cabe en el panel, de unos 310–330 px a 390 px de ancho
- * (15 × 20 + 14 × 4 = 356 px), y desplazaría el mensaje: el suelo baja a 16 px (15 × 16 + 14 × 4 = 296 px) y la letra
- * de debajo a 15 px, que sigue por encima de 13 px y no ensancha un glifo de 16 px.
+ * En el móvil, un movimiento de 15 piezas («Autodestrucción») a 20 px no cabe en el panel, de unos 310–330 px a 390 px de
+ * ancho (15 × 20 + 14 × 4 = 356 px): el suelo baja a 16 px (15 × 16 + 14 × 4 = 296 px) y los huecos se estrechan. La
+ * letra revelada no baja de 13 px (`UnownGlyph`).
  */
 @media (max-width: 639px) {
   .message {
-    --unown-letter: var(--fs-15);
+    --unown-gap: var(--sp-1);
+    --unown-word-gap: var(--sp-4);
+    --unown-row-gap: var(--sp-2);
     --unown-floor: 16px;
   }
 }
+/* Signos que no se cifran («.», «-», «'»): a la altura de las piezas y en proporción. */
 .literal {
   display: inline-flex;
   align-items: center;
   height: var(--unown-size);
-  font: 800 var(--fs-22) / 1 var(--font-display);
+  font: 800 max(var(--fs-13), calc(var(--unown-size) * 0.6)) / 1 var(--font-display);
 }
 /* Cuándo llega la siguiente letra: debajo del mensaje, a la derecha, en texto. */
 .next {
   justify-self: end;
 }
 
-/* Leyenda del alfabeto: los 26 glifos en orden, con la letra de los ya revelados. */
+/*
+ * Leyenda del alfabeto: los 26 glifos en orden, con la letra de los revelados en esta ronda. En escritorio, una sola
+ * fila de 26 columnas (deja más alto al mensaje); en tableta, dos de 13. El glifo crece con el ancho de su columna.
+ */
 .alphabet {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -79,19 +94,48 @@
   text-transform: uppercase;
 }
 .legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-1) var(--sp-2);
+  --legend-columns: 13;
+  display: grid;
+  grid-template-columns: repeat(var(--legend-columns), minmax(0, 1fr));
+  gap: var(--sp-1) 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
+@media (min-width: 1024px) {
+  .legend {
+    --legend-columns: 26;
+  }
+}
+.legend > li {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+/* Los glifos aún ocultos, algo atenuados: los revelados (con su letra) destacan. */
+.legend > li:not([data-known]) {
+  opacity: 0.7;
+}
 .legendGlyph {
-  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-13));
+  --glyph-size: clamp(20px, calc(100cqi / var(--legend-columns) - 6px), 40px);
+  /* Reserva la fila de la letra aunque el glifo siga oculto: la leyenda no salta al revelar. */
+  min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-15));
+}
+.legendGlyph > span {
+  font-size: var(--fs-15);
+  color: var(--yellow);
+}
+@media (min-width: 1600px) and (min-height: 900px) {
+  .legendGlyph {
+    min-height: calc(var(--glyph-size) + var(--sp-1) + var(--fs-18));
+  }
+  .legendGlyph > span {
+    font-size: var(--fs-18);
+  }
 }
 /*
  * En el móvil la leyenda no cabe: la zona superior recorta lo que se sale y la placa de respuesta la taparía. Se oculta
- * entera (sin hueco ni título suelto) porque el mensaje ya enseña traducidas todas las letras conocidas.
+ * entera (sin hueco ni título suelto) porque el mensaje ya enseña en su sitio todas las letras reveladas.
  */
 @media (max-width: 639px) {
   .alphabet {
@@ -99,8 +143,13 @@
   }
 }
 
-/* Revelación: la respuesta en grande con lo que era (tipos del Pokémon, o tipo y categoría del movimiento). */
+/*
+ * Revelación: en Pokémon, la carta con el sprite grande al lado de la respuesta y sus tipos; en Movimientos, la respuesta
+ * en grande con el tipo y la categoría debajo. `--art` es el lado del sprite: crece con el alto de la vista. En los
+ * resultados finales (`.compact`) todo es más contenido, porque comparte la columna con la clasificación.
+ */
 .reveal {
+  --art: clamp(144px, 28vh, 320px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,6 +157,38 @@
   gap: var(--sp-3);
   min-width: 0;
   text-align: center;
+}
+.withPokemon {
+  display: grid;
+  /* Carta y texto juntos y centrados en la losa; el texto se estrecha antes que salirse. */
+  grid-template-columns: auto minmax(0, max-content);
+  align-content: center;
+  justify-content: center;
+  gap: var(--sp-3) var(--sp-6);
+  text-align: start;
+}
+.compact {
+  --art: clamp(96px, 16vh, 176px);
+}
+/* Resultados finales: el sprite suelto, del lado de `--art`. */
+.sprite {
+  width: var(--art);
+  height: var(--art);
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.compact.withPokemon {
+  column-gap: var(--sp-5);
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.withPokemon .text {
+  align-items: flex-start;
 }
 .revealKicker {
   font: 800 var(--fs-13) / 1.2 var(--font-text);
@@ -118,7 +199,13 @@
   margin: 0;
   max-width: 100%;
   font: 800 var(--fs-44) / 1.1 var(--font-display);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+.reveal:not(.compact) .answer {
+  font-size: var(--fs-68);
+}
+.compact .answer {
+  font-size: var(--fs-34);
 }
 .details {
   display: flex;
@@ -127,8 +214,21 @@
   align-items: center;
   gap: var(--sp-2);
 }
+.withPokemon .details {
+  justify-content: flex-start;
+}
+/* La carta del Pokémon: el hueco del sprite mide `--art` y el sprite lo llena sin deformarse. */
 .pokemon {
-  width: 9rem;
+  display: flex;
+}
+.pokemon [data-part='art'] {
+  width: var(--art);
+  height: var(--art);
+}
+.pokemon [data-part='art'] img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .answerText {
   font-weight: 800;
@@ -136,8 +236,35 @@
 .rule {
   margin: 0;
 }
+/* Escritorio bajo (720 px): la respuesta algo menor para que quepa al lado de la carta. */
+@media (min-width: 640px) and (max-height: 800px) {
+  .reveal:not(.compact) .answer {
+    font-size: var(--fs-44);
+  }
+}
+@media (max-width: 1023px) {
+  .reveal {
+    --art: 160px;
+  }
+  .reveal:not(.compact) .answer {
+    font-size: var(--fs-44);
+  }
+}
 @media (max-width: 639px) {
-  .answer {
+  .reveal {
+    --art: 112px;
+  }
+  .withPokemon {
+    column-gap: var(--sp-4);
+  }
+  .reveal:not(.compact) .answer {
     font-size: var(--fs-34);
+  }
+  .compact .answer {
+    font-size: var(--fs-26);
+  }
+  /* Con Pokémon, el nombre ya lo dicen la cabecera («¡Decía X!») y la carta: en la ronda, solo la carta y los tipos. */
+  .withPokemon:not(.compact) .answer {
+    display: none;
   }
 }
