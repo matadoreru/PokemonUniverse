@@ -122,7 +122,8 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
 
     // A5: el cut-in con el ganador y su respuesta; confeti solo para quien gana, sin región viva propia.
     expect(await ganadorHost, 'el host ve «¡Gana A!»').toBe(true);
-    await host.page.screenshot({ path: 'screenshots/juego-most-likely-to-ganador-1280x720.png', animations: 'disabled' });
+    // Sin `animations: 'disabled'`: acabar la animación de golpe la llevaría a la salida (fuera de la vista).
+    await host.page.screenshot({ path: 'screenshots/juego-most-likely-to-ganador-1280x720.png' });
     await expect(bandaCutin(host.page)).toContainText('Pikachu');
     await expect(bandaCutin(host.page)).not.toHaveAttribute('role', 'status');
     await expect(host.page.getByTestId('confetti')).toHaveCount(0);

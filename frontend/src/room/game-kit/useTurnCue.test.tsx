@@ -39,11 +39,11 @@ describe('«¡Te toca!»', () => {
     expect(store.value).toBe('ABCD:g1:3');
   });
 
-  it('el cut-in no es región viva, se puede saltar y sale solo con clave; el rebote, igual', () => {
+  it('el cut-in no es región viva, deja pasar el puntero y sale solo con clave; el rebote, igual', () => {
     const html = renderToStaticMarkup(<TurnCutin cue="ABCD:g1:1" />);
     expect(html).toContain(TURN_CUE_TITLE);
     expect(html).not.toMatch(/role="status"|aria-live/);
-    expect(html).toMatch(/class="[^"]*skippable/);
+    expect(html).not.toMatch(/skippable/);
     expect(renderToStaticMarkup(<TurnCutin cue={null} />)).toBe('');
     expect(turnBumpClass('k')).toBeTruthy();
     expect(turnBumpClass(null)).toBeUndefined();

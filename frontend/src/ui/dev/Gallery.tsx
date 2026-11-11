@@ -1112,10 +1112,10 @@ function ScoreValueSection() {
 
 type MomentSample = 'plain' | 'confetti' | 'turn' | 'winner' | 'winnerSelf';
 
-const MOMENT_SAMPLES: Record<MomentSample, { title: string; subtitle?: string; confetti?: boolean; silent?: boolean; holdMs?: number }> = {
+const MOMENT_SAMPLES: Record<MomentSample, { title: string; subtitle?: string; confetti?: boolean; silent?: boolean; holdMs?: number; skippable?: boolean }> = {
   plain: { title: '¡Racha de 5!', subtitle: 'Momento de ejemplo' },
   confetti: { title: '¡BINGO!', subtitle: 'Momento de ejemplo', confetti: true },
-  turn: { title: '¡Te toca!', silent: true, holdMs: 1_000 },
+  turn: { title: '¡Te toca!', silent: true, holdMs: 1_000, skippable: false },
   winner: { title: '¡Gana Misty!', subtitle: '“Se come los deberes de su entrenador”', silent: true },
   winnerSelf: { title: '¡Ganas tú!', subtitle: 'Pikachu', confetti: true, silent: true },
 };
@@ -1131,7 +1131,7 @@ function MomentCutinSection() {
       <Fig id="momentcutin-confetti" caption="Con confeti (nunca con movimiento reducido)">
         <Pill variant="cream" onClick={() => show('confetti')}>¡BINGO!</Pill>
       </Fig>
-      <Fig id="momentcutin-turn" caption="«¡Te toca!»: corto (1 s) y sin sonido propio (suena ui.open desde useTurnCue)">
+      <Fig id="momentcutin-turn" caption="«¡Te toca!»: corto (1 s), deja pasar el puntero y sin sonido propio (suena ui.open desde useTurnCue)">
         <Pill variant="cream" onClick={() => show('turn')}>¡Te toca!</Pill>
       </Fig>
       <Fig id="momentcutin-winner" caption="Ganador de la ronda social: sin sonido propio (la sala da game.reveal); confeti solo si ganas tú">

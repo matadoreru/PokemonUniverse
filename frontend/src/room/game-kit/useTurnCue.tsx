@@ -90,11 +90,12 @@ export function turnBumpClass(cue: string | null): string | undefined {
 }
 
 /**
- * Cut-in corto «¡Te toca!» de `useTurnCue`: sin región viva (lo dice la de la pantalla), sin sonido propio y saltable con
- * un clic o Espacio (Espacio no lo salta mientras se escribe en un campo). Montado con la clave del turno: el mismo
- * título en otro turno vuelve a salir.
+ * Cut-in corto «¡Te toca!» de `useTurnCue`: sin región viva (lo dice la de la pantalla) ni sonido propio. No intercepta
+ * el puntero ni el Espacio (`skippable={false}`): dura 1 s y el turno ya está en marcha, así el primer trazo, clic o
+ * tecla llega a la pantalla de debajo en vez de gastarse en saltarlo. Montado con la clave del turno: el mismo título en
+ * otro turno vuelve a salir.
  */
 export function TurnCutin({ cue }: { cue: string | null }) {
   if (!cue) return null;
-  return <MomentCutin key={cue} tone="yellow" title={TURN_CUE_TITLE} holdMs={TURN_CUE_MS} silent />;
+  return <MomentCutin key={cue} tone="yellow" title={TURN_CUE_TITLE} holdMs={TURN_CUE_MS} silent skippable={false} />;
 }
