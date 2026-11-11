@@ -10,13 +10,13 @@ import java.nio.file.Path;
  * Ficheros de {@code src/test/resources/web-contracts/}: lo que la web copia de Java (puntuación que muestra, juegos y
  * reglas del reto diario, textos de condición). Los graba un test Java y los lee un test de {@code packages/shared},
  * que comprueba que la copia TS dice lo mismo. Se regeneran con
- * {@code ./gradlew test -Dupdate=true --tests '<el test que lo graba>'}; el diff es el cambio que tiene que seguir la
- * web.
+ * {@code ./gradlew test -DupdateWebContracts=true --tests '<el test que lo graba>'}, una propiedad propia para no
+ * regrabar las doradas a la vez; el diff es el cambio que tiene que seguir la web.
  */
 public final class WebContracts {
 
   private static final Path DIR = Path.of("src/test/resources/web-contracts");
-  private static final boolean UPDATE = Boolean.getBoolean("update");
+  private static final boolean UPDATE = Boolean.getBoolean("updateWebContracts");
 
   private WebContracts() {}
 
@@ -30,6 +30,7 @@ public final class WebContracts {
       return;
     }
     var recorded = Files.exists(path) ? Files.readString(path) : "";
-    assertEquals(recorded, actual, file + ": regenera con -Dupdate=true si el cambio es intencionado y cambia la web");
+    assertEquals(recorded, actual,
+        file + ": regenera con -DupdateWebContracts=true si el cambio es intencionado y cambia la web");
   }
 }

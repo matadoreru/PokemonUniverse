@@ -125,10 +125,13 @@ tasks.register<VerifyOpenApi>("verifyOpenApi") {
 
 tasks.named("check") { dependsOn("verifyOpenApi") }
 
-// Reenvía -Dupdate (ConfigMessagesSnapshotTest reescribe su instantánea con "true").
+// Reenvía -Dupdate (ConfigMessagesSnapshotTest reescribe su instantánea con "true") y -DupdateWebContracts
+// (WebContracts regraba src/test/resources/web-contracts/ y nada más).
 val updateSnapshots = providers.systemProperty("update").orElse("false")
+val updateWebContracts = providers.systemProperty("updateWebContracts").orElse("false")
 tasks.named<Test>("test") {
   // webp-imageio carga su libwebp con System.load (acceso nativo restringido desde Java 24).
   jvmArgs("--enable-native-access=ALL-UNNAMED")
   systemProperty("update", updateSnapshots.get())
+  systemProperty("updateWebContracts", updateWebContracts.get())
 }
