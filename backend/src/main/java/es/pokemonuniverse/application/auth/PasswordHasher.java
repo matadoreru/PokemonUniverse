@@ -9,6 +9,11 @@ import jakarta.inject.Singleton;
 public class PasswordHasher {
 
   private static final int COST = 12;
+  /**
+   * Hash bcrypt fijo (coste 12, de una cadena aleatoria desechada) contra el que se verifica cuando la cuenta no existe,
+   * para que el login cueste lo mismo con un usuario desconocido que con una contraseña errónea.
+   */
+  public static final String DUMMY_HASH = "$2b$12$kXZEq.cM4ggjsbDDTv0dPeGKriU1bSfYERizeta.YGFHYJ/TTfux2";
   private static final BCrypt.Version VERSION = BCrypt.Version.VERSION_2B;
   private static final BCrypt.Hasher HASHER =
       BCrypt.with(VERSION, new java.security.SecureRandom(), LongPasswordStrategies.truncate(VERSION));

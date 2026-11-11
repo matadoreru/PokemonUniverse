@@ -69,11 +69,14 @@ public class AuthService {
 
   /**
    * Busca la cuenta con {@link AccountLookup}. El error es el mismo si la cuenta no existe o la contraseña falla, para
-   * no revelar qué cuentas hay.
+   * no revelar qué cuentas hay; sin cuenta se verifica igualmente contra {@link PasswordHasher#DUMMY_HASH}, para que
+   * tampoco se distinga por el tiempo de respuesta.
    */
   public AuthUser login(LoginCommand cmd) {
-    return accounts.find(cmd.identifier())
-        .filter(user -> hasher.matches(cmd.password(), user.getPasswordHash()))
+    var account = accounts.find(cmd.identifier());
+    var hash = account.map(UserEntity::getPasswordHash).orElse(PasswordHasher.DUMMY_HASH);
+    var matches = hasher.matches(cmd.password(), hash);
+    return account.filter(user -> matches)
         .map(UserIdentityMapper::identityFromUser)
         .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
   }
