@@ -36,6 +36,10 @@ public final class GameRuntime {
   public @Nullable Long introEndsAt;
   /** Jugadores que pulsaron «¡Listo!» en la intro. */
   public final Set<String> introReadyIds = new LinkedHashSet<>();
+  /** {@code actionEpoch} del revelado al que pertenecen los «Siguiente» de {@link #revealNextIds}. */
+  public @Nullable String revealNextEpoch;
+  /** Jugadores que pulsaron «Siguiente» en el revelado {@link #revealNextEpoch}. */
+  public final Set<String> revealNextIds = new LinkedHashSet<>();
   public CompletableFuture<Void> auditReady;
   /** Azar propio de la partida (el reto diario); {@code null} usa el de la sala. */
   public final @Nullable DoubleSupplier random;

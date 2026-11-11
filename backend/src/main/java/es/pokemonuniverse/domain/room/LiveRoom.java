@@ -49,6 +49,16 @@ public final class LiveRoom {
   public @Nullable Long resultsEndsAt;
   /** Sala del reto diario: privada, de una cuenta y sin lobby; {@code null} en las salas normales. */
   public @Nullable DailyRoom daily;
+  /**
+   * Desfase del reloj de la sala sobre la hora real: la partida, sus plazos y el {@code serverNow} de la sala van con
+   * {@code hora real + clockOffsetMs}. Solo crece, cuando todos pulsan «Siguiente» en un revelado.
+   */
+  public long clockOffsetMs;
+
+  /** Hora de la sala para la hora real {@code realNow}. */
+  public long now(long realNow) {
+    return realNow + clockOffsetMs;
+  }
   public final long createdAt;
   public long updatedAt;
 

@@ -52,6 +52,8 @@ public record RoomView(
     @Nullable Long resultsEndsAt,
     /** En {@code GAME_INTRO}, su plazo y quién está listo; {@code null} fuera de la intro. */
     @Nullable IntroView intro,
+    /** En un revelado que admite «Siguiente», quién cuenta y quién lo ha pulsado; {@code null} fuera de ellos. */
+    @Nullable RevealSkipView revealSkip,
     int hostCustomCategoryCount,
     int hostWouldYouRatherPromptCount,
     @Nullable DailyView daily) {
@@ -63,6 +65,14 @@ public record RoomView(
   @Serdeable
   @JsonInclude(JsonInclude.Include.ALWAYS)
   public record IntroView(long endsAt, List<String> playerIds, List<String> readyPlayerIds) {}
+
+  /**
+   * {@code RevealSkipView}: cuando todos los {@code playerIds} (los jugadores conectados de la partida) están en
+   * {@code readyPlayerIds}, al revelado le queda 1 s.
+   */
+  @Serdeable
+  @JsonInclude(JsonInclude.Include.ALWAYS)
+  public record RevealSkipView(List<String> playerIds, List<String> readyPlayerIds) {}
 
   /** {@code DailyRoomInfo}: la sala es del reto diario; {@code result} llega al terminar la partida. */
   @Serdeable
@@ -125,7 +135,7 @@ public record RoomView(
         .gameConfigs(gameConfigs).customizedGameIds(customizedGameIds).gameSelectionMode(gameSelectionMode)
         .allowedModes(allowedModes).nextGameVote(nextGameVote).gameSkipState(gameSkipState).gamesPlayed(gamesPlayed)
         .sessionStandings(sessionStandings).sessionHistory(sessionHistory).gameActionEpoch(gameActionEpoch).game(game)
-        .gamePlayerState(gamePlayerState).serverNow(serverNow).resultsEndsAt(resultsEndsAt).intro(intro).hostCustomCategoryCount(hostCustomCategoryCount)
+        .gamePlayerState(gamePlayerState).serverNow(serverNow).resultsEndsAt(resultsEndsAt).intro(intro).revealSkip(revealSkip).hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount).daily(daily);
   }
 
@@ -157,6 +167,7 @@ public record RoomView(
     private long serverNow;
     private Long resultsEndsAt;
     private IntroView intro;
+    private RevealSkipView revealSkip;
     private int hostCustomCategoryCount;
     private int hostWouldYouRatherPromptCount;
     private DailyView daily;
@@ -218,6 +229,8 @@ public record RoomView(
 
     public Builder intro(@Nullable IntroView v) { intro = v; return this; }
 
+    public Builder revealSkip(@Nullable RevealSkipView v) { revealSkip = v; return this; }
+
     public Builder hostCustomCategoryCount(int v) { hostCustomCategoryCount = v; return this; }
 
     public Builder hostWouldYouRatherPromptCount(int v) { hostWouldYouRatherPromptCount = v; return this; }
@@ -228,7 +241,7 @@ public record RoomView(
       return new RoomView(roomInstanceId, revision, gameCatalogVersion, code, phase, hostId, maxPlayers, members,
           availableGames, selectedGameId, selectedGameConfig, sessionMode, gameConfigs, customizedGameIds,
           gameSelectionMode, allowedModes, nextGameVote, gameSkipState, gamesPlayed, sessionStandings, sessionHistory,
-          gameActionEpoch, game, gamePlayerState, serverNow, resultsEndsAt, intro, hostCustomCategoryCount,
+          gameActionEpoch, game, gamePlayerState, serverNow, resultsEndsAt, intro, revealSkip, hostCustomCategoryCount,
           hostWouldYouRatherPromptCount, daily);
     }
   }

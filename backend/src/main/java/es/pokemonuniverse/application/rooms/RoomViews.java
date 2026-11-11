@@ -1,6 +1,5 @@
 package es.pokemonuniverse.application.rooms;
 
-import es.pokemonuniverse.application.time.Clock;
 import es.pokemonuniverse.domain.game.GameManifest;
 import es.pokemonuniverse.domain.game.GameRegistry;
 import es.pokemonuniverse.domain.game.engine.GameContext;
@@ -28,15 +27,13 @@ final class RoomViews {
 
   private final GameRegistry registry;
   private final Map<String, JsonNode> defaultConfigs;
-  private final Clock clock;
   private final RoomEvents events;
   private final Function<Object, JsonNode> toTree;
 
-  RoomViews(GameRegistry registry, Map<String, JsonNode> defaultConfigs, Clock clock, RoomEvents events,
+  RoomViews(GameRegistry registry, Map<String, JsonNode> defaultConfigs, RoomEvents events,
       Function<Object, JsonNode> toTree) {
     this.registry = registry;
     this.defaultConfigs = defaultConfigs;
-    this.clock = clock;
     this.events = events;
     this.toTree = toTree;
   }
@@ -62,6 +59,9 @@ final class RoomViews {
             List.copyOf(game.introReadyIds))
         : null;
     var live = room.phase == RoomPhase.GAME_INTRO ? null : game;
+    var revealEpoch = live == null ? null : RoomCoordinator.revealEpoch(room, live);
+    var revealSkip = revealEpoch == null ? null : new RoomView.RevealSkipView(
+        RoomCoordinator.introPlayerIds(room, live), RoomCoordinator.revealReadyIds(live, revealEpoch));
     return RoomView.builder()
         .roomInstanceId(room.historyId)
         .revision(room.revision)
@@ -97,9 +97,11 @@ final class RoomViews {
         .gameActionEpoch(live != null ? live.engine.getLifecycle(live.state).actionEpoch() : null)
         .game(live != null ? toTree.apply(live.engine.getPublicState(live.state, context)) : null)
         .gamePlayerState(null)
-        .serverNow(clock.now())
+        // La hora de la sala (la del contexto), con su desfase: la web cuenta los plazos con ella.
+        .serverNow(context.now())
         .resultsEndsAt(room.phase == RoomPhase.GAME_RESULTS ? room.resultsEndsAt : null)
         .intro(intro)
+        .revealSkip(revealSkip)
         .hostCustomCategoryCount(hostCustomCategoryCount)
         .hostWouldYouRatherPromptCount(hostWouldYouRatherPromptCount)
         .daily(daily == null ? null : dailyView(daily))

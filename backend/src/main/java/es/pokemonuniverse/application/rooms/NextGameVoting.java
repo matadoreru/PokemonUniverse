@@ -16,7 +16,8 @@ import java.util.function.Consumer;
 
 /**
  * Votación del siguiente juego en una sesión por votación: la abre, recoge los votos y la resuelve. Se usa siempre con
- * el lock de la sala tomado; el desempate al azar usa {@link GameRotation#randomItem}, el azar de la sala.
+ * el lock de la sala tomado; el desempate al azar usa {@link GameRotation#randomItem}, el azar de la sala. Sus plazos van
+ * en la hora de la sala ({@link LiveRoom#now}), la misma del {@code serverNow} con que la web los cuenta.
  */
 final class NextGameVoting {
 
@@ -58,7 +59,7 @@ final class NextGameVoting {
     var options = rotation.shuffled(candidates);
     var picks = options.subList(0, Math.min(NEXT_GAME_VOTE_OPTIONS, options.size()));
     if (picks.size() < 2) return false;
-    room.nextGameVote = new NextGameVote(picks, clock.now() + NEXT_GAME_VOTE_MS);
+    room.nextGameVote = new NextGameVote(picks, room.now(clock.now()) + NEXT_GAME_VOTE_MS);
     room.phase = RoomPhase.NEXT_GAME_VOTE;
     return true;
   }
@@ -81,7 +82,7 @@ final class NextGameVoting {
     vote.endsAt = null;
     vote.resolvedOptionId = resolved.id();
     vote.tallies = tallies;
-    vote.nextTransitionAt = clock.now() + NEXT_GAME_VOTE_RESULT_MS;
+    vote.nextTransitionAt = room.now(clock.now()) + NEXT_GAME_VOTE_RESULT_MS;
     // El modo votado sobrevive a la vuelta al lobby de tick(): launchGame lo consume al arrancar.
     room.selectedGameId = resolved.gameId();
     room.selectedMode = resolved.mode();
@@ -104,7 +105,7 @@ final class NextGameVoting {
     if (member == null || member.presence != PresenceStatus.CONNECTED) {
       throw new RoomException("No puedes votar en este momento.");
     }
-    if (vote.endsAt != null && clock.now() >= vote.endsAt) {
+    if (vote.endsAt != null && room.now(clock.now()) >= vote.endsAt) {
       resolve(room);
       publish.accept(room);
       throw new RoomException("La votación ha terminado.");

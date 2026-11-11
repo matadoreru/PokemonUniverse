@@ -223,7 +223,7 @@ final class RoomTestKit {
   /** Avanza el reloj hasta pasado el siguiente plazo del juego y dispara los temporizadores vencidos. */
   void passDeadline(LiveRoom room) {
     var deadline = room.game.engine.getLifecycle(room.game.state).nextDeadline();
-    time.advance(Math.max(0, deadline - time.now()) + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+    time.advance(Math.max(0, deadline - manager.roomNow(room)) + RoomCoordinator.DEADLINE_TOLERANCE_MS);
   }
 
   JsonNode publicGame(LiveRoom room, String playerId) {

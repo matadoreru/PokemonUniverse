@@ -137,6 +137,21 @@ public final class RoomCommandParsers {
     return id.getStringValue();
   }
 
+  /** {@code room:reveal-next} {@code { gameInstanceId, actionEpoch }}: el revelado (partida y época) en el que se pulsa. */
+  public record RevealNextRequest(String gameInstanceId, String actionEpoch) {}
+
+  /** {@code room:reveal-next} (estricto): la partida y la época del revelado en el que se pulsa «Siguiente». */
+  public static RevealNextRequest revealNextRequest(@Nullable JsonNode raw) {
+    var id = raw == null || !raw.isObject() ? null : raw.get("gameInstanceId");
+    var epoch = raw == null || !raw.isObject() ? null : raw.get("actionEpoch");
+    if (id == null || !id.isString() || !UUID.matcher(id.getStringValue()).matches() || epoch == null
+        || !epoch.isString() || epoch.getStringValue().isEmpty() || epoch.getStringValue().length() > 512
+        || raw.size() != 2) {
+      throw new RoomException("Petición de «Siguiente» no válida.");
+    }
+    return new RevealNextRequest(id.getStringValue(), epoch.getStringValue());
+  }
+
   /** {@code gameActionRequestSchema} (estricto; {@code action} obligatoria, aunque sea {@code null}). */
   public static GameActionRequest gameActionRequest(@Nullable JsonNode raw) {
     var issues = new ZodIssues();

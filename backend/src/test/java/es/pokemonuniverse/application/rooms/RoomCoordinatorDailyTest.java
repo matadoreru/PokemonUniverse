@@ -138,7 +138,7 @@ class RoomCoordinatorDailyTest {
   private void passDeadline(LiveRoom room) {
     var deadline = room.game.engine.getLifecycle(room.game.state).nextDeadline();
     assertNotNull(deadline, "sin plazo en " + room.phase);
-    time.advance(Math.max(0, deadline - time.now()) + RoomCoordinator.DEADLINE_TOLERANCE_MS);
+    time.advance(Math.max(0, deadline - manager.roomNow(room)) + RoomCoordinator.DEADLINE_TOLERANCE_MS);
   }
 
   /** Deja vencer cada plazo hasta los resultados. */
@@ -235,6 +235,44 @@ class RoomCoordinatorDailyTest {
     assertEquals(directCalls, gameRandom.calls);
     assertEquals(directState, room.game.state);
     assertEquals(0, random.nextCalls);
+  }
+
+  /**
+   * «Siguiente» también vale en el reto: adelanta los revelados sin consumir más azar ni cambiar el resultado, que es
+   * el mismo que dejando vencer cada plazo.
+   */
+  @Test
+  void revealNextKeepsTheDailyDeterministic() {
+    var reference = new CountingSupplier();
+    var direct = start("higher-lower", reference);
+    playEveryRound(direct, RoomTestKit.answer("HIGHER"));
+    var directOutcome = direct.daily.outcome;
+    manager.leave(ASH.id());
+
+    var gameRandom = new CountingSupplier();
+    var room = start("higher-lower", gameRandom);
+    int skipped = 0;
+    String actedEpoch = null;
+    for (int step = 0; step < 200 && room.phase != RoomPhase.GAME_RESULTS; step++) {
+      var epoch = room.game.engine.getLifecycle(room.game.state).actionEpoch();
+      if (room.phase == RoomPhase.ROUND_ACTIVE && !epoch.equals(actedEpoch)) {
+        actedEpoch = epoch;
+        time.advance(1_000);
+        manager.action(ASH.id(), RoomTestKit.answer("HIGHER"));
+      } else if (room.phase == RoomPhase.ROUND_RESULTS && lastState().revealSkip() != null
+          && lastState().revealSkip().readyPlayerIds().isEmpty()) {
+        manager.setRevealNext(ASH.id(), json("{\"gameInstanceId\":\"" + room.game.resultId
+            + "\",\"actionEpoch\":\"" + epoch.replace("\"", "\\\"") + "\"}"));
+        skipped++;
+      } else {
+        passDeadline(room);
+      }
+    }
+    assertEquals(RoomPhase.GAME_RESULTS, room.phase);
+    assertTrue(skipped > 0, "no hubo revelados que adelantar");
+    assertTrue(room.clockOffsetMs > 0);
+    assertEquals(reference.calls, gameRandom.calls);
+    assertEquals(directOutcome, room.daily.outcome);
   }
 
   @Test

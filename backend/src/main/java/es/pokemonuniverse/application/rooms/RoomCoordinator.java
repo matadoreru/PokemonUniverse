@@ -61,12 +61,14 @@ import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
@@ -173,7 +175,7 @@ public class RoomCoordinator {
     this.dailyRooms = new DailyRoomLifecycle(store, cursors, pending,
         dailyRuns != null ? dailyRuns : DailyRunListener.NONE, this::context, this::roomActivity,
         this::claimGameFinish);
-    this.views = new RoomViews(registry, defaultConfigs, clock, events, this::toTree);
+    this.views = new RoomViews(registry, defaultConfigs, events, this::toTree);
     this.currentCatalog = snapshot(catalog.loadPokemonCatalog());
     for (var manifest : registry.list()) {
       defaultConfigs.put(manifest.id(), toTree(manifest.defaultConfig()));
@@ -923,9 +925,11 @@ public class RoomCoordinator {
     var catalog = launch == null ? current
         : new GameCatalogSnapshot(random.uuid(), launch.pokemon(), current.visuals(), current.audio());
     var gameRandom = launch == null ? null : launch.random();
+    // La partida va con la hora de la sala; la auditoría y la persistencia, con la real.
+    long startedAt = clock.now();
     var context = contextBuilder(catalog, gameRandom)
         .players(players)
-        .now(clock.now())
+        .now(room.now(startedAt))
         .roomCode(room.code)
         .hostId(room.hostId)
         .hostCustomCategories(hostCustomCategories(room))
@@ -949,10 +953,10 @@ public class RoomCoordinator {
     var resultId = random.uuid();
     var auditReady = launch != null ? CompletableFuture.<Void>completedFuture(null)
         : track(audit.gameStarted(new GameStarted(resultId, room.historyId, room.code, module.id(),
-            players.size(), configTree, context.now())), null);
+            players.size(), configTree, startedAt)), null);
     cancelPresenceGraces(room);
     room.game = new GameRuntime(catalog, resultId, module.id(), players.stream().map(GamePlayer::id).toList(), engine,
-        config, configTree, state, context.now(), auditReady, gameRandom);
+        config, configTree, state, startedAt, auditReady, gameRandom);
     resetWhoIsWhoCursors(room);
     if (intro) {
       room.game.introEndsAt = context.now() + settings.gameIntroMs();
@@ -989,7 +993,10 @@ public class RoomCoordinator {
     });
   }
 
-  /** Los jugadores conectados de la partida: los que cuentan para terminar la intro antes (los espectadores no). */
+  /**
+   * Los jugadores conectados de la partida: los que cuentan para terminar la intro antes y para «Siguiente» en los
+   * revelados (los espectadores, también los eliminados que el motor marca como tales, no).
+   */
   static List<String> introPlayerIds(LiveRoom room, GameRuntime game) {
     return game.participantIds.stream().filter(playerId -> {
       var member = room.members.get(playerId);
@@ -1047,6 +1054,82 @@ public class RoomCoordinator {
     }
     room.members.clear();
     store.delete(room.code);
+  }
+
+  // ---------------------------------------------------------------------------------- «Siguiente» en los revelados
+
+  /**
+   * Fases de revelado de los motores: solo enseñan un resultado y pasan solas al vencer su plazo, sin acciones de
+   * juego. {@code CHOICE_REVEAL} (One of Us Is Fake) no: es una cadena de pasos de 650 ms, ya por debajo del segundo.
+   */
+  static final Set<RoomPhase> REVEAL_PHASES = EnumSet.of(RoomPhase.ROUND_RESULTS, RoomPhase.VOTE_RESULTS,
+      RoomPhase.ELIMINATION, RoomPhase.ROLE_REVEAL, RoomPhase.TYPE_REVEAL, RoomPhase.INVALID_COMBINATION);
+  /**
+   * Juegos sin «Siguiente»: Pokeddle Race mide su mejor tiempo desde el inicio de la partida, así que adelantar el reloj
+   * entre rondas lo alargaría.
+   */
+  static final Set<String> GAMES_WITHOUT_REVEAL_NEXT = Set.of("pokeddle-race");
+  /** Lo que le queda al revelado cuando todos han pulsado «Siguiente». */
+  static final long REVEAL_NEXT_REMAINING_MS = 1_000;
+
+  /** La época del revelado en curso si admite «Siguiente» (fase de revelado con plazo); {@code null} si no. */
+  static @Nullable String revealEpoch(LiveRoom room, GameRuntime game) {
+    if (room.game != game || game.finishReason != null || !REVEAL_PHASES.contains(room.phase)
+        || GAMES_WITHOUT_REVEAL_NEXT.contains(game.gameId) || game.engine.isFinished(game.state)) {
+      return null;
+    }
+    var lifecycle = game.engine.getLifecycle(game.state);
+    return lifecycle.nextDeadline() == null ? null : lifecycle.actionEpoch();
+  }
+
+  /** Quién ha pulsado «Siguiente» en el revelado {@code epoch}: el conjunto se vacía al cambiar de revelado. */
+  static List<String> revealReadyIds(GameRuntime game, String epoch) {
+    return epoch.equals(game.revealNextEpoch) ? List.copyOf(game.revealNextIds) : List.of();
+  }
+
+  /**
+   * {@code room:reveal-next}; {@code payload} crudo {@code { gameInstanceId, actionEpoch }}. Solo cuentan los jugadores
+   * conectados de la partida (como en la intro). Un «Siguiente» de un revelado que ya terminó no hace nada. Vale también
+   * en el reto diario: adelantar un revelado no extrae azar ni cambia la puntuación.
+   */
+  public void setRevealNext(String playerId, @Nullable JsonNode payload) {
+    var request = RoomCommandParsers.revealNextRequest(payload);
+    inRequiredRoom(playerId, room -> {
+      var game = room.game;
+      if (game == null || game.finishReason != null || !game.resultId.equals(request.gameInstanceId())) {
+        throw new RoomException("El minijuego ya ha cambiado.");
+      }
+      var epoch = revealEpoch(room, game);
+      if (epoch == null || !epoch.equals(request.actionEpoch())) return null;
+      if (!introPlayerIds(room, game).contains(playerId)) {
+        throw new RoomException("Solo los jugadores de la partida pueden pasar al siguiente.");
+      }
+      if (!epoch.equals(game.revealNextEpoch)) {
+        game.revealNextEpoch = epoch;
+        game.revealNextIds.clear();
+      }
+      if (!game.revealNextIds.add(playerId)) return null;
+      advanceRevealIfEveryoneReady(room, game);
+      broadcast(room);
+      return null;
+    });
+  }
+
+  /**
+   * Si todos los jugadores conectados (al menos uno) han pulsado «Siguiente», el reloj de la sala avanza lo justo para
+   * que al plazo del revelado le quede {@link #REVEAL_NEXT_REMAINING_MS}, y se reprograma. El desfase solo crece: un
+   * revelado al que ya le queda menos no cambia. El motor no se entera; al vencer el plazo pasa de fase como siempre.
+   */
+  private boolean advanceRevealIfEveryoneReady(LiveRoom room, GameRuntime game) {
+    var epoch = revealEpoch(room, game);
+    if (epoch == null || !epoch.equals(game.revealNextEpoch)) return false;
+    var expected = introPlayerIds(room, game);
+    if (expected.isEmpty() || !game.revealNextIds.containsAll(expected)) return false;
+    long remaining = Objects.requireNonNull(game.engine.getLifecycle(game.state).nextDeadline()) - roomNow(room);
+    if (remaining <= REVEAL_NEXT_REMAINING_MS) return false;
+    room.clockOffsetMs += remaining - REVEAL_NEXT_REMAINING_MS;
+    schedule(room);
+    return true;
   }
 
   // ---------------------------------------------------------------------------------------------- partida
@@ -1231,7 +1314,7 @@ public class RoomCoordinator {
     var game = room.game;
     if (game == null || game.finishReason != null) return;
     if (room.phase == RoomPhase.GAME_INTRO) {
-      if (game.introEndsAt != null && clock.now() < game.introEndsAt) schedule(room);
+      if (game.introEndsAt != null && roomNow(room) < game.introEndsAt) schedule(room);
       else finishIntro(room, game);
       return;
     }
@@ -1251,7 +1334,7 @@ public class RoomCoordinator {
   private void continueAfterResultsDeadline(LiveRoom room) {
     var deadline = room.resultsEndsAt;
     if (room.daily != null || deadline == null) return;
-    if (clock.now() < deadline) {
+    if (roomNow(room) < deadline) {
       schedule(room);
       return;
     }
@@ -1286,6 +1369,8 @@ public class RoomCoordinator {
       if (!finishIntroIfEveryoneReady(room, game)) broadcast(room);
       return;
     }
+    // Quien se va deja de contar para «Siguiente»: si los que quedan ya lo pulsaron, el revelado se acorta.
+    if (game != null) advanceRevealIfEveryoneReady(room, game);
     if (game != null && game.engine.hasPresenceHandler()) {
       game.state = game.engine.handlePresenceChange(game.state, context(room));
       syncAndBroadcast(room, game);
@@ -1358,7 +1443,7 @@ public class RoomCoordinator {
     // Si queda sesión, sigue sola pasado el plazo aunque el host no pulse (un host distraído no bloquea a nadie).
     room.resultsEndsAt = SessionMode.isComplete(room.sessionMode, room.gamesPlayed,
         room.sessionParticipants.values().stream().map(participant -> participant.sessionPoints).toList())
-        ? null : clock.now() + settings.resultsAutoContinueMs();
+        ? null : roomNow(room) + settings.resultsAutoContinueMs();
     // La sesión puede avanzar antes de que termine la auditoría asíncrona del arranque.
     var identities = new LinkedHashMap<String, AuthUser>();
     for (var entry : room.members.entrySet()) identities.put(entry.getKey(), entry.getValue().identity);
@@ -1591,7 +1676,7 @@ public class RoomCoordinator {
   private void scheduleCurrent(LiveRoom room, long deadline) {
     var timer = new RoomTimer();
     room.transitionTimer = timer;
-    long delay = Math.max(0, deadline - clock.now() + DEADLINE_TOLERANCE_MS);
+    long delay = Math.max(0, deadline - roomNow(room) + DEADLINE_TOLERANCE_MS);
     timer.bind(schedulers.schedule(delay, () -> timerCallback(room, () -> {
       if (room.transitionTimer != timer) return;
       room.transitionTimer = null;
@@ -1601,17 +1686,28 @@ public class RoomCoordinator {
 
   // ------------------------------------------------------------------------------------------ contexto y vistas
 
+  /**
+   * Hora de la sala: la real más su desfase ({@link LiveRoom#clockOffsetMs}). La usan la partida ({@code context.now}),
+   * sus plazos, la intro, los resultados, la votación y el {@code serverNow} de la vista. La auditoría, el chat, los
+   * cursores y la presencia (desconexión, gracias y reconexión) siguen en hora real.
+   */
+  long roomNow(LiveRoom room) {
+    return room.now(clock.now());
+  }
+
   GameContext context(LiveRoom room) {
     return context(room, room.game != null ? room.game.catalog : catalogSnapshot());
   }
 
   /** Con partida, su azar propio si lo tiene (el reto diario): cada contexto consume la misma fuente. */
   private GameContext context(LiveRoom room, GameCatalogSnapshot catalog) {
-    long now = clock.now();
+    // La gracia de presencia cuenta en hora real (desde disconnectedAt); el juego, en la de la sala.
+    long realNow = clock.now();
+    long now = room.now(realNow);
     var graceMs = livePresenceGraceMs(room);
     var players = room.members.values().stream().map(member -> new GamePlayer(member.identity.id(),
         member.identity.displayName(),
-        member.presence == PresenceStatus.CONNECTED || withinPresenceGrace(graceMs, member, now),
+        member.presence == PresenceStatus.CONNECTED || withinPresenceGrace(graceMs, member, realNow),
         member.role == MemberRole.PLAYER && member.presence != PresenceStatus.LEFT)).toList();
     return contextBuilder(catalog, room.game != null ? room.game.random : null)
         .players(players)
