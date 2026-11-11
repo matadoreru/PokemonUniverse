@@ -3,7 +3,7 @@ import { WHO_AM_I_ANSWERS, WHO_AM_I_MAX_QUESTION_LENGTH } from '@pokemon-univers
 import { ArrowLeft, Check, CheckCircle2, Clock3, Eye, Hourglass, MessageCircleQuestion, Search, Send, SkipForward, Target, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
 import { pokemonTypeLabels } from '../components/pokemon-type-labels';
-import { answerLabel, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from '../games/who-am-i/presentation';
+import { answerLabel, freshAnnouncement, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from '../games/who-am-i/presentation';
 import { usePokemonPool } from '../hooks/usePokemonPool';
 import { useServerOffset } from '../hooks/useServerTime';
 import { Card, Chip, cx, Field, Icon, Panel, Pill } from '../ui';
@@ -125,7 +125,8 @@ function useWhoAmIAnnouncement(game: WhoAmIPublicState, player: WhoAmIPlayerStat
   useEffect(() => {
     const next = whoAmIAnnouncement(previous.current, snapshot, nameRef.current);
     previous.current = snapshot;
-    if (next) setText(next);
+    // Un anuncio igual al anterior cambia por dentro (espacio de ancho cero) para que se vuelva a leer.
+    if (next) setText((current) => freshAnnouncement(current, next));
     // `snapshot` se rehace en cada render: basta con los campos que cambian lo que se anuncia.
   }, [snapshot.turnKey, snapshot.questionKey, snapshot.solvedAs]);
   return text;

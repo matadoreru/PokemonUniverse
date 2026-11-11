@@ -1,6 +1,6 @@
 import type { WhoAmIPublicState } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
-import { answerCounts, answerLabel, lockedGuessIds, turnHeadline, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
+import { answerCounts, answerLabel, freshAnnouncement, lockedGuessIds, turnHeadline, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
 
 const NAMES: Record<string, string> = { p1: 'Eru', p2: 'Ana', p3: 'Leo' };
 const nameOf = (id: string) => NAMES[id] ?? 'Entrenador';
@@ -46,6 +46,24 @@ describe('¿Quién soy?: textos', () => {
     expect(whoAmIAnnouncement(idle, { ...idle, turnKey: '1:p2', turnPlayerId: 'p2' }, nameOf)).toBe('Turno de Ana.');
     expect(whoAmIAnnouncement(idle, { ...idle, questionKey: '1:p1|¿Vuelo?', questionText: '¿Vuelo?' }, nameOf)).toBe('Pregunta: ¿Vuelo?');
     expect(whoAmIAnnouncement(idle, { ...idle, turnKey: '1:p2', turnPlayerId: 'p2', solvedAs: 'Mewtwo' }, nameOf)).toBe('¡Eras Mewtwo! Turno de Ana.');
+  });
+});
+
+describe('freshAnnouncement', () => {
+  it('un anuncio nuevo sale tal cual', () => {
+    expect(freshAnnouncement('', 'Turno de Ana.')).toBe('Turno de Ana.');
+    expect(freshAnnouncement('Turno de Ana.', 'Turno de Leo.')).toBe('Turno de Leo.');
+    expect(freshAnnouncement('Turno de Ana.\u200b', 'Turno de Leo.')).toBe('Turno de Leo.');
+  });
+
+  it('el mismo anuncio seguido cambia el texto alternando un espacio de ancho cero', () => {
+    const first = freshAnnouncement('', 'Turno de Ana.');
+    const second = freshAnnouncement(first, 'Turno de Ana.');
+    const third = freshAnnouncement(second, 'Turno de Ana.');
+    expect(second).not.toBe(first);
+    expect(second).toBe('Turno de Ana.\u200b');
+    expect(third).toBe('Turno de Ana.');
+    expect(third).not.toBe(second);
   });
 });
 

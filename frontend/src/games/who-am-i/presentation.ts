@@ -65,6 +65,16 @@ export function whoAmIAnnouncement(before: WhoAmIAnnounceSnapshot, now: WhoAmIAn
 }
 
 /**
+ * El texto que se pone en la región viva para anunciar `next` cuando ya contiene `current`. Si es el mismo anuncio
+ * (p. ej. «Turno de Ana.» con dos turnos seguidos de Ana, al quedar solo ella sin acertar), alterna un espacio de ancho
+ * cero al final: el texto cambia y el lector de pantalla lo vuelve a leer.
+ */
+export function freshAnnouncement(current: string, next: string): string {
+  if (next !== current.replace(/\u200b$/, '')) return next;
+  return current.endsWith('\u200b') ? next : `${next}\u200b`;
+}
+
+/**
  * Ids que el buscador de adivinar bloquea: los ya probados (entradas `GUESS` del historial propio) y los Pokémon de los
  * demás jugadores, que el servidor rechaza («Ese Pokémon lo tiene otro jugador.»).
  */
