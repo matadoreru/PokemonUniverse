@@ -1,14 +1,14 @@
 import { type PokemonTeamAuctionPublicState } from '@pokemon-universe/shared/public';
 import { Coins, Equal, Gavel, Sparkles } from 'lucide-react';
-import { teamStatsLine } from '../games/pokemon-team-auction/presentation';
-import s from '../games/pokemon-team-auction/TeamAuction.module.css';
-import { Card, Chip, cx, Icon, Panel } from '../ui';
-import { guessTop } from './guess-kit';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
+import { teamStatsLine } from './presentation';
+import s from './TeamAuction.module.css';
+import { Card, Chip, cx, Icon, Panel } from '../../ui';
+import { guessTop } from '../../room/guess-kit';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
 
 /**
  * Resultados de Pokémon Team Auction: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con

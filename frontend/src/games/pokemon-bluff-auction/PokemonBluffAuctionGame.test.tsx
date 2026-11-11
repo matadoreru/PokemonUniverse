@@ -2,18 +2,18 @@ import { defaultPokemonBluffAuctionConfig, type BluffAuctionRoundResult, type Ga
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokemonBluffAuctionConfigPanel } from '../games/pokemon-bluff-auction/ConfigPanel';
-import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffRoundLines, bluffTimerLabel, bluffSelfVerdict, bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
-import { bidBlock } from './auction-kit';
+import { PokemonBluffAuctionConfigPanel } from './ConfigPanel';
+import { bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffRoundLines, bluffTimerLabel, bluffSelfVerdict, bluffStatsLine } from './presentation';
+import { bidBlock } from '../../room/auction-kit';
 import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { labelledRadiogroup } from '../ui/segmented-markup';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { labelledRadiogroup } from '../../ui/segmented-markup';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
 const players = ['Ana', 'Pedro', 'Carlos'].map((displayName, index) => member({ id: `p${index + 1}`, displayName, roomRole: index === 0 ? 'HOST' : 'MEMBER', isHost: index === 0 }));
 const nameOf = (id: string) => players.find((player) => player.id === id)?.displayName ?? id;

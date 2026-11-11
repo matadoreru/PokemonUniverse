@@ -175,8 +175,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-bluff-auction',
   config: component(() => import('./pokemon-bluff-auction/ConfigPanel'), 'PokemonBluffAuctionConfigPanel'),
-  active: component(() => import('../room/PokemonBluffAuctionGame'), 'PokemonBluffAuctionGame'),
-  results: component(() => import('../room/PokemonBluffAuctionResults'), 'PokemonBluffAuctionResults'),
+  active: component(() => import('./pokemon-bluff-auction/PokemonBluffAuctionGame'), 'PokemonBluffAuctionGame'),
+  results: component(() => import('./pokemon-bluff-auction/PokemonBluffAuctionResults'), 'PokemonBluffAuctionResults'),
 })).register(clientModule({
   id: 'sketchmon',
   config: component(() => import('./sketchmon/ConfigPanel'), 'SketchmonConfigPanel'),
@@ -190,8 +190,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'pokemon-team-auction',
   config: component(() => import('./pokemon-team-auction/ConfigPanel'), 'PokemonTeamAuctionConfigPanel'),
-  active: component(() => import('../room/PokemonTeamAuctionGame'), 'PokemonTeamAuctionGame'),
-  results: component(() => import('../room/PokemonTeamAuctionResults'), 'PokemonTeamAuctionResults'),
+  active: component(() => import('./pokemon-team-auction/PokemonTeamAuctionGame'), 'PokemonTeamAuctionGame'),
+  results: component(() => import('./pokemon-team-auction/PokemonTeamAuctionResults'), 'PokemonTeamAuctionResults'),
 })).register(clientModule({
   id: 'secret-ranking',
   config: component(() => import('./secret-ranking/ConfigPanel'), 'SecretRankingConfigPanel'),

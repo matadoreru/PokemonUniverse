@@ -2,15 +2,15 @@ import { defaultPokemonTeamAuctionConfig, type PokemonTeamAuctionPlayerState, ty
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
-import { PokemonTeamAuctionConfigPanel } from '../games/pokemon-team-auction/ConfigPanel';
+import { PokemonTeamAuctionConfigPanel } from './ConfigPanel';
 import { PokemonTeamAuctionGame } from './PokemonTeamAuctionGame';
 import { PokemonTeamAuctionResults } from './PokemonTeamAuctionResults';
-import { expectSingleLiveRegion } from './test-support/live-regions';
-import { member, roomView } from './test-support/room-view';
+import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
+import { member, roomView } from '../../room/test-support/room-view';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
-vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
-vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
+vi.mock('../../room/RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
+vi.mock('../../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
 
 const pokemon = (id: string, bst: number): TeamAuctionPokemon => ({ id, name: id, sprite: `/${id}.png`, baseStatTotal: bst, legendaryStatus: 'NORMAL' });
 const current = { id: 'pikachu', name: 'pikachu', sprite: '/pikachu.png', legendaryStatus: 'NORMAL' as const }; const won = pokemon('charizard', 534); const unowned = pokemon('mewtwo', 680);

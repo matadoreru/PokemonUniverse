@@ -4,17 +4,17 @@ import { Coins, Crown, Eye, Hourglass, Lock, PackageCheck, SkipForward } from 'l
 import { useRef, useState } from 'react';
 import {
   currentLotEvents, PASS_RULE, TEAM_SIZE, TEAM_STATUS_TEXT, teamAnnouncement, teamBlockInput, teamBst, teamHeading, teamPrevious, teamStatus, teamTimerLabel, teamTurnOrder, type TeamStatus,
-} from '../games/pokemon-team-auction/presentation';
-import { PokemonFacts, TeamDialog, TeamStrip } from '../games/pokemon-team-auction/TeamParts';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { useServerOffset } from '../hooks/useServerTime';
-import { Card, Chip, Pill, type ChipProps } from '../ui';
+} from './presentation';
+import { PokemonFacts, TeamDialog, TeamStrip } from './TeamParts';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { useServerOffset } from '../../hooks/useServerTime';
+import { Card, Chip, Pill, type ChipProps } from '../../ui';
 import {
   AuctionLot, AuctionPrevious, AuctionScreen, BidControls, BidHistory, BudgetPlate, bidBlock, bidEpoch, bidLog, type BidLogEntry, type BudgetEntry,
-} from './auction-kit';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { useRoomMembers } from './room-members';
-import type { ActiveGameProps } from './room-command';
+} from '../../room/auction-kit';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { useRoomMembers } from '../../room/room-members';
+import type { ActiveGameProps } from '../../room/room-command';
 
 const GAME_NAME = 'Pokémon Team Auction';
 const STATUS_ICON: Record<TeamStatus, LucideIcon> = { leading: Crown, passed: SkipForward, full: PackageCheck, noBudget: Coins, bidding: Hourglass, closed: Lock };

@@ -2,21 +2,21 @@ import type { BluffAuctionAttempt, BluffAuctionRoundResult, PokemonBluffAuctionC
 import type { LucideIcon } from 'lucide-react';
 import { CheckCircle2, Clock3, Copy, Crown, Eye, Hourglass, Mic2, Search, ShieldQuestion, SkipForward, X, XCircle } from 'lucide-react';
 import { useRef, type ReactNode } from 'react';
-import { Avatar } from '../components/Avatar';
+import { Avatar } from '../../components/Avatar';
 import {
   ATTEMPT_TEXT, bluffAnnouncement, bluffBlockInput, bluffHeading, bluffMetrics, bluffResultReason, bluffResultTimerLabel, bluffResultTitle, bluffRoundLabel, bluffRoundLines, bluffRoundResult,
   bluffSeatStatus, bluffSelfVerdict, bluffTimerLabel, bluffTurnOrder, GAME_NAME, latestBids, PASS_RULE, SEAT_STATUS_TEXT, TIME_RULE, UNIT, type BluffSeatStatus,
-} from '../games/pokemon-bluff-auction/presentation';
-import { usePokemonPool } from '../hooks/usePokemonPool';
-import { useSfxCue } from '../hooks/useSfxCue';
-import { useServerOffset } from '../hooks/useServerTime';
-import { Badge, Bar, Chip, cx, Icon, Panel, Row, type ChipProps } from '../ui';
-import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, amountText, bidBlock, bidEpoch, bidLog, type BudgetEntry } from './auction-kit';
-import { useFocusOnTransition } from './game-kit/focus-transition';
-import { GuessPanel } from './guess-kit';
-import { useRoomMembers } from './room-members';
-import type { ActiveGameProps } from './room-command';
-import b from '../games/pokemon-bluff-auction/BluffAuction.module.css';
+} from './presentation';
+import { usePokemonPool } from '../../hooks/usePokemonPool';
+import { useSfxCue } from '../../hooks/useSfxCue';
+import { useServerOffset } from '../../hooks/useServerTime';
+import { Badge, Bar, Chip, cx, Icon, Panel, Row, type ChipProps } from '../../ui';
+import { AuctionAward, AuctionLot, AuctionScreen, BidControls, BidHistory, BudgetPlate, amountText, bidBlock, bidEpoch, bidLog, type BudgetEntry } from '../../room/auction-kit';
+import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
+import { GuessPanel } from '../../room/guess-kit';
+import { useRoomMembers } from '../../room/room-members';
+import type { ActiveGameProps } from '../../room/room-command';
+import b from './BluffAuction.module.css';
 
 const SEAT_ICON: Record<BluffSeatStatus, LucideIcon> = { leading: Crown, passed: SkipForward, bidding: Hourglass, demonstrating: Search, waiting: Eye };
 const SEAT_TONE: Record<BluffSeatStatus, NonNullable<ChipProps['tone']>> = { leading: 'ok', passed: 'neutral', bidding: 'neutral', demonstrating: 'warn', waiting: 'neutral' };

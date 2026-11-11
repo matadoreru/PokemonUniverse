@@ -1,14 +1,14 @@
 import { type PokemonBluffAuctionPublicState } from '@pokemon-universe/shared/public';
 import { CheckCircle2, Equal, Gavel, Trophy } from 'lucide-react';
-import { bluffStatsLine } from '../games/pokemon-bluff-auction/presentation';
-import b from '../games/pokemon-bluff-auction/BluffAuction.module.css';
-import { Chip, Icon } from '../ui';
-import { guessTop } from './guess-kit';
-import { sharesPosition } from './game-kit/results-ties';
-import { ResultsHostActions, ResultsRecords } from './game-kit/ResultsRecords';
-import { ResultsShell, standingRows } from './game-kit/ResultsShell';
-import { useRoomMembers } from './room-members';
-import type { GameResultsProps } from './room-command';
+import { bluffStatsLine } from './presentation';
+import b from './BluffAuction.module.css';
+import { Chip, Icon } from '../../ui';
+import { guessTop } from '../../room/guess-kit';
+import { sharesPosition } from '../../room/game-kit/results-ties';
+import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsRecords';
+import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
+import { useRoomMembers } from '../../room/room-members';
+import type { GameResultsProps } from '../../room/room-command';
 
 /**
  * Resultados de Pokémon Bluff Auction: la clasificación del catálogo (`ResultsShell` con `standings`: ganador con
