@@ -426,3 +426,72 @@ test('una entrada normal en la sala no muestra el aviso de conexión', async ({ 
   expect(await page.evaluate(() => (window as unknown as { avisoVisto: boolean }).avisoVisto), 'el aviso de conexión no debe aparecer').toBe(false);
   expect(errors).toEqual([]);
 });
+
+test('entrar por enlace: /play?sala= entra directamente o tras iniciar sesión, y la sala vacía ofrece copiar el enlace', async ({ browser, crearJugador }) => {
+  test.setTimeout(120_000);
+  // El host necesita el portapapeles para leer lo que copia.
+  const hostContext = await browser.newContext({ viewport: { width: 1280, height: 720 }, permissions: ['clipboard-read', 'clipboard-write'] });
+  const visitorContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  try {
+    const host = await hostContext.newPage();
+    const errors = collectErrors(host);
+    await loginAsGuest(host, uniqueName('Enlace'));
+    const code = await createRoom(host);
+    const enlace = new URL(`/play?sala=${code}`, host.url()).href;
+
+    // Sala vacía: la placa de jugadores invita a traer a más; «Copiar enlace» copia la URL completa.
+    const jugadores = host.getByRole('region', { name: 'Jugadores' });
+    await expect(jugadores.getByText('Aún no ha llegado nadie')).toBeVisible();
+    await capturarATresTamaños(host, 'lobby-sala-vacia', { antes: async () => { await expect(jugadores.getByRole('button', { name: 'Copiar enlace' })).toBeVisible(); } });
+    await jugadores.getByRole('button', { name: 'Copiar enlace' }).click();
+    await expect(jugadores.getByRole('button', { name: 'Enlace copiado' })).toBeVisible();
+    expect(await host.evaluate(() => navigator.clipboard.readText())).toBe(enlace);
+    // La placa de la sala también copia el enlace (en escritorio no abre el menú de compartir) y avisa «Código copiado».
+    await host.evaluate(() => navigator.clipboard.writeText(''));
+    await host.getByRole('button', { name: `Copiar enlace de la sala ${code}` }).click();
+    await expect(host.getByText('Código copiado')).toBeAttached();
+    expect(await host.evaluate(() => navigator.clipboard.readText())).toBe(enlace);
+
+    // Sin sesión: el enlace lleva a entrar y, tras entrar como invitado, directo a la sala (en minúsculas también vale).
+    const visitante = await visitorContext.newPage();
+    await visitante.goto(`/play?sala=${code.toLowerCase()}`);
+    await expect(visitante).toHaveURL(/\/auth$/);
+    await visitante.getByRole('tab', { name: 'Invitado' }).click();
+    await visitante.getByLabel('Tu nombre temporal').fill(uniqueName('Visita'));
+    await visitante.getByRole('button', { name: 'Continuar como invitado' }).click();
+    await expect(visitante).toHaveURL(/\/room$/, { timeout: 15_000 });
+    await expect(visitante.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached();
+    await expect(jugadores.getByText('Aún no ha llegado nadie')).toHaveCount(0, { timeout: 15_000 });
+
+    // Con sesión: el enlace entra sin pasar por el formulario, aunque el código lleve espacios.
+    const directo = await crearJugador('Directo');
+    await directo.page.goto(`/play?sala=${code.slice(0, 3)}%20${code.slice(3)}`);
+    await expect(directo.page).toHaveURL(/\/room$/, { timeout: 15_000 });
+    await expect(directo.page.getByRole('heading', { name: 'Lobby de la sala' })).toBeAttached();
+    // Atrás no vuelve a `/play?sala=` (el enlace se sustituyó en el historial): Jugar ofrece volver a la sala.
+    await directo.page.goBack();
+    await expect(directo.page).toHaveURL(/\/play$/);
+    await expect(directo.page.getByRole('heading', { name: 'Ya tienes una sala activa' })).toBeVisible();
+
+    // Un código inválido se ignora: Jugar se queda como siempre, con el campo vacío.
+    const otro = await crearJugador('Invalido');
+    await otro.page.goto('/play?sala=ABC');
+    await expect(otro.page.getByRole('heading', { name: 'Entrar en partida' })).toBeVisible();
+    await expect(otro.page.locator('#room-code')).toHaveValue('');
+    expect(errors).toEqual([]);
+  } finally {
+    await Promise.all([hostContext.close(), visitorContext.close()]);
+  }
+});
+
+test('«Saltar al contenido» es lo primero con el teclado y lleva el foco al main', async ({ page }) => {
+  await page.goto('/');
+  await page.keyboard.press('Tab');
+  const saltar = page.getByRole('link', { name: 'Saltar al contenido' });
+  await expect(saltar).toBeFocused();
+  await expect(saltar).toBeInViewport();
+  await capture(page, 'saltar-al-contenido');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main#contenido')).toBeFocused();
+  await expect(page).toHaveURL(/\/$/);
+});
