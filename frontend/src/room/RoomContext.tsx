@@ -8,7 +8,7 @@ import { roomActionErrorMessage } from './roomCode';
 import { applyDeleted, applyHistory, applyMessage, EMPTY_CHAT, syncInstance, type ChatState } from './chat/chat-state';
 import { OptimisticRoomProjection, runOptimisticLobbyMutation, type OptimisticLobbyUpdate } from './optimistic-room';
 import { SessionAttachment } from './session-attachment';
-import { attachWhoIsWhoCursorChannel } from './who-is-who-cursor-channel';
+import { attachWhoIsWhoCursorChannel } from '../games/who-is-who-pokemon/who-is-who-cursor-channel';
 
 /** Avisos del `/ws` de la cuenta (no son de la sala): los escuchan los proveedores y pantallas con `subscribe`. */
 export type FriendSocketEvent = 'friends:presence' | 'friends:changed' | 'friends:invite' | 'achievements:unlocked' | 'daily:recorded';

@@ -165,13 +165,13 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'poke-taboo',
   config: component(() => import('./poke-taboo/ConfigPanel'), 'PokeTabooConfigPanel'),
-  active: component(() => import('../room/PokeTabooGame'), 'PokeTabooGame'),
-  results: component(() => import('../room/PokeTabooResults'), 'PokeTabooResults'),
+  active: component(() => import('./poke-taboo/PokeTabooGame'), 'PokeTabooGame'),
+  results: component(() => import('./poke-taboo/PokeTabooResults'), 'PokeTabooResults'),
 })).register(clientModule({
   id: 'one-of-us-is-fake',
   config: component(() => import('./one-of-us-is-fake/ConfigPanel'), 'OneOfUsIsFakeConfigPanel'),
-  active: component(() => import('../room/OneOfUsIsFakeGame'), 'OneOfUsIsFakeGame'),
-  results: component(() => import('../room/OneOfUsIsFakeResults'), 'OneOfUsIsFakeResults'),
+  active: component(() => import('./one-of-us-is-fake/OneOfUsIsFakeGame'), 'OneOfUsIsFakeGame'),
+  results: component(() => import('./one-of-us-is-fake/OneOfUsIsFakeResults'), 'OneOfUsIsFakeResults'),
 })).register(clientModule({
   id: 'pokemon-bluff-auction',
   config: component(() => import('./pokemon-bluff-auction/ConfigPanel'), 'PokemonBluffAuctionConfigPanel'),
@@ -180,8 +180,8 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'sketchmon',
   config: component(() => import('./sketchmon/ConfigPanel'), 'SketchmonConfigPanel'),
-  active: component(() => import('../room/SketchmonGame'), 'SketchmonGame'),
-  results: component(() => import('../room/SketchmonResults'), 'SketchmonResults'),
+  active: component(() => import('./sketchmon/SketchmonGame'), 'SketchmonGame'),
+  results: component(() => import('./sketchmon/SketchmonResults'), 'SketchmonResults'),
 })).register(clientModule({
   id: 'pokemon-connections',
   config: component(() => import('./pokemon-connections/ConfigPanel'), 'PokemonConnectionsConfigPanel'),
@@ -195,23 +195,23 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'secret-ranking',
   config: component(() => import('./secret-ranking/ConfigPanel'), 'SecretRankingConfigPanel'),
-  active: component(() => import('../room/SecretRankingGame'), 'SecretRankingGame'),
-  results: component(() => import('../room/SecretRankingResults'), 'SecretRankingResults'),
+  active: component(() => import('./secret-ranking/SecretRankingGame'), 'SecretRankingGame'),
+  results: component(() => import('./secret-ranking/SecretRankingResults'), 'SecretRankingResults'),
 })).register(clientModule({
   id: 'most-likely-to',
   config: component(() => import('./most-likely-to/ConfigPanel'), 'MostLikelyToConfigPanel'),
-  active: component(() => import('../room/MostLikelyToGame'), 'MostLikelyToGame'),
-  results: component(() => import('../room/MostLikelyToResults'), 'MostLikelyToResults'),
+  active: component(() => import('./most-likely-to/MostLikelyToGame'), 'MostLikelyToGame'),
+  results: component(() => import('./most-likely-to/MostLikelyToResults'), 'MostLikelyToResults'),
 })).register(clientModule({
   id: 'would-you-rather',
   config: component(() => import('./would-you-rather/ConfigPanel'), 'WouldYouRatherConfigPanel'),
-  active: component(() => import('../room/WouldYouRatherGame'), 'WouldYouRatherGame'),
-  results: component(() => import('../room/WouldYouRatherResults'), 'WouldYouRatherResults'),
+  active: component(() => import('./would-you-rather/WouldYouRatherGame'), 'WouldYouRatherGame'),
+  results: component(() => import('./would-you-rather/WouldYouRatherResults'), 'WouldYouRatherResults'),
 })).register(clientModule({
   id: 'pokemon-red-flag',
   config: component(() => import('./pokemon-red-flag/ConfigPanel'), 'PokemonRedFlagConfigPanel'),
-  active: component(() => import('../room/PokemonRedFlagGame'), 'PokemonRedFlagGame'),
-  results: component(() => import('../room/PokemonRedFlagResults'), 'PokemonRedFlagResults'),
+  active: component(() => import('./pokemon-red-flag/PokemonRedFlagGame'), 'PokemonRedFlagGame'),
+  results: component(() => import('./pokemon-red-flag/PokemonRedFlagResults'), 'PokemonRedFlagResults'),
 })).register(clientModule({
   id: 'tcg-higher-lower',
   config: component(() => import('./tcg-higher-lower/ConfigPanel'), 'TcgHigherLowerConfigPanel'),
@@ -235,13 +235,13 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'who-is-who-pokemon',
   config: component(() => import('./who-is-who-pokemon/ConfigPanel'), 'WhoIsWhoPokemonConfigPanel'),
-  active: component(() => import('../room/WhoIsWhoPokemonGame'), 'WhoIsWhoPokemonGame'),
-  results: component(() => import('../room/WhoIsWhoPokemonResults'), 'WhoIsWhoPokemonResults'),
+  active: component(() => import('./who-is-who-pokemon/WhoIsWhoPokemonGame'), 'WhoIsWhoPokemonGame'),
+  results: component(() => import('./who-is-who-pokemon/WhoIsWhoPokemonResults'), 'WhoIsWhoPokemonResults'),
 })).register(clientModule({
   id: 'absurd-pokedex',
   config: component(() => import('./absurd-pokedex/ConfigPanel'), 'AbsurdPokedexConfigPanel'),
-  active: component(() => import('../room/AbsurdPokedexGame'), 'AbsurdPokedexGame'),
-  results: component(() => import('../room/AbsurdPokedexResults'), 'AbsurdPokedexResults'),
+  active: component(() => import('./absurd-pokedex/AbsurdPokedexGame'), 'AbsurdPokedexGame'),
+  results: component(() => import('./absurd-pokedex/AbsurdPokedexResults'), 'AbsurdPokedexResults'),
 })).register(clientModule({
   id: 'unown-translator',
   config: component(() => import('./unown-translator/ConfigPanel'), 'UnownTranslatorConfigPanel'),
@@ -250,6 +250,6 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
 })).register(clientModule({
   id: 'who-am-i',
   config: component(() => import('./who-am-i/ConfigPanel'), 'WhoAmIConfigPanel'),
-  active: component(() => import('../room/WhoAmIGame'), 'WhoAmIGame'),
-  results: component(() => import('../room/WhoAmIResults'), 'WhoAmIResults'),
+  active: component(() => import('./who-am-i/WhoAmIGame'), 'WhoAmIGame'),
+  results: component(() => import('./who-am-i/WhoAmIResults'), 'WhoAmIResults'),
 }));

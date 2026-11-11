@@ -2,8 +2,8 @@ import type { RoomMemberView, WhoIsWhoCursorEvent, WhoIsWhoGuess, WhoIsWhoPokemo
 import { Check, EyeOff, Flag, LockKeyhole, MousePointer2, Search, Target, X } from 'lucide-react';
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type RefObject } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { clearWhoIsWhoCursor, sendWhoIsWhoCursor, subscribeWhoIsWhoCursors } from '../../room/who-is-who-cursor-channel';
-import { normalizeBoardPointer, projectBoardCursor } from '../../room/who-is-who-cursor-position';
+import { clearWhoIsWhoCursor, sendWhoIsWhoCursor, subscribeWhoIsWhoCursors } from './who-is-who-cursor-channel';
+import { normalizeBoardPointer, projectBoardCursor } from './who-is-who-cursor-position';
 import { useRefocusAfterReject } from '../../room/game-kit/focus-transition';
 import { playerColor } from '../../lib/player-color';
 import { searchPokemonOptions } from '../../room/game-kit/pokemon-search';
