@@ -32,11 +32,7 @@ export function SecretRankingConfigPanel({ config, disabled, room, selfId, onCha
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo para ordenar" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La ronda termina antes si todos han bloqueado su ranking." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
-    <div className={s.field}>
-      <span className={s.label}>Fuente de preguntas</span>
-      <Segmented label="Fuente de preguntas" value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
-      <p className={s.help}>{source.detail}</p>
-    </div>
+    <Segmented label="Fuente de preguntas" showLabel hint={source.detail} value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
     {registeredHost
       ? <CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="De más valiente a menos valiente" emptyText="Todavía no has creado preguntas personales." newLabel="Nueva pregunta" editLabel="Editar pregunta" noun="pregunta" />
       : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar preguntas personales de forma permanente.' : `Las preguntas personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}

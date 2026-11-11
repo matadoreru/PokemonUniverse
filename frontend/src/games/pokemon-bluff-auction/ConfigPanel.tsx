@@ -18,19 +18,11 @@ export function PokemonBluffAuctionConfigPanel({ config, disabled, onChange }: {
   return <fieldset disabled={disabled} className={s.config}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="La condición y el buscador usarán únicamente especies normales de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label}>Tiempo inicial para demostrar</span>
-        <Segmented label="Tiempo inicial para demostrar" value={value.demonstrationSeconds}
-          options={times.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))}
-          onChange={(demonstrationSeconds) => void onChange({ ...value, demonstrationSeconds })} />
-        <p className={s.help}>Cada acierto añade 5 segundos y cada fallo quita 3.</p>
-      </div>
-      <div className={s.field}>
-        <span className={s.label}>Rondas</span>
-        <Segmented label="Rondas" value={value.rounds} options={rounds.map((count) => ({ value: count, label: String(count), disabled }))}
-          onChange={(count) => void onChange({ ...value, rounds: count })} />
-        <p className={s.help}>Cada ronda renueva condición y orden de puja.</p>
-      </div>
+      <Segmented label="Tiempo inicial para demostrar" showLabel hint="Cada acierto añade 5 segundos y cada fallo quita 3." value={value.demonstrationSeconds}
+        options={times.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))}
+        onChange={(demonstrationSeconds) => void onChange({ ...value, demonstrationSeconds })} />
+      <Segmented label="Rondas" showLabel hint="Cada ronda renueva condición y orden de puja." value={value.rounds} options={rounds.map((count) => ({ value: count, label: String(count), disabled }))}
+        onChange={(count) => void onChange({ ...value, rounds: count })} />
     </div>
     <ConfigRange label="Tiempo por puja" value={value.bidSeconds ?? 20} min={0} max={120} disabled={disabled}
       formatValue={(seconds) => (seconds === 0 ? 'Sin límite' : `${seconds} s`)} hint="Al agotarse el tiempo, pasas. Usa 0 para jugar sin límite."

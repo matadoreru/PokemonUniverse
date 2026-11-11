@@ -7,6 +7,7 @@ import { colorName, describePaletteHint, paletteSwatches } from '../games/pokemo
 import { PokemonPaletteGuessGame } from './PokemonPaletteGuessGame';
 import { PokemonPaletteGuessResults } from './PokemonPaletteGuessResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { labelledRadiogroup } from '../ui/segmented-markup';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -156,7 +157,7 @@ describe('Adivina por la Paleta: resultados y ajustes', () => {
 
   it('ajustes con los controles del catálogo: tamaño de la paleta, pistas y tiempos', () => {
     const html = renderToStaticMarkup(createElement(PokemonPaletteGuessConfigPanel, { config: { ...config, hintsEnabled: true }, disabled: false, onChange: async () => undefined }));
-    expect(html).toContain('role="radiogroup" aria-label="Máximo de colores visibles"');
+    expect(html).toMatch(labelledRadiogroup('Máximo de colores visibles'));
     expect(html).toContain('todos los colores dominantes');
     expect(html).toContain('Pistas adicionales');
     expect(html).toContain('role="switch"');

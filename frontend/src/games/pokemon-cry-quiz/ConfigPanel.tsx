@@ -22,11 +22,7 @@ export function PokemonCryQuizConfigPanel({ config, disabled, onChange }: { conf
   const version = versions.find((option) => option.value === value.cryVersion) ?? versions[0]!;
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon con un grito persistido en el catálogo local." onChange={(generations) => update({ generations })} />
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{VERSION_LABEL}</span>
-      <Segmented<PokemonCryQuizConfig['cryVersion']> label={VERSION_LABEL} value={value.cryVersion} options={versions.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(cryVersion) => update({ cryVersion })} />
-      <p className={s.help}>{version.detail}</p>
-    </div>
+    <Segmented<PokemonCryQuizConfig['cryVersion']> label={VERSION_LABEL} showLabel hint={version.detail} value={value.cryVersion} options={versions.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(cryVersion) => update({ cryVersion })} />
     <Toggle label="Formas regionales" hint="Incluye únicamente formas con grito propio disponible." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => update({ includeRegionalForms })} />
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />

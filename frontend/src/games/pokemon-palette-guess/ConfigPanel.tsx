@@ -24,11 +24,7 @@ export function PokemonPaletteGuessConfigPanel({ config, disabled, onChange }: {
   const toggleHint = (hint: PokemonPaletteHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((kind) => kind !== hint), hint] : value.hintKinds.filter((kind) => kind !== hint) });
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon cuya paleta haya sido persistida por DataSync." onChange={(generations) => update({ generations })} />
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{SIZE_LABEL}</span>
-      <Segmented<number> label={SIZE_LABEL} value={value.paletteSize} options={SIZES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(paletteSize) => update({ paletteSize })} />
-      <p className={s.help}>Se mostrarán todos los colores dominantes disponibles hasta este máximo; nunca se descartará un Pokémon por tener menos.</p>
-    </div>
+    <Segmented<number> label={SIZE_LABEL} showLabel hint="Se mostrarán todos los colores dominantes disponibles hasta este máximo; nunca se descartará un Pokémon por tener menos." value={value.paletteSize} options={SIZES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(paletteSize) => update({ paletteSize })} />
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />

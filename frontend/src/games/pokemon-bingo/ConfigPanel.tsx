@@ -22,10 +22,7 @@ const SIDES = [2, 3, 4, 5, 6] as const;
 export function PokemonBingoConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonBingoConfig; const validation = validateGameConfigReadiness('pokemon-bingo', value);
   const active = BINGO_FAMILY_KEYS.filter((key) => value.families[key]).length;
-  const side = (key: 'width' | 'height', label: string) => <div className={s.field}>
-    <span className={s.label}>{label}</span>
-    <Segmented label={label} value={value[key]} options={SIDES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(size) => void onChange({ ...value, [key]: size })} />
-  </div>;
+  const side = (key: 'width' | 'height', label: string) => <Segmented label={label} showLabel value={value[key]} options={SIDES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(size) => void onChange({ ...value, [key]: size })} />;
   return <fieldset disabled={disabled} className={s.panel}>
     <div className={s.pair}>
       {side('width', 'Anchura del tablero')}
@@ -43,11 +40,7 @@ export function PokemonBingoConfigPanel({ config, disabled, onChange }: { config
       <span className={s.label} aria-hidden="true">{group.title}</span>
       <div className={s.kinds}>{group.keys.map((key) => <Toggle key={key} label={bingoFamilyLabels[key]} checked={value.families[key]} disabled={disabled} onChange={(on) => void onChange({ ...value, families: { ...value.families, [key]: on } })} />)}</div>
     </div>)}</div>
-    <div className={s.field}>
-      <span className={s.label}>Máximo de condiciones por casilla</span>
-      <Segmented label="Máximo de condiciones por casilla" value={value.maxConditionsPerCell} options={([1, 2] as const).map((count) => ({ value: count, label: count === 1 ? '1 condición' : '2 condiciones', disabled }))} onChange={(maxConditionsPerCell) => void onChange({ ...value, maxConditionsPerCell })} />
-      <p className={s.help}>Con máximo 2 se mantiene una mezcla de casillas simples y combinadas.</p>
-    </div>
+    <Segmented label="Máximo de condiciones por casilla" showLabel hint="Con máximo 2 se mantiene una mezcla de casillas simples y combinadas." value={value.maxConditionsPerCell} options={([1, 2] as const).map((count) => ({ value: count, label: count === 1 ? '1 condición' : '2 condiciones', disabled }))} onChange={(maxConditionsPerCell) => void onChange({ ...value, maxConditionsPerCell })} />
     {validation && <p className={s.note} role="alert">{validation}</p>}
   </fieldset>;
 }

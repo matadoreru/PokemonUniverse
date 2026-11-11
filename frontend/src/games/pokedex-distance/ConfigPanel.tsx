@@ -18,11 +18,7 @@ export function PokedexDistanceConfigPanel({ config, disabled, onChange }: { con
   return <fieldset disabled={disabled} className={s.panel}>
     <GameModeField gameId="pokedex-distance" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{DISTANCE_SELECTION_VISIBILITY_LABEL}</span>
-      <Segmented<PokedexDistanceSelectionVisibility> label={DISTANCE_SELECTION_VISIBILITY_LABEL} value={value.selectionVisibility} options={options} onChange={(selectionVisibility) => void onChange({ ...value, selectionVisibility })} />
-      {value.selectionVisibility === 'LIVE' && <p className={s.warning}>{LIVE_VISIBILITY_WARNING}</p>}
-    </div>
+    <Segmented<PokedexDistanceSelectionVisibility> label={DISTANCE_SELECTION_VISIBILITY_LABEL} showLabel hint={value.selectionVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} className={s.group ?? ''} value={value.selectionVisibility} options={options} onChange={(selectionVisibility) => void onChange({ ...value, selectionVisibility })} />
     <div className={s.group}><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /></div>
     {shown('POINTS') && <div className={s.group}><ConfigRange label="Número de rondas" value={value.pointsRounds} min={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.min} max={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.max} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(pointsRounds) => onChange({ ...value, pointsRounds })} /></div>}
   </fieldset>;

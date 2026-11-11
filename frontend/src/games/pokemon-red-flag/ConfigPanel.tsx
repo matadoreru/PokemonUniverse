@@ -22,11 +22,7 @@ export function PokemonRedFlagConfigPanel({ config, disabled, onChange }: { conf
   const mode = modes.find((entry) => entry.id === value.mode) ?? modes[0]!;
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="El Pokémon protagonista de cada ronda se elige del pool configurado." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.field}>
-      <span className={s.label}>Tono de las frases</span>
-      <Segmented label="Tono de las frases" value={value.mode} options={modes.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(next) => void onChange({ ...value, mode: next })} />
-      <p className={s.help}>{mode.detail} Define si las frases buscan el lado malo, el bueno o una sorpresa por ronda.</p>
-    </div>
+    <Segmented label="Tono de las frases" showLabel hint={`${mode.detail} Define si las frases buscan el lado malo, el bueno o una sorpresa por ronda.`} value={value.mode} options={modes.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(next) => void onChange({ ...value, mode: next })} />
     <div className={s.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo por fase" value={value.phaseSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="Se aplica por separado a escribir, votar y, si hace falta, revotar." onCommit={(phaseSeconds) => onChange({ ...value, phaseSeconds })} />

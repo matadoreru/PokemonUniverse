@@ -87,11 +87,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
       <div className={s.group}>
         <Toggle label="Mostrar el valor del anterior Pokémon" hint="Si no, los dos valores salen al revelar" checked={value.showPreviousValue} disabled={disabled} onChange={(showPreviousValue) => void onChange({ ...value, showPreviousValue })} />
       </div>
-      <div className={s.group}>
-        <span className={s.label} aria-hidden="true">{VISIBILITY_LABEL}</span>
-        <Segmented<HigherLowerAnswerVisibility> label={VISIBILITY_LABEL} value={value.answerVisibility} options={visibilities} onChange={(answerVisibility) => void onChange({ ...value, answerVisibility })} />
-        {value.answerVisibility === 'LIVE' && <p className={s.warning}>{LIVE_VISIBILITY_WARNING}</p>}
-      </div>
+      <Segmented<HigherLowerAnswerVisibility> label={VISIBILITY_LABEL} showLabel hint={value.answerVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} value={value.answerVisibility} options={visibilities} onChange={(answerVisibility) => void onChange({ ...value, answerVisibility })} />
     </div>
 
     <div className={s.ranges}>

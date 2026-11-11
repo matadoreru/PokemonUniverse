@@ -18,27 +18,16 @@ export function WhoIsWhoPokemonConfigPanel({ config, disabled, onChange }: { con
   const selection = value.selectionSeconds ?? 30;
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="El pool se mezcla en el servidor antes de repartir los secretos." onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.field}>
-      <span className={s.label}>Pokémon secreto</span>
-      <Segmented label="Pokémon secreto" value={value.secretSelection} options={[{ value: 'RANDOM', label: 'Aleatorio', disabled }, { value: 'PLAYER_CHOICE', label: 'Por el equipo', disabled }]}
-        onChange={(secretSelection) => void onChange({ ...value, secretSelection })} />
-      <p className={s.help}>{value.secretSelection === 'RANDOM' ? 'El servidor asigna uno a cada equipo.' : 'Cada equipo elige en secreto una carta del tablero.'}</p>
-    </div>
+    <Segmented label="Pokémon secreto" showLabel hint={value.secretSelection === 'RANDOM' ? 'El servidor asigna uno a cada equipo.' : 'Cada equipo elige en secreto una carta del tablero.'} value={value.secretSelection} options={[{ value: 'RANDOM', label: 'Aleatorio', disabled }, { value: 'PLAYER_CHOICE', label: 'Por el equipo', disabled }]}
+      onChange={(secretSelection) => void onChange({ ...value, secretSelection })} />
     <div className={s.pair}>
       <ConfigRange label="Pokémon en el tablero" value={value.boardSize} min={5} max={50} disabled={disabled} formatValue={(size) => `${size} Pokémon`} hint="Rango permitido: 5–50 Pokémon." onCommit={(boardSize) => onChange({ ...value, boardSize })} />
       <ConfigRange label="Tiempo para elegir secreto" value={selection} min={0} max={120} step={5} disabled={disabled}
         formatValue={(seconds) => (seconds === 0 ? 'Sin límite' : `${seconds} s`)} hint="Si lo elige el equipo: al agotarse, se asigna uno al azar. 0 = sin límite." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
     </div>
     <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label}>Tiempo por turno</span>
-        <Segmented label="Tiempo por turno" value={value.turnSeconds} options={turnTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(turnSeconds) => void onChange({ ...value, turnSeconds })} />
-      </div>
-      <div className={s.field}>
-        <span className={s.label}>Rondas máximas</span>
-        <Segmented label="Rondas máximas" value={value.rounds} options={roundCounts.map((rounds) => ({ value: rounds, label: String(rounds), disabled }))} onChange={(rounds) => void onChange({ ...value, rounds })} />
-        <p className={s.help}>Si nadie adivina antes, la partida acaba en empate.</p>
-      </div>
+      <Segmented label="Tiempo por turno" showLabel value={value.turnSeconds} options={turnTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(turnSeconds) => void onChange({ ...value, turnSeconds })} />
+      <Segmented label="Rondas máximas" showLabel hint="Si nadie adivina antes, la partida acaba en empate." value={value.rounds} options={roundCounts.map((rounds) => ({ value: rounds, label: String(rounds), disabled }))} onChange={(rounds) => void onChange({ ...value, rounds })} />
     </div>
     <Toggle label="Incluir formas regionales y variantes" hint="Usa todas las formas que el PokémonRepository marque como compatibles." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => void onChange({ ...value, includeForms })} />
     <p className={s.note}>Cada equipo solo recibe su propio secreto y sus cartas bajadas; los del rival se revelan al final de la partida.</p>

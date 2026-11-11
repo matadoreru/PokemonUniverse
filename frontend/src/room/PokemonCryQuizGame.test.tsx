@@ -7,6 +7,7 @@ import { CRY_PLAY_FAILED, CRY_UNAVAILABLE, cryAnnouncement, cryAudioEvents, cryV
 import { PokemonCryQuizGame } from './PokemonCryQuizGame';
 import { PokemonCryQuizResults } from './PokemonCryQuizResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { labelledRadiogroup } from '../ui/segmented-markup';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -186,7 +187,7 @@ describe('Adivina el Grito: resultados y ajustes', () => {
 
   it('ajustes con los controles del catálogo: versión del grito, formas y tiempos', () => {
     const html = renderToStaticMarkup(createElement(PokemonCryQuizConfigPanel, { config, disabled: false, onChange: async () => undefined }));
-    expect(html).toContain('role="radiogroup" aria-label="Versión del grito"');
+    expect(html).toMatch(labelledRadiogroup('Versión del grito'));
     expect(html).toContain('Clásico');
     expect(html).toContain('El grito moderno de cada Pokémon.');
     expect(html).toContain('Formas regionales');

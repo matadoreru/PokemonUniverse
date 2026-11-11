@@ -6,6 +6,7 @@ import { WhoIsWhoPokemonConfigPanel } from '../games/who-is-who-pokemon/ConfigPa
 import { WhoIsWhoPokemonGame } from './WhoIsWhoPokemonGame';
 import { WhoIsWhoPokemonResults } from './WhoIsWhoPokemonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { labelledRadiogroup } from '../ui/segmented-markup';
 
 // «Saltar minijuego» lee la sala: sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -170,9 +171,9 @@ describe('Quién es Quién: resultados', () => {
 describe('Quién es Quién: ajustes', () => {
   it('controles del catálogo con los valores del motor', () => {
     const html = renderToStaticMarkup(createElement(WhoIsWhoPokemonConfigPanel, { config: defaultWhoIsWhoPokemonConfig, disabled: false, onChange: async () => undefined }));
-    expect(html).toContain('role="radiogroup" aria-label="Pokémon secreto"');
-    expect(html).toContain('role="radiogroup" aria-label="Tiempo por turno"');
-    expect(html).toContain('role="radiogroup" aria-label="Rondas máximas"');
+    expect(html).toMatch(labelledRadiogroup('Pokémon secreto'));
+    expect(html).toMatch(labelledRadiogroup('Tiempo por turno'));
+    expect(html).toMatch(labelledRadiogroup('Rondas máximas'));
     expect(html).toContain('Pokémon en el tablero');
     expect(html).toContain('Tiempo para elegir secreto');
     expect(html).toContain('role="switch"');

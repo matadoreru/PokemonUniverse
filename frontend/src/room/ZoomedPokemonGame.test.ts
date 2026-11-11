@@ -8,6 +8,7 @@ import { describeZoomedHint } from '../games/zoomed-pokemon/presentation';
 import { ZoomedPokemonGame, ZoomViewport } from './ZoomedPokemonGame';
 import { ZoomedPokemonResults } from './ZoomedPokemonResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { labelledRadiogroup } from '../ui/segmented-markup';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -165,7 +166,7 @@ describe('Zoomed Pokémon: resultados y ajustes', () => {
 
   it('ajustes con los controles del catálogo, en los límites del contrato', () => {
     const html = renderToStaticMarkup(createElement(ZoomedPokemonConfigPanel, { config: { ...defaultZoomedPokemonConfig, hintsEnabled: true }, disabled: false, onChange: async () => undefined }));
-    expect(html).toContain('role="radiogroup" aria-label="Imagen"');
+    expect(html).toMatch(labelledRadiogroup('Imagen'));
     expect(html).toContain('Tiempo por ronda');
     expect(html).toContain('min="15"');
     expect(html).toContain('Número de rondas');

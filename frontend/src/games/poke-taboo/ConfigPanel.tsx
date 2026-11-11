@@ -18,11 +18,7 @@ export function PokeTabooConfigPanel({ config, disabled, onChange }: { config: u
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a este pool." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label}>Tiempo por turno</span>
-        <Segmented label="Tiempo por turno" value={value.roundSeconds} options={roundTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(roundSeconds) => void onChange({ ...value, roundSeconds })} />
-        <p className={s.help}>Lo que tiene quien describe para que el grupo acierte; acertar antes da más puntos.</p>
-      </div>
+      <Segmented label="Tiempo por turno" showLabel hint="Lo que tiene quien describe para que el grupo acierte; acertar antes da más puntos." value={value.roundSeconds} options={roundTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(roundSeconds) => void onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Vueltas" value={value.laps} min={1} max={5} disabled={disabled} formatValue={(laps) => (laps === 1 ? '1 vuelta' : `${laps} vueltas`)} hint="Cada jugador describe una vez por vuelta." onCommit={(laps) => onChange({ ...value, laps })} />
     </div>
     <Toggle label="Formas regionales" hint="La forma exacta será obligatoria al responder." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => void onChange({ ...value, includeRegionalForms })} />

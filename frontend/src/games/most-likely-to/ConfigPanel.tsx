@@ -32,11 +32,7 @@ export function MostLikelyToConfigPanel({ config, disabled, room, selfId, onChan
       <ConfigRange label="Tiempo para responder" value={value.selectionSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La votación empieza antes si todos han respondido." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
       <ConfigRange label="Tiempo para votar" value={value.votingSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="Con empate hay una segunda vuelta con el mismo tiempo." onCommit={(votingSeconds) => onChange({ ...value, votingSeconds })} />
     </div>
-    <div className={s.field}>
-      <span className={s.label}>Fuente de preguntas</span>
-      <Segmented label="Fuente de preguntas" value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
-      <p className={s.help}>{source.detail}</p>
-    </div>
+    <Segmented label="Fuente de preguntas" showLabel hint={source.detail} value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
     {registeredHost
       ? <CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="¿Qué Pokémon sería más probable que montase una banda?" emptyText="Todavía no has creado preguntas personales." newLabel="Nueva pregunta" editLabel="Editar pregunta" noun="pregunta" />
       : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar preguntas personales de forma permanente.' : `Las preguntas personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}

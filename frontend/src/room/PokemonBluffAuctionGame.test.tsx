@@ -8,6 +8,7 @@ import { bidBlock } from './auction-kit';
 import { PokemonBluffAuctionGame } from './PokemonBluffAuctionGame';
 import { PokemonBluffAuctionResults } from './PokemonBluffAuctionResults';
 import { expectSingleLiveRegion } from './test-support/live-regions';
+import { labelledRadiogroup } from '../ui/segmented-markup';
 
 // «Saltar minijuego» va en la cabecera (`GameSkipSlot` lee la sala); el `ConfigPanel` usa el selector de generaciones.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -300,8 +301,8 @@ describe('Pokémon Bluff Auction: resultados finales y ajustes', () => {
 
   it('ajustes con los controles del catálogo', () => {
     const html = renderToStaticMarkup(createElement(PokemonBluffAuctionConfigPanel, { config: defaultPokemonBluffAuctionConfig, disabled: false, onChange: async () => undefined }));
-    expect(html).toContain('role="radiogroup" aria-label="Tiempo inicial para demostrar"');
-    expect(html).toContain('role="radiogroup" aria-label="Rondas"');
+    expect(html).toMatch(labelledRadiogroup('Tiempo inicial para demostrar'));
+    expect(html).toMatch(labelledRadiogroup('Rondas'));
     expect(html).toContain('Tiempo por puja');
     expect(html).toContain('Solo especies normales');
     // Lo rediseñado (todo menos el selector de generaciones heredado, F9) sin clases heredadas.

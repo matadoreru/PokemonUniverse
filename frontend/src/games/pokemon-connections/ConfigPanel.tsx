@@ -20,16 +20,10 @@ export function PokemonConnectionsConfigPanel({ config, disabled, onChange }: { 
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="Cada puzle se genera al azar solo con Pokémon de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label}>Pokémon por grupo</span>
-        <Segmented label="Pokémon por grupo" value={value.groupSize} options={groupSizes.map((size) => ({ value: size, label: String(size), disabled }))}
-          onChange={(groupSize) => void onChange({ ...value, groupSize, pokemonCount: groupSize * groupCount })} />
-      </div>
-      <div className={s.field}>
-        <span className={s.label}>Total del tablero</span>
-        <Segmented label="Total del tablero" value={value.pokemonCount} options={groupCounts.map((count) => ({ value: count * value.groupSize, label: `${count * value.groupSize} (${count} grupos)`, disabled }))}
-          onChange={(pokemonCount) => void onChange({ ...value, pokemonCount })} />
-      </div>
+      <Segmented label="Pokémon por grupo" showLabel value={value.groupSize} options={groupSizes.map((size) => ({ value: size, label: String(size), disabled }))}
+        onChange={(groupSize) => void onChange({ ...value, groupSize, pokemonCount: groupSize * groupCount })} />
+      <Segmented label="Total del tablero" showLabel value={value.pokemonCount} options={groupCounts.map((count) => ({ value: count * value.groupSize, label: `${count * value.groupSize} (${count} grupos)`, disabled }))}
+        onChange={(pokemonCount) => void onChange({ ...value, pokemonCount })} />
     </div>
     <div className={s.pair}>
       <ConfigRange label="Errores permitidos" value={value.mistakesAllowed} min={1} max={10} disabled={disabled} formatValue={(mistakes) => (mistakes === 1 ? '1 error' : `${mistakes} errores`)} onCommit={(mistakesAllowed) => onChange({ ...value, mistakesAllowed })} />

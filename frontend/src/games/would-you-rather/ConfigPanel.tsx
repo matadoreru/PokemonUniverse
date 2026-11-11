@@ -28,11 +28,7 @@ export function WouldYouRatherConfigPanel({ config, disabled, room, selfId, onCh
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo para votar y predecir" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La ronda termina antes si todos han enviado su papeleta." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
-    <div className={s.field}>
-      <span className={s.label}>Fuente de dilemas</span>
-      <Segmented label="Fuente de dilemas" value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
-      <p className={s.help}>{source.detail}</p>
-    </div>
+    <Segmented label="Fuente de dilemas" showLabel hint={source.detail} value={value.promptSource} options={sources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(promptSource) => void onChange({ ...value, promptSource })} />
     {registeredHost
       ? <CustomWouldYouRatherPromptManager disabled={disabled} />
       : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar dilemas personales de forma permanente.' : `Los dilemas personales pertenecen al host. Hay ${room.hostWouldYouRatherPromptCount ?? 0} activos.`}</p>}

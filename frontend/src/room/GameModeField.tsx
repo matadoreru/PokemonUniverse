@@ -84,9 +84,5 @@ export function GameModeField({ gameId, value, onChange, disabled }: Props) {
   const mode = value !== undefined && catalog.modes.includes(value) ? value : 'CLASSIC';
   const options = catalog.modes.map((option) => ({ value: option, label: label(option), disabled }));
   const text = catalog.texts[mode];
-  return <div className={s.field}>
-    <span className={s.label} aria-hidden="true">{MODE_LABEL}</span>
-    <Segmented<string> label={MODE_LABEL} value={mode} options={options} onChange={onChange} />
-    {text && <p className={s.text}>{text}</p>}
-  </div>;
+  return <Segmented<string> label={MODE_LABEL} showLabel hint={text} className={s.field ?? ''} value={mode} options={options} onChange={onChange} />;
 }

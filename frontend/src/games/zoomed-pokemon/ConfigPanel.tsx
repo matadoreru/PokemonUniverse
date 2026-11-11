@@ -29,11 +29,7 @@ export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { confi
   const mode = modes.find((option) => option.value === value.imageMode) ?? modes[0]!;
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} onChange={(generations) => update({ generations })} />
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{IMAGE_LABEL}</span>
-      <Segmented<ZoomedPokemonImageMode> label={IMAGE_LABEL} value={value.imageMode} options={modes.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(imageMode) => update({ imageMode })} />
-      <p className={s.help}>{mode.description}{value.imageMode === 'ARTWORK' ? ' El servidor validará que exista al menos un artwork para estas generaciones al empezar.' : ''}</p>
-    </div>
+    <Segmented<ZoomedPokemonImageMode> label={IMAGE_LABEL} showLabel hint={`${mode.description}${value.imageMode === 'ARTWORK' ? ' El servidor validará que exista al menos un artwork para estas generaciones al empezar.' : ''}`} value={value.imageMode} options={modes.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(imageMode) => update({ imageMode })} />
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La cámara se aleja cada cuarto de ronda: cuanto antes aciertes, más bonificación." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />

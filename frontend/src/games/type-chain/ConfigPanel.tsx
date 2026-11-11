@@ -12,10 +12,7 @@ export function TypeChainConfigPanel({ config, disabled, onChange }: { config: u
   const value = config as TypeChainConfig;
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del pool" description={`Limita los Pokémon que valen y los tipos que pueden salir (solo los que tienen al menos ${TYPE_CHAIN_MIN_TYPE_POKEMON} Pokémon en el pool).`} onChange={(generations) => void onChange({ ...value, generations })} />
-    <div className={s.field}>
-      <span className={s.label}>Tiempo por turno</span>
-      <Segmented label="Tiempo por turno" value={value.turnSeconds} options={turnTimes.map((seconds) => ({ value: seconds, label: `${seconds}s`, disabled }))} onChange={(turnSeconds) => void onChange({ ...value, turnSeconds })} />
-    </div>
+    <Segmented label="Tiempo por turno" showLabel value={value.turnSeconds} options={turnTimes.map((seconds) => ({ value: seconds, label: `${seconds}s`, disabled }))} onChange={(turnSeconds) => void onChange({ ...value, turnSeconds })} />
     <div className={s.rule}>
       <span className={s.ruleIcon}><Icon icon={Link2} size={24} /></span>
       <div>

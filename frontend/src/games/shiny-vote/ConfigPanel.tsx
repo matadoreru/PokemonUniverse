@@ -33,15 +33,8 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
         state={value.candidateMode === mode.value ? 'selected' : 'idle'} disabled={disabled} onSelect={() => { if (value.candidateMode !== mode.value) void onChange({ ...value, candidateMode: mode.value }); }} />)}</div>
     </div>
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{OPTION_COUNT_LABEL}</span>
-      <Segmented<number> label={OPTION_COUNT_LABEL} value={value.optionCount} options={counts} onChange={(optionCount) => void onChange({ ...value, optionCount })} />
-    </div>
-    <div className={s.group}>
-      <span className={s.label} aria-hidden="true">{SHINY_VOTE_VISIBILITY_LABEL}</span>
-      <Segmented<ShinyVoteVisibility> label={SHINY_VOTE_VISIBILITY_LABEL} value={value.voteVisibility} options={visibilities} onChange={(voteVisibility) => void onChange({ ...value, voteVisibility })} />
-      {value.voteVisibility === 'LIVE' && <p className={s.warning}>{LIVE_VISIBILITY_WARNING}</p>}
-    </div>
+    <Segmented<number> label={OPTION_COUNT_LABEL} showLabel className={s.group ?? ''} value={value.optionCount} options={counts} onChange={(optionCount) => void onChange({ ...value, optionCount })} />
+    <Segmented<ShinyVoteVisibility> label={SHINY_VOTE_VISIBILITY_LABEL} showLabel hint={value.voteVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} className={s.group ?? ''} value={value.voteVisibility} options={visibilities} onChange={(voteVisibility) => void onChange({ ...value, voteVisibility })} />
     <div className={s.ranges}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />

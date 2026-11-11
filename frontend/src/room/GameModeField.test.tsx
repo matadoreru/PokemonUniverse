@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { defaultTypeDuelConfig } from '@pokemon-universe/shared/public';
 import { TypeDuelConfigPanel } from '../games/type-duel/ConfigPanel';
 import { GameModeField, SessionModesProvider, toggleAllowedMode } from './GameModeField';
+import { labelledRadiogroup } from '../ui/segmented-markup';
 
 const render = (gameId: string, value: string | undefined) =>
   renderToStaticMarkup(<GameModeField gameId={gameId} value={value} onChange={() => undefined} disabled={false} />);
@@ -10,10 +11,12 @@ const render = (gameId: string, value: string | undefined) =>
 describe('GameModeField', () => {
   it('muestra Clásico y el modo nuevo, con el texto del modo elegido', () => {
     const html = render('pokedex-distance', 'POINTS');
-    expect(html).toContain('role="radiogroup" aria-label="Modo"');
+    expect(html).toMatch(labelledRadiogroup('Modo'));
     expect(html).toMatch(/aria-checked="false"[^>]*>Clásico</);
     expect(html).toMatch(/aria-checked="true"[^>]*>Por puntos</);
-    expect(html).toContain('Nadie queda fuera: cada ronda suma 100 menos tu distancia, y 50 extra si clavas el número.');
+    const hintId = /<p id="([^"]+)"[^>]*>Nadie queda fuera: cada ronda suma 100 menos tu distancia, y 50 extra si clavas el número\.<\/p>/.exec(html)?.[1];
+    expect(hintId).toBeTruthy();
+    expect(html).toContain(`aria-describedby="${hintId}"`);
   });
 
   it('en Clásico (o sin mode guardado) marca Clásico y no enseña el texto del modo nuevo', () => {
@@ -54,7 +57,7 @@ describe('GameModeField', () => {
     const html = renderToStaticMarkup(<SessionModesProvider value={{ gameId: 'type-duel', allowed: ['CLASSIC', 'COOP'], order: false, onChange: () => undefined }}>
       <GameModeField gameId="higher-lower" value="CLASSIC" onChange={() => undefined} disabled={false} />
     </SessionModesProvider>);
-    expect(html).toContain('role="radiogroup" aria-label="Modo"');
+    expect(html).toMatch(labelledRadiogroup('Modo'));
   });
 
   it('toggleAllowedMode marca y desmarca en el orden del catálogo, nunca hasta vaciar', () => {

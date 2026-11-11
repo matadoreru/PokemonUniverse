@@ -34,11 +34,7 @@ export function OneOfUsIsFakeConfigPanel({ config, disabled, room, selfId, onCha
       <ConfigRange label="Tiempo de debate y voto" value={value.discussionSeconds} min={30} max={600} step={15} disabled={disabled} formatValue={minutes} hint="Con empate hay otra vuelta con el mismo tiempo." onCommit={(discussionSeconds) => onChange({ ...value, discussionSeconds })} />
     </div>
     <Toggle label="El fake sabe que es fake" hint="Por defecto nadie sabe si recibió la categoría diferente." checked={value.fakeKnows} disabled={disabled} onChange={(fakeKnows) => void onChange({ ...value, fakeKnows })} />
-    <div className={s.field}>
-      <span className={s.label}>Fuente de categorías</span>
-      <Segmented label="Fuente de categorías" value={value.categorySource} options={categorySources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(categorySource) => void onChange({ ...value, categorySource })} />
-      <p className={s.help}>{source.detail}</p>
-    </div>
+    <Segmented label="Fuente de categorías" showLabel hint={source.detail} value={value.categorySource} options={categorySources.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(categorySource) => void onChange({ ...value, categorySource })} />
     {registeredHost
       ? <CustomCategoryManager disabled={disabled} />
       : <p className={s.note}>{isHost ? 'Crea una cuenta para guardar categorías personales de forma permanente.' : `Las categorías personales pertenecen al host. Hay ${room.hostCustomCategoryCount ?? 0} activas.`}</p>}

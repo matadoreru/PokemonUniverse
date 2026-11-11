@@ -18,11 +18,7 @@ export function SketchmonConfigPanel({ config, disabled, onChange }: { config: u
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label}>Tiempo por dibujo</span>
-        <Segmented label="Tiempo por dibujo" value={value.roundSeconds} options={roundTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(roundSeconds) => void onChange({ ...value, roundSeconds })} />
-        <p className={s.help}>Lo que tiene quien dibuja para que el grupo acierte; acertar antes da más puntos.</p>
-      </div>
+      <Segmented label="Tiempo por dibujo" showLabel hint="Lo que tiene quien dibuja para que el grupo acierte; acertar antes da más puntos." value={value.roundSeconds} options={roundTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(roundSeconds) => void onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Vueltas" value={value.laps} min={1} max={3} disabled={disabled} formatValue={(laps) => (laps === 1 ? '1 vuelta' : `${laps} vueltas`)} hint="Cada jugador dibuja una vez por vuelta, en un orden nuevo." onCommit={(laps) => onChange({ ...value, laps })} />
     </div>
     <Toggle label="Memoria de 3 segundos" hint="Muestra el sprite 3 segundos y después deja únicamente el nombre." checked={value.memoryPreviewEnabled} disabled={disabled} onChange={(memoryPreviewEnabled) => void onChange({ ...value, memoryPreviewEnabled })} />

@@ -19,15 +19,8 @@ export function PokemonTriviaConfigPanel({ config, disabled, onChange }: { confi
   return <fieldset disabled={disabled} className={s.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Las preguntas se generan únicamente con el catálogo local seleccionado." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.pair}>
-      <div className={s.field}>
-        <span className={s.label}>Dificultad</span>
-        <Segmented label="Dificultad" value={value.difficulty} options={(['EASY', 'NORMAL', 'HARD'] as const).map((difficulty) => ({ value: difficulty, label: triviaDifficultyLabels[difficulty], disabled }))} onChange={(difficulty) => void onChange({ ...value, difficulty })} />
-        <p className={s.help}>La dificultad ajusta lo parecidas que son las opciones numéricas.</p>
-      </div>
-      <div className={s.field}>
-        <span className={s.label}>Opciones por pregunta</span>
-        <Segmented label="Opciones por pregunta" value={value.optionCount} options={[3, 4].map((count) => ({ value: count, label: `${count} opciones`, disabled }))} onChange={(optionCount) => void onChange({ ...value, optionCount })} />
-      </div>
+      <Segmented label="Dificultad" showLabel hint="La dificultad ajusta lo parecidas que son las opciones numéricas." value={value.difficulty} options={(['EASY', 'NORMAL', 'HARD'] as const).map((difficulty) => ({ value: difficulty, label: triviaDifficultyLabels[difficulty], disabled }))} onChange={(difficulty) => void onChange({ ...value, difficulty })} />
+      <Segmented label="Opciones por pregunta" showLabel value={value.optionCount} options={[3, 4].map((count) => ({ value: count, label: `${count} opciones`, disabled }))} onChange={(optionCount) => void onChange({ ...value, optionCount })} />
     </div>
     <div className={s.head}>
       <span className={s.label}>Categorías de preguntas</span>
