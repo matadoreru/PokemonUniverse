@@ -23,6 +23,15 @@ export function impostorEliminationCutIn(reveal: ImpostorEliminationReveal, name
   return { tone: impostor ? 'berry' : 'aqua', title: name, delayedLine: impostor ? '…era impostor' : '…era inocente' };
 }
 
+/**
+ * Aviso de la expulsión en la región viva de la pantalla (el cut-in solo se ve): el nombre y, como la `delayedLine`
+ * del cut-in, el rol solo cuando ha pasado la pausa (`roleShown`).
+ */
+export function impostorEliminationAnnouncement(reveal: ImpostorEliminationReveal, name: string, roleShown: boolean): string {
+  if (!roleShown) return `Expulsión: ${name}.`;
+  return `Expulsión: ${name} era ${reveal.role === 'IMPOSTOR' ? 'impostor' : 'inocente'}.`;
+}
+
 /** Título de la fase de pistas: sin nadie conectado el orden está vacío y no hay turno que anunciar. */
 export function impostorCluePhaseTitle(currentName: string | null): string {
   return currentName ? `Turno de ${currentName}` : 'Nadie conectado para dar pistas';

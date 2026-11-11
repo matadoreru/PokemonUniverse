@@ -465,7 +465,7 @@ test.describe('pokemon-impostor: eliminación', () => {
       }
 
       // Resultado de la votación: el rol aún no está en ninguna parte de la página.
-      const banda = (page: Page) => page.locator('.reveal-cut-in[role="status"]');
+      const banda = (page: Page) => page.locator('.reveal-cut-in');
       await expect(host.page.getByText(`${expulsado.name} recibió más votos`)).toBeVisible({ timeout: 10_000 });
       await expect(banda(host.page)).toHaveCount(0);
       await expect(host.page.getByText(/era (impostor|inocente|IMPOSTOR|INOCENTE)/)).toHaveCount(0);
@@ -954,7 +954,7 @@ test('pokedex-distance: acierto exacto con cut-in', async ({ browser }) => {
     expect(exacto, `Pokémon #${numero} en la BD`).not.toBe('');
     await elegirPokemon(host.page, exacto);
 
-    const banda = host.page.locator('.reveal-cut-in[role="status"]');
+    const banda = host.page.locator('.reveal-cut-in');
     await expect(banda).toContainText('¡Acierto exacto!', { timeout: 5_000 });
     // Se detiene un poco por delante del reloj de la página (detenerlo en el pasado falla) y se captura a los tres
     // tamaños con la banda quieta.

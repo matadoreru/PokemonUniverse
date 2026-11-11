@@ -16,7 +16,7 @@ import { cx, Field, Panel, Pill, ScreenSplit } from '../ui';
 import { useFocusOnTransition } from './focus-transition';
 import { GameSkipSlot } from './GameSkipSlot';
 import { PokemonSelector } from './PokemonSelector';
-import { clampImpostorClue, impostorClueLength, impostorEliminationCutIn } from './pokemon-impostor-texts';
+import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
 import s from '../games/pokemon-impostor/PokemonImpostor.module.css';
 
 /** El fallo de una orden ya sale, traducido, en el aviso global de la sala (RoomContext): aquí no se repite. */
@@ -130,9 +130,9 @@ export function PokemonImpostorGame({ room, selfId, onAction }: { room: RoomView
 
   return <div className={cx('content-row', s.screen)}>
     <ScreenSplit fill top={top} side={side} bottom={bottom} />
-    {/* Una sola región viva, siempre montada: solo cambia su texto. */}
-    <p className="sr-only" role="status" aria-live="polite">{impostorAnnouncement(game, player, selfId, people.nameOf)}</p>
-    {elimination && eliminationCutIn && <RevealCutIn key={`${game.roundNumber}:${elimination.playerId}`} tone="electric" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
+    {/* Una sola región viva, siempre montada: solo cambia su texto. La expulsión también va aquí (el cut-in solo se ve). */}
+    <p className="sr-only" role="status" aria-live="polite">{elimination ? impostorEliminationAnnouncement(elimination, people.nameOf(elimination.playerId), eliminationRoleShown) : impostorAnnouncement(game, player, selfId, people.nameOf)}</p>
+    {elimination && eliminationCutIn && <RevealCutIn key={`${game.roundNumber}:${elimination.playerId}`} tone="electric" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} live={false} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
   </div>;
 }
 

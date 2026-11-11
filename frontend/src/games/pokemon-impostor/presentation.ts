@@ -62,7 +62,7 @@ function voteClosedAnnouncement(result: ImpostorVoteResult, nameOf: NameOf): str
 
 /**
  * Texto de la única región `status` de la pantalla (siempre montada; solo cambia su texto). En la expulsión no dice
- * nada: el cut-in ya se anuncia por su cuenta y el rol no puede llegar al DOM antes de la pausa de 1 s.
+ * nada: la pantalla usa `impostorEliminationAnnouncement`, que respeta la pausa de 1 s antes del rol.
  */
 export function impostorAnnouncement(game: Pick<PokemonImpostorPublicState, 'phase' | 'currentCluePlayerId' | 'lastVoteResult'>, player: Pick<PokemonImpostorPlayerState, 'role' | 'canSubmitClue' | 'ownClue' | 'canVote' | 'ownVote' | 'fellowImpostorIds'>, selfId: string, nameOf: NameOf): string {
   switch (game.phase) {

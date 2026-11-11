@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { impostorAnnouncement, impostorClueLine, impostorFocusKey, impostorPhaseTitle, impostorRoundLabel, impostorClueGroupLabel, impostorTallies } from '../games/pokemon-impostor/presentation';
 import { PokemonImpostorGame } from './PokemonImpostorGame';
 import { impostorResultLine, impostorTeam, PokemonImpostorResults } from './PokemonImpostorResults';
+import { expectSingleLiveRegion } from './test-support/live-regions';
 
 // «Saltar minijuego» va dentro de la pantalla (`GameSkipSlot` lee la sala): sin votación de salto no pinta nada.
 vi.mock('./RoomContext', () => ({ useRoom: () => ({ room: { gameSkipState: null }, connected: true, setGameSkipVote: () => undefined }) }));
@@ -264,8 +265,16 @@ describe('Pokémon Impostor: pantalla', () => {
 
   it('una sola región viva, siempre montada', () => {
     for (const game of [publicGame(), publicGame({ phase: 'ROLE_REVEAL' }), elimination('IMPOSTOR')]) {
-      expect(render(game, innocent()).match(/aria-live="polite"/g)).toHaveLength(1);
+      expectSingleLiveRegion(render(game, innocent()), game.phase);
     }
+  });
+
+  it('la expulsión la dice la región de la pantalla (el cut-in solo se ve), con el rol solo tras la pausa', () => {
+    const live = (html: string) => /role="status" aria-live="polite">([^<]*)</.exec(html)?.[1] ?? '';
+    expect(live(render(elimination('IMPOSTOR'), innocent(), 'p3'))).toBe('Expulsión: Ana.');
+    motion.reduced = true;
+    expect(live(render(elimination('IMPOSTOR'), innocent(), 'p3'))).toBe('Expulsión: Ana era impostor.');
+    expect(live(render(elimination('INNOCENT'), innocent(), 'p3'))).toBe('Expulsión: Ana era inocente.');
   });
 });
 
