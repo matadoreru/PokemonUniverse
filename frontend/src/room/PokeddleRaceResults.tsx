@@ -7,6 +7,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 
 const num = (stats: Record<string, number>, key: string) => Number(stats[key] ?? 0);
 
@@ -54,7 +55,7 @@ export function PokeddleRaceResults({ room, selfId, onLobby, onEnd }: GameResult
     { key: 'fewest', title: 'Menos intentos', icon: ListChecks, names: fewest?.names ?? null, value: fewest ? String(fewest.value) : '', unit: fewest?.value === 1 ? 'intento para resolverlo' : 'intentos para resolverlo' },
     { key: 'fastest', title: 'Resolución más rápida', icon: Timer, names: fastest?.names ?? null, value: fastest ? guessSeconds(fastest.value) : '', unit: 'desde el inicio de la partida' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${GAME_SUBTITLE} · ${game.roundNumber} ${game.roundNumber === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${GAME_SUBTITLE} · ${roundsLabel(game.roundNumber)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }
 

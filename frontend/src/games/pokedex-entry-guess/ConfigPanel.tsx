@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Toggle } from '../../ui';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -29,8 +30,8 @@ export function PokedexEntryGuessConfigPanel({ config, disabled, onChange }: { c
     <GenerationSelector selected={value.generations} label="Generaciones del objetivo" onChange={(generations) => update({ generations })} />
     <p className={s.note}><strong>Generación de referencia: {reference}</strong>Se prioriza una entrada de esta generación o la más reciente anterior. Si aún no existía en español, como ocurre en Gen 1 y 2, se usa la primera posterior disponible.</p>
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Visibles desde el inicio de cada ronda.' : 'Solo se mostrará la entrada Pokédex.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => update({ hintsEnabled })} />
     {value.hintsEnabled && <div className={c.group} role="group" aria-label={HINT_KINDS_LABEL}>

@@ -2,6 +2,7 @@ import { POKEDDLE_CLUE_KEYS, validateGameConfigReadiness, type PokeddleClueKey, 
 import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Toggle } from '../../ui';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -26,8 +27,8 @@ export function PokeddleRaceConfigPanel({ config, disabled, onChange }: { config
   return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La ronda se cierra antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Máximo de rondas" value={value.maxRounds} min={1} max={30} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(maxRounds) => onChange({ ...value, maxRounds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="La ronda se cierra antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Máximo de rondas" value={value.maxRounds} min={1} max={30} disabled={disabled} formatValue={roundsLabel} onCommit={(maxRounds) => onChange({ ...value, maxRounds })} />
     </div>
     <div className={c.head}>
       <span className={c.label}>Pistas</span>

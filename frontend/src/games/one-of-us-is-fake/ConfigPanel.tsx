@@ -5,6 +5,7 @@ import { Toggle } from '../../ui';
 import { CustomCategoryManager } from '../prompt-source/CustomCategoryManager';
 import c from '../ConfigPanel.module.css';
 import { PromptSourceField, type PromptSourceOption } from '../prompt-source/PromptSourceField';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 
 const categorySources: PromptSourceOption[] = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Categorías incluidas y listas para jugar.' },
@@ -12,8 +13,7 @@ const categorySources: PromptSourceOption[] = [
   { id: 'BOTH', title: 'Ambas', detail: 'Mezcla el catálogo oficial con las categorías del host.' },
 ];
 
-const seconds = (value: number) => `${value} segundos`;
-const minutes = (value: number) => (value < 60 ? seconds(value) : value % 60 === 0 ? `${value / 60} min` : `${Math.floor(value / 60)} min ${value % 60} s`);
+const minutes = (value: number) => (value < 60 ? secondsLabel(value) : value % 60 === 0 ? `${value / 60} min` : `${Math.floor(value / 60)} min ${value % 60} s`);
 
 /**
  * Ajustes de One of Us Is Fake con los controles del catálogo: generaciones (el selector heredado, F9), rondas y tiempos
@@ -25,8 +25,8 @@ export function OneOfUsIsFakeConfigPanel({ config, disabled, room, selfId, onCha
   return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada elección debe existir en este pool; la interpretación de la categoría siempre es libre." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={30} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
-      <ConfigRange label="Tiempo para elegir" value={value.selectionSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={seconds} hint="La revelación empieza antes si todos han elegido." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={30} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo para elegir" value={value.selectionSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={secondsLabel} hint="La revelación empieza antes si todos han elegido." onCommit={(selectionSeconds) => onChange({ ...value, selectionSeconds })} />
       <ConfigRange label="Tiempo de debate y voto" value={value.discussionSeconds} min={30} max={600} step={15} disabled={disabled} formatValue={minutes} hint="Con empate hay otra vuelta con el mismo tiempo." onCommit={(discussionSeconds) => onChange({ ...value, discussionSeconds })} />
     </div>
     <Toggle label="El fake sabe que es fake" hint="Por defecto nadie sabe si recibió la categoría diferente." checked={value.fakeKnows} disabled={disabled} onChange={(fakeKnows) => void onChange({ ...value, fakeKnows })} />

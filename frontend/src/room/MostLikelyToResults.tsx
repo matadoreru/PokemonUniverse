@@ -7,6 +7,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 import s from '../games/most-likely-to/MostLikelyTo.module.css';
 
 type Stats = NonNullable<MostLikelyToPublicState['results']>['standings'][number]['stats'];
@@ -49,7 +50,7 @@ export function MostLikelyToResults({ room, selfId, onLobby, onEnd }: GameResult
     { key: 'votes', title: 'Más votos recibidos', icon: Vote, names: votes?.names ?? null, value: String(votes?.value ?? ''), unit: votes?.value === 1 ? 'voto decisivo' : 'votos decisivos' },
     { key: 'solo', title: 'Victorias en solitario', icon: MessageSquareHeart, names: solo?.names ?? null, value: String(solo?.value ?? ''), unit: solo?.value === 1 ? 'ronda sin empate' : 'rondas sin empate' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las respuestas favoritas" subtitle={`Most Likely To · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las respuestas favoritas" subtitle={`Most Likely To · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Cada victoria vale {MOST_LIKELY_TO_WIN_POINTS} puntos. Una victoria compartida otorga los mismos {MOST_LIKELY_TO_WIN_POINTS} puntos a cada autor empatado.</p>
   </ResultsShell>;

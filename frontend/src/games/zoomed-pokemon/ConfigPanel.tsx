@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 
 const IMAGE_LABEL = 'Imagen';
@@ -31,8 +32,8 @@ export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { confi
     <GenerationSelector selected={value.generations} onChange={(generations) => update({ generations })} />
     <Segmented<ZoomedPokemonImageMode> label={IMAGE_LABEL} showLabel hint={`${mode.description}${value.imageMode === 'ARTWORK' ? ' El servidor validará que exista al menos un artwork para estas generaciones al empezar.' : ''}`} value={value.imageMode} options={modes.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(imageMode) => update({ imageMode })} />
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La cámara se aleja cada cuarto de ronda: cuanto antes aciertes, más bonificación." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="La cámara se aleja cada cuarto de ronda: cuanto antes aciertes, más bonificación." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <div className={c.pair}>
       <Toggle label="Formas y variantes" hint="Regionales, Mega y Gigamax cuando el catálogo tiene su clave e imagen propias." checked={value.includeForms} disabled={disabled} onChange={(includeForms) => update({ includeForms })} />

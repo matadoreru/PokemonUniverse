@@ -7,6 +7,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 import s from '../games/would-you-rather/WouldYouRather.module.css';
 
 type Stats = NonNullable<WouldYouRatherPublicState['results']>['standings'][number]['stats'];
@@ -50,7 +51,7 @@ export function WouldYouRatherResults({ room, selfId, onLobby, onEnd }: GameResu
     { key: 'majority', title: 'Más veces en la mayoría', icon: Users, names: majority?.names ?? null, value: String(majority?.value ?? ''), unit: majority?.value === 1 ? 'elección mayoritaria' : 'elecciones mayoritarias' },
     { key: 'perfect', title: 'Rondas perfectas', icon: Sparkles, names: perfect?.names ?? null, value: String(perfect?.value ?? ''), unit: perfect?.value === 1 ? `ronda con ${PERFECT_ROUND_POINTS} puntos` : `rondas con ${PERFECT_ROUND_POINTS} puntos` },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Quien mejor leyó la sala" subtitle={`Would You Rather Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Quien mejor leyó la sala" subtitle={`Would You Rather Pokémon · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Cada ronda daba hasta {PERFECT_ROUND_POINTS} puntos: {WOULD_YOU_RATHER_MAJORITY_POINTS} por formar parte de la mayoría y {WOULD_YOU_RATHER_PREDICTION_POINTS} por predecirla.</p>
   </ResultsShell>;

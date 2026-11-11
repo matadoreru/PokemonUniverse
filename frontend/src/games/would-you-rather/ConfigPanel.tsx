@@ -3,14 +3,13 @@ import { ConfigRange } from '../../room/ConfigRange';
 import { CustomWouldYouRatherPromptManager } from './CustomPromptManager';
 import c from '../ConfigPanel.module.css';
 import { PromptSourceField, type PromptSourceOption } from '../prompt-source/PromptSourceField';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 
 const sources: PromptSourceOption[] = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Dilemas normales, adultos y de humor oscuro.' },
   { id: 'CUSTOM', title: 'Personales', detail: 'Solo las parejas activas del anfitrión.' },
   { id: 'BOTH', title: 'Mezclados', detail: 'Combina el catálogo oficial con el personal.' },
 ];
-
-const seconds = (value: number) => `${value} segundos`;
 
 /**
  * Ajustes de Would You Rather con los controles del catálogo: rondas y tiempo (`ConfigRange`), fuente de dilemas
@@ -20,8 +19,8 @@ export function WouldYouRatherConfigPanel({ config, disabled, room, selfId, onCh
   const value = config as WouldYouRatherConfig;
   return <fieldset disabled={disabled} className={c.panel}>
     <div className={c.pair}>
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
-      <ConfigRange label="Tiempo para votar y predecir" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La ronda termina antes si todos han enviado su papeleta." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo para votar y predecir" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={secondsLabel} hint="La ronda termina antes si todos han enviado su papeleta." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
     <PromptSourceField label="Fuente de dilemas" sources={sources} value={value.promptSource} disabled={disabled} onChange={(promptSource) => void onChange({ ...value, promptSource })} room={room} selfId={selfId}
       noun="dilemas" masculine hostCount={room.hostWouldYouRatherPromptCount} manager={<CustomWouldYouRatherPromptManager disabled={disabled} />} />

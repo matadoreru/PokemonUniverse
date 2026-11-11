@@ -1,4 +1,5 @@
 import { type DistanceRoundRecord, MAX_TIEBREAK_DEPTH } from '@pokemon-universe/shared/public';
+import { plural } from '../lib/format';
 
 export interface DistancePlayerSummary {
   playerId: string;
@@ -119,8 +120,6 @@ export function distanceCell(record: DistanceRoundRecord, playerId: string): Dis
 
 /** Media con coma decimal y dos decimales como mucho: `181,75`. */
 const formatAverage = (value: number) => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2 }).format(value);
-
-const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 
 /** Estadísticas de una fila de la clasificación (`GameStanding.stats` de Distance). */
 export function distanceStatsLine(stats: Readonly<Record<string, number | undefined>>): string {

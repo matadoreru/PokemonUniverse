@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ballotState, bindChoiceShortcuts, choiceFromKey, namesList, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, votesText } from './presentation';
+import { ballotState, bindChoiceShortcuts, choiceFromKey, phaseIndex, runoffCounts, runoffLeaders, socialFocusKey, tallyOutcome, tallySummary, votesText } from './presentation';
 
 const names: Record<string, string> = { p1: 'Snorlax', p2: 'Psyduck', p3: 'Gengar' };
 const nameOf = (id: string) => names[id] ?? id;
@@ -13,12 +13,9 @@ describe('social-kit: presentación', () => {
     expect(runoffLeaders([])).toEqual([]);
   });
 
-  it('textos de votos y listas de nombres', () => {
+  it('textos de votos', () => {
     expect(votesText(0)).toBe('0 votos');
     expect(votesText(1)).toBe('1 voto');
-    expect(namesList([])).toBe('');
-    expect(namesList(['Ana'])).toBe('Ana');
-    expect(namesList(['Ana', 'Leo', 'Eru'])).toBe('Ana, Leo y Eru');
   });
 
   it('el resultado nunca corona con «0 votos»: única respuesta, nadie votó, en solitario y compartida', () => {

@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Segmented, Toggle } from '../../ui';
 import { triviaCategoryLabels, triviaDifficultyLabels } from './presentation';
+import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -33,7 +34,7 @@ export function PokemonTriviaConfigPanel({ config, disabled, onChange }: { confi
     })}</div>
     <p className={c.help}>Mantén al menos una categoría activa.</p>
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por pregunta" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La pregunta se cierra antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Tiempo por pregunta" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="La pregunta se cierra antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de preguntas" value={value.rounds} min={1} max={30} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 pregunta' : `${rounds} preguntas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
   </fieldset>;

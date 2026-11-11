@@ -7,6 +7,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 
 /**
  * Resultados de Type Duel: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con insignia y
@@ -50,6 +51,6 @@ function TypeDuelCoopResults({ room, selfId, onLobby, onEnd }: GameResultsProps)
   ]} />;
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   const modeLabel = gameModeLabel('type-duel', game);
-  return <ResultsShell title="Resultado del grupo" subtitle={`Type Duel${modeLabel ? ` · ${modeLabel}` : ''} · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell title="Resultado del grupo" subtitle={`Type Duel${modeLabel ? ` · ${modeLabel}` : ''} · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} noWinner pointsLabel={coopPoints} aside={aside} actions={actions} fillLarge />;
 }

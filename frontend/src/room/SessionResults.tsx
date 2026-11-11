@@ -4,7 +4,8 @@ import { useEffect, useRef } from 'react';
 import { audio } from '../audio';
 import { cx, Icon, Panel, Pill, ScreenSplit } from '../ui';
 import { resultsCue, ResultsStandings } from './ResultsShell';
-import { joinNames, sessionPodium } from './session-results';
+import { joinNames } from '../lib/format';
+import { sessionPodium } from './session-results';
 import s from './SessionResults.module.css';
 
 /**

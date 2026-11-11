@@ -1,6 +1,7 @@
 import type { AvatarRef } from '@pokemon-universe/shared/public';
 import { cx } from '../ui';
 import { Avatar } from './Avatar';
+import { joinNames } from '../lib/format';
 import s from './AvatarStack.module.css';
 
 export interface AvatarStackMember {
@@ -12,8 +13,7 @@ export interface AvatarStackMember {
 /** Texto para lectores de pantalla de una pila de avatares: «Elegida por Ana y Leo». */
 export function avatarStackLabel(names: readonly string[], prefix: string): string {
   if (names.length === 0) return '';
-  const list = names.length === 1 ? names[0]! : `${names.slice(0, -1).join(', ')} y ${names.at(-1)!}`;
-  return `${prefix} ${list}`;
+  return `${prefix} ${joinNames(names)}`;
 }
 
 /**

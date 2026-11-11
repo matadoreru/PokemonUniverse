@@ -9,12 +9,12 @@ import { ResultsHostActions, ResultsRecords, type ResultsRecordItem } from './Re
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { plural, roundsLabel } from '../lib/format';
 import s from '../games/unown-translator/UnownTranslator.module.css';
 
 const GAME_NAME = 'Traductor Unown';
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 const moveCategoryLabel = (category: string) => categoryLabel[category as MoveCategory] ?? category;
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** «4 letras ocultas» / «1 letra oculta»: las que seguían sin revelar al descifrarlo. */
 export const hiddenLettersText = (n: number) => plural(n, 'letra oculta', 'letras ocultas');
@@ -75,7 +75,7 @@ export function UnownTranslatorResults({ room, selfId, onLobby, onEnd }: GameRes
     record('firstSolves', 'El más rápido', Zap, 'vez el primero', 'veces el primero'),
     record('hiddenLettersAtSolve', 'A ciegas', EyeOff, 'letra oculta al acertar', 'letras ocultas al acertar'),
   ];
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${GAME_NAME} · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${GAME_NAME} · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={<ResultsRecords id="unown-records-title" records={records} />}
     actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>{unownTranslatorScoringLabel()}</p>

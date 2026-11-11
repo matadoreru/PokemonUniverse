@@ -1,6 +1,7 @@
 import type { PokemonTeamAuctionPlayerState, PokemonTeamAuctionPublicState, TeamAuctionLotResult, TeamAuctionPokemon } from '@pokemon-universe/shared/public';
 import type { AuctionPreviousProps, BidBlockInput, BidEventLike, TurnOrderEntry } from '../../room/auction-kit';
 import { amountText, turnOrderEntries, waitTexts } from '../../room/auction-kit';
+import { plural } from '../../lib/format';
 
 /**
  * Textos y cálculos de Pokémon Team Auction (puros, sin React). El motor no tiene fase de adjudicación: cierra el lote y
@@ -134,7 +135,6 @@ export function teamAnnouncement(game: PokemonTeamAuctionPublicState, selfId: st
 /** Línea de métricas de un puesto de los resultados. */
 export function teamStatsLine(stats: Record<string, number | undefined>): string {
   const n = (key: string) => stats[key] ?? 0;
-  const plural = (value: number, one: string, many: string) => `${value} ${value === 1 ? one : many}`;
   return [
     `BST ${n('bstTotal')}`,
     plural(n('pokemonWon'), 'Pokémon', 'Pokémon'),

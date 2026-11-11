@@ -1,5 +1,6 @@
 import type { GamePhase, MostLikelyToRoundResult } from '@pokemon-universe/shared/public';
-import { namesList, tallyOutcome, tallySummary, votesText, type PhaseStep } from '../../room/social-kit';
+import { tallyOutcome, tallySummary, votesText, type PhaseStep } from '../../room/social-kit';
+import { joinNames } from '../../lib/format';
 
 /**
  * Textos de la pantalla de Most Likely To: fases, título de cada una, región viva y veredicto propio de la revelación.
@@ -51,7 +52,7 @@ export function mostLikelyAnnouncement({ phase, roundNumber, ownChoice, locked, 
 }): string {
   if (phase === 'ROUND_ACTIVE') return ownChoice ? `Respuesta guardada: ${ownChoice}.` : '';
   if (phase === 'VOTING') return locked ? 'Voto bloqueado. El resultado sale cuando vote todo el grupo.' : `Ronda ${roundNumber}: votación abierta.`;
-  if (phase === 'REVOTE') return locked ? 'Voto bloqueado en la segunda vuelta.' : `Empate: segunda vuelta entre ${namesList(tiedNames)}.`;
+  if (phase === 'REVOTE') return locked ? 'Voto bloqueado en la segunda vuelta.' : `Empate: segunda vuelta entre ${joinNames(tiedNames)}.`;
   if (phase === 'ROUND_RESULTS' && result) return `Ronda ${roundNumber} terminada. ${tallySummary(result.winnerIds, result.voteRounds, nameOf, 'Nadie respondió a tiempo.')}`;
   return '';
 }

@@ -1,4 +1,5 @@
 import type { HigherLowerAnswerVisibility, HigherLowerCategory, HigherLowerChoice, HigherLowerOutcome } from '@pokemon-universe/shared/public';
+import { plural } from '../lib/format';
 
 // Etiquetas en español de las tres respuestas de Higher or Lower (botones, revelado y barra lateral).
 export const higherLowerChoiceLabels: Record<HigherLowerChoice, string> = { HIGHER: 'Mayor', SAME: 'Igual', LOWER: 'Menor' };
@@ -50,8 +51,6 @@ export function higherLowerBars(previous: number, current: number): HigherLowerB
     diffLabel: diff > 0 ? `+${diff}` : diff < 0 ? `\u2212${-diff}` : '=',
   };
 }
-
-const plural = (count: number, singular: string, pluralForm: string) => `${count} ${count === 1 ? singular : pluralForm}`;
 
 /** Línea de estadísticas de la clasificación final, con singular y plural. */
 export function higherLowerStatsLine(stats: Readonly<Record<string, number | undefined>>): string {

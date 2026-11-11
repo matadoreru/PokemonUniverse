@@ -5,6 +5,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 
 /** Línea de estadísticas de un puesto: aciertos y precisión. */
 export function shinyStatsLine(stats: { correctVotes?: number | undefined; accuracy?: number | undefined }): string {
@@ -12,7 +13,7 @@ export function shinyStatsLine(stats: { correctVotes?: number | undefined; accur
   return `${correct} ${correct === 1 ? 'acierto' : 'aciertos'} · ${stats.accuracy ?? 0}% de precisión`;
 }
 
-const survivalPoints = (points: number) => `${points} ${points === 1 ? 'ronda' : 'rondas'}`;
+const survivalPoints = roundsLabel;
 
 /**
  * Resultados de Shiny Quiz: la clasificación del catálogo (`ResultsShell` con `standings`: podio, insignia de ganador y

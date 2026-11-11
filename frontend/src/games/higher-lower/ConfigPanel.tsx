@@ -13,6 +13,7 @@ import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { higherLowerVisibilityLabels } from '../../room/higher-lower-labels';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, cx, Segmented, Toggle } from '../../ui';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -92,8 +93,8 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
     </div>
 
     <div className={s.ranges}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      {shown('CLASSIC') && <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />}
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={secondsLabel} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      {shown('CLASSIC') && <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />}
     </div>
   </fieldset>;
 }

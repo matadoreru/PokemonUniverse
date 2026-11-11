@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Chip, Toggle } from '../../ui';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 
 const STATS_LABEL = 'Stats mostradas';
@@ -26,8 +27,8 @@ export function GuessFromStatsConfigPanel({ config, disabled, onChange }: { conf
   return <fieldset disabled={disabled} className={c.panelLoose}>
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => update({ generations })} />
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <div className={c.group} role="group" aria-label={STATS_LABEL}>
       <div className={c.head}>

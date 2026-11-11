@@ -1,6 +1,6 @@
 import type { GamePhase, SecretRankingRoundResult } from '@pokemon-universe/shared/public';
 import type { PhaseStep, ProgressStatus } from '../../room/social-kit';
-import { namesList } from '../../room/social-kit';
+import { joinNames } from '../../lib/format';
 
 /**
  * Lógica de la pantalla de Secret Ranking: mover un Pokémon de la lista (y a qué botón va el foco), fases, títulos,
@@ -78,7 +78,7 @@ export function secretRankingSummary(result: SecretRankingRoundResult, nameOf: (
   const closest = rankingClosest(result);
   if (!closest.length) return 'Solo llegó un ranking: no hubo con quién compararlo.';
   const distance = result.players[closest[0]!]?.distance ?? 0;
-  if (closest.length > 1) return `Empate en cabeza entre ${namesList(closest.map(nameOf))}, a distancia ${formatDistance(distance)}.`;
+  if (closest.length > 1) return `Empate en cabeza entre ${joinNames(closest.map(nameOf))}, a distancia ${formatDistance(distance)}.`;
   return distance === 0 ? `${nameOf(closest[0]!)} coincidió del todo con el grupo.` : `${nameOf(closest[0]!)} fue quien más se acercó al grupo, a distancia ${formatDistance(distance)}.`;
 }
 

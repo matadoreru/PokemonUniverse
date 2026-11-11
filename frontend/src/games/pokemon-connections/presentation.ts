@@ -1,11 +1,10 @@
 import type { ConnectionAttemptFeedback, ConnectionPlayerStatus, PokemonConnectionsPlayerState, PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
+import { plural } from '../../lib/format';
 
 /** Estado de un jugador en texto (además del color del chip). */
 export const connectionsStatusLabels: Record<ConnectionPlayerStatus, string> = { PLAYING: 'Resolviendo', SOLVED: 'Completado', ELIMINATED: 'Sin intentos', TIMED_OUT: 'Sin tiempo' };
 
 export const connectionsStatusTone = (status: ConnectionPlayerStatus): 'ok' | 'bad' | 'info' => status === 'SOLVED' ? 'ok' : status === 'PLAYING' ? 'info' : 'bad';
-
-const plural = (count: number, singular: string, pluralForm: string) => `${count} ${count === 1 ? singular : pluralForm}`;
 
 /** Lo que dice el último intento propio: «Grupo encontrado», «Te falta uno» o «Ese grupo no conecta». */
 export function connectionsFeedbackText(feedback: ConnectionAttemptFeedback | null): string | null {

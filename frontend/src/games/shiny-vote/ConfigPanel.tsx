@@ -7,6 +7,7 @@ import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { Card, Icon, Segmented } from '../../ui';
 import { SHINY_REVEAL_DURATION_LABEL, shinyRevealSecondsLabel } from './reveal';
 import { SHINY_VOTE_VISIBILITY_LABEL, shinyVisibilityLabels } from './vote-visibility';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -37,8 +38,8 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
     <Segmented<number> label={OPTION_COUNT_LABEL} showLabel className={s.group ?? ''} value={value.optionCount} options={counts} onChange={(optionCount) => void onChange({ ...value, optionCount })} />
     <Segmented<ShinyVoteVisibility> label={SHINY_VOTE_VISIBILITY_LABEL} showLabel hint={value.voteVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} className={s.group ?? ''} value={value.voteVisibility} options={visibilities} onChange={(voteVisibility) => void onChange({ ...value, voteVisibility })} />
     <div className={s.ranges}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={secondsLabel} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={50} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label={SHINY_REVEAL_DURATION_LABEL} value={value.revealSeconds} min={SHINY_REVEAL_SECONDS_RANGE.min} max={SHINY_REVEAL_SECONDS_RANGE.max} disabled={disabled} formatValue={shinyRevealSecondsLabel} onCommit={(revealSeconds) => onChange({ ...value, revealSeconds })} />
     </div>
   </fieldset>;

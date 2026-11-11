@@ -1,3 +1,5 @@
+import { secondsLabel } from '../../lib/format';
+
 /** Lo máximo que una ronda espera a que carguen las cartas: después se juega aunque falle alguna imagen. */
 export const SHINY_CARDS_TIMEOUT_MS = 4_000;
 
@@ -6,7 +8,7 @@ export const SHINY_BEFORE_AFTER = { title: 'Antes / después', normal: 'Normal',
 export const SHINY_REVEAL_DURATION_LABEL = 'Duración de la revelación';
 
 export function shinyRevealSecondsLabel(seconds: number): string {
-  return `${seconds} segundos`;
+  return secondsLabel(seconds);
 }
 
 /**

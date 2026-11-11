@@ -1,5 +1,6 @@
 import type { GamePhase } from '@pokemon-universe/shared/public';
 import { bindShortcuts, shortcutKey, type ShortcutEvent, type ShortcutTarget } from '../shortcuts';
+import { joinNames } from '../../lib/format';
 
 /**
  * Lógica pura del kit social (Most Likely To, Red Flag, Would You Rather, One of Us Is Fake, Secret Ranking y Poké
@@ -22,12 +23,6 @@ export interface RunoffCount {
 
 /** «1 voto», «2 votos», «0 votos». */
 export const votesText = (votes: number) => `${votes} ${votes === 1 ? 'voto' : 'votos'}`;
-
-/** «Ana», «Ana y Leo», «Ana, Leo y Eru» (lista vacía: ''). */
-export function namesList(names: readonly string[]): string {
-  if (names.length <= 1) return names[0] ?? '';
-  return `${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;
-}
 
 /** Recuento de una vuelta en el orden de los candidatos; los votos a quien no era candidato no cuentan (como el motor). */
 export function runoffCounts(round: RunoffRoundLike): RunoffCount[] {
@@ -81,13 +76,13 @@ export function tallyOutcome(winnerIds: readonly string[], rounds: readonly Runo
  */
 export function tallySummary(winnerIds: readonly string[], rounds: readonly RunoffRoundLike[], nameOf: (id: string) => string, emptyText = 'Nadie respondió a tiempo.', verb = 'Gana'): string {
   const outcome = tallyOutcome(winnerIds, rounds);
-  const names = namesList(winnerIds.map(nameOf));
+  const names = joinNames(winnerIds.map(nameOf));
   const after = rounds.length > 1 ? ' tras la segunda vuelta' : '';
   const last = rounds.at(-1);
   const counts = last ? runoffCounts(last) : [];
   const leaders = runoffLeaders(counts);
   const top = counts.find((count) => count.id === leaders[0])?.votes ?? 0;
-  const tiedNames = namesList(leaders.map(nameOf));
+  const tiedNames = joinNames(leaders.map(nameOf));
   switch (outcome) {
     case 'none': return emptyText;
     case 'unopposed': return `Única respuesta: ${names} gana sin votación.`;

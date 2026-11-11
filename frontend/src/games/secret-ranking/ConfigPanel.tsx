@@ -5,14 +5,13 @@ import { Toggle } from '../../ui';
 import { CustomCategoryManager } from '../prompt-source/CustomCategoryManager';
 import c from '../ConfigPanel.module.css';
 import { PromptSourceField, type PromptSourceOption } from '../prompt-source/PromptSourceField';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 
 const sources: PromptSourceOption[] = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Preguntas direccionales incluidas y listas para jugar.' },
   { id: 'CUSTOM', title: 'Personales', detail: 'Solo las preguntas activas guardadas por el host.' },
   { id: 'BOTH', title: 'Mezcladas', detail: 'Combina el catálogo oficial con las preguntas del host.' },
 ];
-
-const seconds = (value: number) => `${value} segundos`;
 
 /**
  * Ajustes de Secret Ranking con los controles del catálogo: generaciones (el selector heredado, F9), rondas y tiempo
@@ -25,8 +24,8 @@ export function SecretRankingConfigPanel({ config, disabled, room, selfId, onCha
   return <fieldset disabled={disabled} className={c.panel}>
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada ronda usa cinco Pokémon distintos del pool seleccionado." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
-      <ConfigRange label="Tiempo para ordenar" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={seconds} hint="La ronda termina antes si todos han bloqueado su ranking." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo para ordenar" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={secondsLabel} hint="La ronda termina antes si todos han bloqueado su ranking." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
     </div>
     <PromptSourceField label="Fuente de preguntas" sources={sources} value={value.promptSource} disabled={disabled} onChange={(promptSource) => void onChange({ ...value, promptSource })} room={room} selfId={selfId}
       noun="preguntas" hostCount={room.hostCustomCategoryCount} manager={<CustomCategoryManager disabled={disabled} minimumActive={1} title="Mis preguntas subjetivas" description="Se comparten con los demás juegos subjetivos y permanecen guardadas en tu cuenta." placeholder="De más valiente a menos valiente" emptyText="Todavía no has creado preguntas personales." newLabel="Nueva pregunta" editLabel="Editar pregunta" noun="pregunta" />} />

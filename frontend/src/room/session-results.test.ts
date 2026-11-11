@@ -1,7 +1,7 @@
 import type { RoomMemberView } from '@pokemon-universe/shared/public';
 import { describe, expect, it } from 'vitest';
 import { PLAYER_COLORS } from './player-color';
-import { joinNames, sessionPodium } from './session-results';
+import { sessionPodium } from './session-results';
 
 const member = (id: string): RoomMemberView => ({ id, displayName: id, avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'MEMBER', role: 'PLAYER', isHost: false, ready: false, sessionPoints: 0 });
 const standing = (id: string, displayName: string, sessionPoints: number) => ({ id, displayName, avatar: { type: 'DEFAULT' as const }, sessionPoints });
@@ -35,14 +35,5 @@ describe('sessionPodium', () => {
     const podium = sessionPodium({ gamesPlayed: 2, members: [], sessionStandings: [standing('a', 'Eru', 0), standing('b', 'Ana', 0)] }, 'a');
     expect(podium.champions).toEqual([]);
     expect(podium).toMatchObject({ tied: false, won: false, title: 'Sesión sin ganador', subtitle: '2 partidas disputadas' });
-  });
-});
-
-describe('joinNames', () => {
-  it('joins with commas and «y»', () => {
-    expect(joinNames([])).toBe('');
-    expect(joinNames(['Ana'])).toBe('Ana');
-    expect(joinNames(['Ana', 'Eru'])).toBe('Ana y Eru');
-    expect(joinNames(['Ana', 'Eru', 'Leo'])).toBe('Ana, Eru y Leo');
   });
 });

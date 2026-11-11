@@ -5,6 +5,7 @@ import { Check, CheckCircle2, Clock3, Eye, Hourglass, MousePointerClick, Send, S
 import { useFocusOnTransition } from '../../room/focus-transition';
 import { cx, Icon, Panel, Pill } from '../../ui';
 import { SHINY_CARDS_LOADING } from './reveal';
+import { roundsLabel } from '../../lib/format';
 import s from './ShinyVote.module.css';
 
 /** Letra de la opción en su disco amarillo y el nombre del Pokémon. */
@@ -146,7 +147,7 @@ function shinyPlate({ active, loading, revealed, participant, selectedOption, ow
 
   if (survival?.eliminated) {
     return { icon: UserX, tone: 'bad', kicker: 'Eliminado', title: 'Estás fuera',
-      text: `Superaste ${survival.roundsSurvived} ${survival.roundsSurvived === 1 ? 'ronda' : 'rondas'}. Sigues la partida como espectador.` };
+      text: `Superaste ${roundsLabel(survival.roundsSurvived)}. Sigues la partida como espectador.` };
   }
 
   if (!active) return { icon: Clock3, tone: 'info', kicker: 'Shiny Quiz', title: 'Preparando la ronda…', text: 'El servidor reparte las cartas de la siguiente ronda.' };

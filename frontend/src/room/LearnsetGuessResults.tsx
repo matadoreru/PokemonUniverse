@@ -8,6 +8,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 
 /**
  * Resultados de Learnset Guess: la clasificación del catálogo (`ResultsShell` con `standings`: podio, ganador con
@@ -32,6 +33,6 @@ export function LearnsetGuessResults({ room, selfId, onLobby, onEnd }: GameResul
     { key: 'bestRound', title: 'Mejor ronda', icon: Trophy, names: records.bestRound?.names ?? null, value: records.bestRound?.value ?? '', unit: 'puntos en una sola ronda' },
   ]} />;
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Learnset Guess" subtitle={`Learnset Guess${manual ? ` · ${learnsetModeLabel}` : ''} · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Learnset Guess" subtitle={`Learnset Guess${manual ? ` · ${learnsetModeLabel}` : ''} · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

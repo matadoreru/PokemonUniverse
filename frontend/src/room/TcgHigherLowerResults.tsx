@@ -9,6 +9,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 
 const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
   { key: 'bestStreak', title: 'Mejor racha', icon: Flame, unit: (value) => value === 1 ? 'acierto seguido' : 'aciertos seguidos' },
@@ -36,6 +37,6 @@ export function TcgHigherLowerResults({ room, selfId, onLobby, onEnd }: GameResu
     return { key, title, icon, names: record?.names ?? null, value, unit: record ? unit(record.value) : '', valueInHelp: true };
   })} />;
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower: Cartas" subtitle={`Precios de cartas TCG · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower: Cartas" subtitle={`Precios de cartas TCG · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
 }

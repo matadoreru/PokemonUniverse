@@ -1,5 +1,6 @@
 import type { FakeRoundResult, GamePhase } from '@pokemon-universe/shared/public';
-import { namesList, runoffCounts, runoffLeaders, tallyOutcome, votesText, type PhaseStep } from '../../room/social-kit';
+import { runoffCounts, runoffLeaders, tallyOutcome, votesText, type PhaseStep } from '../../room/social-kit';
+import { joinNames } from '../../lib/format';
 
 /**
  * Textos de la pantalla de One of Us Is Fake: fases, título de cada una, región viva, resumen del recuento y veredicto
@@ -61,7 +62,7 @@ export function fakeTallySummary(result: FakeRoundResult, nameOf: (playerId: str
   const last = rounds.at(-1);
   const counts = last ? runoffCounts(last) : [];
   const top = Math.max(0, ...counts.map((count) => count.votes));
-  const tied = namesList(runoffLeaders(counts).map(nameOf));
+  const tied = joinNames(runoffLeaders(counts).map(nameOf));
   const outcome = tallyOutcome([result.selectedPlayerId], rounds);
   const how = !last
     ? `Sale ${selected} sin votación.`
@@ -92,7 +93,7 @@ export function fakeAnnouncement({ phase, roundNumber, voteRound, ownChoice, loc
   if (phase === 'ROUND_ACTIVE') return ownChoice ? `Elección guardada: ${ownChoice}.` : '';
   if (phase === 'CHOICE_REVEAL') return `Ronda ${roundNumber}: se revelan las elecciones.`;
   if (phase === 'DISCUSSION') return locked ? 'Voto bloqueado. El resultado sale cuando vote todo el grupo.' : `Ronda ${roundNumber}: debate y votación abiertos.`;
-  if (phase === 'REVOTE') return locked ? `Voto bloqueado en la ${fakeVoteRoundLabel(voteRound).toLowerCase()}.` : `Empate: ${fakeVoteRoundLabel(voteRound).toLowerCase()} entre ${namesList(tiedNames)}.`;
+  if (phase === 'REVOTE') return locked ? `Voto bloqueado en la ${fakeVoteRoundLabel(voteRound).toLowerCase()}.` : `Empate: ${fakeVoteRoundLabel(voteRound).toLowerCase()} entre ${joinNames(tiedNames)}.`;
   if (phase === 'ROUND_RESULTS' && result) return `Ronda ${roundNumber} terminada. ${fakeTallySummary(result, nameOf)} ${result.winner === 'NORMALS' ? 'Ganan los normales.' : 'Gana el fake.'}`;
   return '';
 }

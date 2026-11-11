@@ -8,11 +8,11 @@ import { ResultsHostActions, ResultsRecords, type ResultsRecordItem } from './Re
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { plural, roundsLabel } from '../lib/format';
 import s from '../games/absurd-pokedex/AbsurdPokedex.module.css';
 
 type Stats = NonNullable<AbsurdPokedexPublicState['results']>['standings'][number]['stats'];
 const num = (stats: Stats, key: string) => Number(stats[key] ?? 0);
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** Línea de métricas en texto; en `REAL_ENTRY` suma las oficiales acertadas, los engañados y las risas. */
 export function absurdStatsLine(stats: Stats, mode: AbsurdPokedexPublicState['mode']): string {
@@ -47,7 +47,7 @@ export function AbsurdPokedexResults({ room, selfId, onLobby, onEnd }: GameResul
       record('roundWins', 'Más victorias', Trophy, 'ronda ganada', 'rondas ganadas'),
       record('votesReceived', 'Más votos recibidos', Vote, 'voto recibido', 'votos recibidos'),
     ];
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las entradas más absurdas" subtitle={`Pokédex Absurda · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las entradas más absurdas" subtitle={`Pokédex Absurda · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={<ResultsRecords id="absurd-records-title" records={records} />}
     actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>{absurdPokedexScoringLabel(game.mode)}</p>

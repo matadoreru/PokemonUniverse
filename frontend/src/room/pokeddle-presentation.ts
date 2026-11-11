@@ -1,5 +1,6 @@
 import type { GamePhase, PokeddleBoardRow, PokeddleClueKey, PokeddleFeedbackEntry, PokeddlePokemonReveal, PokeddlePublicBoard, PokeddleRacePlayerState } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
+import { plural } from '../lib/format';
 
 /** Lo que dice una casilla del tablero: acierto, parcial, fallo, o fallo con el objetivo por encima o por debajo. */
 export type PokeddleFeedbackSemantic = 'higher' | 'lower' | 'match' | 'partial' | 'none';
@@ -138,7 +139,6 @@ export function pokeddleVisibleSecret(board: Pick<PokeddlePublicBoard, 'solved' 
   return board.solved || phase === 'GAME_RESULTS' ? board.revealedPokemon : null;
 }
 
-const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 export const pokeddleAttemptsText = (count: number) => plural(count, 'intento', 'intentos');
 
 /** Estado de un rival en la columna lateral: solo lo que hoy es público (resuelto con su Pokémon, intento enviado, cuentas). */

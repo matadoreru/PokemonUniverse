@@ -7,6 +7,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 import s from '../games/pokemon-red-flag/PokemonRedFlag.module.css';
 
 type Stats = NonNullable<PokemonRedFlagPublicState['results']>['standings'][number]['stats'];
@@ -50,7 +51,7 @@ export function PokemonRedFlagResults({ room, selfId, onLobby, onEnd }: GameResu
     { key: 'votes', title: 'Más votos recibidos', icon: Vote, names: votes?.names ?? null, value: String(votes?.value ?? ''), unit: votes?.value === 1 ? 'voto decisivo' : 'votos decisivos' },
     { key: 'solo', title: 'Victorias en solitario', icon: MessageSquareHeart, names: solo?.names ?? null, value: String(solo?.value ?? ''), unit: solo?.value === 1 ? 'ronda sin empate' : 'rondas sin empate' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las frases más votadas" subtitle={`La Frase Pokémon · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las frases más votadas" subtitle={`La Frase Pokémon · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Cada victoria vale {RED_FLAG_WIN_POINTS} puntos, también cuando el empate persiste tras la segunda vuelta.</p>
   </ResultsShell>;

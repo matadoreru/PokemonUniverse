@@ -6,6 +6,7 @@ import { api } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/api-errors';
 import { ConfigRange } from '../../room/ConfigRange';
 import { Chip, Field, Icon, StateBox, Toggle } from '../../ui';
+import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -84,7 +85,7 @@ export function TcgHigherLowerConfigPanel({ config, disabled, onChange }: { conf
     </div>
     <Toggle label="Mostrar rareza de las cartas" hint="Si se oculta, la rareza se desvela después de responder." checked={value.showRarity} disabled={disabled} onChange={(showRarity) => void onChange({ ...value, showRarity })} />
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por comparación" value={value.roundSeconds} min={5} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint="La ronda se revela antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Tiempo por comparación" value={value.roundSeconds} min={5} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="La ronda se revela antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
       <ConfigRange label="Número de rondas" value={value.rounds} min={5} max={50} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
     <p className={s.eligible}>{eligible === null

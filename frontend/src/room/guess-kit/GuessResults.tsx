@@ -7,6 +7,7 @@ import { ResultsShell, standingRows } from '../ResultsShell';
 import { useRoomMembers } from '../room-members';
 import type { GameResultsProps } from '../room-command';
 import { guessRecords, guessStatsLine, type GuessStats } from './results';
+import { roundsLabel } from '../../lib/format';
 
 /** Lo que leen los resultados del estado público de cualquiera de los seis juegos de adivinar. */
 interface GuessResultsGame { totalRounds: number; results: GameResults | null }
@@ -47,6 +48,6 @@ export function GuessResults({ room, selfId, onLobby, onEnd, gameName, recordsId
     { key: 'fastest', title: 'Acierto más rápido', icon: Timer, names: records.fastest?.names ?? null, value: records.fastest?.value ?? '', unit: fastestUnit },
     thirdRecord ? thirdRecord(entries) : { key: 'firstTry', title: 'Al primer intento', icon: Target, names: records.firstTry?.names ?? null, value: records.firstTry?.value ?? '', unit: records.firstTry?.value === '1' ? 'acierto sin fallar antes' : 'aciertos sin fallar antes' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${gameName} · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación final" subtitle={`${gameName} · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge />;
 }

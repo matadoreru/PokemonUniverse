@@ -9,6 +9,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 
 const RECORDS: { key: string; title: string; icon: LucideIcon; unit: (value: number) => string }[] = [
   { key: 'bestStreak', title: 'Mejor racha', icon: Flame, unit: (value) => value === 1 ? 'acierto seguido' : 'aciertos seguidos' },
@@ -44,6 +45,6 @@ export function HigherLowerResults({ room, selfId, onLobby, onEnd }: GameResults
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   // En Racha infinita no hay número de rondas: el subtítulo dice cuántas se jugaron.
   const rounds = endless ? game.roundNumber : game.totalRounds;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower" subtitle={`Higher or Lower${modeLabel ? ` · ${modeLabel}` : ''} · ${rounds} ${rounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación Higher or Lower" subtitle={`Higher or Lower${modeLabel ? ` · ${modeLabel}` : ''} · ${roundsLabel(rounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge {...(endless ? { pointsLabel: endlessPoints } : {})} />;
 }

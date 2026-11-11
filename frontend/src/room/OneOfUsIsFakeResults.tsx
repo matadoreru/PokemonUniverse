@@ -7,11 +7,11 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { plural, roundsLabel } from '../lib/format';
 import s from '../games/one-of-us-is-fake/OneOfUsIsFake.module.css';
 
 type Stats = NonNullable<OneOfUsIsFakePublicState['results']>['standings'][number]['stats'];
 const num = (stats: Stats, key: string) => Number(stats[key] ?? 0);
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** Línea de métricas en texto: victorias como normal y como fake, votos correctos, veces fake y descubierto. */
 export function fakeStatsLine(stats: Stats): string {
@@ -48,7 +48,7 @@ export function OneOfUsIsFakeResults({ room, selfId, onLobby, onEnd }: GameResul
     { key: 'detective', title: 'Mejor detective', icon: Search, names: detective?.names ?? null, value: String(detective?.value ?? ''), unit: detective?.value === 1 ? 'voto correcto' : 'votos correctos' },
     { key: 'often', title: 'Más veces fake', icon: ShieldQuestion, names: often?.names ?? null, value: String(often?.value ?? ''), unit: often?.value === 1 ? 'ronda como fake' : 'rondas como fake' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Una partida de sospechas" subtitle={`One of Us Is Fake · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Una partida de sospechas" subtitle={`One of Us Is Fake · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Si el grupo expulsa al fake, cada normal gana {ONE_OF_US_IS_FAKE_NORMAL_ROUND_POINTS} puntos; si el fake se libra, gana {ONE_OF_US_IS_FAKE_FAKE_ROUND_POINTS}.</p>
   </ResultsShell>;

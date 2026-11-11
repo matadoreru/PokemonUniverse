@@ -1,4 +1,5 @@
 import { gameModeLabel, learnsetManualRevealPoints, learnsetPoints } from '@pokemon-universe/shared/public';
+import { secondsLabel } from '../lib/format';
 
 /** Nombre visible de Revelación manual (el del catálogo de modos). */
 export const learnsetModeLabel = gameModeLabel('learnset-guess', { mode: 'MANUAL_REVEAL' }) ?? 'Revelación manual';
@@ -12,8 +13,7 @@ export function learnsetLastWarningText(lastWarning: boolean, solved: boolean, r
   if (!lastWarning) return null;
   if (!Number.isFinite(remainingSeconds) || remainingSeconds < 1) return '¡Último aviso! Se acaba pronto.';
   const seconds = Math.ceil(remainingSeconds);
-  const unit = seconds === 1 ? 'segundo' : 'segundos';
-  return solved ? `Último aviso: la ronda se cierra en ${seconds} ${unit}.` : `¡Último aviso! Solo faltas tú: ${seconds} ${unit}.`;
+  return solved ? `Último aviso: la ronda se cierra en ${secondsLabel(seconds)}.` : `¡Último aviso! Solo faltas tú: ${secondsLabel(seconds)}.`;
 }
 
 /**

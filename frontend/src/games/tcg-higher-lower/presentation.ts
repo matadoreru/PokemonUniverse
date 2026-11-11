@@ -1,4 +1,5 @@
 import type { TcgHigherLowerAnswer, TcgHigherLowerChoice, TcgHigherLowerOutcome, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
+import { plural } from '../../lib/format';
 
 /** Orden de las tres respuestas: el de las píldoras y el de los atajos 1, 2 y 3 (como Higher or Lower). */
 export const TCG_CHOICE_ORDER: readonly TcgHigherLowerChoice[] = ['HIGHER', 'SAME', 'LOWER'];
@@ -97,8 +98,6 @@ export function tcgFocusKey(kind: TcgPlateKind, roundNumber: number): string | n
   if (kind === 'locked') return `locked-${roundNumber}`;
   return kind === 'reveal' ? `reveal-${roundNumber}` : null;
 }
-
-const plural = (count: number, singular: string, pluralForm: string) => `${count} ${count === 1 ? singular : pluralForm}`;
 
 /** Línea de estadísticas de la clasificación final: «3 aciertos de 5 · 1 igual · mejor racha 2 · 60%». */
 export function tcgStatsLine(stats: Readonly<Record<string, number | undefined>>): string {

@@ -8,8 +8,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
-
-const count = (value: number, one: string, many: string) => `${value} ${value === 1 ? one : many}`;
+import { plural } from '../lib/format';
 
 /**
  * Resultados de Type Chain: la clasificación del catálogo (`ResultsShell` con podio, ganador y «+N»), que ordena por
@@ -32,7 +31,7 @@ export function TypeChainResults({ room, selfId, onLobby, onEnd }: GameResultsPr
         {elimination
           ? <Chip tone="bad" icon={<Icon icon={Skull} size={18} />}>{`Eliminado ${elimination.eliminationOrder}.º`}</Chip>
           : <Chip tone="ok" icon={<Icon icon={ShieldCheck} size={18} />}>Sigue en pie</Chip>}
-        <span>{[count(named, 'Pokémon nombrado', 'Pokémon nombrados'), ...(elimination ? [`Cayó: ${typeChainEliminationLabels[elimination.reason]}`] : []), count(invalid, 'fallo', 'fallos')].join(' · ')}</span>
+        <span>{[plural(named, 'Pokémon nombrado', 'Pokémon nombrados'), ...(elimination ? [`Cayó: ${typeChainEliminationLabels[elimination.reason]}`] : []), plural(invalid, 'fallo', 'fallos')].join(' · ')}</span>
       </>,
     };
   });

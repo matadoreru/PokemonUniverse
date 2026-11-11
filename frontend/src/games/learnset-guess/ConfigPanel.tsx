@@ -4,6 +4,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../../room/ConfigRange';
 import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { Badge, Icon, Toggle } from '../../ui';
+import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -31,8 +32,8 @@ export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { confi
       <Toggle label="Información evolutiva" hint="Muestra únicamente la etapa, nunca nombres." checked={value.showEvolution} disabled={disabled} onChange={(showEvolution) => void onChange({ ...value, showEvolution })} />
     </div>
     <div className={c.pair}>
-      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} hint={shown('MANUAL_REVEAL') && !shown('CLASSIC') ? 'Tope de la ronda · cada fallo enseña un grupo más · 1 segundo de espera tras un fallo.' : 'Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo.'} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
-      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={(rounds) => (rounds === 1 ? '1 ronda' : `${rounds} rondas`)} onCommit={(rounds) => onChange({ ...value, rounds })} />
+      <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={120} step={5} disabled={disabled} formatValue={secondsLabel} hint={shown('MANUAL_REVEAL') && !shown('CLASSIC') ? 'Tope de la ronda · cada fallo enseña un grupo más · 1 segundo de espera tras un fallo.' : 'Nuevas pistas cada 7 segundos · 1 segundo de espera tras un fallo.'} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />
+      <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={20} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
     </div>
   </fieldset>;
 }

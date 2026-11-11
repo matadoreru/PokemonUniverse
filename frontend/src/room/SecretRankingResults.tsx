@@ -8,6 +8,7 @@ import { ResultsHostActions, ResultsRecords } from './ResultsRecords';
 import { ResultsShell, standingRows } from './ResultsShell';
 import { useRoomMembers } from './room-members';
 import type { GameResultsProps } from './room-command';
+import { roundsLabel } from '../lib/format';
 import s from '../games/secret-ranking/SecretRanking.module.css';
 
 /**
@@ -34,7 +35,7 @@ export function SecretRankingResults({ room, selfId, onLobby, onEnd }: GameResul
     { key: 'perfect', title: 'Coincidencias perfectas', icon: Sparkles, names: perfect?.names ?? null, value: String(perfect?.value ?? ''), unit: perfect?.value === 1 ? 'ranking idéntico a la media' : 'rankings idénticos a la media' },
     { key: 'closest', title: 'Mente más sincronizada', icon: Crosshair, names: closest?.names ?? null, value: closest ? formatDistance(closest.value) : '', unit: 'de distancia media a los demás' },
   ]} />;
-  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La mente más sincronizada" subtitle={`Secret Ranking · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda' : 'rondas'}`}
+  return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="La mente más sincronizada" subtitle={`Secret Ranking · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>Los puntos se obtienen por cercanía en cada ronda. La media de referencia de cada persona excluye siempre su propio ranking.</p>
   </ResultsShell>;

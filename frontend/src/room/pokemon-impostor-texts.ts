@@ -1,4 +1,5 @@
 import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type ImpostorEliminationReveal, type ImpostorFinishReason, type ImpostorVoteResult } from '@pokemon-universe/shared/public';
+import { joinNames } from '../lib/format';
 
 /** Titular del resultado de una votación según su tipo. */
 export function impostorVoteHeadline(result: ImpostorVoteResult, nameOf: (id: string) => string): string {
@@ -75,12 +76,6 @@ export function clampImpostorClue(value: string): string {
   return leading + points.slice(0, IMPOSTOR_CLUE_MAX_CODE_POINTS).join('');
 }
 
-/** Enumeración en español: «Ana», «Ana y Bea», «Ana, Bea y Carla». */
-export function joinNamesEs(names: readonly string[]): string {
-  if (names.length <= 1) return names[0] ?? '';
-  return `${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;
-}
-
 /** Encabezado de la línea de aliados: «Otro impostor: » o «Otros impostores: ». */
 export function impostorFellowsLead(count: number): string {
   return count === 1 ? 'Otro impostor: ' : 'Otros impostores: ';
@@ -89,10 +84,10 @@ export function impostorFellowsLead(count: number): string {
 /** Línea de aliados del impostor; un compañero expulsado lleva « (fuera)». `null` si no tiene aliados. */
 export function impostorFellowsText(names: readonly { name: string; out: boolean }[]): string | null {
   if (names.length === 0) return null;
-  return `${impostorFellowsLead(names.length)}${joinNamesEs(names.map((fellow) => (fellow.out ? `${fellow.name} (fuera)` : fellow.name)))}`;
+  return `${impostorFellowsLead(names.length)}${joinNames(names.map((fellow) => (fellow.out ? `${fellow.name} (fuera)` : fellow.name)))}`;
 }
 
 /** Versión corta para la línea del móvil: «con Ana y Bea», sin sufijo. */
 export function impostorFellowsShort(names: readonly string[]): string | null {
-  return names.length === 0 ? null : `con ${joinNamesEs(names)}`;
+  return names.length === 0 ? null : `con ${joinNames(names)}`;
 }

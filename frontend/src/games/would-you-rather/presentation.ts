@@ -1,5 +1,6 @@
 import { WOULD_YOU_RATHER_MAJORITY_POINTS, WOULD_YOU_RATHER_PREDICTION_POINTS, type GamePhase, type WouldYouRatherOption, type WouldYouRatherRoundResult } from '@pokemon-universe/shared/public';
-import { namesList, type PhaseStep, type RunoffRoundLike } from '../../room/social-kit';
+import { type PhaseStep, type RunoffRoundLike } from '../../room/social-kit';
+import { joinNames } from '../../lib/format';
 
 /**
  * Textos de la pantalla de Would You Rather: fases, título, la vuelta sintética del recuento (cada papeleta es un voto a
@@ -62,7 +63,7 @@ export function wouldYouRatherVerdict(result: WouldYouRatherRoundResult, selfId:
   if (!own) return { tone: 'bad', text: 'No enviaste papeleta', points: 0, detail: rule };
   const parts = [own.majorityPoint ? 'en la mayoría' : null, own.predictionPoints ? 'predicción acertada' : null].filter((part): part is string => part !== null);
   if (own.totalPoints >= 3) return { tone: 'ok', text: '¡Ronda perfecta!', points: own.totalPoints, detail: rule };
-  if (own.totalPoints > 0) return { tone: 'ok', text: `Sumas por ${namesList(parts)}`, points: own.totalPoints, detail: rule };
+  if (own.totalPoints > 0) return { tone: 'ok', text: `Sumas por ${joinNames(parts)}`, points: own.totalPoints, detail: rule };
   return { tone: 'info', text: result.majority ? 'Esta vez no sumas' : 'Empate: nadie suma', points: 0, detail: rule };
 }
 

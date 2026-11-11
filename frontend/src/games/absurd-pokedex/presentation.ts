@@ -1,5 +1,6 @@
 import type { AbsurdPokedexEntryResult, AbsurdPokedexMode, AbsurdPokedexRoundResult, GamePhase } from '@pokemon-universe/shared/public';
-import { namesList, type PhaseStep } from '../../room/social-kit';
+import { type PhaseStep } from '../../room/social-kit';
+import { joinNames } from '../../lib/format';
 import type { GameAction } from '../../room/room-command';
 
 /**
@@ -17,7 +18,7 @@ export function absurdModeTitle(mode: AbsurdPokedexMode): string {
 /** «Engañó a Ana y Luis»: quienes votaron una entrada inventada creyéndola la oficial; vacío si nadie (o si es la oficial). */
 export function fooledNames(entry: Pick<AbsurdPokedexEntryResult, 'votedBy'> & { isReal?: boolean }, nameOf: (playerId: string) => string): string {
   if (entry.isReal || entry.votedBy.length === 0) return '';
-  return `Engañó a ${namesList(entry.votedBy.map(nameOf))}`;
+  return `Engañó a ${joinNames(entry.votedBy.map(nameOf))}`;
 }
 
 /** Las entradas de la revelación: la oficial primero en `REAL_ENTRY` y luego por votos (descendente) y id. */
@@ -67,7 +68,7 @@ export function absurdAnnouncement({ phase, roundNumber, entryLocked, voteLocked
   if (phase === 'ROUND_RESULTS' && result) {
     if (result.skipped) return `Ronda ${roundNumber}: ronda sin suficientes entradas.`;
     const real = result.realEntry ? ` La entrada oficial era de ${result.realEntry.versionLabel}.` : '';
-    const winners = result.winnerPlayerIds.length ? ` Gana ${namesList(result.winnerPlayerIds.map(nameOf))}.` : '';
+    const winners = result.winnerPlayerIds.length ? ` Gana ${joinNames(result.winnerPlayerIds.map(nameOf))}.` : '';
     return `Ronda ${roundNumber} terminada.${real}${winners}`;
   }
   return '';

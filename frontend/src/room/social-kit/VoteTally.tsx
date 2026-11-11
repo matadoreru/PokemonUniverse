@@ -4,7 +4,8 @@ import { Crown, Dices, Equal, Scale, UserRound } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { Badge, Bar, Chip, cx, Icon, Panel, Row } from '../../ui';
-import { namesList, runoffCounts, runoffLeaders, runoffTotal, tallyOutcome, tallySummary, votesText, type RunoffRoundLike } from './presentation';
+import { runoffCounts, runoffLeaders, runoffTotal, tallyOutcome, tallySummary, votesText, type RunoffRoundLike } from './presentation';
+import { joinNames } from '../../lib/format';
 import s from './VoteTally.module.css';
 
 /** Insignia propia del juego en la franja (p. ej. «Fake» en One of Us Is Fake): va con la del ganador, no en texto. */
@@ -140,7 +141,7 @@ export function VoteTally({ options, rounds, winnerIds, voterName, voterAvatar, 
                   <span className={s.voterChips} aria-hidden="true">{voters.map((id) => <span key={id} className={s.voter} title={voterName(id)} data-testid="tally-voter">
                     <Avatar name={voterName(id)} avatar={voterAvatar?.(id)} size="xs" />
                   </span>)}</span>
-                  <span className="sr-only">{`Votos de ${namesList(voters.map(voterName))}`}</span>
+                  <span className="sr-only">{`Votos de ${joinNames(voters.map(voterName))}`}</span>
                 </span>}
               </span>
               : <span className={s.detail}>Sin votación</span>}

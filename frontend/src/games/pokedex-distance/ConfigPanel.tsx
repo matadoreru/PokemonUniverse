@@ -5,6 +5,7 @@ import { GameModeField, useModeShown } from '../../room/GameModeField';
 import { LIVE_VISIBILITY_WARNING } from '../../room/live-visibility';
 import { DISTANCE_SELECTION_VISIBILITY_LABEL, distanceSelectionVisibilityLabels } from '../../room/pokedex-distance-selection';
 import { Segmented } from '../../ui';
+import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
 
@@ -20,7 +21,7 @@ export function PokedexDistanceConfigPanel({ config, disabled, onChange }: { con
     <GameModeField gameId="pokedex-distance" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
     <Segmented<PokedexDistanceSelectionVisibility> label={DISTANCE_SELECTION_VISIBILITY_LABEL} showLabel hint={value.selectionVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} className={s.group ?? ''} value={value.selectionVisibility} options={options} onChange={(selectionVisibility) => void onChange({ ...value, selectionVisibility })} />
-    <div className={s.group}><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={(seconds) => `${seconds} segundos`} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /></div>
+    <div className={s.group}><ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={secondsLabel} onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} /></div>
     {shown('POINTS') && <div className={s.group}><ConfigRange label="Número de rondas" value={value.pointsRounds} min={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.min} max={POKEDEX_DISTANCE_POINTS_ROUNDS_RANGE.max} disabled={disabled} formatValue={(rounds) => `${rounds} rondas`} onCommit={(pointsRounds) => onChange({ ...value, pointsRounds })} /></div>}
   </fieldset>;
 }

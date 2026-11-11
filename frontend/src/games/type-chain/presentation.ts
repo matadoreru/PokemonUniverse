@@ -1,9 +1,10 @@
 import type { PokemonType, TypeChainElimination, TypeChainEvent, TypeChainInvalidReason, TypeChainPlayerState, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
+import { secondsLabel } from '../../lib/format';
 
 /** Espera tras un intento que no vale (`TypeChainEngine.INVALID_COOLDOWN_MS` del backend): textos de ayuda y aviso. */
 export const TYPE_CHAIN_COOLDOWN_SECONDS = 1;
-export const typeChainCooldownText = `${TYPE_CHAIN_COOLDOWN_SECONDS} ${TYPE_CHAIN_COOLDOWN_SECONDS === 1 ? 'segundo' : 'segundos'}`;
+export const typeChainCooldownText = secondsLabel(TYPE_CHAIN_COOLDOWN_SECONDS);
 
 /** Motivo de un intento rechazado, en texto. */
 export const typeChainReasonLabels: Record<TypeChainInvalidReason, string> = {
