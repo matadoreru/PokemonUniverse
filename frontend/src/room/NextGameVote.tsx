@@ -81,8 +81,9 @@ export function NextGameVote({ room, selfId, onVote, onEnd }: { room: RoomView; 
             {!unavailableReason && <span className={s.config}>{modeText ?? summarizeGameConfig(room.gameConfigs?.[game.id])}</span>}
             {!active && <span className={s.tally}><Badge tone={winner ? 'yellow' : 'cream'}><Icon icon={Vote} size={18} />{votesLabel(tally)}</Badge></span>}
           </Card>
-          {/* «?» con las reglas, hermano de la carta: pulsarlo no cambia el voto. */}
-          <GameRulesButton game={game} className={s.rules} />
+          {/* «?» con las reglas, hermano de la carta: pulsarlo no cambia el voto. Lleva el nombre de la opción, que
+              distingue dos modos del mismo juego. */}
+          <GameRulesButton game={{ name: voteOptionName(option, vote.options), howTo: game.howTo }} className={s.rules} />
         </li>;
       })}
     </ul>

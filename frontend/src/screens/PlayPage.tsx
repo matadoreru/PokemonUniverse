@@ -1,6 +1,7 @@
 import { CalendarDays, Crown, DoorOpen, Gamepad2, KeyRound, LogOut, Plus, Users } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { audio } from '../audio';
 import { useAuth } from '../auth/AuthContext';
 import { DailyPanel } from '../daily/DailyPanel';
 import { ABANDON_DAILY_TEXT } from '../daily/daily-state';
@@ -75,7 +76,9 @@ export function PlayPage() {
   async function playDaily() {
     setBusy('daily'); resetErrors();
     // Como «Crear sala»: `startDaily` no pasa su fallo al aviso global; se enseña traducido en el panel del reto.
-    try { await startDaily(); navigate('/room'); }
+    // El reto llega ya empezado: la sala no ve el cambio de partida (`GameStartCue` se monta con ella), así que su
+    // `game.start` suena aquí, una vez.
+    try { await startDaily(); audio.play('game.start'); navigate('/room'); }
     catch (caught) { setDailyError(caught); daily.reload(); }
     finally { setBusy(null); }
   }

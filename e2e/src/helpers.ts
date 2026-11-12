@@ -266,9 +266,9 @@ export function sinTapar(locator: Locator): Promise<boolean> {
   return locator.evaluate((el) => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
 }
 
-/** Carta (el botón de su celda) de un minijuego en la lista «Minijuegos» del lobby. */
+/** Carta (su conmutador, no el «?» de las reglas) de un minijuego en la lista «Minijuegos» del lobby. */
 export function cartaDeJuego(page: Page, nombre: string): Locator {
-  return page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) }).getByRole('button').first();
+  return page.getByRole('list', { name: 'Minijuegos' }).getByRole('listitem').filter({ has: page.getByText(nombre, { exact: true }) }).locator('button[aria-pressed]');
 }
 
 /**

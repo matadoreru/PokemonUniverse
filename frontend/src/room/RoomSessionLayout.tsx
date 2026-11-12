@@ -52,7 +52,8 @@ function ConnectionNotice({ connected }: { connected: boolean }) {
 
 /**
  * `game.start` una vez al empezar cada partida, sin nada en pantalla. Se monta con la sala: como `useSfxCue` no suena en
- * el primer render, recargar o volver a una partida ya empezada no lo repite.
+ * el primer render, recargar o volver a una partida ya empezada no lo repite (el reto, que llega ya empezado, lo
+ * suena al pulsar «Jugar»).
  */
 function GameStartCue({ room }: { room: RoomView }) {
   useSfxCue('game.start', gameStartCue(room));
