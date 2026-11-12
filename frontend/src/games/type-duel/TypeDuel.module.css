@@ -1,73 +1,25 @@
 /*
- * Type Duel (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Type Duel (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`): sin scroll de página en escritorio.
  * Arriba la placa de la ronda y la escena de la fase (elección, losa del VS, resultado); abajo los tipos, el buscador o
  * el resultado; al lado, el marcador y los intentos públicos.
  */
-.screen {
-  /* Contiene la región `sr-only` (absoluta) del aviso. */
-  position: relative;
-  min-height: 100%;
-  padding-top: var(--sp-4);
-}
-@media (min-width: 1024px) {
-  .screen {
-    height: 100%;
-    padding-block: var(--sp-5);
-  }
-}
-
-.top {
+/*
+ * Escena de la fase en el hueco de la pista del marco (`GameScreen`): en escritorio la llena sin crecer por su contenido
+ * (lo largo se desplaza por dentro).
+ */
+.scene {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
   min-width: 0;
-  /* Hueco para la sombra dura de las placas (la columna recorta lo que se sale al desplazarse). */
-  padding-bottom: var(--sp-2);
-}
-.top > * {
-  flex: none;
 }
 @media (min-width: 1024px) {
-  .top {
-    height: 100%;
+  .scene {
+    min-height: 0;
   }
-  /* La escena llena el alto que deja la placa de la ronda. */
-  .top > :last-child:not(:first-child) {
+  .scene > * {
     flex: 1 1 auto;
     min-height: 0;
   }
-}
-
-/* Placa de la ronda: ronda y fase arriba, el título debajo, el tiempo a la derecha. */
-.hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-}
-.hudMain {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.hudMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-}
-.heading {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 800 var(--fs-34) / 1.1 var(--font-display);
-  color: var(--white);
-}
-.hudTimer {
-  display: flex;
-  justify-content: flex-end;
 }
 
 /* Disco «VS» (elección y revelación). */
@@ -431,39 +383,6 @@
   padding-bottom: var(--sp-1);
 }
 
-/* Columna lateral: el marcador, los intentos y «Saltar minijuego». */
-.sideColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-height: 0;
-}
-.sideColumn > * {
-  flex: none;
-}
-.sidePanel,
-.attemptsPanel {
-  max-height: 22rem;
-}
-@media (min-width: 1024px) {
-  .sideColumn {
-    height: 100%;
-  }
-  .sideColumn > .sidePanel {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: 50%;
-  }
-  .sideColumn > .attemptsPanel {
-    flex: 1 1 auto;
-    min-height: 8rem;
-    max-height: none;
-  }
-}
-.skip {
-  display: flex;
-  justify-content: flex-end;
-}
 .rows {
   display: flex;
   flex-direction: column;
@@ -608,13 +527,6 @@
   }
 }
 @media (max-width: 639px) {
-  /* Placa de la ronda en el móvil: ronda y fase arriba; el título y el tiempo debajo. */
-  .hud {
-    padding: var(--sp-2) var(--sp-3);
-  }
-  .heading {
-    font-size: var(--fs-22);
-  }
   .vsDisc {
     width: 44px;
     height: 44px;
@@ -705,14 +617,8 @@
     max-height: 8.5rem;
   }
 }
-/* Escritorio bajo (720 px): la placa de la ronda, algo más baja. */
+/* Escritorio bajo (720 px). */
 @media (min-width: 1024px) and (max-height: 800px) {
-  .hud {
-    padding-block: var(--sp-2);
-  }
-  .heading {
-    font-size: var(--fs-26);
-  }
   /* La elección, en una franja por duelista: la rejilla de tipos necesita el alto. */
   .pickBoard {
     gap: var(--sp-2);
@@ -743,16 +649,10 @@
 }
 
 /*
- * Escritorio grande (≥1600×900): la pantalla se llena. Título a 44 px, la losa del VS con insignias de 44 px y disco de
+ * Escritorio grande (≥1600×900): la pantalla se llena. La losa del VS con insignias de 44 px y disco de
  * 112 px, los duelistas de la elección más grandes, los tipos más altos y las cartas de soluciones más grandes.
  */
 @media (min-width: 1600px) and (min-height: 900px) {
-  .hud {
-    padding: var(--sp-4) var(--sp-5);
-  }
-  .heading {
-    font-size: var(--fs-44);
-  }
   .vsDisc {
     width: 112px;
     height: 112px;

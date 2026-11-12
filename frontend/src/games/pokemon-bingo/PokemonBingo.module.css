@@ -3,74 +3,14 @@
  * Arriba la placa del tablero y el tablero propio (rejilla de `--cols` columnas dentro de un `Panel` que se desplaza por
  * dentro si no cabe); abajo la casilla elegida con el buscador al lado; en la columna lateral, los tableros de todos.
  */
-.screen {
-  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
-  position: relative;
-  min-height: 100%;
-  padding-top: var(--sp-4);
-}
-@media (min-width: 1024px) {
-  .screen {
-    height: 100%;
-    padding-block: var(--sp-5);
-  }
-}
-
-.top {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-  /* Hueco para la sombra dura del panel. */
-  padding-bottom: var(--sp-2);
-}
-.top > * {
-  flex: none;
-}
-@media (min-width: 1024px) {
-  .top {
-    height: 100%;
-  }
-  .top > .boardPanel {
-    flex: 1 1 0;
-    min-height: 12rem;
-  }
-}
-
-/* Placa del tablero: tamaño, progreso y puntos arriba, el título debajo, el plazo a la derecha. */
-.hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-}
-.hudMain {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.hudMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-}
 .hudPoints {
   display: inline-flex;
 }
-.heading {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 800 var(--fs-34) / 1.1 var(--font-display);
-  color: var(--yellow);
-}
-.hudTimer {
-  display: flex;
-  justify-content: flex-end;
+@media (min-width: 1024px) {
+  /* Panel del tablero: llena el hueco de la pista del marco, sin bajar de 12rem. */
+  .boardPanel {
+    min-height: 12rem;
+  }
 }
 
 /* Panel del tablero: el cuerpo contiene la rejilla y se desplaza por dentro si las filas no caben. */
@@ -218,33 +158,6 @@
   white-space: nowrap;
 }
 
-/* Columna lateral: los tableros de todos y «Saltar minijuego». */
-.sideColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-height: 0;
-}
-.sideColumn > * {
-  flex: none;
-}
-.sidePanel {
-  max-height: 22rem;
-}
-@media (min-width: 1024px) {
-  .sideColumn {
-    height: 100%;
-  }
-  .sideColumn > .sidePanel {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: none;
-  }
-}
-.skip {
-  display: flex;
-  justify-content: flex-end;
-}
 .rows {
   display: flex;
   flex-direction: column;
@@ -320,19 +233,6 @@
   }
 }
 @media (max-width: 639px) {
-  .hud {
-    padding: var(--sp-2) var(--sp-3);
-  }
-  /* El `title` no se ve en táctil: el título baja a dos líneas antes de cortarse. */
-  .heading {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    font-size: var(--fs-22);
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
   .grid {
     --row-min: 7.5rem;
     gap: var(--sp-1);
@@ -353,22 +253,6 @@
  * cabe entero a 1920 y a 1280 se desplaza poco dentro de su panel.
  */
 @media (min-width: 1024px) and (max-height: 800px) {
-  .hud {
-    padding-block: var(--sp-2);
-  }
-  /* El título en la misma línea que el tamaño y el progreso: el alto que gana es para el tablero. */
-  .hudMain {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: var(--sp-4);
-  }
-  .hudMain > .heading {
-    order: -1;
-  }
-  .heading {
-    font-size: var(--fs-26);
-  }
   /* Más específico que el relleno del cuerpo del `Panel`. */
   .boardPanel > .boardBody {
     padding-block: var(--sp-2);
@@ -475,12 +359,6 @@
 
 /* Escritorio grande (≥1600×900): la pantalla se llena; la condición, los nombres y el título crecen con el tablero. */
 @media (min-width: 1600px) and (min-height: 900px) {
-  .hud {
-    padding: var(--sp-4) var(--sp-5);
-  }
-  .heading {
-    font-size: var(--fs-44);
-  }
   .gridFill:not(.dense) {
     --row-min: 9rem;
   }

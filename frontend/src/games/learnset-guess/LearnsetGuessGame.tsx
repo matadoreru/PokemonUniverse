@@ -1,14 +1,14 @@
 import type { LearnsetGuessConfig, LearnsetGuessPlayerState, LearnsetGuessPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { ServerTimer } from '../../components/ServerTimer';
-import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetHud, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from './LearnsetGuessParts';
+import { LearnsetAttempts, LearnsetClues, LearnsetHints, LearnsetNotices, LearnsetPlate, LearnsetRevealBoard, LearnsetRevealScene, LearnsetScoreboard, LearnsetSearchNote, learnsetOwnLastAttempt, type ScoreLine } from './LearnsetGuessParts';
 import { learnsetAnnouncement, learnsetFocusKey, learnsetLatestStage, learnsetManualExhausted, learnsetPlateKind, learnsetPositions, learnsetVerdict } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useTimedVisibility } from '../../hooks/useTimedVisibility';
-import { cx, ScreenSplit } from '../../ui';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { BookOpen } from 'lucide-react';
+import { Chip, Icon } from '../../ui';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { learnsetGroupProgress, learnsetLastWarningAnnouncement, learnsetLastWarningText, learnsetManualStakeText, learnsetScoreboard, learnsetSolvedAnnouncement, learnsetStakeText } from './learnset-texts';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
@@ -20,7 +20,7 @@ import s from './LearnsetGuess.module.css';
 const SOLVED_NOTICE_MS = 2_000;
 
 /**
- * Learnset Guess (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda, los avisos (último aviso, quién acaba de
+ * Learnset Guess (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa de la ronda, los avisos (último aviso, quién acaba de
  * acertar) y las pistas de movimientos, la última arriba; en la revelación, la carta del Pokémon y su learnset. Abajo
  * se actúa: el buscador, el acierto con sus puntos o el veredicto. Al lado, el marcador en vivo y los intentos públicos
  * (en la revelación, los puntos de la ronda de cada uno).
@@ -81,31 +81,23 @@ export function LearnsetGuessGame({ room, selfId, onAction }: ActiveGameProps) {
   }));
 
   const last = game.roundNumber >= game.totalRounds;
-  const deadline = active ? game.roundEndsAt : game.nextTransitionAt;
-  const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={active ? 'Tiempo' : last ? 'Clasificación' : 'Siguiente ronda'}
-    {...(active && config?.roundSeconds ? { totalMs: config.roundSeconds * 1_000 } : {})} /> : null;
+  const timer: GameTimer = { deadline: active ? game.roundEndsAt : game.nextTransitionAt, serverOffset: offset, label: active ? 'Tiempo' : last ? 'Clasificación' : 'Siguiente ronda',
+    totalMs: active && config?.roundSeconds ? config.roundSeconds * 1_000 : undefined };
   const heading = lastRound ? `¡Era ${lastRound.pokemon.name}!` : '¿Qué Pokémon es?';
+  const meta = <Chip tone="neutral" icon={<Icon icon={BookOpen} size={18} />}>Learnset de Gen {game.referenceGeneration}<span className={s.source}> · {game.referenceSource}</span></Chip>;
 
-  const top = <div className={s.top}>
-    <LearnsetHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} referenceGeneration={game.referenceGeneration} referenceSource={game.referenceSource}
-      heading={heading} timer={timer} />
-    <LearnsetNotices lastWarning={lastWarning} lastWarningAnnouncement={lastWarningAnnouncement} solver={solver} announcement={announcement} />
-    {lastRound
-      ? <LearnsetRevealScene result={lastRound} />
-      : <LearnsetClues groups={groups} latestStage={latestStage} stake={stake} nextClueIn={!manual && active && game.nextTransitionAt ? transitionRemaining : null} progress={progress}
-        emptyText={manual && active && totalGroups === 0 ? { title: 'Cada jugador ve solo sus pistas.', text: 'Los movimientos que desbloquea cada uno se descubren en la revelación.' } : null} />}
-    {!lastRound && <LearnsetHints evolutionHint={active ? game.evolutionHint : null} className={s.hints} />}
-  </div>;
+  const clue = lastRound
+    ? <LearnsetRevealScene result={lastRound} />
+    : <LearnsetClues groups={groups} latestStage={latestStage} stake={stake} nextClueIn={!manual && active && game.nextTransitionAt ? transitionRemaining : null} progress={progress}
+      emptyText={manual && active && totalGroups === 0 ? { title: 'Cada jugador ve solo sus pistas.', text: 'Los movimientos que desbloquea cada uno se descubren en la revelación.' } : null} />;
 
-  const side = <div className={s.sideColumn}>
-    {lastRound
-      ? <LearnsetRevealBoard result={lastRound} members={room.members} colors={colors} selfId={selfId} className={s.sidePanel} />
-      : <>
-        <LearnsetScoreboard lines={lines} selfId={selfId} className={s.sidePanel} />
-        <LearnsetAttempts attempts={attempts} members={members} colors={colors} className={s.attemptsPanel} own={manual} />
-      </>}
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  // En la revelación, los puntos de la ronda miden lo que necesitan; en la ronda, marcador arriba e intentos debajo.
+  const side = lastRound
+    ? <LearnsetRevealBoard result={lastRound} members={room.members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />
+    : <>
+      <LearnsetScoreboard lines={lines} selfId={selfId} />
+      <LearnsetAttempts attempts={attempts} members={members} colors={colors} own={manual} />
+    </>;
 
   const search = kind === 'guess' && <div className={s.search}>
     <PokemonSelector key={game.roundNumber} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={false}
@@ -117,7 +109,10 @@ export function LearnsetGuessGame({ room, selfId, onAction }: ActiveGameProps) {
     solveOrder={player?.solveOrder ?? null} roundPoints={player?.roundPoints ?? 0} verdict={lastRound ? learnsetVerdict(lastRound, selfId, participating) : null}
     countdown={`${last ? 'Clasificación' : 'Siguiente ronda'} en ${Math.max(1, transitionRemaining)}s`} titleRef={titleRef} />;
 
-  return <div className={cx('content-row', s.screen)}>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-  </div>;
+  // La única región viva es la del marco: dice también el último aviso y quién acaba de acertar (los chips solo se ven).
+  const liveText = [lastWarningAnnouncement, solver?.text, announcement].filter(Boolean).join(' ');
+  return <GameScreen gameName="Learnset Guess" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} meta={meta} heading={heading} timer={timer}
+    announcement={liveText} phases={<LearnsetNotices lastWarning={lastWarning} lastWarningKey={lastWarningAnnouncement} solver={solver} />} clue={clue}
+    hints={lastRound ? null : <LearnsetHints evolutionHint={active ? game.evolutionHint : null} className={s.hints} />}
+    side={side} bottom={bottom} className={s.screen} />;
 }

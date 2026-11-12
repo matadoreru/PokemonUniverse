@@ -15,20 +15,6 @@ import s from './TypeDuel.module.css';
 // Los sprites llegan como ruta del proxy opaco (`/api/pokemon/{id}/sprite`); se sirven desde el origen de la API.
 export const typeDuelSprite = (sprite: string) => sprite.startsWith('/api/') ? apiAsset(sprite) : sprite;
 
-/** Placa de la ronda (pantalla superior): ronda y fase, el título y, a la derecha, el plazo del servidor. */
-export function TypeDuelHud({ roundNumber, totalRounds, phaseLabel, heading, timer }: { roundNumber: number; totalRounds: number; phaseLabel: string; heading: string; timer: ReactNode }) {
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>Ronda {roundNumber} de {totalRounds}</Badge>
-        <Chip tone="neutral" icon={<Icon icon={Swords} size={18} />}>{phaseLabel}</Chip>
-      </div>
-      <h1 className={cx(s.heading, 'ol')} title={heading}>{heading}</h1>
-    </div>
-    <div className={s.hudTimer}>{timer}</div>
-  </Panel>;
-}
-
 export interface PickDuelist { id: string; name: string; member: RoomMemberView | undefined; color: string; locked: boolean; ownType: PokemonType | null }
 
 /**

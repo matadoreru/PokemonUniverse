@@ -28,15 +28,13 @@ interface PlateProps {
 }
 
 /**
- * Placa de acción del catálogo (`ActionPlate`) con el aviso para lectores en una región `status` siempre montada (solo
- * cambia su texto): así se anuncia cada cambio. Al título va el foco por programa cuando su control desaparece.
+ * Placa de acción del catálogo (`ActionPlate`). Al título va el foco por programa cuando su control desaparece. Lo que
+ * cambia lo anuncia la región viva del marco (`shinyStatusAnnouncement`).
  */
-function StatusPlate({ icon, tone, kicker, title, text, aside, wideAside = false, announcement, titleRef }: PlateProps & { announcement: string; titleRef: Ref<HTMLHeadingElement> }) {
+function StatusPlate({ icon, tone, kicker, title, text, aside, wideAside = false, titleRef }: PlateProps & { titleRef: Ref<HTMLHeadingElement> }) {
   const titleId = useId();
   return <ActionPlate titleId={titleId} titleRef={titleRef} icon={icon} tone={tone} kicker={kicker} title={title} text={text}
-    aside={aside} helpClassName={s.help} asideClassName={cx(wideAside && s.actionAsideWide)}>
-    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-  </ActionPlate>;
+    aside={aside} helpClassName={s.help} asideClassName={cx(wideAside && s.actionAsideWide)} />;
 }
 
 /**
@@ -52,7 +50,7 @@ function roundsText(rounds: number, suffix: string): string {
   return `${rounds} ${rounds === 1 ? `ronda ${suffix}` : `rondas ${suffix}s`}`;
 }
 
-/** Texto del aviso de la región `status` (cambia solo cuando cambia el estado que importa al jugador). */
+/** Texto de la región viva de la pantalla (cambia solo cuando cambia el estado que importa al jugador). */
 export function shinyStatusAnnouncement({ active, loading, reveal, participant, ownVote, correctOptionId, points, survival = null }: {
   active: boolean;
   loading: boolean;
@@ -104,8 +102,7 @@ export function ShinyVoteStatus({ active, loading = false, reveal, participant, 
   const focusKey = revealed ? `reveal-${correctOptionId}` : ownVote ? `vote-${ownVote.optionId}` : null;
   // Al montarse (recarga, volver a la sala) no se mueve el foco: solo en un cambio real de estado.
   useFocusOnTransition(focusKey, titleRef);
-  const announcement = shinyStatusAnnouncement({ active, loading, reveal, participant, ownVote, correctOptionId, points, survival });
-  return <StatusPlate {...shinyPlate({ active, loading, revealed, participant, selectedOption, ownVote, correctOptionId, points, submitting, onConfirm, survival })} announcement={announcement} titleRef={titleRef} />;
+  return <StatusPlate {...shinyPlate({ active, loading, revealed, participant, selectedOption, ownVote, correctOptionId, points, submitting, onConfirm, survival })} titleRef={titleRef} />;
 }
 
 function shinyPlate({ active, loading, revealed, participant, selectedOption, ownVote, correctOptionId, points, submitting, onConfirm, survival }: {

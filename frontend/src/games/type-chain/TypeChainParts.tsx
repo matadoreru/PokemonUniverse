@@ -1,10 +1,8 @@
 import type { RoomMemberView, TypeChainNode, TypeChainPublicState } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { AlertTriangle, CheckCircle2, CircleDashed, Gamepad2, Link2, Skull, TimerOff, Unplug, XCircle } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import { AlertTriangle, CheckCircle2, CircleDashed, Gamepad2, Skull, TimerOff, Unplug, XCircle } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { ServerTimer } from '../../components/ServerTimer';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
 import { guessSprite } from '../../room/guess-kit';
 import { playerColor } from '../../lib/player-color';
 import { Badge, Chip, cx, Icon, Panel, Row, ScoreValue, StateBox, TypeBadge } from '../../ui';
@@ -14,41 +12,6 @@ import s from './TypeChain.module.css';
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
 
 const nameOf = (members: ReadonlyMap<string, RoomMemberView>, id: string) => members.get(id)?.displayName ?? 'Entrenador';
-
-/**
- * Placa del turno (pantalla superior): turno, cadena y récord; de quién es el turno en texto con su color (la muestra
- * del color nunca va sola); a la derecha, «Saltar minijuego» y el plazo del turno (`Timer` del catálogo, que se pone
- * urgente en los 5 últimos segundos).
- */
-export function TypeChainHud({ game, members, colors, selfId, timer }: {
-  game: TypeChainPublicState;
-  members: ReadonlyMap<string, RoomMemberView>;
-  colors: ReadonlyMap<string, number>;
-  selfId: string;
-  timer: { deadline: number | null; serverOffset: number; totalMs: number };
-}) {
-  const current = game.currentPlayerId;
-  const heading = !current ? 'Preparando la cadena…' : current === selfId ? '¡Tu turno!' : `Turno de ${nameOf(members, current)}`;
-  const swatch = current ? ({ '--player': playerColor(colors.get(current) ?? 0) } as CSSProperties) : undefined;
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>Turno {game.turnNumber}</Badge>
-        <span className={s.gameName}>Type Chain</span>
-        <Chip tone="neutral" icon={<Icon icon={Link2} size={18} />}>{`Cadena ${game.chainNumber}${game.chainType ? ` · ${typeLabel(game.chainType)}` : ''} · ${game.chain.length} Pokémon`}</Chip>
-        <Chip tone="neutral">Récord {game.longestChain}</Chip>
-      </div>
-      <h1 className={cx(s.heading, 'ol')} title={heading}>
-        {swatch && <span className={s.swatch} style={swatch} aria-hidden="true" />}
-        <span className={s.headingText}>{heading}</span>
-      </h1>
-    </div>
-    <div className={s.hudSide}>
-      <GameSkipSlot className={s.skip} />
-      {timer.deadline !== null && <div className={s.timer}><ServerTimer deadline={timer.deadline} serverOffset={timer.serverOffset} label="Turno" totalMs={timer.totalMs} /></div>}
-    </div>
-  </Panel>;
-}
 
 /**
  * El tipo de la cadena (la pista): una `TypeBadge` grande en el hueco protagonista, con cuántos se llevan nombrados;

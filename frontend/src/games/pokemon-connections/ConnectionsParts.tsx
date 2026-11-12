@@ -1,5 +1,5 @@
 import type { ConnectionAnswerGroup, ConnectionPokemon, PokemonConnectionsPublicState, PokemonConnectionsRoundResult, RoomMemberView } from '@pokemon-universe/shared/public';
-import { CheckCircle2, Equal, Puzzle, Users, XCircle } from 'lucide-react';
+import { CheckCircle2, Equal, Users, XCircle } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
@@ -10,33 +10,6 @@ import { higherLowerRanking } from '../higher-lower/presentation';
 import { connectionsRevealOrder, connectionsRoundLine, connectionsStatusLabels, connectionsStatusTone } from './presentation';
 import { UNKNOWN_PLAYER_NAME } from '../../room/room-members';
 import s from './PokemonConnections.module.css';
-
-/**
- * Placa del puzle (pantalla superior): el puzle y su forma, el título y, a la derecha, el plazo (al revelar, el del avance
- * automático en el mismo hueco).
- */
-export function ConnectionsHud({ roundNumber, totalRounds, groupCount, groupSize, heading, source, timer }: {
-  roundNumber: number;
-  totalRounds: number;
-  groupCount: number;
-  groupSize: number;
-  heading: string;
-  /** Al revelar: de dónde sale el puzle. */
-  source?: PokemonConnectionsRoundResult['source'] | null;
-  timer: ReactNode;
-}) {
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>Puzle {roundNumber} de {totalRounds}</Badge>
-        <span className={s.shape}><Chip tone="neutral" icon={<Icon icon={Puzzle} size={18} />}>{groupCount} grupos de {groupSize}</Chip></span>
-        {source && <Chip tone="info">Solución {source === 'CURATED' ? 'curada' : 'generada'}</Chip>}
-      </div>
-      <h1 className={cx(s.heading, 'ol')} title={heading}>{heading}</h1>
-    </div>
-    <div className={s.hudTimer}>{timer}</div>
-  </Panel>;
-}
 
 /** Sprites del catálogo: las rutas de la API se sirven desde su origen; las URL absolutas, tal cual. */
 const spriteUrl = (sprite: string) => sprite.startsWith('/api/') ? apiAsset(sprite) : sprite;

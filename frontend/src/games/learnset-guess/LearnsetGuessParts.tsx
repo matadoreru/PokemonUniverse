@@ -1,6 +1,6 @@
 import { learnsetManualRevealPoints, type LearnsetGuessAttempt, type LearnsetGuessPublicState, type LearnsetMoveGroup, type LearnsetMoveHint, type LearnsetRoundResult, type MoveCategory, type RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { AlarmClock, BookOpen, Check, CheckCircle2, CircleDashed, Clock3, Coins, Equal, Eye, EyeOff, Hourglass, Lightbulb, Search, Sparkles, Swords, WifiOff, X } from 'lucide-react';
+import { AlarmClock, Check, CheckCircle2, CircleDashed, Clock3, Coins, Equal, Eye, EyeOff, Hourglass, Lightbulb, Search, Sparkles, Swords, WifiOff, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
@@ -18,20 +18,6 @@ export const learnsetSprite = (sprite: string) => sprite.startsWith('/api/') ? a
 
 const categoryIcons: Record<MoveCategory, LucideIcon> = { physical: Swords, special: Sparkles, status: CircleDashed };
 
-/** Placa de la ronda (pantalla superior): ronda, learnset de referencia, el título y el plazo. */
-export function LearnsetHud({ roundNumber, totalRounds, referenceGeneration, referenceSource, heading, timer }: { roundNumber: number; totalRounds: number; referenceGeneration: number; referenceSource: string; heading: string; timer: ReactNode }) {
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>Ronda {roundNumber} de {totalRounds}</Badge>
-        <Chip tone="neutral" icon={<Icon icon={BookOpen} size={18} />}>Learnset de Gen {referenceGeneration}<span className={s.source}> · {referenceSource}</span></Chip>
-      </div>
-      <h1 className={cx(s.heading, 'ol')} title={heading}>{heading}</h1>
-    </div>
-    <div className={s.hudTimer}>{timer}</div>
-  </Panel>;
-}
-
 /**
  * Pista evolutiva (si la ronda la da), en la franja del kit bajo las pistas reveladas: como en el resto de juegos, las
  * pistas van debajo de la pista principal y encima del buscador. Sin pista, nada.
@@ -42,17 +28,15 @@ export function LearnsetHints({ evolutionHint, className }: { evolutionHint: str
 }
 
 /**
- * La única región viva de la pantalla (siempre montada): el último aviso, quién acaba de acertar y, solo para lectores,
- * la pista nueva, el acierto propio o la revelación. Sin avisos visibles no ocupa sitio.
+ * Avisos de la ronda, entre la placa y las pistas: el último aviso y quién acaba de acertar, en chips. Solo se ven: los
+ * dice la región viva del marco (`GameScreen`). Sin avisos no ocupa sitio.
  */
-export function LearnsetNotices({ lastWarning, lastWarningAnnouncement, solver, announcement }: { lastWarning: string | null; /** Texto fijo del último aviso para lectores (el chip visible cuenta los segundos y no se anuncia). */ lastWarningAnnouncement: string | null; solver: { key: string; member: RoomMemberView; text: string } | null; announcement: string }) {
+export function LearnsetNotices({ lastWarning, lastWarningKey, solver }: { lastWarning: string | null; /** Texto fijo del último aviso (el chip cuenta los segundos): la clave de su rebote. */ lastWarningKey: string | null; solver: { key: string; member: RoomMemberView; text: string } | null }) {
   const visible = Boolean(lastWarning || solver);
-  return <div role="status" aria-live="polite" className={cx(s.notices, !visible && s.noticesIdle)}>
+  return <div className={cx(s.notices, !visible && s.noticesIdle)}>
     {/* Un solo rebote al aparecer cada aviso (la clave es su texto fijo, no la cuenta atrás): el latido de urgencia ya es el del reloj. */}
-    {lastWarning && <span key={lastWarningAnnouncement ?? lastWarning} className={cx(s.warning, 'motion-bump')} aria-hidden="true"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
-    {lastWarningAnnouncement && <span className="sr-only">{lastWarningAnnouncement}</span>}
+    {lastWarning && <span key={lastWarningKey ?? lastWarning} className={cx(s.warning, 'motion-bump')} aria-hidden="true" data-testid="learnset-last-warning"><Chip tone="bad" icon={<Icon icon={AlarmClock} size={18} />}>{lastWarning}</Chip></span>}
     {solver && <span key={solver.key} className={cx(s.solver, 'motion-bump')}><Chip tone="ok" icon={<Avatar name={solver.member.displayName} avatar={solver.member.avatar} size="xs" />}>{solver.text}</Chip></span>}
-    <span className="sr-only">{announcement}</span>
   </div>;
 }
 

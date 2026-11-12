@@ -1,23 +1,22 @@
 import type { PokemonConnectionsConfig, PokemonConnectionsPlayerState, PokemonConnectionsPublicState } from '@pokemon-universe/shared/public';
-import { ArrowRight, Check, CheckCircle2, Clock3, Eye, Lightbulb, MousePointerClick, ShieldX, Trophy, X } from 'lucide-react';
+import { ArrowRight, Check, CheckCircle2, Clock3, Eye, Lightbulb, MousePointerClick, Puzzle, ShieldX, Trophy, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ServerTimer } from '../../components/ServerTimer';
-import { ConnectionsBand, ConnectionsBoard, ConnectionsHud, ConnectionsProgress, ConnectionsRoundBoard } from './ConnectionsParts';
+import { ConnectionsBand, ConnectionsBoard, ConnectionsProgress, ConnectionsRoundBoard } from './ConnectionsParts';
 import { connectionsAnnouncement, connectionsFeedbackText, connectionsFocusKey, connectionsGroupAction, connectionsLivesText, connectionsPlateKind, nextAttemptFocus, type AttemptFocusState, type ConnectionsPlateKind } from './presentation';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { Chip, cx, Icon, Pill, ScorePop, ScreenSplit } from '../../ui';
+import { Chip, Icon, Pill, ScorePop } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { GuessPanel, type GuessPlateContent } from '../../room/guess-kit';
 import { type ActiveGameProps, sendWithBusy } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
 import s from './PokemonConnections.module.css';
 
 /**
- * Pokémon Connections (spec §2 y §6 «Juegos»). Arriba se mira: la placa del puzle con el plazo y el tablero, una
- * rejilla de `groupSize` columnas con las cartas seleccionables (`Card` conmutadoras) y, encima, cada grupo encontrado
- * como una banda con su tema en texto. Abajo se actúa: cuántas llevas elegidas, los errores que quedan, lo que dijo el
+ * Pokémon Connections (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa del puzle
+ * con el plazo y el tablero, una rejilla de `groupSize` columnas con las cartas seleccionables (`Card` conmutadoras) y,
+ * encima, cada grupo encontrado como una banda con su tema en texto. Abajo se actúa: cuántas llevas elegidas, los errores que quedan, lo que dijo el
  * último intento y «Comprobar». Al lado, el progreso de cada jugador (cuántos grupos, nunca cuáles).
  *
  * Al revelar, el tablero pasa a ser todos los grupos (los tuyos marcados como encontrados o no) y el lateral, la
@@ -82,25 +81,23 @@ export function PokemonConnectionsGame({ room, selfId, onAction }: ActiveGamePro
   const cards = lastRound ? [] : game.board.filter((pokemon) => !foundIds.has(pokemon.id));
 
   const roundMs = Math.max(1, (config?.roundSeconds ?? 120) * 1_000);
-  const timer = game.phase === 'ROUND_ACTIVE'
-    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} totalMs={roundMs} label="Tiempo" />
-    : lastRound ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label="Avance automático" /> : null;
+  const timer: GameTimer = game.phase === 'ROUND_ACTIVE'
+    ? { deadline: game.roundEndsAt, serverOffset: offset, totalMs: roundMs, label: 'Tiempo' }
+    : { deadline: lastRound ? game.nextTransitionAt : null, serverOffset: offset, label: 'Avance automático' };
+  const meta = <>
+    <span className={s.shape}><Chip tone="neutral" icon={<Icon icon={Puzzle} size={18} />}>{game.groupCount} grupos de {game.groupSize}</Chip></span>
+    {lastRound && <Chip tone="info">Solución {lastRound.source === 'CURATED' ? 'curada' : 'generada'}</Chip>}
+  </>;
 
-  const top = <div className={s.top}>
-    <ConnectionsHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} groupCount={game.groupCount} groupSize={game.groupSize}
-      heading={lastRound ? 'Estas eran las conexiones' : 'Encuentra las conexiones'} source={lastRound?.source ?? null} timer={timer} />
-    <div className={s.board}>
-      <ConnectionsBoard groupSize={game.groupSize} groupCount={game.groupCount} bands={bands} cards={cards} selected={selected}
-        onToggle={canSelect ? toggle : undefined} label={lastRound ? 'Solución del puzle' : `Tablero: elige ${game.groupSize} Pokémon que compartan algo`} />
-    </div>
+  const clue = <div className={s.board}>
+    <ConnectionsBoard groupSize={game.groupSize} groupCount={game.groupCount} bands={bands} cards={cards} selected={selected}
+      onToggle={canSelect ? toggle : undefined} label={lastRound ? 'Solución del puzle' : `Tablero: elige ${game.groupSize} Pokémon que compartan algo`} />
   </div>;
 
-  const side = <div className={s.sideColumn}>
-    {lastRound
-      ? <ConnectionsRoundBoard result={lastRound} groupCount={game.groupCount} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />
-      : <ConnectionsProgress game={game} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />}
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  // El progreso (o la clasificación de la ronda) mide lo que necesita: no llena la columna.
+  const side = lastRound
+    ? <ConnectionsRoundBoard result={lastRound} groupCount={game.groupCount} members={members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />
+    : <ConnectionsProgress game={game} members={members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />;
 
   const lastFound = feedback?.kind === 'CORRECT' ? foundGroups.find((group) => group.pokemon.some((pokemon) => feedback.attemptedPokemonIds.includes(pokemon.id))) ?? null : null;
   const announcement = connectionsAnnouncement({
@@ -113,10 +110,9 @@ export function PokemonConnectionsGame({ room, selfId, onAction }: ActiveGamePro
   });
   const bottom = <GuessPanel kind="waiting" titleRef={titleRef} question="" content={content} />;
 
-  return <div className={cx('content-row', s.screen)} data-testid="pokemon-connections-screen">
-    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-  </div>;
+  return <GameScreen gameName="Pokémon Connections" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} roundLabel={`Puzle ${game.roundNumber} de ${game.totalRounds}`}
+    meta={meta} heading={lastRound ? 'Estas eran las conexiones' : 'Encuentra las conexiones'} timer={timer} announcement={announcement}
+    clue={clue} side={side} bottom={bottom} testId="pokemon-connections-screen" />;
 }
 
 function plateContent({ kind, game, own, selected, submitting, ownResult, host, advancing, remaining, onSubmit, onAdvance }: {

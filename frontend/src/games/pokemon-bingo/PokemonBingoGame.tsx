@@ -1,15 +1,14 @@
 import type { BingoPublicCell, PokemonBingoConfig, PokemonBingoPlayerState, PokemonBingoPublicState } from '@pokemon-universe/shared/public';
 import { ArrowRight, CheckCircle2, Clock3, Eye, Grid3x3, Hourglass, Lock, Trash2, Trophy, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { ServerTimer } from '../../components/ServerTimer';
-import { BingoBoard, BingoHud, BingoPlayers } from './BingoParts';
+import { BingoBoard, BingoPlayers } from './BingoParts';
 import { bingoAnnouncement, bingoAttemptText, bingoCellLabel, bingoFocusKey, bingoMoveText, bingoPlateKind, bingoProgressText, type BingoPlateKind } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { Chip, ConfirmDialog, MomentCutin, cx, Dialog, Icon, Panel, Pill, ScreenSplit } from '../../ui';
+import { Chip, ConfirmDialog, MomentCutin, cx, Dialog, Icon, Panel, Pill, ScoreValue } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { GuessPanel, guessSeconds, type GuessPlateContent } from '../../room/guess-kit';
 import { type ActiveGameProps, ignoreFailure, sendWithBusy } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
@@ -19,7 +18,7 @@ import s from './PokemonBingo.module.css';
 interface PendingMove { pokemonId: string; pokemonName: string; from: BingoPublicCell; to: BingoPublicCell }
 
 /**
- * Pokémon Bingo (spec §2 y §6 «Juegos»). Arriba se mira: la placa del tablero con el plazo y el tablero propio, una
+ * Pokémon Bingo (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa del tablero con el plazo y el tablero propio, una
  * rejilla de `Card`s (condición, Pokémon colocado o vacía) que se eligen con `aria-pressed`. Abajo se actúa: la casilla
  * elegida con «Quitar Pokémon» y, al lado (debajo en el móvil), el buscador. Al lado, los tableros de todos: el de cada
  * rival se abre en un `Dialog`. Mover un Pokémon ya colocado se confirma en otro `Dialog`.
@@ -83,25 +82,26 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
   const winnerName = game.winnerId ? nameOf(game.winnerId) : null;
   const remaining = Math.ceil(useRemainingMs(game.nextTransitionAt, offset) / 1000);
   const durationMs = Math.max(1, (config?.durationSeconds ?? 120) * 1_000);
-  const timer = game.phase === 'ROUND_ACTIVE'
-    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} totalMs={durationMs} label="Tiempo" />
-    : game.phase === 'ROUND_RESULTS' ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label="Clasificación" /> : null;
+  // En el bingo, el plazo de la clasificación en el mismo hueco.
+  const timer: GameTimer = game.phase === 'ROUND_ACTIVE'
+    ? { deadline: game.roundEndsAt, serverOffset: offset, totalMs: durationMs, label: 'Tiempo' }
+    : { deadline: game.phase === 'ROUND_RESULTS' ? game.nextTransitionAt : null, serverOffset: offset, label: 'Clasificación' };
   const heading = kind === 'bingo' ? '¡BINGO!' : own ? 'Completa tu tablero' : 'Tableros en directo';
   const points = members.get(selfId)?.sessionPoints ?? null;
 
-  const top = <div className={s.top}>
-    <BingoHud width={game.width} height={game.height} heading={heading} progress={own} points={own ? points : null} timer={timer} />
-    {shown && <Panel variant="cream" scroll scrollLabel={own ? 'Tu tablero' : `Tablero de ${nameOf(shown.playerId)}`} className={cx(s.boardPanel)} bodyClassName={cx(s.boardBody)}
+  // Tu progreso y tus puntos de la sesión, junto al tamaño del tablero.
+  const meta = own && <>
+    <span data-testid="bingo-progress"><Chip tone={own.completed === own.total ? 'ok' : 'neutral'} icon={<Icon icon={Grid3x3} size={18} />}>Tu progreso · {own.completed}/{own.total}</Chip></span>
+    {points !== null && <span className={s.hudPoints}><Chip tone="neutral" icon={<Icon icon={Trophy} size={18} />}><ScoreValue value={points} self> pts</ScoreValue></Chip></span>}
+  </>;
+
+  const board = shown && <Panel variant="cream" scroll scrollLabel={own ? 'Tu tablero' : `Tablero de ${nameOf(shown.playerId)}`} className={cx(s.boardPanel)} bodyClassName={cx(s.boardBody)}
       title={own ? 'Tu tablero' : `Tablero de ${nameOf(shown.playerId)}`} right={<Chip tone={shown.completed === shown.total ? 'ok' : 'neutral'}>{bingoProgressText(shown)}</Chip>}>
       <BingoBoard board={shown} width={game.width} height={game.height} fill selectedCellId={kind === 'pick' ? selectedCell?.id ?? null : null}
         onSelect={kind === 'pick' ? setSelectedCellId : undefined} label={own ? 'Tu tablero: elige una casilla' : `Tablero de ${nameOf(shown.playerId)}`} />
-    </Panel>}
-  </div>;
+    </Panel>;
 
-  const side = <div className={s.sideColumn}>
-    <BingoPlayers game={game} members={members} colors={colors} selfId={selfId} onOpen={setRivalId} className={s.sidePanel} />
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  const side = <BingoPlayers game={game} members={members} colors={colors} selfId={selfId} onOpen={setRivalId} className={GAME_SIDE_FIT} />;
 
   const content = plateContent({
     kind, cell: selectedCell, index: selectedIndex, total: own?.total ?? 0, cooldownMs, attempt, winnerName, selfWon: game.winnerId === selfId,
@@ -133,10 +133,9 @@ export function PokemonBingoGame({ room, selfId, onAction }: ActiveGameProps) {
     {moveDialog}
     {/* Sin región viva propia: el bingo lo dice la región de la pantalla. */}
     {kind === 'bingo' && winnerName && <MomentCutin key={game.bingoAt ?? 0} tone="yellow" title="¡BINGO!" confetti={game.winnerId === selfId} subtitle={game.winnerId === selfId ? '¡Has completado tu tablero!' : `${winnerName} ha completado el tablero`} />}
-    <div className={cx('content-row', s.screen)} data-testid="pokemon-bingo-screen">
-      <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-      <ScreenSplit fill top={top} side={side} bottom={bottom} />
-    </div>
+    {/* Sin rondas: la insignia dice el tamaño del tablero y la pista entra de nuevo solo al cambiar de fase. */}
+    <GameScreen gameName="Pokémon Bingo" roundNumber={1} totalRounds={1} phase={game.phase} roundLabel={`Tablero ${game.width}×${game.height}`} meta={meta} heading={heading}
+      timer={timer} announcement={announcement} clue={board} side={side} bottom={bottom} testId="pokemon-bingo-screen" />
   </>;
 }
 

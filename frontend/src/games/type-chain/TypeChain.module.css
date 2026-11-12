@@ -1,86 +1,11 @@
 /*
- * Type Chain (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio. Arriba la
+ * Type Chain (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`): sin scroll de página en escritorio. Arriba la
  * placa del turno, el tipo de la cadena (crece con el hueco) y, al lado en escritorio, la cadena con su propio scroll;
  * abajo el buscador o la espera; en la columna lateral, los jugadores y los intentos fallidos.
  */
-.screen {
-  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
-  position: relative;
-  min-height: 100%;
-  padding-top: var(--sp-4);
-}
-@media (min-width: 1024px) {
-  .screen {
-    height: 100%;
-    padding-block: var(--sp-5);
-  }
-}
-
-.top {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-  /* Hueco para la sombra dura de las placas. */
-  padding-bottom: var(--sp-2);
-}
-.top > * {
-  flex: none;
-}
-@media (min-width: 1024px) {
-  .top {
-    height: 100%;
-  }
-  .top > .board {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-}
-
-/* Placa del turno: turno, cadena y récord arriba; de quién es el turno debajo; «Saltar» y el plazo a la derecha. */
-.hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-}
-.hudMain {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.hudMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.gameName {
-  font: 800 var(--fs-13) / 1.2 var(--font-text);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--sky-2);
-}
-.heading {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-width: 0;
-  font: 800 var(--fs-34) / 1.1 var(--font-display);
-  color: var(--white);
-}
-.headingText {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-/* Color del jugador del turno (nunca solo: el nombre va al lado). */
+/* Color del jugador del turno, antes del título (nunca solo: el nombre va al lado). */
 .swatch {
-  flex: none;
+  display: inline-block;
   width: 0.7em;
   height: 0.7em;
   border: var(--ol-2) solid var(--white);
@@ -88,18 +13,8 @@
   background: var(--player);
   box-shadow: 0 0 0 var(--ol-2) var(--navy);
 }
-.hudSide {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  min-width: 0;
-}
-.skip {
-  display: flex;
-  justify-content: flex-end;
-}
-.timer {
-  flex: none;
+.record {
+  display: inline-flex;
 }
 
 /* Tablero: el tipo de la cadena y, en escritorio, la cadena a su derecha. */
@@ -110,10 +25,12 @@
   min-width: 0;
 }
 @media (min-width: 1024px) {
+  /* Llena el hueco de la pista del marco sin crecer por su contenido (la cadena se desplaza por dentro). */
   .board {
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 1fr);
     gap: var(--sp-4);
+    min-height: 0;
   }
   .board > * {
     min-height: 0;
@@ -272,33 +189,6 @@
   opacity: 0.55;
 }
 
-/* Columna lateral: los jugadores miden lo que necesitan (con tope) y los fallos llenan el resto. */
-.side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-height: 0;
-}
-.side > * {
-  flex: none;
-  max-height: 20rem;
-}
-@media (min-width: 1024px) {
-  .side {
-    height: 100%;
-  }
-  .side > .playersPanel {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: 62%;
-  }
-  .side > .attemptsPanel {
-    flex: 1 1 auto;
-    min-height: 7rem;
-    max-height: none;
-  }
-}
-
 @media (max-width: 1023px) {
   /* Móvil y tableta: el tipo es una franja baja (placa a la izquierda) y la cadena va debajo, con tope. */
   .stage {
@@ -327,43 +217,9 @@
   }
 }
 @media (max-width: 639px) {
-  /* Móvil: turno y título a la izquierda, el plazo a la derecha y «Saltar» debajo, a lo ancho. */
-  .hud {
-    grid-template-areas: 'main timer' 'skip skip';
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-3);
-  }
-  .hudMain {
-    grid-area: main;
-    gap: var(--sp-1);
-  }
-  .hudSide {
-    display: contents;
-  }
-  .timer {
-    grid-area: timer;
-  }
-  .skip {
-    grid-area: skip;
-  }
-  .skip:empty {
-    display: none;
-  }
   /* El récord ya va en la cadena. */
-  .hudMeta > span:nth-child(n + 4) {
+  .record {
     display: none;
-  }
-  /* El nombre del juego ya va en la placa de la sala: aquí solo para lectores. */
-  .gameName {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-  .heading {
-    font-size: var(--fs-22);
   }
   .stage {
     grid-template-columns: 9.5rem minmax(0, 1fr);
@@ -379,32 +235,14 @@
     display: none;
   }
 }
-/* Escritorio bajo (720 px): la placa del turno algo más baja. */
+/* Escritorio bajo (720 px). */
 @media (min-width: 1024px) and (max-height: 800px) {
-  .hud {
-    padding-block: var(--sp-2);
-  }
-  .heading {
-    font-size: var(--fs-26);
-  }
   .rule {
     font-size: var(--fs-18);
   }
 }
 /* Escritorio grande (≥1600×900): la pantalla se llena; la carta, la regla y las franjas crecen. */
 @media (min-width: 1600px) and (min-height: 900px) {
-  .screen > div {
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 22vw, 420px);
-  }
-  .hud {
-    padding: var(--sp-4) var(--sp-5);
-  }
-  .heading {
-    font-size: var(--fs-44);
-  }
-  .gameName {
-    font-size: var(--fs-15);
-  }
   .emblemSlot {
     height: min(100cqh, 40rem);
   }
