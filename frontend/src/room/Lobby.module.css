@@ -176,6 +176,13 @@
   right: var(--sp-2);
   bottom: var(--sp-2);
 }
+/* Por debajo de 640 px la carta es tan estrecha que un chip largo («2 modos en juego») llega a la esquina: la carta
+   deja debajo de su contenido el alto del «?». */
+@media (max-width: 639.98px) {
+  .cell > :first-child {
+    padding-bottom: calc(28px + var(--sp-3));
+  }
+}
 /* Insignias TOP / Experimental en la esquina superior derecha de la carta (la carta ya es `position: relative`). */
 .corner {
   position: absolute;
