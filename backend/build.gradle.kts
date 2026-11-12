@@ -73,8 +73,8 @@ dependencies {
 }
 
 // Imagen nativa (Dockerfile.native). Sin más argumentos el compilador de GraalVM toma la memoria y los hilos que
-// encuentra; -PnativeImageXmx=7g y -PnativeImageParallelism=4 lo acotan en una máquina compartida. El análisis de este
-// backend no cabe en 5 GB de heap (se queda en GC continuo): cuenta con 8 GB libres o más.
+// encuentra; -PnativeImageXmx=7g y -PnativeImageParallelism=4 lo acotan en una máquina compartida. Con 4g y con 5g de
+// heap el análisis de este backend se queda en GC continuo; cuánto necesita no está medido.
 // -PnativeImageArgs="-Ob" añade argumentos sueltos (p. ej. la compilación rápida sin optimizar, para iterar). Los
 // metadatos de reflexión, recursos y JNI están en src/main/resources/META-INF/native-image/.
 val nativeImageXmx = providers.gradleProperty("nativeImageXmx").orElse("")

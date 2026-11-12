@@ -8,9 +8,9 @@ RUN ./gradlew --no-daemon --version
 COPY src ./src
 COPY openapi ./openapi
 # Memoria e hilos del compilador de GraalVM (ver graalvmNative en build.gradle.kts). Vacíos, GraalVM usa lo que
-# encuentra (así compila en un runner de 16 GB); para acotarlo: --build-arg NATIVE_IMAGE_XMX=7g
-# --build-arg NATIVE_IMAGE_PARALLELISM=4. Con 4g y con 5g el análisis no termina (GC continuo), y el contenedor de
-# compilación necesita el heap más ~1 GB (resto del compilador y Gradle).
+# encuentra; para acotarlo: --build-arg NATIVE_IMAGE_XMX=7g --build-arg NATIVE_IMAGE_PARALLELISM=4. Con 4g y con 5g
+# el análisis no termina (GC continuo); cuánto necesita no está medido. El contenedor de compilación necesita el heap
+# más ~1 GB (resto del compilador y Gradle).
 # NATIVE_IMAGE_ARGS añade argumentos sueltos (p. ej. -Ob para una compilación rápida sin optimizar).
 ARG NATIVE_IMAGE_XMX=""
 ARG NATIVE_IMAGE_PARALLELISM=""

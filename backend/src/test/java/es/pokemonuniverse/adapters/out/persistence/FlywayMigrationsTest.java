@@ -71,6 +71,35 @@ class FlywayMigrationsTest {
     assertTrue(schema(db).stream().anyMatch(s -> s.startsWith("CREATE TABLE public.\"User\" (")));
   }
 
+  /**
+   * El binario nativo da a Flyway las migraciones ya listadas ({@link NativeMigrationResources}) en vez de dejarle
+   * escanear el classpath. Flyway debe verlas igual: mismas versiones y mismos checksums, en los dos sentidos (una BD
+   * migrada por el escáner valida con el proveedor y al revés) y sin aplicar nada de más.
+   */
+  @Test
+  void nativeResourceProviderIsInterchangeableWithTheClasspathScanner() throws Exception {
+    var directory = Path.of(FlywayMigrationsTest.class.getClassLoader().getResource(NativeMigrationResources.LOCATION).toURI());
+
+    var scanned = createDatabase();
+    FlywayMigrations.migrate(dataSource(scanned));
+    var historyBefore = history(scanned);
+    var withProvider = FlywayMigrations.configure(dataSource(scanned))
+        .resourceProvider(NativeMigrationResources.load(directory)).load();
+    withProvider.validate();
+    assertEquals(0, withProvider.migrate().migrationsExecuted);
+    assertEquals(historyBefore, history(scanned));
+
+    var provided = createDatabase();
+    var result = FlywayMigrations.configure(dataSource(provided))
+        .resourceProvider(NativeMigrationResources.load(directory)).load().migrate();
+    assertEquals(historyBefore.size(), result.migrationsExecuted);
+    assertEquals(historyBefore, history(provided));
+    assertEquals(String.join("\n\n", schema(scanned)), String.join("\n\n", schema(provided)));
+    var scanner = FlywayMigrations.configure(dataSource(provided)).load();
+    scanner.validate();
+    assertEquals(0, scanner.migrate().migrationsExecuted);
+  }
+
   @Test
   void prismaDatabaseWithBaselineStartsUnchanged() throws Exception {
     var db = createDatabase();

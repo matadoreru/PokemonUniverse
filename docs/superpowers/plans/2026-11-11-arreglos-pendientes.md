@@ -79,5 +79,5 @@ funciona en PRO. Si es incorrecto, un rollback a través del corte dejaría de e
     ByteBuddy, migraciones de Flyway en el binario, `Dockerfile.native` con las bibliotecas de AWT y WebP y el
     `HEALTHCHECK` (`--healthcheck`), y el humo `scripts/backend-native-smoke.mjs`. Un binario nativo de prueba con
     ImageIO, TwelveMonkeys, WebP por JNI, ICU4J y el listado de migraciones sí funciona en UBI-micro.
-  - Siguiente paso: compilar donde haya 8 GB libres o más y pasar el humo. Detalle y receta en
-    `docs/migracion-java-pendientes.md`, «Qué queda», punto 1.
+  - Siguiente paso: compilar en una máquina con más memoria libre (cuánta hace falta no está medido) y pasar el
+    humo. Detalle y receta en `docs/migracion-java-pendientes.md`, «Qué queda», punto 1.

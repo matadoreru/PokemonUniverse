@@ -20,10 +20,10 @@ import org.flywaydb.core.api.ResourceProvider;
 import org.flywaydb.core.api.resource.LoadableResource;
 
 /**
- * Migraciones de Flyway dentro de un binario nativo. El escáner de Flyway recorre el classpath por protocolo
- * ({@code file:}, {@code jar:}…) y no conoce {@code resource:}, el de los recursos empaquetados por native-image: sin
- * este proveedor no encuentra ninguna migración. Aquí se listan con el sistema de archivos {@code resource:/} de
- * GraalVM. Solo se usa en el binario nativo ({@link FlywayMigrations}); en la JVM escanea Flyway, como siempre.
+ * Migraciones de Flyway dentro de un binario nativo. El escáner de Flyway recorre el classpath por protocolo y solo
+ * trae lectores para {@code file:}, {@code jar:}, JBoss y OSGi, no para {@code resource:}, el de los recursos
+ * empaquetados por native-image. Aquí se listan con el sistema de archivos {@code resource:/} de GraalVM. Solo se usa
+ * en el binario nativo ({@link FlywayMigrations}); en la JVM escanea Flyway, como siempre.
  */
 final class NativeMigrationResources implements ResourceProvider {
 

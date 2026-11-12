@@ -257,8 +257,9 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 1. **Imagen nativa (parte G): preparada, sin verificar entera.** Rama `backend/imagen-nativa` (2026-11-13). El
    binario completo **no se ha podido compilar en la máquina de desarrollo** (falta memoria, ver abajo), así que
-   nadie lo ha visto arrancar todavía. Se despliega la imagen JVM; la nativa se construye solo a mano
-   (`backend-native.yml`).
+   nadie lo ha visto arrancar todavía, ni se ha reproducido el fallo de arranque original: lo de ByteBuddy y lo del
+   escáner de Flyway son previsiones (leyendo las bibliotecas), no errores observados. Se despliega la imagen JVM; la
+   nativa se construye solo a mano (`backend-native.yml`).
    - **Qué se ha hecho.**
      - Metadatos de GraalVM en `backend/src/main/resources/META-INF/native-image/es.pokemonuniverse/`:
        `pokemon-universe-backend/reachability-metadata.json` es la salida del agente de trazas
@@ -271,8 +272,10 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
      - Hibernate sin ByteBuddy: en el binario, `Application` fija `jpa.default.compile-time-hibernate-proxies=true`
        (`NativeImage.configure()`), que cambia el proveedor de bytecode por el de introspecciones de Micronaut. Las
        entidades no tienen asociaciones, así que no hacen falta `@GenerateProxy`. En la JVM no se ejecuta.
-     - Flyway: su escáner no conoce el protocolo `resource:` de native-image; en el binario, `FlywayMigrations` le
-       pasa las migraciones ya listadas (`NativeMigrationResources`).
+     - Flyway: su escáner de classpath solo trae lectores para `file:`, `jar:`, JBoss y OSGi, no para el
+       `resource:` de native-image; en el binario, `FlywayMigrations` le pasa las migraciones ya listadas
+       (`NativeMigrationResources`). `FlywayMigrationsTest` comprueba en la JVM que ese proveedor y el escáner son
+       intercambiables (mismos checksums, misma BD).
      - `Dockerfile.native`: copia junto al binario las bibliotecas del JDK que native-image no enlaza (`libawt`,
        `libawt_headless`, `libjavajpeg`, `liblcms`…) y `libwebp-imageio.so`, los artworks y `/data/avatars`;
        `HEALTHCHECK` con el propio binario (`/app/backend --healthcheck`, `tools.Healthcheck`); `ENTRYPOINT` con
@@ -282,21 +285,28 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
      migraciones por `resource:/`; `Collations` y el formato `es-ES` de ICU; los siete avatares de
      `src/test/resources/avatars` (JPEG CMYK y progresivo con EXIF, PNG, WebP), con el mismo tamaño de salida que
      en la JVM; el codificador WebP por JNI, también con raíz de solo lectura y `/tmp` `noexec` (solo con
-     `-Djava.library.path=/app`; sin él falla con `UnsatisfiedLinkError`); los tres `-XX`/`-D` del `ENTRYPOINT`; y
-     la sonda `--healthcheck` contra un puerto cerrado (sale con 1). `libfontmanager.so` pide `libfreetype` y
-     `libawt_xawt.so` pide X11: no están en UBI-micro y no hacen falta mientras no se dibuje texto.
+     `-Djava.library.path=/app`; sin él falla con `UnsatisfiedLinkError`); los dos `-XX` y los `-D` de AWT y
+     `java.library.path` del `ENTRYPOINT` (el de logback, no); y `Healthcheck.run` contra un puerto cerrado (sale
+     con 1; la entrada por `Application --healthcheck` solo se ha ejecutado en la JVM). `libfontmanager.so` pide
+     `libfreetype` y `libawt_xawt.so` pide X11: no están en UBI-micro y no hacen falta mientras no se dibuje texto.
    - **Qué falta.** Compilar el binario completo y pasarle el humo. En la máquina de desarrollo (15 GB, unos 6 GB
-     libres) el análisis de native-image no cabe: con `-J-Xmx4g` y con `-J-Xmx5g` se queda en GC continuo (heap
-     viejo al 100 %, más de 360 000 métodos en el análisis) y con `-J-Xmx6g` el contenedor de compilación (7 GB)
-     muere por memoria. Hace falta una máquina con 8 GB libres o más (el runner de `backend-native.yml` tiene 16).
-     Nada de lo siguiente está visto en nativo: el arranque de Micronaut, Netty y logback, Hibernate con el
-     proveedor de bytecode de compilación, el pool y el driver de PostgreSQL, Micronaut Serialization, `/ws` y la
-     sincronización de datos. Es de esperar algún registro de reflexión que falte en rutas que la traza no pisó
-     (administración, correo SMTP, TCGdex completo).
+     libres y el swap casi lleno) hubo tres intentos y ninguno pasó del análisis: con `-J-Xmx4g` y con `-J-Xmx5g`
+     el compilador se queda en GC continuo (generación vieja al 100 %; con 5g, 145 GC completos y 215 s de GC en
+     5 minutos, y 363 841 métodos ya creados por el análisis), y con `-J-Xmx6g` en un contenedor de 7 GB native-image
+     termina con «The Native Image build process ran out of memory». **Cuánta memoria necesita no está medido**:
+     el intento de 6g no dice si 6g bastan (murió por el tope del contenedor), y `main` no se ha compilado aquí, así
+     que tampoco se sabe si los 2 653 tipos registrados por la traza encarecen el análisis. El binario de prueba
+     analizó 33 343 métodos. Nada de lo siguiente está visto en nativo: el arranque de Micronaut, Netty y logback,
+     Hibernate con el proveedor de bytecode de compilación, la validación y la migración de Flyway, el pool y el
+     driver de PostgreSQL, Micronaut Serialization, `/ws` y la sincronización de datos. Es de esperar algún registro
+     de reflexión que falte en rutas que la traza no pisó (administración, correo SMTP, TCGdex completo).
    - **Cómo seguir.**
-     1. `podman build --format docker -f backend/Dockerfile.native -t pu-backend-native:prueba backend`
-        (`--build-arg NATIVE_IMAGE_XMX=7g --build-arg NATIVE_IMAGE_PARALLELISM=4` para acotarlo; `--format docker`
-        para que podman conserve el `HEALTHCHECK`).
+     1. En una máquina con más memoria libre (el runner de `backend-native.yml` debería valer; sin comprobar),
+        compilar `main` y la rama con los mismos límites y comparar los recuentos de `[2/8] Performing analysis`:
+        `podman build --format docker -f backend/Dockerfile.native -t pu-backend-native:prueba backend`
+        (`--build-arg NATIVE_IMAGE_XMX=… --build-arg NATIVE_IMAGE_PARALLELISM=…` para acotarlo; `--format docker`
+        para que podman conserve el `HEALTHCHECK`). El paso que copia las bibliotecas a `/out` y la etapa final del
+        `Dockerfile.native` tampoco se han ejecutado nunca.
      2. Arrancarlo contra una BD con catálogo: `MICRONAUT_ENVIRONMENTS=prod`, `JDBC_URL`, `DB_USER`, `DB_PASSWORD`,
         `JWT_SECRET`, `WEB_ORIGIN`, `COOKIE_SECURE=false`, `ROOMS_ENABLED=true`, `PORT`.
      3. `node scripts/backend-native-smoke.mjs http://127.0.0.1:<puerto>` y borrar después las cuentas `nativa_*`.
@@ -325,7 +335,7 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 | Riesgo | Detalle |
 | --- | --- |
-| Imagen nativa | **Sin verificar entera**: metadatos, `Dockerfile.native` y sonda `--healthcheck` están en la rama `backend/imagen-nativa`, y AWT/ImageIO, TwelveMonkeys, `webp-imageio` (JNI), ICU4J y el listado de migraciones de Flyway funcionan en un binario nativo de prueba sobre UBI-micro; el binario completo no se ha compilado (el análisis necesita más de los ~6 GB libres de la máquina de desarrollo), así que su arranque con Micronaut e Hibernate sigue sin verse. Se construye solo a mano (`backend-native.yml`), fuera de la cadena de `deploy-pre`. Se despliega la imagen JVM. Ver «Qué queda», punto 1. |
+| Imagen nativa | **Sin verificar entera**: metadatos, `Dockerfile.native` y sonda `--healthcheck` están en la rama `backend/imagen-nativa`, y AWT/ImageIO, TwelveMonkeys, `webp-imageio` (JNI), ICU4J y el listado de migraciones de Flyway funcionan en un binario nativo de prueba sobre UBI-micro; el binario completo no se ha compilado (tres intentos parados por memoria en la máquina de desarrollo, con unos 6 GB libres; la memoria que necesita no está medida), así que su arranque con Micronaut e Hibernate sigue sin verse. Se construye solo a mano (`backend-native.yml`), fuera de la cadena de `deploy-pre`. Se despliega la imagen JVM. Ver «Qué queda», punto 1. |
 | E2E fuera de CI | Playwright necesita un catálogo sembrado (`npm run db:seed`, descarga de PokéAPI); ningún workflow lo ejecuta. |
 | Micronaut 5.1 | Versión reciente (5.1.5); hay que vigilar versiones de parche y la compatibilidad de Micronaut Data/Serialization. |
 | Imagen base | `eclipse-temurin:25-jre-alpine` (amd64/arm64). La libwebp de `webp-imageio` 0.11.0 está enlazada contra glibc, pero solo pide símbolos que musl exporta: se comprobó codificando en la imagen Alpine en amd64 y, con `webp-arm64`, en arm64 (ejecución 41657262671). Un push normal publica solo amd64; arm64 sale con los tags `v*`. |
