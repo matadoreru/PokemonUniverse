@@ -1,6 +1,6 @@
 import { IMPOSTOR_SKIP_TARGET, type ImpostorEliminationReveal, type ImpostorVoteResult, type PokemonImpostorPlayerState, type PokemonImpostorPublicState, type RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
-import { Brain, Check, CircleDashed, Eye, ShieldCheck, Skull, SkipForward, UserX, Users } from 'lucide-react';
+import { Brain, Check, CircleDashed, Eye, ShieldCheck, Skull, SkipForward, UserX } from 'lucide-react';
 import { Fragment, useId, type CSSProperties, type ReactNode, type Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { playerColor } from '../../lib/player-color';
@@ -31,22 +31,6 @@ function personRow(people: ImpostorPeople, id: string) {
     disconnected: member?.presence !== undefined && member.presence !== 'CONNECTED',
     avatar: <span className={s.rowAvatar}><Avatar name={name} avatar={member?.avatar} level={member?.level} size="sm" /></span>,
   };
-}
-
-/** Placa de la ronda (pantalla superior): ronda, vivos y desempate; el título de la fase y el tiempo a la derecha. */
-export function ImpostorHud({ roundLabel, alive, tiebreak, title, timer, strip }: { roundLabel: string; alive: number; tiebreak: boolean; title: string; timer: ReactNode; /** Rol compacto (solo en el móvil). */ strip?: ReactNode }) {
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>{roundLabel}</Badge>
-        <Chip tone="neutral" icon={<Icon icon={Users} size={18} />}>{alive} {alive === 1 ? 'vivo' : 'vivos'}</Chip>
-        {tiebreak && <Chip tone="warn">Desempate</Chip>}
-      </div>
-      <h1 className={cx(s.title, 'ol')}>{title}</h1>
-    </div>
-    <div className={s.hudTimer}>{timer}</div>
-    {strip}
-  </Panel>;
 }
 
 /** Icono y texto de un rol propio. */
@@ -116,10 +100,10 @@ export function ImpostorRoleStrip({ player, people }: { player: PokemonImpostorP
  * Tu rol en la columna lateral (todas las fases salvo el reparto): rol, Pokémon secreto y, al impostor durante las
  * pistas, su único intento de adivinar el Pokémon.
  */
-export function ImpostorRolePanel({ player, phase, guessOpen, onToggleGuess, people }: { player: PokemonImpostorPlayerState; phase: PokemonImpostorPublicState['phase']; guessOpen: boolean; onToggleGuess(): void; people: ImpostorPeople }) {
+export function ImpostorRolePanel({ player, phase, guessOpen, onToggleGuess, people, className }: { player: PokemonImpostorPlayerState; phase: PokemonImpostorPublicState['phase']; guessOpen: boolean; onToggleGuess(): void; people: ImpostorPeople; className?: string | undefined }) {
   const look = roleLook(player.role);
   const guessing = phase === 'CLUE_PHASE' && player.role === 'IMPOSTOR';
-  return <Panel title="Tu rol" variant="cream" as="section" bodyClassName={cx(s.rolePanel)}
+  return <Panel title="Tu rol" variant="cream" as="section" {...(className ? { className } : {})} bodyClassName={cx(s.rolePanel)}
     right={<span className={cx(s.roleTag, look.tone)}><Icon icon={look.icon} size={18} />{look.label}</span>}>
     <SecretPokemon player={player} box="side" />
     <FellowsLine player={player} people={people} />

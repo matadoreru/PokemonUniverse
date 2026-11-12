@@ -1,82 +1,22 @@
 /*
- * Pokémon Connections (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Pokémon Connections (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`): sin scroll de página en escritorio.
  * Arriba la placa del puzle y el tablero (una rejilla de `--cols` × `--rows` que llena el hueco: bandas de los grupos
  * encontrados y cartas); abajo la selección y «Comprobar»; en la columna lateral, el progreso de cada jugador.
  */
-.screen {
-  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
-  position: relative;
-  min-height: 100%;
-  padding-top: var(--sp-4);
-}
-@media (min-width: 1024px) {
-  .screen {
-    height: 100%;
-    padding-block: var(--sp-5);
-  }
-}
-
-.top {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-  /* Hueco para la sombra dura de las cartas. */
-  padding-bottom: var(--sp-2);
-}
-.top > * {
-  flex: none;
-}
-@media (min-width: 1024px) {
-  .top {
-    height: 100%;
-  }
-  .top > .board {
-    flex: 1 1 0;
-    min-height: 14rem;
-  }
-}
-
-/* Placa del puzle: el puzle y su forma arriba, el título debajo, el plazo a la derecha. */
-.hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-}
-.hudMain {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.hudMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-}
-.heading {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 800 var(--fs-34) / 1.1 var(--font-display);
-  color: var(--yellow);
-}
+/* La forma del puzle (chip de la placa de la ronda): se oculta en el móvil. */
 .shape {
   display: inline-flex;
-}
-.hudTimer {
-  display: flex;
-  justify-content: flex-end;
 }
 
 /* Tablero: rejilla de `--cols` columnas y `--rows` filas iguales que llena el alto libre. */
 .board {
   display: flex;
   min-width: 0;
+}
+@media (min-width: 1024px) {
+  .board {
+    min-height: 14rem;
+  }
 }
 .grid {
   display: grid;
@@ -207,33 +147,6 @@
   font: 800 var(--fs-13) / 1.2 var(--font-text);
 }
 
-/* Columna lateral: el progreso (o la clasificación de la ronda) y «Saltar minijuego». */
-.sideColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-height: 0;
-}
-.sideColumn > * {
-  flex: none;
-}
-.sidePanel {
-  max-height: 22rem;
-}
-@media (min-width: 1024px) {
-  .sideColumn {
-    height: 100%;
-  }
-  .sideColumn > .sidePanel {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: none;
-  }
-}
-.skip {
-  display: flex;
-  justify-content: flex-end;
-}
 .sideHint {
   margin-bottom: var(--sp-2);
   font: 700 var(--fs-13) / 1.35 var(--font-text);
@@ -298,8 +211,12 @@
 
 /* Móvil y tableta: tablero compacto (cabe entero sobre la placa pegada al fondo); bandas con los nombres en texto. */
 @media (max-width: 1023px) {
+  /* Con la placa de la ronda del marco, las cartas algo más bajas: el tablero entero cabe sobre la placa del fondo. */
+  .grid {
+    grid-auto-rows: minmax(4.625rem, auto);
+  }
   .grid > [data-connection-card] {
-    min-height: 4.75rem;
+    min-height: 4.625rem;
   }
   .grid > [data-connection-card] > span[data-part='art'] {
     max-height: 3rem;
@@ -312,17 +229,9 @@
   }
 }
 @media (max-width: 639px) {
-  .hud {
-    padding: var(--sp-2) var(--sp-3);
-  }
   /* La forma del puzle ya se ve en el tablero: en el móvil, la placa en menos líneas. */
   .shape {
     display: none;
-  }
-  /* En el móvil el título se parte en dos líneas antes que recortarse. */
-  .heading {
-    font-size: var(--fs-22);
-    white-space: normal;
   }
   .grid {
     gap: var(--sp-1);
@@ -348,12 +257,6 @@
  * en ~80 px el sprite encima del nombre se quedaría en 30 px); las bandas, sin los nombres de los Pokémon.
  */
 @media (min-width: 1024px) and (max-height: 800px) {
-  .hud {
-    padding-block: var(--sp-2);
-  }
-  .heading {
-    font-size: var(--fs-26);
-  }
   .grid > [data-connection-card] {
     flex-direction: row;
     justify-content: flex-start;
@@ -377,12 +280,6 @@
 
 /* Escritorio grande (≥1600×900): la pantalla se llena; el título, las bandas y los nombres crecen. */
 @media (min-width: 1600px) and (min-height: 900px) {
-  .hud {
-    padding: var(--sp-4) var(--sp-5);
-  }
-  .heading {
-    font-size: var(--fs-44);
-  }
   .grid > [data-connection-card] > span:nth-of-type(2) {
     font-size: var(--fs-22);
   }

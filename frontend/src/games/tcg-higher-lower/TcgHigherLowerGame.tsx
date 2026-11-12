@@ -1,17 +1,15 @@
 import type { TcgHigherLowerChoice, TcgHigherLowerConfig, TcgHigherLowerPlayerState, TcgHigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { ServerTimer } from '../../components/ServerTimer';
-import { HigherLowerHud } from '../higher-lower/HigherLowerParts';
 import { formatTcgPrice, tcgAnnouncement, tcgChoiceFromShortcut, tcgFocusKey, tcgPlateKind, tcgVerdict } from './presentation';
 import { TcgDuelCard, TcgPlate, TcgPriceStrip, TcgSidebar } from './TcgParts';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { cx, ScreenSplit } from '../../ui';
+import { cx } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
 import { usePendingAction } from '../../room/game-kit/usePendingAction';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { higherLowerRevealCountdown } from '../higher-lower/higher-lower-labels';
 import type { ActiveGameProps } from '../../room/room-command';
 import { useRoomMembers } from '../../room/room-members';
@@ -19,8 +17,8 @@ import hl from '../higher-lower/HigherLower.module.css';
 import s from './TcgHigherLower.module.css';
 
 /**
- * Higher or Lower: Cartas (spec §2 y §6 «Juegos»), con el lenguaje de Higher or Lower. Arriba se mira: la placa con la
- * ronda y el tiempo, el duelo de dos cartas TCG (la nueva con «¿? €» hasta revelar, y entonces gira) y, al revelar, la
+ * Higher or Lower: Cartas (spec §2 y §6 «Juegos»), con el lenguaje de Higher or Lower y en el marco de juego
+ * (`GameScreen`). Arriba se mira: la placa con la ronda y el tiempo, el duelo de dos cartas TCG (la nueva con «¿? €» hasta revelar, y entonces gira) y, al revelar, la
  * franja con los dos precios y la diferencia. Abajo se actúa: «Más / Igual / Menos» (atajos 1–3), la respuesta
  * bloqueada o el veredicto con los puntos. Al lado, el marcador con las rachas y, al revelar, qué eligió cada uno.
  *
@@ -61,24 +59,17 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: ActiveGameProps) 
   });
 
   const roundMs = Math.max(1, (config?.roundSeconds ?? 15) * 1_000);
-  const timer = active
-    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} totalMs={roundMs} label="Tiempo" />
-    : lastRound ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label={game.roundNumber >= game.totalRounds ? 'Clasificación' : 'Siguiente ronda'} /> : null;
+  const timer: GameTimer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, totalMs: roundMs, label: 'Tiempo' }
+    : { deadline: lastRound ? game.nextTransitionAt : null, serverOffset: offset, label: game.roundNumber >= game.totalRounds ? 'Clasificación' : 'Siguiente ronda' };
 
-  const top = <div className={cx(hl.top, lastRound && hl.revealed)}>
-    <HigherLowerHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} category="Precio de mercado" visibility={null} timer={timer} />
-    <div className={s.duel} role="group" aria-label="Duelo de precios">
-      <TcgDuelCard side="previous" card={game.previousCard} price={game.previousCard.price} currency={game.currency} flip={false} leader={comparison !== null && comparison <= 0} />
-      <span className={cx(hl.vs, 'ol')} aria-hidden="true">VS</span>
-      <TcgDuelCard key={`current-${game.roundNumber}`} side="current" card={game.currentCard} price={lastRound ? lastRound.currentPrice : null} currency={game.currency} flip={lastRound !== null} leader={comparison !== null && comparison >= 0} />
-    </div>
-    {lastRound && <TcgPriceStrip previous={lastRound.previousPrice} current={lastRound.currentPrice} currency={game.currency} correctAnswer={lastRound.correctAnswer} />}
+  const duel = <div className={s.duel} role="group" aria-label="Duelo de precios">
+    <TcgDuelCard side="previous" card={game.previousCard} price={game.previousCard.price} currency={game.currency} flip={false} leader={comparison !== null && comparison <= 0} />
+    <span className={cx(hl.vs, 'ol')} aria-hidden="true">VS</span>
+    <TcgDuelCard key={`current-${game.roundNumber}`} side="current" card={game.currentCard} price={lastRound ? lastRound.currentPrice : null} currency={game.currency} flip={lastRound !== null} leader={comparison !== null && comparison >= 0} />
   </div>;
-
-  const side = <div className={hl.sideColumn}>
-    <TcgSidebar game={game} lastRound={lastRound} members={members} colors={colors} selfId={selfId} className={hl.sidePanel} />
-    <GameSkipSlot className={hl.skip} />
-  </div>;
+  const strip = lastRound ? <TcgPriceStrip previous={lastRound.previousPrice} current={lastRound.currentPrice} currency={game.currency} correctAnswer={lastRound.correctAnswer} /> : null;
+  const side = <TcgSidebar game={game} lastRound={lastRound} members={members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />;
 
   const announcement = tcgAnnouncement({
     kind, roundNumber: game.roundNumber, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant,
@@ -88,8 +79,6 @@ export function TcgHigherLowerGame({ room, selfId, onAction }: ActiveGameProps) 
     participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={tcgVerdict(selfOutcome, participant)}
     titleRef={titleRef} onAnswer={submit} />;
 
-  return <div className={cx('content-row', hl.screen)} data-testid="tcg-higher-lower-screen">
-    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-  </div>;
+  return <GameScreen gameName="Higher or Lower: Cartas" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} headingLead="Se compara" heading="Precio de mercado"
+    timer={timer} announcement={announcement} clue={duel} hints={strip} side={side} bottom={bottom} testId="tcg-higher-lower-screen" />;
 }

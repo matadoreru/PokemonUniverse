@@ -1,11 +1,11 @@
 import type { BingoPublicBoard, PokemonBingoPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, Eye, Grid3x3, Plus, Trophy } from 'lucide-react';
-import { useEffect, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react';
+import { Check, CheckCircle2, Eye, Plus, Trophy } from 'lucide-react';
+import { useEffect, useRef, type CSSProperties, type RefObject } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { guessSprite } from '../../room/guess-kit';
 import { trimSprite } from './sprite-trim';
 import { playerColor } from '../../lib/player-color';
-import { Badge, Card, Chip, cx, Icon, Panel, Row, RowButton, ScoreValue } from '../../ui';
+import { Badge, Card, Chip, cx, Icon, Panel, Row, RowButton } from '../../ui';
 import { bingoCellLabel, bingoPlayerOrder, bingoProgressText } from './presentation';
 import s from './PokemonBingo.module.css';
 
@@ -84,31 +84,6 @@ function useTrimmedSprites(grid: RefObject<HTMLElement | null>) {
     }
     return () => { for (const cleanup of cleanups) cleanup(); };
   });
-}
-
-/**
- * Placa del tablero (pantalla superior): el tamaño del tablero, tu progreso y tus puntos de la sesión, el título y, a la
- * derecha, el plazo (en el bingo, el de la clasificación).
- */
-export function BingoHud({ width, height, heading, progress, points, timer }: {
-  width: number;
-  height: number;
-  heading: string;
-  progress: BingoPublicBoard | null;
-  points: number | null;
-  timer: ReactNode;
-}) {
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>Tablero {width}×{height}</Badge>
-        {progress && <span data-testid="bingo-progress"><Chip tone={progress.completed === progress.total ? 'ok' : 'neutral'} icon={<Icon icon={Grid3x3} size={18} />}>Tu progreso · {progress.completed}/{progress.total}</Chip></span>}
-        {points !== null && <span className={s.hudPoints}><Chip tone="neutral" icon={<Icon icon={Trophy} size={18} />}><ScoreValue value={points} self> pts</ScoreValue></Chip></span>}
-      </div>
-      <h1 className={cx(s.heading, 'ol')} title={heading}>{heading}</h1>
-    </div>
-    <div className={s.hudTimer}>{timer}</div>
-  </Panel>;
 }
 
 /**

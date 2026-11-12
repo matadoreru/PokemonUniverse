@@ -1,9 +1,8 @@
 import { IMPOSTOR_CLUE_MAX_CODE_POINTS, IMPOSTOR_SKIP_TARGET, type PokemonImpostorConfig, type PokemonImpostorPlayerState, type PokemonImpostorPublicState } from '@pokemon-universe/shared/public';
-import { Check, Clock3, Eye, Hourglass, Lock, MousePointerClick, Send, TimerOff, UserX, Vote } from 'lucide-react';
+import { Check, Clock3, Eye, Hourglass, Lock, MousePointerClick, Send, TimerOff, Users, UserX, Vote } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { ServerTimer } from '../../components/ServerTimer';
-import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorHud, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from './ImpostorParts';
+import { ImpostorClueBoard, ImpostorEliminationPlate, ImpostorPlate, ImpostorPlayersPanel, ImpostorRolePanel, ImpostorRoleReveal, ImpostorRoleStrip, ImpostorVoteGrid, ImpostorVoteResultPanel, type ImpostorPeople, type PlateProps } from './ImpostorParts';
 import { impostorAnnouncement, impostorClueAction, impostorFocusKey, impostorGuessAction, impostorPhaseTitle, impostorRoundLabel, impostorTimerLabel, impostorVoteAction } from './presentation';
 import { validateImpostorClue } from './validation';
 import { useDraft } from '../../hooks/useDraft';
@@ -12,11 +11,11 @@ import { useReducedMotion } from '../../lib/motion';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useDelayElapsed } from '../../hooks/useTimedVisibility';
-import { MomentCutin, CUTIN_DELAYED_LINE_MS, cx, Field, Panel, Pill, ScreenSplit } from '../../ui';
+import { Chip, MomentCutin, CUTIN_DELAYED_LINE_MS, cx, Field, Icon, Panel, Pill } from '../../ui';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
-import { roomTurnKey, TurnCutin, turnBumpClass, useTurnCue } from '../../room/game-kit/useTurnCue';
+import { roomTurnKey, useTurnCue } from '../../room/game-kit/useTurnCue';
 import { gameDraftKey } from '../../room/game-kit/game-draft';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { clampImpostorClue, impostorClueLength, impostorEliminationAnnouncement, impostorEliminationCutIn } from './pokemon-impostor-texts';
 import { type ActiveGameProps, sendWithBusy } from '../../room/room-command';
@@ -24,7 +23,7 @@ import { useRoomMembers } from '../../room/room-members';
 import s from './PokemonImpostor.module.css';
 
 /**
- * Pokémon Impostor (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda (fase y tiempo) y la escena de la fase
+ * Pokémon Impostor (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa de la ronda (fase y tiempo) y la escena de la fase
  * (el reparto de roles, el orden con las pistas, los candidatos, el recuento o la expulsión). Abajo se actúa: escribir
  * la pista, confirmar el voto, adivinar el Pokémon o el estado. Al lado, tu rol y los jugadores.
  *
@@ -88,7 +87,7 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
     : game.playerIds;
   const deadline = game.roundEndsAt ?? game.nextTransitionAt;
   const totalMs = game.phase === 'CLUE_PHASE' ? config.clueSeconds * 1_000 : game.phase === 'VOTING' ? config.voteSeconds * 1_000 : undefined;
-  const timer = deadline ? <ServerTimer deadline={deadline} serverOffset={serverOffset} label={impostorTimerLabel(game.phase)} {...(totalMs ? { totalMs } : {})} /> : null;
+  const timer: GameTimer = { deadline: deadline || null, serverOffset, label: impostorTimerLabel(game.phase), totalMs };
 
   const scene = game.phase === 'ROLE_REVEAL'
     ? <ImpostorRoleReveal player={player} people={people} />
@@ -100,17 +99,16 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
           ? <ImpostorEliminationPlate reveal={elimination} roleShown={eliminationRoleShown} reducedMotion={reducedMotion} winnerTeam={game.winnerTeam} people={people} />
           : <ImpostorClueBoard game={game} people={people} orderedIds={orderedIds} />;
 
-  const top = <div className={s.top}>
-    <ImpostorHud roundLabel={impostorRoundLabel(game)} alive={game.aliveIds.length} tiebreak={game.phase === 'VOTING' && game.votingRound > 1} title={impostorPhaseTitle(game, people.nameOf)} timer={timer}
-      strip={game.phase !== 'ROLE_REVEAL' ? <ImpostorRoleStrip player={player} people={people} /> : null} />
-    {scene}
-  </div>;
+  const meta = <>
+    <Chip tone="neutral" icon={<Icon icon={Users} size={18} />}>{game.aliveIds.length} {game.aliveIds.length === 1 ? 'vivo' : 'vivos'}</Chip>
+    {game.phase === 'VOTING' && game.votingRound > 1 && <Chip tone="warn">Desempate</Chip>}
+  </>;
 
-  const side = <div className={s.side}>
-    {game.phase !== 'ROLE_REVEAL' && <ImpostorRolePanel player={player} phase={game.phase} guessOpen={showGuess} onToggleGuess={() => setShowGuess((open) => !open)} people={people} />}
-    {game.phase !== 'CLUE_PHASE' && <ImpostorPlayersPanel game={game} people={people} className={s.sidePanel} />}
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  // Tu rol y los jugadores miden lo que necesitan: no llenan la columna.
+  const side = <>
+    {game.phase !== 'ROLE_REVEAL' && <ImpostorRolePanel player={player} phase={game.phase} guessOpen={showGuess} onToggleGuess={() => setShowGuess((open) => !open)} people={people} className={GAME_SIDE_FIT} />}
+    {game.phase !== 'CLUE_PHASE' && <ImpostorPlayersPanel game={game} people={people} className={GAME_SIDE_FIT} />}
+  </>;
 
   const plate = impostorPlate({ game, player, people, voteDraft, submitting, roleShown: eliminationRoleShown, onConfirm: () => void submitVote() });
   const bottom = game.phase === 'CLUE_PHASE' && player.canSubmitClue
@@ -126,13 +124,12 @@ export function PokemonImpostorGame({ room, selfId, onAction }: ActiveGameProps)
       ? <div className={s.selector}><PokemonSelector pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={submitting} inputLabel="Adivinar el Pokémon" onSelect={guessPokemon} /></div>
       : <ImpostorPlate {...plate} titleRef={titleRef} />;
 
-  return <div className={cx('content-row', s.screen)}>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} bottomClassName={turnBumpClass(turnCue)} />
-    <TurnCutin cue={turnCue} />
-    {/* Una sola región viva, siempre montada: solo cambia su texto. La expulsión también va aquí (el cut-in solo se ve). */}
-    <p className="sr-only" role="status" aria-live="polite">{elimination ? impostorEliminationAnnouncement(elimination, people.nameOf(elimination.playerId), eliminationRoleShown) : impostorAnnouncement(game, player, selfId, people.nameOf)}</p>
-    {elimination && eliminationCutIn && <MomentCutin key={`${game.roundNumber}:${elimination.playerId}`} tone="yellow" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />}
-  </div>;
+  // La región viva del marco dice también la expulsión (el cut-in solo se ve).
+  const announcement = elimination ? impostorEliminationAnnouncement(elimination, people.nameOf(elimination.playerId), eliminationRoleShown) : impostorAnnouncement(game, player, selfId, people.nameOf);
+  return <GameScreen gameName="Pokémon Impostor" roundNumber={game.roundNumber} totalRounds={0} phase={`${game.phase}:${game.votingRound}`} roundLabel={impostorRoundLabel(game)} meta={meta}
+    heading={impostorPhaseTitle(game, people.nameOf)} hudFoot={game.phase !== 'ROLE_REVEAL' ? <ImpostorRoleStrip player={player} people={people} /> : null}
+    timer={timer} announcement={announcement} clue={<div className={s.scene}>{scene}</div>} side={side} bottom={bottom} turnCue={turnCue}
+    moment={elimination && eliminationCutIn && <MomentCutin key={`${game.roundNumber}:${elimination.playerId}`} tone="yellow" delayedTone={eliminationCutIn.tone} title={eliminationCutIn.title} delayedLine={eliminationCutIn.delayedLine} holdMs={3_200} media={<Avatar name={eliminationCutIn.title} avatar={members.get(elimination.playerId)?.avatar} size="lg" />} />} />;
 }
 
 /** Placa de la pantalla inferior según la fase y lo que puede hacer el jugador. */

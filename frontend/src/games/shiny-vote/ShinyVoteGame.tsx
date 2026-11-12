@@ -1,17 +1,16 @@
 import { type RoomMemberView, type ShinyOptionId, type ShinyVoteConfig, type ShinyVotePlayerState, type ShinyVotePublicState } from '@pokemon-universe/shared/public';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ServerTimer } from '../../components/ServerTimer';
-import { ShinyGameHeader } from './ShinyGameHeader';
+import { Eye, Layers3, LayoutGrid, Shuffle } from 'lucide-react';
 import { ShinyGameSidebar } from './ShinyGameSidebar';
 import { clearShinySprites, ShinyBeforeAfter, ShinyOptionCard } from './ShinyOptionCard';
-import { ShinyVoteStatus } from './ShinyVoteStatus';
+import { shinyStatusAnnouncement, ShinyVoteStatus } from './ShinyVoteStatus';
 import { createShinyVoteAction, shinyOptionFromShortcut, updateShinyDraft } from './interaction';
 import { SHINY_CARDS_TIMEOUT_MS, shinyCardsReady, shinyRoundFeedback } from './reveal';
-import { shinyVotersVisible } from './vote-visibility';
+import { shinyVisibilityChip, shinyVotersVisible } from './vote-visibility';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { cx, ScreenSplit } from '../../ui';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { Chip, cx, Icon } from '../../ui';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
 import { usePendingAction } from '../../room/game-kit/usePendingAction';
 import type { ActiveGameProps } from '../../room/room-command';
@@ -41,7 +40,7 @@ function useShinyCardsReady(roundKey: string, total: number) {
 }
 
 /**
- * Shiny Quiz (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, la pregunta y el tiempo, y las cartas de
+ * Shiny Quiz (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa con la ronda, la pregunta y el tiempo, y las cartas de
  * opción (`Card` llena: seleccionable, seleccionada, correcta que gira al revelar, incorrecta). Abajo se actúa: confirmar
  * el voto o, al revelar, el veredicto con los puntos. En la columna lateral, el marcador y, debajo, el antes y el
  * después al revelar; en el móvil, entre las cartas y la pantalla inferior.
@@ -110,9 +109,16 @@ export function ShinyVoteGame({ room, selfId, onAction }: ActiveGameProps) {
     return true;
   });
 
-  const timer = active
-    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={serverOffset} totalMs={Math.max(1, config.roundSeconds * 1_000)} label="Tiempo" />
-    : reveal ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={serverOffset} label={transitionLabel} /> : null;
+  // En la revelación, el plazo de la siguiente ronda en el mismo hueco: la placa no cambia de alto.
+  const timer: GameTimer = active
+    ? { deadline: game.roundEndsAt, serverOffset, totalMs: Math.max(1, config.roundSeconds * 1_000), label: 'Tiempo' }
+    : { deadline: reveal ? game.nextTransitionAt : null, serverOffset, label: transitionLabel };
+  // Modo de votos y de candidatos; en Supervivencia (crecen cada pocas rondas), también cuántos candidatos hay.
+  const meta = <>
+    {survival && game.options.length > 0 && <Chip tone="info" icon={<Icon icon={LayoutGrid} size={18} />}>{game.options.length} candidatos</Chip>}
+    <Chip tone="neutral" icon={<Icon icon={Eye} size={18} />}>{shinyVisibilityChip(game.voteVisibility)}</Chip>
+    <Chip tone="neutral" icon={<Icon icon={config.candidateMode === 'SAME_POKEMON' ? Layers3 : Shuffle} size={18} />}>{config.candidateMode === 'SAME_POKEMON' ? 'Mismo Pokémon' : 'Pokémon diferentes'}</Chip>
+  </>;
 
   const grid = game.options.length > 0
     ? <div className={s.grid} data-count={game.options.length} role="group" aria-label="Opciones de Pokémon" aria-busy={loadingCards ? 'true' : undefined}>{game.options.map((option) => {
@@ -139,16 +145,11 @@ export function ShinyVoteGame({ room, selfId, onAction }: ActiveGameProps) {
     // Sin rol: la región viva es la de la placa («Preparando la ronda»); el esqueleto solo dice que está ocupado.
     : <div className={s.grid} data-count={4} aria-busy="true"><span className="sr-only">Cargando opciones</span>{Array.from({ length: 4 }, (_, index) => <span key={index} className={s.ghostCard}><span className={s.skeleton} /></span>)}</div>;
 
-  const top = <div className={s.top}>
-    <ShinyGameHeader roundNumber={game.roundNumber} totalRounds={game.totalRounds} voteVisibility={game.voteVisibility} candidateMode={config.candidateMode} timer={timer} candidates={survival && game.options.length > 0 ? game.options.length : null} />
-    {grid}
-  </div>;
-
-  const side = <div className={s.side}>
-    <ShinyGameSidebar game={game} members={members} colors={colors} selfId={selfId} className={cx(s.sidePanel)} />
-    {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} />}
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  // El marcador y, al revelar, el antes y el después miden lo que necesitan: no llenan la columna.
+  const side = <>
+    <ShinyGameSidebar game={game} members={members} colors={colors} selfId={selfId} className={cx(s.sidePanel, GAME_SIDE_FIT)} />
+    {correctOption && <ShinyBeforeAfter key={`${game.roundNumber}|${correctOption.id}`} option={correctOption} className={GAME_SIDE_FIT} />}
+  </>;
 
   const bottom = <ShinyVoteStatus
     active={active}
@@ -164,7 +165,7 @@ export function ShinyVoteGame({ room, selfId, onAction }: ActiveGameProps) {
     survival={survivalStatus}
   />;
 
-  return <div className={cx('content-row', s.screen)}>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-  </div>;
+  const announcement = shinyStatusAnnouncement({ active, loading: loadingCards, reveal, participant, ownVote, correctOptionId: game.correctOptionId, points: playerState?.roundResult?.points ?? 0, survival: survivalStatus });
+  return <GameScreen gameName="Shiny Quiz" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} meta={meta} heading="¿Cuál es el shiny verdadero?"
+    timer={timer} announcement={announcement} clue={grid} side={side} bottom={bottom} />;
 }

@@ -1,15 +1,15 @@
 import { TYPE_DUEL_MAX_INVALID_COMBINATIONS, type PokemonType, type TypeDuelConfig, type TypeDuelPlayerState, type TypeDuelPublicState } from '@pokemon-universe/shared/public';
 import { useMemo, useRef, useState } from 'react';
 import { Avatar } from '../../components/Avatar';
-import { ServerTimer } from '../../components/ServerTimer';
-import { TypeDuelAttempts, TypeDuelContinue, TypeDuelHud, TypeDuelPickBoard, TypeDuelPlate, TypeDuelResultScene, TypeDuelSearchNote, TypeDuelSidebar, type PickDuelist } from './TypeDuelParts';
+import { Swords } from 'lucide-react';
+import { TypeDuelAttempts, TypeDuelContinue, TypeDuelPickBoard, TypeDuelPlate, TypeDuelResultScene, TypeDuelSearchNote, TypeDuelSidebar, type PickDuelist } from './TypeDuelParts';
 import { TypeDuelCoopBoard, TypeDuelCoopContributions, TypeDuelCoopFound, TypeDuelCoopFoundNote, TypeDuelCoopPlate, TypeDuelCoopResultScene, type TypeDuelCoopPlateKind } from './TypeDuelCoopParts';
 import { typeDuelAnnouncement, typeDuelCombinationText, typeDuelCoopAnnouncement, typeDuelCoopPhaseLabel, typeDuelCoopRoundTitle, typeDuelFocusKey, typeDuelOwnLastAttempt, typeDuelPhaseLabel, typeDuelPlateKind, typeDuelTimerLabel, typeDuelVerdict } from './presentation';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
-import { cx, ScreenSplit } from '../../ui';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { Chip, Icon } from '../../ui';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { playerColor } from '../../lib/player-color';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
@@ -29,7 +29,7 @@ export function TypeDuelGame(props: ActiveGameProps) {
 }
 
 /**
- * Type Duel (spec §2 y §6 «Juegos»). Arriba se mira: la placa de la ronda y la escena de la fase (la elección secreta
+ * Type Duel (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa de la ronda y la escena de la fase (la elección secreta
  * frente a frente, la losa del VS con los tipos y cuántos Pokémon valen, la combinación imposible o el resultado del
  * duelo). Abajo se actúa: los 18 tipos, el tipo bloqueado, el buscador de la carrera o el resultado con los puntos y la
  * acción del host. Al lado, el marcador y los intentos públicos.
@@ -81,7 +81,7 @@ function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
   }
 
   const totalMs = game.phase === 'SELECTING_TYPES' ? (config?.typeSelectSeconds ?? 15) * 1_000 : game.phase === 'POKEMON_SEARCH' ? (config?.searchSeconds ?? 20) * 1_000 : undefined;
-  const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={typeDuelTimerLabel(game)} {...(totalMs ? { totalMs } : {})} /> : null;
+  const timer: GameTimer = { deadline, serverOffset: offset, label: typeDuelTimerLabel(game), totalMs };
   const countdown = game.phase === 'TYPE_REVEAL' ? `La carrera empieza en ${remaining}s.`
     : game.phase === 'INVALID_COMBINATION' ? `Sigue en ${remaining}s.`
       : `${last ? 'Clasificación' : 'Siguiente ronda'} en ${remaining}s`;
@@ -103,17 +103,12 @@ function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
           ? <TypeDuelResultScene lastRound={lastRound} title={resultText.title} detail={resultText.detail} types={resultTypes} winningAttempt={winningAttempt} winnerName={lastRound.winnerId ? nameOf(lastRound.winnerId) : null} />
           : null;
 
-  const top = <div className={s.top}>
-    <TypeDuelHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} phaseLabel={typeDuelPhaseLabel(game.phase)} heading={typeDuelHeading(game.phase, names)} timer={timer} />
-    {scene}
-  </div>;
-
+  // El marcador mide lo que necesita (solo, no llena la columna); los intentos, debajo, llenan el resto.
   const showAttempts = game.phase === 'POKEMON_SEARCH' || game.phase === 'ROUND_RESULTS';
-  const side = <div className={s.sideColumn}>
-    <TypeDuelSidebar game={game} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />
-    {showAttempts && <TypeDuelAttempts attempts={game.attempts} members={members} colors={colors} className={s.attemptsPanel} />}
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  const side = <>
+    <TypeDuelSidebar game={game} members={members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />
+    {showAttempts && <TypeDuelAttempts attempts={game.attempts} members={members} colors={colors} />}
+  </>;
 
   const search = kind === 'search' && <div className={s.search}>
     <PokemonSelector key={`${game.roundNumber}-${game.phase}`} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={new Set()} disabled={false}
@@ -127,18 +122,17 @@ function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
     hostAction={selfId === room.hostId ? <TypeDuelContinue last={last} pending={continuing} onContinue={() => void continueNow()} /> : undefined}
     titleRef={titleRef} onPick={(type) => void pick(type)} />;
 
-  return <div className={cx('content-row', s.screen)}>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-  </div>;
+  return <GameScreen gameName="Type Duel" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase}
+    meta={<Chip tone="neutral" icon={<Icon icon={Swords} size={18} />}>{typeDuelPhaseLabel(game.phase)}</Chip>} heading={typeDuelHeading(game.phase, names)}
+    timer={timer} announcement={announcement} clue={<div className={s.scene}>{scene}</div>} side={side} bottom={bottom} />;
 }
 
 /**
  * Type Duel · Cooperativo (spec «Type Duel · Cooperativo»). Arriba, la placa de la ronda y la combinación con el
  * contador del grupo y la aportación propia (o el resultado de la ronda con los que faltaron). Abajo, el buscador
- * (los ya encontrados quedan bloqueados) o la cuenta atrás con la acción del host. Al lado, lo encontrado y quién lo
- * dijo, y la aportación de cada jugador en la partida. Un duplicado lo rechaza el servidor con «Ya lo ha encontrado
- * alguien.», que sale en el aviso de la sala (aquí no se repite).
+ * (los ya encontrados quedan bloqueados) o la cuenta atrás con la acción del host. Al lado, la aportación de cada
+ * jugador en la partida y, debajo, lo encontrado y quién lo dijo. Un duplicado lo rechaza el servidor con «Ya lo ha
+ * encontrado alguien.», que sale en el aviso de la sala (aquí no se repite).
  */
 function TypeDuelCoopGame({ room, selfId, onAction }: ActiveGameProps) {
   const game = room.game as TypeDuelPublicState;
@@ -175,22 +169,17 @@ function TypeDuelCoopGame({ room, selfId, onAction }: ActiveGameProps) {
     await sendWithBusy(setContinuing, () => onAction({ type: 'CONTINUE' }));
   }
 
-  const timer = deadline !== null ? <ServerTimer deadline={deadline} serverOffset={offset} label={game.phase === 'POKEMON_SEARCH' ? 'Buscar' : last ? 'Clasificación' : 'Siguiente ronda'}
-    {...(game.phase === 'POKEMON_SEARCH' ? { totalMs: (config?.coopSeconds ?? 60) * 1_000 } : {})} /> : null;
+  const timer: GameTimer = { deadline, serverOffset: offset, label: game.phase === 'POKEMON_SEARCH' ? 'Buscar' : last ? 'Clasificación' : 'Siguiente ronda',
+    totalMs: game.phase === 'POKEMON_SEARCH' ? (config?.coopSeconds ?? 60) * 1_000 : undefined };
   const heading = combination.length > 0 ? `Tipo ${typeDuelCombinationText(combination)}` : 'Búsqueda conjunta';
   const scene = lastRound
     ? <TypeDuelCoopResultScene lastRound={lastRound} title={typeDuelCoopRoundTitle(lastRound.reason, found.length, total)} found={found.length} total={total} />
     : combination.length > 0 ? <TypeDuelCoopBoard combination={combination} found={found.length} total={total} ownRound={ownRound} ownTotal={contributions[selfId] ?? 0} /> : null;
-  const top = <div className={s.top}>
-    <TypeDuelHud roundNumber={game.roundNumber} totalRounds={game.totalRounds} phaseLabel={typeDuelCoopPhaseLabel(game.phase)} heading={heading} timer={timer} />
-    {scene}
-  </div>;
-
-  const side = <div className={s.sideColumn}>
-    <TypeDuelCoopFound found={found} total={total} members={members} colors={colors} selfId={selfId} className={s.attemptsPanel} />
-    <TypeDuelCoopContributions playerIds={game.playerIds} contributions={contributions} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  // Como el marcador del Clásico: las aportaciones arriba (miden lo que necesitan) y lo encontrado debajo, que llena el resto.
+  const side = <>
+    <TypeDuelCoopContributions playerIds={game.playerIds} contributions={contributions} members={members} colors={colors} selfId={selfId} />
+    <TypeDuelCoopFound found={found} total={total} members={members} colors={colors} selfId={selfId} />
+  </>;
 
   const search = kind === 'search' && <div className={s.search}>
     <PokemonSelector key={`${game.roundNumber}-${game.phase}`} pokemon={pokemon} loading={poolLoading} loadError={poolError} onRetry={retryPool} locked={foundIds} disabled={false}
@@ -203,8 +192,7 @@ function TypeDuelCoopGame({ room, selfId, onAction }: ActiveGameProps) {
     hostAction={selfId === room.hostId ? <TypeDuelContinue last={last} pending={continuing} onContinue={() => void continueNow()} /> : undefined} />;
 
   const announcement = typeDuelCoopAnnouncement({ phase: game.phase, roundNumber: game.roundNumber, combination, found: found.length, total, lastAttempt, player: isPlayer });
-  return <div className={cx('content-row', s.screen)}>
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-  </div>;
+  return <GameScreen gameName="Type Duel" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase}
+    meta={<Chip tone="neutral" icon={<Icon icon={Swords} size={18} />}>{typeDuelCoopPhaseLabel(game.phase)}</Chip>} heading={heading}
+    timer={timer} announcement={announcement} clue={<div className={s.scene}>{scene}</div>} side={side} bottom={bottom} />;
 }

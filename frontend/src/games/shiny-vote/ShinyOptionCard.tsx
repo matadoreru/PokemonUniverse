@@ -135,8 +135,8 @@ function BeforeAfterFigure({ label, src, alt, testId, shiny }: { label: string; 
  * Antes y después de la revelación: el sprite normal (proxy de la Pokédex) junto al shiny verdadero. Solo se monta al
  * revelar (el sprite normal daría la respuesta): en la columna lateral en escritorio y bajo las cartas en el móvil.
  */
-export function ShinyBeforeAfter({ option }: { option: ShinyOption }) {
-  return <Panel variant="cream" title={SHINY_BEFORE_AFTER.title} aria-label={`${SHINY_BEFORE_AFTER.title}: ${option.pokemonName}`} className={cx(s.beforeAfter)}>
+export function ShinyBeforeAfter({ option, className }: { option: ShinyOption; className?: string | undefined }) {
+  return <Panel variant="cream" title={SHINY_BEFORE_AFTER.title} aria-label={`${SHINY_BEFORE_AFTER.title}: ${option.pokemonName}`} className={cx(s.beforeAfter, className)}>
     <div data-testid="shiny-before-after">
       <p className={s.beforeName} title={option.pokemonName}>{option.pokemonName}</p>
       <div className={s.figures}>

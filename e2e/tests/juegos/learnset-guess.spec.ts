@@ -108,7 +108,8 @@ test('learnset-guess: último aviso a 390', async ({ browser }) => {
     await expect.poll(() => (estado as LearnsetVisible | null)?.visibleGroups.length ?? 0, { timeout: 10_000 }).toBeGreaterThan(0);
     // Con dos jugadores, el acierto del host deja al invitado como el último.
     await acertarLearnset(host.page, estado!, nombres);
-    const chip = invitado.page.getByRole('status').filter({ hasText: /¡Último aviso! Solo faltas tú: \d+ segundos?\./ });
+    // El chip se ve (cuenta los segundos); la región viva del marco dice el texto fijo.
+    const chip = invitado.page.getByTestId('learnset-last-warning').filter({ hasText: /¡Último aviso! Solo faltas tú: \d+ segundos?\./ });
     await expect(chip).toBeVisible({ timeout: 5_000 });
     await invitado.page.setViewportSize({ width: SIZES[2].w, height: SIZES[2].h });
     await invitado.page.getByRole('textbox', { name: 'Buscar Pokémon' }).blur();

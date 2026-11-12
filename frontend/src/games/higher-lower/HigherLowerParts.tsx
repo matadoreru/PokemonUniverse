@@ -1,10 +1,10 @@
-import type { HigherLowerAnswerVisibility, HigherLowerChoice, HigherLowerOutcome, HigherLowerPokemonView, HigherLowerPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
+import type { HigherLowerChoice, HigherLowerOutcome, HigherLowerPokemonView, HigherLowerPublicState, RoomMemberView } from '@pokemon-universe/shared/public';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowDown, ArrowUp, Check, CheckCircle2, CircleDashed, Clock3, Equal, Eye, Flame, MousePointerClick, TimerOff, UserX, X, XCircle } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import { Avatar } from '../../components/Avatar';
 import { apiAsset } from '../../lib/api';
-import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus, higherLowerVisibilityLabels } from './higher-lower-labels';
+import { higherLowerChoiceLabels, higherLowerOutcomeLine, higherLowerOutcomeStatus } from './higher-lower-labels';
 import { playerColor } from '../../lib/player-color';
 import { sharesPosition } from '../../room/game-kit/results-ties';
 import { Badge, Card, Chip, cx, Icon, Panel, Pill, Row, ScorePop, ScoreValue } from '../../ui';
@@ -17,36 +17,6 @@ import s from './HigherLower.module.css';
 export const higherLowerSprite = (sprite: string) => sprite.startsWith('/api/') ? apiAsset(sprite) : sprite;
 
 export const CHOICE_ICONS: Record<HigherLowerChoice, LucideIcon> = { HIGHER: ArrowUp, SAME: Equal, LOWER: ArrowDown };
-
-/**
- * Placa de la ronda (pantalla superior): ronda y visibilidad de las respuestas, la stat que se compara y, a la derecha,
- * el tiempo del servidor (al revelar, el de la siguiente ronda en el mismo hueco: la placa no cambia de alto). Sin
- * `totalRounds` (Racha infinita, que no tiene número de rondas) solo dice «Ronda N»; `modeLabel` añade el chip del modo.
- */
-export function HigherLowerHud({ roundNumber, totalRounds, category, visibility, timer, modeLabel = null }: {
-  roundNumber: number;
-  totalRounds: number | null;
-  category: string;
-  /** Visibilidad de las respuestas ajenas (de la configuración de la partida); sin ella, no se pinta el chip. */
-  visibility: HigherLowerAnswerVisibility | null;
-  timer: ReactNode;
-  modeLabel?: string | null;
-}) {
-  return <Panel variant="dark" as="div" bodyClassName={cx(s.hud)}>
-    <div className={s.hudMain}>
-      <div className={s.hudMeta}>
-        <Badge>{totalRounds === null ? `Ronda ${roundNumber}` : `Ronda ${roundNumber} de ${totalRounds}`}</Badge>
-        {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
-        {visibility && <Chip tone="neutral" icon={<Icon icon={Eye} size={18} />}>Respuestas {higherLowerVisibilityLabels[visibility].toLowerCase()}</Chip>}
-      </div>
-      <div className={s.hudTitle}>
-        <span className={s.hudKicker}>Se compara</span>
-        <h1 className={cx(s.category, 'ol')}>{category}</h1>
-      </div>
-    </div>
-    <div className={s.hudTimer}>{timer}</div>
-  </Panel>;
-}
 
 /**
  * Carta de un Pokémon del duelo (`Card` llena del catálogo). Nunca lleva el número de Pokédex (`number`): con la
@@ -149,12 +119,12 @@ interface PlateContent {
 
 /**
  * Pantalla inferior: elegir (tres píldoras con su atajo 1–3 como insignia), la respuesta bloqueada, observar o, al
- * revelar, la respuesta correcta con el veredicto propio y los puntos («+N»). El aviso para lectores de pantalla va en
- * una región `status` siempre montada (solo cambia su texto). El título admite foco por programa (`tabIndex={-1}`).
+ * revelar, la respuesta correcta con el veredicto propio y los puntos («+N»). El aviso para lectores lo da la región viva
+ * del marco (`GameScreen`). El título admite foco por programa (`tabIndex={-1}`).
  * En Racha infinita (`endless`) el revelado dice si sigues en pie o caes, con tu racha en lugar de los puntos, y quien
  * ya cayó (`eliminated`) mira la partida.
  */
-export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, announcement, titleRef, onAnswer, endless = false, eliminated = false, streak = 0 }: {
+export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome, participant, countdown, verdict, titleRef, onAnswer, endless = false, eliminated = false, streak = 0 }: {
   kind: HigherLowerPlateKind;
   answer: HigherLowerChoice | null;
   /** Respuesta enviada a la espera del servidor. */
@@ -164,7 +134,6 @@ export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome
   participant: boolean;
   countdown: string;
   verdict: string;
-  announcement: string;
   titleRef: Ref<HTMLHeadingElement>;
   onAnswer(choice: HigherLowerChoice): void;
   endless?: boolean;
@@ -181,7 +150,6 @@ export function HigherLowerPlate({ kind, answer, pending, correctAnswer, outcome
       {content.text && <p className={s.help}>{content.text}</p>}
     </div>
     {content.aside && <div className={cx(s.plateAside, kind === 'answer' && s.plateChoices)}>{content.aside}</div>}
-    <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
   </Panel>;
 }
 

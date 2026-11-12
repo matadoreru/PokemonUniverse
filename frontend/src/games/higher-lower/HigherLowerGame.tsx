@@ -1,15 +1,15 @@
 import { gameModeLabel, type HigherLowerChoice, type HigherLowerConfig, type HigherLowerPlayerState, type HigherLowerPublicState } from '@pokemon-universe/shared/public';
 import { useRef } from 'react';
-import { ServerTimer } from '../../components/ServerTimer';
-import { HigherLowerDuelCard, HigherLowerHud, HigherLowerPlate, HigherLowerSidebar } from './HigherLowerParts';
+import { Eye } from 'lucide-react';
+import { HigherLowerDuelCard, HigherLowerPlate, HigherLowerSidebar } from './HigherLowerParts';
 import { higherLowerAnnouncement, higherLowerChoiceFromShortcut, higherLowerFocusKey, higherLowerPlateKind, higherLowerVerdict } from './presentation';
 import { useRemainingMs, useServerOffset } from '../../hooks/useServerTime';
 import { useSfxCue } from '../../hooks/useSfxCue';
 import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
-import { MomentCutin, cx, ScreenSplit } from '../../ui';
-import { GameSkipSlot } from '../../room/game-kit/GameSkipSlot';
+import { Chip, cx, Icon, MomentCutin } from '../../ui';
+import { GAME_SIDE_FIT, GameScreen, type GameTimer } from '../../room/game-kit/GameScreen';
 import { HigherLowerBars } from './HigherLowerBars';
-import { higherLowerBars, higherLowerCategoryLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
+import { higherLowerBars, higherLowerCategoryLabels, higherLowerVisibilityLabels, higherLowerLastReveal, higherLowerRevealCountdown, higherLowerStreakMilestone } from './higher-lower-labels';
 import { useFocusOnTransition } from '../../room/game-kit/focus-transition';
 import { useChoiceShortcuts } from '../../room/game-kit/useChoiceShortcuts';
 import { usePendingAction } from '../../room/game-kit/usePendingAction';
@@ -18,7 +18,7 @@ import { useRoomMembers } from '../../room/room-members';
 import s from './HigherLower.module.css';
 
 /**
- * Higher or Lower (spec §2 y §6 «Juegos»). Arriba se mira: la placa con la ronda, la stat y el tiempo, el duelo de dos
+ * Higher or Lower (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`). Arriba se mira: la placa con la ronda, la stat y el tiempo, el duelo de dos
  * cartas (la segunda con «???» hasta revelar, y entonces gira) y, al revelar, las barras comparadas. Abajo se actúa:
  * «Mayor / Igual / Menor» (atajos 1–3), la respuesta bloqueada o el veredicto con los puntos. Al lado, el marcador con
  * las rachas; en el móvil, entre el duelo y la pantalla inferior.
@@ -69,33 +69,33 @@ export function HigherLowerGame({ room, selfId, onAction }: ActiveGameProps) {
   });
 
   const roundMs = Math.max(1, (config?.roundSeconds ?? 20) * 1_000);
-  const timer = active
-    ? <ServerTimer deadline={game.roundEndsAt} serverOffset={offset} totalMs={roundMs} label="Tiempo" />
-    : lastRound ? <ServerTimer deadline={game.nextTransitionAt} serverOffset={offset} label={higherLowerLastReveal(game) ? 'Clasificación' : 'Siguiente ronda'} /> : null;
+  // Al revelar, el plazo de la siguiente ronda en el mismo hueco: la placa no cambia de alto.
+  const timer: GameTimer = active
+    ? { deadline: game.roundEndsAt, serverOffset: offset, totalMs: roundMs, label: 'Tiempo' }
+    : { deadline: lastRound ? game.nextTransitionAt : null, serverOffset: offset, label: higherLowerLastReveal(game) ? 'Clasificación' : 'Siguiente ronda' };
+  const modeLabel = gameModeLabel('higher-lower', game);
+  const visibility = config?.answerVisibility ?? null;
+  const meta = <>
+    {modeLabel && <Chip tone="info">{modeLabel}</Chip>}
+    {visibility && <Chip tone="neutral" icon={<Icon icon={Eye} size={18} />}>Respuestas {higherLowerVisibilityLabels[visibility].toLowerCase()}</Chip>}
+  </>;
 
-  const top = <div className={cx(s.top, lastRound && s.revealed)}>
-    <HigherLowerHud roundNumber={game.roundNumber} totalRounds={endless ? null : game.totalRounds} category={category} visibility={config?.answerVisibility ?? null} timer={timer} modeLabel={gameModeLabel('higher-lower', game)} />
-    <div className={s.duel} role="group" aria-label={`Duelo de ${category}`}>
-      <HigherLowerDuelCard side="previous" pokemon={game.previousPokemon} category={category} flip={false} leader={bars !== null && bars.leader !== 'current'} />
-      <span className={cx(s.vs, 'ol')} aria-hidden="true">VS</span>
-      <HigherLowerDuelCard key={`current-${game.roundNumber}`} side="current" pokemon={game.currentPokemon} category={category} flip={lastRound !== null} leader={bars !== null && bars.leader !== 'previous'} />
-    </div>
-    {lastRound && <HigherLowerBars category={category} previous={{ name: game.previousPokemon.name, value: lastRound.previousValue }} current={{ name: game.currentPokemon.name, value: lastRound.currentValue }} />}
+  const duel = <div className={s.duel} role="group" aria-label={`Duelo de ${category}`}>
+    <HigherLowerDuelCard side="previous" pokemon={game.previousPokemon} category={category} flip={false} leader={bars !== null && bars.leader !== 'current'} />
+    <span className={cx(s.vs, 'ol')} aria-hidden="true">VS</span>
+    <HigherLowerDuelCard key={`current-${game.roundNumber}`} side="current" pokemon={game.currentPokemon} category={category} flip={lastRound !== null} leader={bars !== null && bars.leader !== 'previous'} />
   </div>;
-
-  const side = <div className={s.sideColumn}>
-    <HigherLowerSidebar game={game} members={members} colors={colors} selfId={selfId} className={s.sidePanel} />
-    <GameSkipSlot className={s.skip} />
-  </div>;
+  // Al revelar, las barras comparadas bajo el duelo (el duelo cede el alto que ocupan).
+  const barsRow = lastRound ? <HigherLowerBars category={category} previous={{ name: game.previousPokemon.name, value: lastRound.previousValue }} current={{ name: game.currentPokemon.name, value: lastRound.currentValue }} /> : null;
+  const side = <HigherLowerSidebar game={game} members={members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />;
 
   // El hito de racha va en la región de la placa: el cut-in solo se ve.
   const announcement = [higherLowerAnnouncement({ kind, roundNumber: game.roundNumber, category, answer, correctAnswer: lastRound?.correctAnswer ?? null, outcome: selfOutcome, participant, endless, eliminated }), milestone?.spoken].filter(Boolean).join(' ');
   const bottom = <HigherLowerPlate kind={kind} answer={answer?.choice ?? null} pending={pending} correctAnswer={lastRound?.correctAnswer ?? null} outcome={selfOutcome}
     participant={participant} countdown={higherLowerRevealCountdown(game, remaining)} verdict={eliminated ? 'Eliminado' : higherLowerVerdict(selfOutcome, participant)}
-    announcement={announcement} titleRef={titleRef} onAnswer={submit} endless={endless} eliminated={eliminated} streak={selfStreak} />;
+    titleRef={titleRef} onAnswer={submit} endless={endless} eliminated={eliminated} streak={selfStreak} />;
 
-  return <div className={cx('content-row', s.screen)}>
-    {milestone && <MomentCutin key={game.roundNumber} tone="yellow" title={milestone.title} subtitle={milestone.subtitle} />}
-    <ScreenSplit fill top={top} side={side} bottom={bottom} />
-  </div>;
+  return <GameScreen gameName="Higher or Lower" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} roundLabel={endless ? `Ronda ${game.roundNumber}` : undefined}
+    meta={meta} headingLead="Se compara" heading={category} timer={timer} announcement={announcement} clue={duel} hints={barsRow} side={side} bottom={bottom}
+    className={cx(lastRound && s.revealed)} moment={milestone && <MomentCutin key={game.roundNumber} tone="yellow" title={milestone.title} subtitle={milestone.subtitle} />} />;
 }

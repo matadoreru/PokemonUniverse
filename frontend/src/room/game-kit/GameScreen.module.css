@@ -140,13 +140,16 @@
   vertical-align: middle;
   line-height: 0;
 }
-/* Franja al pie de la placa, a todo su ancho (desaparece si su contenido no pinta nada). */
+/*
+ * Franja al pie de la placa: su contenido va a todo el ancho, en una fila más. La envoltura no genera caja, así que si el
+ * contenido se oculta (p. ej. solo se ve en el móvil) la placa no gana la fila ni el hueco.
+ */
 .hudFoot {
+  display: contents;
+}
+.hudFoot > * {
   grid-column: 1 / -1;
   min-width: 0;
-}
-.hudFoot:empty {
-  display: none;
 }
 /* «Saltar minijuego» a la izquierda del plazo, en la misma fila: la placa no crece en alto. */
 .hudSide {
@@ -229,7 +232,7 @@
 @media (max-width: 639px) {
   /* Móvil: ronda y título a la izquierda, el plazo a la derecha y «Saltar minijuego» debajo, a lo ancho. */
   .hud {
-    grid-template-areas: 'main timer' 'skip skip' 'foot foot';
+    grid-template-areas: 'main timer' 'skip skip';
     gap: var(--sp-2);
     padding: var(--sp-2) var(--sp-3);
   }
@@ -248,9 +251,6 @@
   }
   .skip:empty {
     display: none;
-  }
-  .hudFoot {
-    grid-area: foot;
   }
   /* El nombre del juego ya va en la placa de la sala: aquí solo para lectores. */
   .gameName {

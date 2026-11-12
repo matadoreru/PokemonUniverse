@@ -92,7 +92,8 @@ describe('LearnsetGuessGame: pantalla', () => {
     expect(html).toMatch(/role="status"[^]*¡Último aviso! Solo faltas tú: \d+ segundos?\./);
     // El chip visible cuenta los segundos y no se anuncia; para los lectores, un texto fijo.
     expect(html).toMatch(/aria-hidden="true"><span[^>]*>[^]*?¡Último aviso! Solo faltas tú: \d+ segundos?\./);
-    expect(html).toContain('<span class="sr-only">¡Último aviso! Solo faltas tú: la ronda se cierra en unos segundos.</span>');
+    // La región viva del marco dice el texto fijo del aviso y quién acaba de acertar (los chips solo se ven).
+    expect(html).toMatch(/aria-live="polite">¡Último aviso! Solo faltas tú: la ronda se cierra en unos segundos\. Bruno ha acertado[^<]*<\/p>/);
     expect(html).toContain('Bruno ha acertado');
   });
   it('keeps a live scoreboard: one row per player (no spectators), by points, with the solve order', () => {

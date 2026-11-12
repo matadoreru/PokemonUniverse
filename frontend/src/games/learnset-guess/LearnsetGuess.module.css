@@ -1,99 +1,24 @@
 /*
- * Learnset Guess (spec §2 y §6 «Juegos»): alto del `main` como `SessionScreen`, sin scroll de página en escritorio.
+ * Learnset Guess (spec §2 y §6 «Juegos»), en el marco de juego (`GameScreen`): sin scroll de página en escritorio.
  * Arriba la placa de la ronda, los avisos y las pistas (o la revelación); abajo el buscador o el veredicto; al lado, el
  * marcador en vivo y los intentos públicos.
  */
-.screen {
-  /* Contiene el texto `sr-only` (absoluto) de la región viva. */
-  position: relative;
-  min-height: 100%;
-  padding-top: var(--sp-4);
-}
-@media (min-width: 1024px) {
-  .screen {
-    height: 100%;
-    padding-block: var(--sp-5);
-  }
-}
-
-.top {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-width: 0;
-  /* Hueco para la sombra dura de las placas (la columna recorta lo que se sale al desplazarse). */
-  padding-bottom: var(--sp-2);
-}
-.top > * {
-  flex: none;
-}
-@media (min-width: 1024px) {
-  .top {
-    height: 100%;
-  }
-  /* Las pistas (o la revelación) llenan el alto que dejan la placa de la ronda, los avisos y la pista evolutiva. */
-  .top > :last-child:not(:first-child):not(.hints),
-  .top > .cluesPanel:has(+ .hints) {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-}
-
-/* Placa de la ronda: ronda y learnset arriba, el título debajo, el tiempo a la derecha. */
-.hud {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) var(--sp-4);
-}
-.hudMain {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.hudMeta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-  min-width: 0;
-}
-.hudMeta > * {
-  max-width: 100%;
-}
-/* Los chips de la placa pueden partir su texto en dos líneas antes que salirse de su hueco. */
-.hudMeta > span {
-  white-space: normal;
-}
 /* Pista evolutiva: la franja del kit (`GuessHints`) bajo las pistas reveladas, encima del buscador. */
 .hints {
   min-width: 0;
 }
 @media (max-width: 1023px) {
   /* Móvil y tableta: con la franja, las pistas reveladas tienen tope de alto (se desplazan por dentro) y la franja se ve. */
-  .top > .cluesPanel:has(+ .hints) {
+  .screen:has(.hints) .cluesPanel {
     max-height: 30svh;
   }
   /* Con un aviso visible (último aviso, quién acertó) las pistas reveladas ceden más alto. */
-  .top:has(> .notices:not(.noticesIdle)) > .cluesPanel:has(+ .hints) {
+  .screen:has(.hints):has(.notices:not(.noticesIdle)) .cluesPanel {
     max-height: 20svh;
   }
 }
-.heading {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 800 var(--fs-34) / 1.1 var(--font-display);
-  color: var(--white);
-}
-.hudTimer {
-  display: flex;
-  justify-content: flex-end;
-}
 
-/* Región viva: los avisos en chips; sin avisos visibles no ocupa sitio (anula el hueco de la columna). */
+/* Avisos en chips (los dice la región viva del marco); sin avisos visibles no ocupa sitio (anula el hueco de la columna). */
 .notices {
   display: flex;
   flex-wrap: wrap;
@@ -120,6 +45,12 @@
 /* Pistas: una franja por movimiento en rejilla; la última pista arriba. */
 .cluesPanel {
   min-height: 10rem;
+}
+@media (min-width: 1024px) {
+  /* En escritorio las pistas llenan el hueco de la pista del marco y, si no caben, se desplazan por dentro. */
+  .cluesPanel {
+    min-height: 0;
+  }
 }
 .cluesRight {
   display: inline-flex;
@@ -152,39 +83,6 @@
   min-width: 0;
 }
 
-/* Columna lateral: el marcador, los intentos (o los puntos de la ronda) y «Saltar minijuego». */
-.sideColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  min-height: 0;
-}
-.sideColumn > * {
-  flex: none;
-}
-.sidePanel,
-.attemptsPanel {
-  max-height: 22rem;
-}
-@media (min-width: 1024px) {
-  .sideColumn {
-    height: 100%;
-  }
-  .sideColumn > .sidePanel {
-    flex: 0 1 auto;
-    min-height: 0;
-    max-height: 60%;
-  }
-  .sideColumn > .attemptsPanel {
-    flex: 1 1 auto;
-    min-height: 8rem;
-    max-height: none;
-  }
-}
-.skip {
-  display: flex;
-  justify-content: flex-end;
-}
 .rows {
   display: flex;
   flex-direction: column;
@@ -389,13 +287,7 @@
 }
 
 @media (max-width: 639px) {
-  /* Móvil: placa de la ronda y pistas compactas; la placa inferior sin icono ni kicker al buscar. */
-  .hud {
-    padding: var(--sp-2) var(--sp-3);
-  }
-  .heading {
-    font-size: var(--fs-22);
-  }
+  /* Móvil: pistas compactas; la placa inferior sin icono ni kicker al buscar. */
   .clues {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -440,11 +332,8 @@
     max-height: 8.5rem;
   }
 }
-/* Escritorio bajo (720 px): la placa de la ronda algo más baja y la bandeja del buscador de una fila de cartas. */
+/* Escritorio bajo (720 px): la bandeja del buscador de una fila de cartas. */
 @media (min-width: 1024px) and (max-height: 800px) {
-  .hud {
-    padding-block: var(--sp-2);
-  }
   .search :global(.pokemon-selector-results) {
     max-height: 9rem;
   }
@@ -464,29 +353,20 @@
   .search:has(:global(.pokemon-selector-results)) [id$='-hint'] {
     display: none;
   }
-  .screen:has(:global(.pokemon-selector-results)) .heading {
+  .screen:has(:global(.pokemon-selector-results)) h1 {
     position: absolute;
     width: 1px;
     height: 1px;
     overflow: hidden;
     clip-path: inset(50%);
   }
-  .heading {
-    font-size: var(--fs-26);
-  }
 }
 
 /*
- * Escritorio grande (≥1600×900): la pantalla se llena. Título a 44 px, franjas de movimiento más altas y con letra
+ * Escritorio grande (≥1600×900): la pantalla se llena. Franjas de movimiento más altas y con letra
  * mayor, la carta de la revelación más grande y los puntos a 68 px.
  */
 @media (min-width: 1600px) and (min-height: 900px) {
-  .hud {
-    padding: var(--sp-4) var(--sp-5);
-  }
-  .heading {
-    font-size: var(--fs-44);
-  }
   /* Dos columnas de franjas altas: las pistas iniciales ya llenan media losa y las nuevas se desplazan dentro. */
   .clues {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -552,11 +432,6 @@
     min-height: 36px;
     padding-inline: var(--sp-3);
     font-size: var(--fs-18);
-  }
-  .hudMeta > span {
-    min-height: 30px;
-    padding-inline: var(--sp-3);
-    font-size: var(--fs-15);
   }
   .plateTitle {
     font-size: var(--fs-26);
