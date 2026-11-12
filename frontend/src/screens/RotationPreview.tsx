@@ -1,4 +1,4 @@
-import type { RoomView } from '@pokemon-universe/shared/public';
+import { defaultHigherLowerConfig, defaultPokedexDistanceConfig, defaultShinyVoteConfig, type RoomView } from '@pokemon-universe/shared/public';
 import { GameOrderChoice, SelectedGamesConfig } from '../room/GameSelectionConfig';
 import { Panel, Screen } from '../ui';
 
@@ -11,11 +11,12 @@ const games = [
 const room: RoomView = {
   code: 'ABC234', phase: 'LOBBY', hostId: 'host', maxPlayers: 8,
   members: [{ id: 'host', displayName: 'Eru', avatar: { type: 'DEFAULT' }, connected: true, presence: 'CONNECTED', roomRole: 'HOST', role: 'PLAYER', isHost: true, ready: false, sessionPoints: 0 }],
-  availableGames: games, selectedGameId: 'pokedex-distance', selectedGameConfig: { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], roundSeconds: 20 },
+  availableGames: games, selectedGameId: 'pokedex-distance', selectedGameConfig: defaultPokedexDistanceConfig,
   gameConfigs: {
-    'pokedex-distance': { generations: [1, 2, 3, 4, 5, 6, 7, 8, 9], roundSeconds: 20 },
-    'shiny-vote': { generations: [1, 2, 3], rounds: 5, roundSeconds: 20 },
-    'higher-lower': { generations: [1, 2, 3, 4], rounds: 10, roundSeconds: 15 },
+    // Configuraciones completas: cada panel las pinta enteras (Higher or Lower no admite una parcial).
+    'pokedex-distance': defaultPokedexDistanceConfig,
+    'shiny-vote': { ...defaultShinyVoteConfig, generations: [1, 2, 3], rounds: 5 },
+    'higher-lower': { ...defaultHigherLowerConfig, generations: [1, 2, 3, 4], roundSeconds: 15 },
   }, customizedGameIds: ['shiny-vote'], sessionMode: { type: 'INFINITE' },
   gameSelectionMode: { type: 'VOTE', gameIds: games.map((game) => game.id) }, nextGameVote: null,
   gamesPlayed: 0, sessionStandings: [], sessionHistory: [], game: null, gamePlayerState: null, daily: null, serverNow: Date.now(),

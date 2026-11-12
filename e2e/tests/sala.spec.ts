@@ -213,7 +213,7 @@ test('configuración de varios minijuegos: «Ritmo» aplica sus valores y un aju
   await expect(host.page.getByRole('radiogroup', { name: 'Tiempo por turno' }).getByRole('radio', { name: '30 s', exact: true })).toHaveAttribute('aria-checked', 'true');
   await capturarATresTamaños(host.page, 'lobby-configuracion-ritmo', {
     // El editor desde su título, con «Ritmo» debajo (a 390 la lista de los elegidos va encima: scroll interno del panel).
-    antes: async () => { await titulo.evaluate((el) => el.scrollIntoView({ block: 'start' })); await expect(ritmo).toBeInViewport(); },
+    antes: async () => { await host.page.mouse.move(0, 0); await titulo.evaluate((el) => el.scrollIntoView({ block: 'start' })); await expect(ritmo).toBeInViewport(); },
     restaurar: false,
   });
   await host.page.setViewportSize({ width: 1280, height: 720 });
