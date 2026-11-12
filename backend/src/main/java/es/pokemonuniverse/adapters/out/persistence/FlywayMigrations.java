@@ -1,5 +1,6 @@
 package es.pokemonuniverse.adapters.out.persistence;
 
+import es.pokemonuniverse.NativeImage;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.jdbc.DataSourceResolver;
@@ -38,7 +39,10 @@ public class FlywayMigrations {
   }
 
   static void migrate(DataSource dataSource) {
-    configure(dataSource).load().migrate();
+    var configuration = configure(dataSource);
+    // En el binario nativo Flyway no sabe escanear los recursos empaquetados: se le dan ya listados.
+    if (NativeImage.RUNNING) configuration.resourceProvider(NativeMigrationResources.load());
+    configuration.load().migrate();
   }
 
   /** Los ajustes de producción; los tests los reutilizan (p. ej. con {@code target("1")} o más ubicaciones). */

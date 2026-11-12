@@ -1,8 +1,9 @@
 name: Backend native image (experimental)
 
-# Experimental (stage 1): the native binary still crashes at runtime. Built by
-# hand only (Actions → Run workflow), so it never slows down a push to main.
-# Publishes :<sha>-native; Compose keeps deploying the JVM image.
+# Experimental: the native binary starts and passes scripts/backend-native-smoke.mjs
+# locally, but it is not deployed. Built by hand only (Actions → Run workflow), so
+# it never slows down a push to main. Publishes :<sha>-native; Compose keeps
+# deploying the JVM image.
 on:
   workflow_dispatch:
 

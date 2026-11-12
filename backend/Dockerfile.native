@@ -1,5 +1,5 @@
-# Imagen nativa experimental (etapa 1): se publica con sufijo -native para medir
-# arranque y memoria; Compose sigue desplegando la imagen JVM (Dockerfile).
+# Imagen nativa (GraalVM native-image): arranca y pasa el humo de scripts/backend-native-smoke.mjs, pero Compose
+# sigue desplegando la imagen JVM (Dockerfile). Se publica con sufijo -native para medir arranque y memoria.
 FROM ghcr.io/graalvm/native-image-community:25 AS build
 WORKDIR /src
 COPY gradlew settings.gradle.kts build.gradle.kts gradle.properties ./
@@ -7,7 +7,29 @@ COPY gradle ./gradle
 RUN ./gradlew --no-daemon --version
 COPY src ./src
 COPY openapi ./openapi
-RUN ./gradlew --no-daemon nativeCompile -x test
+# Memoria e hilos del compilador de GraalVM (ver graalvmNative en build.gradle.kts). Con 6g y 4 hilos cabe en un
+# runner de 16 GB; en una máquina más justa: --build-arg NATIVE_IMAGE_XMX=4g --build-arg NATIVE_IMAGE_PARALLELISM=2.
+# NATIVE_IMAGE_ARGS añade argumentos sueltos (p. ej. -Ob para una compilación rápida sin optimizar).
+ARG NATIVE_IMAGE_XMX=6g
+ARG NATIVE_IMAGE_PARALLELISM=4
+ARG NATIVE_IMAGE_ARGS=""
+RUN ./gradlew --no-daemon nativeCompile -x test \
+      -PnativeImageXmx="${NATIVE_IMAGE_XMX}" -PnativeImageParallelism="${NATIVE_IMAGE_PARALLELISM}" \
+      -PnativeImageArgs="${NATIVE_IMAGE_ARGS}"
+# /out es lo que se copia tal cual a /app: el binario (el plugin lo nombra como el proyecto, rootProject.name) y las
+# bibliotecas del JDK que native-image deja a su lado en vez de enlazarlas (AWT/ImageIO: libawt, libjavajpeg, liblcms…),
+# que el binario busca en su propio directorio.
+# Además la libwebp de webp-imageio (escritura de avatares por JNI): va también como recurso dentro del binario y se
+# extrae a java.io.tmpdir al primer uso; esta copia es la alternativa por java.library.path cuando /tmp es noexec, como
+# /app/native en la imagen JVM.
+RUN mkdir -p /out /data/avatars /tmp/webp \
+ && cp build/native/nativeCompile/pokemon-universe-backend /out/backend \
+ && find build/native/nativeCompile -maxdepth 1 -name '*.so' -exec cp {} /out/ \; \
+ && cd /tmp/webp \
+ && jar xf "$(find /root/.gradle/caches/modules-2 -name 'webp-imageio-*.jar' | grep -v sources | head -n 1)" \
+      "native/Linux/$(uname -m)/libwebp-imageio.so" \
+ && cp "native/Linux/$(uname -m)/libwebp-imageio.so" /out/ \
+ && ls -l /out
 
 # native-image-community:25 está basada en Oracle Linux 10: el runtime usa la
 # misma generación (UBI 10) para que la libz copiada encuentre su glibc.
@@ -15,16 +37,24 @@ FROM registry.access.redhat.com/ubi10/ubi-micro
 ARG PU_COMMIT_SHA=""
 ENV PU_COMMIT_SHA=${PU_COMMIT_SHA}
 WORKDIR /app
-# El plugin nombra el binario como el proyecto (rootProject.name).
-COPY --from=build /src/build/native/nativeCompile/pokemon-universe-backend /app/backend
+COPY --from=build /out/ /app/
 # El binario enlaza libz.so.1 y UBI-micro no la incluye: se toma la de la
 # imagen de compilación.
 COPY --from=build /usr/lib64/libz.so.1 /usr/lib64/libz.so.1
+# PNG del modo Artwork (POKEMON_ARTWORK_DIR=/app/pokemon-artworks en compose), como en la imagen JVM.
+COPY assets/pokemon-artworks /app/pokemon-artworks
 # Mismo uid/gid que el usuario `node` del servidor Node (avatares 0600 en el
 # volumen compartido); ver Dockerfile.
+COPY --from=build --chown=1000:1000 /data /data
 USER 1000:1000
 EXPOSE 8080
-# Sin HEALTHCHECK: UBI-micro no trae wget ni curl. En la etapa 2 el binario
-# tendrá un modo --healthcheck que consulte /health/readiness y salga con 0/1.
-# Un binario nativo acepta -D en tiempo de ejecución (no hay JAVA_TOOL_OPTIONS).
-ENTRYPOINT ["/app/backend", "-Dlogback.configurationFile=logback-prod.xml"]
+# UBI-micro no trae wget ni curl: el propio binario hace de sonda (es.pokemonuniverse.tools.Healthcheck pide
+# /health/readiness en 127.0.0.1:$PORT y sale con 0/1). start-period como en la imagen JVM: la primera sincronización
+# de PokéAPI (BD vacía) precede a la readiness.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5m --retries=3 \
+  CMD ["/app/backend", "--healthcheck"]
+# Un binario nativo acepta -D y -XX en tiempo de ejecución (no hay JAVA_TOOL_OPTIONS). Como en la imagen JVM: el heap
+# se queda en el 75 % de la memoria del contenedor y un OutOfMemoryError termina el proceso para que compose lo
+# reinicie.
+ENTRYPOINT ["/app/backend", "-XX:MaximumHeapSizePercent=75", "-XX:+ExitOnOutOfMemoryError", \
+  "-Djava.awt.headless=true", "-Dlogback.configurationFile=logback-prod.xml", "-Djava.library.path=/app"]

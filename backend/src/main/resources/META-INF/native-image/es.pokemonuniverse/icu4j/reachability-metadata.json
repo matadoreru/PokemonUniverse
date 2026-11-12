@@ -1,0 +1,94 @@
+{
+  "resources": [
+    {
+      "glob": "com/ibm/icu/ICUConfig.properties"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/root.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/pool.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/res_index.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/es*.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/*.icu"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/*.nrm"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/*.spp"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/*.cfu"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/supplementalData.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/numberingSystems.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/keyTypeData.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/likelySubtags.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/metadata.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/plurals.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/pluralRanges.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/icuver.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/icustd.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/coll/root.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/coll/pool.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/coll/res_index.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/coll/es*.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/coll/*.icu"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/coll/supplementalData.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/curr/root.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/curr/pool.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/curr/res_index.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/curr/es*.res"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/curr/*.icu"
+    },
+    {
+      "glob": "com/ibm/icu/impl/data/icudata/curr/supplementalData.res"
+    }
+  ]
+}
