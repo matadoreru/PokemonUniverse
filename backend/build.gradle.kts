@@ -72,18 +72,21 @@ dependencies {
   testResourcesService("org.postgresql:postgresql")
 }
 
-// Imagen nativa (Dockerfile.native). El compilador de GraalVM se acota en memoria e hilos para que quepa en un
-// portátil o en un runner de 16 GB: -PnativeImageXmx=5g, -PnativeImageParallelism=2 (con 4g el análisis no termina).
+// Imagen nativa (Dockerfile.native). Sin más argumentos el compilador de GraalVM toma la memoria y los hilos que
+// encuentra; -PnativeImageXmx=7g y -PnativeImageParallelism=4 lo acotan en una máquina compartida. El análisis de este
+// backend no cabe en 5 GB de heap (se queda en GC continuo): cuenta con 8 GB libres o más.
 // -PnativeImageArgs="-Ob" añade argumentos sueltos (p. ej. la compilación rápida sin optimizar, para iterar). Los
 // metadatos de reflexión, recursos y JNI están en src/main/resources/META-INF/native-image/.
-val nativeImageXmx = providers.gradleProperty("nativeImageXmx").orElse("6g")
-val nativeImageParallelism = providers.gradleProperty("nativeImageParallelism").orElse("4")
+val nativeImageXmx = providers.gradleProperty("nativeImageXmx").orElse("")
+val nativeImageParallelism = providers.gradleProperty("nativeImageParallelism").orElse("")
 val nativeImageArgs = providers.gradleProperty("nativeImageArgs").orElse("")
 graalvmNative {
   binaries {
     named("main") {
-      buildArgs.add(nativeImageXmx.map { "-J-Xmx$it" })
-      buildArgs.add(nativeImageParallelism.map { "--parallelism=$it" })
+      // webp-imageio carga su libwebp con System.load, como en la JVM (jvmArgs de run y test).
+      buildArgs.add("--enable-native-access=ALL-UNNAMED")
+      buildArgs.addAll(nativeImageXmx.map { if (it.isBlank()) listOf() else listOf("-J-Xmx$it") })
+      buildArgs.addAll(nativeImageParallelism.map { if (it.isBlank()) listOf() else listOf("--parallelism=$it") })
       buildArgs.addAll(nativeImageArgs.map { args -> args.split(" ").filter { it.isNotBlank() } })
     }
   }

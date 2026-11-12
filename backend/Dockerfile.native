@@ -7,15 +7,16 @@ COPY gradle ./gradle
 RUN ./gradlew --no-daemon --version
 COPY src ./src
 COPY openapi ./openapi
-# Memoria e hilos del compilador de GraalVM (ver graalvmNative en build.gradle.kts): --build-arg NATIVE_IMAGE_XMX=5g
-# --build-arg NATIVE_IMAGE_PARALLELISM=2. Con 4g no basta (el análisis se queda en GC continuo). El contenedor de
-# compilación necesita el heap más ~1,5 GB (resto del compilador y Gradle).
+# Memoria e hilos del compilador de GraalVM (ver graalvmNative en build.gradle.kts). Vacíos, GraalVM usa lo que
+# encuentra (así compila en un runner de 16 GB); para acotarlo: --build-arg NATIVE_IMAGE_XMX=7g
+# --build-arg NATIVE_IMAGE_PARALLELISM=4. Con 4g y con 5g el análisis no termina (GC continuo), y el contenedor de
+# compilación necesita el heap más ~1 GB (resto del compilador y Gradle).
 # NATIVE_IMAGE_ARGS añade argumentos sueltos (p. ej. -Ob para una compilación rápida sin optimizar).
-ARG NATIVE_IMAGE_XMX=6g
-ARG NATIVE_IMAGE_PARALLELISM=4
+ARG NATIVE_IMAGE_XMX=""
+ARG NATIVE_IMAGE_PARALLELISM=""
 ARG NATIVE_IMAGE_ARGS=""
 # Java se compila en un paso aparte: así el proceso de Gradle que espera a native-image no carga con los procesadores
-# de anotaciones (medio GB menos junto a los 6 GB del compilador nativo).
+# de anotaciones (medio GB menos junto al compilador nativo).
 RUN ./gradlew --no-daemon classes
 RUN ./gradlew --no-daemon -Dorg.gradle.jvmargs="-Xmx384m -XX:+UseSerialGC" nativeCompile -x test \
       -PnativeImageXmx="${NATIVE_IMAGE_XMX}" -PnativeImageParallelism="${NATIVE_IMAGE_PARALLELISM}" \

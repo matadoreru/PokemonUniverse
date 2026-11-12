@@ -72,4 +72,12 @@ funciona en PRO. Si es incorrecto, un rollback a través del corte dejaría de e
   - Playwright solo de las pantallas tocadas, sin cambios visibles salvo radios que pasen a los del sistema.
   - Hecha en el paquete 8 del pulido (regla `no-tailwind-shape` en `eslint.config.mjs`).
 - [ ] **G. Imagen nativa:** intentar que arranque, con compilaciones nativas de una en una y avisando al usuario.
-  - Pendiente: el usuario la retoma.
+  - Intentado el 2026-11-13 en la rama `backend/imagen-nativa`: **no se ha visto arrancar**. El binario completo no
+    se pudo compilar en la máquina de desarrollo: tres compilaciones, las tres paradas por memoria (`-J-Xmx4g` y
+    `-J-Xmx5g` en GC continuo durante el análisis; `-J-Xmx6g` con el contenedor a 7 GB, muerto por memoria).
+  - Queda en la rama todo lo que se pudo preparar y comprobar sin él: metadatos del agente de trazas, Hibernate sin
+    ByteBuddy, migraciones de Flyway en el binario, `Dockerfile.native` con las bibliotecas de AWT y WebP y el
+    `HEALTHCHECK` (`--healthcheck`), y el humo `scripts/backend-native-smoke.mjs`. Un binario nativo de prueba con
+    ImageIO, TwelveMonkeys, WebP por JNI, ICU4J y el listado de migraciones sí funciona en UBI-micro.
+  - Siguiente paso: compilar donde haya 8 GB libres o más y pasar el humo. Detalle y receta en
+    `docs/migracion-java-pendientes.md`, «Qué queda», punto 1.
