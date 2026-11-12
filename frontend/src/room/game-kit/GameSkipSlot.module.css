@@ -12,3 +12,16 @@
   gap: var(--sp-2);
   min-width: 0;
 }
+/*
+ * Móvil: con «Siguiente» al lado, «Saltar minijuego» queda en su icono y su recuento (el nombre accesible no cambia) y
+ * los dos caben en una fila. En dos filas la placa de la ronda crecía 54 px y la placa de la acción tapaba la escena
+ * (la última fila de cartas de Trivia con una pregunta de dos líneas).
+ */
+@media (max-width: 639px) {
+  .slot {
+    flex-wrap: nowrap;
+  }
+  .slot > :not(:only-child) [data-skip-text] {
+    display: none;
+  }
+}

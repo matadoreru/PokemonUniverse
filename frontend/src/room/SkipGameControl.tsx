@@ -59,7 +59,8 @@ export function SkipGameControl({ state, connected, onSetVote }: SkipGameControl
       loading={pending}
       onClick={() => void toggleVote()}
     >
-      {voted ? 'Cancelar voto' : 'Saltar minijuego'}
+      {/* `data-skip-text`: en el móvil, junto a «Siguiente», `GameSkipSlot` deja solo el icono y el recuento. */}
+      <span data-skip-text>{voted ? 'Cancelar voto' : 'Saltar minijuego'}</span>
       {state.votes > 0 && <span className={s.count}>{state.votes}/{state.requiredVotes}</span>}
     </Pill>
     <span id={helpId} className="sr-only">{tooltip}</span>
