@@ -30,7 +30,7 @@ funciona en PRO. Si es incorrecto, un rollback a través del corte dejaría de e
   - quitar los escenarios del corte de `scripts/test-deploy-rollback.sh`;
   - migración que borra `_prisma_migrations`, revisando antes el baseline de Flyway y `FlywayMigrationsTest`;
   - ejecutar `test-deploy-rollback.sh` y shellcheck.
-- [ ] **D. Detalles menores de los juegos nuevos** (comprobar cada uno contra main antes de tocarlo):
+- [x] **D. Detalles menores de los juegos nuevos** (comprobar cada uno contra main antes de tocarlo):
   - **Traductor Unown:**
     - en el móvil, ajustar el tamaño mínimo del glifo a la palabra más larga real del mazo;
     - `md` en el móvil con letra de 22 px;
@@ -53,17 +53,23 @@ funciona en PRO. Si es incorrecto, un rollback a través del corte dejaría de e
     - nombres de test con números viejos (`listsFortyEight…`, `loadsTwentyEight…`);
     - la 4.ª tarjeta cortada en la revelación REAL a 1280;
     - el récord vacío «Mejor ojo».
-  - Pendiente: el usuario la retoma.
+  - Hecha el 2026-11-12. Ya resueltos por el rediseño de Unown (letras por ronda) o por los borradores: el tamaño mínimo
+    del glifo, el `md` de 22 px, el test de «sin letra visible» y el texto de la pregunta al abrir «Adivinar». La
+    «graciosa a la oficial» y el `aria-pressed` ya tenían test. El resto, arreglado: el mensaje de Unown con su propio
+    contenedor de tamaño (sin `.stage > div` ni los 28 px), quién descifró el último mensaje en los resultados, la
+    captura con `capture()`, la placa de ¿Quién soy? en su sitio del DOM en el móvil (al cruzar 1024 px el buscador se
+    monta de nuevo), «Pokémon oculto», un intento por turno, la placa en segunda persona, los tests de CLASSIC vacío y
+    REAL sin votos, los nombres de test, las cuatro tarjetas en una fila a 1280 y los récords sin dueño ocultos.
 - [x] **E. Documentación:** «Qué queda», «Riesgos» y «Deuda» de `docs/migracion-java-pendientes.md` al día. Hay que
   comprobar la CI con `gh run list`; el oráculo Node ya está retirado.
 - [x] **F. Notas de parche 0.8.0 (V16 o la siguiente libre):** los tres juegos nuevos y los arreglos visibles, con el
   patrón idempotente `NOT EXISTS` de V14/V15.
-- [ ] **H. Tailwind sin forma ni decoración** (decisión del 2026-11-11, ya en `AGENTS.md`):
+- [x] **H. Tailwind sin forma ni decoración** (decisión del 2026-11-11, ya en `AGENTS.md`):
   - Tailwind vale para maquetación y para peso, mayúsculas, `tracking-*` y `leading-*`;
   - `rounded*`, `border*` y `shadow*` pasan a los componentes de `ui/` o a CSS Modules con los tokens (unas 30 clases en
     unas 15 pantallas);
   - el lint `no-arbitrary-style` empieza a rechazarlas fuera de `ui/`;
   - Playwright solo de las pantallas tocadas, sin cambios visibles salvo radios que pasen a los del sistema.
-  - Pendiente: el usuario la retoma con la D.
+  - Hecha en el paquete 8 del pulido (regla `no-tailwind-shape` en `eslint.config.mjs`).
 - [ ] **G. Imagen nativa:** intentar que arranque, con compilaciones nativas de una en una y avisando al usuario.
   - Pendiente: el usuario la retoma.

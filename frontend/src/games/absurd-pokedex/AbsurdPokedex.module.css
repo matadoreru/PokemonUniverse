@@ -167,6 +167,15 @@
   height: 100%;
   min-height: 0;
 }
+/*
+ * Revelación en escritorio: columnas más estrechas que al votar (aquí no hay botones), para que las cuatro tarjetas de
+ * «¿Cuál es la real?» con tres jugadores quepan en una fila a 1280 px; con 16rem la cuarta bajaba y quedaba cortada.
+ */
+@media (min-width: 1024px) {
+  .reveal .entries {
+    grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
+  }
+}
 
 .points {
   display: inline-flex;

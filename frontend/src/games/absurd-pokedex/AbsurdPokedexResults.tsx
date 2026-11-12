@@ -37,7 +37,7 @@ export function AbsurdPokedexResults({ room, selfId, onLobby, onEnd }: GameResul
     const top = guessTop(entries, key);
     return { key, title, icon, names: top?.names ?? null, value: String(top?.value ?? ''), unit: top?.value === 1 ? one : many };
   };
-  const records: ResultsRecordItem[] = game.mode === 'REAL_ENTRY'
+  const all: ResultsRecordItem[] = game.mode === 'REAL_ENTRY'
     ? [
       record('realGuessed', 'Mejor ojo', Search, 'oficial acertada', 'oficiales acertadas'),
       record('playersFooled', 'Más engaños', VenetianMask, 'jugador engañado', 'jugadores engañados'),
@@ -47,6 +47,10 @@ export function AbsurdPokedexResults({ room, selfId, onLobby, onEnd }: GameResul
       record('roundWins', 'Más victorias', Trophy, 'ronda ganada', 'rondas ganadas'),
       record('votesReceived', 'Más votos recibidos', Vote, 'voto recibido', 'votos recibidos'),
     ];
+  // Un récord que nadie consiguió (p. ej. «Mejor ojo» si nadie acertó la oficial) no ocupa una loseta vacía mientras
+  // haya otro que enseñar; si no hay ninguno, se quedan todos con su «Nadie lo consiguió».
+  const achieved = all.filter((item) => item.names !== null);
+  const records = achieved.length > 0 ? achieved : all;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Las entradas más absurdas" subtitle={`Pokédex Absurda · ${roundsLabel(game.totalRounds)}`}
     standings={rows} selfId={selfId} winnersNeedPoints aside={<ResultsRecords id="absurd-records-title" records={records} />}
     actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>

@@ -35,7 +35,7 @@ public final class PokedexEntryText {
    * Nombre, id con espacios, nombres localizados y el símbolo de Nidoran; en NFC, recortados, de al menos dos unidades
    * UTF-16 y del más largo al más corto (orden estable, como {@code Array.prototype.sort}).
    */
-  static List<String> aliasesFor(Pokemon pokemon) {
+  private static List<String> aliasesFor(Pokemon pokemon) {
     var aliases = new LinkedHashSet<String>();
     aliases.add(pokemon.name());
     aliases.add(pokemon.id().replace("-", " "));
@@ -57,7 +57,7 @@ public final class PokedexEntryText {
    * Solo las letras y números del alias (por punto de código, como {@code [...alias]}), separados por espacios,
    * puntuación o símbolos opcionales. El escape de metacaracteres de TS no cambia nada: ninguna letra ni número lo es.
    */
-  static String aliasPattern(String alias) {
+  private static String aliasPattern(String alias) {
     var letters = new ArrayList<String>();
     alias.codePoints().mapToObj(Character::toString)
         .filter(character -> LETTER_OR_NUMBER.matcher(character).matches())

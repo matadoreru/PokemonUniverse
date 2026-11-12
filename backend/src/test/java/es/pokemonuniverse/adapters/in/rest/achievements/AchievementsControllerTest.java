@@ -76,7 +76,7 @@ class AchievementsControllerTest {
   }
 
   @Test
-  void listsFortyEightInCatalogOrder() {
+  void listsTheWholeCatalogInOrder() {
     var body = get(register());
     assertEquals(51, body.get("total"));
     assertEquals(0, body.get("unlocked"));

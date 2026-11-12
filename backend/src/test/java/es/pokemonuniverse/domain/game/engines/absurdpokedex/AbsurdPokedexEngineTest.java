@@ -279,6 +279,32 @@ class AbsurdPokedexEngineTest {
   }
 
   @Test
+  void classicRoundWithNoEntriesIsSkipped() {
+    var context = context(3, 11);
+    var state = engine.handleTimeout(started(config(AbsurdPokedexMode.CLASSIC, 2), context), context.withNow(31_000));
+    assertEquals(GamePhase.ROUND_RESULTS, state.phase());
+    assertTrue(state.lastRound().skipped());
+    assertTrue(state.lastRound().pointsAwarded().isEmpty());
+    assertEquals(List.of("p1", "p2", "p3"), state.lastRound().missingPlayerIds());
+    assertEquals(Map.of("p1", 0, "p2", 0, "p3", 0), state.scores());
+    assertEquals(0, state.playerStats().values().stream().mapToInt(stats -> stats.entriesSubmitted()).sum());
+  }
+
+  @Test
+  void realRoundWithoutVotesScoresNobody() {
+    var context = context(3, 5);
+    var voting = everyoneWrites(started(config(AbsurdPokedexMode.REAL_ENTRY, 2), context), context);
+    var state = engine.handleTimeout(voting, context.withNow(1_000_000));
+    assertEquals(GamePhase.ROUND_RESULTS, state.phase());
+    assertFalse(state.lastRound().skipped());
+    assertEquals(Map.of("p1", 0, "p2", 0, "p3", 0), state.scores());
+    assertEquals(4, state.lastRound().entries().size());
+    assertEquals(0, state.lastRound().entries().stream().mapToInt(entry -> entry.votesReceived()).sum());
+    assertEquals(0, state.playerStats().values().stream()
+        .mapToInt(stats -> stats.realGuessed() + stats.playersFooled() + stats.roundWins()).sum());
+  }
+
+  @Test
   void funnyVoteOnTheOfficialIsDroppedSilently() {
     var context = context(3, 5);
     var real = everyoneWrites(started(config(AbsurdPokedexMode.REAL_ENTRY, 2), context), context);

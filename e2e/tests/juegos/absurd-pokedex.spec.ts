@@ -138,7 +138,9 @@ test('pokédex absurda: escribir, votar la más absurda y la real, y la clasific
     retenedor.soltar();
 
     await expect(host.page.getByRole('heading', { name: 'Las entradas más absurdas', level: 1 })).toBeVisible({ timeout: 20_000 });
-    await expect(host.page.getByText('Mejor ojo')).toBeVisible();
+    // Nadie votó la oficial: «Mejor ojo» no sale como loseta vacía; «Más engaños» sí tiene dueño.
+    await expect(host.page.getByText('Más engaños')).toBeVisible();
+    await expect(host.page.getByText('Mejor ojo')).toHaveCount(0);
     await sinScorePop(host.page);
     await capturarTamanos(host.page, 'juego-absurd-pokedex-clasificacion');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
