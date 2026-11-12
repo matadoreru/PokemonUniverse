@@ -21,6 +21,7 @@ import { ConfigRange } from '../../games/common/ConfigRange';
 import { playerColor } from '../../lib/player-color';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { ResultsShell } from '../../room/game-kit/ResultsShell';
+import { GAME_HUD_SKIP, GameHud } from '../../room/game-kit/GameScreen';
 import { GameIntro } from '../../room/GameIntro';
 import { GameHelpButton } from '../../room/GameHelpButton';
 import { RevealNextControl } from '../../room/RevealNextControl';
@@ -1421,6 +1422,34 @@ function RevealNextSection() {
   );
 }
 
+/*
+ * Placa de la ronda de `GameScreen` (paquete 10): la de siempre y los tres huecos que trajeron las cabeceras propias
+ * (entradilla y marca del título, franja al pie). Los títulos van como `h1` de la placa, igual que en la pantalla.
+ */
+function GameHudSection() {
+  const now = Date.now();
+  const timer = { deadline: now + 20_000, serverOffset: 0, label: 'Tiempo', totalMs: 30_000 };
+  return (
+    <Section name="game-hud" title="Placa de la ronda (GameScreen)">
+      <Fig id="game-hud-basic" caption="Ronda, juego, chips, título y plazo" wide>
+        <GameHud gameName="Pokémon Connections" roundLabel="Puzle 2 de 3" meta={<Chip tone="neutral">4 grupos de 4</Chip>} heading="Forma los grupos" timer={timer} />
+      </Fig>
+      <Fig id="game-hud-lead" caption="headingLead · entradilla en pequeño dentro del título (Higher or Lower, Pokédex Distance)" wide>
+        <GameHud gameName="Higher or Lower" roundLabel="Ronda 3 de 10" headingLead="Se compara" heading="Ataque" timer={timer} />
+      </Fig>
+      <Fig id="game-hud-mark" caption="headingMark · marca decorativa antes del título (en Type Chain, la muestra del color del jugador del turno)" wide>
+        <GameHud gameName="Type Chain" roundLabel="Turno 4" headingMark={<Icon icon={Link2} size={24} />}
+          heading="Turno de Misty" timer={{ ...timer, label: 'Turno' }}
+          skip={<div className={GAME_HUD_SKIP}><SkipGameControl state={REVEAL_SKIP_STATE} connected onSetVote={asyncNoop} /></div>} />
+      </Fig>
+      <Fig id="game-hud-foot" caption="hudFoot · franja al pie, a todo el ancho (el rol compacto de Impostor en el móvil)" wide>
+        <GameHud gameName="Pokémon Impostor" roundLabel="Ronda 1 · Votación 1" heading="Turno de pistas" timer={timer}
+          foot={<Chip tone="info" icon={<Icon icon={ShieldCheck} size={18} />}>INOCENTE · Pikachu</Chip>} />
+      </Fig>
+    </Section>
+  );
+}
+
 /* Piezas que comparten los minijuegos (F4): buscador, temporizador de servidor, deslizador, avatar y resultados. */
 const SELECTOR_POKEMON = ['Pikachu', 'Pichu', 'Raichu', 'Pikachu Libre', 'Pikachu Coqueta', 'Chikorita', 'Chinchou'].map((name) => ({ id: name.toLowerCase(), name, sprite: '' }));
 const asyncNoop = async () => undefined;
@@ -1612,6 +1641,7 @@ export function Gallery() {
       <ScreenSplitSection />
       <GameIntroSection />
       <RevealNextSection />
+      <GameHudSection />
       <AuctionSection />
       <GamePiecesSection />
       <ToastStack toasts={toasts} onClose={close} />

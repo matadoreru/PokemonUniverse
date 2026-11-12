@@ -124,6 +124,30 @@
   font: 800 var(--fs-34) / 1.1 var(--font-display);
   color: var(--white);
 }
+/* Entradilla del título: en pequeño y en mayúsculas, en la línea base del título (como el nombre del juego). */
+.headingLead {
+  margin-right: var(--sp-2);
+  font: 800 var(--fs-13) / 1.2 var(--font-text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sky-2);
+  text-shadow: none;
+}
+/* Marca antes del título (p. ej. la muestra del color del jugador): centrada en la línea, sin estirarla. */
+.headingMark {
+  display: inline-flex;
+  margin-right: var(--sp-2);
+  vertical-align: middle;
+  line-height: 0;
+}
+/* Franja al pie de la placa, a todo su ancho (desaparece si su contenido no pinta nada). */
+.hudFoot {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.hudFoot:empty {
+  display: none;
+}
 /* «Saltar minijuego» a la izquierda del plazo, en la misma fila: la placa no crece en alto. */
 .hudSide {
   display: flex;
@@ -205,7 +229,7 @@
 @media (max-width: 639px) {
   /* Móvil: ronda y título a la izquierda, el plazo a la derecha y «Saltar minijuego» debajo, a lo ancho. */
   .hud {
-    grid-template-areas: 'main timer' 'skip skip';
+    grid-template-areas: 'main timer' 'skip skip' 'foot foot';
     gap: var(--sp-2);
     padding: var(--sp-2) var(--sp-3);
   }
@@ -224,6 +248,9 @@
   }
   .skip:empty {
     display: none;
+  }
+  .hudFoot {
+    grid-area: foot;
   }
   /* El nombre del juego ya va en la placa de la sala: aquí solo para lectores. */
   .gameName {
