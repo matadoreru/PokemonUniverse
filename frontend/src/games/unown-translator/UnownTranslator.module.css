@@ -2,15 +2,25 @@
 
 /*
  * El mensaje: las palabras bajan de línea, pero cada una es un bloque que no se parte. Debajo, en su propia fila,
- * cuándo llega la siguiente letra (nunca encima de las letras). El cuerpo de `GamePanel` es un contenedor de tamaño:
- * cada pieza (glifo, letra revelada en su lugar o signo) mide lo mismo, `--unown-size`, el mayor de dos repartos que
- * caben seguro: todo el mensaje en una fila (`--total` piezas a lo ancho) o una palabra por fila (`--longest` piezas a lo
- * ancho y `--words` filas a lo alto). Si caben más palabras por fila, el flex las junta y ocupan aún menos alto. Si un
- * mensaje aun así no cupiera (el suelo de 16–20 px), se desplaza dentro de su panel, nunca la página.
+ * cuándo llega la siguiente letra (nunca encima de las letras). `.messageBox` llena la fila del mensaje y es su
+ * contenedor de tamaño: cada pieza (glifo, letra revelada en su lugar o signo) mide lo mismo, `--unown-size`, el mayor
+ * de dos repartos que caben seguro: todo el mensaje en una fila (`--total` piezas a lo ancho) o una palabra por fila
+ * (`--longest` piezas a lo ancho y `--words` filas a lo alto). Si caben más palabras por fila, el flex las junta y ocupan
+ * aún menos alto. Si un mensaje aun así no cupiera (el suelo de 16–20 px), se desplaza dentro de su caja, nunca la
+ * página.
  */
-.stage > div {
+.stage {
   grid-template-rows: minmax(0, 1fr) auto;
   gap: var(--sp-2);
+}
+.messageBox {
+  container-type: size;
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  justify-self: stretch;
+  min-width: 0;
+  min-height: 0;
   overflow: auto;
 }
 .message {
@@ -19,11 +29,9 @@
   --unown-word-gap: var(--sp-6);
   --unown-row-gap: var(--sp-3);
   --unown-floor: 20px;
-  /* Lo que ocupa a lo alto además de las filas: la fila de la cuenta atrás (chip de 28 px) y su hueco. */
-  --unown-chrome: calc(var(--sp-2) + 28px);
   /* Margen de redondeo: a lo justo, una fila podría partirse por un píxel. */
   --unown-slack: 4px;
-  --unown-high: calc(100cqb - var(--unown-chrome));
+  --unown-high: calc(100cqb - var(--unown-slack));
   --unown-line: min(
     calc((100cqi - var(--unown-slack) - (var(--total, 8) - var(--words, 1)) * var(--unown-gap) - (var(--words, 1) - 1) * var(--unown-word-gap)) / var(--total, 8)),
     var(--unown-high)

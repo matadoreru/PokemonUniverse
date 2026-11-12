@@ -35,11 +35,12 @@ function MessageToken({ token }: { token: UnownToken }) {
 function UnownMessage({ tokens }: { tokens: readonly UnownToken[] }) {
   const words = splitWords(tokens);
   const { words: count, total, longest } = messageMetrics(words);
-  return <div className={s.message} data-testid="unown-message" style={{ '--words': count, '--total': total, '--longest': longest } as CSSProperties}>
+  // `messageBox` es el contenedor de tamaño del que salen los `cqi`/`cqb` del mensaje: no depende de quién lo envuelva.
+  return <div className={s.messageBox}><div className={s.message} data-testid="unown-message" style={{ '--words': count, '--total': total, '--longest': longest } as CSSProperties}>
     {words.map((word, index) => <span key={index} className={s.word}>
       {word.map((token, position) => <MessageToken key={position} token={token} />)}
     </span>)}
-  </div>;
+  </div></div>;
 }
 
 /** Leyenda «Alfabeto»: los 26 glifos en orden de índice, con la letra de los revelados en esta ronda. */
@@ -147,7 +148,7 @@ export function UnownTranslatorGame({ room, selfId, onAction }: ActiveGameProps)
 
   const clue = lastRound
     ? <UnownRoundReveal round={lastRound} />
-    : <GamePanel label="Mensaje cifrado" className={s.stage}>
+    : <GamePanel label="Mensaje cifrado" bodyClassName={s.stage}>
       <UnownMessage tokens={game.tokens} />
       {active && <span className={s.next}><Chip tone="neutral" icon={<Icon icon={Clock3} size={18} />}>{hintCountdownLabel(game.nextHintAt, serverNow, game.tokens.some((token) => token.kind === 'GLYPH'))}</Chip></span>}
     </GamePanel>;

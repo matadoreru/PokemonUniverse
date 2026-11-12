@@ -3,7 +3,7 @@
  * `tests/juegos.spec.ts` y los helpers que comparten los specs de juegos, en `src/juegos.ts`.
  */
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../../src/helpers.js';
+import { capture, crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, SIZES, type Jugador } from '../../src/helpers.js';
 import { capturarTamanos, primeraVisible, sinScorePop, ajustarRango } from '../../src/juegos.js';
 
 const escaparRegExp = (texto: string) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -121,7 +121,16 @@ test('quién soy: preguntar, responder, adivinar y clasificación', async ({ bro
       const suyo = asignados.get(turno.name)!;
       const opcion = await buscarEnQuienSoy(turno.page, suyo);
       if (!capturado) {
-        await capturarTamanos(turno.page, 'juego-who-am-i-adivinar', { sigue: opcion });
+        // Por debajo de 1024 px la placa de la acción va en otro sitio del DOM (tras la placa de la ronda): al cruzar ese
+        // ancho el buscador se monta de nuevo, vacío, y se vuelve a escribir en cada tamaño.
+        const buscador = turno.page.getByRole('textbox', { name: 'Buscar tu Pokémon' });
+        for (const tamano of [...SIZES, SIZES[0]]) {
+          await turno.page.setViewportSize({ width: tamano.w, height: tamano.h });
+          if ((await buscador.inputValue()) !== suyo) await buscador.fill(suyo);
+          await expect(opcion).toBeEnabled({ timeout: 10_000 });
+          if (tamano !== SIZES[0] || !capturado) await capture(turno.page, 'juego-who-am-i-adivinar');
+          capturado = true;
+        }
         capturado = true;
       }
       await opcion.click();
@@ -189,7 +198,7 @@ test('quién soy: cinco jugadores en el móvil, cartas desplazables y el Pokémo
     expect(ultimaCaja!.x + ultimaCaja!.width).toBeLessThanOrEqual(caja!.x + caja!.width + 1);
     expect(ultimaCaja!.x + ultimaCaja!.width).toBeLessThanOrEqual(SIZES[2].w);
     // Solo a 390×844 a propósito: la fila desplazable de cartas solo existe por debajo de 1024 px.
-    await otro.page.screenshot({ path: 'screenshots/juego-who-am-i-cinco-jugadores-desplazado-390x844.png', animations: 'disabled' });
+    await capture(otro.page, 'juego-who-am-i-cinco-jugadores-desplazado');
     for (const jugador of jugadores) expect(jugador.errors, jugador.name).toEqual([]);
   } finally {
     await sala.cerrar();

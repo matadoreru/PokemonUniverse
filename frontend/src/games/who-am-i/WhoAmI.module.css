@@ -27,43 +27,19 @@
 }
 
 /*
- * Móvil y tableta: nada queda debajo de la placa de la acción. La placa deja de ir pegada al fondo y va justo después
- * de la placa de la ronda, antes que las cartas y que «Tus pistas»: la acción se ve sin desplazar y lo demás se lee al
- * bajar sin que nada lo tape. Las cartas van en una sola fila que se desplaza en horizontal: la lista es la que se
- * desplaza (el cuerpo del panel recorta en horizontal), con encaje suave por carta, y las columnas son estrechas para
- * que con cuatro o más cartas asome la siguiente y se vea que hay más.
- * Estructura (`GameScreen` + `ScreenSplit`): la pantalla > `p` de la región viva y la rejilla; la rejilla > arriba
- * (> arriba de `GameScreen` > placa de la ronda, escena), lateral (`aside`) y placa de la acción (`data-layer`).
- * Las dos envolturas de arriba se disuelven (`display: contents`) para ordenar sus piezas con la placa de la acción.
+ * Móvil y tableta: nada queda debajo de la placa de la acción. La placa va en el flujo, justo después de la placa de la
+ * ronda (`WhoAmIGame` la monta ahí por debajo de 1024 px), y la pantalla inferior, vacía, no ocupa sitio. Las cartas van
+ * en una sola fila que se desplaza en horizontal: la lista es la que se desplaza (el cuerpo del panel recorta en
+ * horizontal), con encaje suave por carta, y las columnas son estrechas para que con cuatro o más cartas asome la
+ * siguiente y se vea que hay más.
  */
 @media (max-width: 1023px) {
-  .screen > div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-  }
-  .screen > div > div:first-child,
-  .screen > div > div:first-child > div {
-    display: contents;
-  }
-  .screen > div > div:first-child > div > * {
-    order: 2;
-  }
-  .screen > div > div:first-child > div > :first-child {
-    order: 0;
-  }
   .screen [data-layer='screen-bottom'] {
-    order: 1;
-    position: static;
+    display: none;
   }
-  .screen > div > aside {
-    order: 3;
+  .screen aside {
     /* Sitio para la sombra dura del último panel. */
     padding-bottom: var(--sp-2);
-  }
-  /* La bisagra marca la placa pegada al fondo: sin pegar, sobra. */
-  .screen [data-layer='screen-bottom'] > [aria-hidden='true'] {
-    display: none;
   }
   .cards {
     grid-template-columns: none;

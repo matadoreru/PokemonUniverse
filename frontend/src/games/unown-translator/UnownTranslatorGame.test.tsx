@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { UnownTranslatorConfigPanel } from './ConfigPanel';
 import s from './UnownTranslator.module.css';
 import { UnownTranslatorGame } from './UnownTranslatorGame';
-import { UnownTranslatorResults } from './UnownTranslatorResults';
+import { lastSolversText, UnownTranslatorResults } from './UnownTranslatorResults';
 import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
 import { member, roomView } from '../../room/test-support/room-view';
 
@@ -158,6 +158,13 @@ describe('Traductor Unown: pantalla', () => {
     expect(classic).toContain('/pikachu.png');
     const moves = results(publicGame('GAME_RESULTS', { mode: 'MOVES', round: moveRound }));
     expect(moves).toContain('Lucha');
+  });
+
+  it('resultados finales: quién descifró el último mensaje, en orden, o que nadie lo hizo', () => {
+    expect(lastSolversText([])).toBe('Nadie descifró el último mensaje.');
+    expect(lastSolversText(['Ana'])).toBe('Lo descifró Ana.');
+    expect(lastSolversText(['Ana', 'Leo'])).toBe('Lo descifraron, por orden: Ana, Leo.');
+    expect(results(publicGame('GAME_RESULTS', { round: pokemonRound }))).toContain('data-testid="unown-last-solvers"');
   });
 
   it.each([

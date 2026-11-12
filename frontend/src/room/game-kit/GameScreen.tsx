@@ -166,8 +166,8 @@ export function GameHud({ gameName, roundLabel, meta, heading, headingLead, head
  * de alto) y centra su contenido. El cuerpo es un contenedor de tamaño (`container-type: size`): la pista escala con
  * `cqw`/`cqh` (p. ej. `width: min(92cqw, 92cqh)`), así a 1920 crece y a 390 cabe sin desplazar.
  */
-export function GamePanel({ title, right, label, variant = 'cream', className, children }: { title?: ReactNode; right?: ReactNode; /** Nombre accesible de la zona (si no hay `title`). */ label?: string; variant?: 'cream' | 'dark' | 'blue'; className?: string | undefined; children: ReactNode }) {
-  return <Panel variant={variant} as="section" {...(title ? { title } : {})} {...(right ? { right } : {})} {...(label ? { 'aria-label': label } : {})} className={cx(s.cluePanel, className)} bodyClassName={cx(s.clueBody)}>
+export function GamePanel({ title, right, label, variant = 'cream', className, bodyClassName, children }: { title?: ReactNode; right?: ReactNode; /** Nombre accesible de la zona (si no hay `title`). */ label?: string; variant?: 'cream' | 'dark' | 'blue'; className?: string | undefined; /** Clase del cuerpo (el contenedor de tamaño), para un reparto propio de sus hijos. */ bodyClassName?: string | undefined; children: ReactNode }) {
+  return <Panel variant={variant} as="section" {...(title ? { title } : {})} {...(right ? { right } : {})} {...(label ? { 'aria-label': label } : {})} className={cx(s.cluePanel, className)} bodyClassName={cx(s.clueBody, bodyClassName)}>
     {children}
   </Panel>;
 }

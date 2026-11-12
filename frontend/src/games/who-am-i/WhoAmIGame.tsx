@@ -107,7 +107,10 @@ function AskerPokemon({ name, pokemon }: { name: string; pokemon: WhoAmIPokemon 
   </p>;
 }
 
-/** La carta de un jugador: los demás con su Pokémon; la propia con «?» (o con `self` si ya acertó). */
+/**
+ * La carta de un jugador: los demás con su Pokémon; la propia con «?» (o con `self` si ya acertó). La de otro sin
+ * Pokémon a la vista (un espectador nunca los recibe) dice «Pokémon oculto», no «Tu Pokémon».
+ */
 function PlayerCard({ name, self, pokemon, turn, solved, viewing, wide, onView }: { name: string; self: boolean; pokemon: WhoAmIPokemon | null; turn: boolean; solved: boolean; viewing: boolean; wide: boolean; onView?: (() => void) | undefined }) {
   // En escritorio con alto la carta llena su celda (el sprite crece con ella); si no, sigue pequeña.
   const size = wide ? 'fill' : 'sm';
@@ -120,7 +123,7 @@ function PlayerCard({ name, self, pokemon, turn, solved, viewing, wide, onView }
   const card = pokemon
     ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} number={pokemon.nationalDexNumber} types={cardTypes(pokemon)} decorativeSprite size={size} eager
       state={viewing ? 'selected' : 'idle'} {...(onView ? { onSelect: onView, attrs: { 'aria-label': `${pokemon.name}, de ${label}: ver sus pistas` } } : {})}>{extra}</Card>
-    : <Card name="Tu Pokémon" size={size} {...(wide ? { art: <span className={s.mystery}>?</span> } : {})}>{extra}</Card>;
+    : <Card name={self ? 'Tu Pokémon' : 'Pokémon oculto'} size={size} {...(wide ? { art: <span className={s.mystery}>?</span> } : {})}>{extra}</Card>;
   return <li className={cx(s.seat, turn && s.turn)} data-turn={turn || undefined}>{card}</li>;
 }
 
@@ -182,6 +185,8 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const [viewedId, setViewedId] = useState<string | null>(null);
   // La misma consulta que `WhoAmI.module.css`: escritorio con alto para cartas grandes (a 720 px de alto siguen pequeñas).
   const wide = useMediaQuery('(min-width: 1024px) and (min-height: 860px)');
+  // Móvil y tableta: la placa de la acción va en el DOM justo después de la placa de la ronda (ver el final).
+  const narrow = useMediaQuery('(max-width: 1023px)');
   const viewed = viewedId && viewedId !== selfId && game.playerIds.includes(viewedId) ? viewedId : !participating ? game.turnPlayerId : null;
 
   const settings = config ?? {};
@@ -198,6 +203,14 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const announcement = useWhoAmIAnnouncement(game, player, nameOf);
 
   const send = (action: unknown) => onAction(action).catch(ignoreFailure);
+  // Un intento por turno: el segundo toque sobre el buscador no manda otro `GUESS_SELF` (el servidor lo rechazaría con
+  // un aviso de error, porque el turno ya pasó). Si el envío falla, se puede volver a intentar.
+  const guessSentFor = useRef<string | null>(null);
+  const guess = (pokemonId: string) => {
+    if (turnKey === null || guessSentFor.current === turnKey) return;
+    guessSentFor.current = turnKey;
+    void onAction({ type: 'GUESS_SELF', pokemonId }).catch((error: unknown) => { guessSentFor.current = null; ignoreFailure(error); });
+  };
   const responderIds = game.playerIds.filter((id) => id !== game.turnPlayerId);
   const turnName = game.turnPlayerId ? nameOf(game.turnPlayerId) : '';
 
@@ -239,7 +252,7 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
     search = true;
     content = { icon: Search, tone: 'info', kicker: 'Adivinar', title: '¿Qué Pokémon eres?', text: 'Un solo intento: acertar o fallar pasa el turno.', aside: <Pill variant="cream" icon={ArrowLeft} onClick={() => setGuessingKey(null)}>Volver</Pill> };
     body = <PokemonSelector key={turnKey} pokemon={pokemon} loading={poolLoading} loadError={loadError} onRetry={retry} locked={lockedIds} disabled={!canGuess} variant="embedded" autoFocus={false}
-      inputLabel="Buscar tu Pokémon" onSelect={(pokemonId) => send({ type: 'GUESS_SELF', pokemonId })} />;
+      inputLabel="Buscar tu Pokémon" onSelect={guess} />;
   } else if (ownTurn && step === 'ASKING' && player?.canAsk) {
     content = { icon: MessageCircleQuestion, tone: 'warn', kicker: 'Tu turno', title: 'Pregunta sobre tu Pokémon', text: 'Los demás responden con Sí, No, A medias o No lo sé. Cuantas menos preguntas, más puntos.' };
     body = <AskForm key={turnKey} fieldRef={fieldRef} canGuess={canGuess} draft={gameDraftKey(room, 'who-am-i-question', turnKey)} onAsk={(text) => send({ type: 'ASK_QUESTION', text })} onGuess={() => setGuessingKey(turnKey)} />;
@@ -266,15 +279,21 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   } else if (active) {
     const offline = participating && !ownTurn && step === 'ANSWERING' && !player.canAnswer;
     content = {
-      icon: Eye, tone: 'info', kicker: participating ? (offline ? 'Sin conexión: vuelve para responder' : `Turno de ${turnName}`) : 'Estás observando', title: question ? `Pregunta de ${turnName}` : `Turno de ${turnName}`,
-      text: questionText ?? (step === 'ASKING' ? `${turnName} está pensando su pregunta.` : undefined),
+      // En el turno propio sin nada que hacer (sin conexión al empezar, o ya sin poder preguntar): en segunda persona.
+      icon: Eye, tone: 'info', kicker: participating ? (offline ? 'Sin conexión: vuelve para responder' : ownTurn ? 'Tu turno' : `Turno de ${turnName}`) : 'Estás observando',
+      title: ownTurn ? (question ? 'Tu pregunta' : 'Es tu turno') : question ? `Pregunta de ${turnName}` : `Turno de ${turnName}`,
+      text: questionText ?? (step === 'ASKING' ? (ownTurn ? 'Ahora mismo no puedes preguntar.' : `${turnName} está pensando su pregunta.`) : undefined),
     };
     if (question) body = <AnswerProgress question={question} responderIds={responderIds} showAnswers={step === 'DECIDING'} nameOf={nameOf} />;
   } else {
     content = { icon: Clock3, tone: 'info', kicker: WHO_AM_I_NAME, title: 'Repartiendo los Pokémon…', text: 'Todos verán tu Pokémon menos tú.' };
   }
-  const bottom = <SocialPlate titleRef={titleRef} content={content} search={search}>{body}</SocialPlate>;
+  const plate = <SocialPlate titleRef={titleRef} content={content} search={search}>{body}</SocialPlate>;
 
+  // En el móvil nada queda debajo de la placa de la acción: va en el flujo, después de la placa de la ronda y antes de
+  // las cartas y de las pistas (en el hueco de las fases del marco), y la pantalla inferior queda vacía. Así el orden
+  // de lectura y de tabulación es el que se ve, sin `order` en el CSS.
   return <SocialScreen gameName={WHO_AM_I_NAME} roundNumber={game.lap} phase={game.phase} totalRounds={game.maxLaps} roundLabel={`Vuelta ${Math.max(1, game.lap)} de ${game.maxLaps}`}
-    heading={turnHeadline(game, selfId, nameOf)} meta={meta} timer={timer} announcement={announcement} stage={stage} side={side} bottom={bottom} className={s.screen} turnCue={turnCue} />;
+    heading={turnHeadline(game, selfId, nameOf)} meta={meta} timer={timer} announcement={announcement} stage={stage} side={side} className={s.screen} turnCue={turnCue}
+    {...(narrow ? { phases: plate, bottom: null } : { bottom: plate })} />;
 }

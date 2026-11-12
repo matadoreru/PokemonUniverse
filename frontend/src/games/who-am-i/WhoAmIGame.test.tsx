@@ -143,6 +143,18 @@ describe('¿Quién soy?: pantalla', () => {
     expect(html).not.toContain('/mewtwo.png');
   });
 
+  it('otherCardWithoutPokemonIsNotYours: la carta de otro sin Pokémon a la vista dice «Pokémon oculto»; solo la propia, «Tu Pokémon»', () => {
+    const cards = block(render(publicGame(), playerState({ others: { p2: BULBASAUR } })), 'who-am-i-cards');
+    expect(count(cards, 'Tu Pokémon')).toBe(1);
+    expect(count(cards, 'Pokémon oculto')).toBe(1);
+  });
+
+  it('ownTurnWithoutActionSpeaksToYou: en tu turno sin poder preguntar, la placa no dice «Turno de <tu nombre>»', () => {
+    const html = render(publicGame(), playerState());
+    expect(html).toContain('Es tu turno');
+    expect(html).toContain('Ahora mismo no puedes preguntar.');
+  });
+
   it('el historial muestra los intentos fallidos como «Probó con …» y las respuestas con su autor', () => {
     const clues = block(render(publicGame(), playerState({ canAsk: true, canGuess: true })), 'who-am-i-clues');
     expect(clues).toContain('Probó con Charmander');

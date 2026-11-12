@@ -47,6 +47,12 @@ export function UnownRoundReveal({ round, kicker = 'El mensaje decía', compact 
   </Panel>;
 }
 
+/** Quién descifró el último mensaje, en orden de acierto (los resultados finales no tienen la columna de la ronda). */
+export function lastSolversText(names: readonly string[]): string {
+  if (names.length === 0) return 'Nadie descifró el último mensaje.';
+  return `${names.length === 1 ? 'Lo descifró' : 'Lo descifraron, por orden:'} ${names.join(', ')}.`;
+}
+
 type Stats = NonNullable<UnownTranslatorPublicState['results']>['standings'][number]['stats'];
 const num = (stats: Stats, key: string) => Number(stats[key] ?? 0);
 
@@ -88,5 +94,6 @@ export function UnownTranslatorResults({ room, selfId, onLobby, onEnd }: GameRes
     actions={<ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} waitingText="Esperando a que el host continúe la sesión…" />} fillLarge>
     <p className={s.rule}>{unownTranslatorScoringLabel()}</p>
     {game.lastRound && <UnownRoundReveal round={game.lastRound} kicker="El último mensaje decía" compact />}
+    {game.lastRound && <p className={s.rule} data-testid="unown-last-solvers">{lastSolversText(game.lastRound.solves.map((solve) => nameOf(solve.playerId)))}</p>}
   </ResultsShell>;
 }
