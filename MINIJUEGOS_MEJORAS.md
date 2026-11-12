@@ -142,7 +142,6 @@ El catálogo y la BD ya tienen:
   - Los cambios de esquema siguen pasando por Prisma hasta la etapa 2. No se puede añadir una `V2__` en Flyway (`AGENTS.md`).
 - Las salas en Java (`/ws`) solo están activas con `VITE_REALTIME=java`. Por eso la lógica nueva de sala (gracia por juego, chat) hay que escribirla en `manager.ts` **y** en `RoomCoordinator`.
 - **Datos nuevos del catálogo.** La sincronización con PokéAPI ya existe en Java (etapa 2C, apagada por defecto con `BACKEND_DATA_SYNC_ENABLED`). Después de sincronizar, `PokemonCatalogService.reloadGameCatalogs` recarga el catálogo: las partidas nuevas usan los datos nuevos y las que están en curso conservan los suyos. Los datos derivados que piden las propuestas se calculan en esa sincronización (Java), no en el `seed.ts` de Node:
-  - la marca de habilidad oculta en el catálogo, para Ability Hunt (§9);
   - la rareza de cada movimiento, para «Movimiento firma» (§7.9).
 - **Configuración guardada.** `migrateStoredGameConfig` (`apps/server/src/game-configs/service.ts:64`; espejo en `StoredGameConfigMigration.java`) reconstruye la configuración recorriendo las claves del valor por defecto (`mergeKnown`). Conserva cualquier valor guardado que siga siendo válido y descarta las claves que ya no existen. `manager.ts:286` guarda la configuración completa cada vez que un usuario registrado la cambia. En la práctica:
   - cambiar **solo el valor por defecto** de un campo no llega a quien ya guardó una configuración de ese juego;
@@ -1354,22 +1353,20 @@ En todas, el catálogo solo alimenta `PokemonSelector` (`apps/web/src/room/Pokem
 
 ## 9. Minijuegos nuevos
 
-Los cinco reutilizan infraestructura que ya existe (`pokemon/conditions`, `advanceTimedRound`, `recordGuessSolve`, `runoff-voting`, `contentDeck`) y los datos del catálogo. Ninguno repite un juego que ya existe: Type Chain encadena por tipo compartido, Guess From Stats adivina por stats y Pokeddle Race usa pistas comparativas.
+Los cuatro reutilizan infraestructura que ya existe (`pokemon/conditions`, `advanceTimedRound`, `recordGuessSolve`, `runoff-voting`, `contentDeck`) y los datos del catálogo. Ninguno repite un juego que ya existe: Type Chain encadena por tipo compartido, Guess From Stats adivina por stats y Pokeddle Race usa pistas comparativas.
 
 | Juego | Jugadores | Reglas | Encaja con | Infraestructura reutilizada |
 |---|---|---|---|---|
-| **Ability Hunt** | 2+ | Se muestra una habilidad y gana el primero en nombrar un Pokémon que la tenga. Si es la habilidad oculta, puntúa doble. Cada Pokémon válido solo se puede usar una vez por ronda. | Fiestas rápidas; premia el conocimiento profundo. | `recordGuessSolve`, `advanceTimedRound`, condición `ability` de `pokemon/conditions`, `PokemonSelector`. |
 | **Type Matchup Quiz** | 1+ | Se muestra un tipo de ataque y un Pokémon defensor con sus tipos. Hay que elegir la efectividad: ×0, ×¼, ×½, ×1, ×2 o ×4. Puntos por acierto y por orden (4/3/2/1, como Shiny Quiz). | Aprender la tabla de tipos; va bien en solitario y como reto diario. | `advanceTimedRound`, `shuffled`, `PokemonTypeBadge`. |
 | **Evolución Express** | 1+ | Se muestran desordenados los miembros de una cadena evolutiva (o una cadena con un hueco) y hay que ordenarlos o completarlos. Puntos por acierto y por rapidez. | Partidas cortas y visuales, accesibles para novatos. | `contentDeck` sobre cadenas evolutivas, `recordGuessSolve`, `PokemonSelector` para el hueco. |
 | **Pokémon Shiritori** | 2–8 | Por turnos, cada jugador nombra un Pokémon que empiece por la última letra del anterior. No se repiten Pokémon. Quien se queda sin respuesta o sin tiempo pierde una vida (3 vidas). | Ritmo de turnos como Type Chain, con otra regla de encadenado. | Estructura de turnos de `type-chain`, `setPlayerCooldown`, `names` del catálogo. |
 | **Peso Pluma** | 2+ | Se muestra un Pokémon y cada jugador estima su peso o su altura en secreto. Puntúa quien más se acerque sin pasarse; si todos se pasan, el más cercano. | Estimación tipo «el precio justo»: tensión sin necesidad de memorizar. | `advanceTimedRound`, revelación al cierre como en Pokédex Distance, `heightDecimeters`/`weightHectograms`. |
 
 **Notas técnicas**
-- **Ability Hunt.** La BD distingue la habilidad oculta (`PokemonAbility.isHidden`, `apps/server/prisma/schema.prisma:386`), pero el catálogo en memoria la pierde: `Pokemon.abilities` es un `string[]` que mezcla las normales y las ocultas (`packages/shared/src/pokemon/types.ts:84-85`). Hay que añadir, por ejemplo, `hiddenAbilities: string[]`, en TS y en Java (catálogo y sincronización), sin exponerlo en el selector (§8.7).
 - **Type Matchup Quiz.** En `packages/shared` no hay tabla de efectividad de tipos. Es una tabla 18×18 nueva en `pokemon/`, con su espejo en Java y un fixture golden que la recorra entera, para que TS y Java no se desalineen.
 - **Pokémon Shiritori.** La comparación de letras usa la misma normalización (NFD sin diacríticos) que el filtro de pistas de Impostor (§4.3), así que conviene una sola utilidad compartida. Hay que decidir qué hacer con los nombres que terminan en símbolo (Nidoran♀/♂, Porygon-Z, Mr. Mime): ignorar los caracteres que no son letras.
 - **Peso Pluma.** El selector reducido (§8.7) no debe incluir altura ni peso.
-- Los cinco necesitan su `portedEngines` en `ClasspathGameRegistryLoader`, fixtures golden, `npm run registry:export` y subir los recuentos de los tests de registro (§1.6).
+- Los cuatro necesitan su `portedEngines` en `ClasspathGameRegistryLoader`, fixtures golden, `npm run registry:export` y subir los recuentos de los tests de registro (§1.6).
 
 ---
 
