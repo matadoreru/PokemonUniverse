@@ -26,4 +26,13 @@ describe('game-kit: marco', () => {
     const html = renderToStaticMarkup(<GameScreen gameName="x" roundNumber={1} totalRounds={1} phase="ROUND_ACTIVE" heading="h" timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={<p>pista</p>} side={null} bottom={null} />);
     expect(html).not.toMatch(/enter(Odd|Even)/);
   });
+  it('placa: entradilla y marca dentro del título (la marca, oculta a lectores) y la franja al pie solo si hay', () => {
+    const html = renderToStaticMarkup(<GameScreen gameName="Higher or Lower" roundNumber={1} totalRounds={3} heading="Ataque" headingLead="Se compara" headingMark={<i>m</i>}
+      hudFoot={<p>rol</p>} timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={null} side={null} bottom={null} />);
+    expect(html).toMatch(/<h1[^>]*title="Se compara: Ataque"[^>]*><span[^>]*aria-hidden="true"><i>m<\/i><\/span><span[^>]*>Se compara <\/span>Ataque<\/h1>/);
+    expect(html).toMatch(/hudFoot[^"]*"><p>rol<\/p>/);
+    const plain = renderToStaticMarkup(<GameScreen gameName="x" roundNumber={1} totalRounds={1} heading="h" timer={{ deadline: null, serverOffset: 0, label: 'Tiempo' }} announcement="" clue={null} side={null} bottom={null} />);
+    expect(plain).not.toMatch(/hudFoot/);
+    expect(plain).toMatch(/<h1[^>]*title="h"[^>]*>h<\/h1>/);
+  });
 });
