@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, capturarAnotando, sinScorePop, textoDeMain } from '../../src/juegos.js';
+import { capturarTamanos, capturarAnotando, sinScorePop, textoDeMain, sinMomento } from '../../src/juegos.js';
 
 /**
  * Pokémon Red Flag con tres jugadores y una ronda, con un empate forzado: el host y A se votan entre sí y B no vota, así
@@ -148,6 +148,8 @@ test('pokemon-red-flag: escribir, votar anónimo con empate, segunda vuelta, rev
     await expect(host.page.locator('[data-tally-round="2"]').getByTestId('tally-row')).toHaveCount(2);
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Frase ganadora' })).toContainText(textos.get(a)!);
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(host.page);
     await capturarAnotando(host.page, 'juego-pokemon-red-flag-revelacion', titulo(host.page).filter({ hasText: 'La frase de la ronda' }));
 
     await expect(host.page.getByRole('heading', { name: 'Las frases más votadas' })).toBeVisible({ timeout: 20_000 });

@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, elegirPokemon, juegoEnTrama, sinScorePop, textoDeMain, tramasRetenibles } from '../../src/juegos.js';
+import { capturarTamanos, elegirPokemon, juegoEnTrama, sinScorePop, textoDeMain, tramasRetenibles, sinMomento } from '../../src/juegos.js';
 
 /** Lo que el test lee del estado público de One of Us Is Fake. */
 interface FakeVisible {
@@ -156,6 +156,8 @@ test('one-of-us-is-fake: categoría secreta, revelación, debate con empate, seg
     await expect(b.page.getByTestId('tally-row').filter({ hasText: 'Más votado' })).toContainText('Votos de');
     await expect(b.page.getByTestId('tally-row').filter({ hasText: 'Más votado' })).toContainText('Fake');
     await expect(b.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(b.page);
     await capturarTamanos(b.page, 'juego-one-of-us-is-fake-revelacion', { sigue: titulo(b.page).filter({ hasText: 'Ganan los normales' }) });
     retenedor.soltar();
 

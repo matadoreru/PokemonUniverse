@@ -111,8 +111,9 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
     await expect(b.page.getByRole('heading', { name: 'Voto bloqueado' })).toBeVisible({ timeout: 15_000 });
     await expect(titulo(b.page)).toHaveText('Segunda vuelta');
     await sinVotosAjenos(b.page, 'segunda vuelta tras recargar');
-    // El cut-in del ganador sale al revelar y dura 1,4 s: se arma antes del último voto. Con movimiento, para ver el confeti.
-    for (const page of [host.page, a.page]) await conMovimiento(page);
+    // El cut-in del ganador sale al revelar y dura 1,4 s: se arma antes del último voto. A, con movimiento, para ver su
+    // confeti; el host sigue reducido (banda quieta en la captura).
+    await conMovimiento(a.page);
     const ganadorHost = veraCutin(bandaCutin(host.page).filter({ hasText: `¡Gana ${a.name}!` }));
     const ganadorA = veraCutin(bandaCutin(a.page).filter({ hasText: '¡Ganas tú!' }));
     await opcion(host.page, 'Pikachu', a).click();
@@ -122,13 +123,12 @@ test('most-likely-to: elegir, votar con empate, segunda vuelta, revelación y cl
 
     // A5: el cut-in con el ganador y su respuesta; confeti solo para quien gana, sin región viva propia.
     expect(await ganadorHost, 'el host ve «¡Gana A!»').toBe(true);
-    // Sin `animations: 'disabled'`: acabar la animación de golpe la llevaría a la salida (fuera de la vista).
     await host.page.screenshot({ path: 'screenshots/juego-most-likely-to-ganador-1280x720.png' });
     await expect(bandaCutin(host.page)).toContainText('Pikachu');
     await expect(bandaCutin(host.page)).not.toHaveAttribute('role', 'status');
-    await expect(host.page.getByTestId('confetti')).toHaveCount(0);
     expect(await ganadorA, 'A ve «¡Ganas tú!»').toBe(true);
     await expect(a.page.getByTestId('confetti'), 'confeti para quien gana').toHaveCount(1);
+    await a.page.emulateMedia({ reducedMotion: 'reduce' });
     // Y sus puntos de la ronda salen con el «+N» flotante en su franja.
     await expect(a.page.getByTestId('social-round-points').filter({ hasText: '+' })).not.toHaveCount(0);
     await sinMomento(host.page);

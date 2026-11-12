@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, capturarAnotando, sinScorePop, textoDeMain } from '../../src/juegos.js';
+import { capturarTamanos, capturarAnotando, sinScorePop, textoDeMain, sinMomento } from '../../src/juegos.js';
 
 /**
  * Would You Rather con tres jugadores y una ronda: el host elige con el atajo `1`, los demás con las cartas; la mayoría es
@@ -93,6 +93,8 @@ test('would-you-rather: atajos, papeleta secreta, revelación y clasificación',
     await expect(host.page.getByTestId('tally-row').filter({ hasText: 'Mayoría' })).toContainText(`Votos de`);
     await expect(host.page.getByTestId('social-progress-row').filter({ hasText: a.name })).toContainText('Eligió A · Predijo B');
     await expect(host.page.getByTestId('social-screen').locator('[aria-live]')).toHaveCount(1);
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(host.page);
     await capturarAnotando(host.page, 'juego-would-you-rather-revelacion', titulo(host.page).filter({ hasText: 'La mayoría eligió A' }));
 
     await expect(host.page.getByRole('heading', { name: 'Quien mejor leyó la sala' })).toBeVisible({ timeout: 20_000 });

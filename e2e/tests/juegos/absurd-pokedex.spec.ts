@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, terminarSesion, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, juegoEnTrama, sinScorePop, tramasRetenibles, elegirModo, ajustarRango } from '../../src/juegos.js';
+import { capturarTamanos, juegoEnTrama, sinScorePop, tramasRetenibles, elegirModo, ajustarRango, sinMomento } from '../../src/juegos.js';
 
 /**
  * Pokédex Absurda con tres jugadores y dos partidas seguidas de una ronda (el modo se cambia en el lobby entre ellas).
@@ -80,6 +80,8 @@ test('pokédex absurda: escribir, votar la más absurda y la real, y la clasific
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: host.name })).toContainText('+4');
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: host.name })).toContainText('Ganó');
     await expect(viva(b.page)).toHaveCount(1);
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(b.page);
     await capturarTamanos(b.page, 'juego-absurd-pokedex-revelacion', { sigue: revelada });
     retenedor.soltar();
 

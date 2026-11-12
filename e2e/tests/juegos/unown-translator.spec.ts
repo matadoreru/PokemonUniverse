@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, esperarPartida, seleccionarJuego, terminarSesion, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, juegoEnTrama, sinScorePop, tramasRetenibles, ajustarRango } from '../../src/juegos.js';
+import { capturarTamanos, juegoEnTrama, sinScorePop, tramasRetenibles, ajustarRango, sinMomento } from '../../src/juegos.js';
 
 /**
  * Lo que dice el mensaje de Traductor Unown con lo que ya se ve, palabra a palabra: cada pieza es un glifo oculto (`?`),
@@ -129,6 +129,8 @@ test('traductor unown: pistas, fallo, acierto y clasificación', async ({ browse
     await expect(revelada).toBeVisible();
     await expect(b.page.getByText(/^1\.º · /)).toBeVisible();
     await expect(viva(b.page)).toHaveCount(1);
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(b.page);
     await capturarTamanos(b.page, 'juego-unown-translator-revelacion', { sigue: revelada });
     retenedor.soltar();
 

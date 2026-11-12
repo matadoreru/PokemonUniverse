@@ -4,7 +4,7 @@
  */
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, primeraVisible, buscadorRespuesta, adivinar, juegoEnTrama, sinScorePop, tramasRetenibles, comoPalabra } from '../../src/juegos.js';
+import { capturarTamanos, primeraVisible, buscadorRespuesta, adivinar, juegoEnTrama, sinScorePop, tramasRetenibles, comoPalabra, sinMomento } from '../../src/juegos.js';
 
 /**
  * Sketchmon con tres jugadores y una vuelta (el motor da un dibujo por jugador: tres turnos). En el primero quien dibuja
@@ -176,6 +176,8 @@ test('sketchmon: dibujar con herramientas, adivinar con un fallo, la revelación
     await expect.poll(() => g1.evaluate(() => document.activeElement !== null && document.activeElement !== document.body), { timeout: 3_000 }).toBe(true);
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(g1) })).toContainText('Acertó · 2 intentos');
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(dibujante) })).toContainText('+3');
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(b.page);
     await capturarTamanos(b.page, 'juego-sketchmon-revelacion', { sigue: titulo(b.page).filter({ hasText: `¡Era ${secreto}!` }) });
     retenedor.soltar();
 

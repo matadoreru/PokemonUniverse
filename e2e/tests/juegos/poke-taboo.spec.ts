@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, primeraVisible, buscadorRespuesta, adivinar, juegoEnTrama, sinScorePop, tramasRetenibles, comoPalabra } from '../../src/juegos.js';
+import { capturarTamanos, primeraVisible, buscadorRespuesta, adivinar, juegoEnTrama, sinScorePop, tramasRetenibles, comoPalabra, sinMomento } from '../../src/juegos.js';
 
 /**
  * PokéTaboo con tres jugadores y una vuelta (tres turnos: uno por jugador). En el primero, quien describe (la página que
@@ -156,6 +156,8 @@ test('poke-taboo: secreto con palabras prohibidas, pistas, un fallo, el acierto,
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(g1) })).toContainText('Acertó · 2 intentos');
     await expect(b.page.getByTestId('social-progress-row').filter({ hasText: nombreDe(descriptora) })).toContainText('+2');
     await expect(b.page.getByText(primera, { exact: false }).first()).toBeVisible();
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(b.page);
     await capturarTamanos(b.page, 'juego-poke-taboo-revelacion', { sigue: titulo(b.page).filter({ hasText: `¡Era ${secreto}!` }) });
     retenedor.soltar();
 

@@ -4,7 +4,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { crearSalaConJugadores, iniciarPartida, layoutProblems, esperarPartida, seleccionarJuego, sinTapar, SIZES, type Jugador } from '../../src/helpers.js';
-import { capturarTamanos, juegoEnTrama, sinScorePop, textoDeMain, tramasRetenibles } from '../../src/juegos.js';
+import { capturarTamanos, juegoEnTrama, sinScorePop, textoDeMain, tramasRetenibles, sinMomento } from '../../src/juegos.js';
 
 /**
  * Secret Ranking con tres jugadores y una ronda. El host ordena con el teclado (Intro en «Bajar X» y «Subir X»): cada
@@ -153,6 +153,8 @@ test('secret-ranking: ordenar con teclado, ranking secreto, revelación del cons
     // La barra es decorativa (la distancia ya va en texto): se busca por su etiqueta, no por el árbol accesible.
     await expect(cercania(host).locator(`[role="meter"][aria-label="Cercanía de ${host.name}"]`)).toHaveCount(1);
     await expect(viva(b.page)).toHaveCount(1);
+    // Sin el cut-in del ganador (1,4 s): la captura muestra la revelación.
+    await sinMomento(b.page);
     await capturarTamanos(b.page, 'juego-secret-ranking-revelacion', { sigue: titulo(b.page).filter({ hasText: 'El consenso del grupo' }) });
     retenedor.soltar();
 
