@@ -4,7 +4,7 @@
  * `<figure data-gallery="<componente>-<estado>">` que el E2E captura uno a uno. Con `?static` en la URL se añade la
  * clase `static` al `body` (sin animaciones ni transiciones).
  */
-import { POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
+import { defaultWhoIsWhoPokemonConfig, POKEMON_TYPE_LABELS } from '@pokemon-universe/shared/public';
 import { Bell, Bug, CheckCircle2, Clock3, Code2, Eye, Gamepad2, Heart, Link2, LogOut, MessagesSquare, Newspaper, Palette, Scale, Search, Send, Settings, ShieldCheck, Sparkles, Star, Trophy, UserPlus, SlidersHorizontal, WifiOff, Wrench, Zap } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
@@ -18,6 +18,8 @@ import { GameModeField, SessionModesProvider } from '../../games/common/GameMode
 import { ServerTimer } from '../../components/ServerTimer';
 import { AuctionLot, AuctionPrevious, BidControls, bidBlock, turnOrderEntries, type BidBlockInput } from '../../room/auction-kit';
 import { ConfigRange } from '../../games/common/ConfigRange';
+import { PaceField } from '../../games/common/PaceField';
+import { applyPace } from '../../games/common/pace-presets';
 import { playerColor } from '../../lib/player-color';
 import { PokemonSelector } from '../../room/game-kit/PokemonSelector';
 import { ResultsShell } from '../../room/game-kit/ResultsShell';
@@ -359,6 +361,12 @@ function TabsSection() {
   );
 }
 
+/** «Ritmo» de Quién es Quién: elegir un ritmo lo marca; con un ajuste tocado a mano no hay ninguno marcado. */
+function PaceDemo({ initial = defaultWhoIsWhoPokemonConfig }: { initial?: unknown }) {
+  const [config, setConfig] = useState<unknown>(initial);
+  return <PaceField gameId="who-is-who-pokemon" config={config} disabled={false} onChange={setConfig} />;
+}
+
 function SegmentedBlockDemo() {
   const [value, setValue] = useState<TextPreference>('xlarge');
   return <div className="w-72"><Segmented block showLabel value={value} onChange={setValue} label="Texto" options={[{ value: 'normal', label: 'Normal' }, { value: 'large', label: 'Grande' }, { value: 'xlarge', label: 'Muy grande' }]} /></div>;
@@ -393,6 +401,9 @@ function SegmentedSection() {
       </Fig>
       <Fig id="segmented-label-hint-focus" caption="Sobre crema con etiqueta y ayuda · foco" cream>
         <SegmentedDemo showLabel hint="Cuanto antes aciertes, más puntos." forced="focus" />
+      </Fig>
+      <Fig id="segmented-none" caption="Sin ninguna marcada (valor fuera de las opciones)" cream>
+        <Segmented<number> showLabel label="Tiempo por ronda" hint="Ninguna coincide: la primera recibe el foco." value={45} onChange={noop} options={[{ value: 30, label: '30 s' }, { value: 60, label: '60 s' }, { value: 90, label: '90 s' }]} />
       </Fig>
       <Fig id="segmented-block" caption="A todo el ancho (block): las opciones se reparten el sitio" cream>
         <SegmentedBlockDemo />
@@ -1523,6 +1534,15 @@ function GamePiecesSection() {
         <span className={s.barBox}>
           <ConfigRange label="Número de rondas" value={5} min={1} max={10} disabled onCommit={asyncNoop} />
         </span>
+      </Fig>
+      <Fig id="pace" caption="Ritmo · Clásico (los valores por defecto)" cream>
+        <PaceDemo />
+      </Fig>
+      <Fig id="pace-custom" caption="Ritmo · Personalizado (un ajuste tocado a mano)" cream>
+        <PaceDemo initial={{ ...defaultWhoIsWhoPokemonConfig, rounds: 5 }} />
+      </Fig>
+      <Fig id="pace-disabled" caption="Ritmo · solo lectura (invitado)" cream>
+        <PaceField gameId="who-is-who-pokemon" config={applyPace('who-is-who-pokemon', defaultWhoIsWhoPokemonConfig, 'FAST')} disabled onChange={noop} />
       </Fig>
       <Fig id="avatar-sizes" caption="Avatar · inicial en los seis tamaños">
         {(['xs', 'sm', 'md', 'lg', 'xl', 'xxl'] as const).map((size) => (

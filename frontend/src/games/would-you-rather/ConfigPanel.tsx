@@ -4,6 +4,7 @@ import { CustomWouldYouRatherPromptManager } from './CustomPromptManager';
 import c from '../ConfigPanel.module.css';
 import { PromptSourceField, type PromptSourceOption } from '../prompt-source/PromptSourceField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
+import { PaceField } from '../common/PaceField';
 
 const sources: PromptSourceOption[] = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Dilemas normales, adultos y de humor oscuro.' },
@@ -18,6 +19,7 @@ const sources: PromptSourceOption[] = [
 export function WouldYouRatherConfigPanel({ config, disabled, room, selfId, onChange }: { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }) {
   const value = config as WouldYouRatherConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="would-you-rather" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <div className={c.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />
       <ConfigRange label="Tiempo para votar y predecir" value={value.roundSeconds} min={15} max={120} disabled={disabled} formatValue={secondsLabel} hint="La ronda termina antes si todos han enviado su papeleta." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />

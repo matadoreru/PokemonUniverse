@@ -6,6 +6,7 @@ import { CustomCategoryManager } from '../prompt-source/CustomCategoryManager';
 import c from '../ConfigPanel.module.css';
 import { PromptSourceField, type PromptSourceOption } from '../prompt-source/PromptSourceField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
+import { PaceField } from '../common/PaceField';
 
 const sources: PromptSourceOption[] = [
   { id: 'OFFICIAL', title: 'Oficiales', detail: 'Preguntas direccionales incluidas y listas para jugar.' },
@@ -22,6 +23,7 @@ const sources: PromptSourceOption[] = [
 export function SecretRankingConfigPanel({ config, disabled, room, selfId, onChange }: { config: unknown; disabled: boolean; room: RoomView; selfId: string; onChange(config: unknown): Promise<void> }) {
   const value = config as SecretRankingConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="secret-ranking" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="Cada ronda usa cinco Pokémon distintos del pool seleccionado." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />

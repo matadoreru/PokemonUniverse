@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { GameModeField, useModeShown } from '../common/GameModeField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Type Duel: el modo (`GameModeField`), generaciones y los tiempos de elegir tipo y de buscar (en
@@ -17,6 +18,7 @@ export function TypeDuelConfigPanel({ config, disabled, onChange }: { config: un
   const shown = useModeShown('type-duel', value.mode);
   const coop = shown('COOP') && !shown('CLASSIC');
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="type-duel" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="type-duel" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} />
     <div className={c.pair}>

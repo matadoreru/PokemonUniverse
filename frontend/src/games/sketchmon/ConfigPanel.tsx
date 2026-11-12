@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /** Los únicos tiempos por dibujo que admite el motor (`sketchmonConfigSchema`): por eso un `Segmented`. */
 const roundTimes = [60, 90, 120] as const;
@@ -16,6 +17,7 @@ const roundTimes = [60, 90, 120] as const;
 export function SketchmonConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as SketchmonConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="sketchmon" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <Segmented label="Tiempo por dibujo" showLabel hint="Lo que tiene quien dibuja para que el grupo acierte; acertar antes da más puntos." value={value.roundSeconds} options={roundTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(roundSeconds) => void onChange({ ...value, roundSeconds })} />

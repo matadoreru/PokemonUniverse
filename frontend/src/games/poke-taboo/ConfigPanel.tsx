@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle';
 import { Segmented, Toggle } from '../../ui';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /** Los únicos tiempos por turno que admite el motor (`pokeTabooConfigSchema`): por eso un `Segmented` y no un deslizador. */
 const roundTimes = [30, 45, 60, 90, 120] as const;
@@ -16,6 +17,7 @@ const roundTimes = [30, 45, 60, 90, 120] as const;
 export function PokeTabooConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokeTabooConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="poke-taboo" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="El Pokémon secreto y todas las respuestas pertenecerán a este pool." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <Segmented label="Tiempo por turno" showLabel hint="Lo que tiene quien describe para que el grupo acierte; acertar antes da más puntos." value={value.roundSeconds} options={roundTimes.map((seconds) => ({ value: seconds, label: `${seconds} s`, disabled }))} onChange={(roundSeconds) => void onChange({ ...value, roundSeconds })} />

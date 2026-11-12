@@ -187,6 +187,47 @@ test('el host quita el único minijuego: no se puede empezar hasta elegir otro',
   expect(guest.errors).toEqual([]);
 });
 
+test('configuración de varios minijuegos: «Ritmo» aplica sus valores y un ajuste a mano lo deja en Personalizado', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+  await conmutarJuego(cartaDeJuego(host.page, 'Quién es Quién — Pokémon'), true);
+  await conmutarJuego(cartaDeJuego(host.page, 'Higher or Lower'), true);
+
+  await host.page.getByRole('tab', { name: 'Configuración' }).click();
+  await host.page.getByRole('button', { name: 'Ajustar Quién es Quién — Pokémon' }).click();
+  await expect(host.page.getByRole('heading', { name: 'Ajustes de Quién es Quién — Pokémon' })).toBeVisible();
+  const ritmo = host.page.getByRole('radiogroup', { name: 'Ritmo' });
+  const opcion = (nombre: string) => ritmo.getByRole('radio', { name: nombre, exact: true });
+  const rondas = host.page.getByRole('radiogroup', { name: 'Rondas máximas' });
+  // Clásico es el valor por defecto: 15 rondas.
+  await expect(opcion('Clásico')).toHaveAttribute('aria-checked', 'true');
+  await expect(rondas.getByRole('radio', { name: '15', exact: true })).toHaveAttribute('aria-checked', 'true');
+  // Rápido aplica sus valores de una vez (10 rondas y 30 s por turno).
+  await opcion('Rápido').click();
+  await expect(opcion('Rápido')).toHaveAttribute('aria-checked', 'true');
+  await expect(rondas.getByRole('radio', { name: '10', exact: true })).toHaveAttribute('aria-checked', 'true');
+  await expect(host.page.getByRole('radiogroup', { name: 'Tiempo por turno' }).getByRole('radio', { name: '30 s', exact: true })).toHaveAttribute('aria-checked', 'true');
+  await capturarATresTamaños(host.page, 'lobby-configuracion-ritmo', { antes: () => expect(ritmo).toBeInViewport(), restaurar: false });
+  await host.page.setViewportSize({ width: 1280, height: 720 });
+
+  // Un ajuste del ritmo tocado a mano: ninguno marcado y la ayuda lo dice.
+  await rondas.getByRole('radio', { name: '5', exact: true }).click();
+  await expect(rondas.getByRole('radio', { name: '5', exact: true })).toHaveAttribute('aria-checked', 'true');
+  await expect(ritmo.getByRole('radio', { checked: true })).toHaveCount(0);
+  await expect(host.page.getByText('Personalizado: has cambiado a mano algún ajuste del ritmo.')).toBeVisible();
+
+  // El invitado ve el mismo ritmo, en solo lectura.
+  await guest.page.getByRole('tab', { name: 'Configuración' }).click();
+  await guest.page.getByRole('button', { name: 'Ajustar Quién es Quién — Pokémon' }).click();
+  await expect(guest.page.getByRole('radiogroup', { name: 'Ritmo' }).getByRole('radio', { name: 'Experto', exact: true })).toBeDisabled();
+
+  expect(host.errors).toEqual([]);
+  expect(guest.errors).toEqual([]);
+});
+
 test('lobby: pestañas del invitado, modo de la sesión y búsqueda sin resultados', async ({ crearJugador }) => {
   const host = await crearJugador('Host');
   const code = await createRoom(host.page);

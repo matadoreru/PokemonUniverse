@@ -134,7 +134,7 @@ describe('Pokémon Trivia: pantalla', () => {
   it('ajustes con el catálogo: Segmented, Toggle por categoría y rangos', () => {
     const markup = renderToStaticMarkup(createElement(PokemonTriviaConfigPanel, { config: { generations: [1], roundSeconds: 20, rounds: 10, optionCount: 4, difficulty: 'NORMAL', questionTypes: ['TYPE', 'BST'] }, disabled: false, onChange: async () => undefined }));
     expect(markup).toContain('Categorías de preguntas'); expect(markup).toContain('Velocidad'); expect(markup).toContain('Peso');
-    expect(markup.match(/role="radiogroup"/g)).toHaveLength(2); expect(markup.match(/role="switch"/g)).toHaveLength(12); expect(markup).toContain('2 activas');
+    expect(markup.match(/role="radiogroup"/g)).toHaveLength(3); // dificultad, opciones y «Ritmo» expect(markup.match(/role="switch"/g)).toHaveLength(12); expect(markup).toContain('2 activas');
   });
 
   it('resultados: precisión, aciertos por categoría, récords y continuar sesión, sin medallas', () => {

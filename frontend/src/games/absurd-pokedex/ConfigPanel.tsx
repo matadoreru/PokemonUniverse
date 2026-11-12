@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { GameModeField } from '../common/GameModeField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Pokédex Absurda con los controles del catálogo: modo (`GameModeField`), generaciones, rondas y los tiempos
@@ -12,6 +13,7 @@ import c from '../ConfigPanel.module.css';
 export function AbsurdPokedexConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as AbsurdPokedexConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="absurd-pokedex" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="absurd-pokedex" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="El Pokémon de cada ronda se elige del pool configurado." onChange={(generations) => void onChange({ ...value, generations })} />
     <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />

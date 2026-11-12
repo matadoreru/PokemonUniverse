@@ -5,6 +5,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { Icon, Segmented } from '../../ui';
 import c from '../ConfigPanel.module.css';
 import s from './BluffAuction.module.css';
+import { PaceField } from '../common/PaceField';
 
 const times = [20, 30, 45, 60] as const;
 const rounds = [5, 10, 15, 20] as const;
@@ -17,6 +18,7 @@ const rounds = [5, 10, 15, 20] as const;
 export function PokemonBluffAuctionConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonBluffAuctionConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokemon-bluff-auction" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="La condición y el buscador usarán únicamente especies normales de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <Segmented label="Tiempo inicial para demostrar" showLabel hint="Cada acierto añade 5 segundos y cada fallo quita 3." value={value.demonstrationSeconds}

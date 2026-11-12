@@ -16,6 +16,7 @@ import { Card, cx, Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const categoryLabels: Record<HigherLowerCategory, string> = {
   DEX_NUMBER: 'N.º Pokédex',
@@ -65,6 +66,7 @@ export function HigherLowerConfigPanel({ config, disabled, onChange }: { config:
   const onlyCategory = value.categories.length === 1 ? value.categories[0] : null;
 
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="higher-lower" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="higher-lower" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <div className={c.group}>
       <span className={c.label} aria-hidden="true">{CATEGORIES_LABEL}</span>

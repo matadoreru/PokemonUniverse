@@ -6,6 +6,7 @@ import { Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const HINT_KINDS_LABEL = 'Qué pistas salen';
 const hintOptions: Array<{ key: keyof PokedexEntryGuessConfig['hints']; label: string }> = [
@@ -27,6 +28,7 @@ export function PokedexEntryGuessConfigPanel({ config, disabled, onChange }: { c
   }
   const reference = Math.max(...value.generations);
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="pokedex-entry-guess" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones del objetivo" onChange={(generations) => update({ generations })} />
     <p className={s.note}><strong>Generación de referencia: {reference}</strong>Se prioriza una entrada de esta generación o la más reciente anterior. Si aún no existía en español, como ocurre en Gen 1 y 2, se usa la primera posterior disponible.</p>
     <div className={c.pair}>

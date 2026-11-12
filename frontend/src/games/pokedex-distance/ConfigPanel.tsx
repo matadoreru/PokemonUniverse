@@ -8,6 +8,7 @@ import { Segmented } from '../../ui';
 import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Pokédex Distance: el modo (`GameModeField`; «Por puntos» añade el número de rondas), generaciones, si las elecciones de los rivales se ven al momento (`Segmented`, con el
@@ -18,6 +19,7 @@ export function PokedexDistanceConfigPanel({ config, disabled, onChange }: { con
   const shown = useModeShown('pokedex-distance', value.mode);
   const options = POKEDEX_DISTANCE_SELECTION_VISIBILITIES.map((visibility) => ({ value: visibility, label: distanceSelectionVisibilityLabels[visibility], disabled }));
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="pokedex-distance" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="pokedex-distance" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
     <Segmented<PokedexDistanceSelectionVisibility> label={DISTANCE_SELECTION_VISIBILITY_LABEL} showLabel hint={value.selectionVisibility === 'LIVE' ? LIVE_VISIBILITY_WARNING : undefined} className={s.group ?? ''} value={value.selectionVisibility} options={options} onChange={(selectionVisibility) => void onChange({ ...value, selectionVisibility })} />

@@ -9,6 +9,7 @@ import { Chip, Field, Icon, StateBox, Toggle } from '../../ui';
 import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 interface FilterOption { value: string; label: string; count: number }
 
@@ -70,6 +71,7 @@ export function TcgHigherLowerConfigPanel({ config, disabled, onChange }: { conf
   const updatePrice = (key: 'minPrice' | 'maxPrice', raw: string) => void onChange({ ...value, [key]: raw.trim() === '' ? null : raw });
   const enough = eligible !== null && eligible >= 2;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="tcg-higher-lower" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     {loadError && <StateBox kind="error" title="Catálogo TCG no disponible" text={loadError} />}
     <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" description="Incluye cartas protagonizadas por al menos un Pokémon de las generaciones elegidas. Las cartas de Entrenador sin Pokémon quedan fuera." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>

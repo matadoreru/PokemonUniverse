@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { GameModeField } from '../common/GameModeField';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Traductor Unown con los controles del catálogo: modo (`GameModeField`: Pokémon o Movimientos),
@@ -12,6 +13,7 @@ import c from '../ConfigPanel.module.css';
 export function UnownTranslatorConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as UnownTranslatorConfig;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="unown-translator" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="unown-translator" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="Los nombres (o los movimientos que aprenden) salen de los Pokémon de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <ConfigRange label="Número de rondas" value={value.rounds} min={1} max={10} disabled={disabled} formatValue={roundsLabel} onCommit={(rounds) => onChange({ ...value, rounds })} />

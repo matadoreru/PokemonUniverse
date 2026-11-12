@@ -6,6 +6,7 @@ import { triviaCategoryLabels, triviaDifficultyLabels } from './presentation';
 import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Pokémon Trivia con los controles del catálogo: generaciones, dificultad y opciones por pregunta
@@ -19,6 +20,7 @@ export function PokemonTriviaConfigPanel({ config, disabled, onChange }: { confi
     void onChange({ ...value, questionTypes: on ? [...value.questionTypes, type] : value.questionTypes.filter((entry) => entry !== type) });
   };
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokemon-trivia" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="Las preguntas se generan únicamente con el catálogo local seleccionado." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <Segmented label="Dificultad" showLabel hint="La dificultad ajusta lo parecidas que son las opciones numéricas." value={value.difficulty} options={(['EASY', 'NORMAL', 'HARD'] as const).map((difficulty) => ({ value: difficulty, label: triviaDifficultyLabels[difficulty], disabled }))} onChange={(difficulty) => void onChange({ ...value, difficulty })} />

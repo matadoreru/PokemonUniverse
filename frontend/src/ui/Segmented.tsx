@@ -28,12 +28,17 @@ export interface SegmentedProps<T extends string | number> {
   forced?: ForcedState;
 }
 
-/** Selector de un valor entre 2–5: grupo de radio con foco itinerante y flechas circulares. */
+/**
+ * Selector de un valor entre 2–5: grupo de radio con foco itinerante y flechas circulares. Si `value` no es ninguna de
+ * las opciones (p. ej. «Personalizado» en «Ritmo»), no hay ninguna marcada y entra en el orden de tabulación la primera
+ * habilitada.
+ */
 export function Segmented<T extends string | number>({ value, options, onChange, label, showLabel, hint, className, block = false, forced }: SegmentedProps<T>) {
   const labelId = useId();
   const hintId = useId();
   const wrapped = Boolean(showLabel || hint);
   const items = options.map((o) => ({ key: o.value, disabled: o.disabled }));
+  const tabStop = options.some((o) => o.value === value) ? value : options.find((o) => !o.disabled)?.value;
   const pick = (v: T) => {
     if (v === value) return;
     uiSound('tick');
@@ -61,7 +66,7 @@ export function Segmented<T extends string | number>({ value, options, onChange,
           role="radio"
           aria-checked={o.value === value}
           disabled={o.disabled}
-          tabIndex={o.value === value ? 0 : -1}
+          tabIndex={o.value === tabStop ? 0 : -1}
           className={cx(s.opt, o.value === value && s.on, o.value === value && forced && s[forced])}
           onClick={() => pick(o.value)}
         >

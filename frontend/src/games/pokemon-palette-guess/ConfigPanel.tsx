@@ -6,6 +6,7 @@ import { StreakBonusToggle } from '../common/StreakBonusToggle';
 import { Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const SIZE_LABEL = 'Máximo de colores visibles';
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -25,6 +26,7 @@ export function PokemonPaletteGuessConfigPanel({ config, disabled, onChange }: {
   const update = (next: Partial<PokemonPaletteGuessConfig>) => void onChange({ ...value, ...next });
   const toggleHint = (hint: PokemonPaletteHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((kind) => kind !== hint), hint] : value.hintKinds.filter((kind) => kind !== hint) });
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="pokemon-palette-guess" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon cuya paleta haya sido persistida por DataSync." onChange={(generations) => update({ generations })} />
     <Segmented<number> label={SIZE_LABEL} showLabel hint="Se mostrarán todos los colores dominantes disponibles hasta este máximo; nunca se descartará un Pokémon por tener menos." value={value.paletteSize} options={SIZES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(paletteSize) => update({ paletteSize })} />
     <div className={c.pair}>

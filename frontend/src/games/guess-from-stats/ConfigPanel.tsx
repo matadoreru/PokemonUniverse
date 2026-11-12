@@ -5,6 +5,7 @@ import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle'
 import { Chip, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const STATS_LABEL = 'Stats mostradas';
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -25,6 +26,7 @@ export function GuessFromStatsConfigPanel({ config, disabled, onChange }: { conf
   const update = (next: Partial<GuessFromStatsConfig>) => void onChange({ ...value, ...next });
   const statCount = Object.values(value.stats).filter(Boolean).length;
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="guess-from-stats" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => update({ generations })} />
     <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={15} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="Cuanto antes aciertes, más puntos; tras un fallo hay una breve espera." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />

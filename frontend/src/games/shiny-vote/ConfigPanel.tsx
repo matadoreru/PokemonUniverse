@@ -10,6 +10,7 @@ import { SHINY_VOTE_VISIBILITY_LABEL, shinyVisibilityLabels } from './vote-visib
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const CANDIDATE_MODE_LABEL = 'Opciones de Pokémon';
 const OPTION_COUNT_LABEL = 'Número de opciones';
@@ -28,6 +29,7 @@ export function ShinyVoteConfigPanel({ config, disabled, onChange }: { config: u
   const counts = OPTION_COUNTS.map((count) => ({ value: count, label: String(count), disabled }));
   const visibilities = SHINY_VOTE_VISIBILITIES.map((visibility) => ({ value: visibility, label: shinyVisibilityLabels[visibility], disabled }));
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="shiny-vote" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="shiny-vote" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <div className={s.group}>
       <span className={c.label} aria-hidden="true">{CANDIDATE_MODE_LABEL}</span>

@@ -5,6 +5,7 @@ import { Chip, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const groups: Array<{ title: string; keys: PokeddleClueKey[] }> = [
   { title: 'Básicas', keys: ['generation', 'dexNumber', 'types', 'typeCount'] },
@@ -25,6 +26,7 @@ export function PokeddleRaceConfigPanel({ config, disabled, onChange }: { config
   const value = config as PokeddleRaceConfig; const validation = validateGameConfigReadiness('pokeddle-race', value);
   const active = POKEDDLE_CLUE_KEYS.filter((key) => value.clues[key]).length;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokeddle-race" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones del pool" onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <ConfigRange label="Tiempo por ronda" value={value.roundSeconds} min={10} max={60} step={5} disabled={disabled} formatValue={secondsLabel} hint="La ronda se cierra antes si todos han respondido." onCommit={(roundSeconds) => onChange({ ...value, roundSeconds })} />

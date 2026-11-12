@@ -99,6 +99,7 @@ import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
 import { WouldYouRatherConfigPanel } from './would-you-rather/ConfigPanel';
 import { ZoomedPokemonConfigPanel } from './zoomed-pokemon/ConfigPanel';
 import { roomView } from '../room/test-support/room-view';
+import { applyPace, PACE_IDS, pacePresetsOf } from './common/pace-presets';
 
 // Los paneles de preguntas propias leen la sesión: un invitado no ve el gestor, que pediría datos a la API.
 vi.mock('../auth/AuthContext', () => ({ useAuth: () => ({ user: { kind: 'GUEST' } }) }));
@@ -242,4 +243,24 @@ describe('config panel ranges', () => {
     expect([...renderRanges(Panel, { ...config, mode }).keys()].sort()).toEqual([...labels].sort());
   });
 
+  /**
+   * Los ritmos de «Ritmo» tienen que caber en los controles del panel, no solo en Zod: cada `Segmented` sigue con una
+   * opción marcada y cada deslizador cae en su paso (en cada modo, que enseña sus propios ajustes).
+   */
+  it.each(Object.keys(panels).filter((game) => pacePresetsOf(game)))('%s: cada ritmo cae en la rejilla del panel', (game) => {
+    const { Panel } = panels[game]!;
+    const render = (config: unknown) => renderToStaticMarkup(createElement(Panel, { config, disabled: false, room, selfId: 'guest', onChange: async () => {} }));
+    const checked = (html: string) => (html.match(/aria-checked="true"/g) ?? []).length;
+    for (const [mode, config] of modeConfigs(game)) {
+      const base = checked(render(config));
+      for (const pace of PACE_IDS) {
+        const html = render(applyPace(game, config, pace));
+        expect({ mode, pace, checked: checked(html) }).toEqual({ mode, pace, checked: base });
+        for (const [input] of html.matchAll(/<input[^>]*type="range"[^>]*>/g)) {
+          const attribute = (name: string) => Number(input.match(new RegExp(` ${name}="([^"]*)"`))?.[1] ?? 1);
+          expect({ mode, pace, input, offGrid: (attribute('value') - attribute('min')) % attribute('step') }).toEqual({ mode, pace, input, offGrid: 0 });
+        }
+      }
+    }
+  });
 });

@@ -6,6 +6,7 @@ import { Icon, Segmented } from '../../ui';
 import { CONNECTIONS_TIME, connectionsSnapSeconds, connectionsTimeLabel } from './presentation';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const groupSizes = [3, 4, 5] as const;
 const groupCounts = [3, 4, 5] as const;
@@ -19,6 +20,7 @@ export function PokemonConnectionsConfigPanel({ config, disabled, onChange }: { 
   const value = config as PokemonConnectionsConfig;
   const groupCount = Math.min(5, Math.max(3, Math.round(value.pokemonCount / value.groupSize)));
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokemon-connections" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="Cada puzle se genera al azar solo con Pokémon de estas generaciones." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <Segmented label="Pokémon por grupo" showLabel value={value.groupSize} options={groupSizes.map((size) => ({ value: size, label: String(size), disabled }))}

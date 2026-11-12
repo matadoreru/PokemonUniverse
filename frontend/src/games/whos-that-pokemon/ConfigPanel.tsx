@@ -6,6 +6,7 @@ import { StreakBonusToggle } from '../common/StreakBonusToggle';
 import { Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de ¿Quién es ese Pokémon? con los controles del catálogo: generaciones del pool, pistas adicionales y formas
@@ -14,6 +15,7 @@ import c from '../ConfigPanel.module.css';
 export function WhosThatPokemonConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as WhosThatPokemonConfig;
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="whos-that-pokemon" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones del pool" description="La generación normalizada del catálogo compartido también se aplica a las formas regionales." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <Toggle label="Pistas adicionales" hint={value.hintsEnabled ? 'Generación, tipo y evolución aparecen poco a poco.' : 'Solo se muestra la silueta.'} checked={value.hintsEnabled} disabled={disabled} onChange={(hintsEnabled) => void onChange({ ...value, hintsEnabled })} />

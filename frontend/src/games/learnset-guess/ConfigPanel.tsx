@@ -7,6 +7,7 @@ import { Badge, Icon, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Learnset Guess con los controles del catálogo: el modo (`GameModeField`), generaciones (el learnset de referencia sale de la más
@@ -17,6 +18,7 @@ export function LearnsetGuessConfigPanel({ config, disabled, onChange }: { confi
   const value = config as LearnsetGuessConfig; const reference = Math.max(...value.generations) as keyof typeof GENERATION_LEARNSET_SOURCES;
   const shown = useModeShown('learnset-guess', value.mode);
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="learnset-guess" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="learnset-guess" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} label="Generaciones de Pokémon" onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={s.reference}>

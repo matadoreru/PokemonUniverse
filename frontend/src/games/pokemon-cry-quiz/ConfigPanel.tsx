@@ -6,6 +6,7 @@ import { StreakBonusToggle } from '../common/StreakBonusToggle';
 import { Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const VERSION_LABEL = 'Versión del grito';
 const versions: Array<{ value: PokemonCryQuizConfig['cryVersion']; label: string; detail: string }> = [
@@ -23,6 +24,7 @@ export function PokemonCryQuizConfigPanel({ config, disabled, onChange }: { conf
   const update = (next: Partial<PokemonCryQuizConfig>) => void onChange({ ...value, ...next });
   const version = versions.find((option) => option.value === value.cryVersion) ?? versions[0]!;
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="pokemon-cry-quiz" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones" description="Solo entrarán Pokémon con un grito persistido en el catálogo local." onChange={(generations) => update({ generations })} />
     <Segmented<PokemonCryQuizConfig['cryVersion']> label={VERSION_LABEL} showLabel hint={version.detail} value={value.cryVersion} options={versions.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(cryVersion) => update({ cryVersion })} />
     <Toggle label="Formas regionales" hint="Incluye únicamente formas con grito propio disponible." checked={value.includeRegionalForms} disabled={disabled} onChange={(includeRegionalForms) => update({ includeRegionalForms })} />

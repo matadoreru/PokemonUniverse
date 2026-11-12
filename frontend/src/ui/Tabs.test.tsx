@@ -59,8 +59,16 @@ describe('Segmented', () => {
     expect(html.match(/aria-checked="true"/g)).toHaveLength(1);
     expect(html.match(/tabindex="0"/g)).toHaveLength(1);
   });
+  it('sin opción que coincida no marca ninguna y la primera habilitada queda en el orden de tabulación', () => {
+    const html = renderToStaticMarkup(
+      createElement(Segmented<number>, { value: 9, options: [{ value: 1, label: 'Uno', disabled: true }, { value: 2, label: 'Dos' }, { value: 3, label: 'Tres' }], onChange: () => undefined, label: 'Número' }),
+    );
+    expect(html).not.toContain('aria-checked="true"');
+    expect(html.match(/tabindex="0"/g)).toHaveLength(1);
+    expect(html).toMatch(/tabindex="0"[^>]*>Dos</);
+  });
   const options = [{ value: 1, label: 'Uno' }, { value: 2, label: 'Dos' }];
-  const render = (props: Partial<SegmentedProps<number>>) => renderToStaticMarkup(
+  const render =(props: Partial<SegmentedProps<number>>) => renderToStaticMarkup(
     createElement(Segmented<number>, { value: 2, options, onChange: () => undefined, label: 'Número', className: 'extra', ...props }),
   );
   it('sin etiqueta visible ni ayuda es el grupo solo, con su nombre en aria-label y la clase en él', () => {

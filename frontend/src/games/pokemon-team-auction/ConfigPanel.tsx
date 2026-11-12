@@ -5,6 +5,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { cx, Field, Segmented, Toggle } from '../../ui';
 import c from '../ConfigPanel.module.css';
 import s from './TeamAuction.module.css';
+import { PaceField } from '../common/PaceField';
 
 const budgets = [10, 20, 30, 50] as const;
 const CUSTOM = 'custom';
@@ -29,6 +30,7 @@ export function PokemonTeamAuctionConfigPanel({ config, disabled, onChange }: { 
   const preset = (budgets as readonly number[]).includes(value.initialBudget) ? String(value.initialBudget) : CUSTOM;
   const draftValid = parseBudget(draft) !== null;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokemon-team-auction" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="La pool contiene exactamente seis lotes por jugador. Las formas alternativas cuentan como Pokémon independientes." onChange={(generations) => void onChange({ ...value, generations })} />
     <div className={c.pair}>
       <div className={c.group}>

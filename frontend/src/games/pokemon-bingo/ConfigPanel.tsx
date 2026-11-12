@@ -5,6 +5,7 @@ import { Chip, Segmented, Toggle } from '../../ui';
 import { bingoClock } from './presentation';
 import c from '../ConfigPanel.module.css';
 import s from './ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const groups: Array<{ title: string; keys: BingoFamilyKey[] }> = [
   { title: 'Básicas', keys: ['generation', 'dexNumber', 'type', 'typeCombination', 'typeCount'] },
@@ -25,6 +26,7 @@ export function PokemonBingoConfigPanel({ config, disabled, onChange }: { config
   const active = BINGO_FAMILY_KEYS.filter((key) => value.families[key]).length;
   const side = (key: 'width' | 'height', label: string) => <Segmented label={label} showLabel value={value[key]} options={SIDES.map((size) => ({ value: size, label: String(size), disabled }))} onChange={(size) => void onChange({ ...value, [key]: size })} />;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokemon-bingo" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <div className={c.pair}>
       {side('width', 'Anchura del tablero')}
       {side('height', 'Altura del tablero')}

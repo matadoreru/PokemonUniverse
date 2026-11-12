@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const modes: Array<{ id: PokemonRedFlagConfig['mode']; title: string; detail: string }> = [
   { id: 'RED', title: 'Lo peor', detail: 'La frase muestra su lado malo.' },
@@ -20,6 +21,7 @@ export function PokemonRedFlagConfigPanel({ config, disabled, onChange }: { conf
   const value = config as PokemonRedFlagConfig;
   const mode = modes.find((entry) => entry.id === value.mode) ?? modes[0]!;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="pokemon-red-flag" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones disponibles" description="El Pokémon protagonista de cada ronda se elige del pool configurado." onChange={(generations) => void onChange({ ...value, generations })} />
     <Segmented label="Tono de las frases" showLabel hint={`${mode.detail} Define si las frases buscan el lado malo, el bueno o una sorpresa por ronda.`} value={value.mode} options={modes.map((entry) => ({ value: entry.id, label: entry.title, disabled }))} onChange={(next) => void onChange({ ...value, mode: next })} />
     <div className={c.pair}>

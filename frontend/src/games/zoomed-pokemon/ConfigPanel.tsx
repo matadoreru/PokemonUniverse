@@ -5,6 +5,7 @@ import { PublicAttemptsToggle } from '../../room/guess-kit/PublicAttemptsToggle'
 import { Segmented, Toggle } from '../../ui';
 import { roundsLabel, secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const IMAGE_LABEL = 'Imagen';
 const HINT_KINDS_LABEL = 'Qué pistas salen';
@@ -29,6 +30,7 @@ export function ZoomedPokemonConfigPanel({ config, disabled, onChange }: { confi
   const toggleHint = (hint: ZoomedPokemonHintKind, on: boolean) => update({ hintKinds: on ? [...value.hintKinds.filter((item) => item !== hint), hint] : value.hintKinds.filter((item) => item !== hint) });
   const mode = modes.find((option) => option.value === value.imageMode) ?? modes[0]!;
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="zoomed-pokemon" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} onChange={(generations) => update({ generations })} />
     <Segmented<ZoomedPokemonImageMode> label={IMAGE_LABEL} showLabel hint={`${mode.description}${value.imageMode === 'ARTWORK' ? ' El servidor validará que exista al menos un artwork para estas generaciones al empezar.' : ''}`} value={value.imageMode} options={modes.map((option) => ({ value: option.value, label: option.label, disabled }))} onChange={(imageMode) => update({ imageMode })} />
     <div className={c.pair}>

@@ -4,6 +4,7 @@ import { ConfigRange } from '../common/ConfigRange';
 import { GameModeField } from '../common/GameModeField';
 import { secondsLabel } from '../../lib/format';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 /**
  * Ajustes de Pokémon Impostor: el modo (`GameModeField`), generaciones, impostores (con el mínimo de jugadores que piden) y los tiempos de pista y
@@ -12,6 +13,7 @@ import c from '../ConfigPanel.module.css';
 export function PokemonImpostorConfigPanel({ config, disabled, onChange }: { config: unknown; disabled: boolean; onChange(config: unknown): Promise<void> }) {
   const value = config as PokemonImpostorConfig;
   return <fieldset disabled={disabled} className={c.panelLoose}>
+    <PaceField gameId="pokemon-impostor" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GameModeField gameId="pokemon-impostor" value={value.mode} disabled={disabled} onChange={(mode) => void onChange({ ...value, mode })} />
     <GenerationSelector selected={value.generations} onChange={(generations) => onChange({ ...value, generations })} label="Generaciones disponibles" />
     <div className={c.pair}>

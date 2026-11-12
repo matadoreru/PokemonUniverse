@@ -246,7 +246,8 @@ describe('presentación de Pokémon Bingo', () => {
 describe('PokemonBingoConfigPanel', () => {
   it('controles del catálogo: tamaño con Segmented, familias con Toggle y el aviso de validación', () => {
     const html = renderToStaticMarkup(createElement(PokemonBingoConfigPanel, { config: defaultPokemonBingoConfig, disabled: false, onChange: async () => undefined }));
-    expect(html.match(/role="radiogroup"/g)).toHaveLength(3);
+    // Ancho, alto y condiciones por casilla, más «Ritmo».
+    expect(html.match(/role="radiogroup"/g)).toHaveLength(4);
     expect(html.match(/role="switch"/g)).toHaveLength(18);
     expect(html).toContain('3 × 3 · 9 casillas');
     expect(html).toContain('2:00 minutos');

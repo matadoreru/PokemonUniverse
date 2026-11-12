@@ -3,6 +3,7 @@ import { GenerationSelector } from '../../components/GenerationSelector';
 import { ConfigRange } from '../common/ConfigRange';
 import { Segmented, Toggle } from '../../ui';
 import c from '../ConfigPanel.module.css';
+import { PaceField } from '../common/PaceField';
 
 const turnTimes = [20, 30, 40, 60, 90] as const;
 const roundCounts = [5, 10, 15, 20, 25] as const;
@@ -17,6 +18,7 @@ export function WhoIsWhoPokemonConfigPanel({ config, disabled, onChange }: { con
   const value = config as WhoIsWhoPokemonConfig;
   const selection = value.selectionSeconds ?? 30;
   return <fieldset disabled={disabled} className={c.panel}>
+    <PaceField gameId="who-is-who-pokemon" config={value} disabled={disabled} onChange={(next) => void onChange(next)} />
     <GenerationSelector selected={value.generations} label="Generaciones del tablero" description="El pool se mezcla en el servidor antes de repartir los secretos." onChange={(generations) => void onChange({ ...value, generations })} />
     <Segmented label="Pokémon secreto" showLabel hint={value.secretSelection === 'RANDOM' ? 'El servidor asigna uno a cada equipo.' : 'Cada equipo elige en secreto una carta del tablero.'} value={value.secretSelection} options={[{ value: 'RANDOM', label: 'Aleatorio', disabled }, { value: 'PLAYER_CHOICE', label: 'Por el equipo', disabled }]}
       onChange={(secretSelection) => void onChange({ ...value, secretSelection })} />
