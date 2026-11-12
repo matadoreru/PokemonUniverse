@@ -60,7 +60,8 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     // Votación: tres cartas, la cuenta atrás y «Confirmar voto» abajo; la clasificación de la sesión en franjas.
     const titulo = (page: Page) => page.getByRole('heading', { name: 'Elige el siguiente minijuego' });
     for (const page of pages) await expect(titulo(page)).toBeVisible({ timeout: 15_000 });
-    const opciones = (page: Page) => page.getByRole('list', { name: 'Opciones de voto' }).getByRole('button');
+    // Las cartas votables (conmutadores); el «?» de las reglas de cada opción es otro botón, hermano de la carta.
+    const opciones = (page: Page) => page.getByRole('list', { name: 'Opciones de voto' }).locator('button[aria-pressed]');
     await expect(opciones(host.page)).toHaveCount(3);
     await expect(host.page.getByRole('timer', { name: /^Para votar/ })).toBeVisible();
     await expect(host.page.getByText('0/2 votos')).toBeVisible();
@@ -68,6 +69,16 @@ test('sesión: votación del siguiente juego y clasificación final', async ({ b
     const confirmar = (page: Page) => page.getByRole('button', { name: 'Confirmar voto' });
     await expect(confirmar(host.page)).toBeDisabled();
     await expect(host.page.getByText('Selecciona una opción para preparar tu voto.')).toBeVisible();
+    // El «?» de una opción abre sus reglas sin votarla.
+    const reglas = host.page.getByRole('list', { name: 'Opciones de voto' }).getByRole('button', { name: /^Cómo se juega: / });
+    await expect(reglas).toHaveCount(3);
+    await reglas.first().click();
+    const ayuda = host.page.getByRole('dialog', { name: /^Cómo se juega · / });
+    await expect(ayuda.getByRole('region', { name: 'Reglas' }).getByRole('listitem')).toHaveCount(3);
+    await ayuda.getByRole('button', { name: 'Entendido' }).click();
+    await expect(ayuda).toBeHidden();
+    await expect(opciones(host.page).and(host.page.locator('[aria-pressed="true"]'))).toHaveCount(0);
+    await expect(confirmar(host.page)).toBeDisabled();
 
     // Fuera del lobby, «Salir» de la placa pide confirmación: «Cancelar» con el foco y la sala sigue igual.
     await host.page.getByRole('button', { name: 'Salir de la sala' }).click();
@@ -204,7 +215,7 @@ test('sesión: modos que se juegan y votación entre los modos de un juego', asy
 
     // Un solo juego con dos modos: la votación tiene dos opciones, una por modo.
     for (const page of pages) await expect(page.getByRole('heading', { name: 'Elige el siguiente minijuego' })).toBeVisible({ timeout: 15_000 });
-    const opciones = (page: Page) => page.getByRole('list', { name: 'Opciones de voto' }).getByRole('button');
+    const opciones = (page: Page) => page.getByRole('list', { name: 'Opciones de voto' }).locator('button[aria-pressed]');
     await expect(opciones(host.page)).toHaveCount(2);
     const racha = (page: Page) => opciones(page).filter({ hasText: 'Higher or Lower · Racha infinita' });
     await expect(opciones(host.page).filter({ hasText: 'Higher or Lower · Clásico' })).toHaveCount(1);
