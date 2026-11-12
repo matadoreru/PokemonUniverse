@@ -3,8 +3,34 @@
  * intro; cada carta del lobby lleva un «?» hermano que abre las reglas sin elegirla, y ya en partida la píldora «?» de la
  * placa (o la tecla «?») abre las reglas y los atajos en el diálogo de ayuda.
  */
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { capturarATresTamaños, cartaDeJuego, crearSalaConJugadores, esperarPartida, iniciarPartida, seleccionarJuego, type Jugador } from '../src/helpers.js';
+
+/**
+ * El «?» de cada carta visible del lobby no pisa ningún texto de su carta (nombre, jugadores, chips): el medidor de encaje
+ * lo trata como capa (`data-layer`) porque se monta sobre la esquina de la carta, así que esto lo comprueba aparte.
+ */
+async function rulesSinPisarTexto(page: Page): Promise<void> {
+  const pisados = await page.getByRole('list', { name: 'Minijuegos' }).evaluate((lista) => {
+    const out: string[] = [];
+    for (const celda of lista.querySelectorAll('li')) {
+      const dot = celda.querySelector('[data-layer="rules"]');
+      if (!dot) continue;
+      const d = dot.getBoundingClientRect();
+      if (d.bottom < 0 || d.top > innerHeight) continue;
+      const textos = [...celda.querySelectorAll('*')].filter((e) => e !== dot && !dot.contains(e) && !e.closest('dialog')
+        && [...e.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent?.trim()));
+      for (const t of textos) {
+        const r = t.getBoundingClientRect();
+        const w = Math.min(r.right, d.right) - Math.max(r.left, d.left);
+        const h = Math.min(r.bottom, d.bottom) - Math.max(r.top, d.top);
+        if (w > 1 && h > 1) out.push(`${(t as HTMLElement).innerText.trim()} (${Math.round(w)}×${Math.round(h)})`);
+      }
+    }
+    return out;
+  });
+  expect(pisados, 'el «?» no pisa texto de su carta').toEqual([]);
+}
 
 test('«Cómo se juega»: «?» en las cartas del lobby y en la partida', async ({ browser }) => {
   test.setTimeout(120_000);
@@ -14,6 +40,8 @@ test('«Cómo se juega»: «?» en las cartas del lobby y en la partida', async 
     const [invitado] = invitados as [Jugador];
 
     await seleccionarJuego(host.page, 'Higher or Lower');
+    // El lobby con sus «?», a los tres tamaños, sin que ninguno pise el texto de su carta.
+    await capturarATresTamaños(host.page, 'lobby-reglas', { antes: () => rulesSinPisarTexto(host.page) });
     // El «?» de una carta: abre sus reglas (sin atajos) y no cambia la selección, ni la elegida ni otra.
     for (const nombre of ['Higher or Lower', 'Shiny Quiz']) {
       const carta = cartaDeJuego(host.page, nombre);
