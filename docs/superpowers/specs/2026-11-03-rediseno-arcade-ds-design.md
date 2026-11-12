@@ -252,7 +252,7 @@ Se porta el motor de Inazuma (`engine`, `mixer`, `synth`, `voices`, `variation`,
 | `ui.open` / `ui.close` | abrir o cerrar un diálogo | `Dialog` |
 | `ui.error` | aviso de error | `Toast` |
 | `room.join` / `room.leave` | alguien entra o sale de la sala | `PlayerList` |
-| `game.start` | empieza un juego (intro) | `GameIntro` |
+| `game.start` | empieza una partida | `GameStartCue` (`RoomSessionLayout`) y «Jugar» del reto |
 | `game.countdown` | cada uno de los 3 últimos segundos | `Timer` |
 | `game.reveal` | la ronda pasa a resultados | `RoomSessionLayout`, por cambio de fase |
 | `game.hit` / `game.miss` / `game.score` | acierto, fallo o puntos propios | `useSfxCue`, ahora un adaptador |
