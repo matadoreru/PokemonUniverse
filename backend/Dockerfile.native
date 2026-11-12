@@ -1,5 +1,5 @@
-# Imagen nativa (GraalVM native-image): arranca y pasa el humo de scripts/backend-native-smoke.mjs, pero Compose
-# sigue desplegando la imagen JVM (Dockerfile). Se publica con sufijo -native para medir arranque y memoria.
+# Imagen nativa (GraalVM native-image), experimental: Compose sigue desplegando la imagen JVM (Dockerfile). Se publica
+# con sufijo -native para medir arranque y memoria. Estado y verificación: docs/migracion-java-pendientes.md.
 FROM ghcr.io/graalvm/native-image-community:25 AS build
 WORKDIR /src
 COPY gradlew settings.gradle.kts build.gradle.kts gradle.properties ./
@@ -7,13 +7,17 @@ COPY gradle ./gradle
 RUN ./gradlew --no-daemon --version
 COPY src ./src
 COPY openapi ./openapi
-# Memoria e hilos del compilador de GraalVM (ver graalvmNative en build.gradle.kts). Con 6g y 4 hilos cabe en un
-# runner de 16 GB; en una máquina más justa: --build-arg NATIVE_IMAGE_XMX=4g --build-arg NATIVE_IMAGE_PARALLELISM=2.
+# Memoria e hilos del compilador de GraalVM (ver graalvmNative en build.gradle.kts): --build-arg NATIVE_IMAGE_XMX=5g
+# --build-arg NATIVE_IMAGE_PARALLELISM=2. Con 4g no basta (el análisis se queda en GC continuo). El contenedor de
+# compilación necesita el heap más ~1,5 GB (resto del compilador y Gradle).
 # NATIVE_IMAGE_ARGS añade argumentos sueltos (p. ej. -Ob para una compilación rápida sin optimizar).
 ARG NATIVE_IMAGE_XMX=6g
 ARG NATIVE_IMAGE_PARALLELISM=4
 ARG NATIVE_IMAGE_ARGS=""
-RUN ./gradlew --no-daemon nativeCompile -x test \
+# Java se compila en un paso aparte: así el proceso de Gradle que espera a native-image no carga con los procesadores
+# de anotaciones (medio GB menos junto a los 6 GB del compilador nativo).
+RUN ./gradlew --no-daemon classes
+RUN ./gradlew --no-daemon -Dorg.gradle.jvmargs="-Xmx384m -XX:+UseSerialGC" nativeCompile -x test \
       -PnativeImageXmx="${NATIVE_IMAGE_XMX}" -PnativeImageParallelism="${NATIVE_IMAGE_PARALLELISM}" \
       -PnativeImageArgs="${NATIVE_IMAGE_ARGS}"
 # /out es lo que se copia tal cual a /app: el binario (el plugin lo nombra como el proyecto, rootProject.name) y las

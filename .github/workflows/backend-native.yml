@@ -1,9 +1,8 @@
 name: Backend native image (experimental)
 
-# Experimental: the native binary starts and passes scripts/backend-native-smoke.mjs
-# locally, but it is not deployed. Built by hand only (Actions → Run workflow), so
-# it never slows down a push to main. Publishes :<sha>-native; Compose keeps
-# deploying the JVM image.
+# Experimental: not deployed (status in docs/migracion-java-pendientes.md). Built by
+# hand only (Actions → Run workflow), so it never slows down a push to main.
+# Publishes :<sha>-native; Compose keeps deploying the JVM image.
 on:
   workflow_dispatch:
 
