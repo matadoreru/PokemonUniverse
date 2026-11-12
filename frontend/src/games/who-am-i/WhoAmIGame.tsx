@@ -206,10 +206,11 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   // Un intento por turno: el segundo toque sobre el buscador no manda otro `GUESS_SELF` (el servidor lo rechazaría con
   // un aviso de error, porque el turno ya pasó). Si el envío falla, se puede volver a intentar.
   const guessSentFor = useRef<string | null>(null);
-  const guess = (pokemonId: string) => {
+  const guess = async (pokemonId: string): Promise<void> => {
     if (turnKey === null || guessSentFor.current === turnKey) return;
     guessSentFor.current = turnKey;
-    void onAction({ type: 'GUESS_SELF', pokemonId }).catch((error: unknown) => { guessSentFor.current = null; ignoreFailure(error); });
+    // El fallo ya sale en el aviso de la sala (`gameAction`): aquí solo se vuelve a permitir el intento.
+    await onAction({ type: 'GUESS_SELF', pokemonId }).catch(() => { guessSentFor.current = null; });
   };
   const responderIds = game.playerIds.filter((id) => id !== game.turnPlayerId);
   const turnName = game.turnPlayerId ? nameOf(game.turnPlayerId) : '';
