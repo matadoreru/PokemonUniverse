@@ -4,6 +4,7 @@ import { ArrowLeft, Check, CheckCircle2, Clock3, Eye, Hourglass, MessageCircleQu
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode, type RefObject } from 'react';
 import { answerLabel, freshAnnouncement, lockedGuessIds, questionsText, turnHeadline, WHO_AM_I_NAME, whoAmIAnnouncement, type WhoAmIAnnounceSnapshot } from './presentation';
 import { useDraft, type DraftKey } from '../../hooks/useDraft';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { usePokemonPool } from '../../hooks/usePokemonPool';
 import { useServerOffset } from '../../hooks/useServerTime';
 import { Card, Chip, cx, Field, Icon, Panel, Pill, StateBox } from '../../ui';
@@ -19,6 +20,8 @@ import s from './WhoAmI.module.css';
 
 /** Plazo de `DECIDING` (`DECIDE_MS` del motor): no es configurable. */
 const DECIDE_MS = 20_000;
+/** Tono del chip de cada respuesta en las pistas; la respuesta va siempre también en texto. */
+const ANSWER_TONES: Readonly<Record<WhoAmIAnswer, 'ok' | 'bad' | 'warn' | 'neutral'>> = { YES: 'ok', NO: 'bad', PARTLY: 'warn', UNKNOWN: 'neutral' };
 const typeLabel = (type: string) => POKEMON_TYPE_LABELS[type as PokemonType] ?? type;
 const cardTypes = (pokemon: WhoAmIPokemon) => pokemon.types.map((type) => ({ type: type as PokemonType, label: typeLabel(type) }));
 
@@ -33,7 +36,7 @@ export function WhoAmIHistory({ entries, nameOf, testId, emptyText }: { entries:
         <p className={s.answers}>
           {entry.answers.length === 0
             ? <span>Sin respuestas</span>
-            : entry.answers.map((answer) => <span key={answer.playerId} className={s.answer}>{nameOf(answer.playerId)}: <strong>{answerLabel(answer.answer)}</strong></span>)}
+            : entry.answers.map((answer) => <span key={answer.playerId} className={s.answer}><Chip tone={ANSWER_TONES[answer.answer]}>{nameOf(answer.playerId)}: <strong>{answerLabel(answer.answer)}</strong></Chip></span>)}
         </p>
       </li>)}
   </ul>;
@@ -52,7 +55,7 @@ function AnswerProgress({ question, responderIds, showAnswers, nameOf }: { quest
       const answer = answers.get(id);
       const done = answered.has(id) || answer !== undefined;
       const text = showAnswers ? (answer ? answerLabel(answer) : 'Sin respuesta') : done ? 'Respondió' : 'Sin respuesta';
-      return <li key={id}><Chip tone={done ? 'ok' : 'neutral'} icon={<Icon icon={done ? Check : Hourglass} size={18} />}>{`${nameOf(id)} · ${text}`}</Chip></li>;
+      return <li key={id}><Chip tone={showAnswers && answer ? ANSWER_TONES[answer] : done ? 'ok' : 'neutral'} icon={<Icon icon={done ? Check : Hourglass} size={18} />}>{`${nameOf(id)} · ${text}`}</Chip></li>;
     })}
   </ul>;
 }
@@ -105,7 +108,9 @@ function AskerPokemon({ name, pokemon }: { name: string; pokemon: WhoAmIPokemon 
 }
 
 /** La carta de un jugador: los demás con su Pokémon; la propia con «?» (o con `self` si ya acertó). */
-function PlayerCard({ name, self, pokemon, turn, solved, viewing, onView }: { name: string; self: boolean; pokemon: WhoAmIPokemon | null; turn: boolean; solved: boolean; viewing: boolean; onView?: (() => void) | undefined }) {
+function PlayerCard({ name, self, pokemon, turn, solved, viewing, wide, onView }: { name: string; self: boolean; pokemon: WhoAmIPokemon | null; turn: boolean; solved: boolean; viewing: boolean; wide: boolean; onView?: (() => void) | undefined }) {
+  // En escritorio con alto la carta llena su celda (el sprite crece con ella); si no, sigue pequeña.
+  const size = wide ? 'fill' : 'sm';
   const label = self ? `${name} (tú)` : name;
   const extra = <span className={s.player}>
     {label}
@@ -113,9 +118,9 @@ function PlayerCard({ name, self, pokemon, turn, solved, viewing, onView }: { na
     {solved && <Chip tone="ok" icon={<Icon icon={CheckCircle2} size={18} />}>Acertó</Chip>}
   </span>;
   const card = pokemon
-    ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} number={pokemon.nationalDexNumber} types={cardTypes(pokemon)} decorativeSprite size="sm" eager
+    ? <Card name={pokemon.name} sprite={guessSprite(pokemon.sprite)} number={pokemon.nationalDexNumber} types={cardTypes(pokemon)} decorativeSprite size={size} eager
       state={viewing ? 'selected' : 'idle'} {...(onView ? { onSelect: onView, attrs: { 'aria-label': `${pokemon.name}, de ${label}: ver sus pistas` } } : {})}>{extra}</Card>
-    : <Card name="Tu Pokémon" size="sm">{extra}</Card>;
+    : <Card name="Tu Pokémon" size={size} {...(wide ? { art: <span className={s.mystery}>?</span> } : {})}>{extra}</Card>;
   return <li className={cx(s.seat, turn && s.turn)} data-turn={turn || undefined}>{card}</li>;
 }
 
@@ -175,6 +180,8 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const guessing = guessingKey !== null && guessingKey === turnKey && canGuess;
   // Las cartas de los demás se tocan para ver sus pistas. Un espectador (sin pistas propias) ve las del turno.
   const [viewedId, setViewedId] = useState<string | null>(null);
+  // La misma consulta que `WhoAmI.module.css`: escritorio con alto para cartas grandes (a 720 px de alto siguen pequeñas).
+  const wide = useMediaQuery('(min-width: 1024px) and (min-height: 860px)');
   const viewed = viewedId && viewedId !== selfId && game.playerIds.includes(viewedId) ? viewedId : !participating ? game.turnPlayerId : null;
 
   const settings = config ?? {};
@@ -201,13 +208,15 @@ export function WhoAmIGame({ room, selfId, onAction }: ActiveGameProps) {
   const meta = participating ? <Chip tone="info" icon={<Icon icon={MessageCircleQuestion} size={18} />}>{`Has hecho ${questionsText(asked)}`}</Chip> : <Chip tone="info" icon={<Icon icon={Eye} size={18} />}>Observando</Chip>;
 
   const solvedIds = new Set(game.solvedPlayerIds);
+  // Hasta cuatro cartas, una fila; con más, dos filas.
+  const columns = game.playerIds.length <= 4 ? game.playerIds.length : Math.ceil(game.playerIds.length / 2);
   const stage = <Panel variant="cream" as="section" title="Jugadores" scroll scrollLabel="Cartas de los jugadores" className={s.stage ?? ''}>
-    <ul className={s.cards} data-testid="who-am-i-cards">
+    <ul className={s.cards} data-testid="who-am-i-cards" style={{ ['--cols' as string]: columns }}>
       {game.playerIds.map((id) => {
         const own = id === selfId;
         // La propia, solo con `self`; nunca con `others[selfId]` aunque llegara.
         const card = own ? (player?.role === 'PLAYER' ? player.self : null) : player?.others[id] ?? null;
-        return <PlayerCard key={id} name={nameOf(id)} self={own} pokemon={card} turn={active && game.turnPlayerId === id} solved={solvedIds.has(id)} viewing={viewed === id}
+        return <PlayerCard key={id} name={nameOf(id)} self={own} pokemon={card} turn={active && game.turnPlayerId === id} solved={solvedIds.has(id)} viewing={viewed === id} wide={wide}
           onView={own || !card ? undefined : () => setViewedId((current) => (current === id ? null : id))} />;
       })}
     </ul>
