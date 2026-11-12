@@ -1,10 +1,18 @@
 name: Backend native image (experimental)
 
-# Experimental: not deployed (status in docs/migracion-java-pendientes.md). Built by
-# hand only (Actions → Run workflow), so it never slows down a push to main.
-# Publishes :<sha>-native; Compose keeps deploying the JVM image.
+# Experimental: built by hand only (Actions → Run workflow), so it never slows
+# down a push to main. Compiles the native binary on the runner (the analysis
+# needs more memory than a 16 GB laptop has free), starts the image against an
+# empty PostgreSQL the way compose.yaml does (read-only root, /tmp tmpfs) and
+# runs scripts/backend-native-smoke.mjs against it. With `publish` it also
+# pushes :<sha>-native; Compose keeps deploying the JVM image.
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publicar :<sha>-native en GHCR si el humo pasa'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,33 +24,96 @@ concurrency:
 
 jobs:
   native:
-    name: Publish backend native image
-    timeout-minutes: 25
+    name: Build and smoke-test the backend native image
+    timeout-minutes: 75
     runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}-native
     steps:
       - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Runner memory
+        run: free -g && nproc
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Build native image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.native
+          platforms: linux/amd64
+          load: true
+          build-args: |
+            PU_COMMIT_SHA=${{ github.sha }}
+          tags: ${{ env.IMAGE }}
+          cache-from: type=gha,scope=backend-native
+          cache-to: type=gha,mode=max,scope=backend-native
+
+      - name: Image size
+        run: docker image ls "$IMAGE"
+
+      - name: Start PostgreSQL and the native backend
+        run: |
+          set -euo pipefail
+          docker network create pu
+          docker run -d --name pg --network pu -e POSTGRES_USER=pokemon -e POSTGRES_PASSWORD=pokemon \
+            -e POSTGRES_DB=pokemon_universe postgres:17-alpine
+          for i in $(seq 1 30); do docker exec pg pg_isready -U pokemon -d pokemon_universe && break; sleep 2; done
+          # Como compose.yaml: raíz de solo lectura, /tmp en tmpfs y sin capacidades. El catálogo vacío se sincroniza
+          # con PokéAPI antes de abrir el puerto.
+          docker run -d --name backend --network pu -p 18080:8080 \
+            --read-only --tmpfs /tmp:size=64m,mode=1777 --tmpfs /data/avatars:size=64m,mode=1777,uid=1000,gid=1000 \
+            --security-opt no-new-privileges:true --cap-drop ALL --pids-limit 150 \
+            -e MICRONAUT_ENVIRONMENTS=prod -e PORT=8080 \
+            -e JDBC_URL=jdbc:postgresql://pg:5432/pokemon_universe -e DB_USER=pokemon -e DB_PASSWORD=pokemon \
+            -e JWT_SECRET=native-smoke-secret-with-at-least-32-characters \
+            -e WEB_ORIGIN=http://127.0.0.1:18080 -e COOKIE_SECURE=false \
+            -e AVATAR_STORAGE_DIR=/data/avatars -e SPRITE_CACHE_DIR=/data/avatars/sprite-cache \
+            -e POKEMON_ARTWORK_DIR=/app/pokemon-artworks \
+            -e ROOMS_ENABLED=true -e INTERRUPT_STALE_ROOMS=true -e BACKEND_DATA_SYNC_ENABLED=true \
+            "$IMAGE"
+          date +%s > /tmp/started-at
+
+      - name: Wait for /api/health
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 120); do
+            if [ "$(docker inspect -f '{{.State.Running}}' backend)" != "true" ]; then
+              echo "El backend nativo se ha parado:"; docker logs backend 2>&1 | tail -n 200; exit 1
+            fi
+            if curl -fsS http://127.0.0.1:18080/api/health; then
+              echo; echo "Listo a los $(( $(date +%s) - $(cat /tmp/started-at) )) s"; exit 0
+            fi
+            sleep 5
+          done
+          echo "Sin respuesta en 10 min:"; docker logs backend 2>&1 | tail -n 200; exit 1
+
+      - name: Memory at rest and container healthcheck
+        run: |
+          docker stats --no-stream backend
+          docker exec backend /app/backend --healthcheck && echo "healthcheck: 0"
+
+      - name: Functional smoke test
+        run: node scripts/backend-native-smoke.mjs http://127.0.0.1:18080
+
+      - name: Backend log
+        if: always()
+        run: docker logs backend 2>&1 | tail -n 300 || true
+
       - name: Log in to GitHub Container Registry
+        if: inputs.publish
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push native image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile.native
-          platforms: linux/amd64
-          push: true
-          build-args: |
-            PU_COMMIT_SHA=${{ github.sha }}
-          tags: ghcr.io/${{ github.repository_owner }}/pokemon-universe-backend:${{ github.sha }}-native
-          cache-from: type=gha,scope=backend-native
-          cache-to: type=gha,mode=max,scope=backend-native
-          provenance: mode=max
-          sbom: true
+      - name: Publish :<sha>-native
+        if: inputs.publish
+        run: docker push "$IMAGE"
