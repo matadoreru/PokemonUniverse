@@ -122,8 +122,12 @@ function TypeDuelClassicGame({ room, selfId, onAction }: ActiveGameProps) {
     hostAction={selfId === room.hostId ? <TypeDuelContinue last={last} pending={continuing} onContinue={() => void continueNow()} /> : undefined}
     titleRef={titleRef} onPick={(type) => void pick(type)} />;
 
+  // En la elección el título es la fase, en una línea y sin chip: los nombres ya van en las tarjetas de los duelistas, y
+  // en el móvil la placa no empuja esas tarjetas bajo la pantalla inferior.
+  const picking = game.phase === 'SELECTING_TYPES';
   return <GameScreen gameName="Type Duel" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase}
-    meta={<Chip tone="neutral" icon={<Icon icon={Swords} size={18} />}>{typeDuelPhaseLabel(game.phase)}</Chip>} heading={typeDuelHeading(game.phase, names)}
+    {...(picking ? {} : { meta: <Chip tone="neutral" icon={<Icon icon={Swords} size={18} />}>{typeDuelPhaseLabel(game.phase)}</Chip> })}
+    heading={picking ? typeDuelPhaseLabel(game.phase) : typeDuelHeading(game.phase, names)}
     timer={timer} announcement={announcement} clue={<div className={s.scene}>{scene}</div>} side={side} bottom={bottom} />;
 }
 

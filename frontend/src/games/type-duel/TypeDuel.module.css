@@ -534,13 +534,16 @@
   }
   .pickBoard {
     gap: var(--sp-2);
-    padding: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
   }
-  .pickIcon {
-    display: none;
-  }
-  .pickTitle {
-    font-size: var(--fs-18);
+  /* La placa de la ronda ya dice «Elección secreta»: el título de la losa queda solo para lectores. */
+  .pickHead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .pickRow {
     gap: var(--sp-2);
@@ -552,7 +555,7 @@
   .pickSide {
     height: auto;
     gap: var(--sp-1);
-    padding: var(--sp-1) var(--sp-2) var(--sp-2);
+    padding: var(--sp-1) var(--sp-2);
   }
   .pickAvatar {
     display: none;
@@ -562,7 +565,7 @@
   }
   .hiddenType {
     min-width: 4rem;
-    min-height: 36px;
+    min-height: 32px;
     font-size: var(--fs-18);
   }
   .versus {

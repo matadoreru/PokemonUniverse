@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ServerTimer } from '../../components/ServerTimer';
 import { Badge, cx, Panel, ScreenSplit } from '../../ui';
 import { GameSkipSlot } from './GameSkipSlot';
@@ -96,6 +96,16 @@ export function clueEntryClass(step: number): string | undefined {
  */
 export function GameScreen({ gameName, roundNumber, totalRounds, phase, heading, headingLead, headingMark, hudFoot, meta, roundLabel, phases, timer, announcement, clue, hints, side, bottom, className, testId, turnCue = null, moment }: GameScreenProps) {
   const clueStep = useStepCount(`${roundNumber}|${phase ?? ''}`);
+  // Ronda o fase nueva: el `main` vuelve arriba. En el móvil, quien bajó a votar o a mirar el marcador vería la placa de la
+  // ronda (y lo que cuelga de ella, como el rol de Impostor) fuera de la vista. Al montar no toca nada.
+  const screenRef = useRef<HTMLDivElement>(null);
+  const shownStep = useRef(clueStep);
+  useEffect(() => {
+    if (shownStep.current === clueStep) return;
+    shownStep.current = clueStep;
+    const main = screenRef.current?.closest('main');
+    if (main && main.scrollTop > 0) main.scrollTo({ top: 0 });
+  }, [clueStep]);
   const top = <div className={s.top}>
     <GameHud gameName={gameName} roundLabel={roundLabel ?? <>Ronda {roundNumber} de {totalRounds}</>} meta={meta} heading={heading} headingLead={headingLead} headingMark={headingMark}
       timer={timer} skip={<GameSkipSlot className={s.skip} />} foot={hudFoot} />
@@ -103,7 +113,7 @@ export function GameScreen({ gameName, roundNumber, totalRounds, phase, heading,
     <div className={cx(s.clue, clueEntryClass(clueStep))}>{clue}</div>
     {hints}
   </div>;
-  return <div className={cx('content-row', s.screen, className)} {...(testId ? { 'data-testid': testId } : {})}>
+  return <div ref={screenRef} className={cx('content-row', s.screen, className)} {...(testId ? { 'data-testid': testId } : {})}>
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
     <ScreenSplit fill top={top} side={<div className={s.side}>{side}</div>} bottom={bottom} bottomClassName={turnBumpClass(turnCue)} />
     <TurnCutin cue={turnCue} />
