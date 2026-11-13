@@ -29,8 +29,10 @@ Fake?»; se llama **El Intruso** para no confundirlo con *One of Us Is Fake* en 
 Un tablero es válido solo si:
 
 1. el intruso no pertenece a la categoría de los otros tres;
-2. ninguna otra categoría del catálogo contiene al intruso y a dos de los otros tres (sin respuestas alternativas
-   defendibles según el catálogo);
+2. ninguna otra categoría **distintiva** del catálogo (la que reúne como mucho un tercio de los Pokémon en juego)
+   contiene al intruso y a dos de los otros tres; la categoría secreta también es distintiva. Un rasgo que comparte
+   casi todo el pool («no legendario») no es una respuesta alternativa defendible, y contarlo convertía el juego en
+   «encuentra al legendario»;
 3. si puede, el intruso comparte tipo o generación con alguno de los tres, para que no sea obvio.
 
 Las categorías de aspecto son listas a mano e incompletas: en ellas el intruso se toma de un tipo claramente distinto.

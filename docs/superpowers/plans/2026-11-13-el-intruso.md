@@ -42,8 +42,10 @@ no; todos votan a la vez quién es el intruso y al revelar se ve la categoría.
   nadie (solo `votedPlayerIds`). El voto propio sale en el estado del jugador.
 - **Tablero válido** (`OddOneOutBoards`), con la categoría `C` y los tres miembros `m1..m3`:
   1. el intruso `x` no está en `C`;
-  2. no existe otra categoría `D` del catálogo resuelto (`resolvedCategoryDefinitions(pool)`) con `x ∈ D` y al menos
-     dos de `m1..m3` en `D`;
+  2. no existe otra categoría **distintiva** `D` del catálogo resuelto (`resolvedCategoryDefinitions(pool)`) con
+     `x ∈ D` y al menos dos de `m1..m3` en `D`. Distintiva = sus miembros en el pool son como mucho un tercio del pool
+     (`isDistinctive`); `C` también debe ser distintiva. (Decisión tomada al ejecutar: con todas las categorías, las
+     amplias como «ordinary» dejaban al legendario como intruso en más de la mitad de los tableros.)
   3. si `C` es de datos (`isDataCategory`), se prefieren intrusos que comparten tipo o generación con algún miembro;
      si es curada (lista a mano), se exige que `x` no comparta ningún tipo con los tres y se prefiere la misma
      generación que alguno;
