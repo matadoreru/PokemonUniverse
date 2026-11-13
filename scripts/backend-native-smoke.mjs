@@ -263,8 +263,12 @@ async function main() {
     await pause(1200);
   }
   third.close();
-  report(started === gameList.length, `minijuegos arrancados por /ws: ${started}/${gameList.length}`, short(notStarted.join(' | '), 900));
-  if (notStarted.length) console.log(`AVISO juegos sin arrancar: ${notStarted.join(' | ')}`);
+  // Sobre una BD recién creada TCGdex aún no ha terminado de sincronizar (tarda hasta 30 min): que Higher or Lower:
+  // Cartas no arranque por falta de cartas es un aviso, no un fallo del binario.
+  const withoutData = notStarted.filter((line) => /No hay al menos dos cartas TCG/.test(line));
+  const failed = notStarted.filter((line) => !withoutData.includes(line));
+  report(failed.length === 0, `minijuegos arrancados por /ws: ${started}/${gameList.length}`, short(failed.join(' | '), 900));
+  if (withoutData.length) console.log(`AVISO sin datos para arrancar: ${withoutData.join(' | ')}`);
 
   const daily = await host.request('daily:start');
   console.log(`INFO daily:start → ${daily.ok ? 'ok' : daily.error}`);
