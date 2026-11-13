@@ -42,15 +42,12 @@
   gap: var(--sp-4);
   align-items: start;
 }
-@container rotation (min-width: 60rem) {
-  .split {
-    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
-  }
-  .items {
-    max-height: 36rem;
-  }
+.listCell {
+  min-width: 0;
 }
 .list {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   padding: var(--sp-3);
   border: var(--ol-2-5) solid var(--navy);
@@ -69,6 +66,33 @@
   padding-right: var(--sp-1);
   scrollbar-width: thin;
   scrollbar-color: var(--navy-3) transparent;
+}
+
+/*
+ * Uno junto a otro: la lista no aporta alto a la fila (contain), así que esta la marca el editor; la celda se estira
+ * hasta él y el marco de la lista llega como mucho a ese alto (corto, si hay pocos juegos) y se desplaza por dentro.
+ * Con un editor bajo, la celda guarda un mínimo para que la lista no se quede en dos filas.
+ */
+@container rotation (min-width: 60rem) {
+  .split {
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+    align-items: stretch;
+  }
+  .listCell {
+    contain: size;
+    min-height: 24rem;
+  }
+  .list {
+    max-height: 100%;
+  }
+  .items {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .editor {
+    align-self: start;
+  }
 }
 
 /* Fila de juego: franja crema; elegida con contorno azul noche y, la que se edita, en amarillo. */

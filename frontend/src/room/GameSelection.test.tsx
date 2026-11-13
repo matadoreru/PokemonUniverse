@@ -2,7 +2,7 @@ import type { MiniGameManifest, RoomView } from '@pokemon-universe/shared/public
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, sessionModesOf, toggleSelectedGame } from './GameSelectionConfig';
+import { GameOrderChoice, gameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, SelectedGamesConfig, sessionModesOf, toggleSelectedGame, missingPlayableGameIds, withAllPlayableGames } from './GameSelectionConfig';
 import { NextGameVote } from './NextGameVote';
 import { expectSingleLiveRegion } from './test-support/live-regions';
 import { member, roomView } from './test-support/room-view';
@@ -222,5 +222,35 @@ describe('game selection UI', () => {
     expect(result).toContain('Un fallo y estás fuera. Gana quien encadene más aciertos.');
     expect(result).toContain('2 votos');
     expect(result).toContain('>Juego uno<');
+  });
+});
+
+describe('«Elegir jugables»', () => {
+  const lobby = (gameIds: string[], gameConfigs: Record<string, unknown> = {}, available = games): RoomView => roomView({
+    phase: 'LOBBY', availableGames: available, selectedGameId: 'one', selectedGameConfig: {}, gameConfigs,
+    gameSelectionMode: { type: 'RANDOM', gameIds },
+  });
+
+  it('añade al final los que admiten a los conectados, en el orden del catálogo, y conserva el modo y el orden', () => {
+    // Con 2 jugadores: «one» (1+) y «two» (2–8) sí; «three» (3+) no.
+    expect(withAllPlayableGames(lobby(['two']), 2)).toEqual({ type: 'RANDOM', gameIds: ['two', 'one'] });
+    expect(missingPlayableGameIds(lobby(['two']), 2)).toEqual(['one']);
+    expect(withAllPlayableGames(lobby([]), 3)).toEqual({ type: 'RANDOM', gameIds: ['one', 'two', 'three'] });
+  });
+
+  it('no quita los elegidos que ahora no son jugables ni duplica los que ya están', () => {
+    expect(withAllPlayableGames(lobby(['three', 'one']), 2)).toEqual({ type: 'RANDOM', gameIds: ['three', 'one', 'two'] });
+    expect(missingPlayableGameIds(lobby(['one', 'two']), 2)).toEqual([]);
+  });
+
+  it('respeta el máximo de jugadores del juego', () => {
+    expect(missingPlayableGameIds(lobby([]), 9)).toEqual(['one', 'three']);
+  });
+
+  it('un juego de impostores cuya configuración no cuadra con los conectados no es jugable', () => {
+    const impostor: MiniGameManifest = { id: 'pokemon-impostor', name: 'Impostor', icon: '🕵', description: '', howTo: [], minPlayers: 3, profileStats: { metrics: [] } };
+    const available = [...games, impostor];
+    expect(missingPlayableGameIds(lobby([], { 'pokemon-impostor': { impostorCount: 1 } }, available), 3)).toContain('pokemon-impostor');
+    expect(missingPlayableGameIds(lobby([], { 'pokemon-impostor': { impostorCount: 2 } }, available), 3)).not.toContain('pokemon-impostor');
   });
 });

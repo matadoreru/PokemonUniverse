@@ -82,6 +82,18 @@
   gap: var(--sp-2);
   width: 100%;
 }
+/* «Elegir jugables» y «Quitar todos»: juntos; si no caben junto al buscador, este baja a su fila. */
+.bulk {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+/* En el móvil caben los dos en una fila con menos aire a los lados. */
+@media (max-width: 639px) {
+  .bulk > * {
+    padding-inline: var(--sp-3);
+  }
+}
 /* En el móvil, si no cabe junto a «Solo lectura», el buscador baja a su propia fila a todo el ancho. */
 .search {
   flex: 1 1 12rem;
@@ -90,9 +102,7 @@
 @media (min-width: 640px) {
   .tools {
     width: auto;
-  }
-  .tools {
-    flex-wrap: nowrap;
+    justify-content: flex-end;
   }
   .search {
     flex: none;

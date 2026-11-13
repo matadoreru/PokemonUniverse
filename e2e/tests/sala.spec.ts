@@ -187,6 +187,58 @@ test('el host quita el único minijuego: no se puede empezar hasta elegir otro',
   expect(guest.errors).toEqual([]);
 });
 
+test('«Elegir jugables» añade los que admiten a los conectados y «Quitar todos» vacía la selección', async ({ crearJugador }) => {
+  const host = await crearJugador('Host');
+  const code = await createRoom(host.page);
+  const guest = await crearJugador('Inv');
+  await joinRoom(guest.page, code);
+  await esperarInvitado(host.page, guest.name);
+  const lista = host.page.getByRole('list', { name: 'Minijuegos' });
+  const elegir = host.page.getByRole('button', { name: 'Elegir jugables' });
+  const quitar = host.page.getByRole('button', { name: 'Quitar todos' });
+  // El invitado no los tiene: solo el host y los co-hosts eligen.
+  await expect(guest.page.getByRole('button', { name: 'Elegir jugables' })).toHaveCount(0);
+
+  // Con 2 jugadores: entran todos los que admiten a 2 (los de 3+ se quedan fuera); el elegido conserva su puesto 1.
+  await elegir.click();
+  await expect(elegir).toBeDisabled();
+  const elegidos = await lista.getByRole('button', { pressed: true }).count();
+  const total = await lista.getByRole('listitem').count();
+  expect(elegidos).toBeGreaterThan(1);
+  expect(elegidos, 'los de 3 o más jugadores no entran').toBeLessThan(total);
+  await expect(cartaDeJuego(host.page, 'Pokédex Distance')).toContainText('1');
+  await capturarATresTamaños(host.page, 'lobby-elegir-jugables', { restaurar: false });
+
+  // Configuración: la lista de los elegidos llega hasta el alto del editor (no se queda en unas pocas filas).
+  await host.page.getByRole('tab', { name: 'Configuración' }).click();
+  const filas = host.page.getByRole('region', { name: 'Minijuegos elegidos' }).getByRole('listitem');
+  await expect(filas).toHaveCount(elegidos);
+  const editor = host.page.getByRole('region', { name: 'Ajustes del minijuego' });
+  const listaAlLado = async ({ w }: { w: number }) => {
+    const lado = await host.page.getByRole('region', { name: 'Minijuegos elegidos' }).evaluate((section) => {
+      const marco = section.firstElementChild!.getBoundingClientRect();
+      return { top: marco.top, bottom: marco.bottom, left: marco.left };
+    });
+    const ajustes = await editor.boundingBox();
+    // Solo uno junto a otro: el marco de la lista acaba donde el editor (±2 px), con scroll dentro.
+    if (ajustes && ajustes.x > lado.left + 100) {
+      expect(Math.abs(lado.bottom - (ajustes.y + ajustes.height)), `a ${w}: lista ${lado.top}–${lado.bottom}, editor ${ajustes.y}–${ajustes.y + ajustes.height}`).toBeLessThanOrEqual(2);
+    }
+  };
+  await capturarATresTamaños(host.page, 'lobby-config-jugables', { antes: listaAlLado, restaurar: false });
+
+  // «Quitar todos» deja la selección vacía y se desactiva.
+  await host.page.getByRole('tab', { name: 'Minijuegos' }).click();
+  await quitar.click();
+  await expect(lista.getByRole('button', { pressed: true })).toHaveCount(0);
+  await expect(quitar).toBeDisabled();
+  await expect(elegir).toBeEnabled();
+  await expect(host.page.locator('#start-help')).toHaveText('Elige al menos un minijuego para empezar.');
+
+  expect(host.errors).toEqual([]);
+  expect(guest.errors).toEqual([]);
+});
+
 test('configuración de varios minijuegos: «Ritmo» aplica sus valores y un ajuste a mano lo deja en Personalizado', async ({ crearJugador }) => {
   const host = await crearJugador('Host');
   const code = await createRoom(host.page);

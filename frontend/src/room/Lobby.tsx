@@ -1,5 +1,5 @@
 import { gameModeCount, gameModeName, hasRoomPermission, type ChatMessage, type GameSelectionMode, type RoomView, type SessionMode } from '@pokemon-universe/shared/public';
-import { Check, CheckCircle2, UserPlus, Flag, Flame, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff } from 'lucide-react';
+import { Check, CheckCheck, CheckCircle2, UserPlus, Flag, Flame, Gamepad2, Hash, Infinity as InfinityIcon, LockKeyhole, MessageCircle, Play, Search, Settings2, Shuffle, Trophy, Users, WifiOff, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOptionalFriends } from '../friends/FriendsContext';
 import { canInviteFriend } from '../friends/FriendsDrawer';
@@ -10,7 +10,7 @@ import { GameArt } from '../games/GameArt';
 import { ChatAnnouncer } from './chat/chat-announcer';
 import { LobbyChat } from './chat/LobbyChat';
 import { GameRulesButton } from './GameRulesButton';
-import { allowedModesOf, compatibleSelectedGameIds, GameOrderChoice, GameOrderHint, queueSlotLabel, queueSlots, queueSlotSpoken, rotationGameConfig, SelectedGamesConfig, toggleSelectedGame } from './GameSelectionConfig';
+import { allowedModesOf, compatibleSelectedGameIds, GameOrderChoice, GameOrderHint, missingPlayableGameIds, queueSlotLabel, queueSlots, queueSlotSpoken, rotationGameConfig, SelectedGamesConfig, toggleSelectedGame, withAllPlayableGames, withGameIds } from './GameSelectionConfig';
 import { connectedCount, emptyRoomState, filterGames, lobbyActionStatus, lobbyStartReason, playerRangeLabel, withDoubleLastGame, withGameCountTarget } from './lobby-state';
 import { useRoomLinkShare } from './room-link';
 import { RoomPlayersPanel } from './RoomPlayersPanel';
@@ -137,6 +137,8 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
   // Cada modo marcado es una opción más al azar o por votación y un turno más de la cola por orden.
   const pairCount = compatibleGameIds.reduce((count, gameId) => count + Math.max(1, allowedModesOf(room, gameId).length), 0);
   const slots = queueSlots(room);
+  // «Elegir jugables» añade los que admiten a los conectados; sin ninguno que añadir, se desactiva.
+  const missingPlayableCount = missingPlayableGameIds(room, connectedPlayers).length;
   const configReason = (selectedGameIds.length === 1 ? selectedGameIds : compatibleGameIds).map((gameId) => {
     const manifest = room.availableGames.find((game) => game.id === gameId);
     if (!manifest) return null;
@@ -200,6 +202,11 @@ export function Lobby({ room, selfId, onReady, onStart, onGameConfig, onSession,
         </div>
         <div className={s.tools}>
           {!canEditGameSelection && readOnlyChip}
+          {/* Sobre todo el catálogo, no solo lo que deja ver el buscador. */}
+          {canEditGameSelection && <div className={s.bulk}>
+            <Pill variant="cream" size="small" icon={CheckCheck} disabled={missingPlayableCount === 0} title={`Añade los minijuegos que admiten a ${connectedPlayers === 1 ? '1 jugador' : `${connectedPlayers} jugadores`}`} onClick={() => gameSelection(withAllPlayableGames(room, connectedPlayers))}>Elegir jugables</Pill>
+            <Pill variant="ghost" size="small" icon={X} disabled={selectedGameIds.length === 0} onClick={() => gameSelection(withGameIds(room.gameSelectionMode, []))}>Quitar todos</Pill>
+          </div>}
           <Field className={cx(s.search)} label="Buscar minijuego" hideLabel icon={Search} type="search" value={gameQuery} onChange={(event) => setGameQuery(event.target.value)} placeholder={`Buscar entre ${room.availableGames.length} juegos`} />
         </div>
       </div>

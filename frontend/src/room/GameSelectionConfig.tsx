@@ -221,7 +221,8 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
       <Chip tone={readyCount < games.length ? 'bad' : 'ok'}>{readyCount}/{games.length} listos</Chip>
     </div>
     <div className={g.split}>
-      <section className={g.list} aria-label="Minijuegos elegidos">
+      <section className={g.listCell} aria-label="Minijuegos elegidos">
+        <div className={g.list}>
         <ol className={g.items}>
           {games.map((game) => {
             const { skipReason, reason, needsReview } = status(game);
@@ -245,6 +246,7 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
             </li>;
           })}
         </ol>
+        </div>
       </section>
       <section className={g.editor} aria-live="polite" aria-label="Ajustes del minijuego">{editor}</section>
     </div>
@@ -252,12 +254,31 @@ export function SelectedGamesConfig({ room, selfId, playerCount, disabled, onCon
 }
 
 /**
- * Juegos de la selección que admiten a los conectados (los que puede sacar el modo): un requisito de jugadores (rango
- * del manifest o paridad de impostores) excluye el juego, como en el servidor.
+ * El juego admite a los conectados: un requisito de jugadores (rango del manifest o paridad de impostores, con su
+ * configuración de ahora) lo excluye, como en el servidor.
  */
+export function gameAdmitsPlayers(room: RoomView, game: MiniGameManifest, playerCount: number): boolean {
+  return supportsPlayerCount(game, playerCount) && playerCountReadinessReason(game.id, rotationGameConfig(room, game.id), playerCount) === null;
+}
+
+/** Juegos de la selección que admiten a los conectados (los que puede sacar el modo). */
 export function compatibleSelectedGameIds(room: RoomView, playerCount: number): string[] {
   return room.gameSelectionMode.gameIds.filter((gameId) => {
     const game = room.availableGames.find((candidate) => candidate.id === gameId);
-    return Boolean(game && supportsPlayerCount(game, playerCount) && playerCountReadinessReason(gameId, rotationGameConfig(room, gameId), playerCount) === null);
+    return Boolean(game && gameAdmitsPlayers(room, game, playerCount));
   });
+}
+
+/** Juegos del catálogo que admiten a los conectados y aún no están en la selección, en el orden del catálogo. */
+export function missingPlayableGameIds(room: RoomView, playerCount: number): string[] {
+  const selected = new Set(room.gameSelectionMode.gameIds);
+  return room.availableGames.filter((game) => !selected.has(game.id) && gameAdmitsPlayers(room, game, playerCount)).map((game) => game.id);
+}
+
+/**
+ * «Elegir jugables»: la selección de ahora, en su orden, y detrás los jugables que faltan. No quita ninguno: el que
+ * ahora no admite a los conectados se queda (se omitirá) por si entra o sale gente.
+ */
+export function withAllPlayableGames(room: RoomView, playerCount: number): GameSelectionMode {
+  return withGameIds(room.gameSelectionMode, [...room.gameSelectionMode.gameIds, ...missingPlayableGameIds(room, playerCount)]);
 }
