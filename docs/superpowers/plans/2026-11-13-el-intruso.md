@@ -86,8 +86,8 @@ no; todos votan a la vez quién es el intruso y al revelar se ve la categoría.
 
 **Files:**
 - Create: `packages/shared/src/games/odd-one-out/config.ts`, `types.ts`, `rules.ts`
-- Modify: `packages/shared/src/public.ts` (exporta los tres), `packages/shared/src/games/projection-keys.test.ts`
-  (entrada `'odd-one-out'`; fallará hasta la Task 4, que graba las fixtures: se añade en la Task 4)
+- Modify: `packages/shared/src/public.ts` (exporta los tres). La entrada de `projection-keys.test.ts` va en la
+  Task 4, cuando existen las fixtures.
 - Test: `packages/shared/src/games/odd-one-out/rules.test.ts`
 
 **Interfaces:**
