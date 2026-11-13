@@ -20,15 +20,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 
 class OddOneOutBoardsTest {
 
   private static final InMemoryPokemonCatalog GOLDEN = GoldenCatalogs.load("gen1-2");
   private static final List<Pokemon> POOL = OddOneOutBoards.pool(List.of(1, 2), GOLDEN);
+  private static final Function<String, String> LINES = PokemonConnectionsCatalog.evolutionLines(GOLDEN);
 
   private static Board board(long seed) {
-    return OddOneOutBoards.generate(POOL, Set.of(), Set.of(), new Random(seed)::nextDouble);
+    return OddOneOutBoards.generate(POOL, Set.of(), Set.of(), LINES, new Random(seed)::nextDouble);
   }
 
   private static Map<String, Pokemon> byId(List<Pokemon> pool) {
@@ -120,9 +122,20 @@ class OddOneOutBoardsTest {
     var usedCategories = new HashSet<String>();
     var usedPokemon = new HashSet<String>();
     for (int round = 0; round < 30; round++) {
-      var board = OddOneOutBoards.generate(POOL, usedCategories, usedPokemon, random::nextDouble);
+      var board = OddOneOutBoards.generate(POOL, usedCategories, usedPokemon, LINES, random::nextDouble);
       assertTrue(usedCategories.add(board.category().id()), "categoría repetida: " + board.category().id());
       usedPokemon.addAll(board.pokemonIds());
+    }
+  }
+
+  @Test
+  void noTwoPokemonOfTheSameLine() {
+    // El catálogo dorado trae aristas evolutivas: si no, cada Pokémon sería su propia línea y el test no probaría nada.
+    assertEquals(LINES.apply("bulbasaur"), LINES.apply("venusaur"));
+    for (long seed = 0; seed < 200; seed++) {
+      var board = board(seed);
+      var lines = board.pokemonIds().stream().map(LINES).distinct().count();
+      assertEquals(4, lines, "semilla " + seed + ": " + board.pokemonIds());
     }
   }
 
@@ -136,21 +149,21 @@ class OddOneOutBoardsTest {
   void smallPoolsEitherWorkOrAreRejected() {
     for (var generation : List.of(1, 2)) {
       var pool = OddOneOutBoards.pool(List.of(generation), GOLDEN);
-      if (OddOneOutBoards.availabilityIssue(pool).isPresent()) continue;
+      if (OddOneOutBoards.availabilityIssue(pool, LINES).isPresent()) continue;
       var random = new Random(generation);
       var usedCategories = new HashSet<String>();
       var usedPokemon = new HashSet<String>();
       for (int round = 0; round < 30; round++) {
-        var board = OddOneOutBoards.generate(pool, usedCategories, usedPokemon, random::nextDouble);
+        var board = OddOneOutBoards.generate(pool, usedCategories, usedPokemon, LINES, random::nextDouble);
         usedCategories.add(board.category().id());
         usedPokemon.addAll(board.pokemonIds());
       }
     }
     var tiny = POOL.subList(0, 3);
     var literal = "No hay categorías suficientes en esas generaciones.";
-    assertEquals(Optional.of(literal), OddOneOutBoards.availabilityIssue(tiny));
+    assertEquals(Optional.of(literal), OddOneOutBoards.availabilityIssue(tiny, LINES));
     var error = assertThrows(EngineException.class,
-        () -> OddOneOutBoards.generate(tiny, Set.of(), Set.of(), new Random(1)::nextDouble));
+        () -> OddOneOutBoards.generate(tiny, Set.of(), Set.of(), LINES, new Random(1)::nextDouble));
     assertEquals(literal, error.getMessage());
   }
 }

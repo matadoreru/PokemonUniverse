@@ -1176,7 +1176,7 @@ public final class PokemonConnectionsCatalog {
    * La línea evolutiva de cada Pokémon: el id de la raíz de su familia (siguiendo las preevoluciones del catálogo).
    * Un catálogo sin aristas evolutivas deja a cada Pokémon como su propia línea.
    */
-  static Function<String, String> evolutionLines(PokemonCatalog catalog) {
+  public static Function<String, String> evolutionLines(PokemonCatalog catalog) {
     if (!(catalog instanceof EvolutionPokemonCatalog links)) return Function.identity();
     var roots = new HashMap<String, String>();
     return id -> roots.computeIfAbsent(id, start -> {

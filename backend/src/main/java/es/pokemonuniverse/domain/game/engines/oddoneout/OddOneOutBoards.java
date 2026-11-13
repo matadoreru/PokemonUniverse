@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 
 /**
  * Tableros de El Intruso: tres Pokémon de una categoría secreta del catálogo de Pokémon Connections y un intruso que no
@@ -28,7 +29,9 @@ import java.util.function.DoubleSupplier;
  *   <li>ninguna otra categoría distintiva ({@link #isDistinctive}) contiene al intruso y a dos de los tres;</li>
  *   <li>en una categoría de datos se prefiere un intruso que comparta tipo o generación con alguno de los tres; en una
  *       curada (lista a mano, incompleta) se exige que no comparta tipo con ninguno y se prefiere su generación;</li>
- *   <li>no se repite categoría mientras quede otra y se prefieren Pokémon no usados.</li>
+ *   <li>no se repite categoría mientras quede otra y se prefieren Pokémon no usados;</li>
+ *   <li>los cuatro Pokémon son de cuatro líneas evolutivas distintas ({@code lineOf}, la raíz de cada familia): dos
+ *       de la misma línea darían una pista que no es la categoría.</li>
  * </ol>
  * La categoría secreta también tiene que ser distintiva. Todo el azar sale de {@code random}, así que la misma
  * semilla da el mismo tablero.
@@ -80,8 +83,8 @@ public final class OddOneOutBoards {
    * Por qué no se puede jugar con ese pool, o vacío. Usa la misma búsqueda determinista que el último recurso de
    * {@link #generate}: si da vacío, {@code generate} nunca lanza con ese pool.
    */
-  public static Optional<String> availabilityIssue(List<Pokemon> pool) {
-    return firstBoard(Index.of(pool)) == null ? Optional.of(NO_CATEGORIES) : Optional.empty();
+  public static Optional<String> availabilityIssue(List<Pokemon> pool, Function<String, String> lineOf) {
+    return firstBoard(Index.of(pool, lineOf)) == null ? Optional.of(NO_CATEGORIES) : Optional.empty();
   }
 
   /**
@@ -90,8 +93,8 @@ public final class OddOneOutBoards {
    * lanza el literal de disponibilidad.
    */
   public static Board generate(List<Pokemon> pool, Set<String> usedCategoryIds, Set<String> usedPokemonIds,
-      DoubleSupplier random) {
-    var index = Index.of(pool);
+      Function<String, String> lineOf, DoubleSupplier random) {
+    var index = Index.of(pool, lineOf);
     var order = new ArrayList<Candidate>(Randoms.shuffled(index.candidates().stream()
         .filter(candidate -> !usedCategoryIds.contains(candidate.definition().id())).toList(), random));
     order.addAll(Randoms.shuffled(index.candidates().stream()
@@ -99,9 +102,10 @@ public final class OddOneOutBoards {
     for (var candidate : order) {
       var unusedMembers = candidate.members().stream()
           .filter(pokemon -> !usedPokemonIds.contains(pokemon.id())).toList();
-      var members = unusedMembers.size() >= 3 ? unusedMembers : candidate.members();
+      var members = lineCount(unusedMembers, lineOf) >= 3 ? unusedMembers : candidate.members();
       for (int attempt = 0; attempt < BOARD_ATTEMPTS; attempt++) {
-        var trio = Randoms.takeRandom(members, 3, random);
+        var trio = pickTrio(members, lineOf, random);
+        if (trio.size() < 3) break;
         var intruders = validIntruders(index, candidate, trio);
         if (intruders.isEmpty()) continue;
         return board(candidate, trio, pickIntruder(candidate, trio, intruders, usedPokemonIds, random), random);
@@ -125,9 +129,10 @@ public final class OddOneOutBoards {
    * Las categorías del pool, calculadas una vez: las candidatas, en el orden del catálogo resuelto, y para cada
    * Pokémon los conjuntos de miembros de las categorías distintivas que lo contienen (para la regla 2).
    */
-  private record Index(List<Pokemon> pool, List<Candidate> candidates, Map<String, List<Set<String>>> distinctiveOf) {
+  private record Index(List<Pokemon> pool, List<Candidate> candidates, Map<String, List<Set<String>>> distinctiveOf,
+      Function<String, String> lineOf) {
 
-    static Index of(List<Pokemon> pool) {
+    static Index of(List<Pokemon> pool, Function<String, String> lineOf) {
       var candidates = new ArrayList<Candidate>();
       var distinctiveOf = new HashMap<String, List<Set<String>>>();
       for (var definition : PokemonConnectionsCatalog.resolvedCategoryDefinitions(pool)) {
@@ -144,15 +149,35 @@ public final class OddOneOutBoards {
               !PokemonConnectionsCatalog.isDataCategory(definition.id())));
         }
       }
-      return new Index(pool, List.copyOf(candidates), Map.copyOf(distinctiveOf));
+      return new Index(pool, List.copyOf(candidates), Map.copyOf(distinctiveOf), lineOf);
     }
   }
 
-  /** Reglas 1–3 (la parte obligatoria): los intrusos válidos para ese trío, en el orden del pool. */
+  /**
+   * Tres miembros al azar de tres líneas distintas: cada extracción ({@code randomIndex}) descarta del resto los de la
+   * misma línea. Devuelve menos de tres si la categoría no tiene tres líneas.
+   */
+  private static List<Pokemon> pickTrio(List<Pokemon> members, Function<String, String> lineOf,
+      DoubleSupplier random) {
+    var remaining = new ArrayList<Pokemon>(members);
+    var trio = new ArrayList<Pokemon>();
+    while (trio.size() < 3 && !remaining.isEmpty()) {
+      var chosen = remaining.get(Randoms.randomIndex(remaining.size(), random));
+      var line = lineOf.apply(chosen.id());
+      trio.add(chosen);
+      remaining.removeIf(pokemon -> lineOf.apply(pokemon.id()).equals(line));
+    }
+    return trio;
+  }
+
+  /** Reglas 1–3 y 5 (la parte obligatoria): los intrusos válidos para ese trío, en el orden del pool. */
   private static List<Pokemon> validIntruders(Index index, Candidate candidate, List<Pokemon> trio) {
+    var lines = new HashSet<String>();
+    trio.forEach(member -> lines.add(index.lineOf().apply(member.id())));
     var result = new ArrayList<Pokemon>();
     for (var pokemon : index.pool()) {
       if (candidate.memberIds().contains(pokemon.id())) continue;
+      if (lines.contains(index.lineOf().apply(pokemon.id()))) continue;
       if (candidate.curated() && trio.stream().anyMatch(member -> sharesType(member, pokemon))) continue;
       if (hasAlternativeAnswer(index, pokemon, trio)) continue;
       result.add(pokemon);
@@ -197,12 +222,21 @@ public final class OddOneOutBoards {
         for (int second = first + 1; second < members.size(); second++) {
           for (int third = second + 1; third < members.size(); third++) {
             var trio = List.of(members.get(first), members.get(second), members.get(third));
+            if (!distinctLines(trio, index.lineOf())) continue;
             if (!validIntruders(index, candidate, trio).isEmpty()) return new Found(candidate, trio);
           }
         }
       }
     }
     return null;
+  }
+
+  private static long lineCount(List<Pokemon> pokemon, Function<String, String> lineOf) {
+    return pokemon.stream().map(entry -> lineOf.apply(entry.id())).distinct().count();
+  }
+
+  private static boolean distinctLines(List<Pokemon> pokemon, Function<String, String> lineOf) {
+    return lineCount(pokemon, lineOf) == pokemon.size();
   }
 
   /** Baraja los cuatro Pokémon para que el intruso caiga en cualquier letra y les asigna A–D. */
