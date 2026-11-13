@@ -119,6 +119,30 @@ class PokemonConnectionsCatalogTest {
     }
   }
 
+  /** Treinta tableros seguidos: ningún grupo junta dos Pokémon de la misma línea evolutiva (Frogadier y Greninja). */
+  @Test
+  void noGroupRepeatsAnEvolutionLine() {
+    var catalog = GoldenCatalogs.load("gen1-2");
+    var lineOf = PokemonConnectionsCatalog.evolutionLines(catalog);
+    assertEquals(lineOf.apply("bulbasaur"), lineOf.apply("venusaur"));
+    for (var generations : List.of(List.of(1), List.of(1, 2))) {
+      var context = GameContext.builder(catalog, new Mulberry32(11))
+          .players(List.of(new GamePlayer("p1", "Ana"))).now(1000).build();
+      var used = new ArrayList<String>();
+      for (int round = 0; round < 30; round++) {
+        var puzzle = PokemonConnectionsCatalog.generateConnectionsPuzzle(context,
+            new PuzzleOptions(4, 16, generations, List.copyOf(used), List.of()));
+        if (puzzle.source().equals("DYNAMIC")) {
+          for (var group : puzzle.groups()) {
+            var lines = group.pokemon().stream().map(pokemon -> lineOf.apply(pokemon.id())).distinct().count();
+            assertEquals(group.pokemon().size(), lines, puzzle.key() + " / " + group.categoryId());
+          }
+        }
+        used.add(puzzle.key());
+      }
+    }
+  }
+
   /** Treinta tableros seguidos con semilla fija: como mucho una categoría de datos en cada uno. */
   @Test
   void atMostOneDataCategoryPerBoard() {

@@ -130,7 +130,7 @@
       "action": {
         "type": "SUBMIT_GROUP",
         "pokemonIds": [
-          "grimer",
+          "mew",
           "venusaur",
           "pikachu",
           "charizard"
@@ -747,9 +747,9 @@
             "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
           },
           {
-            "id": "weezing",
-            "name": "Weezing",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+            "id": "ditto",
+            "name": "Ditto",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
           },
           {
             "id": "kingler",
@@ -762,9 +762,9 @@
             "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
           },
           {
-            "id": "grimer",
-            "name": "Grimer",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+            "id": "mew",
+            "name": "Mew",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
           },
           {
             "id": "poliwhirl",
@@ -782,14 +782,14 @@
             "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
           },
           {
-            "id": "koffing",
-            "name": "Koffing",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+            "id": "moltres",
+            "name": "Moltres",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
           },
           {
-            "id": "muk",
-            "name": "Muk",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+            "id": "aerodactyl",
+            "name": "Aerodactyl",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
           },
           {
             "id": "seaking",
@@ -921,9 +921,9 @@
             "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
           },
           {
-            "id": "weezing",
-            "name": "Weezing",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+            "id": "ditto",
+            "name": "Ditto",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
           },
           {
             "id": "kingler",
@@ -936,9 +936,9 @@
             "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
           },
           {
-            "id": "grimer",
-            "name": "Grimer",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+            "id": "mew",
+            "name": "Mew",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
           },
           {
             "id": "poliwhirl",
@@ -956,14 +956,14 @@
             "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
           },
           {
-            "id": "koffing",
-            "name": "Koffing",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+            "id": "moltres",
+            "name": "Moltres",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
           },
           {
-            "id": "muk",
-            "name": "Muk",
-            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+            "id": "aerodactyl",
+            "name": "Aerodactyl",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
           },
           {
             "id": "seaking",
@@ -1099,9 +1099,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -1114,9 +1114,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -1134,14 +1134,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -1277,9 +1277,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -1292,9 +1292,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -1312,14 +1312,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -1455,9 +1455,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -1470,9 +1470,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -1490,14 +1490,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -1633,9 +1633,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -1648,9 +1648,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -1668,14 +1668,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -1811,9 +1811,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -1826,9 +1826,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -1846,14 +1846,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -1989,9 +1989,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -2004,9 +2004,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -2024,14 +2024,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -2167,9 +2167,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -2182,9 +2182,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -2202,14 +2202,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -2344,9 +2344,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -2359,9 +2359,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -2379,14 +2379,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -2462,7 +2462,7 @@
               "lastAttempt": {
                 "kind": "INCORRECT",
                 "attemptedPokemonIds": [
-                  "grimer",
+                  "mew",
                   "venusaur",
                   "pikachu",
                   "charizard"
@@ -2531,9 +2531,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -2546,9 +2546,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -2566,14 +2566,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -2719,9 +2719,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -2734,9 +2734,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -2754,14 +2754,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -2907,9 +2907,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -2922,9 +2922,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -2942,14 +2942,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -3095,9 +3095,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -3110,9 +3110,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -3130,14 +3130,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -3283,9 +3283,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -3298,9 +3298,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -3318,14 +3318,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -3471,9 +3471,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -3486,9 +3486,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -3506,14 +3506,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -3659,9 +3659,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -3674,9 +3674,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -3694,14 +3694,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -3847,9 +3847,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -3862,9 +3862,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -3882,14 +3882,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -4035,9 +4035,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -4050,9 +4050,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -4070,14 +4070,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -4223,9 +4223,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -4238,9 +4238,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -4258,14 +4258,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -4411,9 +4411,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -4426,9 +4426,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -4446,14 +4446,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -4599,9 +4599,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -4614,9 +4614,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -4634,14 +4634,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -4787,9 +4787,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -4802,9 +4802,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -4822,14 +4822,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -4975,9 +4975,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -4990,9 +4990,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -5010,14 +5010,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -5163,9 +5163,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -5178,9 +5178,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -5198,14 +5198,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -5351,9 +5351,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -5366,9 +5366,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -5386,14 +5386,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -5539,9 +5539,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -5554,9 +5554,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -5574,14 +5574,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -5727,9 +5727,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -5742,9 +5742,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -5762,14 +5762,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -5915,9 +5915,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -5930,9 +5930,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -5950,14 +5950,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -6103,9 +6103,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -6118,9 +6118,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -6138,14 +6138,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -6291,9 +6291,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -6306,9 +6306,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -6326,14 +6326,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -6477,9 +6477,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -6492,9 +6492,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -6512,14 +6512,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -6665,9 +6665,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -6680,9 +6680,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -6700,14 +6700,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -6853,9 +6853,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -6868,9 +6868,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -6888,14 +6888,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -7041,9 +7041,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -7056,9 +7056,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -7076,14 +7076,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -7229,9 +7229,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -7244,9 +7244,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -7264,14 +7264,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -7417,9 +7417,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -7432,9 +7432,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -7452,14 +7452,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -7605,9 +7605,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -7620,9 +7620,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -7640,14 +7640,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -7793,9 +7793,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -7808,9 +7808,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -7828,14 +7828,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -7981,9 +7981,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -7996,9 +7996,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -8016,14 +8016,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -8169,9 +8169,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -8184,9 +8184,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -8204,14 +8204,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -8357,9 +8357,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -8372,9 +8372,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -8392,14 +8392,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -8543,9 +8543,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
               },
               {
-                "id": "weezing",
-                "name": "Weezing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                "id": "ditto",
+                "name": "Ditto",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
               },
               {
                 "id": "kingler",
@@ -8558,9 +8558,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
               },
               {
-                "id": "grimer",
-                "name": "Grimer",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                "id": "mew",
+                "name": "Mew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
               },
               {
                 "id": "poliwhirl",
@@ -8578,14 +8578,14 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
               },
               {
-                "id": "koffing",
-                "name": "Koffing",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "muk",
-                "name": "Muk",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
                 "id": "seaking",
@@ -8734,29 +8734,29 @@
                 },
                 {
                   "id": "group-4",
-                  "categoryId": "pollution",
-                  "label": "Basura y contaminación",
-                  "explanation": "Nacieron de la basura, los residuos o el gas contaminante.",
+                  "categoryId": "single-stage",
+                  "label": "Sin evoluciones",
+                  "explanation": "No evolucionan ni proceden de otro Pokémon.",
                   "pokemon": [
                     {
-                      "id": "muk",
-                      "name": "Muk",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/89.png"
+                      "id": "aerodactyl",
+                      "name": "Aerodactyl",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
                     },
                     {
-                      "id": "koffing",
-                      "name": "Koffing",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/109.png"
+                      "id": "moltres",
+                      "name": "Moltres",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
                     },
                     {
-                      "id": "weezing",
-                      "name": "Weezing",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+                      "id": "ditto",
+                      "name": "Ditto",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
                     },
                     {
-                      "id": "grimer",
-                      "name": "Grimer",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/88.png"
+                      "id": "mew",
+                      "name": "Mew",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png"
                     }
                   ]
                 }
@@ -8878,29 +8878,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -8908,29 +8888,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -8938,24 +8918,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -9056,29 +9056,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -9086,29 +9066,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -9116,24 +9096,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -9234,29 +9234,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -9264,29 +9244,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -9294,24 +9274,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -9412,29 +9412,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -9442,29 +9422,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -9472,24 +9452,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -9590,29 +9590,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -9620,29 +9600,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -9650,24 +9630,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -9768,29 +9768,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -9798,29 +9778,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -9828,24 +9808,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -9946,29 +9946,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -9976,29 +9956,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -10006,24 +9986,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -10124,29 +10124,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -10154,29 +10134,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -10184,24 +10164,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -10302,29 +10302,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -10332,29 +10312,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -10362,24 +10342,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -10478,29 +10478,9 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "charizard",
-                "name": "Charizard",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-              },
-              {
-                "id": "exeggcute",
-                "name": "Exeggcute",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-              },
-              {
-                "id": "raticate",
-                "name": "Raticate",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-              },
-              {
-                "id": "butterfree",
-                "name": "Butterfree",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
+                "id": "abra",
+                "name": "Abra",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
               },
               {
                 "id": "magmar",
@@ -10508,29 +10488,29 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
               },
               {
-                "id": "magneton",
-                "name": "Magneton",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                "id": "mewtwo",
+                "name": "Mewtwo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
               },
               {
-                "id": "dodrio",
-                "name": "Dodrio",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
               },
               {
-                "id": "charmeleon",
-                "name": "Charmeleon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                "id": "moltres",
+                "name": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
               },
               {
-                "id": "vaporeon",
-                "name": "Vaporeon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
+                "id": "gyarados",
+                "name": "Gyarados",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
               },
               {
-                "id": "rhydon",
-                "name": "Rhydon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                "id": "ninetales",
+                "name": "Ninetales",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
               },
               {
                 "id": "doduo",
@@ -10538,24 +10518,44 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
               },
               {
-                "id": "gengar",
-                "name": "Gengar",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-              },
-              {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-              },
-              {
-                "id": "vileplume",
-                "name": "Vileplume",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
-              },
-              {
                 "id": "onix",
                 "name": "Onix",
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+              },
+              {
+                "id": "dragonair",
+                "name": "Dragonair",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
+              },
+              {
+                "id": "hypno",
+                "name": "Hypno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+              },
+              {
+                "id": "dugtrio",
+                "name": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "charmeleon",
+                "name": "Charmeleon",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+              },
+              {
+                "id": "rapidash",
+                "name": "Rapidash",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+              },
+              {
+                "id": "snorlax",
+                "name": "Snorlax",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+              },
+              {
+                "id": "jigglypuff",
+                "name": "Jigglypuff",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
               }
             ],
             "playerProgress": {
@@ -10590,65 +10590,9 @@
               "groups": [
                 {
                   "id": "group-1",
-                  "categoryId": "single-type",
-                  "label": "Tienen un único tipo",
-                  "explanation": "Solo poseen un tipo elemental en su forma mostrada.",
-                  "pokemon": [
-                    {
-                      "id": "charmeleon",
-                      "name": "Charmeleon",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
-                    },
-                    {
-                      "id": "vaporeon",
-                      "name": "Vaporeon",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/134.png"
-                    },
-                    {
-                      "id": "magmar",
-                      "name": "Magmar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
-                    },
-                    {
-                      "id": "raticate",
-                      "name": "Raticate",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-2",
-                  "categoryId": "gigantamax",
-                  "label": "Tienen forma Gigamax",
-                  "explanation": "Pueden gigamaxizarse en Pokémon Espada y Escudo.",
-                  "pokemon": [
-                    {
-                      "id": "gengar",
-                      "name": "Gengar",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-                    },
-                    {
-                      "id": "charizard",
-                      "name": "Charizard",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
-                    },
-                    {
-                      "id": "lapras",
-                      "name": "Lapras",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
-                    },
-                    {
-                      "id": "butterfree",
-                      "name": "Butterfree",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png"
-                    }
-                  ]
-                },
-                {
-                  "id": "group-3",
-                  "categoryId": "kanto-gym-aces",
-                  "label": "Ases de los líderes de Kanto",
-                  "explanation": "Son el Pokémon estrella de un líder de gimnasio de Kanto: Brock, Misty, Surge, Erika, Koga, Sabrina, Blaine y Giovanni.",
+                  "categoryId": "giants",
+                  "label": "Miden 3 metros o más",
+                  "explanation": "Su altura oficial alcanza al menos 3 metros.",
                   "pokemon": [
                     {
                       "id": "onix",
@@ -10656,47 +10600,103 @@
                       "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
                     },
                     {
-                      "id": "vileplume",
-                      "name": "Vileplume",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+                      "id": "dragonair",
+                      "name": "Dragonair",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/148.png"
                     },
                     {
-                      "id": "rhydon",
-                      "name": "Rhydon",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png"
+                      "id": "gyarados",
+                      "name": "Gyarados",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png"
                     },
                     {
-                      "id": "starmie",
-                      "name": "Starmie",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
+                      "id": "arbok",
+                      "name": "Arbok",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
+                    }
+                  ]
+                },
+                {
+                  "id": "group-2",
+                  "categoryId": "fire-tails",
+                  "label": "Les arde la cola",
+                  "explanation": "Su cola es o termina en una llama.",
+                  "pokemon": [
+                    {
+                      "id": "charmeleon",
+                      "name": "Charmeleon",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+                    },
+                    {
+                      "id": "magmar",
+                      "name": "Magmar",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+                    },
+                    {
+                      "id": "rapidash",
+                      "name": "Rapidash",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/78.png"
+                    },
+                    {
+                      "id": "moltres",
+                      "name": "Moltres",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+                    }
+                  ]
+                },
+                {
+                  "id": "group-3",
+                  "categoryId": "sleep-dreams",
+                  "label": "Dormilones y comesueños",
+                  "explanation": "Se pasan el día durmiendo, duermen a los demás o se alimentan de sueños.",
+                  "pokemon": [
+                    {
+                      "id": "jigglypuff",
+                      "name": "Jigglypuff",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png"
+                    },
+                    {
+                      "id": "snorlax",
+                      "name": "Snorlax",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png"
+                    },
+                    {
+                      "id": "hypno",
+                      "name": "Hypno",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/97.png"
+                    },
+                    {
+                      "id": "abra",
+                      "name": "Abra",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png"
                     }
                   ]
                 },
                 {
                   "id": "group-4",
-                  "categoryId": "multiple-heads",
-                  "label": "Tienen varias cabezas",
-                  "explanation": "Su diseño muestra dos o más cabezas claramente diferenciadas.",
+                  "categoryId": "name-hides-number",
+                  "label": "Su nombre esconde un número",
+                  "explanation": "Hay un número dentro del nombre: Mewtwo (two), Ninetales (nine), Porygon2 (2), Doduo (dúo), Dugtrio (trío) o Duosion (dúo).",
                   "pokemon": [
                     {
-                      "id": "magneton",
-                      "name": "Magneton",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+                      "id": "ninetales",
+                      "name": "Ninetales",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
                     },
                     {
-                      "id": "exeggcute",
-                      "name": "Exeggcute",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/102.png"
-                    },
-                    {
-                      "id": "dodrio",
-                      "name": "Dodrio",
-                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/85.png"
+                      "id": "mewtwo",
+                      "name": "Mewtwo",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png"
                     },
                     {
                       "id": "doduo",
                       "name": "Doduo",
                       "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/84.png"
+                    },
+                    {
+                      "id": "dugtrio",
+                      "name": "Dugtrio",
+                      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
                     }
                   ]
                 }
@@ -10809,14 +10809,14 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "vulpix",
-                "name": "Vulpix",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
               },
               {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
               },
               {
                 "id": "cubone",
@@ -10824,49 +10824,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png"
               },
               {
-                "id": "nidorino",
-                "name": "Nidorino",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/33.png"
-              },
-              {
-                "id": "marowak",
-                "name": "Marowak",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
-              },
-              {
-                "id": "nidoran-m",
-                "name": "Nidoran M",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
-              },
-              {
-                "id": "clefairy",
-                "name": "Clefairy",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
-              },
-              {
-                "id": "eevee",
-                "name": "Eevee",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
-              },
-              {
-                "id": "staryu",
-                "name": "Staryu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/120.png"
-              },
-              {
-                "id": "seel",
-                "name": "Seel",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
-              },
-              {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "graveler",
-                "name": "Graveler",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
                 "id": "dugtrio",
@@ -10874,19 +10834,59 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
               },
               {
-                "id": "clefable",
-                "name": "Clefable",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
-                "id": "ninetales",
-                "name": "Ninetales",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "flareon",
-                "name": "Flareon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
+                "id": "lickitung",
+                "name": "Lickitung",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/108.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              },
+              {
+                "id": "alakazam",
+                "name": "Alakazam",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+              },
+              {
+                "id": "seel",
+                "name": "Seel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+              },
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "sandshrew",
+                "name": "Sandshrew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/27.png"
+              },
+              {
+                "id": "nidoran-m",
+                "name": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
+              },
+              {
+                "id": "victreebel",
+                "name": "Victreebel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
               }
             ],
             "playerProgress": {
@@ -10987,14 +10987,14 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "vulpix",
-                "name": "Vulpix",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
               },
               {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
               },
               {
                 "id": "cubone",
@@ -11002,49 +11002,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png"
               },
               {
-                "id": "nidorino",
-                "name": "Nidorino",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/33.png"
-              },
-              {
-                "id": "marowak",
-                "name": "Marowak",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
-              },
-              {
-                "id": "nidoran-m",
-                "name": "Nidoran M",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
-              },
-              {
-                "id": "clefairy",
-                "name": "Clefairy",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
-              },
-              {
-                "id": "eevee",
-                "name": "Eevee",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
-              },
-              {
-                "id": "staryu",
-                "name": "Staryu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/120.png"
-              },
-              {
-                "id": "seel",
-                "name": "Seel",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
-              },
-              {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "graveler",
-                "name": "Graveler",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
                 "id": "dugtrio",
@@ -11052,19 +11012,59 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
               },
               {
-                "id": "clefable",
-                "name": "Clefable",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
-                "id": "ninetales",
-                "name": "Ninetales",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "flareon",
-                "name": "Flareon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
+                "id": "lickitung",
+                "name": "Lickitung",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/108.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              },
+              {
+                "id": "alakazam",
+                "name": "Alakazam",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+              },
+              {
+                "id": "seel",
+                "name": "Seel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+              },
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "sandshrew",
+                "name": "Sandshrew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/27.png"
+              },
+              {
+                "id": "nidoran-m",
+                "name": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
+              },
+              {
+                "id": "victreebel",
+                "name": "Victreebel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
               }
             ],
             "playerProgress": {
@@ -11163,14 +11163,14 @@
             "groupCount": 4,
             "board": [
               {
-                "id": "vulpix",
-                "name": "Vulpix",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png"
+                "id": "weezing",
+                "name": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
               },
               {
-                "id": "lapras",
-                "name": "Lapras",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+                "id": "slowbro",
+                "name": "Slowbro",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
               },
               {
                 "id": "cubone",
@@ -11178,49 +11178,9 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png"
               },
               {
-                "id": "nidorino",
-                "name": "Nidorino",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/33.png"
-              },
-              {
-                "id": "marowak",
-                "name": "Marowak",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/105.png"
-              },
-              {
-                "id": "nidoran-m",
-                "name": "Nidoran M",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
-              },
-              {
-                "id": "clefairy",
-                "name": "Clefairy",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
-              },
-              {
-                "id": "eevee",
-                "name": "Eevee",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
-              },
-              {
-                "id": "staryu",
-                "name": "Staryu",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/120.png"
-              },
-              {
-                "id": "seel",
-                "name": "Seel",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
-              },
-              {
-                "id": "starmie",
-                "name": "Starmie",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/121.png"
-              },
-              {
-                "id": "graveler",
-                "name": "Graveler",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+                "id": "charizard",
+                "name": "Charizard",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
               },
               {
                 "id": "dugtrio",
@@ -11228,19 +11188,59 @@
                 "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
               },
               {
-                "id": "clefable",
-                "name": "Clefable",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png"
+                "id": "aerodactyl",
+                "name": "Aerodactyl",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/142.png"
               },
               {
-                "id": "ninetales",
-                "name": "Ninetales",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png"
+                "id": "lapras",
+                "name": "Lapras",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
               },
               {
-                "id": "flareon",
-                "name": "Flareon",
-                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/136.png"
+                "id": "lickitung",
+                "name": "Lickitung",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/108.png"
+              },
+              {
+                "id": "seaking",
+                "name": "Seaking",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/119.png"
+              },
+              {
+                "id": "alakazam",
+                "name": "Alakazam",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+              },
+              {
+                "id": "seel",
+                "name": "Seel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/86.png"
+              },
+              {
+                "id": "graveler",
+                "name": "Graveler",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+              },
+              {
+                "id": "sandshrew",
+                "name": "Sandshrew",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/27.png"
+              },
+              {
+                "id": "nidoran-m",
+                "name": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "arbok",
+                "name": "Arbok",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png"
+              },
+              {
+                "id": "victreebel",
+                "name": "Victreebel",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
               }
             ],
             "playerProgress": {

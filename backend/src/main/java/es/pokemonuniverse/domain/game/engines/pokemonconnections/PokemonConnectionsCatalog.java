@@ -7,7 +7,9 @@ import es.pokemonuniverse.domain.game.engine.GameContext;
 import es.pokemonuniverse.domain.game.engine.infra.Randoms;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionAnswerGroup;
 import es.pokemonuniverse.domain.game.engines.pokemonconnections.PokemonConnectionsTypes.ConnectionPokemon;
+import es.pokemonuniverse.domain.pokemon.EvolutionPokemonCatalog;
 import es.pokemonuniverse.domain.pokemon.Pokemon;
+import es.pokemonuniverse.domain.pokemon.PokemonCatalog;
 import io.micronaut.core.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -1087,7 +1090,8 @@ public final class PokemonConnectionsCatalog {
    * un Pokémon del tablero, y no se eligen Pokémon de una categoría ya elegida.
    */
   private static @Nullable GeneratedConnectionsPuzzle dynamicPuzzle(List<Pokemon> pool, int groupSize, int groupCount,
-      DoubleSupplier random, Set<String> excludedCategoryIds, Set<String> usedPuzzleKeys) {
+      DoubleSupplier random, Set<String> excludedCategoryIds, Set<String> usedPuzzleKeys,
+      Function<String, String> lineOf) {
     var candidates = new ArrayList<Candidate>();
     for (var definition : resolvedCategoryDefinitions(pool)) {
       var members = Randoms.shuffled(membersFor(definition, pool), random);
@@ -1099,10 +1103,14 @@ public final class PokemonConnectionsCatalog {
         .filter(candidate -> excludedCategoryIds.contains(candidate.definition().id())).toList(), random));
     // Primero con el tope de una categoría de datos; sin él solo si el pool no tiene curadas suficientes (una
     // generación suelta con un tablero grande), para no quedarse sin tablero.
-    for (boolean capData : List.of(true, false)) {
-      for (boolean distinctFamilies : List.of(true, false)) {
-        var puzzle = searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, distinctFamilies, capData);
-        if (puzzle != null) return puzzle;
+    // Antes que todo lo demás, cada grupo sin dos Pokémon de la misma línea evolutiva (Frogadier y Greninja en «con
+    // aspecto de rana» lo regalan); solo si no sale ningún tablero así se permite repetir línea.
+    for (var lines : List.of(lineOf, Function.<String>identity())) {
+      for (boolean capData : List.of(true, false)) {
+        for (boolean distinctFamilies : List.of(true, false)) {
+          var puzzle = searchPuzzle(randomized, groupSize, groupCount, usedPuzzleKeys, distinctFamilies, capData, lines);
+          if (puzzle != null) return puzzle;
+        }
       }
     }
     return null;
@@ -1113,7 +1121,8 @@ public final class PokemonConnectionsCatalog {
    * {@code capData}, como mucho una categoría de datos ({@link #isDataCategory}) por tablero.
    */
   private static @Nullable GeneratedConnectionsPuzzle searchPuzzle(List<Candidate> randomized, int groupSize,
-      int groupCount, Set<String> usedPuzzleKeys, boolean distinctFamilies, boolean capData) {
+      int groupCount, Set<String> usedPuzzleKeys, boolean distinctFamilies, boolean capData,
+      Function<String, String> lineOf) {
     for (int attempt = 0; attempt < Math.max(1, randomized.size() * 4); attempt += 1) {
       var used = new HashSet<String>();
       var chosen = new ArrayList<Set<String>>();
@@ -1129,8 +1138,8 @@ public final class PokemonConnectionsCatalog {
         var available = rotate(candidate.members(), attempt + groups.size()).stream()
             .filter(pokemon -> chosen.stream().noneMatch(memberIds -> memberIds.contains(pokemon.id())))
             .toList();
-        if (available.size() < groupSize) continue;
-        var selected = available.subList(0, groupSize);
+        var selected = onePerLine(available, groupSize, lineOf);
+        if (selected.size() < groupSize) continue;
         selected.forEach(pokemon -> used.add(pokemon.id()));
         chosen.add(candidate.memberIds());
         families.add(family);
@@ -1150,6 +1159,33 @@ public final class PokemonConnectionsCatalog {
       }
     }
     return null;
+  }
+
+  /** Los primeros {@code size} de {@code available}, en su orden, sin repetir línea evolutiva ({@code lineOf}). */
+  private static List<Pokemon> onePerLine(List<Pokemon> available, int size, Function<String, String> lineOf) {
+    var lines = new HashSet<String>();
+    var selected = new ArrayList<Pokemon>();
+    for (var pokemon : available) {
+      if (selected.size() == size) break;
+      if (lines.add(lineOf.apply(pokemon.id()))) selected.add(pokemon);
+    }
+    return selected;
+  }
+
+  /**
+   * La línea evolutiva de cada Pokémon: el id de la raíz de su familia (siguiendo las preevoluciones del catálogo).
+   * Un catálogo sin aristas evolutivas deja a cada Pokémon como su propia línea.
+   */
+  static Function<String, String> evolutionLines(PokemonCatalog catalog) {
+    if (!(catalog instanceof EvolutionPokemonCatalog links)) return Function.identity();
+    var roots = new HashMap<String, String>();
+    return id -> roots.computeIfAbsent(id, start -> {
+      var root = start;
+      for (var parent = links.preEvolutionId(root); parent.isPresent(); parent = links.preEvolutionId(root)) {
+        root = parent.get();
+      }
+      return root;
+    });
   }
 
   /** Opciones de {@code generateConnectionsPuzzle}. */
@@ -1172,7 +1208,8 @@ public final class PokemonConnectionsCatalog {
     Set<String> used = new HashSet<>(options.usedPuzzleKeys());
     Set<String> excludedCategoryIds = new HashSet<>(options.excludedCategoryIds());
     var random = context.random();
-    var generated = dynamicPuzzle(pool, options.groupSize(), groupCount, random, excludedCategoryIds, used);
+    var generated = dynamicPuzzle(pool, options.groupSize(), groupCount, random, excludedCategoryIds, used,
+        evolutionLines(context.pokemon()));
     if (generated != null) return generated;
     List<GeneratedConnectionsPuzzle> curatedFallback = List.of();
     if (options.groupSize() == 4 && (options.pokemonCount() == 12 || options.pokemonCount() == 16)) {
