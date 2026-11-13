@@ -71,7 +71,10 @@ funciona en PRO. Si es incorrecto, un rollback a través del corte dejaría de e
   - el lint `no-arbitrary-style` empieza a rechazarlas fuera de `ui/`;
   - Playwright solo de las pantallas tocadas, sin cambios visibles salvo radios que pasen a los del sistema.
   - Hecha en el paquete 8 del pulido (regla `no-tailwind-shape` en `eslint.config.mjs`).
-- [ ] **G. Imagen nativa:** intentar que arranque, con compilaciones nativas de una en una y avisando al usuario.
+- [x] **G. Imagen nativa:** intentar que arranque, con compilaciones nativas de una en una y avisando al usuario.
+  - **Arranca** (2026-11-13): compilada y probada en el runner de GitHub con `backend-native.yml` (ejecución
+    43334523638): `/api/health` a los 50 s sobre una BD vacía, 153 MiB en reposo, `--healthcheck` y el humo completo
+    en verde. No se despliega: sigue la imagen JVM. Lo de abajo es el intento previo en la máquina de desarrollo.
   - Intentado el 2026-11-13 en la rama `backend/imagen-nativa`: **no se ha visto arrancar**. El binario completo no
     se pudo compilar en la máquina de desarrollo: tres compilaciones, las tres paradas por memoria (`-J-Xmx4g` y
     `-J-Xmx5g` en GC continuo durante el análisis; `-J-Xmx6g` con el contenedor a 7 GB, muerto por memoria).

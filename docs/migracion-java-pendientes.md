@@ -238,9 +238,9 @@ Lista de comprobación (todo junto, en un mismo despliegue):
   máquina arm64); hoy solo se comprobó en amd64. (Tarea 5 de 2D: job `webp-arm64` de `backend.yml`, que codifica con
   `WebpEncoderSmoke` en la imagen `linux/arm64` con `--read-only` y `/tmp` `noexec`. En verde en la ejecución
   41657262671 del 2026-11-03; desde entonces solo corre en PRs y cuando se publica arm64, con tags `v*` o a mano.)
-- [ ] Imagen nativa: AWT (ImageIO), ICU4J, los SPI de TwelveMonkeys y `webp-imageio` (JNI con `System.load` y Kotlin
-  stdlib) ya tienen sus metadatos y funcionan en un binario nativo de prueba (2026-11-13); el binario completo sigue
-  sin compilarse con ellos. Ver «Qué queda», punto 1. Sigue desplegándose la imagen JVM. (No bloquea el corte.)
+- [x] Imagen nativa (arranca y pasa el humo en CI desde el 2026-11-13; ver «Qué queda», punto 1): AWT (ImageIO), ICU4J, los SPI de TwelveMonkeys y `webp-imageio` (JNI con `System.load` y Kotlin
+  stdlib) ya tienen sus metadatos y funcionan en un binario nativo de prueba (2026-11-13), y el binario completo
+  compila con ellos en el runner de GitHub. Ver «Qué queda», punto 1. Sigue desplegándose la imagen JVM. (No bloquea el corte.)
 - [x] Repetir `contenido-y-admin.spec.ts` y `juegos.spec.ts` solo contra Java. (Tarea 6 de 2D: `npm run test:e2e`
   completo y `juegos` 28/28 sobre el catálogo sincronizado de la BD local; ver «Verificación final».)
 
@@ -255,7 +255,20 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 ## Qué queda
 
-1. **Imagen nativa (parte G): preparada, sin verificar entera.** Rama `backend/imagen-nativa` (2026-11-13). El
+1. **Imagen nativa (parte G): arranca y pasa el humo; no se despliega.** Verificada el 2026-11-13 en el runner de
+   GitHub con `backend-native.yml` (ejecución 43334523638, sobre la rama `backend/imagen-nativa`): el binario compila
+   (5 min 10 s en la 43332967092, pico de 8,27 GB de memoria del compilador; por eso no cabe en un portátil de 16 GB
+   con el escritorio abierto), la imagen (334 MB en disco, 82,6 MB comprimida) arranca como en Compose (raíz de solo
+   lectura, `/tmp` en tmpfs, sin capacidades) contra un PostgreSQL vacío, Flyway aplica V1–V18, sincroniza PokéAPI y
+   responde `/api/health` a los 50 s; en reposo ocupa 153 MiB; `--healthcheck` sale con 0; y
+   `scripts/backend-native-smoke.mjs` pasa entero (API, registro y login, siete avatares guardados como WebP, `/ws`,
+   chat y 30 de 31 minijuegos arrancados; Higher or Lower: Cartas no arranca porque TCGdex aún no ha sincronizado en
+   una BD recién creada, y el humo lo da como aviso). Sigue desplegándose la imagen JVM: cambiar a la nativa es una
+   decisión aparte. Sin comprobar en nativo: administración, el envío real por SMTP y la sincronización completa de
+   TCGdex. Al cargar el codificador WebP la biblioteca escribe en el log un `UnsatisfiedLinkError` de su primer
+   intento (extraer el `.so` a `/tmp`, que es `noexec`) y después lo carga de `/app` (`-Djava.library.path`): los
+   avatares funcionan. Lo que sigue es el detalle de cómo se preparó (escrito antes de poder compilarla).
+   Estado anterior: preparada, sin verificar entera. Rama `backend/imagen-nativa` (2026-11-13). El
    binario completo **no se ha podido compilar en la máquina de desarrollo** (falta memoria, ver abajo), así que
    nadie lo ha visto arrancar todavía, ni se ha reproducido el fallo de arranque original: lo de ByteBuddy y lo del
    escáner de Flyway son previsiones (leyendo las bibliotecas), no errores observados. Se despliega la imagen JVM; la
@@ -335,7 +348,7 @@ cierres de `/ws` al cerrar las páginas, sin fallos.
 
 | Riesgo | Detalle |
 | --- | --- |
-| Imagen nativa | **Sin verificar entera**: metadatos, `Dockerfile.native` y sonda `--healthcheck` están en la rama `backend/imagen-nativa`, y AWT/ImageIO, TwelveMonkeys, `webp-imageio` (JNI), ICU4J y el listado de migraciones de Flyway funcionan en un binario nativo de prueba sobre UBI-micro; el binario completo no se ha compilado (tres intentos parados por memoria en la máquina de desarrollo, con unos 6 GB libres; la memoria que necesita no está medida), así que su arranque con Micronaut e Hibernate sigue sin verse. Se construye solo a mano (`backend-native.yml`), fuera de la cadena de `deploy-pre`. Se despliega la imagen JVM. Ver «Qué queda», punto 1. |
+| Imagen nativa | **Arranca y pasa el humo en CI (2026-11-13, `backend-native.yml`), pero no se despliega**; sin probar en nativo: administración, SMTP real y TCGdex completo. Estado anterior, de antes de poder compilarla: sin verificar entera: metadatos, `Dockerfile.native` y sonda `--healthcheck` están en la rama `backend/imagen-nativa`, y AWT/ImageIO, TwelveMonkeys, `webp-imageio` (JNI), ICU4J y el listado de migraciones de Flyway funcionan en un binario nativo de prueba sobre UBI-micro; el binario completo no se ha compilado (tres intentos parados por memoria en la máquina de desarrollo, con unos 6 GB libres; la memoria que necesita no está medida), así que su arranque con Micronaut e Hibernate sigue sin verse. Se construye solo a mano (`backend-native.yml`), fuera de la cadena de `deploy-pre`. Se despliega la imagen JVM. Ver «Qué queda», punto 1. |
 | E2E fuera de CI | Playwright necesita un catálogo sembrado (`npm run db:seed`, descarga de PokéAPI); ningún workflow lo ejecuta. |
 | Micronaut 5.1 | Versión reciente (5.1.5); hay que vigilar versiones de parche y la compatibilidad de Micronaut Data/Serialization. |
 | Imagen base | `eclipse-temurin:25-jre-alpine` (amd64/arm64). La libwebp de `webp-imageio` 0.11.0 está enlazada contra glibc, pero solo pide símbolos que musl exporta: se comprobó codificando en la imagen Alpine en amd64 y, con `webp-arm64`, en arm64 (ejecución 41657262671). Un push normal publica solo amd64; arm64 sale con los tags `v*`. |
