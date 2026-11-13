@@ -8,6 +8,7 @@ import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsEngin
 import es.pokemonuniverse.domain.game.engines.higherlower.HigherLowerEngine;
 import es.pokemonuniverse.domain.game.engines.learnsetguess.LearnsetGuessEngine;
 import es.pokemonuniverse.domain.game.engines.mostlikelyto.MostLikelyToEngine;
+import es.pokemonuniverse.domain.game.engines.oddoneout.OddOneOutEngine;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeEngine;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceEngine;
 import es.pokemonuniverse.domain.game.engines.pokedexdistance.PokedexDistanceEngine;
@@ -122,6 +123,7 @@ public class ClasspathGameRegistryLoader {
     engines.put(UnownTranslatorEngine.ID,
         new UnownTranslatorEngine(manifest(manifests, UnownTranslatorEngine.ID)));
     engines.put(WhoAmIEngine.ID, new WhoAmIEngine(manifest(manifests, WhoAmIEngine.ID)));
+    engines.put(OddOneOutEngine.ID, new OddOneOutEngine(manifest(manifests, OddOneOutEngine.ID)));
     return engines;
   }
 

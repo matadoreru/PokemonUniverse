@@ -170,6 +170,26 @@
     "includeForms ausente": "Configuración de Most Likely To no válida: falta includeForms.",
     "includeForms tipo erróneo": "Configuración de Most Likely To no válida: includeForms debe ser booleano."
   },
+  "odd-one-out": {
+    "<raíz null>": "Configuración de El Intruso no válida: la configuración debe ser un objeto.",
+    "<raíz lista>": "Configuración de El Intruso no válida: la configuración debe ser un objeto.",
+    "<clave desconocida>": "Configuración de El Intruso no válida: clave desconocida zzUnknown.",
+    "generations ausente": "Configuración de El Intruso no válida: falta generations.",
+    "generations tipo erróneo": "Configuración de El Intruso no válida: generations debe ser una lista con al menos una generación.",
+    "generations [10.5]": "Configuración de El Intruso no válida: generations debe ser un número entero.",
+    "generations [1e20]": "Configuración de El Intruso no válida: generations debe estar entre 1 y 9.",
+    "generations [-1]": "Configuración de El Intruso no válida: generations debe estar entre 1 y 9.",
+    "rounds ausente": "Configuración de El Intruso no válida: falta rounds.",
+    "rounds tipo erróneo": "Configuración de El Intruso no válida: rounds debe ser un número entero.",
+    "rounds 10.5": "Configuración de El Intruso no válida: rounds debe ser un número entero.",
+    "rounds 1e20": "Configuración de El Intruso no válida: rounds debe estar entre 3 y 30.",
+    "rounds -1": "Configuración de El Intruso no válida: rounds debe estar entre 3 y 30.",
+    "roundSeconds ausente": "Configuración de El Intruso no válida: falta roundSeconds.",
+    "roundSeconds tipo erróneo": "Configuración de El Intruso no válida: roundSeconds debe ser un número entero.",
+    "roundSeconds 10.5": "Configuración de El Intruso no válida: roundSeconds debe ser un número entero.",
+    "roundSeconds 1e20": "Configuración de El Intruso no válida: roundSeconds debe estar entre 10 y 60.",
+    "roundSeconds -1": "Configuración de El Intruso no válida: roundSeconds debe estar entre 10 y 60."
+  },
   "one-of-us-is-fake": {
     "<raíz null>": "Configuración de One of Us Is Fake no válida: la configuración debe ser un objeto.",
     "<raíz lista>": "Configuración de One of Us Is Fake no válida: la configuración debe ser un objeto.",

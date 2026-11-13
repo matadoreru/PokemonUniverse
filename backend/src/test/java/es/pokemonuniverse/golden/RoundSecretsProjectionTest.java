@@ -9,6 +9,7 @@ import es.pokemonuniverse.domain.game.engine.GamePhase;
 import es.pokemonuniverse.domain.game.engine.PokemonAudioCatalog.CryVersion;
 import es.pokemonuniverse.domain.game.engine.SubjectiveCategory;
 import es.pokemonuniverse.domain.game.engines.guessfromstats.GuessFromStatsTypes.GuessFromStatsState;
+import es.pokemonuniverse.domain.game.engines.oddoneout.OddOneOutTypes.OddOneOutState;
 import es.pokemonuniverse.domain.game.engines.oneofusisfake.OneOfUsIsFakeTypes.OneOfUsIsFakeState;
 import es.pokemonuniverse.domain.game.engines.pokeddlerace.PokeddleRaceTypes.PokeddleRaceState;
 import es.pokemonuniverse.domain.game.engines.pokedexentryguess.PokedexEntryGuessTypes.PokedexEntryGuessState;
@@ -36,7 +37,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
 /**
- * Privacidad de la respuesta de cada ronda en los once motores con un secreto por ronda. Cada escenario dorado se
+ * Privacidad de la respuesta de cada ronda en los doce motores con un secreto por ronda. Cada escenario dorado se
  * juega paso a paso ({@link GoldenRun}) y, en cada estado de la fase secreta, ni el ciclo de vida, ni la vista pública,
  * ni la vista de cada jugador contienen el secreto (salvo la de quien ya puede verlo). Las doradas fijan lo grabado:
  * una fuga que entrase al regrabarlas pasaría por «comportamiento esperado» sin este test.
@@ -179,6 +180,14 @@ class RoundSecretsProjectionTest {
           new Secret("isFake", Set.of(), Set.of(), Set.of("isFake"), Set.of(fake)),
           new Secret("categoría del fake", Set.of(), Set.of(category(s, s.fakeCategoryId())), Set.of(), Set.of(fake)),
           new Secret("categoría principal", Set.of(), Set.of(category(s, s.mainCategoryId())), Set.of(), normals));
+    }));
+    // Las cuatro opciones son públicas; hasta revelar, nadie ve cuál es el intruso ni la categoría de los otros tres.
+    RULES.put("odd-one-out", Rule.of((state, context) -> {
+      var s = (OddOneOutState) state;
+      if (s.phase() != GamePhase.ROUND_ACTIVE || s.board() == null) return List.of();
+      var category = s.board().category();
+      return List.of(new Secret("categoría", Set.of(category.id()), Set.of(category.label(), category.explanation()),
+          Set.of("intruderOptionId", "category"), Set.of()));
     }));
   }
 

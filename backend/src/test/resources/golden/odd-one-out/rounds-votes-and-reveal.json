@@ -1,0 +1,1487 @@
+{
+  "engineId": "odd-one-out",
+  "scenario": "rounds-votes-and-reveal",
+  "seed": 5101,
+  "catalog": "gen1-2",
+  "startNow": 1794427200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "rounds": 3,
+    "roundSeconds": 20
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 1794427203000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 1794427205000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE",
+        "optionId": "A"
+      },
+      "now": 1794427206000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427211000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 1794427212000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "A"
+      },
+      "now": 1794427214000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 1794427215000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427220000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "D"
+      },
+      "now": 1794427222000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427230000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "D"
+      },
+      "now": 1794427231000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427240000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427245000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "roundSeconds": 20
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "odd-one-out",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "options": [],
+        "votedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canVote": false,
+          "vote": null
+        },
+        "p2": {
+          "canVote": false,
+          "vote": null
+        },
+        "p3": {
+          "canVote": false,
+          "vote": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 1794427220000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1794427200000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "odd-one-out",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "options": [
+          {
+            "id": "A",
+            "pokemonId": "bulbasaur",
+            "pokemonName": "Bulbasaur",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+          },
+          {
+            "id": "B",
+            "pokemonId": "krabby",
+            "pokemonName": "Krabby",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png"
+          },
+          {
+            "id": "C",
+            "pokemonId": "fearow",
+            "pokemonName": "Fearow",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png"
+          },
+          {
+            "id": "D",
+            "pokemonId": "squirtle",
+            "pokemonName": "Squirtle",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+          }
+        ],
+        "votedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1794427200000,
+        "roundEndsAt": 1794427220000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canVote": true,
+          "vote": null
+        },
+        "p2": {
+          "canVote": true,
+          "vote": null
+        },
+        "p3": {
+          "canVote": true,
+          "vote": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427220000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794427200000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "krabby",
+                "pokemonName": "Krabby",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "fearow",
+                "pokemonName": "Fearow",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "squirtle",
+                "pokemonName": "Squirtle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427200000,
+            "roundEndsAt": 1794427220000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427203000
+              }
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427220000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794427200000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "krabby",
+                "pokemonName": "Krabby",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "fearow",
+                "pokemonName": "Fearow",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "squirtle",
+                "pokemonName": "Squirtle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427200000,
+            "roundEndsAt": 1794427220000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427205000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427203000
+              }
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427211000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1794427200000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "bulbasaur",
+                "pokemonName": "Bulbasaur",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "krabby",
+                "pokemonName": "Krabby",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/98.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "fearow",
+                "pokemonName": "Fearow",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "squirtle",
+                "pokemonName": "Squirtle",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427200000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427211000,
+            "lastRound": {
+              "roundNumber": 1,
+              "intruderOptionId": "C",
+              "category": {
+                "id": "ash-kanto-team",
+                "label": "El equipo de Ash en Kanto",
+                "explanation": "Los capturó Ash en su primer viaje por Kanto y las Islas Naranja, contando sus evoluciones."
+              },
+              "votes": {
+                "p2": {
+                  "optionId": "C",
+                  "votedAt": 1794427203000
+                },
+                "p1": {
+                  "optionId": "C",
+                  "votedAt": 1794427205000
+                },
+                "p3": {
+                  "optionId": "A",
+                  "votedAt": 1794427206000
+                }
+              },
+              "points": {
+                "p1": 3,
+                "p2": 4,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427205000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427203000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 1794427206000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427231000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794427211000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "lugia",
+                "pokemonName": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "tyranitar",
+                "pokemonName": "Tyranitar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/248.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "ho-oh",
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              }
+            ],
+            "votedPlayerIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427211000,
+            "roundEndsAt": 1794427231000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427231000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794427211000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "lugia",
+                "pokemonName": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "tyranitar",
+                "pokemonName": "Tyranitar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/248.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "ho-oh",
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427211000,
+            "roundEndsAt": 1794427231000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427212000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427231000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794427211000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "lugia",
+                "pokemonName": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "tyranitar",
+                "pokemonName": "Tyranitar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/248.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "ho-oh",
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 4,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427211000,
+            "roundEndsAt": 1794427231000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 1794427214000
+              }
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427212000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427220000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,1794427211000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "lugia",
+                "pokemonName": "Lugia",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/249.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "tyranitar",
+                "pokemonName": "Tyranitar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/248.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "ho-oh",
+                "pokemonName": "Ho Oh",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/250.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "raikou",
+                "pokemonName": "Raikou",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/243.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 7,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427211000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427220000,
+            "lastRound": {
+              "roundNumber": 2,
+              "intruderOptionId": "B",
+              "category": {
+                "id": "legendary",
+                "label": "Pokémon legendarios",
+                "explanation": "Tienen la clasificación oficial de Pokémon legendario."
+              },
+              "votes": {
+                "p3": {
+                  "optionId": "B",
+                  "votedAt": 1794427212000
+                },
+                "p1": {
+                  "optionId": "A",
+                  "votedAt": 1794427214000
+                },
+                "p2": {
+                  "optionId": "B",
+                  "votedAt": 1794427215000
+                }
+              },
+              "points": {
+                "p1": 0,
+                "p2": 3,
+                "p3": 4
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 1794427214000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427215000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427212000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427240000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427220000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "zapdos",
+                "pokemonName": "Zapdos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "moltres",
+                "pokemonName": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "articuno",
+                "pokemonName": "Articuno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "nidorina",
+                "pokemonName": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              }
+            ],
+            "votedPlayerIds": [],
+            "scores": {
+              "p1": 3,
+              "p2": 7,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427220000,
+            "roundEndsAt": 1794427240000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427240000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427220000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "zapdos",
+                "pokemonName": "Zapdos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "moltres",
+                "pokemonName": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "articuno",
+                "pokemonName": "Articuno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "nidorina",
+                "pokemonName": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 7,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427220000,
+            "roundEndsAt": 1794427240000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427222000
+              }
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427240000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427220000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "zapdos",
+                "pokemonName": "Zapdos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "moltres",
+                "pokemonName": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "articuno",
+                "pokemonName": "Articuno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "nidorina",
+                "pokemonName": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 7,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427220000,
+            "roundEndsAt": 1794427240000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427222000
+              }
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427240000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427220000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "zapdos",
+                "pokemonName": "Zapdos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "moltres",
+                "pokemonName": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "articuno",
+                "pokemonName": "Articuno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "nidorina",
+                "pokemonName": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 3,
+              "p2": 7,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427220000,
+            "roundEndsAt": 1794427240000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427222000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427231000
+              }
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,1794427220000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "zapdos",
+                "pokemonName": "Zapdos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "moltres",
+                "pokemonName": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "articuno",
+                "pokemonName": "Articuno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "nidorina",
+                "pokemonName": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 7,
+              "p2": 10,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427220000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427245000,
+            "lastRound": {
+              "roundNumber": 3,
+              "intruderOptionId": "D",
+              "category": {
+                "id": "legendary-birds",
+                "label": "Aves legendarias de Kanto",
+                "explanation": "Forman el trío de aves legendarias descubierto en Kanto."
+              },
+              "votes": {
+                "p1": {
+                  "optionId": "D",
+                  "votedAt": 1794427222000
+                },
+                "p2": {
+                  "optionId": "D",
+                  "votedAt": 1794427231000
+                }
+              },
+              "points": {
+                "p1": 4,
+                "p2": 3,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427222000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427231000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,1794427220000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "zapdos",
+                "pokemonName": "Zapdos",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/145.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "moltres",
+                "pokemonName": "Moltres",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/146.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "articuno",
+                "pokemonName": "Articuno",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/144.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "nidorina",
+                "pokemonName": "Nidorina",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 7,
+              "p2": 10,
+              "p3": 4
+            },
+            "roundStartedAt": 1794427220000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "roundNumber": 3,
+              "intruderOptionId": "D",
+              "category": {
+                "id": "legendary-birds",
+                "label": "Aves legendarias de Kanto",
+                "explanation": "Forman el trío de aves legendarias descubierto en Kanto."
+              },
+              "votes": {
+                "p1": {
+                  "optionId": "D",
+                  "votedAt": 1794427222000
+                },
+                "p2": {
+                  "optionId": "D",
+                  "votedAt": 1794427231000
+                }
+              },
+              "points": {
+                "p1": 4,
+                "p2": 3,
+                "p3": 0
+              }
+            },
+            "results": {
+              "winnerId": "p2",
+              "standings": [
+                {
+                  "playerId": "p2",
+                  "position": 1,
+                  "points": 10,
+                  "won": true,
+                  "stats": {
+                    "correctVotes": 3,
+                    "votes": 3,
+                    "incorrectVotes": 0,
+                    "unanswered": 0,
+                    "accuracy": 100
+                  }
+                },
+                {
+                  "playerId": "p1",
+                  "position": 2,
+                  "points": 7,
+                  "won": false,
+                  "stats": {
+                    "correctVotes": 2,
+                    "votes": 3,
+                    "incorrectVotes": 1,
+                    "unanswered": 0,
+                    "accuracy": 67
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "correctVotes": 1,
+                    "votes": 2,
+                    "incorrectVotes": 1,
+                    "unanswered": 1,
+                    "accuracy": 50
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427222000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "D",
+                "votedAt": 1794427231000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": null
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p2",
+      "standings": [
+        {
+          "playerId": "p2",
+          "position": 1,
+          "points": 10,
+          "won": true,
+          "stats": {
+            "correctVotes": 3,
+            "votes": 3,
+            "incorrectVotes": 0,
+            "unanswered": 0,
+            "accuracy": 100
+          }
+        },
+        {
+          "playerId": "p1",
+          "position": 2,
+          "points": 7,
+          "won": false,
+          "stats": {
+            "correctVotes": 2,
+            "votes": 3,
+            "incorrectVotes": 1,
+            "unanswered": 0,
+            "accuracy": 67
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "correctVotes": 1,
+            "votes": 2,
+            "incorrectVotes": 1,
+            "unanswered": 1,
+            "accuracy": 50
+          }
+        }
+      ]
+    }
+  }
+}

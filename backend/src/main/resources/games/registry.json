@@ -2946,5 +2946,70 @@
       "askSeconds": 45,
       "answerSeconds": 20
     }
+  },
+  {
+    "id": "odd-one-out",
+    "name": "El Intruso",
+    "icon": "🔍",
+    "description": "Tres Pokémon comparten algo y uno no: descubre al intruso sin saber la categoría.",
+    "howTo": [
+      "Cada ronda salen cuatro Pokémon: tres comparten una categoría secreta y uno es el intruso.",
+      "Cada acierto suma 1 punto, y los tres primeros en acertar ganan 3, 2 y 1 extra.",
+      "Solo hay un voto por ronda: en cuanto elegís, queda bloqueado."
+    ],
+    "experimental": false,
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "presenceGraceMs": 8000,
+    "profileStats": {
+      "metrics": [
+        {
+          "key": "correctVotes",
+          "label": "Aciertos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "incorrectVotes",
+          "label": "Fallos",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "unanswered",
+          "label": "Sin respuesta",
+          "aggregation": "SUM"
+        },
+        {
+          "key": "votes",
+          "label": "Respuestas",
+          "aggregation": "SUM"
+        }
+      ],
+      "derivedMetrics": [
+        {
+          "key": "accuracy",
+          "label": "Precisión",
+          "kind": "PERCENT",
+          "numerator": "correctVotes",
+          "denominator": [
+            "votes"
+          ]
+        }
+      ]
+    },
+    "defaultConfig": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 20
+    }
   }
 ]

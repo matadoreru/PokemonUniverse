@@ -23,8 +23,8 @@ class ClasspathGameRegistryLoaderTest {
 
   @Test
   void loadsThirtyOneGames() {
-    assertEquals(31, registry.list().size());
-    assertEquals(31, registry.manifests().size());
+    assertEquals(32, registry.list().size());
+    assertEquals(32, registry.manifests().size());
     assertTrue(registry.get("pokedex-distance").isPresent());
   }
 

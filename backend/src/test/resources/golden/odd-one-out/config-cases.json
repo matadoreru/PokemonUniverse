@@ -1,0 +1,431 @@
+[
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 2,
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 3,
+      "roundSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 3,
+      "roundSeconds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 30,
+      "roundSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 30,
+      "roundSeconds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 31,
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 9
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 10
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 10
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 60
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 60
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 61
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5,
+      "roundSeconds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 5.5,
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 15
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 15
+    }
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": "20"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        2,
+        1,
+        1
+      ],
+      "rounds": 10,
+      "roundSeconds": 20
+    },
+    "valid": true,
+    "normalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 10,
+      "roundSeconds": 20
+    }
+  },
+  {
+    "input": {
+      "generations": [],
+      "rounds": 10,
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        10
+      ],
+      "rounds": 10,
+      "roundSeconds": 20
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 20,
+      "mode": "CLASSIC"
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "rounds": 10,
+      "roundSeconds": 20,
+      "legacy": true
+    },
+    "valid": false
+  },
+  {
+    "input": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 10
+    },
+    "valid": false
+  },
+  {
+    "input": null,
+    "valid": false
+  }
+]

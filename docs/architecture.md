@@ -3,7 +3,7 @@
 The repository is split into three boundaries (the Java backend is described in its own section below):
 
 - `packages/shared`: config schemas, public and per-player projection types, default configs and presentation helpers for the browser. It has no engines and depends only on `zod`.
-- `backend`: the Java server, the only server and the only place with game engines. It serves the whole HTTP API, hosts rooms over the `/ws` WebSocket with all 31 engines, runs data-sync and owns the schema (Flyway). The coordinator sends intentions to a registered game module and publishes only its public projection.
+- `backend`: the Java server, the only server and the only place with game engines. It serves the whole HTTP API, hosts rooms over the `/ws` WebSocket with all 32 engines, runs data-sync and owns the schema (Flyway). The coordinator sends intentions to a registered game module and publishes only its public projection.
 - `frontend`: React screens and presentation. It never decides deadlines, winners, eliminations or whether a selection wins a race.
 
 The English sections from «Local data authority» on were written for the Node server. They still describe the design, because the Java backend ports it literally (same rules, projections, timers and limits); file names there point to the removed Node server (`apps/server`, in git history before the commit «Quitar el servidor Node y los motores TS»), and the Java counterparts are listed in the Spanish sections.
@@ -30,7 +30,7 @@ The English sections from «Local data authority» on were written for the Node 
 
 ## Salas en Java (etapa 2A)
 
-Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación, votación, resultados) con `application/rooms/RoomCoordinator`, port literal de `apps/server/src/rooms/manager.ts` con una sección crítica por sala. Hasta el corte 2D fue solo de desarrollo y E2E, porque el cambio de transporte y de rutas era todo o nada (ver «Corte 2D» en `docs/migracion-java-pendientes.md`); desde el corte es el coordinador de producción. En 2A había dos motores portados (`higher-lower` y `pokedex-distance`); desde 2B están los 28 (hoy 31) (ver la sección siguiente). `ClasspathGameRegistryLoader` no arranca si algún manifiesto no tiene motor, así que todo juego publicado se puede jugar; `/api/games` y el perfil muestran los 31 manifests. El coordinador reparte el trabajo en colaboradores que reciben la sala ya bloqueada y nunca toman el lock (solo programan o cancelan temporizadores con el lock tomado, a través del coordinador): `RoomChatCommands` (chat del lobby), `GameRotation` (pares jugables y azar de la rotación), `NextGameVoting`, `DailyRoomLifecycle` (final de la sala del reto), `CursorRelay` y `RoomViews`.
+Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación, votación, resultados) con `application/rooms/RoomCoordinator`, port literal de `apps/server/src/rooms/manager.ts` con una sección crítica por sala. Hasta el corte 2D fue solo de desarrollo y E2E, porque el cambio de transporte y de rutas era todo o nada (ver «Corte 2D» en `docs/migracion-java-pendientes.md`); desde el corte es el coordinador de producción. En 2A había dos motores portados (`higher-lower` y `pokedex-distance`); desde 2B están los 28 (hoy 32) (ver la sección siguiente). `ClasspathGameRegistryLoader` no arranca si algún manifiesto no tiene motor, así que todo juego publicado se puede jugar; `/api/games` y el perfil muestran los 32 manifests. El coordinador reparte el trabajo en colaboradores que reciben la sala ya bloqueada y nunca toman el lock (solo programan o cancelan temporizadores con el lock tomado, a través del coordinador): `RoomChatCommands` (chat del lobby), `GameRotation` (pares jugables y azar de la rotación), `NextGameVoting`, `DailyRoomLifecycle` (final de la sala del reto), `CursorRelay` y `RoomViews`.
 
 **Transporte.** Desde el corte 2D la web usa siempre el WebSocket nativo contra `/ws` (`createRealtime()` de `frontend/src/lib/socket.ts`, cliente en `realtime-ws.ts`); el adaptador Socket.IO y la bandera `VITE_REALTIME` ya no existen. `RoomContext` solo conoce la interfaz `RealtimeClient`. En desarrollo el proxy de Vite manda todo `/api` a `http://localhost:8080` y `/ws` a `ws://localhost:8080`; en contenedores, nginx tiene `location = /ws` (coincidencia exacta) hacia `backend:8080`.
 
@@ -60,7 +60,7 @@ Desde la etapa 2A el backend Java puede alojar salas completas (lobby, rotación
 
 Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Solo desarrollo y E2E hasta el corte 2D; en producción desde entonces.
 
-**Motores (31/31).** Cada motor está en `backend/src/main/java/es/pokemonuniverse/domain/game/engines/<id sin guiones>/` y se registra en un único sitio, `portedEngines` de `adapters/out/resources/ClasspathGameRegistryLoader.java`, en el mismo commit que sus fixtures doradas. `GoldenRegistryConsistencyTest` falla si hay fixtures sin motor o motor sin fixtures, y el cargador exige un motor por manifiesto (`ClasspathGameRegistryLoaderTest` lo comprueba con los 31). Las reglas de port (orden de claves, `Record<number, …>`, token de asset, `localeCompare`, `.int()`, `trim()`, `\p{Diacritic}`) están en `domain/game/engines/README.md`. Las condiciones compartidas por Bingo y Bluff Auction viven en `domain/pokemon/conditions/`.
+**Motores (32/32).** Cada motor está en `backend/src/main/java/es/pokemonuniverse/domain/game/engines/<id sin guiones>/` y se registra en un único sitio, `portedEngines` de `adapters/out/resources/ClasspathGameRegistryLoader.java`, en el mismo commit que sus fixtures doradas. `GoldenRegistryConsistencyTest` falla si hay fixtures sin motor o motor sin fixtures, y el cargador exige un motor por manifiesto (`ClasspathGameRegistryLoaderTest` lo comprueba con los 32). Las reglas de port (orden de claves, `Record<number, …>`, token de asset, `localeCompare`, `.int()`, `trim()`, `\p{Diacritic}`) están en `domain/game/engines/README.md`. Las condiciones compartidas por Bingo y Bluff Auction viven en `domain/pokemon/conditions/`.
 
 **Arnés dorado.** Las fixtures las generaban los motores TS; desde que se quitaron, las graba Java (`GoldenRecorder`, con `./gradlew test -Dupdate=true --tests '*GoldenReplayTest*'`) y son fotos de su comportamiento: al cambiar un motor se regraban y se revisa el diff. `golden/OrderedJsonCompare` compara los objetos clave a clave **en secuencia** (el orden de claves grabado es el contrato del cable; `JsonTree.equal` de producción sigue ignorándolo). Un escenario puede traer contexto (`hostCustomCategories`, `hostWouldYouRatherPrompts`, `pokemonVisuals`, `pokemonAudio`, `tcgCards`) que `GoldenContexts.java` monta, un `catalogPatch` con paletas y pasos `asset` que fijan `resolveAsset`. El flujo está en `domain/game/engines/README.md`.
 
@@ -74,7 +74,7 @@ Plan: `docs/superpowers/plans/2026-10-31-etapa-2b-motores.md`. Solo desarrollo y
 
 **Enrutado.** Las URL de assets que emiten los motores son relativas (`/api/rooms/…`). En dev, `proxyFor` de `frontend/vite.config.ts` manda todo `/api` (también `/api/rooms/`) a `:8080`. `infra/nginx.conf` las manda también a Java (`location ^~ /api/`) desde el corte 2D.
 
-**E2E por juego.** `e2e/tests/juegos.spec.ts` (`npm run test:e2e -- juegos`, que también coge los specs de cada juego en `e2e/tests/juegos/<id>.spec.ts`) lanza los 31 juegos contra el `/ws` de Java y exige que ninguna página abra Socket.IO. `tcg-higher-lower` y `pokemon-palette-guess` se saltan solo si el servidor muestra su literal de no disponibilidad (sin cartas TCG o sin paletas en la BD). El encaje se anota y solo falla con `PU_LAYOUT_STRICT=1` (ver `e2e/README.md`).
+**E2E por juego.** `e2e/tests/juegos.spec.ts` (`npm run test:e2e -- juegos`, que también coge los specs de cada juego en `e2e/tests/juegos/<id>.spec.ts`) lanza los 32 juegos contra el `/ws` de Java y exige que ninguna página abra Socket.IO. `tcg-higher-lower` y `pokemon-palette-guess` se saltan solo si el servidor muestra su literal de no disponibilidad (sin cartas TCG o sin paletas en la BD). El encaje se anota y solo falla con `PU_LAYOUT_STRICT=1` (ver `e2e/README.md`).
 
 ## Datos y administración en Java (etapa 2C)
 
@@ -84,7 +84,7 @@ lo mismo que Java cachea y cada proceso solo habría visto sus propias escritura
 en dev/E2E (`proxyFor`) y en producción (`location ^~ /api/`).
 
 **Qué hay y dónde.**
-- `domain/game/engine/infra/ConfigReader`: lector común de las 31 `<Juego>Config` (mismos mensajes que Zod; modo
+- `domain/game/engine/infra/ConfigReader`: lector común de las 32 `<Juego>Config` (mismos mensajes que Zod; modo
   «recoger todo» con rutas para la migración de configuraciones).
 - `application/gameconfigs/`: `UserGameConfigService` (lectura en `create()` de sala para identidades USER, debounce de
   250 ms por usuario y juego, escrituras encadenadas por clave, `flush()` al apagar) y `StoredGameConfigMigration`

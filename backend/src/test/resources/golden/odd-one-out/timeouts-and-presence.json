@@ -1,0 +1,1517 @@
+{
+  "engineId": "odd-one-out",
+  "scenario": "timeouts-and-presence",
+  "seed": 5202,
+  "catalog": "gen1-2",
+  "startNow": 1794427200000,
+  "players": [
+    {
+      "id": "p1",
+      "displayName": "Ana"
+    },
+    {
+      "id": "p2",
+      "displayName": "Bruno"
+    },
+    {
+      "id": "p3",
+      "displayName": "Carla"
+    }
+  ],
+  "config": {
+    "generations": [
+      1,
+      2
+    ],
+    "rounds": 3,
+    "roundSeconds": 20
+  },
+  "steps": [
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "A"
+      },
+      "now": 1794427202000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427220000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427225000
+    },
+    {
+      "kind": "action",
+      "playerId": "p1",
+      "action": {
+        "type": "VOTE",
+        "optionId": "B"
+      },
+      "now": 1794427227000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 1794427228000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla",
+          "connected": false
+        }
+      ],
+      "now": 1794427229000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427234000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794427235000
+    },
+    {
+      "kind": "action",
+      "playerId": "p2",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 1794427236000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana",
+          "connected": false
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794427237000
+    },
+    {
+      "kind": "action",
+      "playerId": "p3",
+      "action": {
+        "type": "VOTE",
+        "optionId": "C"
+      },
+      "now": 1794427238000
+    },
+    {
+      "kind": "presence",
+      "players": [
+        {
+          "id": "p1",
+          "displayName": "Ana"
+        },
+        {
+          "id": "p2",
+          "displayName": "Bruno"
+        },
+        {
+          "id": "p3",
+          "displayName": "Carla"
+        }
+      ],
+      "now": 1794427240000
+    },
+    {
+      "kind": "timeout",
+      "now": 1794427243000
+    }
+  ],
+  "expected": {
+    "configNormalized": {
+      "generations": [
+        1,
+        2
+      ],
+      "rounds": 3,
+      "roundSeconds": 20
+    },
+    "initial": {
+      "lifecycle": {
+        "phase": "GAME_STARTING",
+        "nextDeadline": null,
+        "actionEpoch": "[\"GAME_STARTING\",0,null,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "odd-one-out",
+        "phase": "GAME_STARTING",
+        "roundNumber": 0,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "options": [],
+        "votedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": null,
+        "roundEndsAt": null,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canVote": false,
+          "vote": null
+        },
+        "p2": {
+          "canVote": false,
+          "vote": null
+        },
+        "p3": {
+          "canVote": false,
+          "vote": null
+        }
+      },
+      "finished": false
+    },
+    "afterStart": {
+      "lifecycle": {
+        "phase": "ROUND_ACTIVE",
+        "nextDeadline": 1794427220000,
+        "actionEpoch": "[\"ROUND_ACTIVE\",1,1794427200000,null,null,null,null,null]",
+        "spectatorIds": []
+      },
+      "publicState": {
+        "gameId": "odd-one-out",
+        "phase": "ROUND_ACTIVE",
+        "roundNumber": 1,
+        "totalRounds": 3,
+        "playerIds": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "options": [
+          {
+            "id": "A",
+            "pokemonId": "alakazam",
+            "pokemonName": "Alakazam",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+          },
+          {
+            "id": "B",
+            "pokemonId": "pupitar",
+            "pokemonName": "Pupitar",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/247.png"
+          },
+          {
+            "id": "C",
+            "pokemonId": "metapod",
+            "pokemonName": "Metapod",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+          },
+          {
+            "id": "D",
+            "pokemonId": "kakuna",
+            "pokemonName": "Kakuna",
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png"
+          }
+        ],
+        "votedPlayerIds": [],
+        "scores": {
+          "p1": 0,
+          "p2": 0,
+          "p3": 0
+        },
+        "roundStartedAt": 1794427200000,
+        "roundEndsAt": 1794427220000,
+        "nextTransitionAt": null,
+        "lastRound": null,
+        "results": null
+      },
+      "playerStates": {
+        "p1": {
+          "canVote": true,
+          "vote": null
+        },
+        "p2": {
+          "canVote": true,
+          "vote": null
+        },
+        "p3": {
+          "canVote": true,
+          "vote": null
+        }
+      },
+      "finished": false
+    },
+    "afterSteps": [
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427220000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",1,1794427200000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "alakazam",
+                "pokemonName": "Alakazam",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "pupitar",
+                "pokemonName": "Pupitar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/247.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "metapod",
+                "pokemonName": "Metapod",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "kakuna",
+                "pokemonName": "Kakuna",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 0,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427200000,
+            "roundEndsAt": 1794427220000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 1794427202000
+              }
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427225000,
+            "actionEpoch": "[\"ROUND_RESULTS\",1,1794427200000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 1,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "alakazam",
+                "pokemonName": "Alakazam",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "pupitar",
+                "pokemonName": "Pupitar",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/247.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "metapod",
+                "pokemonName": "Metapod",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "kakuna",
+                "pokemonName": "Kakuna",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427200000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427225000,
+            "lastRound": {
+              "roundNumber": 1,
+              "intruderOptionId": "A",
+              "category": {
+                "id": "cocoons",
+                "label": "Fases de capullo o crisálida",
+                "explanation": "Son la fase intermedia de capullo, crisálida o pupa de su familia."
+              },
+              "votes": {
+                "p1": {
+                  "optionId": "A",
+                  "votedAt": 1794427202000
+                }
+              },
+              "points": {
+                "p1": 4,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "A",
+                "votedAt": 1794427202000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794427225000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "nidoran-f",
+                "pokemonName": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "magcargo",
+                "pokemonName": "Magcargo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/219.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "nidoran-m",
+                "pokemonName": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "azumarill",
+                "pokemonName": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              }
+            ],
+            "votedPlayerIds": [],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427225000,
+            "roundEndsAt": 1794427245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794427225000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "nidoran-f",
+                "pokemonName": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "magcargo",
+                "pokemonName": "Magcargo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/219.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "nidoran-m",
+                "pokemonName": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "azumarill",
+                "pokemonName": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427225000,
+            "roundEndsAt": 1794427245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427227000
+              }
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427245000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",2,1794427225000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "nidoran-f",
+                "pokemonName": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "magcargo",
+                "pokemonName": "Magcargo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/219.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "nidoran-m",
+                "pokemonName": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "azumarill",
+                "pokemonName": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 4,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427225000,
+            "roundEndsAt": 1794427245000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427227000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427228000
+              }
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427234000,
+            "actionEpoch": "[\"ROUND_RESULTS\",2,1794427225000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 2,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "nidoran-f",
+                "pokemonName": "Nidoran F",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "magcargo",
+                "pokemonName": "Magcargo",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/219.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "nidoran-m",
+                "pokemonName": "Nidoran M",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "azumarill",
+                "pokemonName": "Azumarill",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p1",
+              "p2"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427225000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427234000,
+            "lastRound": {
+              "roundNumber": 2,
+              "intruderOptionId": "B",
+              "category": {
+                "id": "rabbits",
+                "label": "Pokémon con aspecto de conejo",
+                "explanation": "Su diseño está inspirado en conejos o liebres."
+              },
+              "votes": {
+                "p1": {
+                  "optionId": "B",
+                  "votedAt": 1794427227000
+                },
+                "p2": {
+                  "optionId": "C",
+                  "votedAt": 1794427228000
+                }
+              },
+              "points": {
+                "p1": 4,
+                "p2": 0,
+                "p3": 0
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": {
+                "optionId": "B",
+                "votedAt": 1794427227000
+              }
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427228000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427254000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [],
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": 1794427254000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": false,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427254000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [],
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": 1794427254000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": true,
+              "vote": null
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427254000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": 1794427254000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": true,
+              "vote": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427236000
+              }
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_ACTIVE",
+            "nextDeadline": 1794427254000,
+            "actionEpoch": "[\"ROUND_ACTIVE\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_ACTIVE",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p2"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 0,
+              "p3": 0
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": 1794427254000,
+            "nextTransitionAt": null,
+            "lastRound": null,
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427236000
+              }
+            },
+            "p3": {
+              "canVote": true,
+              "vote": null
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "accepted": true,
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427243000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 4,
+              "p3": 3
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427243000,
+            "lastRound": {
+              "roundNumber": 3,
+              "intruderOptionId": "C",
+              "category": {
+                "id": "multiple-heads",
+                "label": "Tienen varias cabezas",
+                "explanation": "Su diseño muestra dos o más cabezas claramente diferenciadas."
+              },
+              "votes": {
+                "p2": {
+                  "optionId": "C",
+                  "votedAt": 1794427236000
+                },
+                "p3": {
+                  "optionId": "C",
+                  "votedAt": 1794427238000
+                }
+              },
+              "points": {
+                "p1": 0,
+                "p2": 4,
+                "p3": 3
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427236000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427238000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "ROUND_RESULTS",
+            "nextDeadline": 1794427243000,
+            "actionEpoch": "[\"ROUND_RESULTS\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "ROUND_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 4,
+              "p3": 3
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": null,
+            "nextTransitionAt": 1794427243000,
+            "lastRound": {
+              "roundNumber": 3,
+              "intruderOptionId": "C",
+              "category": {
+                "id": "multiple-heads",
+                "label": "Tienen varias cabezas",
+                "explanation": "Su diseño muestra dos o más cabezas claramente diferenciadas."
+              },
+              "votes": {
+                "p2": {
+                  "optionId": "C",
+                  "votedAt": 1794427236000
+                },
+                "p3": {
+                  "optionId": "C",
+                  "votedAt": 1794427238000
+                }
+              },
+              "points": {
+                "p1": 0,
+                "p2": 4,
+                "p3": 3
+              }
+            },
+            "results": null
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427236000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427238000
+              }
+            }
+          },
+          "finished": false
+        }
+      },
+      {
+        "snapshot": {
+          "lifecycle": {
+            "phase": "GAME_RESULTS",
+            "nextDeadline": null,
+            "actionEpoch": "[\"GAME_RESULTS\",3,1794427234000,null,null,null,null,null]",
+            "spectatorIds": []
+          },
+          "publicState": {
+            "gameId": "odd-one-out",
+            "phase": "GAME_RESULTS",
+            "roundNumber": 3,
+            "totalRounds": 3,
+            "playerIds": [
+              "p1",
+              "p2",
+              "p3"
+            ],
+            "options": [
+              {
+                "id": "A",
+                "pokemonId": "magneton",
+                "pokemonName": "Magneton",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+              },
+              {
+                "id": "B",
+                "pokemonId": "dugtrio",
+                "pokemonName": "Dugtrio",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+              },
+              {
+                "id": "C",
+                "pokemonId": "caterpie",
+                "pokemonName": "Caterpie",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png"
+              },
+              {
+                "id": "D",
+                "pokemonId": "weezing",
+                "pokemonName": "Weezing",
+                "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/110.png"
+              }
+            ],
+            "votedPlayerIds": [
+              "p2",
+              "p3"
+            ],
+            "scores": {
+              "p1": 8,
+              "p2": 4,
+              "p3": 3
+            },
+            "roundStartedAt": 1794427234000,
+            "roundEndsAt": null,
+            "nextTransitionAt": null,
+            "lastRound": {
+              "roundNumber": 3,
+              "intruderOptionId": "C",
+              "category": {
+                "id": "multiple-heads",
+                "label": "Tienen varias cabezas",
+                "explanation": "Su diseño muestra dos o más cabezas claramente diferenciadas."
+              },
+              "votes": {
+                "p2": {
+                  "optionId": "C",
+                  "votedAt": 1794427236000
+                },
+                "p3": {
+                  "optionId": "C",
+                  "votedAt": 1794427238000
+                }
+              },
+              "points": {
+                "p1": 0,
+                "p2": 4,
+                "p3": 3
+              }
+            },
+            "results": {
+              "winnerId": "p1",
+              "standings": [
+                {
+                  "playerId": "p1",
+                  "position": 1,
+                  "points": 8,
+                  "won": true,
+                  "stats": {
+                    "correctVotes": 2,
+                    "votes": 2,
+                    "incorrectVotes": 0,
+                    "unanswered": 1,
+                    "accuracy": 100
+                  }
+                },
+                {
+                  "playerId": "p2",
+                  "position": 2,
+                  "points": 4,
+                  "won": false,
+                  "stats": {
+                    "correctVotes": 1,
+                    "votes": 2,
+                    "incorrectVotes": 1,
+                    "unanswered": 1,
+                    "accuracy": 50
+                  }
+                },
+                {
+                  "playerId": "p3",
+                  "position": 3,
+                  "points": 3,
+                  "won": false,
+                  "stats": {
+                    "correctVotes": 1,
+                    "votes": 1,
+                    "incorrectVotes": 0,
+                    "unanswered": 2,
+                    "accuracy": 100
+                  }
+                }
+              ]
+            }
+          },
+          "playerStates": {
+            "p1": {
+              "canVote": false,
+              "vote": null
+            },
+            "p2": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427236000
+              }
+            },
+            "p3": {
+              "canVote": false,
+              "vote": {
+                "optionId": "C",
+                "votedAt": 1794427238000
+              }
+            }
+          },
+          "finished": true
+        }
+      }
+    ],
+    "results": {
+      "winnerId": "p1",
+      "standings": [
+        {
+          "playerId": "p1",
+          "position": 1,
+          "points": 8,
+          "won": true,
+          "stats": {
+            "correctVotes": 2,
+            "votes": 2,
+            "incorrectVotes": 0,
+            "unanswered": 1,
+            "accuracy": 100
+          }
+        },
+        {
+          "playerId": "p2",
+          "position": 2,
+          "points": 4,
+          "won": false,
+          "stats": {
+            "correctVotes": 1,
+            "votes": 2,
+            "incorrectVotes": 1,
+            "unanswered": 1,
+            "accuracy": 50
+          }
+        },
+        {
+          "playerId": "p3",
+          "position": 3,
+          "points": 3,
+          "won": false,
+          "stats": {
+            "correctVotes": 1,
+            "votes": 1,
+            "incorrectVotes": 0,
+            "unanswered": 2,
+            "accuracy": 100
+          }
+        }
+      ]
+    }
+  }
+}
