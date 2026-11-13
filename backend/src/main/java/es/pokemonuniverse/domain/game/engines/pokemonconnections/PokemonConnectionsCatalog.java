@@ -122,7 +122,7 @@ public final class PokemonConnectionsCatalog {
     }
 
     /** {@code ids?.has(pokemon.id) || definition.matches?.(pokemon)}. */
-    boolean includes(Pokemon pokemon) {
+    public boolean includes(Pokemon pokemon) {
       return (pokemonIds != null && pokemonIds.contains(pokemon.id())) || (matches != null && matches.test(pokemon));
     }
   }
@@ -903,7 +903,7 @@ public final class PokemonConnectionsCatalog {
    * {@code starters}; cada grupo de prefijo ({@code ability-}, {@code letter-}, {@code generation-}) o de sufijo
    * ({@code -evolution}, {@code -gym-aces}) comparte familia; el resto, la de {@link #FAMILY_BY_ID} o su propio id.
    */
-  static String categoryFamily(String categoryId) {
+  public static String categoryFamily(String categoryId) {
     var family = FAMILY_BY_ID.get(categoryId);
     if (family != null) return family;
     if (categoryId.startsWith("type-") || categoryId.startsWith("mono-") || categoryId.startsWith("dual-")) {
@@ -918,7 +918,7 @@ public final class PokemonConnectionsCatalog {
   }
 
   /** Si la categoría sale de datos puros del catálogo en vez de una idea curada (ver {@link #DATA_CATEGORY_IDS}). */
-  static boolean isDataCategory(String categoryId) {
+  public static boolean isDataCategory(String categoryId) {
     if (CURATED_WITH_DATA_PREFIX.contains(categoryId)) return false;
     return DATA_CATEGORY_IDS.contains(categoryId)
         || DATA_CATEGORY_PREFIXES.stream().anyMatch(categoryId::startsWith);
@@ -937,7 +937,7 @@ public final class PokemonConnectionsCatalog {
    * evolución, rareza, número de tipos, habilidades, inicial del nombre, altura y, si el pool trae más de
    * una generación, la generación de debut), sin repetir id.
    */
-  static List<CategoryDefinition> resolvedCategoryDefinitions(List<Pokemon> pool) {
+  public static List<CategoryDefinition> resolvedCategoryDefinitions(List<Pokemon> pool) {
     var availableGenerations = new HashSet<Integer>();
     for (var pokemon : pool) availableGenerations.add(pokemon.generation());
     var dynamic = new ArrayList<CategoryDefinition>();
@@ -1025,7 +1025,7 @@ public final class PokemonConnectionsCatalog {
     return pokemon.evolutionStageCount() == null ? 1 : pokemon.evolutionStageCount();
   }
 
-  static List<Pokemon> membersFor(CategoryDefinition definition, List<Pokemon> pool) {
+  public static List<Pokemon> membersFor(CategoryDefinition definition, List<Pokemon> pool) {
     return pool.stream().filter(definition::includes).toList();
   }
 
