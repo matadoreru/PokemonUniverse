@@ -24,7 +24,7 @@ const registry = JSON.parse(readFileSync(new URL('../../backend/src/main/resourc
 const ASSET_GAMES = new Set(['whos-that-pokemon', 'zoomed-pokemon', 'shiny-vote', 'pokemon-cry-quiz']);
 
 /** Un juego de cada lote de la etapa 2B: se captura a los tres tamaños de revisión (Higher or Lower, en su propio test). */
-const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'absurd-pokedex', 'unown-translator', 'who-am-i', 'pokemon-team-auction', 'pokemon-bluff-auction']);
+const SCREENSHOT_GAMES = new Set(['shiny-vote', 'type-duel', 'poke-taboo', 'most-likely-to', 'learnset-guess', 'whos-that-pokemon', 'zoomed-pokemon', 'pokemon-palette-guess', 'pokemon-cry-quiz', 'pokedex-entry-guess', 'guess-from-stats', 'pokeddle-race', 'type-chain', 'pokemon-trivia', 'tcg-higher-lower', 'pokemon-connections', 'who-is-who-pokemon', 'pokemon-bingo', 'sketchmon', 'absurd-pokedex', 'unown-translator', 'who-am-i', 'pokemon-team-auction', 'pokemon-bluff-auction', 'odd-one-out']);
 
 /** Texto del aviso de error del lobby o de la sala, si hay alguno visible. */
 async function avisos(page: Page): Promise<string> {
