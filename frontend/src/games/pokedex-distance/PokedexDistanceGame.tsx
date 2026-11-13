@@ -89,9 +89,12 @@ export function PokedexDistanceGame({ room, selfId, onAction }: ActiveGameProps)
   const scene = revealing
     ? <DistanceRuler round={lastRound} members={room.members} selfId={selfId} className={s.scene} />
     : <DexStrip target={game.targetDexNumber} generations={config.generations} className={s.scene} />;
-  const lead = !activePhase && !revealing ? <p className={s.lead}>{pointsMode
-    ? 'Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: nadie cae, cada ronda suma puntos.'
-    : 'Elige el Pokémon cuyo número de Pokédex esté más cerca del objetivo: cae quien quede más lejos.'}</p> : null;
+  // Qué hay que hacer, con el número a la vista, hasta que se revela la ronda (la tira sola no lo explica).
+  const lead = !revealing ? <p className={s.lead}>
+    Elige el Pokémon cuyo número de Pokédex esté más cerca del <strong className={s.leadTarget}>{targetLabel}</strong>{pointsMode
+      ? ': nadie cae, cada ronda suma puntos.'
+      : ': cae quien quede más lejos.'}
+  </p> : null;
 
   const panel = revealing
     ? <Panel title="Resultado de la ronda" variant="dark" scroll scrollLabel="Distancias de la ronda" className={GAME_SIDE_FIT}>

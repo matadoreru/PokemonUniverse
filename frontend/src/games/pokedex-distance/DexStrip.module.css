@@ -83,6 +83,28 @@
   border-radius: 50%;
   background: var(--yellow);
 }
+/* Con objetivo, la pista baja para dejar sitio a su número sobre la chincheta. */
+.withTarget {
+  margin-top: calc(var(--sp-4) + 1.75rem);
+}
+/*
+ * Número del objetivo sobre la cabeza de la chincheta. Se desplaza a la izquierda lo mismo que la chincheta avanza en
+ * la pista (`--at`), así en los bordes no se sale de la tira.
+ */
+.pinLabel {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  padding: 1px var(--sp-2);
+  border: var(--ol-2) solid var(--navy);
+  border-radius: var(--r-badge);
+  background: var(--yellow);
+  color: var(--navy);
+  font: 800 var(--fs-13) / 1.2 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transform: translateX(calc(-1 * var(--at)));
+}
 /* Tramo de números de cada generación: solo en escritorio grande. */
 .genRange {
   display: none;
@@ -132,6 +154,13 @@
     margin-left: -5px;
     border-width: var(--ol-2);
     border-radius: 5px;
+  }
+  .withTarget {
+    margin-top: calc(var(--sp-4) + 2.5rem);
+  }
+  .pinLabel {
+    bottom: calc(100% + 20px);
+    font-size: var(--fs-18);
   }
   .head {
     top: -18px;

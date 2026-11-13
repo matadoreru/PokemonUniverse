@@ -35,6 +35,11 @@
   font: 700 var(--fs-15) / var(--lh-text) var(--font-text);
   color: var(--sky-2);
 }
+.leadTarget {
+  color: var(--yellow);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
 .rows {
   display: flex;
   flex-direction: column;

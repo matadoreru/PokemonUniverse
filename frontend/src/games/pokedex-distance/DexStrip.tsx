@@ -20,9 +20,10 @@ export function DexStrip({ target, generations, className }: { target: number | 
       <span className={s.range} aria-hidden="true">{ranges.map((range) => rangeText(range.first, range.last)).join(' · ')}</span>
       <span className="sr-only">: generaciones en juego {bands.map((band) => band.generation).join(', ')}.</span>
     </figcaption>
-    <div className={s.track} aria-hidden="true">
+    {/* El número del objetivo sobre la chincheta: dice qué marca (sin él, la chincheta en una sola banda no se entiende). */}
+    <div className={cx(s.track, targetPercent !== null && s.withTarget)} aria-hidden="true">
       {bands.map((band) => <span key={band.generation} className={cx(s.band, s.on, band.gapBefore && s.cut)} style={{ width: `${band.widthPercent}%` }} />)}
-      {targetPercent !== null && <span className={s.pin} style={{ '--at': `${targetPercent}%` } as CSSProperties}><span className={s.head} /></span>}
+      {targetPercent !== null && target !== null && <span className={s.pin} style={{ '--at': `${targetPercent}%` } as CSSProperties}><span className={s.head} /><span className={s.pinLabel}>{formatDexNumber(target)}</span></span>}
     </div>
     {/* Número de cada generación bajo su banda (la chincheta no lo tapa). */}
     <div className={s.labels} aria-hidden="true">
