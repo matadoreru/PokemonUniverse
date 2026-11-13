@@ -43,6 +43,7 @@ describe('client minigame registry', () => {
       'absurd-pokedex',
       'unown-translator',
       'who-am-i',
+      'odd-one-out',
     ]);
   });
 

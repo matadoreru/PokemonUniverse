@@ -1,6 +1,6 @@
 import {
   defaultAbsurdPokedexConfig, defaultGuessFromStatsConfig, defaultHigherLowerConfig, defaultLearnsetGuessConfig, defaultMostLikelyToConfig,
-  defaultOneOfUsIsFakeConfig, defaultPokeddleRaceConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokemonBingoConfig,
+  defaultOddOneOutConfig, defaultOneOfUsIsFakeConfig, defaultPokeddleRaceConfig, defaultPokedexDistanceConfig, defaultPokedexEntryGuessConfig, defaultPokemonBingoConfig,
   defaultPokemonBluffAuctionConfig, defaultPokemonConnectionsConfig, defaultPokemonCryQuizConfig, defaultPokemonImpostorConfig,
   defaultPokemonPaletteGuessConfig, defaultPokemonRedFlagConfig, defaultPokemonTeamAuctionConfig, defaultPokemonTriviaConfig, defaultPokeTabooConfig,
   defaultSecretRankingConfig, defaultShinyVoteConfig, defaultSketchmonConfig, defaultTcgHigherLowerConfig, defaultTypeDuelConfig,
@@ -57,6 +57,7 @@ export const PACE_PRESETS: Readonly<Record<string, GamePacePresets | null>> = {
   'learnset-guess': pace(defaultLearnsetGuessConfig, ['rounds', 'roundSeconds'], { rounds: 5, roundSeconds: 45 }, { rounds: 15, roundSeconds: 45 }),
   'most-likely-to': pace(defaultMostLikelyToConfig, ['rounds', 'selectionSeconds', 'votingSeconds'],
     { rounds: 3, selectionSeconds: 30, votingSeconds: 20 }, { rounds: 8, selectionSeconds: 30, votingSeconds: 20 }),
+  'odd-one-out': pace(defaultOddOneOutConfig, ['rounds', 'roundSeconds'], { rounds: 5, roundSeconds: 15 }, { rounds: 15, roundSeconds: 15 }),
   'one-of-us-is-fake': pace(defaultOneOfUsIsFakeConfig, ['rounds', 'selectionSeconds', 'discussionSeconds'],
     { rounds: 3, selectionSeconds: 20, discussionSeconds: 90 }, { rounds: 8, selectionSeconds: 20, discussionSeconds: 90 }),
   'poke-taboo': pace(defaultPokeTabooConfig, ['laps', 'roundSeconds'], { laps: 1, roundSeconds: 45 }, { laps: 2, roundSeconds: 45 },

@@ -249,4 +249,9 @@ export const clientGameRegistry = new ClientGameRegistry().register(clientModule
   config: component(() => import('./who-am-i/ConfigPanel'), 'WhoAmIConfigPanel'),
   active: component(() => import('./who-am-i/WhoAmIGame'), 'WhoAmIGame'),
   results: component(() => import('./who-am-i/WhoAmIResults'), 'WhoAmIResults'),
+})).register(clientModule({
+  id: 'odd-one-out',
+  config: component(() => import('./odd-one-out/ConfigPanel'), 'OddOneOutConfigPanel'),
+  active: component(() => import('./odd-one-out/OddOneOutGame'), 'OddOneOutGame'),
+  results: component(() => import('./odd-one-out/OddOneOutResults'), 'OddOneOutResults'),
 }));

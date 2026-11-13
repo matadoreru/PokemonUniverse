@@ -27,6 +27,7 @@ import {
   defaultTypeDuelConfig,
   defaultUnownTranslatorConfig,
   gameModeCatalog,
+  defaultOddOneOutConfig,
   defaultWhoAmIConfig,
   defaultWhoIsWhoPokemonConfig,
   defaultWhosThatPokemonConfig,
@@ -51,6 +52,7 @@ import {
   pokemonTriviaConfigSchema,
   pokeTabooConfigSchema,
   secretRankingConfigSchema,
+  oddOneOutConfigSchema,
   shinyVoteConfigSchema,
   sketchmonConfigSchema,
   tcgHigherLowerConfigSchema,
@@ -93,6 +95,7 @@ import { TcgHigherLowerConfigPanel } from './tcg-higher-lower/ConfigPanel';
 import { TypeChainConfigPanel } from './type-chain/ConfigPanel';
 import { TypeDuelConfigPanel } from './type-duel/ConfigPanel';
 import { UnownTranslatorConfigPanel } from './unown-translator/ConfigPanel';
+import { OddOneOutConfigPanel } from './odd-one-out/ConfigPanel';
 import { WhoAmIConfigPanel } from './who-am-i/ConfigPanel';
 import { WhoIsWhoPokemonConfigPanel } from './who-is-who-pokemon/ConfigPanel';
 import { WhosThatPokemonConfigPanel } from './whos-that-pokemon/ConfigPanel';
@@ -155,6 +158,7 @@ const panels: Record<string, { Panel: Panel; config: object; shape: Record<strin
   'type-chain': { Panel: TypeChainConfigPanel, config: defaultTypeChainConfig, shape: typeChainConfigSchema.shape, fields: {} },
   'type-duel': { Panel: TypeDuelConfigPanel, config: defaultTypeDuelConfig, shape: typeDuelConfigSchema.shape, fields: { 'Tiempo para elegir tipo': 'typeSelectSeconds', 'Tiempo para buscar': 'searchSeconds', 'Tiempo de búsqueda conjunta': 'coopSeconds', 'Número de rondas': 'rounds' } },
   'unown-translator': { Panel: UnownTranslatorConfigPanel, config: defaultUnownTranslatorConfig, shape: unownTranslatorConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por ronda': 'roundSeconds', 'Tiempo entre letras': 'hintSeconds' } },
+  'odd-one-out': { Panel: OddOneOutConfigPanel, config: defaultOddOneOutConfig, shape: oddOneOutConfigSchema.shape, fields: { 'Número de rondas': 'rounds', 'Tiempo por ronda': 'roundSeconds' } },
   'who-am-i': { Panel: WhoAmIConfigPanel, config: defaultWhoAmIConfig, shape: whoAmIConfigSchema.shape, fields: { 'Número de vueltas': 'maxLaps', 'Tiempo para preguntar': 'askSeconds', 'Tiempo para responder': 'answerSeconds' } },
   'who-is-who-pokemon': { Panel: WhoIsWhoPokemonConfigPanel, config: defaultWhoIsWhoPokemonConfig, shape: whoIsWhoPokemonConfigSchema.shape, fields: { 'Pokémon en el tablero': 'boardSize', 'Tiempo para elegir secreto': 'selectionSeconds' } },
   'whos-that-pokemon': { Panel: WhosThatPokemonConfigPanel, config: defaultWhosThatPokemonConfig, shape: whosThatPokemonConfigSchema.shape, fields: { 'Tiempo por ronda': 'roundSeconds', 'Número de rondas': 'rounds' } },
@@ -216,6 +220,12 @@ describe('config panel ranges', () => {
     expect(ranges.get('Número de vueltas')).toEqual({ min: 3, max: 20 });
     expect(ranges.get('Tiempo para preguntar')).toEqual({ min: 20, max: 90 });
     expect(ranges.get('Tiempo para responder')).toEqual({ min: 10, max: 60 });
+  });
+
+  it('El Intruso: 3–30 rondas y 10–60 s por ronda', () => {
+    const ranges = renderRanges(OddOneOutConfigPanel, defaultOddOneOutConfig);
+    expect(ranges.get('Número de rondas')).toEqual({ min: 3, max: 30 });
+    expect(ranges.get('Tiempo por ronda')).toEqual({ min: 10, max: 60 });
   });
 
   it('hay una fila por cada panel de configuración', () => {

@@ -1,0 +1,86 @@
+/*
+ * El Intruso, en el marco de juego (`GameScreen`): arriba las cuatro cartas (2×2 en el móvil, una fila en escritorio),
+ * abajo la placa con el voto o la revelación y al lado el marcador.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+.grid > [data-odd-option] {
+  min-height: 11rem;
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    flex: 1 1 0;
+    min-height: 15rem;
+  }
+  .grid > [data-odd-option] {
+    height: auto;
+  }
+}
+
+/* Votantes de cada carta al revelar. */
+.voters {
+  display: flex;
+  justify-content: center;
+  min-height: 1.5rem;
+}
+
+/* Revelación en la placa: categoría (el nombre largo parte palabras en vez de desbordar), explicación e intruso. */
+.category {
+  display: block;
+  overflow-wrap: anywhere;
+  font: 800 var(--fs-18) / 1.25 var(--font-display);
+  color: var(--ink);
+}
+.explanation {
+  display: block;
+  overflow-wrap: anywhere;
+  font: 600 var(--fs-15) / 1.35 var(--font-text);
+  color: var(--ink-2);
+}
+.intruderLine {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+}
+.points {
+  font: 800 var(--fs-44) / 1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.points small {
+  font: 800 var(--fs-15) / 1 var(--font-text);
+}
+
+/* Marcador. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.rowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.score {
+  white-space: nowrap;
+}
+.score small {
+  font: 800 var(--fs-13) / 1 var(--font-text);
+}
+
+@media (max-width: 1023px) {
+  .shortcuts {
+    display: none;
+  }
+}
+@media (max-width: 639px) {
+  .points {
+    font-size: var(--fs-34);
+  }
+}

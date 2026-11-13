@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowUpDown, Ban, BookOpen, BookText, Brain, Brush, ChartColumn, CircleHelp, Coins, Gamepad2, Gavel, Grid3x3,
-  Languages, Link, ListOrdered, MessageSquareQuote, Palette, Pointer, Puzzle, Rows3, Scale, ScanFace, ScrollText, Spade, Sparkles, Swords, Target, UserRoundSearch, UserX,
+  Languages, Link, ListOrdered, MessageSquareQuote, Palette, Pointer, Puzzle, Rows3, Scale, ScanFace, SearchCheck, ScrollText, Spade, Sparkles, Swords, Target, UserRoundSearch, UserX,
   VenetianMask, Volume2, ZoomIn,
 } from 'lucide-react';
 
@@ -41,6 +41,7 @@ export const GAME_ICONS: Readonly<Record<string, LucideIcon>> = {
   'absurd-pokedex': ScrollText,
   'unown-translator': Languages,
   'who-am-i': ScanFace,
+  'odd-one-out': SearchCheck,
 };
 
 /** Icono del juego; si aparece uno nuevo sin entrada, un mando genérico (nunca su emoji). */
