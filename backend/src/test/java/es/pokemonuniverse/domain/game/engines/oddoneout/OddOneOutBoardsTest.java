@@ -147,9 +147,12 @@ class OddOneOutBoardsTest {
 
   @Test
   void smallPoolsEitherWorkOrAreRejected() {
+    // Cada generación sola basta para jugar: si alguna dejara de estar disponible, el bucle no probaría nada.
+    var exercised = 0;
     for (var generation : List.of(1, 2)) {
       var pool = OddOneOutBoards.pool(List.of(generation), GOLDEN);
-      if (OddOneOutBoards.availabilityIssue(pool, LINES).isPresent()) continue;
+      assertEquals(Optional.empty(), OddOneOutBoards.availabilityIssue(pool, LINES), "generación " + generation);
+      exercised++;
       var random = new Random(generation);
       var usedCategories = new HashSet<String>();
       var usedPokemon = new HashSet<String>();
@@ -159,6 +162,7 @@ class OddOneOutBoardsTest {
         usedPokemon.addAll(board.pokemonIds());
       }
     }
+    assertEquals(2, exercised, "las dos generaciones se juegan");
     var tiny = POOL.subList(0, 3);
     var literal = "No hay categorías suficientes en esas generaciones.";
     assertEquals(Optional.of(literal), OddOneOutBoards.availabilityIssue(tiny, LINES));

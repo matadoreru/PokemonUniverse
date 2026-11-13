@@ -3,12 +3,14 @@ import { ResultsHostActions, ResultsRecords } from '../../room/game-kit/ResultsR
 import { ResultsShell, standingRows } from '../../room/game-kit/ResultsShell';
 import { useRoomMembers } from '../../room/room-members';
 import type { GameResultsProps } from '../../room/room-command';
-import type { OddOneOutPublicState } from '@pokemon-universe/shared/public';
+import { oddOneOutScoringLabel, type OddOneOutPublicState } from '@pokemon-universe/shared/public';
 import { oddStatsLine, oddRecords } from './presentation';
+import s from './OddOneOut.module.css';
 
 /**
  * Resultados de El Intruso: la clasificación del catálogo (puntos, aciertos y precisión de cada uno) y, al lado, los
- * récords de la partida (más aciertos y mejor precisión; empates juntos). Abajo, la acción del host.
+ * récords de la partida (más aciertos y mejor precisión; empates juntos), con la regla de puntos bajo la clasificación.
+ * Abajo, la acción del host.
  */
 export function OddOneOutResults({ room, selfId, onLobby, onEnd }: GameResultsProps) {
   const game = room.game as OddOneOutPublicState;
@@ -24,5 +26,7 @@ export function OddOneOutResults({ room, selfId, onLobby, onEnd }: GameResultsPr
   const actions = <ResultsHostActions room={room} host={host} onLobby={onLobby} onEnd={onEnd} />;
   return <ResultsShell won={(game.results?.winnerId ?? null) === selfId} title="Clasificación del intruso"
     subtitle={`El Intruso · ${game.totalRounds} ${game.totalRounds === 1 ? 'ronda completada' : 'rondas completadas'}`}
-    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge />;
+    standings={rows} selfId={selfId} winnersNeedPoints aside={aside} actions={actions} fillLarge>
+    <p className={s.rule}>{oddOneOutScoringLabel()}</p>
+  </ResultsShell>;
 }

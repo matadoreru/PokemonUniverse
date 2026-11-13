@@ -18,9 +18,12 @@ import { ActionPlate, Badge, Card, Chip, Icon, Panel, Row, ScoreValue, type Acti
 import { roundOutcome, votedCountText } from './presentation';
 import s from './OddOneOut.module.css';
 
-/** Estado de la carta: al votar, la elegida; al revelar, el intruso como respuesta y las otras tres como miembros de la categoría. */
+/**
+ * Estado de la carta: al votar, la elegida; al revelar, el intruso como respuesta correcta, la que votó quien mira (si
+ * no era el intruso) como fallo y las demás sin marca.
+ */
 export function oddCardState({ reveal, selected, intruder }: { reveal: boolean; selected: boolean; intruder: boolean }): CardState {
-  if (reveal) return intruder ? 'wrong' : 'correct';
+  if (reveal) return intruder ? 'correct' : selected ? 'wrong' : 'idle';
   return selected ? 'selected' : 'idle';
 }
 
@@ -39,7 +42,9 @@ function OptionCard({ option, voters, selected, interactive, reveal, intruder, o
   intruder: boolean;
   onSelect(): void;
 }) {
-  const role = reveal ? intruder ? ', el intruso' : ', pertenece a la categoría' : selected ? ', voto bloqueado' : '';
+  const role = reveal
+    ? intruder ? `, el intruso${selected ? ', tu voto' : ''}` : `, pertenece a la categoría${selected ? ', tu voto' : ''}`
+    : selected ? ', voto bloqueado' : '';
   const label = `Opción ${option.id}: ${option.pokemonName}${role}`;
   return <Card size="fill" name={option.pokemonName} sprite={apiAsset(option.sprite)} decorativeSprite state={oddCardState({ reveal, selected, intruder })} marks="corner" action
     attrs={{ 'data-odd-option': option.id, ...(reveal && intruder ? { 'data-intruder': 'true' } : {}), ...(interactive ? { 'aria-label': label, 'aria-keyshortcuts': `${option.id} ${option.id.charCodeAt(0) - 64}` } : {}) }}
@@ -192,6 +197,6 @@ export function OddOneOutGame({ room, selfId, onAction }: ActiveGameProps) {
     announcement = 'Elige al intruso: uno de los cuatro no comparte la categoría de los otros tres.';
   }
 
-  return <GameScreen gameName="El Intruso" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} heading="¿Quién es el intruso?"
+  return <GameScreen gameName="El Intruso" roundNumber={game.roundNumber} totalRounds={game.totalRounds} phase={game.phase} heading={reveal ? 'El intruso' : '¿Quién es el intruso?'}
     timer={timer} announcement={announcement} clue={grid} side={side} bottom={<Plate content={plate} focusKey={focusKey} />} />;
 }

@@ -1,10 +1,10 @@
-import { defaultOddOneOutConfig, type OddOneOutPlayerState, type OddOneOutPublicState, type RoomView } from '@pokemon-universe/shared/public';
+import { defaultOddOneOutConfig, oddOneOutScoringLabel, type OddOneOutPlayerState, type OddOneOutPublicState, type RoomView } from '@pokemon-universe/shared/public';
 import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
-import { OddOneOutGame } from './OddOneOutGame';
+import { OddOneOutGame, oddCardState } from './OddOneOutGame';
 import { OddOneOutResults } from './OddOneOutResults';
 import s from './OddOneOut.module.css';
 import { expectSingleLiveRegion } from '../../room/test-support/live-regions';
@@ -70,16 +70,43 @@ describe('El Intruso: pantalla', () => {
     expect(html).toContain('Se resucitan de un fósil.');
     expect(html).toContain('El intruso era Pikachu');
     expect(html).toContain('¡Era el intruso!');
-    expect(html.match(/data-mark="correct"/g)).toHaveLength(3);
-    expect(html.match(/data-mark="wrong"/g)).toHaveLength(1);
+    expect(html.match(/data-mark="correct"/g)).toHaveLength(1);
+    expect(html).not.toContain('data-mark="wrong"');
+    expect(html).toContain('Opción D: Pikachu, el intruso, tu voto');
     expect(html).toContain('data-testid="odd-voters-D"');
     expect(html).toContain('data-testid="odd-voters-A"');
+  });
+
+  it('en la revelación el título es corto; al votar, la pregunta', () => {
+    expect(render(revealGame())).toContain('>El intruso</h1>');
+    expect(render(revealGame())).not.toContain('¿Quién es el intruso?');
+    expect(render(publicGame())).toContain('¿Quién es el intruso?');
+  });
+
+  it('si falla, su carta va marcada como fallo y el intruso como correcto; las demás, sin marca', () => {
+    const html = render(revealGame(), player({ canVote: false, vote: { optionId: 'A', votedAt: 2_100 } }));
+    expect(html.match(/data-mark="correct"/g)).toHaveLength(1);
+    expect(html.match(/data-mark="wrong"/g)).toHaveLength(1);
+    expect(html).toMatch(/data-odd-option="A"[^]*?data-mark="wrong"[^]*?data-odd-option="B"/);
+    expect(html).toMatch(/data-odd-option="D"[^]*?data-mark="correct"/);
+    expect(html).toContain('Opción A: Aerodactyl, pertenece a la categoría, tu voto');
+  });
+
+  it('oddCardState: intruso correcto, voto fallido mal, el resto sin marca', () => {
+    expect(oddCardState({ reveal: true, selected: false, intruder: true })).toBe('correct');
+    expect(oddCardState({ reveal: true, selected: true, intruder: true })).toBe('correct');
+    expect(oddCardState({ reveal: true, selected: true, intruder: false })).toBe('wrong');
+    expect(oddCardState({ reveal: true, selected: false, intruder: false })).toBe('idle');
+    expect(oddCardState({ reveal: false, selected: true, intruder: false })).toBe('selected');
+    expect(oddCardState({ reveal: false, selected: false, intruder: true })).toBe('idle');
   });
 
   it('el espectador ve «El intruso era» una sola vez', () => {
     const html = renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(OddOneOutGame, { room: room(revealGame(), null), selfId: 'espectador', onAction: async () => undefined })));
     expect(html).toContain('Resultado de la ronda');
     expect(html.match(/El intruso era/g)).toHaveLength(1);
+    expect(html.match(/data-mark="correct"/g)).toHaveLength(1);
+    expect(html).not.toContain('data-mark="wrong"');
   });
 
   it('longCategoryWraps: el nombre largo de la categoría parte palabras en vez de desbordar', () => {
@@ -116,5 +143,6 @@ describe('El Intruso: resultados', () => {
     expect(html).toContain('7 aciertos · 70% de precisión');
     expect(html).toContain('1 acierto · 10% de precisión');
     expect(html).toContain('Eru');
+    expect(html).toContain(oddOneOutScoringLabel());
   });
 });

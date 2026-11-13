@@ -21,11 +21,16 @@
   }
 }
 
-/* Votantes de cada carta al revelar. */
+/*
+ * Votantes de cada carta al revelar. La fila reserva el alto real de la pila de avatares (avatar `sm` de 32 px, 2 px de
+ * relleno y el contorno `--ol-2` por arriba y por abajo: 40 px, 2.5rem) para que las cartas con y sin votos dejen el
+ * mismo hueco al sprite y el nombre a la misma altura.
+ */
 .voters {
   display: flex;
+  align-items: center;
   justify-content: center;
-  min-height: 1.5rem;
+  min-height: calc(32px + 2 * 2px + 2 * var(--ol-2));
 }
 
 /* Revelación en la placa: categoría (el nombre largo parte palabras en vez de desbordar), explicación e intruso. */
@@ -54,6 +59,13 @@
 }
 .points small {
   font: 800 var(--fs-15) / 1 var(--font-text);
+}
+
+/* Regla de puntos en los resultados. */
+.rule {
+  margin: var(--sp-3) 0 0;
+  font: 700 var(--fs-15) / 1.4 var(--font-text);
+  color: var(--sky-2);
 }
 
 /* Marcador. */
