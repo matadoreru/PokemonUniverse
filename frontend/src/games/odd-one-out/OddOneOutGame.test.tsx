@@ -76,6 +76,12 @@ describe('El Intruso: pantalla', () => {
     expect(html).toContain('data-testid="odd-voters-A"');
   });
 
+  it('el espectador ve «El intruso era» una sola vez', () => {
+    const html = renderToStaticMarkup(createElement(MemoryRouter, {}, createElement(OddOneOutGame, { room: room(revealGame(), null), selfId: 'espectador', onAction: async () => undefined })));
+    expect(html).toContain('Resultado de la ronda');
+    expect(html.match(/El intruso era/g)).toHaveLength(1);
+  });
+
   it('longCategoryWraps: el nombre largo de la categoría parte palabras en vez de desbordar', () => {
     const html = render(revealGame(LONG));
     expect(html).toContain(`Categoría: ${LONG}`);

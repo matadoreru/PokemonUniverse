@@ -14,7 +14,7 @@ import { useOutcomeCue } from '../../room/game-kit/useOutcomeCue';
 import { usePendingAction } from '../../room/game-kit/usePendingAction';
 import type { ActiveGameProps } from '../../room/room-command';
 import { UNKNOWN_PLAYER_NAME, useRoomMembers } from '../../room/room-members';
-import { ActionPlate, Badge, Card, Chip, cx, Icon, Panel, Row, ScoreValue, type ActionPlateTone, type CardState } from '../../ui';
+import { ActionPlate, Badge, Card, Chip, Icon, Panel, Row, ScoreValue, type ActionPlateTone, type CardState } from '../../ui';
 import { roundOutcome, votedCountText } from './presentation';
 import s from './OddOneOut.module.css';
 
@@ -154,7 +154,7 @@ export function OddOneOutGame({ room, selfId, onAction }: ActiveGameProps) {
     })}</div>
     : <div className={s.grid} data-count={4} aria-busy="true"><span className="sr-only">Cargando opciones</span></div>;
 
-  const side = <Sidebar game={game} members={members} colors={colors} selfId={selfId} className={cx(s.sidePanel, GAME_SIDE_FIT)} />;
+  const side = <Sidebar game={game} members={members} colors={colors} selfId={selfId} className={GAME_SIDE_FIT} />;
 
   let plate: PlateContent;
   let announcement: string;
@@ -164,7 +164,7 @@ export function OddOneOutGame({ room, selfId, onAction }: ActiveGameProps) {
     focusKey = `reveal-${round.roundNumber}`;
     plate = {
       icon: found ? CheckCircle2 : outcome?.tone === 'bad' ? XCircle : outcome ? TimerOff : SearchCheck,
-      tone: outcome?.tone ?? 'info', kicker: 'Revelación', title: outcome?.title ?? `El intruso era ${intruder.pokemonName}`,
+      tone: outcome?.tone ?? 'info', kicker: 'Revelación', title: outcome?.title ?? 'Resultado de la ronda',
       text: <>
         <span className={s.category}>{`Categoría: ${round.category.label}`}</span>
         <span className={s.explanation}>{round.category.explanation}</span>
@@ -172,7 +172,7 @@ export function OddOneOutGame({ room, selfId, onAction }: ActiveGameProps) {
       </>,
       aside: outcome ? <strong className={s.points}>+{points}<small> puntos</small></strong> : null,
     };
-    announcement = `Revelación. Categoría: ${round.category.label}. El intruso era ${intruder.pokemonName}. ${outcome ? `${outcome.title} +${points} puntos.` : ''}`.trim();
+    announcement = `Revelación. Categoría: ${round.category.label}. Intruso: ${intruder.pokemonName}. ${outcome ? `${outcome.title} +${points} puntos.` : ''}`.trim();
   } else if (!active) {
     plate = { icon: Clock3, tone: 'info', kicker: 'El Intruso', title: 'Preparando la ronda…', text: 'El servidor reparte los Pokémon de la siguiente ronda.' };
     announcement = 'Preparando la ronda.';
