@@ -22,7 +22,7 @@ class ClasspathGameRegistryLoaderTest {
   @Inject ObjectMapper mapper;
 
   @Test
-  void loadsThirtyOneGames() {
+  void loadsThirtyTwoGames() {
     assertEquals(32, registry.list().size());
     assertEquals(32, registry.manifests().size());
     assertTrue(registry.get("pokedex-distance").isPresent());
